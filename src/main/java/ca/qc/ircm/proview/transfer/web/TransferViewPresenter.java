@@ -24,7 +24,6 @@ import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -53,6 +52,7 @@ import com.vaadin.data.ValidationResult;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -132,6 +132,7 @@ public class TransferViewPresenter implements BinderValidator {
   private Map<TransferedSample, Binder<TransferedSample>> transferBinders = new HashMap<>();
   private Map<TransferedSample, ComboBox<Tube>> destinationTubes = new HashMap<>();
   private Map<TransferedSample, ComboBox<Well>> destinationWells = new HashMap<>();
+  private Map<TransferedSample, Button> downs = new HashMap<>();
   @Inject
   private TransferService transferService;
   @Inject
@@ -196,12 +197,6 @@ public class TransferViewPresenter implements BinderValidator {
     design.transfersPanel.addStyleName(TRANSFERS_PANEL);
     design.transfersPanel.setCaption(resources.message(TRANSFERS_PANEL));
     prepareTransfersGrid();
-    design.down.addStyleName(DOWN);
-    design.down.addStyleName(BUTTON_SKIP_ROW);
-    design.down.setCaption(resources.message(DOWN));
-    design.down.setIcon(VaadinIcons.ARROW_DOWN);
-    design.down.setVisible(false);
-    design.down.addClickListener(e -> down());
     design.destination.addStyleName(DESTINATION);
     design.destination.setCaption(resources.message(DESTINATION));
     design.destinationPlatesField.addStyleName(DESTINATION_PLATES);
@@ -261,6 +256,8 @@ public class TransferViewPresenter implements BinderValidator {
         .setId(DESTINATION_TUBE).setCaption(resources.message(DESTINATION_TUBE)).setSortable(false);
     design.transfers.addColumn(ts -> destinationWell(ts), new ComponentRenderer())
         .setId(DESTINATION_WELL).setCaption(resources.message(DESTINATION_WELL)).setSortable(false);
+    design.transfers.addColumn(ts -> downButton(ts), new ComponentRenderer()).setId(DOWN)
+        .setCaption(resources.message(DOWN)).setSortable(false);
   }
 
   private Binder<TransferedSample> binder(TransferedSample ts) {
@@ -307,6 +304,21 @@ public class TransferViewPresenter implements BinderValidator {
     }
   }
 
+  private Button downButton(TransferedSample ts) {
+    if (downs.get(ts) != null) {
+      return downs.get(ts);
+    } else {
+      MessageResource resources = view.getResources();
+      Button down = new Button();
+      down.addStyleName(DOWN);
+      down.setIcon(VaadinIcons.ARROW_DOWN);
+      down.setIconAlternateText(resources.message(DOWN));
+      down.addClickListener(e -> down(ts));
+      downs.put(ts, down);
+      return down;
+    }
+  }
+
   private void updateType() {
     final MessageResource generalResources = view.getGeneralResources();
     final SampleContainerType destinationType = design.type.getValue();
@@ -330,7 +342,8 @@ public class TransferViewPresenter implements BinderValidator {
         .setHidden(binder.getBean().getId() != null || destinationType != TUBE);
     design.transfers.getColumn(DESTINATION_WELL)
         .setHidden(binder.getBean().getId() != null || destinationType != WELL);
-    design.down.setVisible(binder.getBean().getId() == null && destinationType == WELL);
+    design.transfers.getColumn(DOWN)
+        .setHidden(binder.getBean().getId() != null || destinationType != WELL);
     design.destination.setVisible(binder.getBean().getId() == null && destinationType == WELL);
   }
 
@@ -354,18 +367,24 @@ public class TransferViewPresenter implements BinderValidator {
     updateType();
   }
 
-  private void down() {
+  private void down(TransferedSample ts) {
     List<TransferedSample> tss = gridItems(design.transfers).collect(Collectors.toList());
-    Well firstWell = destinationWells.get(tss.get(0)).getValue();
+    Well firstWell = destinationWells.get(ts).getValue();
     if (firstWell != null) {
       Plate plate = design.destinationPlatesField.getValue();
       List<Well> wells = plate.wells(new WellLocation(firstWell.getRow(), firstWell.getColumn()),
           new WellLocation(plate.getRowCount() - 1, plate.getColumnCount() - 1));
       wells.sort(new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
+      boolean copy = false;
       int index = 0;
-      for (TransferedSample ts : tss) {
-        ComboBox<Well> field = destinationWells.get(ts);
-        field.setValue(wells.get(index++));
+      for (TransferedSample other : tss) {
+        if (ts.equals(other)) {
+          copy = true;
+        }
+        if (copy) {
+          ComboBox<Well> field = destinationWells.get(other);
+          field.setValue(wells.get(index++));
+        }
       }
     }
   }

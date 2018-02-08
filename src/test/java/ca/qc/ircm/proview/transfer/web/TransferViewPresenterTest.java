@@ -55,7 +55,6 @@ import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYP
 import static ca.qc.ircm.proview.transfer.web.TransferViewPresenter.TRANSFER_TYPE_PANEL;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -100,6 +99,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -221,8 +221,6 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.getStyleName().contains(TRANSFERS_PANEL));
     assertTrue(design.transfers.getStyleName().contains(TRANSFERS));
     assertTrue(design.transfers.getStyleName().contains(COMPONENTS));
-    assertTrue(design.down.getStyleName().contains(DOWN));
-    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.destination.getStyleName().contains(DESTINATION));
     assertTrue(design.destinationPlatesField.getStyleName().contains(DESTINATION_PLATES));
     assertTrue(design.destinationPlatePanel.getStyleName().contains(DESTINATION_PLATE_PANEL));
@@ -246,8 +244,6 @@ public class TransferViewPresenterTest {
       assertEquals(type.getLabel(locale), design.type.getItemCaptionGenerator().apply(type));
     }
     assertEquals(resources.message(TRANSFERS_PANEL), design.transfersPanel.getCaption());
-    assertEquals(resources.message(DOWN), design.down.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(DESTINATION), design.destination.getCaption());
     assertEquals(resources.message(DESTINATION_PLATES), design.destinationPlatesField.getCaption());
     assertEquals(resources.message(TEST), design.test.getCaption());
@@ -279,8 +275,8 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.isVisible());
     assertTrue(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
     assertFalse(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertFalse(design.transfers.getColumn(DOWN).isHidden());
     assertTrue(design.destination.isVisible());
-    assertTrue(design.down.isVisible());
 
     design.type.setValue(TUBE);
     assertTrue(design.type.getItemEnabledProvider().test(TUBE));
@@ -289,8 +285,8 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.isVisible());
     assertFalse(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
     assertTrue(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertTrue(design.transfers.getColumn(DOWN).isHidden());
     assertFalse(design.destination.isVisible());
-    assertFalse(design.down.isVisible());
 
     design.type.setValue(WELL);
     assertTrue(design.type.getItemEnabledProvider().test(TUBE));
@@ -299,8 +295,8 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.isVisible());
     assertTrue(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
     assertFalse(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertFalse(design.transfers.getColumn(DOWN).isHidden());
     assertTrue(design.destination.isVisible());
-    assertTrue(design.down.isVisible());
   }
 
   @Test
@@ -314,8 +310,8 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.isVisible());
     assertTrue(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
     assertFalse(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertFalse(design.transfers.getColumn(DOWN).isHidden());
     assertTrue(design.destination.isVisible());
-    assertTrue(design.down.isVisible());
 
     design.type.setValue(TUBE);
     assertTrue(design.type.getItemEnabledProvider().test(TUBE));
@@ -324,8 +320,8 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.isVisible());
     assertFalse(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
     assertTrue(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertTrue(design.transfers.getColumn(DOWN).isHidden());
     assertFalse(design.destination.isVisible());
-    assertFalse(design.down.isVisible());
 
     design.type.setValue(WELL);
     assertTrue(design.type.getItemEnabledProvider().test(TUBE));
@@ -334,8 +330,8 @@ public class TransferViewPresenterTest {
     assertTrue(design.transfersPanel.isVisible());
     assertTrue(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
     assertFalse(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertFalse(design.transfers.getColumn(DOWN).isHidden());
     assertTrue(design.destination.isVisible());
-    assertTrue(design.down.isVisible());
   }
 
   @Test
@@ -344,7 +340,7 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    assertEquals(5, design.transfers.getColumns().size());
+    assertEquals(6, design.transfers.getColumns().size());
     assertEquals(SAMPLE, design.transfers.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.transfers.getColumn(SAMPLE).getCaption());
     assertFalse(design.transfers.getColumn(SAMPLE).isHidden());
@@ -409,6 +405,18 @@ public class TransferViewPresenterTest {
       assertFalse(field.isEmptySelectionAllowed());
       assertTrue(field.isRequiredIndicatorVisible());
     }
+    assertEquals(DOWN, design.transfers.getColumns().get(5).getId());
+    assertTrue(containsInstanceOf(design.transfers.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertEquals(resources.message(DOWN), design.transfers.getColumn(DOWN).getCaption());
+    assertFalse(design.transfers.getColumn(DOWN).isHidden());
+    assertFalse(design.transfers.getColumn(DOWN).isSortable());
+    for (TransferedSample ts : transfers) {
+      Button down = (Button) design.transfers.getColumn(DOWN).getValueProvider().apply(ts);
+      assertTrue(down.getStyleName().contains(DOWN));
+      assertEquals(VaadinIcons.ARROW_DOWN, down.getIcon());
+      assertEquals(resources.message(DOWN), down.getIconAlternateText());
+    }
     Plate plate = new Plate();
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
@@ -430,7 +438,7 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("3");
 
-    assertEquals(5, design.transfers.getColumns().size());
+    assertEquals(6, design.transfers.getColumns().size());
     assertEquals(SAMPLE, design.transfers.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.transfers.getColumn(SAMPLE).getCaption());
     assertFalse(design.transfers.getColumn(SAMPLE).isHidden());
@@ -494,6 +502,17 @@ public class TransferViewPresenterTest {
       assertFalse(field.isEmptySelectionAllowed());
       assertTrue(field.isRequiredIndicatorVisible());
     }
+    assertEquals(DOWN, design.transfers.getColumns().get(5).getId());
+    assertTrue(containsInstanceOf(design.transfers.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertEquals(resources.message(DOWN), design.transfers.getColumn(DOWN).getCaption());
+    assertTrue(design.transfers.getColumn(DOWN).isHidden());
+    for (TransferedSample ts : transfers) {
+      Button down = (Button) design.transfers.getColumn(DOWN).getValueProvider().apply(ts);
+      assertTrue(down.getStyleName().contains(DOWN));
+      assertEquals(VaadinIcons.ARROW_DOWN, down.getIcon());
+      assertEquals(resources.message(DOWN), down.getIconAlternateText());
+    }
     Plate plate = new Plate();
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
@@ -543,7 +562,7 @@ public class TransferViewPresenterTest {
 
     ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
         .apply(transfers.get(0))).setValue(plate.well(0, 0));
-    design.down.click();
+    ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(transfers.get(0))).click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     int count = 0;
@@ -555,7 +574,7 @@ public class TransferViewPresenterTest {
 
     ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
         .apply(transfers.get(0))).setValue(plate.well(2, 3));
-    design.down.click();
+    ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(transfers.get(0))).click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     count = 2;
@@ -563,6 +582,18 @@ public class TransferViewPresenterTest {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 3), field.getValue());
+    }
+
+    ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
+        .apply(transfers.get(1))).setValue(plate.well(4, 4));
+    ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(transfers.get(1))).click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    count = 4;
+    for (TransferedSample ts : transfers.subList(1, transfers.size())) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      assertEquals(plate.well(count++, 4), field.getValue());
     }
   }
 
@@ -581,7 +612,7 @@ public class TransferViewPresenterTest {
       design.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
     }
 
-    design.down.click();
+    ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(transfers.get(0))).click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     for (TransferedSample ts : transfers) {
@@ -609,15 +640,30 @@ public class TransferViewPresenterTest {
 
     ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
         .apply(transfers.get(2))).setValue(plate.well(0, 0));
-    design.down.click();
+    List<TransferedSample> orderedTransfers =
+        VaadinUtils.gridItems(design.transfers).collect(Collectors.toList());
+    ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(orderedTransfers.get(0)))
+        .click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     int count = 0;
-    for (TransferedSample ts : VaadinUtils.gridItems(design.transfers)
-        .collect(Collectors.toList())) {
+    for (TransferedSample ts : orderedTransfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 0), field.getValue());
+    }
+
+    ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
+        .apply(orderedTransfers.get(1))).setValue(plate.well(4, 4));
+    ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(orderedTransfers.get(1)))
+        .click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    count = 4;
+    for (TransferedSample ts : orderedTransfers.subList(1, orderedTransfers.size())) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      assertEquals(plate.well(count++, 4), field.getValue());
     }
   }
 
@@ -639,15 +685,30 @@ public class TransferViewPresenterTest {
 
     ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
         .apply(transfers.get(2))).setValue(plate.well(0, 0));
-    design.down.click();
+    List<TransferedSample> orderedTransfers =
+        VaadinUtils.gridItems(design.transfers).collect(Collectors.toList());
+    ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(orderedTransfers.get(0)))
+        .click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     int count = 0;
-    for (TransferedSample ts : VaadinUtils.gridItems(design.transfers)
-        .collect(Collectors.toList())) {
+    for (TransferedSample ts : orderedTransfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 0), field.getValue());
+    }
+
+    ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
+        .apply(orderedTransfers.get(1))).setValue(plate.well(4, 4));
+    ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(orderedTransfers.get(1)))
+        .click();
+    verify(view, never()).showError(any());
+    verify(transferService, never()).insert(any());
+    count = 4;
+    for (TransferedSample ts : orderedTransfers.subList(1, orderedTransfers.size())) {
+      ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
+          .getValueProvider().apply(ts);
+      assertEquals(plate.well(count++, 4), field.getValue());
     }
   }
 
@@ -1828,7 +1889,6 @@ public class TransferViewPresenterTest {
     assertFalse(design.deleted.isVisible());
     assertTrue(design.transfersPanel.isVisible());
     assertTrue(design.destination.isVisible());
-    assertTrue(design.down.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
@@ -1869,7 +1929,6 @@ public class TransferViewPresenterTest {
     assertFalse(design.deleted.isVisible());
     assertTrue(design.transfersPanel.isVisible());
     assertFalse(design.destination.isVisible());
-    assertFalse(design.down.isVisible());
     assertTrue(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
     assertTrue(design.removeLayout.isVisible());
@@ -1895,7 +1954,6 @@ public class TransferViewPresenterTest {
     assertTrue(design.deleted.isVisible());
     assertTrue(design.transfersPanel.isVisible());
     assertFalse(design.destination.isVisible());
-    assertFalse(design.down.isVisible());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());

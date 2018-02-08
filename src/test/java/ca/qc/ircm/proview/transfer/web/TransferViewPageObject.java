@@ -44,6 +44,9 @@ import com.vaadin.testbench.elements.RadioButtonGroupElement;
 import org.openqa.selenium.WebElement;
 
 public abstract class TransferViewPageObject extends AbstractTestBenchTestCase {
+  private static final int DESTINATION_COLUMN = 2;
+  private static final int DOWN_COLUMN = 3;
+
   protected void open() {
     openView(TransferView.VIEW_NAME);
   }
@@ -81,21 +84,22 @@ public abstract class TransferViewPageObject extends AbstractTestBenchTestCase {
   }
 
   protected void setDestinationTube(int row, String name) {
-    ComboBoxElement field = wrap(ComboBoxElement.class,
-        transfers().getRow(row).getCell(2).findElement(className(DESTINATION_TUBE)));
+    ComboBoxElement field = wrap(ComboBoxElement.class, transfers().getRow(row)
+        .getCell(DESTINATION_COLUMN).findElement(className(DESTINATION_TUBE)));
     field.selectByText(name);
     transfers().focus();
   }
 
   protected void setDestinationWell(int row, String name) {
-    ComboBoxElement field = wrap(ComboBoxElement.class,
-        transfers().getRow(row).getCell(2).findElement(className(DESTINATION_WELL)));
+    ComboBoxElement field = wrap(ComboBoxElement.class, transfers().getRow(row)
+        .getCell(DESTINATION_COLUMN).findElement(className(DESTINATION_WELL)));
     field.selectByText(name);
     transfers().focus();
   }
 
-  protected ButtonElement down() {
-    return wrap(ButtonElement.class, findElement(className(DOWN)));
+  protected void clickDown(int row) {
+    wrap(ButtonElement.class,
+        transfers().getRow(row).getCell(DOWN_COLUMN).findElement(className(DOWN))).click();
   }
 
   protected PanelElement destinationPanel() {

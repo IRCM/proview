@@ -116,7 +116,6 @@ public class TransferViewTest extends TransferViewPageObject {
     assertTrue(optional(() -> transferType()).isPresent());
     assertTrue(optional(() -> transfersPanel()).isPresent());
     assertTrue(optional(() -> transfers()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> destinationPanel()).isPresent());
     assertTrue(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());
@@ -138,7 +137,6 @@ public class TransferViewTest extends TransferViewPageObject {
     assertTrue(optional(() -> transferType()).isPresent());
     assertTrue(optional(() -> transfersPanel()).isPresent());
     assertTrue(optional(() -> transfers()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> destinationPanel()).isPresent());
     assertTrue(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());
@@ -150,7 +148,6 @@ public class TransferViewTest extends TransferViewPageObject {
     assertTrue(optional(() -> transferType()).isPresent());
     assertTrue(optional(() -> transfersPanel()).isPresent());
     assertTrue(optional(() -> transfers()).isPresent());
-    assertFalse(optional(() -> down()).isPresent());
     assertFalse(optional(() -> destinationPanel()).isPresent());
     assertFalse(optional(() -> destinationPlates()).isPresent());
     assertFalse(optional(() -> destinationPlatePanel()).isPresent());

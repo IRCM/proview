@@ -31,7 +31,6 @@ public class TransferViewDesign extends VerticalLayout {
   protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleContainerType> type;
   protected Panel transfersPanel;
   protected Grid<ca.qc.ircm.proview.transfer.TransferedSample> transfers;
-  protected Button down;
   protected Panel destination;
   protected VerticalLayout destinationPlateLayout;
   protected ComboBox<ca.qc.ircm.proview.plate.Plate> destinationPlatesField;
