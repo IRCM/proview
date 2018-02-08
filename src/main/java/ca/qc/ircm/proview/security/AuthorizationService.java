@@ -42,8 +42,6 @@ import ca.qc.ircm.proview.user.UserRole;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,20 +63,13 @@ public class AuthorizationService {
   private EntityManager entityManager;
   @Inject
   private JPAQueryFactory queryFactory;
-  @Inject
-  private AuthenticationService authenticationService;
-  @Inject
-  private SecurityConfiguration securityConfiguration;
 
   protected AuthorizationService() {
   }
 
-  protected AuthorizationService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      AuthenticationService authenticationService, SecurityConfiguration securityConfiguration) {
+  protected AuthorizationService(EntityManager entityManager, JPAQueryFactory queryFactory) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
-    this.authenticationService = authenticationService;
-    this.securityConfiguration = securityConfiguration;
   }
 
   private Subject getSubject() {
@@ -91,10 +82,6 @@ public class AuthorizationService {
     }
 
     return entityManager.find(User.class, id);
-  }
-
-  private String realmName() {
-    return securityConfiguration.realmName();
   }
 
   private Sample getSample(Long id) {
@@ -158,23 +145,6 @@ public class AuthorizationService {
    */
   public boolean hasManagerRole() {
     return getSubject().hasRole(MANAGER);
-  }
-
-  /**
-   * Returns true if user has manager role, false otherwise.
-   *
-   * @param user
-   *          user
-   * @return true if user has manager role, false otherwise
-   */
-  public boolean hasManagerRole(User user) {
-    if (user == null) {
-      return false;
-    }
-
-    AuthorizationInfo authorizationInfo = authenticationService
-        .getAuthorizationInfo(new SimplePrincipalCollection(user.getId(), realmName()));
-    return authorizationInfo.getRoles() != null && authorizationInfo.getRoles().contains(MANAGER);
   }
 
   /**

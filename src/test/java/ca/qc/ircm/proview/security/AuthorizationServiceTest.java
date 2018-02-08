@@ -27,7 +27,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
@@ -45,21 +44,14 @@ import ca.qc.ircm.proview.user.UserRole;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.Permission;
-import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -73,30 +65,15 @@ public class AuthorizationServiceTest {
   private EntityManager entityManager;
   @Inject
   private JPAQueryFactory queryFactory;
-  @Mock
-  private AuthenticationService authenticationService;
-  @Mock
-  private ApplicationConfiguration applicationConfiguration;
-  @Mock
-  private AuthorizationInfo authorizationInfo;
-  @Mock
-  private SecurityConfiguration securityConfiguration;
-  @Captor
-  private ArgumentCaptor<String> roleCaptor;
-  @Captor
-  private ArgumentCaptor<PrincipalCollection> principalCollectionCaptor;
   private Subject subject;
-  private String realmName = "proviewRealm";
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() {
-    authorizationService = new AuthorizationService(entityManager, queryFactory,
-        authenticationService, securityConfiguration);
+    authorizationService = new AuthorizationService(entityManager, queryFactory);
     subject = SecurityUtils.getSubject();
-    when(securityConfiguration.realmName()).thenReturn(realmName);
   }
 
   @Test
@@ -219,47 +196,6 @@ public class AuthorizationServiceTest {
 
     verify(subject).hasRole("MANAGER");
     assertEquals(true, hasRole);
-  }
-
-  @Test
-  public void hasManagerRole_User_False() {
-    when(authenticationService.getAuthorizationInfo(any())).thenReturn(authorizationInfo);
-    when(authorizationInfo.getRoles()).thenReturn(new HashSet<>());
-    User user = new User(10L);
-
-    boolean hasRole = authorizationService.hasManagerRole(user);
-
-    assertEquals(false, hasRole);
-    verify(authenticationService).getAuthorizationInfo(principalCollectionCaptor.capture());
-    PrincipalCollection principalCollection = principalCollectionCaptor.getValue();
-    assertEquals(10L, principalCollection.getPrimaryPrincipal());
-    assertEquals(1, principalCollection.fromRealm(realmName).size());
-    assertEquals(10L, principalCollection.fromRealm(realmName).iterator().next());
-  }
-
-  @Test
-  public void hasManagerRole_User_True() {
-    when(authenticationService.getAuthorizationInfo(any())).thenReturn(authorizationInfo);
-    Set<String> roles = new HashSet<>();
-    roles.add(UserRole.MANAGER.name());
-    when(authorizationInfo.getRoles()).thenReturn(roles);
-    User user = new User(10L);
-
-    boolean hasRole = authorizationService.hasManagerRole(user);
-
-    assertEquals(true, hasRole);
-    verify(authenticationService).getAuthorizationInfo(principalCollectionCaptor.capture());
-    PrincipalCollection principalCollection = principalCollectionCaptor.getValue();
-    assertEquals(10L, principalCollection.getPrimaryPrincipal());
-    assertEquals(1, principalCollection.fromRealm(realmName).size());
-    assertEquals(10L, principalCollection.fromRealm(realmName).iterator().next());
-  }
-
-  @Test
-  public void hasManagerRole_NullUser() {
-    boolean hasRole = authorizationService.hasManagerRole(null);
-
-    assertEquals(false, hasRole);
   }
 
   @Test
