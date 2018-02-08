@@ -104,7 +104,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -309,7 +308,27 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    assertFalse(design.type.getItemEnabledProvider().test(TUBE));
+    assertTrue(design.type.getItemEnabledProvider().test(TUBE));
+    assertTrue(design.type.getItemEnabledProvider().test(WELL));
+    assertTrue(design.typePanel.isVisible());
+    assertTrue(design.transfersPanel.isVisible());
+    assertTrue(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
+    assertFalse(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertTrue(design.destination.isVisible());
+    assertTrue(design.down.isVisible());
+
+    design.type.setValue(TUBE);
+    assertTrue(design.type.getItemEnabledProvider().test(TUBE));
+    assertTrue(design.type.getItemEnabledProvider().test(WELL));
+    assertTrue(design.typePanel.isVisible());
+    assertTrue(design.transfersPanel.isVisible());
+    assertFalse(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
+    assertTrue(design.transfers.getColumn(DESTINATION_WELL).isHidden());
+    assertFalse(design.destination.isVisible());
+    assertFalse(design.down.isVisible());
+
+    design.type.setValue(WELL);
+    assertTrue(design.type.getItemEnabledProvider().test(TUBE));
     assertTrue(design.type.getItemEnabledProvider().test(WELL));
     assertTrue(design.typePanel.isVisible());
     assertTrue(design.transfersPanel.isVisible());
@@ -1378,7 +1397,6 @@ public class TransferViewPresenterTest {
   }
 
   @Test
-  @Ignore("Not available for now")
   @SuppressWarnings("unchecked")
   public void save_PlateToTube() {
     presenter.init(view);
@@ -1411,7 +1429,8 @@ public class TransferViewPresenterTest {
       assertEquals(sample, transferedSample.getSample());
       assertEquals(sourceWells.get(i), transferedSample.getContainer());
       assertTrue(transferedSample.getDestinationContainer() instanceof Tube);
-      assertEquals("test" + i, transferedSample.getDestinationContainer().getName());
+      assertEquals(sample.getName() + "_destination",
+          transferedSample.getDestinationContainer().getName());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
     verify(view).saveContainers(transfer.getTreatmentSamples().stream()
@@ -1513,24 +1532,27 @@ public class TransferViewPresenterTest {
   }
 
   @Test
-  @Ignore("Not available for now")
   @SuppressWarnings("unchecked")
   public void save_PlateToTube_MultipleWellPerSample() {
     Plate sourcePlate = entityManager.find(Plate.class, 26L);
+    sourceWells.clear();
     IntStream.range(0, samples.size()).forEach(i -> {
       Sample sample = samples.get(i);
       List<Well> wells = Arrays.asList(sourcePlate.well(i, 0), sourcePlate.well(i, 1));
       wells.stream().forEach(well -> well.setSample(sample));
       sourceWells.addAll(wells);
     });
+    Collections.sort(sourceWells, new WellComparator(WellComparator.Compare.SAMPLE_ASSIGN));
+    when(view.savedContainers()).thenReturn(new ArrayList<>(sourceWells));
     presenter.init(view);
     presenter.enter("");
     design.type.setValue(TUBE);
     Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    int count = 0;
     for (TransferedSample ts : transfers) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
-      field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
+      field.setValue(new Tube(null, ts.getSample().getName() + "_destination_" + count++));
     }
     doAnswer(i -> {
       Transfer transfer = i.getArgumentAt(0, Transfer.class);
@@ -1544,22 +1566,17 @@ public class TransferViewPresenterTest {
     verify(view, never()).showError(any());
     verify(transferService).insert(transferCaptor.capture());
     Transfer transfer = transferCaptor.getValue();
-    assertEquals(transfer.getTreatmentSamples().size(), sourceWells.size());
-    int count = 0;
-    for (int i = 0; i < samples.size(); i++) {
-      Sample sample = samples.get(i);
-      List<TransferedSample> transferedSamples = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(2, transferedSamples.size());
-      TransferedSample transferedSample = transferedSamples.get(0);
+    assertEquals(sourceWells.size(), transfer.getTreatmentSamples().size());
+    count = 0;
+    for (int i = 0; i < sourceWells.size(); i++) {
+      Well source = sourceWells.get(i);
+      Sample sample = source.getSample();
+      TransferedSample transferedSample = transfer.getTreatmentSamples().get(i);
       assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourcePlate.well(i, 1), transferedSample.getContainer());
+      assertEquals(source, transferedSample.getContainer());
       assertTrue(transferedSample.getDestinationContainer() instanceof Tube);
-      assertEquals("test" + count++, transferedSample.getDestinationContainer().getName());
-      transferedSample = transferedSamples.get(1);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourcePlate.well(i, 3), transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Tube);
-      assertEquals("test" + count++, transferedSample.getDestinationContainer().getName());
+      assertEquals(sample.getName() + "_destination_" + count++,
+          transferedSample.getDestinationContainer().getName());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
     verify(view).saveContainers(transfer.getTreatmentSamples().stream()

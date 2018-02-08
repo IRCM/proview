@@ -230,6 +230,51 @@ public class TransferViewTest extends TransferViewPageObject {
   }
 
   @Test
+  public void save_PlateToTubes() throws Throwable {
+    openWithWells();
+    setTransferType(TUBE);
+    setDestinationTube(0, "test_tube_1");
+    setDestinationTube(1, "test_tube_2");
+    setDestinationTube(2, "test_tube_3");
+
+    clickSave();
+
+    assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(TransferView.VIEW_NAME)));
+    long id = Long.parseLong(
+        getDriver().getCurrentUrl().substring(viewUrl(TransferView.VIEW_NAME).length() + 1));
+    Transfer savedTransfer =
+        jpaQueryFactory.select(transfer).from(transfer).where(transfer.id.eq(id)).fetchOne();
+    assertEquals(3, savedTransfer.getTreatmentSamples().size());
+    Optional<TransferedSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
+    assertTrue(opTs.isPresent());
+    TransferedSample ts = opTs.get();
+    assertEquals((Long) 559L, ts.getSample().getId());
+    assertEquals((Long) 224L, ts.getContainer().getId());
+    assertEquals(SampleContainerType.TUBE, ts.getDestinationContainer().getType());
+    Tube tube = (Tube) ts.getDestinationContainer();
+    assertEquals("test_tube_1", tube.getName());
+    assertEquals((Long) 559L, tube.getSample().getId());
+    opTs = find(savedTransfer.getTreatmentSamples(), 560);
+    assertTrue(opTs.isPresent());
+    ts = opTs.get();
+    assertEquals((Long) 560L, ts.getSample().getId());
+    assertEquals((Long) 236L, ts.getContainer().getId());
+    assertEquals(SampleContainerType.TUBE, ts.getDestinationContainer().getType());
+    tube = (Tube) ts.getDestinationContainer();
+    assertEquals("test_tube_2", tube.getName());
+    assertEquals((Long) 560L, tube.getSample().getId());
+    opTs = find(savedTransfer.getTreatmentSamples(), 444);
+    assertTrue(opTs.isPresent());
+    ts = opTs.get();
+    assertEquals((Long) 444L, ts.getSample().getId());
+    assertEquals((Long) 248L, ts.getContainer().getId());
+    assertEquals(SampleContainerType.TUBE, ts.getDestinationContainer().getType());
+    tube = (Tube) ts.getDestinationContainer();
+    assertEquals("test_tube_3", tube.getName());
+    assertEquals((Long) 444L, tube.getSample().getId());
+  }
+
+  @Test
   public void save_TubesToPlate() throws Throwable {
     openWithTubes();
     String plateName = "test_plate";

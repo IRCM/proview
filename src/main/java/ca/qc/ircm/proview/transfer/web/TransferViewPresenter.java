@@ -191,7 +191,6 @@ public class TransferViewPresenter implements BinderValidator {
     design.typePanel.setCaption(resources.message(TRANSFER_TYPE_PANEL));
     design.type.addStyleName(TRANSFER_TYPE);
     design.type.setItemCaptionGenerator(type -> type.getLabel(locale));
-    design.type.setItemEnabledProvider(type -> type == WELL || sourceType() == TUBE);
     design.type.setItems(SampleContainerType.values());
     design.type.addValueChangeListener(e -> updateType());
     design.transfersPanel.addStyleName(TRANSFERS_PANEL);
@@ -439,10 +438,6 @@ public class TransferViewPresenter implements BinderValidator {
       }
     }
     return ValidationResult.ok();
-  }
-
-  private SampleContainerType sourceType() {
-    return transfers.isEmpty() ? WELL : transfers.get(0).getContainer().getType();
   }
 
   private List<SampleContainer> sources() {
