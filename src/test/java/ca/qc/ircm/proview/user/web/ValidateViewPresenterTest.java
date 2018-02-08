@@ -24,11 +24,17 @@ import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.NAME;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.NO_SELECTION;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.ORGANIZATION;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE_DONE;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE_SELECTED;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USER_SEPARATOR;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_DONE;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -123,59 +129,72 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
-  public void usersGrid() {
+  public void users() {
     presenter.init(view);
 
-    assertEquals(EMAIL, design.usersGrid.getColumns().get(0).getId());
-    assertTrue(containsInstanceOf(design.usersGrid.getColumns().get(0).getExtensions(),
+    assertEquals(6, design.users.getColumns().size());
+    assertEquals(EMAIL, design.users.getColumns().get(0).getId());
+    assertTrue(containsInstanceOf(design.users.getColumns().get(0).getExtensions(),
         ComponentRenderer.class));
-    assertEquals(NAME, design.usersGrid.getColumns().get(1).getId());
-    assertEquals(LABORATORY_NAME, design.usersGrid.getColumns().get(2).getId());
-    assertEquals(ORGANIZATION, design.usersGrid.getColumns().get(3).getId());
-    assertEquals(VALIDATE, design.usersGrid.getColumns().get(4).getId());
-    assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
-    assertTrue(containsInstanceOf(design.usersGrid.getColumn(EMAIL).getExtensions(),
-        ComponentRenderer.class));
+    assertEquals(resources.message(EMAIL), design.users.getColumn(EMAIL).getCaption());
+    assertTrue(
+        containsInstanceOf(design.users.getColumn(EMAIL).getExtensions(), ComponentRenderer.class));
     Collator collator = Collator.getInstance(locale);
     List<User> expectedSortedUsers = new ArrayList<>(usersToValidate);
     List<User> sortedUsers = new ArrayList<>(usersToValidate);
     expectedSortedUsers.sort((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
-    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.ASCENDING));
+    sortedUsers.sort(design.users.getColumn(EMAIL).getComparator(SortDirection.ASCENDING));
     assertEquals(expectedSortedUsers, sortedUsers);
     expectedSortedUsers.sort((u1, u2) -> -collator.compare(u1.getEmail(), u2.getEmail()));
-    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.DESCENDING));
+    sortedUsers.sort(design.users.getColumn(EMAIL).getComparator(SortDirection.DESCENDING));
     assertEquals(expectedSortedUsers, sortedUsers);
     for (User user : usersToValidate) {
-      Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+      Button button = (Button) design.users.getColumn(EMAIL).getValueProvider().apply(user);
       assertEquals(user.getEmail(), button.getCaption());
       assertTrue(user.getEmail(), button.getStyleName().contains(EMAIL));
     }
-    assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
+    assertEquals(NAME, design.users.getColumns().get(1).getId());
+    assertEquals(resources.message(NAME), design.users.getColumn(NAME).getCaption());
     for (User user : usersToValidate) {
-      assertEquals(user.getName(), design.usersGrid.getColumn(NAME).getValueProvider().apply(user));
+      assertEquals(user.getName(), design.users.getColumn(NAME).getValueProvider().apply(user));
     }
+    assertEquals(LABORATORY_NAME, design.users.getColumns().get(2).getId());
     assertEquals(resources.message(LABORATORY_NAME),
-        design.usersGrid.getColumn(LABORATORY_NAME).getCaption());
+        design.users.getColumn(LABORATORY_NAME).getCaption());
     for (User user : usersToValidate) {
       assertEquals(user.getLaboratory().getName(),
-          design.usersGrid.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
+          design.users.getColumn(LABORATORY_NAME).getValueProvider().apply(user));
     }
+    assertEquals(ORGANIZATION, design.users.getColumns().get(3).getId());
     assertEquals(resources.message(ORGANIZATION),
-        design.usersGrid.getColumn(ORGANIZATION).getCaption());
+        design.users.getColumn(ORGANIZATION).getCaption());
     for (User user : usersToValidate) {
       assertEquals(user.getLaboratory().getOrganization(),
-          design.usersGrid.getColumn(ORGANIZATION).getValueProvider().apply(user));
+          design.users.getColumn(ORGANIZATION).getValueProvider().apply(user));
     }
-    assertEquals(resources.message(VALIDATE), design.usersGrid.getColumn(VALIDATE).getCaption());
-    assertFalse(design.usersGrid.getColumn(VALIDATE).isSortable());
+    assertEquals(VALIDATE, design.users.getColumns().get(4).getId());
+    assertTrue(containsInstanceOf(design.users.getColumn(VALIDATE).getExtensions(),
+        ComponentRenderer.class));
+    assertEquals(resources.message(VALIDATE), design.users.getColumn(VALIDATE).getCaption());
+    assertFalse(design.users.getColumn(VALIDATE).isSortable());
     for (User user : usersToValidate) {
-      Button button = (Button) design.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
+      Button button = (Button) design.users.getColumn(VALIDATE).getValueProvider().apply(user);
       assertEquals(resources.message(VALIDATE), button.getCaption());
       assertTrue(user.getEmail(), button.getStyleName().contains(VALIDATE));
     }
-    SelectionModel<User> selectionModel = design.usersGrid.getSelectionModel();
+    assertEquals(REMOVE, design.users.getColumns().get(5).getId());
+    assertTrue(containsInstanceOf(design.users.getColumn(REMOVE).getExtensions(),
+        ComponentRenderer.class));
+    assertEquals(resources.message(REMOVE), design.users.getColumn(REMOVE).getCaption());
+    assertFalse(design.users.getColumn(REMOVE).isSortable());
+    for (User user : usersToValidate) {
+      Button button = (Button) design.users.getColumn(REMOVE).getValueProvider().apply(user);
+      assertEquals(resources.message(REMOVE), button.getCaption());
+      assertTrue(user.getEmail(), button.getStyleName().contains(REMOVE));
+    }
+    SelectionModel<User> selectionModel = design.users.getSelectionModel();
     assertTrue(selectionModel instanceof SelectionModel.Multi);
-    List<GridSortOrder<User>> sortOrders = design.usersGrid.getSortOrder();
+    List<GridSortOrder<User>> sortOrders = design.users.getSortOrder();
     assertFalse(sortOrders.isEmpty());
     GridSortOrder<User> sortOrder = sortOrders.get(0);
     assertEquals(EMAIL, sortOrder.getSorted().getId());
@@ -186,10 +205,11 @@ public class ValidateViewPresenterTest {
   public void styles() {
     presenter.init(view);
 
-    assertTrue(design.headerLabel.getStyleName().contains(HEADER));
-    assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
-    assertTrue(design.usersGrid.getStyleName().contains(USERS_GRID));
-    assertTrue(design.validateSelectedButton.getStyleName().contains(VALIDATE_SELECTED_BUTTON));
+    assertTrue(design.header.getStyleName().contains(HEADER));
+    assertTrue(design.header.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.users.getStyleName().contains(USERS));
+    assertTrue(design.validateSelected.getStyleName().contains(VALIDATE_SELECTED));
+    assertTrue(design.removeSelected.getStyleName().contains(REMOVE_SELECTED));
   }
 
   @Test
@@ -197,9 +217,8 @@ public class ValidateViewPresenterTest {
     presenter.init(view);
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(resources.message(HEADER), design.headerLabel.getValue());
-    assertEquals(resources.message(VALIDATE_SELECTED_BUTTON),
-        design.validateSelectedButton.getCaption());
+    assertEquals(resources.message(HEADER), design.header.getValue());
+    assertEquals(resources.message(VALIDATE_SELECTED), design.validateSelected.getCaption());
   }
 
   @Test
@@ -234,7 +253,7 @@ public class ValidateViewPresenterTest {
   public void viewUser() {
     presenter.init(view);
     final User user = usersToValidate.get(0);
-    Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    Button button = (Button) design.users.getColumn(EMAIL).getValueProvider().apply(user);
 
     button.click();
 
@@ -253,19 +272,43 @@ public class ValidateViewPresenterTest {
     when(userService.all(any())).thenReturn(usersToValidateAfter);
     String homeUrl = "homeUrl";
     when(view.getUrl(any())).thenReturn(homeUrl);
-    Button button = (Button) design.usersGrid.getColumn(VALIDATE).getValueProvider().apply(user);
+    Button button = (Button) design.users.getColumn(VALIDATE).getValueProvider().apply(user);
 
     button.click();
 
     verify(userService).validate(usersCaptor.capture(), homeWebContextCaptor.capture());
+    verify(userService, never()).delete(any());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(1, users.size());
     assertTrue(find(users, user.getId()).isPresent());
-    verify(view).showTrayNotification(resources.message("done", 1, user.getEmail()));
+    verify(view).showTrayNotification(resources.message(VALIDATE_DONE, 1, user.getEmail()));
     verify(userService, times(2)).all(any());
-    assertEquals(usersToValidateAfter.size(), dataProvider(design.usersGrid).getItems().size());
+    assertEquals(usersToValidateAfter.size(), dataProvider(design.users).getItems().size());
     HomeWebContext homeWebContext = homeWebContextCaptor.getValue();
     assertEquals(homeUrl, homeWebContext.getHomeUrl(locale));
+  }
+
+  @Test
+  public void removeOne() {
+    presenter.init(view);
+    final User user = usersToValidate.get(0);
+    List<User> usersToValidateAfter = new ArrayList<>(usersToValidate);
+    usersToValidateAfter.remove(0);
+    when(userService.all(any())).thenReturn(usersToValidateAfter);
+    String homeUrl = "homeUrl";
+    when(view.getUrl(any())).thenReturn(homeUrl);
+    Button button = (Button) design.users.getColumn(REMOVE).getValueProvider().apply(user);
+
+    button.click();
+
+    verify(userService).delete(usersCaptor.capture());
+    verify(userService, never()).validate(any(), any());
+    Collection<User> users = usersCaptor.getValue();
+    assertEquals(1, users.size());
+    assertTrue(find(users, user.getId()).isPresent());
+    verify(view).showTrayNotification(resources.message(REMOVE_DONE, 1, user.getEmail()));
+    verify(userService, times(2)).all(any());
+    assertEquals(usersToValidateAfter.size(), dataProvider(design.users).getItems().size());
   }
 
   @Test
@@ -274,27 +317,28 @@ public class ValidateViewPresenterTest {
     final User user1 = usersToValidate.get(0);
     final User user2 = usersToValidate.get(1);
     final User user3 = usersToValidate.get(2);
-    design.usersGrid.select(user1);
-    design.usersGrid.select(user2);
-    design.usersGrid.select(user3);
+    design.users.select(user1);
+    design.users.select(user2);
+    design.users.select(user3);
     when(userService.all(any())).thenReturn(new ArrayList<>());
     String homeUrl = "homeUrl";
     when(view.getUrl(any())).thenReturn(homeUrl);
 
-    design.validateSelectedButton.click();
+    design.validateSelected.click();
 
     verify(userService).validate(usersCaptor.capture(), homeWebContextCaptor.capture());
+    verify(userService, never()).delete(any());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(3, users.size());
     assertTrue(find(users, user1.getId()).isPresent());
     assertTrue(find(users, user2.getId()).isPresent());
     assertTrue(find(users, user3.getId()).isPresent());
     verify(view).showTrayNotification(
-        resources.message("done", 3, user1.getEmail() + resources.message("userSeparator", 0)
-            + user2.getEmail() + resources.message("userSeparator", 1) + user3.getEmail()));
+        resources.message(VALIDATE_DONE, 3, user1.getEmail() + resources.message(USER_SEPARATOR, 0)
+            + user2.getEmail() + resources.message(USER_SEPARATOR, 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
-    assertEquals(0, design.usersGrid.getSelectedItems().size());
-    assertEquals(0, dataProvider(design.usersGrid).getItems().size());
+    assertEquals(0, design.users.getSelectedItems().size());
+    assertEquals(0, dataProvider(design.users).getItems().size());
     HomeWebContext homeWebContext = homeWebContextCaptor.getValue();
     assertEquals(homeUrl, homeWebContext.getHomeUrl(locale));
   }
@@ -304,9 +348,52 @@ public class ValidateViewPresenterTest {
     presenter.init(view);
     when(userService.all(any())).thenReturn(new ArrayList<>());
 
-    design.validateSelectedButton.click();
+    design.validateSelected.click();
 
     verify(userService, never()).validate(any(), any());
-    verify(view).showError(any());
+    verify(userService, never()).delete(any());
+    verify(view).showError(resources.message(NO_SELECTION));
+  }
+
+  @Test
+  public void removeMany() {
+    presenter.init(view);
+    final User user1 = usersToValidate.get(0);
+    final User user2 = usersToValidate.get(1);
+    final User user3 = usersToValidate.get(2);
+    design.users.select(user1);
+    design.users.select(user2);
+    design.users.select(user3);
+    when(userService.all(any())).thenReturn(new ArrayList<>());
+    String homeUrl = "homeUrl";
+    when(view.getUrl(any())).thenReturn(homeUrl);
+
+    design.removeSelected.click();
+
+    verify(userService).delete(usersCaptor.capture());
+    verify(userService, never()).validate(any(), any());
+    Collection<User> users = usersCaptor.getValue();
+    assertEquals(3, users.size());
+    assertTrue(find(users, user1.getId()).isPresent());
+    assertTrue(find(users, user2.getId()).isPresent());
+    assertTrue(find(users, user3.getId()).isPresent());
+    verify(view).showTrayNotification(
+        resources.message(REMOVE_DONE, 3, user1.getEmail() + resources.message(USER_SEPARATOR, 0)
+            + user2.getEmail() + resources.message(USER_SEPARATOR, 1) + user3.getEmail()));
+    verify(userService, times(2)).all(any());
+    assertEquals(0, design.users.getSelectedItems().size());
+    assertEquals(0, dataProvider(design.users).getItems().size());
+  }
+
+  @Test
+  public void removeMany_NoSelection() {
+    presenter.init(view);
+    when(userService.all(any())).thenReturn(new ArrayList<>());
+
+    design.removeSelected.click();
+
+    verify(userService, never()).validate(any(), any());
+    verify(userService, never()).delete(any());
+    verify(view).showError(resources.message(NO_SELECTION));
   }
 }

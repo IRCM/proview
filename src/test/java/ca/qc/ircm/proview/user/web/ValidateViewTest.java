@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
@@ -110,9 +111,10 @@ public class ValidateViewTest extends ValidatePageObject {
   public void fieldsExistence() throws Throwable {
     open();
 
-    assertNotNull(headerLabel());
-    assertNotNull(usersGrid());
-    assertNotNull(validateSelectedButton());
+    assertTrue(optional(() -> headerLabel()).isPresent());
+    assertTrue(optional(() -> usersGrid()).isPresent());
+    assertTrue(optional(() -> validateSelectedButton()).isPresent());
+    assertTrue(optional(() -> removeSelectedButton()).isPresent());
   }
 
   @Test
@@ -155,6 +157,22 @@ public class ValidateViewTest extends ValidatePageObject {
     assertEquals(email, user.getEmail());
     assertEquals(true, user.isValid());
     assertEquals(true, user.isActive());
+    NotificationElement notification = $(NotificationElement.class).first();
+    assertEquals("tray_notification", notification.getType());
+    assertNotNull(notification.getCaption());
+    assertTrue(notification.getCaption().contains(email));
+  }
+
+  @Test
+  public void remove() throws Throwable {
+    open();
+    String email = "francois.robert@ircm.qc.ca";
+
+    clickRemoveUser(email);
+
+    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
+    User user = getUser(email);
+    assertNull(user);
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
     assertNotNull(notification.getCaption());
@@ -207,6 +225,55 @@ public class ValidateViewTest extends ValidatePageObject {
       assertEquals(email, user.getEmail());
       assertEquals(true, user.isValid());
       assertEquals(true, user.isActive());
+    }
+    NotificationElement notification = $(NotificationElement.class).first();
+    assertEquals("tray_notification", notification.getType());
+    assertNotNull(notification.getCaption());
+    for (String email : emails) {
+      assertTrue(notification.getCaption().contains(email));
+    }
+  }
+
+  @Test
+  public void removeSelected_Error() throws Throwable {
+    open();
+
+    clickRemoveSelected();
+
+    NotificationElement notification = $(NotificationElement.class).first();
+    assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
+    assertNotNull(notification.getCaption());
+  }
+
+  @Test
+  public void removeSelected_One() throws Throwable {
+    open();
+    String email = "francois.robert@ircm.qc.ca";
+    selectUsers(email);
+
+    clickRemoveSelected();
+
+    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
+    User user = getUser(email);
+    assertNull(user);
+    NotificationElement notification = $(NotificationElement.class).first();
+    assertEquals("tray_notification", notification.getType());
+    assertNotNull(notification.getCaption());
+    assertTrue(notification.getCaption().contains(email));
+  }
+
+  @Test
+  public void removeSelected_Many() throws Throwable {
+    open();
+    String[] emails = new String[] { "francois.robert@ircm.qc.ca", "michel.tremblay@ircm.qc.ca" };
+    selectUsers(emails);
+
+    clickRemoveSelected();
+
+    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
+    for (String email : emails) {
+      User user = getUser(email);
+      assertNull(user);
     }
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());

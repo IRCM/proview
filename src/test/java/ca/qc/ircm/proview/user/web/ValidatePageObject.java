@@ -19,9 +19,11 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE_SELECTED;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED_BUTTON;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -42,6 +44,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   private static final int SELECT_COLUMN = 0;
   private static final int EMAIL_COLUMN = 1;
   private static final int VALIDATE_COLUMN = 5;
+  private static final int REMOVE_COLUMN = 6;
 
   protected void open() {
     openView(ValidateView.VIEW_NAME);
@@ -52,7 +55,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   }
 
   protected GridElement usersGrid() {
-    return wrap(GridElement.class, findElement(className(USERS_GRID)));
+    return wrap(GridElement.class, findElement(className(USERS)));
   }
 
   private IntStream usersGridRows(String email) {
@@ -81,6 +84,16 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
     });
   }
 
+  protected void clickRemoveUser(String email) {
+    logger.debug("clickRemoveUser for user {}", email);
+    GridElement usersGrid = usersGrid();
+    usersGridRows(email).findFirst().ifPresent(row -> {
+      ButtonElement button = wrap(ButtonElement.class,
+          usersGrid.getCell(row, REMOVE_COLUMN).findElement(className(REMOVE)));
+      button.click();
+    });
+  }
+
   protected void selectUsers(String... emails) {
     GridElement usersGrid = usersGrid();
     Arrays.asList(emails).forEach(email -> {
@@ -103,10 +116,18 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   }
 
   protected ButtonElement validateSelectedButton() {
-    return wrap(ButtonElement.class, findElement(className(VALIDATE_SELECTED_BUTTON)));
+    return wrap(ButtonElement.class, findElement(className(VALIDATE_SELECTED)));
   }
 
   protected void clickValidateSelected() {
     validateSelectedButton().click();
+  }
+
+  protected ButtonElement removeSelectedButton() {
+    return wrap(ButtonElement.class, findElement(className(REMOVE_SELECTED)));
+  }
+
+  protected void clickRemoveSelected() {
+    removeSelectedButton().click();
   }
 }
