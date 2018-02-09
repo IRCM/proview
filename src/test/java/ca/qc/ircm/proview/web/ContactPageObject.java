@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.ContactViewPresenter.ADDRESS;
 import static ca.qc.ircm.proview.web.ContactViewPresenter.HEADER;
 import static ca.qc.ircm.proview.web.ContactViewPresenter.NAME;
@@ -26,7 +27,6 @@ import static ca.qc.ircm.proview.web.ContactViewPresenter.WEBSITE;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.web.ContactView;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.LinkElement;
 import com.vaadin.testbench.elements.PanelElement;
@@ -45,15 +45,15 @@ public abstract class ContactPageObject extends AbstractTestBenchTestCase {
   }
 
   protected LinkElement proteomicNameLink() {
-    return wrap(LinkElement.class, findElement(className(PROTEOMIC + "-" + NAME)));
+    return wrap(LinkElement.class, findElement(className(styleName(PROTEOMIC, NAME))));
   }
 
   protected LinkElement proteomicAddressLink() {
-    return wrap(LinkElement.class, findElement(className(PROTEOMIC + "-" + ADDRESS)));
+    return wrap(LinkElement.class, findElement(className(styleName(PROTEOMIC, ADDRESS))));
   }
 
   protected LinkElement proteomicPhoneLink() {
-    return wrap(LinkElement.class, findElement(className(PROTEOMIC + "-" + PHONE)));
+    return wrap(LinkElement.class, findElement(className(styleName(PROTEOMIC, PHONE))));
   }
 
   protected PanelElement websitePanel() {
@@ -61,14 +61,14 @@ public abstract class ContactPageObject extends AbstractTestBenchTestCase {
   }
 
   protected LinkElement websiteNameLink() {
-    return wrap(LinkElement.class, findElement(className(WEBSITE + "-" + NAME)));
+    return wrap(LinkElement.class, findElement(className(styleName(WEBSITE, NAME))));
   }
 
   protected LinkElement websiteAddressLink() {
-    return wrap(LinkElement.class, findElement(className(WEBSITE + "-" + ADDRESS)));
+    return wrap(LinkElement.class, findElement(className(styleName(WEBSITE, ADDRESS))));
   }
 
   protected LinkElement websitePhoneLink() {
-    return wrap(LinkElement.class, findElement(className(WEBSITE + "-" + PHONE)));
+    return wrap(LinkElement.class, findElement(className(styleName(WEBSITE, PHONE))));
   }
 }

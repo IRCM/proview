@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
+
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ExternalResource;
@@ -81,33 +84,33 @@ public class ContactViewPresenter {
     design.headerLabel.setValue(resources.message(HEADER));
     design.proteomicContactPanel.addStyleName(PROTEOMIC);
     design.proteomicContactPanel.setCaption(resources.message(PROTEOMIC));
-    design.proteomicContactNameLink.addStyleName(PROTEOMIC + "-" + NAME);
-    design.proteomicContactNameLink.setCaption(resources.message(PROTEOMIC + "." + NAME));
+    design.proteomicContactNameLink.addStyleName(styleName(PROTEOMIC, NAME));
+    design.proteomicContactNameLink.setCaption(resources.message(property(PROTEOMIC, NAME)));
     design.proteomicContactNameLink.setIcon(VaadinIcons.ENVELOPE);
     design.proteomicContactNameLink.setResource(new ExternalResource(PROTEOMIC_EMAIL_RESOURCE));
-    design.proteomicContactAddressLink.addStyleName(PROTEOMIC + "-" + ADDRESS);
-    design.proteomicContactAddressLink.setCaption(resources.message(PROTEOMIC + "." + ADDRESS));
+    design.proteomicContactAddressLink.addStyleName(styleName(PROTEOMIC, ADDRESS));
+    design.proteomicContactAddressLink.setCaption(resources.message(property(PROTEOMIC, ADDRESS)));
     design.proteomicContactAddressLink.setCaptionAsHtml(true);
     design.proteomicContactAddressLink.setIcon(VaadinIcons.MAP_MARKER);
     design.proteomicContactAddressLink
         .setResource(new ExternalResource(PROTEOMIC_ADDRESS_RESOURCE));
-    design.proteomicContactPhoneLink.addStyleName(PROTEOMIC + "-" + PHONE);
-    design.proteomicContactPhoneLink.setCaption(resources.message(PROTEOMIC + "." + PHONE));
+    design.proteomicContactPhoneLink.addStyleName(styleName(PROTEOMIC, PHONE));
+    design.proteomicContactPhoneLink.setCaption(resources.message(property(PROTEOMIC, PHONE)));
     design.proteomicContactPhoneLink.setIcon(VaadinIcons.PHONE);
     design.proteomicContactPhoneLink.setResource(new ExternalResource(PROTEOMIC_PHONE_RESOURCE));
     design.websiteContactPanel.addStyleName(WEBSITE);
     design.websiteContactPanel.setCaption(resources.message(WEBSITE));
-    design.websiteContactNameLink.addStyleName(WEBSITE + "-" + NAME);
-    design.websiteContactNameLink.setCaption(resources.message(WEBSITE + "." + NAME));
+    design.websiteContactNameLink.addStyleName(styleName(WEBSITE, NAME));
+    design.websiteContactNameLink.setCaption(resources.message(property(WEBSITE, NAME)));
     design.websiteContactNameLink.setIcon(VaadinIcons.ENVELOPE);
     design.websiteContactNameLink.setResource(new ExternalResource(WEBSITE_EMAIL_RESOURCE));
-    design.websiteContactAddressLink.addStyleName(WEBSITE + "-" + ADDRESS);
-    design.websiteContactAddressLink.setCaption(resources.message(WEBSITE + "." + ADDRESS));
+    design.websiteContactAddressLink.addStyleName(styleName(WEBSITE, ADDRESS));
+    design.websiteContactAddressLink.setCaption(resources.message(property(WEBSITE, ADDRESS)));
     design.websiteContactAddressLink.setCaptionAsHtml(true);
     design.websiteContactAddressLink.setIcon(VaadinIcons.MAP_MARKER);
     design.websiteContactAddressLink.setResource(new ExternalResource(WEBSITE_ADDRESS_RESOURCE));
-    design.websiteContactPhoneLink.addStyleName(WEBSITE + "-" + PHONE);
-    design.websiteContactPhoneLink.setCaption(resources.message(WEBSITE + "." + PHONE));
+    design.websiteContactPhoneLink.addStyleName(styleName(WEBSITE, PHONE));
+    design.websiteContactPhoneLink.setCaption(resources.message(property(WEBSITE, PHONE)));
     design.websiteContactPhoneLink.setIcon(VaadinIcons.PHONE);
     design.websiteContactPhoneLink.setResource(new ExternalResource(WEBSITE_PHONE_RESOURCE));
   }

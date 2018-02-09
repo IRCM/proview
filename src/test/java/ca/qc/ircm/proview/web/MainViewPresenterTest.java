@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
+import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOTTED_PASSWORD;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_BUTTON;
 import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_EMAIL;
@@ -254,7 +255,7 @@ public class MainViewPresenterTest {
     String url = forgotPasswordWebContextCaptor.getValue()
         .getChangeForgottenPasswordUrl(forgotPassword, locale);
     assertEquals(forgotPasswordUrl + "/" + id + "/" + confirmNumber, url);
-    verify(view).showWarning(resources.message(FORGOT_PASSWORD + ".done"));
+    verify(view).showWarning(resources.message(FORGOTTED_PASSWORD));
   }
 
   @Test
@@ -267,7 +268,7 @@ public class MainViewPresenterTest {
     verify(view, never()).showError(any());
     verify(userService).exists(username);
     verify(forgotPasswordService, never()).insert(any(), any());
-    verify(view).showWarning(resources.message(FORGOT_PASSWORD + ".done"));
+    verify(view).showWarning(resources.message(FORGOTTED_PASSWORD));
   }
 
   @Test

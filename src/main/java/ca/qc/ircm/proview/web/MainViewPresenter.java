@@ -57,6 +57,7 @@ public class MainViewPresenter {
   public static final String FORGOT_PASSWORD = "forgotPassword";
   public static final String FORGOT_PASSWORD_EMAIL = "forgotPassword.email";
   public static final String FORGOT_PASSWORD_BUTTON = "forgotPassword.button";
+  public static final String FORGOTTED_PASSWORD = "forgotedPassword";
   public static final String REGISTER_BUTTON = "register";
   private static final Logger logger = LoggerFactory.getLogger(MainViewPresenter.class);
   private MainView view;
@@ -202,7 +203,7 @@ public class MainViewPresenter {
                 + forgotPassword.getId() + "/" + forgotPassword.getConfirmNumber());
       }
       MessageResource resources = view.getResources();
-      view.showWarning(resources.message(FORGOT_PASSWORD + ".done"));
+      view.showWarning(resources.message(FORGOTTED_PASSWORD));
     }
   }
 

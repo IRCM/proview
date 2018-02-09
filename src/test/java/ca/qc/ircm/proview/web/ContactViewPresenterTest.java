@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.ContactViewPresenter.ADDRESS;
 import static ca.qc.ircm.proview.web.ContactViewPresenter.HEADER;
 import static ca.qc.ircm.proview.web.ContactViewPresenter.NAME;
@@ -79,14 +81,16 @@ public class ContactViewPresenterTest {
     assertTrue(design.headerLabel.getStyleName().contains(HEADER));
     assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
     assertTrue(design.proteomicContactPanel.getStyleName().contains(PROTEOMIC));
-    assertTrue(design.proteomicContactNameLink.getStyleName().contains(PROTEOMIC + "-" + NAME));
+    assertTrue(design.proteomicContactNameLink.getStyleName().contains(styleName(PROTEOMIC, NAME)));
     assertTrue(
-        design.proteomicContactAddressLink.getStyleName().contains(PROTEOMIC + "-" + ADDRESS));
-    assertTrue(design.proteomicContactPhoneLink.getStyleName().contains(PROTEOMIC + "-" + PHONE));
+        design.proteomicContactAddressLink.getStyleName().contains(styleName(PROTEOMIC, ADDRESS)));
+    assertTrue(
+        design.proteomicContactPhoneLink.getStyleName().contains(styleName(PROTEOMIC, PHONE)));
     assertTrue(design.websiteContactPanel.getStyleName().contains(WEBSITE));
-    assertTrue(design.websiteContactNameLink.getStyleName().contains(WEBSITE + "-" + NAME));
-    assertTrue(design.websiteContactAddressLink.getStyleName().contains(WEBSITE + "-" + ADDRESS));
-    assertTrue(design.websiteContactPhoneLink.getStyleName().contains(WEBSITE + "-" + PHONE));
+    assertTrue(design.websiteContactNameLink.getStyleName().contains(styleName(WEBSITE, NAME)));
+    assertTrue(
+        design.websiteContactAddressLink.getStyleName().contains(styleName(WEBSITE, ADDRESS)));
+    assertTrue(design.websiteContactPhoneLink.getStyleName().contains(styleName(WEBSITE, PHONE)));
   }
 
   @Test
@@ -94,25 +98,25 @@ public class ContactViewPresenterTest {
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.headerLabel.getValue());
     assertEquals(resources.message(PROTEOMIC), design.proteomicContactPanel.getCaption());
-    assertEquals(resources.message(PROTEOMIC + "." + NAME),
+    assertEquals(resources.message(property(PROTEOMIC, NAME)),
         design.proteomicContactNameLink.getCaption());
     assertEquals(VaadinIcons.ENVELOPE, design.proteomicContactNameLink.getIcon());
-    assertEquals(resources.message(PROTEOMIC + "." + ADDRESS),
+    assertEquals(resources.message(property(PROTEOMIC, ADDRESS)),
         design.proteomicContactAddressLink.getCaption());
     assertTrue(design.proteomicContactAddressLink.isCaptionAsHtml());
     assertEquals(VaadinIcons.MAP_MARKER, design.proteomicContactAddressLink.getIcon());
-    assertEquals(resources.message(PROTEOMIC + "." + PHONE),
+    assertEquals(resources.message(property(PROTEOMIC, PHONE)),
         design.proteomicContactPhoneLink.getCaption());
     assertEquals(VaadinIcons.PHONE, design.proteomicContactPhoneLink.getIcon());
     assertEquals(resources.message(WEBSITE), design.websiteContactPanel.getCaption());
-    assertEquals(resources.message(WEBSITE + "." + NAME),
+    assertEquals(resources.message(property(WEBSITE, NAME)),
         design.websiteContactNameLink.getCaption());
     assertEquals(VaadinIcons.ENVELOPE, design.websiteContactNameLink.getIcon());
-    assertEquals(resources.message(WEBSITE + "." + ADDRESS),
+    assertEquals(resources.message(property(WEBSITE, ADDRESS)),
         design.websiteContactAddressLink.getCaption());
     assertTrue(design.websiteContactAddressLink.isCaptionAsHtml());
     assertEquals(VaadinIcons.MAP_MARKER, design.websiteContactAddressLink.getIcon());
-    assertEquals(resources.message(WEBSITE + "." + PHONE),
+    assertEquals(resources.message(property(WEBSITE, PHONE)),
         design.websiteContactPhoneLink.getCaption());
     assertEquals(VaadinIcons.PHONE, design.websiteContactPhoneLink.getIcon());
   }
