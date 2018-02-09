@@ -59,6 +59,44 @@ public class VaadinUtilsTest {
   }
 
   @Test
+  public void property() {
+    assertEquals("", VaadinUtils.property((Object) null));
+    assertEquals("true", VaadinUtils.property(true));
+    assertEquals("sample", VaadinUtils.property("sample"));
+    assertEquals("sample", VaadinUtils.property("sample", null));
+    assertEquals("sample.name", VaadinUtils.property("sample", null, "name"));
+    assertEquals("sample.true", VaadinUtils.property("sample", true));
+    assertEquals("sample.name", VaadinUtils.property("sample.name"));
+    assertEquals("sample.name", VaadinUtils.property("sample", "name"));
+    assertEquals("sample.standards.name", VaadinUtils.property("sample.standards.name"));
+    assertEquals("sample.standards.name", VaadinUtils.property("sample.standards", "name"));
+    assertEquals("sample.standards.name", VaadinUtils.property("sample", "standards.name"));
+    assertEquals("sample.standards.name", VaadinUtils.property("sample", "standards", "name"));
+  }
+
+  @Test
+  public void styleName() {
+    assertEquals("", VaadinUtils.property((Object) null));
+    assertEquals("true", VaadinUtils.styleName(true));
+    assertEquals("sample", VaadinUtils.styleName("sample"));
+    assertEquals("sample-true", VaadinUtils.styleName("sample", true));
+    assertEquals("sample", VaadinUtils.styleName("sample", null));
+    assertEquals("sample-name", VaadinUtils.styleName("sample", null, "name"));
+    assertEquals("sample-name", VaadinUtils.styleName("sample-name"));
+    assertEquals("sample-name", VaadinUtils.styleName("sample.name"));
+    assertEquals("sample-name", VaadinUtils.styleName("sample", "name"));
+    assertEquals("sample-standards-name", VaadinUtils.styleName("sample-standards-name"));
+    assertEquals("sample-standards-name", VaadinUtils.styleName("sample.standards.name"));
+    assertEquals("sample-standards-name", VaadinUtils.styleName("sample.standards-name"));
+    assertEquals("sample-standards-name", VaadinUtils.styleName("sample-standards.name"));
+    assertEquals("sample-standards-name", VaadinUtils.styleName("sample-standards", "name"));
+    assertEquals("sample-standards-name", VaadinUtils.styleName("sample.standards", "name"));
+    assertEquals("sample-standards-name", VaadinUtils.styleName("sample", "standards-name"));
+    assertEquals("sample-standards-name", VaadinUtils.styleName("sample", "standards.name"));
+    assertEquals("sample-standards-name", VaadinUtils.styleName("sample", "standards", "name"));
+  }
+
+  @Test
   public void gridComparator() {
     Grid<SubmissionSample> grid = new Grid<>();
     grid.setItems(new ArrayList<>(samples));

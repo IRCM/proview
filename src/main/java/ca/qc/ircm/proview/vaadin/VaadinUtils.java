@@ -22,13 +22,26 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.provider.Query;
 import com.vaadin.ui.Grid;
 
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Utilities for Vaadin.
  */
 public class VaadinUtils {
+  public static String property(Object... names) {
+    return Arrays.asList(names).stream().filter(name -> name != null)
+        .map(name -> String.valueOf(name)).collect(Collectors.joining("."));
+  }
+
+  public static String styleName(Object... names) {
+    return Arrays.asList(names).stream().filter(name -> name != null)
+        .map(name -> String.valueOf(name)).map(name -> name.replaceAll("\\.", "-"))
+        .collect(Collectors.joining("-"));
+  }
+
   /**
    * Returns comparator currently used by grid to sort items.
    *
