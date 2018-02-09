@@ -1093,6 +1093,10 @@ public class SubmissionServiceTest {
   public void update() throws Exception {
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
     submission.setExperience("experience");
     submission.setGoal("goal");
     when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
@@ -1169,6 +1173,10 @@ public class SubmissionServiceTest {
   public void update_Sample() throws Exception {
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
+    submission.getSamples().forEach(sample -> {
+      entityManager.detach(sample);
+      entityManager.detach(sample.getOriginalContainer());
+    });
     submission.setExperience("experience");
     submission.setGoal("goal");
     submission.getSamples().get(0).setName("unit_test_01");
@@ -1280,6 +1288,10 @@ public class SubmissionServiceTest {
     when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
     submission.setSamples(samples);
 
     submissionService.update(submission);
@@ -1375,6 +1387,10 @@ public class SubmissionServiceTest {
     when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
     submission.setSamples(samples);
 
     submissionService.update(submission);
@@ -1433,6 +1449,10 @@ public class SubmissionServiceTest {
   public void update_UpdateUser() throws Exception {
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
     User user = entityManager.find(User.class, 4L);
     submission.setUser(user);
 
@@ -1450,6 +1470,10 @@ public class SubmissionServiceTest {
   public void update_UpdateDate() throws Exception {
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
     submission.setSubmissionDate(Instant.now());
 
     submissionService.update(submission);
@@ -1465,6 +1489,10 @@ public class SubmissionServiceTest {
   public void update_NotToApprove() throws Exception {
     Submission submission = entityManager.find(Submission.class, 147L);
     entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
 
     submissionService.update(submission);
   }
@@ -1473,6 +1501,10 @@ public class SubmissionServiceTest {
   public void forceUpdate() throws Exception {
     Submission submission = entityManager.find(Submission.class, 1L);
     entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
     submission.setService(Service.LC_MS_MS);
     submission.setTaxonomy("human");
     submission.setExperience("experience");
@@ -1601,6 +1633,10 @@ public class SubmissionServiceTest {
         .thenReturn("unit_test_eluate_01");
     Submission submission = entityManager.find(Submission.class, 147L);
     entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
     submission.getSamples().add(sample);
     when(submissionActivityService.forceUpdate(any(Submission.class), any(String.class),
         any(Submission.class))).thenReturn(optionalActivity);

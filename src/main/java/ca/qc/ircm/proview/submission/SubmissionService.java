@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QUser.user;
@@ -50,7 +51,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -299,8 +299,8 @@ public class SubmissionService {
     removeUnusedContainers(submission, old);
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
-      sample.setStatus(SampleStatus.TO_APPROVE);
       if (sample.getId() == null) {
+        sample.setStatus(SampleStatus.TO_APPROVE);
         entityManager.persist(sample);
       }
     });
@@ -335,13 +335,21 @@ public class SubmissionService {
     if (oldPlate != null && (plate == null || !oldPlate.getId().equals(plate.getId()))) {
       entityManager.remove(plate);
     }
-    Function<Submission, Set<Tube>> stubes = sm -> sm.getSamples().stream()
-        .filter(sample -> sample.getOriginalContainer() != null
-            && sample.getOriginalContainer().getType() == SampleContainerType.TUBE)
-        .map(sample -> (Tube) sample.getOriginalContainer()).collect(Collectors.toSet());
-    Set<Tube> tubes = stubes.apply(submission);
-    stubes.apply(old).stream().filter(tube -> !tubes.contains(tube))
-        .forEach(tube -> entityManager.remove(tube));
+    Set<Long> sampleIds = submission.getSamples().stream().filter(sample -> sample.getId() != null)
+        .map(sample -> sample.getId()).collect(Collectors.toSet());
+    old.getSamples().stream().filter(sample -> !sampleIds.contains(sample.getId())
+        && sample.getOriginalContainer().getType() == TUBE).forEach(sample -> {
+          entityManager.remove(sample.getOriginalContainer());
+        });
+    // Populate tube ids.
+    submission.getSamples().stream()
+        .filter(sample -> sample.getId() != null && sample.getOriginalContainer().getType() == TUBE)
+        .forEach(sample -> {
+          old.getSamples().stream().filter(oldSample -> oldSample.getId() == sample.getId())
+              .findAny().ifPresent(oldSample -> {
+                sample.getOriginalContainer().setId(oldSample.getId());
+              });
+        });
   }
 
   /**
