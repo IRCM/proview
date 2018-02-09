@@ -246,27 +246,4 @@ public class EnrichmentActivityServiceTest {
     expecteds.add(bannedWellActivity);
     LogTestUtils.validateUpdateActivities(expecteds, activity.getUpdates());
   }
-
-  @Test
-  public void undoFailed_LongDescription() throws Throwable {
-    Enrichment enrichment = new Enrichment(7L);
-    Tube sourceTube = new Tube(4L);
-    Collection<SampleContainer> bannedContainers = new ArrayList<>();
-    bannedContainers.add(sourceTube);
-    String reason = "long reason having more than 255 characters "
-        + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
-
-    Activity activity = enrichmentActivityService.undoFailed(enrichment, reason, bannedContainers);
-
-    StringBuilder builder = new StringBuilder(reason);
-    while (builder.toString().getBytes("UTF-8").length > 255) {
-      builder.deleteCharAt(builder.length() - 1);
-    }
-    String reasonCutAt255Bytes = builder.toString();
-    assertEquals(255, activity.getExplanation().length());
-    assertEquals(reasonCutAt255Bytes, activity.getExplanation());
-  }
 }

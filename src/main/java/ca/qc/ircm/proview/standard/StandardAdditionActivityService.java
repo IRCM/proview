@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.standard;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.BanSampleContainerUpdateActivityBuilder;
-import ca.qc.ircm.proview.history.DatabaseLogUtil;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -131,7 +130,7 @@ public class StandardAdditionActivityService {
       activity.setRecordId(standardAddition.getId());
       activity.setUser(user);
       activity.setTableName("treatment");
-      activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
+      activity.setExplanation(explanation);
       activity.setUpdates(updates);
       return Optional.of(activity);
     } else {
@@ -201,7 +200,7 @@ public class StandardAdditionActivityService {
       }
     }
 
-    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
+    final String explanation = failedDescription;
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(standardAddition.getId());

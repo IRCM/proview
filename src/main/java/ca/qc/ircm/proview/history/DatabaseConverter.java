@@ -55,7 +55,6 @@ public class DatabaseConverter {
     } else {
       converterValue = String.valueOf(value);
     }
-    converterValue = DatabaseLogUtil.reduceLength(converterValue, 255);
     return converterValue;
   }
 }

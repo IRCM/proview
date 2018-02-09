@@ -21,7 +21,6 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.AddSampleToSampleContainerUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.BanSampleContainerUpdateActivityBuilder;
-import ca.qc.ircm.proview.history.DatabaseLogUtil;
 import ca.qc.ircm.proview.history.RemoveSampleFromSampleContainerUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
@@ -148,7 +147,7 @@ public class FractionationActivityService {
     activity.setRecordId(fractionation.getId());
     activity.setUser(user);
     activity.setTableName("treatment");
-    activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
+    activity.setExplanation(explanation);
     activity.setUpdates(updates);
     return activity;
   }

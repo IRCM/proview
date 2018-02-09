@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -746,32 +745,5 @@ public class SubmissionActivityServiceTest {
         submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
 
     assertEquals(false, optionalActivity.isPresent());
-  }
-
-  @Test
-  public void forceUpdate_LongDescription() throws Throwable {
-    Submission oldSubmission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(oldSubmission);
-    Submission newSubmission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(newSubmission);
-    newSubmission.setTaxonomy("mouse");
-    String reason = "long reason having more than 255 characters "
-        + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        + "AAAAAAAAAAAAAAAAAAAAAAAAAAA";
-
-    Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(newSubmission, reason, oldSubmission);
-
-    assertTrue(optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
-    StringBuilder builder = new StringBuilder(reason);
-    while (builder.toString().getBytes("UTF-8").length > 255) {
-      builder.deleteCharAt(builder.length() - 1);
-    }
-    String reasonCutAt255Bytes = builder.toString();
-    assertEquals(255, activity.getExplanation().length());
-    assertEquals(reasonCutAt255Bytes, activity.getExplanation());
   }
 }

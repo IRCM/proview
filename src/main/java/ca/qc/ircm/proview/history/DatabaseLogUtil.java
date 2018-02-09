@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.history;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 /**
@@ -75,31 +74,5 @@ public class DatabaseLogUtil {
       }
     }
     return same;
-  }
-
-  /**
-   * Reduces the length of input to the number to bytes specified (byteCount) using UTF-8 encoding.
-   * If input already fits in the number to bytes specified, then input is returned.
-   *
-   * @param input
-   *          input string to reduce to specified number to bytes
-   * @param byteCount
-   *          number to bytes the input string must be reduced to
-   * @return input reduced to the number to bytes specified
-   */
-  public static String reduceLength(String input, int byteCount) {
-    if (input == null) {
-      return null;
-    }
-
-    try {
-      while (input.getBytes("UTF-8").length > byteCount) {
-        input = input.substring(0, input.length() - 1);
-      }
-    } catch (UnsupportedEncodingException e) {
-      throw new AssertionError(
-          "UTF-8 is a required charset, but is unkown to this version of Java");
-    }
-    return input;
   }
 }

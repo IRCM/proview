@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.msanalysis;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.BanSampleContainerUpdateActivityBuilder;
-import ca.qc.ircm.proview.history.DatabaseLogUtil;
 import ca.qc.ircm.proview.history.SampleStatusUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
@@ -157,7 +156,7 @@ public class MsAnalysisActivityService {
       activity.setRecordId(msAnalysis.getId());
       activity.setUser(user);
       activity.setTableName("msanalysis");
-      activity.setExplanation(DatabaseLogUtil.reduceLength(explanation, 255));
+      activity.setExplanation(explanation);
       activity.setUpdates(updates);
       return Optional.of(activity);
     } else {
@@ -232,7 +231,7 @@ public class MsAnalysisActivityService {
       }
     }
 
-    final String explanation = DatabaseLogUtil.reduceLength(failedDescription, 255);
+    final String explanation = failedDescription;
     Activity activity = new Activity();
     activity.setActionType(ActionType.DELETE);
     activity.setRecordId(msAnalysis.getId());
