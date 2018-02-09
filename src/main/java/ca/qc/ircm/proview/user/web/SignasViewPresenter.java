@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.security.AuthenticationService;
@@ -59,13 +60,13 @@ public class SignasViewPresenter {
   public static final String USERS_GRID = "users";
   public static final String EMAIL = QUser.user.email.getMetadata().getName();
   public static final String NAME = QUser.user.name.getMetadata().getName();
-  public static final String LABORATORY_PREFIX =
-      QUser.user.laboratory.getMetadata().getName() + ".";
+  public static final String LABORATORY = QUser.user.laboratory.getMetadata().getName();
   public static final String LABORATORY_NAME =
-      LABORATORY_PREFIX + QLaboratory.laboratory.name.getMetadata().getName();
+      property(LABORATORY, QLaboratory.laboratory.name.getMetadata().getName());
   public static final String ORGANIZATION =
-      LABORATORY_PREFIX + QLaboratory.laboratory.organization.getMetadata().getName();
+      property(LABORATORY, QLaboratory.laboratory.organization.getMetadata().getName());
   public static final String SIGN_AS = "signas";
+  public static final String SIGNED_AS = "signedas";
   public static final String ALL = "all";
   private static final Logger logger = LoggerFactory.getLogger(SignasViewPresenter.class);
   private SignasView view;
@@ -199,7 +200,7 @@ public class SignasViewPresenter {
   private void signasUser(User user) {
     MessageResource resources = view.getResources();
     authenticationService.runAs(user);
-    view.showTrayNotification(resources.message(SIGN_AS + ".done", user.getEmail()));
+    view.showTrayNotification(resources.message(SIGNED_AS, user.getEmail()));
     view.navigateTo(MainView.VIEW_NAME);
   }
 

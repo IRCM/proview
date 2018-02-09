@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.SAVE;
+import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.SAVED;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +27,6 @@ import ca.qc.ircm.proview.security.PasswordVersion;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
@@ -107,7 +106,6 @@ public class ForgotPasswordViewTest extends ForgotPasswordPageObject {
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
     assertNotNull(notification.getCaption());
-    assertEquals(resources(ForgotPasswordView.class).message(SAVE + ".done"),
-        notification.getCaption());
+    assertEquals(resources(ForgotPasswordView.class).message(SAVED), notification.getCaption());
   }
 }

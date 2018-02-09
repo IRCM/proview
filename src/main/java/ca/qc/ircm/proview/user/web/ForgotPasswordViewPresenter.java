@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -47,6 +48,7 @@ public class ForgotPasswordViewPresenter implements BinderValidator {
   public static final String PASSWORD = "password";
   public static final String CONFIRM_PASSWORD = "confirmPassword";
   public static final String SAVE = "save";
+  public static final String SAVED = "saved";
   public static final String INVALID_FORGOT_PASSWORD = "invalidForgotPassword";
   private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewPresenter.class);
   private ForgotPasswordView view;
@@ -96,7 +98,7 @@ public class ForgotPasswordViewPresenter implements BinderValidator {
           String confirmPassword = design.confirmPasswordField.getValue();
           return password == null || password.isEmpty() || confirmPassword == null
               || confirmPassword.isEmpty() || password.equals(confirmPassword);
-        }, resources.message(PASSWORD + ".notMatch"))
+        }, resources.message(property(PASSWORD, "notMatch")))
         .bind(Passwords::getPassword, Passwords::setPassword);
     design.confirmPasswordField.addStyleName(CONFIRM_PASSWORD);
     design.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD));
@@ -134,7 +136,7 @@ public class ForgotPasswordViewPresenter implements BinderValidator {
       String password = design.passwordField.getValue();
       forgotPasswordService.updatePassword(forgotPassword, password);
       MessageResource resources = view.getResources();
-      view.showTrayNotification(resources.message("save.done"));
+      view.showTrayNotification(resources.message(SAVED));
       view.navigateTo(MainView.VIEW_NAME);
     }
   }

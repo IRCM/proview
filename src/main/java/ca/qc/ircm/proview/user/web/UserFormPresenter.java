@@ -21,6 +21,8 @@ import static ca.qc.ircm.proview.user.QAddress.address;
 import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QPhoneNumber.phoneNumber;
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
@@ -141,7 +143,7 @@ public class UserFormPresenter implements BinderValidator {
     design.userPanel.setCaption(resources.message(USER));
     design.emailField.addStyleName(EMAIL);
     design.emailField.setCaption(resources.message(EMAIL));
-    design.emailField.setPlaceholder(resources.message(EMAIL + "." + PLACEHOLDER));
+    design.emailField.setPlaceholder(resources.message(property(EMAIL, PLACEHOLDER)));
     userBinder.forField(design.emailField).asRequired(generalResources.message(REQUIRED))
         .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
         .withValidator(email -> {
@@ -151,7 +153,7 @@ public class UserFormPresenter implements BinderValidator {
         }, generalResources.message(ALREADY_EXISTS)).bind(User::getEmail, User::setEmail);
     design.nameField.addStyleName(NAME);
     design.nameField.setCaption(resources.message(NAME));
-    design.nameField.setPlaceholder(resources.message(NAME + "." + PLACEHOLDER));
+    design.nameField.setPlaceholder(resources.message(property(NAME, PLACEHOLDER)));
     userBinder.forField(design.nameField).asRequired(generalResources.message(REQUIRED))
         .bind(User::getName, User::setName);
     design.passwordField.addStyleName(PASSWORD);
@@ -163,7 +165,7 @@ public class UserFormPresenter implements BinderValidator {
           String confirmPassword = design.confirmPasswordField.getValue();
           return password == null || password.isEmpty() || confirmPassword == null
               || confirmPassword.isEmpty() || password.equals(confirmPassword);
-        }, resources.message(PASSWORD + ".notMatch"))
+        }, resources.message(property(PASSWORD, "notMatch")))
         .bind(Passwords::getPassword, Passwords::setPassword);
     design.confirmPasswordField.addStyleName(CONFIRM_PASSWORD);
     design.confirmPasswordField.setCaption(resources.message(CONFIRM_PASSWORD));
@@ -177,57 +179,57 @@ public class UserFormPresenter implements BinderValidator {
     design.newLaboratoryField.setCaption(resources.message(NEW_LABORATORY));
     design.managerField.addStyleName(MANAGER);
     design.managerField.setCaption(resources.message(MANAGER));
-    design.managerField.setPlaceholder(resources.message(MANAGER + "." + PLACEHOLDER));
+    design.managerField.setPlaceholder(resources.message(property(MANAGER, PLACEHOLDER)));
     managerBinder.forField(design.managerField).asRequired(generalResources.message(REQUIRED))
         .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
         .withValidator(manager -> userService.isManager(manager),
-            resources.message(MANAGER + ".notExists"))
+            resources.message(property(MANAGER, "notExists")))
         .bind(User::getEmail, User::setEmail);
     design.organizationField.addStyleName(LABORATORY_ORGANIZATION);
     design.organizationField
-        .setCaption(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION));
+        .setCaption(resources.message(property(LABORATORY, LABORATORY_ORGANIZATION)));
     design.organizationField.setPlaceholder(
-        resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION + "." + PLACEHOLDER));
+        resources.message(property(LABORATORY, LABORATORY_ORGANIZATION, PLACEHOLDER)));
     laboratoryBinder.forField(design.organizationField)
         .asRequired(generalResources.message(REQUIRED))
         .bind(Laboratory::getOrganization, Laboratory::setOrganization);
-    design.laboratoryNameField.addStyleName(LABORATORY + "-" + LABORATORY_NAME);
-    design.laboratoryNameField.setCaption(resources.message(LABORATORY + "." + LABORATORY_NAME));
+    design.laboratoryNameField.addStyleName(styleName(LABORATORY, LABORATORY_NAME));
+    design.laboratoryNameField.setCaption(resources.message(property(LABORATORY, LABORATORY_NAME)));
     design.laboratoryNameField
-        .setPlaceholder(resources.message(LABORATORY + "." + LABORATORY_NAME + "." + PLACEHOLDER));
+        .setPlaceholder(resources.message(property(LABORATORY, LABORATORY_NAME, PLACEHOLDER)));
     laboratoryBinder.forField(design.laboratoryNameField)
         .asRequired(generalResources.message(REQUIRED))
         .bind(Laboratory::getName, Laboratory::setName);
     design.addressPanel.addStyleName(ADDRESS);
     design.addressPanel.setCaption(resources.message(ADDRESS));
     design.addressLineField.addStyleName(ADDRESS_LINE);
-    design.addressLineField.setCaption(resources.message(ADDRESS + "." + ADDRESS_LINE));
+    design.addressLineField.setCaption(resources.message(property(ADDRESS, ADDRESS_LINE)));
     design.addressLineField
-        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_LINE + "." + PLACEHOLDER));
+        .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_LINE, PLACEHOLDER)));
     addressBinder.forField(design.addressLineField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getLine, Address::setLine);
     design.townField.addStyleName(ADDRESS_TOWN);
-    design.townField.setCaption(resources.message(ADDRESS + "." + ADDRESS_TOWN));
+    design.townField.setCaption(resources.message(property(ADDRESS, ADDRESS_TOWN)));
     design.townField
-        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_TOWN + "." + PLACEHOLDER));
+        .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_TOWN, PLACEHOLDER)));
     addressBinder.forField(design.townField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getTown, Address::setTown);
     design.stateField.addStyleName(ADDRESS_STATE);
-    design.stateField.setCaption(resources.message(ADDRESS + "." + ADDRESS_STATE));
+    design.stateField.setCaption(resources.message(property(ADDRESS, ADDRESS_STATE)));
     design.stateField
-        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_STATE + "." + PLACEHOLDER));
+        .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_STATE, PLACEHOLDER)));
     addressBinder.forField(design.stateField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getState, Address::setState);
     design.countryField.addStyleName(ADDRESS_COUNTRY);
-    design.countryField.setCaption(resources.message(ADDRESS + "." + ADDRESS_COUNTRY));
+    design.countryField.setCaption(resources.message(property(ADDRESS, ADDRESS_COUNTRY)));
     design.countryField
-        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_COUNTRY + "." + PLACEHOLDER));
+        .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_COUNTRY, PLACEHOLDER)));
     addressBinder.forField(design.countryField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getCountry, Address::setCountry);
     design.postalCodeField.addStyleName(ADDRESS_POSTAL_CODE);
-    design.postalCodeField.setCaption(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE));
+    design.postalCodeField.setCaption(resources.message(property(ADDRESS, ADDRESS_POSTAL_CODE)));
     design.postalCodeField
-        .setPlaceholder(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE + "." + PLACEHOLDER));
+        .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_POSTAL_CODE, PLACEHOLDER)));
     addressBinder.forField(design.postalCodeField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getPostalCode, Address::setPostalCode);
     design.clearAddressButton.addStyleName(CLEAR_ADDRESS);
@@ -319,7 +321,7 @@ public class UserFormPresenter implements BinderValidator {
     design.phoneNumbersLayout.addComponent(layout);
     ComboBox<PhoneNumberType> typeField = new ComboBox<>();
     typeField.addStyleName(PHONE_NUMBER_TYPE);
-    typeField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_TYPE));
+    typeField.setCaption(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_TYPE)));
     typeField.setEmptySelectionAllowed(false);
     typeField.setItems(PhoneNumberType.values());
     typeField.setItemCaptionGenerator(type -> type.getLabel(view.getLocale()));
@@ -328,22 +330,22 @@ public class UserFormPresenter implements BinderValidator {
     layout.addComponent(typeField);
     TextField numberField = new TextField();
     numberField.addStyleName(PHONE_NUMBER_NUMBER);
-    numberField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER));
+    numberField.setCaption(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER)));
     numberField.setPlaceholder(
-        resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + "." + PLACEHOLDER));
+        resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, PLACEHOLDER)));
     phoneNumberBinder.forField(numberField).asRequired(generalResources.message(REQUIRED))
         .withValidator(new RegexpValidator(
-            resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + ".invalid"), "[\\d\\-]*"))
+            resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, "invalid")), "[\\d\\-]*"))
         .bind(PhoneNumber::getNumber, PhoneNumber::setNumber);
     layout.addComponent(numberField);
     TextField extensionField = new TextField();
     extensionField.addStyleName(PHONE_NUMBER_EXTENSION);
-    extensionField.setCaption(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION));
+    extensionField.setCaption(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION)));
     extensionField.setPlaceholder(
-        resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + "." + PLACEHOLDER));
+        resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, PLACEHOLDER)));
     phoneNumberBinder.forField(extensionField)
         .withValidator(new RegexpValidator(
-            resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + ".invalid"),
+            resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, "invalid")),
             "[\\d\\-]*"))
         .bind(PhoneNumber::getExtension, PhoneNumber::setExtension);
     layout.addComponent(extensionField);

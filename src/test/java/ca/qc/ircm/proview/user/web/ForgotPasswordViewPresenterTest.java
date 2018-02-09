@@ -24,7 +24,9 @@ import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.INVALID_FO
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.PASSWORD;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.PASSWORD_PANEL;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.SAVE;
+import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.SAVED;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.TITLE;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
@@ -165,7 +167,7 @@ public class ForgotPasswordViewPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(resources.message(PASSWORD + ".notMatch")),
+    assertEquals(errorMessage(resources.message(property(PASSWORD, "notMatch"))),
         design.passwordField.getErrorMessage().getFormattedHtmlMessage());
     verify(forgotPasswordService, never()).updatePassword(any(), any());
   }
@@ -179,7 +181,7 @@ public class ForgotPasswordViewPresenterTest {
 
     verify(view, never()).showError(any());
     verify(forgotPasswordService).updatePassword(forgotPassword, password);
-    verify(view).showTrayNotification(resources.message("save.done"));
+    verify(view).showTrayNotification(resources.message(SAVED));
     verify(view).navigateTo(MainView.VIEW_NAME);
   }
 

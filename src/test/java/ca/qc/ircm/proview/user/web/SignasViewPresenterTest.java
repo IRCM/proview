@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.NAME;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.ORGANIZATION;
+import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGNED_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
@@ -305,7 +306,7 @@ public class SignasViewPresenterTest {
     button.click();
 
     verify(authenticationService).runAs(user);
-    verify(view).showTrayNotification(resources.message(SIGN_AS + ".done", user.getEmail()));
+    verify(view).showTrayNotification(resources.message(SIGNED_AS, user.getEmail()));
     verify(view).navigateTo(MainView.VIEW_NAME);
   }
 }

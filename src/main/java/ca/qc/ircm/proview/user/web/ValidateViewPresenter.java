@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -60,16 +61,16 @@ public class ValidateViewPresenter {
   public static final String NAME = QUser.user.name.getMetadata().getName();
   public static final String LABORATORY = QUser.user.laboratory.getMetadata().getName();
   public static final String LABORATORY_NAME =
-      LABORATORY + "." + QLaboratory.laboratory.name.getMetadata().getName();
+      property(LABORATORY, QLaboratory.laboratory.name.getMetadata().getName());
   public static final String ORGANIZATION =
-      LABORATORY + "." + QLaboratory.laboratory.organization.getMetadata().getName();
+      property(LABORATORY, QLaboratory.laboratory.organization.getMetadata().getName());
   public static final String VALIDATE = "validate";
   public static final String REMOVE = "remove";
   public static final String VALIDATE_SELECTED = "validateSelected";
   public static final String REMOVE_SELECTED = "removeSelected";
   public static final String NO_SELECTION = "selected.none";
-  public static final String VALIDATE_DONE = VALIDATE + ".done";
-  public static final String REMOVE_DONE = REMOVE + ".done";
+  public static final String VALIDATED = "validated";
+  public static final String REMOVED = "removed";
   public static final String USER_SEPARATOR = "userSeparator";
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewPresenter.class);
   private ValidateView view;
@@ -198,7 +199,7 @@ public class ValidateViewPresenter {
     userService.validate(Collections.nCopies(1, user), homeWebContext());
     refresh();
     final MessageResource resources = view.getResources();
-    view.showTrayNotification(resources.message(VALIDATE_DONE, 1, user.getEmail()));
+    view.showTrayNotification(resources.message(VALIDATED, 1, user.getEmail()));
   }
 
   private void remove(User user) {
@@ -206,7 +207,7 @@ public class ValidateViewPresenter {
     userService.delete(Collections.nCopies(1, user));
     refresh();
     final MessageResource resources = view.getResources();
-    view.showTrayNotification(resources.message(REMOVE_DONE, 1, user.getEmail()));
+    view.showTrayNotification(resources.message(REMOVED, 1, user.getEmail()));
   }
 
   private boolean validateSelection() {
@@ -238,7 +239,7 @@ public class ValidateViewPresenter {
         }
       }
       refresh();
-      view.showTrayNotification(resources.message(VALIDATE_DONE, users.size(), emails));
+      view.showTrayNotification(resources.message(VALIDATED, users.size(), emails));
     }
   }
 
@@ -259,7 +260,7 @@ public class ValidateViewPresenter {
         }
       }
       refresh();
-      view.showTrayNotification(resources.message(REMOVE_DONE, users.size(), emails));
+      view.showTrayNotification(resources.message(REMOVED, users.size(), emails));
     }
   }
 

@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -71,15 +72,16 @@ public class AccessViewPresenter {
   public static final String SELECT = "select";
   public static final String EMAIL = QUser.user.email.getMetadata().getName();
   public static final String NAME = QUser.user.name.getMetadata().getName();
-  public static final String LABORATORY_PREFIX =
-      QUser.user.laboratory.getMetadata().getName() + ".";
+  public static final String LABORATORY = QUser.user.laboratory.getMetadata().getName();
   public static final String LABORATORY_NAME =
-      LABORATORY_PREFIX + QLaboratory.laboratory.name.getMetadata().getName();
+      property(LABORATORY, QLaboratory.laboratory.name.getMetadata().getName());
   public static final String ORGANIZATION =
-      LABORATORY_PREFIX + QLaboratory.laboratory.organization.getMetadata().getName();
+      property(LABORATORY, QLaboratory.laboratory.organization.getMetadata().getName());
   public static final String ACTIVE = QUser.user.active.getMetadata().getName();
   public static final String ACTIVATE = "activate";
+  public static final String ACTIVATED = "activated";
   public static final String DEACTIVATE = "deactivate";
+  public static final String DEACTIVATED = "deactivated";
   public static final String CLEAR = "clear";
   public static final String ALL = "all";
   public static final String HIDE_SELECTION = "hide-selection";
@@ -181,7 +183,8 @@ public class AccessViewPresenter {
     filterRow.getCell(ACTIVE).setComponent(comboBoxFilter(e -> {
       filter.active = e.getValue();
       design.usersGrid.getDataProvider().refreshAll();
-    }, resources, value -> resources.message(ACTIVE + "." + value), new Boolean[] { true, false }));
+    }, resources, value -> resources.message(property(ACTIVE, value)),
+        new Boolean[] { true, false }));
   }
 
   private CheckBox selectCheckBox(User user) {
@@ -207,7 +210,7 @@ public class AccessViewPresenter {
     label.addStyleName(ACTIVE);
     VaadinIcons icon = active ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
     label.setContentMode(ContentMode.HTML);
-    label.setValue(icon.getHtml() + " " + resources.message(ACTIVE + "." + active));
+    label.setValue(icon.getHtml() + " " + resources.message(property(ACTIVE, active)));
     return label;
   }
 
@@ -306,7 +309,7 @@ public class AccessViewPresenter {
         }
       }
       refreshUsers();
-      view.showTrayNotification(resources.message(ACTIVATE + ".done", users.size(), emails));
+      view.showTrayNotification(resources.message(ACTIVATED, users.size(), emails));
     }
   }
 
@@ -331,7 +334,7 @@ public class AccessViewPresenter {
         }
       }
       refreshUsers();
-      view.showTrayNotification(resources.message(DEACTIVATE + ".done", users.size(), emails));
+      view.showTrayNotification(resources.message(DEACTIVATED, users.size(), emails));
     }
   }
 

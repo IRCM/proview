@@ -21,9 +21,11 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVATE;
+import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVATED;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.CLEAR;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.DEACTIVATE;
+import static ca.qc.ircm.proview.user.web.AccessViewPresenter.DEACTIVATED;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.LABORATORY_NAME;
@@ -32,6 +34,7 @@ import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ORGANIZATION;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.SELECT;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -205,7 +208,7 @@ public class AccessViewPresenterTest {
       assertEquals(ContentMode.HTML, label.getContentMode());
       VaadinIcons activeIcon = user.isActive() ? VaadinIcons.CHECK : VaadinIcons.CLOSE;
       String activeValue =
-          activeIcon.getHtml() + " " + resources.message(ACTIVE + "." + user.isActive());
+          activeIcon.getHtml() + " " + resources.message(property(ACTIVE, user.isActive()));
       assertEquals(activeValue, label.getValue());
     }
     SelectionModel<User> selectionModel = design.usersGrid.getSelectionModel();
@@ -454,7 +457,7 @@ public class AccessViewPresenterTest {
     Label label = (Label) design.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
 
     assertEquals(ContentMode.HTML, label.getContentMode());
-    assertEquals(VaadinIcons.CHECK.getHtml() + " " + resources.message(ACTIVE + ".true"),
+    assertEquals(VaadinIcons.CHECK.getHtml() + " " + resources.message(property(ACTIVE, true)),
         label.getValue());
   }
 
@@ -466,7 +469,7 @@ public class AccessViewPresenterTest {
     Label label = (Label) design.usersGrid.getColumn(ACTIVE).getValueProvider().apply(user);
 
     assertEquals(ContentMode.HTML, label.getContentMode());
-    assertEquals(VaadinIcons.CLOSE.getHtml() + " " + resources.message(ACTIVE + ".false"),
+    assertEquals(VaadinIcons.CLOSE.getHtml() + " " + resources.message(property(ACTIVE, false)),
         label.getValue());
   }
 
@@ -503,9 +506,9 @@ public class AccessViewPresenterTest {
     assertTrue(find(users, user1.getId()).isPresent());
     assertTrue(find(users, user2.getId()).isPresent());
     assertTrue(find(users, user3.getId()).isPresent());
-    verify(view).showTrayNotification(resources.message(ACTIVATE + ".done", 3,
-        user1.getEmail() + resources.message("userSeparator", 0) + user2.getEmail()
-            + resources.message("userSeparator", 1) + user3.getEmail()));
+    verify(view).showTrayNotification(
+        resources.message(ACTIVATED, 3, user1.getEmail() + resources.message("userSeparator", 0)
+            + user2.getEmail() + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(0, design.usersGrid.getSelectedItems().size());
     assertEquals(0, dataProvider(design.usersGrid).getItems().size());
@@ -540,9 +543,9 @@ public class AccessViewPresenterTest {
     assertTrue(find(users, user1.getId()).isPresent());
     assertTrue(find(users, user2.getId()).isPresent());
     assertTrue(find(users, user3.getId()).isPresent());
-    verify(view).showTrayNotification(resources.message(DEACTIVATE + ".done", 3,
-        user1.getEmail() + resources.message("userSeparator", 0) + user2.getEmail()
-            + resources.message("userSeparator", 1) + user3.getEmail()));
+    verify(view).showTrayNotification(
+        resources.message(DEACTIVATED, 3, user1.getEmail() + resources.message("userSeparator", 0)
+            + user2.getEmail() + resources.message("userSeparator", 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(0, design.usersGrid.getSelectedItems().size());
     assertEquals(0, dataProvider(design.usersGrid).getItems().size());

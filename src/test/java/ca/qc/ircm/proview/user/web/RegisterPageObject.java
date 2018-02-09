@@ -43,6 +43,7 @@ import static ca.qc.ircm.proview.user.web.UserFormPresenter.REGISTER_WARNING;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.REMOVE_PHONE_NUMBER;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.SAVE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.USER;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -149,7 +150,8 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement laboratoryNameField() {
-    return wrap(TextFieldElement.class, findElement(className(LABORATORY + "-" + LABORATORY_NAME)));
+    return wrap(TextFieldElement.class,
+        findElement(className(styleName(LABORATORY, LABORATORY_NAME))));
   }
 
   protected String getLaboratoryName() {

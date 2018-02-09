@@ -43,6 +43,8 @@ import static ca.qc.ircm.proview.user.web.UserFormPresenter.REGISTER_WARNING;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.REMOVE_PHONE_NUMBER;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.SAVE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.USER;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
@@ -245,7 +247,7 @@ public class UserFormPresenterTest {
     assertTrue(design.managerField.getStyleName().contains(MANAGER));
     assertTrue(design.organizationField.getStyleName().contains(LABORATORY_ORGANIZATION));
     assertTrue(
-        design.laboratoryNameField.getStyleName().contains(LABORATORY + "-" + LABORATORY_NAME));
+        design.laboratoryNameField.getStyleName().contains(styleName(LABORATORY, LABORATORY_NAME)));
     assertTrue(design.addressPanel.getStyleName().contains(ADDRESS));
     assertTrue(design.addressLineField.getStyleName().contains(ADDRESS_LINE));
     assertTrue(design.townField.getStyleName().contains(ADDRESS_TOWN));
@@ -270,54 +272,56 @@ public class UserFormPresenterTest {
   public void captions() {
     assertEquals(resources.message(USER), design.userPanel.getCaption());
     assertEquals(resources.message(EMAIL), design.emailField.getCaption());
-    assertEquals(resources.message(EMAIL + "." + PLACEHOLDER), design.emailField.getPlaceholder());
+    assertEquals(resources.message(property(EMAIL, PLACEHOLDER)),
+        design.emailField.getPlaceholder());
     assertEquals(resources.message(NAME), design.nameField.getCaption());
-    assertEquals(resources.message(NAME + "." + PLACEHOLDER), design.nameField.getPlaceholder());
+    assertEquals(resources.message(property(NAME, PLACEHOLDER)), design.nameField.getPlaceholder());
     assertEquals(resources.message(PASSWORD), design.passwordField.getCaption());
     assertEquals(resources.message(CONFIRM_PASSWORD), design.confirmPasswordField.getCaption());
     assertEquals(resources.message(NEW_LABORATORY), design.newLaboratoryField.getCaption());
     assertEquals(resources.message(MANAGER), design.managerField.getCaption());
-    assertEquals(resources.message(MANAGER + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(MANAGER, PLACEHOLDER)),
         design.managerField.getPlaceholder());
-    assertEquals(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION),
+    assertEquals(resources.message(property(LABORATORY, LABORATORY_ORGANIZATION)),
         design.organizationField.getCaption());
-    assertEquals(resources.message(LABORATORY + "." + LABORATORY_ORGANIZATION + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(LABORATORY, LABORATORY_ORGANIZATION, PLACEHOLDER)),
         design.organizationField.getPlaceholder());
-    assertEquals(resources.message(LABORATORY + "." + LABORATORY_NAME),
+    assertEquals(resources.message(property(LABORATORY, LABORATORY_NAME)),
         design.laboratoryNameField.getCaption());
-    assertEquals(resources.message(LABORATORY + "." + LABORATORY_NAME + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(LABORATORY, LABORATORY_NAME, PLACEHOLDER)),
         design.laboratoryNameField.getPlaceholder());
     assertEquals(resources.message(ADDRESS), design.addressPanel.getCaption());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_LINE),
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_LINE)),
         design.addressLineField.getCaption());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_LINE + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_LINE, PLACEHOLDER)),
         design.addressLineField.getPlaceholder());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_TOWN), design.townField.getCaption());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_TOWN + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_TOWN)), design.townField.getCaption());
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_TOWN, PLACEHOLDER)),
         design.townField.getPlaceholder());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_STATE), design.stateField.getCaption());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_STATE + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_STATE)),
+        design.stateField.getCaption());
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_STATE, PLACEHOLDER)),
         design.stateField.getPlaceholder());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_COUNTRY),
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_COUNTRY)),
         design.countryField.getCaption());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_COUNTRY + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_COUNTRY, PLACEHOLDER)),
         design.countryField.getPlaceholder());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE),
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_POSTAL_CODE)),
         design.postalCodeField.getCaption());
-    assertEquals(resources.message(ADDRESS + "." + ADDRESS_POSTAL_CODE + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(ADDRESS, ADDRESS_POSTAL_CODE, PLACEHOLDER)),
         design.postalCodeField.getPlaceholder());
     assertEquals(resources.message(CLEAR_ADDRESS), design.clearAddressButton.getCaption());
     assertEquals(resources.message(PHONE_NUMBERS), design.phoneNumbersPanel.getCaption());
     assertEquals(1, design.phoneNumbersLayout.getComponentCount());
-    assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_TYPE),
+    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_TYPE)),
         typeField(0).getCaption());
-    assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER),
+    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER)),
         numberField(0).getCaption());
-    assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, PLACEHOLDER)),
         numberField(0).getPlaceholder());
-    assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION),
+    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION)),
         extensionField(0).getCaption());
-    assertEquals(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + "." + PLACEHOLDER),
+    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, PLACEHOLDER)),
         extensionField(0).getPlaceholder());
     assertEquals(resources.message(REMOVE_PHONE_NUMBER), removePhoneNumberButton(0).getCaption());
     assertEquals(resources.message(ADD_PHONE_NUMBER), design.addPhoneNumberButton.getCaption());
@@ -1112,7 +1116,7 @@ public class UserFormPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(resources.message(PASSWORD + ".notMatch")),
+    assertEquals(errorMessage(resources.message(property(PASSWORD, "notMatch"))),
         design.passwordField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1126,7 +1130,7 @@ public class UserFormPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(resources.message(PASSWORD + ".notMatch")),
+    assertEquals(errorMessage(resources.message(property(PASSWORD, "notMatch"))),
         design.passwordField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1181,7 +1185,7 @@ public class UserFormPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(resources.message(MANAGER + ".notExists")),
+    assertEquals(errorMessage(resources.message(property(MANAGER, "notExists"))),
         design.managerField.getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1346,7 +1350,7 @@ public class UserFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(
-        errorMessage(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + ".invalid")),
+        errorMessage(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, "invalid"))),
         numberField(0).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1361,7 +1365,7 @@ public class UserFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(
-        errorMessage(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + ".invalid")),
+        errorMessage(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, "invalid"))),
         extensionField(0).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1404,7 +1408,7 @@ public class UserFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(
-        errorMessage(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_NUMBER + ".invalid")),
+        errorMessage(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, "invalid"))),
         numberField(1).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1419,7 +1423,7 @@ public class UserFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(
-        errorMessage(resources.message(PHONE_NUMBER + "." + PHONE_NUMBER_EXTENSION + ".invalid")),
+        errorMessage(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, "invalid"))),
         extensionField(1).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }

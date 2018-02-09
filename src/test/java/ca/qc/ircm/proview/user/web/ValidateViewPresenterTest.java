@@ -27,13 +27,13 @@ import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.NAME;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.NO_SELECTION;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.ORGANIZATION;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE_DONE;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVED;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE_SELECTED;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USER_SEPARATOR;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_DONE;
+import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATED;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -281,7 +281,7 @@ public class ValidateViewPresenterTest {
     Collection<User> users = usersCaptor.getValue();
     assertEquals(1, users.size());
     assertTrue(find(users, user.getId()).isPresent());
-    verify(view).showTrayNotification(resources.message(VALIDATE_DONE, 1, user.getEmail()));
+    verify(view).showTrayNotification(resources.message(VALIDATED, 1, user.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(usersToValidateAfter.size(), dataProvider(design.users).getItems().size());
     HomeWebContext homeWebContext = homeWebContextCaptor.getValue();
@@ -306,7 +306,7 @@ public class ValidateViewPresenterTest {
     Collection<User> users = usersCaptor.getValue();
     assertEquals(1, users.size());
     assertTrue(find(users, user.getId()).isPresent());
-    verify(view).showTrayNotification(resources.message(REMOVE_DONE, 1, user.getEmail()));
+    verify(view).showTrayNotification(resources.message(REMOVED, 1, user.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(usersToValidateAfter.size(), dataProvider(design.users).getItems().size());
   }
@@ -334,7 +334,7 @@ public class ValidateViewPresenterTest {
     assertTrue(find(users, user2.getId()).isPresent());
     assertTrue(find(users, user3.getId()).isPresent());
     verify(view).showTrayNotification(
-        resources.message(VALIDATE_DONE, 3, user1.getEmail() + resources.message(USER_SEPARATOR, 0)
+        resources.message(VALIDATED, 3, user1.getEmail() + resources.message(USER_SEPARATOR, 0)
             + user2.getEmail() + resources.message(USER_SEPARATOR, 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(0, design.users.getSelectedItems().size());
@@ -378,7 +378,7 @@ public class ValidateViewPresenterTest {
     assertTrue(find(users, user2.getId()).isPresent());
     assertTrue(find(users, user3.getId()).isPresent());
     verify(view).showTrayNotification(
-        resources.message(REMOVE_DONE, 3, user1.getEmail() + resources.message(USER_SEPARATOR, 0)
+        resources.message(REMOVED, 3, user1.getEmail() + resources.message(USER_SEPARATOR, 0)
             + user2.getEmail() + resources.message(USER_SEPARATOR, 1) + user3.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(0, design.users.getSelectedItems().size());
