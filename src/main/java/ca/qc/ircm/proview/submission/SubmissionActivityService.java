@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission;
 
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.history.DatabaseLogUtil;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.Sample;
@@ -290,7 +291,8 @@ public class SubmissionActivityService {
     List<String> newFiles = newSubmission.getFiles() != null ? newSubmission.getFiles().stream()
         .map(file -> file.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionfiles")
-        .oldValue(oldFiles.toString()).newValue(newFiles.toString()));
+        .oldValue(DatabaseLogUtil.reduceLength(oldFiles.toString(), 255))
+        .newValue(DatabaseLogUtil.reduceLength(newFiles.toString(), 255)));
 
     // Keep updates that changed.
     final Collection<UpdateActivity> updates = new ArrayList<>();
