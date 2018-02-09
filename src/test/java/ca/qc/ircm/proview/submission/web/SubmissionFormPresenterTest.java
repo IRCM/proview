@@ -798,7 +798,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.files.getColumn(REMOVE_FILE).isSortable());
     Button remove = (Button) design.files.getColumn(REMOVE_FILE).getValueProvider().apply(file);
     assertTrue(remove.getStyleName().contains(REMOVE_FILE));
-    assertEquals(resources.message(FILES_PANEL + "." + REMOVE_FILE), remove.getCaption());
+    assertEquals(resources.message(FILES + "." + REMOVE_FILE), remove.getCaption());
   }
 
   @Test
@@ -832,7 +832,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.files.getColumn(REMOVE_FILE).isSortable());
     Button remove = (Button) design.files.getColumn(REMOVE_FILE).getValueProvider().apply(file);
     assertTrue(remove.getStyleName().contains(REMOVE_FILE));
-    assertEquals(resources.message(FILES_PANEL + "." + REMOVE_FILE), remove.getCaption());
+    assertEquals(resources.message(FILES + "." + REMOVE_FILE), remove.getCaption());
     remove.click();
     assertEquals(0, items(design.files).size());
   }
@@ -1407,9 +1407,9 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(FILES_PANEL), design.filesPanel.getCaption());
     verify(view.filesUploader).setUploadButtonCaption(resources.message(FILES_UPLOADER));
     assertEquals(null, design.files.getCaption());
-    assertEquals(resources.message(FILES_PANEL + "." + FILE_FILENAME),
+    assertEquals(resources.message(FILES + "." + FILE_FILENAME),
         design.files.getColumn(FILE_FILENAME).getCaption());
-    assertEquals(resources.message(FILES_PANEL + "." + REMOVE_FILE),
+    assertEquals(resources.message(FILES + "." + REMOVE_FILE),
         design.files.getColumn(REMOVE_FILE).getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());

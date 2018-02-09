@@ -231,9 +231,9 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String COMMENT = submission.comment.getMetadata().getName();
   public static final String STRUCTURE_FILE = "structureFile";
   public static final String GEL_IMAGE_FILE = "gelImageFile";
-  public static final String FILES_PANEL = submission.files.getMetadata().getName();
-  public static final String FILES_UPLOADER = submission.files.getMetadata().getName() + "Uploader";
-  public static final String FILES = FILES_PANEL + "Grid";
+  public static final String FILES = submission.files.getMetadata().getName();
+  public static final String FILES_PANEL = FILES + "Panel";
+  public static final String FILES_UPLOADER = FILES + "Uploader";
   public static final String EXPLANATION_PANEL = "explanationPanel";
   public static final String EXPLANATION = "explanation";
   public static final int MAXIMUM_FILES_SIZE = 10 * 1024 * 1024; // 10MB
@@ -364,10 +364,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.files.addStyleName(FILES);
     design.files.addStyleName(COMPONENTS);
     design.files.addColumn(file -> downloadFileButton(file), new ComponentRenderer())
-        .setId(FILE_FILENAME).setCaption(resources.message(FILES_PANEL + "." + FILE_FILENAME))
+        .setId(FILE_FILENAME).setCaption(resources.message(FILES + "." + FILE_FILENAME))
         .setSortable(false);
     design.files.addColumn(file -> removeFileButton(file), new ComponentRenderer())
-        .setId(REMOVE_FILE).setCaption(resources.message(FILES_PANEL + "." + REMOVE_FILE))
+        .setId(REMOVE_FILE).setCaption(resources.message(FILES + "." + REMOVE_FILE))
         .setSortable(false);
     design.files.setDataProvider(filesDataProvider);
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
@@ -403,7 +403,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       MessageResource resources = view.getResources();
       Button button = new Button();
       button.addStyleName(REMOVE_FILE);
-      button.setCaption(resources.message(FILES_PANEL + "." + REMOVE_FILE));
+      button.setCaption(resources.message(FILES + "." + REMOVE_FILE));
       button.addClickListener(e -> {
         filesDataProvider.getItems().remove(file);
         filesDataProvider.refreshAll();
@@ -1352,7 +1352,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         Files.copy(file.toPath(), content);
       } catch (IOException e) {
         MessageResource resources = view.getResources();
-        view.showError(resources.message(FILES_PANEL + ".error", fileName));
+        view.showError(resources.message(FILES + ".error", fileName));
         return;
       }
 
@@ -1368,7 +1368,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   private void warnIfFilesAtMaximum() {
     if (filesDataProvider.getItems().size() >= MAXIMUM_FILES_COUNT) {
       MessageResource resources = view.getResources();
-      view.showWarning(resources.message(FILES_PANEL + ".overMaximumCount", MAXIMUM_FILES_COUNT));
+      view.showWarning(resources.message(FILES + ".overMaximumCount", MAXIMUM_FILES_COUNT));
     }
   }
 
