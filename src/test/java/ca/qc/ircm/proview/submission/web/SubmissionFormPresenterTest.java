@@ -6051,6 +6051,133 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void save_UpdateNoChange() throws Throwable {
+    Submission database = entityManager.find(Submission.class, 36L);
+    database.setProteinIdentification(REFSEQ);
+    when(submissionSampleService.exists(any())).thenReturn(true);
+    when(submissionService.get(any())).thenReturn(database);
+    presenter.init(view);
+    presenter.setValue(database);
+    database.getSamples()
+        .forEach(sample -> design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample));
+    database.getSamples().stream().flatMap(sample -> sample.getStandards().stream())
+        .forEach(standard -> {
+          design.standards.getColumn(STANDARD_NAME).getValueProvider().apply(standard);
+          design.standards.getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
+          design.standards.getColumn(STANDARD_COMMENT).getValueProvider().apply(standard);
+        });
+    database.getSamples().stream().flatMap(sample -> sample.getContaminants().stream())
+        .forEach(contaminant -> {
+          design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider().apply(contaminant);
+          design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider().apply(contaminant);
+          design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider().apply(contaminant);
+        });
+
+    design.save.click();
+
+    verify(view, never()).showError(any());
+    verify(view, never()).showWarning(any());
+    verify(submissionService).update(submissionCaptor.capture());
+    Submission submission = submissionCaptor.getValue();
+    assertEquals((Long) 36L, submission.getId());
+    assertEquals(database.getService(), submission.getService());
+    assertEquals(database.getTaxonomy(), submission.getTaxonomy());
+    assertEquals(database.getExperience(), submission.getExperience());
+    assertEquals(database.getGoal(), submission.getGoal());
+    assertEquals(database.getMassDetectionInstrument(), submission.getMassDetectionInstrument());
+    assertEquals(database.getSource(), submission.getSource());
+    assertEquals(database.getProteolyticDigestionMethod(),
+        submission.getProteolyticDigestionMethod());
+    assertEquals(database.getUsedProteolyticDigestionMethod(),
+        submission.getUsedProteolyticDigestionMethod());
+    assertEquals(database.getOtherProteolyticDigestionMethod(),
+        submission.getOtherProteolyticDigestionMethod());
+    assertEquals(database.getProteinIdentification(), submission.getProteinIdentification());
+    assertEquals(database.getProteinIdentificationLink(),
+        submission.getProteinIdentificationLink());
+    assertEquals(database.getEnrichmentType(), submission.getEnrichmentType());
+    assertEquals(database.isLowResolution(), submission.isLowResolution());
+    assertEquals(database.isHighResolution(), submission.isHighResolution());
+    assertEquals(database.isMsms(), submission.isMsms());
+    assertEquals(database.isExactMsms(), submission.isExactMsms());
+    assertEquals(database.getMudPitFraction(), submission.getMudPitFraction());
+    assertEquals(database.getProteinContent(), submission.getProteinContent());
+    assertEquals(database.getProtein(), submission.getProtein());
+    assertEquals(database.getPostTranslationModification(),
+        submission.getPostTranslationModification());
+    assertEquals(database.getSeparation(), submission.getSeparation());
+    assertEquals(database.getThickness(), submission.getThickness());
+    assertEquals(database.getColoration(), submission.getColoration());
+    assertEquals(database.getOtherColoration(), submission.getOtherColoration());
+    assertEquals(database.getDevelopmentTime(), submission.getDevelopmentTime());
+    assertEquals(database.isDecoloration(), submission.isDecoloration());
+    assertEquals(database.getWeightMarkerQuantity(), submission.getWeightMarkerQuantity());
+    assertEquals(database.getProteinQuantity(), submission.getProteinQuantity());
+    assertEquals(database.getFormula(), submission.getFormula());
+    assertEquals(database.getMonoisotopicMass(), submission.getMonoisotopicMass());
+    assertEquals(database.getAverageMass(), submission.getAverageMass());
+    assertEquals(database.getSolutionSolvent(), submission.getSolutionSolvent());
+    assertEquals(database.getSolvents(), submission.getSolvents());
+    assertEquals(database.getOtherSolvent(), submission.getOtherSolvent());
+    assertEquals(database.getToxicity(), submission.getToxicity());
+    assertEquals(database.isLightSensitive(), submission.isLightSensitive());
+    assertEquals(database.getStorageTemperature(), submission.getStorageTemperature());
+    assertEquals(database.getQuantification(), submission.getQuantification());
+    assertEquals(database.getQuantificationLabels(), submission.getQuantificationLabels());
+    assertEquals(database.getComment(), submission.getComment());
+    assertEquals(database.getSubmissionDate(), submission.getSubmissionDate());
+    assertEquals(database.getPrice(), submission.getPrice());
+    assertEquals(database.getAdditionalPrice(), submission.getAdditionalPrice());
+    assertEquals(database.getUser().getId(), submission.getUser().getId());
+    assertEquals(database.getLaboratory().getId(), submission.getLaboratory().getId());
+    assertNotNull(submission.getSamples());
+    assertEquals(database.getSamples().size(), submission.getSamples().size());
+    for (int i = 0; i < database.getSamples().size(); i++) {
+      SubmissionSample dsample = database.getSamples().get(i);
+      SubmissionSample sample = submission.getSamples().get(i);
+      assertEquals(dsample.getId(), sample.getId());
+      assertEquals(dsample.getName(), sample.getName());
+      assertEquals(dsample.getSupport(), sample.getSupport());
+      assertEquals(dsample.getVolume(), sample.getVolume(), 0.00001);
+      assertEquals(dsample.getQuantity(), sample.getQuantity());
+      assertEquals(dsample.getNumberProtein(), sample.getNumberProtein());
+      assertEquals(dsample.getMolecularWeight(), sample.getMolecularWeight());
+      assertNotNull(sample.getOriginalContainer());
+      assertEquals(dsample.getOriginalContainer().getId(), sample.getOriginalContainer().getId());
+      assertEquals(dsample.getOriginalContainer().getType(),
+          sample.getOriginalContainer().getType());
+      assertEquals(dsample.getOriginalContainer().getName(),
+          sample.getOriginalContainer().getName());
+      assertEquals(dsample.getStandards().size(), sample.getStandards().size());
+      assertEquals(dsample.getStatus(), sample.getStatus());
+      assertEquals(submission, sample.getSubmission());
+      for (int j = 0; j < dsample.getStandards().size(); j++) {
+        Standard dstandard = dsample.getStandards().get(j);
+        Standard standard = sample.getStandards().get(j);
+        assertEquals(dstandard.getName(), standard.getName());
+        assertEquals(dstandard.getQuantity(), standard.getQuantity());
+        assertEquals(dstandard.getComment(), standard.getComment());
+      }
+      for (int j = 0; j < dsample.getContaminants().size(); j++) {
+        Contaminant dcontaminant = dsample.getContaminants().get(j);
+        Contaminant contaminant = sample.getContaminants().get(j);
+        assertEquals(dcontaminant.getName(), contaminant.getName());
+        assertEquals(dcontaminant.getQuantity(), contaminant.getQuantity());
+        assertEquals(dcontaminant.getComment(), contaminant.getComment());
+      }
+    }
+    assertEquals(database.getFiles().size(), submission.getFiles().size());
+    for (int i = 0; i < database.getFiles().size(); i++) {
+      SubmissionFile dfile = database.getFiles().get(i);
+      SubmissionFile file = submission.getFiles().get(i);
+      assertEquals(dfile.getFilename(), file.getFilename());
+      assertArrayEquals(dfile.getContent(), file.getContent());
+    }
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", database.getExperience()));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
+  }
+
+  @Test
   public void save_ForceUpdate() throws Throwable {
     Submission submission = entityManager.find(Submission.class, 147L);
     when(authorizationService.hasAdminRole()).thenReturn(true);

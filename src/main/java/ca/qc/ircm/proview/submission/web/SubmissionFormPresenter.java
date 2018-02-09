@@ -1382,7 +1382,11 @@ public class SubmissionFormPresenter implements BinderValidator {
         return ValidationResult.error(generalResources.message(ONLY_WORDS));
       }
       if (testExists && submissionSampleService.exists(value)) {
-        return ValidationResult.error(generalResources.message(ALREADY_EXISTS));
+        if (submissionBinder.getBean().getId() == null
+            || !submissionService.get(submissionBinder.getBean().getId()).getSamples().stream()
+                .filter(sample -> sample.getName().equalsIgnoreCase(value)).findAny().isPresent()) {
+          return ValidationResult.error(generalResources.message(ALREADY_EXISTS));
+        }
       }
       return ValidationResult.ok();
     };
