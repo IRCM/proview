@@ -236,7 +236,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String FILES_UPLOADER = FILES + "Uploader";
   public static final String EXPLANATION_PANEL = "explanationPanel";
   public static final String EXPLANATION = "explanation";
-  public static final int MAXIMUM_FILES_SIZE = 10 * 1024 * 1024; // 10MB
+  public static final int MAXIMUM_FILES_SIZE = 50 * 1024 * 1024; // 50MB
   public static final int MAXIMUM_FILES_COUNT = 6;
   public static final String FILE_FILENAME = submissionFile.filename.getMetadata().getName();
   public static final String REMOVE_FILE = "removeFile";
