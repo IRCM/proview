@@ -28,6 +28,8 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ClientConnector;
+import com.vaadin.server.Extension;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
@@ -42,15 +44,78 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @NonTransactionalTestAnnotations
 public class CloseWindowOnViewChangeTest {
   @Mock
-  private Window window;
+  private TestWindow window;
   @Mock
   private UI ui;
   @Mock
   private Navigator navigator;
   @Mock
   private Registration registration;
+  @Mock
+  private ClientConnector clientConnector;
   @Captor
   private ArgumentCaptor<ViewChangeListener> listenerCaptor;
+
+  @Test
+  public void constructor() {
+    when(window.getUI()).thenReturn(ui);
+    when(ui.getNavigator()).thenReturn(navigator);
+    when(navigator.addViewChangeListener(any())).thenReturn(registration);
+
+    CloseWindowOnViewChange closeWindow = new CloseWindowOnViewChange(window);
+    closeWindow.setParent(ui);
+
+    verify(window).addExtension(closeWindow);
+    verify(navigator).addViewChangeListener(any());
+  }
+
+  @Test
+  public void extend() {
+    when(window.getUI()).thenReturn(ui);
+    when(ui.getNavigator()).thenReturn(navigator);
+    when(navigator.addViewChangeListener(any())).thenReturn(registration);
+
+    CloseWindowOnViewChange closeWindow = new CloseWindowOnViewChange();
+    closeWindow.setParent(ui);
+    closeWindow.extend(window);
+
+    verify(window).addExtension(closeWindow);
+    verify(navigator).addViewChangeListener(any());
+  }
+
+  @Test
+  public void remove() {
+    when(window.getUI()).thenReturn(ui);
+    when(ui.getNavigator()).thenReturn(navigator);
+    when(navigator.addViewChangeListener(any())).thenReturn(registration);
+
+    CloseWindowOnViewChange closeWindow = new CloseWindowOnViewChange();
+    closeWindow.setParent(ui);
+    closeWindow.extend(window);
+    closeWindow.remove();
+
+    verify(registration).remove();
+    verify(window).close();
+    verify(ui).removeExtension(closeWindow);
+  }
+
+  @Test
+  public void navigate() {
+    when(window.getUI()).thenReturn(ui);
+    when(ui.getNavigator()).thenReturn(navigator);
+    when(navigator.addViewChangeListener(any())).thenReturn(registration);
+
+    CloseWindowOnViewChange closeWindow = new CloseWindowOnViewChange();
+    closeWindow.setParent(ui);
+    closeWindow.extend(window);
+
+    verify(navigator).addViewChangeListener(listenerCaptor.capture());
+    assertTrue(listenerCaptor.getValue().beforeViewChange(new ViewChangeEvent(navigator,
+        new DigestionView(), new DilutionView(), DilutionView.VIEW_NAME, "")));
+    verify(registration).remove();
+    verify(window).close();
+    verify(ui).removeExtension(closeWindow);
+  }
 
   @Test
   public void closeWindowOnViewChange() {
@@ -58,12 +123,18 @@ public class CloseWindowOnViewChangeTest {
     when(ui.getNavigator()).thenReturn(navigator);
     when(navigator.addViewChangeListener(any())).thenReturn(registration);
 
-    CloseWindowOnViewChange.closeWindowOnViewChange(window);
+    CloseWindowOnViewChange closeWindow = CloseWindowOnViewChange.closeWindowOnViewChange(window);
+    closeWindow.setParent(ui);
 
-    verify(navigator).addViewChangeListener(listenerCaptor.capture());
-    assertTrue(listenerCaptor.getValue().beforeViewChange(new ViewChangeEvent(navigator,
-        new DigestionView(), new DilutionView(), DilutionView.VIEW_NAME, "")));
-    verify(registration).remove();
-    verify(window).close();
+    verify(window).addExtension(closeWindow);
+    verify(navigator).addViewChangeListener(any());
+  }
+
+  @SuppressWarnings("serial")
+  public class TestWindow extends Window {
+    @Override
+    public void addExtension(Extension extension) {
+      super.addExtension(extension);
+    }
   }
 }
