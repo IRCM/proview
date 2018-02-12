@@ -1112,6 +1112,18 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void quantification_Options() {
+    presenter.init(view);
+
+    assertEquals(Quantification.values().length,
+        dataProvider(design.quantification).getItems().size());
+    for (Quantification quantification : Quantification.values()) {
+      assertTrue(quantification.name(),
+          dataProvider(design.quantification).getItems().contains(quantification));
+    }
+  }
+
+  @Test
   public void quantification_RequiredText() {
     presenter.init(view);
 
@@ -1121,6 +1133,18 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.quantificationLabels.isRequiredIndicatorVisible());
     design.quantification.setValue(Quantification.SILAC);
     assertTrue(design.quantificationLabels.isRequiredIndicatorVisible());
+  }
+
+  @Test
+  public void quantificationLabels_Visible() {
+    presenter.init(view);
+
+    design.quantification.setValue(null);
+    assertFalse(design.quantificationLabels.isVisible());
+    design.quantification.setValue(Quantification.LABEL_FREE);
+    assertFalse(design.quantificationLabels.isVisible());
+    design.quantification.setValue(Quantification.SILAC);
+    assertTrue(design.quantificationLabels.isVisible());
   }
 
   @Test
@@ -1683,7 +1707,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -1760,7 +1784,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -1881,7 +1905,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -1958,7 +1982,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -2041,7 +2065,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -2118,7 +2142,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertTrue(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationLabels.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());

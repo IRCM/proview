@@ -993,6 +993,7 @@ public class SubmissionFormPresenter implements BinderValidator {
             : Quantification.getNullLabel(locale));
     design.quantification.addValueChangeListener(e -> design.quantificationLabels
         .setRequiredIndicatorVisible(design.quantification.getValue() == SILAC));
+    design.quantification.addValueChangeListener(e -> updateVisible());
     submissionBinder.forField(design.quantification).withNullRepresentation(Quantification.NULL)
         .bind(QUANTIFICATION);
     design.quantificationLabels.addStyleName(QUANTIFICATION_LABELS);
@@ -1153,7 +1154,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.proteinIdentificationLink.setVisible(design.proteinIdentification.isVisible()
         && design.proteinIdentification.getValue() == ProteinIdentification.OTHER);
     design.quantification.setVisible(service == LC_MS_MS);
-    design.quantificationLabels.setVisible(service == LC_MS_MS);
+    design.quantificationLabels.setVisible(
+        service == LC_MS_MS && design.quantification.getValue() == Quantification.SILAC);
     design.highResolution.setVisible(service == SMALL_MOLECULE);
     design.solventsLayout.setVisible(service == SMALL_MOLECULE);
     design.acetonitrileSolvents.setVisible(service == SMALL_MOLECULE);
