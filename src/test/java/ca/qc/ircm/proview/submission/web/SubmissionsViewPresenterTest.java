@@ -1263,4 +1263,17 @@ public class SubmissionsViewPresenterTest {
     verify(view).showError(resources.message(NO_SELECTION));
     verify(view, never()).navigateTo(DataAnalysisView.VIEW_NAME);
   }
+
+  @Test
+  public void enter_Selections() {
+    final Submission submission1 = find(submissions, 32L).orElse(null);
+    when(view.savedSamples()).thenReturn(new ArrayList<>(submission1.getSamples()));
+    when(view.savedContainers()).thenReturn(new ArrayList<>(Arrays.asList(new Tube(), new Tube())));
+    presenter.init(view);
+
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, 1),
+        design.selectedSamplesLabel.getValue());
+    assertEquals(resources.message(SELECT_CONTAINERS_LABEL, 2),
+        design.selectedContainersLabel.getValue());
+  }
 }

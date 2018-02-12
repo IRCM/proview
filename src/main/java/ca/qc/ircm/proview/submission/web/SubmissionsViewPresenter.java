@@ -218,7 +218,7 @@ public class SubmissionsViewPresenter {
     design.selectContainers.addClickListener(e -> selectContainers());
     design.selectedContainersLabel.addStyleName(SELECT_CONTAINERS_LABEL);
     design.selectedContainersLabel
-        .setValue(resources.message(SELECT_CONTAINERS_LABEL, view.savedSamples().size()));
+        .setValue(resources.message(SELECT_CONTAINERS_LABEL, view.savedContainers().size()));
     design.updateStatusButton.addStyleName(UPDATE_STATUS);
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
