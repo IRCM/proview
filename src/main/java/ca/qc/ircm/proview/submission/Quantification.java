@@ -25,7 +25,7 @@ import java.util.Locale;
  * Quantification.
  */
 public enum Quantification {
-  NULL, LABEL_FREE, SILAC;
+  NULL, LABEL_FREE, SILAC, TMT;
 
   public static String getNullLabel(Locale locale) {
     return NULL.getLabel(locale);

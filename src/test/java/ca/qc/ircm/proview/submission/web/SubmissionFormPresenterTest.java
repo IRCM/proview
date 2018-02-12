@@ -924,7 +924,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isRequiredIndicatorVisible());
     assertTrue(design.proteinIdentificationLink.isRequiredIndicatorVisible());
     assertFalse(design.quantification.isRequiredIndicatorVisible());
-    assertFalse(design.quantificationComment.isRequiredIndicatorVisible());
+    assertTrue(design.quantificationComment.isRequiredIndicatorVisible());
     assertTrue(design.highResolution.isRequiredIndicatorVisible());
     assertFalse(design.acetonitrileSolvents.isRequiredIndicatorVisible());
     assertFalse(design.methanolSolvents.isRequiredIndicatorVisible());
@@ -1124,18 +1124,6 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void quantification_RequiredText() {
-    presenter.init(view);
-
-    design.quantification.setValue(null);
-    assertFalse(design.quantificationComment.isRequiredIndicatorVisible());
-    design.quantification.setValue(Quantification.LABEL_FREE);
-    assertFalse(design.quantificationComment.isRequiredIndicatorVisible());
-    design.quantification.setValue(Quantification.SILAC);
-    assertTrue(design.quantificationComment.isRequiredIndicatorVisible());
-  }
-
-  @Test
   public void quantificationComment_Visible() {
     presenter.init(view);
 
@@ -1145,6 +1133,31 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.quantificationComment.isVisible());
     design.quantification.setValue(Quantification.SILAC);
     assertTrue(design.quantificationComment.isVisible());
+    design.quantification.setValue(Quantification.TMT);
+    assertTrue(design.quantificationComment.isVisible());
+  }
+
+  @Test
+  public void quantificationComment_SilacCaptions() {
+    presenter.init(view);
+
+    design.quantification.setValue(Quantification.SILAC);
+    assertEquals(resources.message(QUANTIFICATION_COMMENT),
+        design.quantificationComment.getCaption());
+    assertEquals(resources.message(QUANTIFICATION_COMMENT + "." + EXAMPLE),
+        design.quantificationComment.getPlaceholder());
+  }
+
+  @Test
+  public void quantificationComment_TmtCaptions() {
+    presenter.init(view);
+
+    design.quantification.setValue(Quantification.TMT);
+    assertEquals(resources.message(QUANTIFICATION_COMMENT + "." + Quantification.TMT.name()),
+        design.quantificationComment.getCaption());
+    assertEquals(
+        resources.message(QUANTIFICATION_COMMENT + "." + EXAMPLE + "." + Quantification.TMT.name()),
+        design.quantificationComment.getPlaceholder());
   }
 
   @Test
@@ -4404,12 +4417,31 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_MissingQuantificationComment() throws Throwable {
+  public void save_MissingQuantificationComment_Silac() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
     design.sampleSupport.setValue(support);
     setFields();
     design.quantification.setValue(Quantification.SILAC);
+    design.quantificationComment.setValue("");
+    uploadFiles();
+
+    design.save.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        design.quantificationComment.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void save_MissingQuantificationComment_Tmt() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleSupport.setValue(support);
+    setFields();
+    design.quantification.setValue(Quantification.TMT);
     design.quantificationComment.setValue("");
     uploadFiles();
 

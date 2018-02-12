@@ -34,12 +34,14 @@ import static ca.qc.ircm.proview.submission.GelThickness.ONE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.QSubmissionFile.submissionFile;
 import static ca.qc.ircm.proview.submission.Quantification.SILAC;
+import static ca.qc.ircm.proview.submission.Quantification.TMT;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.treatment.Solvent.ACETONITRILE;
 import static ca.qc.ircm.proview.treatment.Solvent.CHCL3;
 import static ca.qc.ircm.proview.treatment.Solvent.METHANOL;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
@@ -124,6 +126,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -991,9 +994,25 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.quantification.setItemCaptionGenerator(
         quantification -> quantification != null ? quantification.getLabel(locale)
             : Quantification.getNullLabel(locale));
-    design.quantification.addValueChangeListener(e -> design.quantificationComment
-        .setRequiredIndicatorVisible(design.quantification.getValue() == SILAC));
+    design.quantificationComment.setRequiredIndicatorVisible(true);
     design.quantification.addValueChangeListener(e -> updateVisible());
+    design.quantification.addValueChangeListener(e -> {
+      if (e.getValue() != null) {
+        try {
+          design.quantificationComment
+              .setCaption(resources.message(property(QUANTIFICATION_COMMENT, e.getValue().name())));
+        } catch (MissingResourceException exception) {
+          design.quantificationComment.setCaption(resources.message(QUANTIFICATION_COMMENT));
+        }
+        try {
+          design.quantificationComment.setPlaceholder(
+              resources.message(property(QUANTIFICATION_COMMENT, EXAMPLE, e.getValue().name())));
+        } catch (MissingResourceException exception) {
+          design.quantificationComment
+              .setPlaceholder(resources.message(property(QUANTIFICATION_COMMENT, EXAMPLE)));
+        }
+      }
+    });
     submissionBinder.forField(design.quantification).withNullRepresentation(Quantification.NULL)
         .bind(QUANTIFICATION);
     design.quantificationComment.addStyleName(QUANTIFICATION_COMMENT);
@@ -1001,7 +1020,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.quantificationComment
         .setPlaceholder(resources.message(QUANTIFICATION_COMMENT + "." + EXAMPLE));
     submissionBinder.forField(design.quantificationComment).withValidator((value, context) -> {
-      if (design.quantification.getValue() == SILAC && value.isEmpty()) {
+      if (value.isEmpty() && (design.quantification.getValue() == SILAC
+          || design.quantification.getValue() == TMT)) {
         return ValidationResult.error(generalResources.message(REQUIRED));
       }
       return ValidationResult.ok();
@@ -1154,8 +1174,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.proteinIdentificationLink.setVisible(design.proteinIdentification.isVisible()
         && design.proteinIdentification.getValue() == ProteinIdentification.OTHER);
     design.quantification.setVisible(service == LC_MS_MS);
-    design.quantificationComment.setVisible(
-        service == LC_MS_MS && design.quantification.getValue() == Quantification.SILAC);
+    design.quantificationComment
+        .setVisible(service == LC_MS_MS && (design.quantification.getValue() == Quantification.SILAC
+            || design.quantification.getValue() == Quantification.TMT));
     design.highResolution.setVisible(service == SMALL_MOLECULE);
     design.solventsLayout.setVisible(service == SMALL_MOLECULE);
     design.acetonitrileSolvents.setVisible(service == SMALL_MOLECULE);

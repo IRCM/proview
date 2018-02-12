@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission;
 import static ca.qc.ircm.proview.submission.Quantification.LABEL_FREE;
 import static ca.qc.ircm.proview.submission.Quantification.NULL;
 import static ca.qc.ircm.proview.submission.Quantification.SILAC;
+import static ca.qc.ircm.proview.submission.Quantification.TMT;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -49,5 +50,11 @@ public class QuantificationTest {
   public void getLabel_Silac() {
     assertEquals("Silac", SILAC.getLabel(Locale.ENGLISH));
     assertEquals("Silac", SILAC.getLabel(Locale.FRENCH));
+  }
+
+  @Test
+  public void getLabel_Tmt() {
+    assertEquals("Tandem mass tags", TMT.getLabel(Locale.ENGLISH));
+    assertEquals("Tandem mass tags", TMT.getLabel(Locale.FRENCH));
   }
 }
