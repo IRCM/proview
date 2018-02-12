@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -260,11 +261,11 @@ public class ContainerSelectionFormPresenter {
             .map(sample -> tubes.get(sample).getValue()).collect(Collectors.toList());
         view.fireSaveEvent(containers);
       } else {
-        List<Well> selectedWells = view.plateComponent.getSelectedWells().stream()
-            .filter(well -> well.getSample() != null).collect(Collectors.toList());
-        List<SampleContainer> containers = samples.stream()
-            .flatMap(sample -> selectedWells.stream()
-                .filter(well -> sample.getId().equals(well.getSample().getId())))
+        Set<Long> sampleIds =
+            samples.stream().map(sample -> sample.getId()).collect(Collectors.toSet());
+        List<SampleContainer> containers = view.plateComponent.getSelectedWells().stream()
+            .filter(
+                well -> well.getSample() != null && sampleIds.contains(well.getSample().getId()))
             .collect(Collectors.toList());
         view.fireSaveEvent(containers);
       }

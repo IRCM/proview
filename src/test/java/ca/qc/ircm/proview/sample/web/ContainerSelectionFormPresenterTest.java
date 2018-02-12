@@ -378,8 +378,9 @@ public class ContainerSelectionFormPresenterTest {
     verify(view).fireSaveEvent(containersCaptor.capture());
     List<SampleContainer> containers = containersCaptor.getValue();
     assertEquals(samples.size(), containers.size());
+    int index = 0;
     for (Sample sample : samples) {
-      assertTrue(containers.contains(sourceTubes.get(sample).get(0)));
+      assertEquals(sourceTubes.get(sample).get(0), containers.get(index++));
     }
   }
 
@@ -397,8 +398,9 @@ public class ContainerSelectionFormPresenterTest {
     verify(view).fireSaveEvent(containersCaptor.capture());
     List<SampleContainer> containers = containersCaptor.getValue();
     assertEquals(samples.size(), containers.size());
+    int index = 0;
     for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0))) {
-      assertTrue(containers.contains(well));
+      assertEquals(well, containers.get(index++));
     }
   }
 
@@ -416,8 +418,9 @@ public class ContainerSelectionFormPresenterTest {
     verify(view).fireSaveEvent(containersCaptor.capture());
     List<SampleContainer> containers = containersCaptor.getValue();
     assertEquals(samples.size(), containers.size());
+    int index = 0;
     for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0))) {
-      assertTrue(containers.contains(well));
+      assertEquals(well, containers.get(index++));
     }
   }
 
@@ -436,8 +439,9 @@ public class ContainerSelectionFormPresenterTest {
     verify(view).fireSaveEvent(containersCaptor.capture());
     List<SampleContainer> containers = containersCaptor.getValue();
     assertEquals(samples.size(), containers.size());
+    int index = 0;
     for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0))) {
-      assertTrue(containers.contains(well));
+      assertEquals(well, containers.get(index++));
     }
   }
 
@@ -445,7 +449,7 @@ public class ContainerSelectionFormPresenterTest {
   public void select_MultipleWellsPerSample() {
     presenter.init(view);
     presenter.setSamples(samples);
-    Plate plate = sourcePlates.get(0);
+    Plate plate = sourcePlates.get(1);
     List<Well> sourceWells = this.sourceWells.values().stream()
         .flatMap(map -> map.get(plate).stream()).collect(Collectors.toList());
     when(view.plateComponent.getSelectedWells()).thenReturn(sourceWells);
@@ -455,9 +459,42 @@ public class ContainerSelectionFormPresenterTest {
     verify(view, never()).showError(any());
     verify(view).fireSaveEvent(containersCaptor.capture());
     List<SampleContainer> containers = containersCaptor.getValue();
+    assertEquals(samples.size() * 2, containers.size());
+    int index = 0;
+    for (Well well : plate.wells(new WellLocation(0, 1), new WellLocation(samples.size() - 1, 0))) {
+      assertEquals(well, containers.get(index++));
+    }
+    for (Well well : plate.wells(new WellLocation(0, 3), new WellLocation(samples.size() - 1, 0))) {
+      assertEquals(well, containers.get(index++));
+    }
+  }
+
+  @Test
+  public void select_Wells_AssignOrder() {
+    presenter.init(view);
+    presenter.setSamples(samples);
+    Plate plate = sourcePlates.get(0);
+    sourceWells.clear();
+    IntStream.range(0, samples.size()).forEach(i -> {
+      Sample sample = samples.get(samples.size() - i - 1);
+      Map<Plate, List<Well>> wellsMap = new HashMap<>();
+      List<Well> wells = Arrays.asList(sourcePlates.get(0).well(i, 0));
+      wells.stream().forEach(well -> well.setSample(sample));
+      wellsMap.put(sourcePlates.get(0), wells);
+      sourceWells.put(sample, wellsMap);
+    });
+    when(view.plateComponent.getSelectedWells())
+        .thenReturn(plate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0)));
+
+    design.select.click();
+
+    verify(view, never()).showError(any());
+    verify(view).fireSaveEvent(containersCaptor.capture());
+    List<SampleContainer> containers = containersCaptor.getValue();
     assertEquals(samples.size(), containers.size());
+    int index = 0;
     for (Well well : plate.wells(new WellLocation(0, 0), new WellLocation(samples.size() - 1, 0))) {
-      assertTrue(containers.contains(well));
+      assertEquals(well, containers.get(index++));
     }
   }
 

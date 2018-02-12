@@ -303,7 +303,9 @@ public class SampleSelectionFormPresenterTest {
     List<Sample> samples = samplesCaptor.getValue();
     assertEquals(selectedSamples.size() + 1, samples.size());
     assertTrue(samples.containsAll(this.selectedSamples));
+    assertEquals(selectedSamples, samples.subList(0, selectedSamples.size()));
     assertTrue(samples.contains(this.controls.get(0)));
+    assertEquals(this.controls.get(0), samples.get(selectedSamples.size()));
   }
 
   @Test
