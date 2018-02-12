@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS submission (
   lightSensitive tinyint(1) NOT NULL DEFAULT '0',
   storageTemperature varchar(50) DEFAULT NULL,
   quantification varchar(50) DEFAULT NULL,
-  quantificationLabels clob DEFAULT NULL,
+  quantificationComment clob DEFAULT NULL,
   comment clob,
   price double DEFAULT NULL,
   additionalPrice double DEFAULT NULL,

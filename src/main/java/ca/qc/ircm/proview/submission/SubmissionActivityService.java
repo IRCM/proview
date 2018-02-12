@@ -231,9 +231,9 @@ public class SubmissionActivityService {
         .newValue(newSubmission.getStorageTemperature()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantification")
         .oldValue(oldSubmission.getQuantification()).newValue(newSubmission.getQuantification()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantificationLabels")
-        .oldValue(oldSubmission.getQuantificationLabels())
-        .newValue(newSubmission.getQuantificationLabels()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantificationComment")
+        .oldValue(oldSubmission.getQuantificationComment())
+        .newValue(newSubmission.getQuantificationComment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("comment")
         .oldValue(oldSubmission.getComment()).newValue(newSubmission.getComment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("additionalPrice")

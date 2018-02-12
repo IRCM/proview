@@ -60,7 +60,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_LABELS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_CONTAINER_TYPE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PANEL;
@@ -488,8 +488,8 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(RadioButtonGroupElement.class, findElement(className(QUANTIFICATION)));
   }
 
-  protected TextAreaElement quantificationLabelsField() {
-    return wrap(TextAreaElement.class, findElement(className(QUANTIFICATION_LABELS)));
+  protected TextAreaElement quantificationCommentField() {
+    return wrap(TextAreaElement.class, findElement(className(QUANTIFICATION_COMMENT)));
   }
 
   protected RadioButtonGroupElement highResolutionOptions() {

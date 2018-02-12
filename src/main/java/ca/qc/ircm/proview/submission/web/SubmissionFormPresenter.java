@@ -220,8 +220,8 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String PROTEIN_IDENTIFICATION_LINK =
       submission.proteinIdentificationLink.getMetadata().getName();
   public static final String QUANTIFICATION = submission.quantification.getMetadata().getName();
-  public static final String QUANTIFICATION_LABELS =
-      submission.quantificationLabels.getMetadata().getName();
+  public static final String QUANTIFICATION_COMMENT =
+      submission.quantificationComment.getMetadata().getName();
   public static final String HIGH_RESOLUTION = submission.highResolution.getMetadata().getName();
   public static final String SOLVENTS = submission.solvents.getMetadata().getName();
   public static final String OTHER_SOLVENT = submission.otherSolvent.getMetadata().getName();
@@ -991,21 +991,21 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.quantification.setItemCaptionGenerator(
         quantification -> quantification != null ? quantification.getLabel(locale)
             : Quantification.getNullLabel(locale));
-    design.quantification.addValueChangeListener(e -> design.quantificationLabels
+    design.quantification.addValueChangeListener(e -> design.quantificationComment
         .setRequiredIndicatorVisible(design.quantification.getValue() == SILAC));
     design.quantification.addValueChangeListener(e -> updateVisible());
     submissionBinder.forField(design.quantification).withNullRepresentation(Quantification.NULL)
         .bind(QUANTIFICATION);
-    design.quantificationLabels.addStyleName(QUANTIFICATION_LABELS);
-    design.quantificationLabels.setCaption(resources.message(QUANTIFICATION_LABELS));
-    design.quantificationLabels
-        .setPlaceholder(resources.message(QUANTIFICATION_LABELS + "." + EXAMPLE));
-    submissionBinder.forField(design.quantificationLabels).withValidator((value, context) -> {
+    design.quantificationComment.addStyleName(QUANTIFICATION_COMMENT);
+    design.quantificationComment.setCaption(resources.message(QUANTIFICATION_COMMENT));
+    design.quantificationComment
+        .setPlaceholder(resources.message(QUANTIFICATION_COMMENT + "." + EXAMPLE));
+    submissionBinder.forField(design.quantificationComment).withValidator((value, context) -> {
       if (design.quantification.getValue() == SILAC && value.isEmpty()) {
         return ValidationResult.error(generalResources.message(REQUIRED));
       }
       return ValidationResult.ok();
-    }).withNullRepresentation("").bind(QUANTIFICATION_LABELS);
+    }).withNullRepresentation("").bind(QUANTIFICATION_COMMENT);
     design.highResolution.addStyleName(HIGH_RESOLUTION);
     design.highResolution.setCaption(resources.message(HIGH_RESOLUTION));
     design.highResolution.setItems(false, true);
@@ -1154,7 +1154,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.proteinIdentificationLink.setVisible(design.proteinIdentification.isVisible()
         && design.proteinIdentification.getValue() == ProteinIdentification.OTHER);
     design.quantification.setVisible(service == LC_MS_MS);
-    design.quantificationLabels.setVisible(
+    design.quantificationComment.setVisible(
         service == LC_MS_MS && design.quantification.getValue() == Quantification.SILAC);
     design.highResolution.setVisible(service == SMALL_MOLECULE);
     design.solventsLayout.setVisible(service == SMALL_MOLECULE);
@@ -1218,7 +1218,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.proteinIdentification.setReadOnly(readOnly);
     design.proteinIdentificationLink.setReadOnly(readOnly);
     design.quantification.setReadOnly(readOnly);
-    design.quantificationLabels.setReadOnly(readOnly);
+    design.quantificationComment.setReadOnly(readOnly);
     design.highResolution.setReadOnly(readOnly);
     design.acetonitrileSolvents.setReadOnly(readOnly);
     design.methanolSolvents.setReadOnly(readOnly);
@@ -1585,7 +1585,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     clearInvisibleField(design.proteinIdentification);
     clearInvisibleField(design.proteinIdentificationLink);
     clearInvisibleField(design.quantification);
-    clearInvisibleField(design.quantificationLabels);
+    clearInvisibleField(design.quantificationComment);
     setValueIfInvisible(design.highResolution, false);
     clearInvisibleField(design.acetonitrileSolvents);
     clearInvisibleField(design.methanolSolvents);

@@ -91,7 +91,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected RadioButtonGroup<ca.qc.ircm.proview.sample.ProteinIdentification> proteinIdentification;
   protected TextField proteinIdentificationLink;
   protected RadioButtonGroup<ca.qc.ircm.proview.submission.Quantification> quantification;
-  protected TextArea quantificationLabels;
+  protected TextArea quantificationComment;
   protected RadioButtonGroup<java.lang.Boolean> highResolution;
   protected VerticalLayout solventsLayout;
   protected CheckBox acetonitrileSolvents;

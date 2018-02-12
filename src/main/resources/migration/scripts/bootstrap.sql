@@ -133,7 +133,7 @@ CREATE TABLE submission (
   lightSensitive tinyint(1) NOT NULL DEFAULT '0',
   storageTemperature varchar(50) DEFAULT NULL,
   quantification varchar(50) DEFAULT NULL,
-  quantificationLabels text,
+  quantificationComment text,
   comment text,
   price double DEFAULT NULL,
   additionalPrice double DEFAULT NULL,

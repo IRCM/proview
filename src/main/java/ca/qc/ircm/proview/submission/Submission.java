@@ -307,10 +307,10 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Enumerated(STRING)
   private Quantification quantification;
   /**
-   * Quantification labels.
+   * Quantification comments (labels for silac).
    */
-  @Column(name = "quantificationLabels")
-  private String quantificationLabels;
+  @Column(name = "quantificationComment")
+  private String quantificationComment;
   /**
    * Any comment on this sample.
    */
@@ -745,12 +745,12 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.quantification = quantification;
   }
 
-  public String getQuantificationLabels() {
-    return quantificationLabels;
+  public String getQuantificationComment() {
+    return quantificationComment;
   }
 
-  public void setQuantificationLabels(String quantificationLabels) {
-    this.quantificationLabels = quantificationLabels;
+  public void setQuantificationComment(String quantificationComment) {
+    this.quantificationComment = quantificationComment;
   }
 
   public InjectionType getInjectionType() {

@@ -79,7 +79,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_LABELS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.REMOVE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_CONTAINER_TYPE;
@@ -314,7 +314,7 @@ public class SubmissionFormPresenterTest {
   private ProteinIdentification proteinIdentification = ProteinIdentification.OTHER;
   private String proteinIdentificationLink = "NR at ftp://ftp.ncbi.nlm.nih.gov/blast/db/";
   private Quantification quantification = Quantification.SILAC;
-  private String quantificationLabels = "Heavy: Lys8, Arg10\nLight: None";
+  private String quantificationComment = "Heavy: Lys8, Arg10\nLight: None";
   private boolean highResolution = true;
   private boolean acetonitrileSolvents = true;
   private boolean methanolSolvents = true;
@@ -412,7 +412,7 @@ public class SubmissionFormPresenterTest {
     design.proteinIdentification.setValue(proteinIdentification);
     design.proteinIdentificationLink.setValue(proteinIdentificationLink);
     design.quantification.setValue(quantification);
-    design.quantificationLabels.setValue(quantificationLabels);
+    design.quantificationComment.setValue(quantificationComment);
     design.highResolution.setValue(highResolution);
     design.acetonitrileSolvents.setValue(acetonitrileSolvents);
     design.methanolSolvents.setValue(methanolSolvents);
@@ -563,7 +563,7 @@ public class SubmissionFormPresenterTest {
     submission.setLightSensitive(true);
     submission.setStorageTemperature(storageTemperature);
     submission.setQuantification(quantification);
-    submission.setQuantificationLabels(quantificationLabels);
+    submission.setQuantificationComment(quantificationComment);
     submission.setComment(comment);
     submission.setSubmissionDate(Instant.now());
     User user = entityManager.find(User.class, 3L);
@@ -924,7 +924,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isRequiredIndicatorVisible());
     assertTrue(design.proteinIdentificationLink.isRequiredIndicatorVisible());
     assertFalse(design.quantification.isRequiredIndicatorVisible());
-    assertFalse(design.quantificationLabels.isRequiredIndicatorVisible());
+    assertFalse(design.quantificationComment.isRequiredIndicatorVisible());
     assertTrue(design.highResolution.isRequiredIndicatorVisible());
     assertFalse(design.acetonitrileSolvents.isRequiredIndicatorVisible());
     assertFalse(design.methanolSolvents.isRequiredIndicatorVisible());
@@ -1128,23 +1128,23 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
 
     design.quantification.setValue(null);
-    assertFalse(design.quantificationLabels.isRequiredIndicatorVisible());
+    assertFalse(design.quantificationComment.isRequiredIndicatorVisible());
     design.quantification.setValue(Quantification.LABEL_FREE);
-    assertFalse(design.quantificationLabels.isRequiredIndicatorVisible());
+    assertFalse(design.quantificationComment.isRequiredIndicatorVisible());
     design.quantification.setValue(Quantification.SILAC);
-    assertTrue(design.quantificationLabels.isRequiredIndicatorVisible());
+    assertTrue(design.quantificationComment.isRequiredIndicatorVisible());
   }
 
   @Test
-  public void quantificationLabels_Visible() {
+  public void quantificationComment_Visible() {
     presenter.init(view);
 
     design.quantification.setValue(null);
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     design.quantification.setValue(Quantification.LABEL_FREE);
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     design.quantification.setValue(Quantification.SILAC);
-    assertTrue(design.quantificationLabels.isVisible());
+    assertTrue(design.quantificationComment.isVisible());
   }
 
   @Test
@@ -1217,7 +1217,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(
         design.proteinIdentificationLink.getStyleName().contains(PROTEIN_IDENTIFICATION_LINK));
     assertTrue(design.quantification.getStyleName().contains(QUANTIFICATION));
-    assertTrue(design.quantificationLabels.getStyleName().contains(QUANTIFICATION_LABELS));
+    assertTrue(design.quantificationComment.getStyleName().contains(QUANTIFICATION_COMMENT));
     assertTrue(design.highResolution.getStyleName().contains(HIGH_RESOLUTION));
     assertTrue(design.solventsLayout.getStyleName().contains(REQUIRED));
     assertTrue(design.acetonitrileSolvents.getStyleName()
@@ -1408,10 +1408,10 @@ public class SubmissionFormPresenterTest {
       assertEquals(quantification.getLabel(locale),
           design.quantification.getItemCaptionGenerator().apply(quantification));
     }
-    assertEquals(resources.message(QUANTIFICATION_LABELS),
-        design.quantificationLabels.getCaption());
-    assertEquals(resources.message(QUANTIFICATION_LABELS + "." + EXAMPLE),
-        design.quantificationLabels.getPlaceholder());
+    assertEquals(resources.message(QUANTIFICATION_COMMENT),
+        design.quantificationComment.getCaption());
+    assertEquals(resources.message(QUANTIFICATION_COMMENT + "." + EXAMPLE),
+        design.quantificationComment.getPlaceholder());
     assertEquals(resources.message(HIGH_RESOLUTION), design.highResolution.getCaption());
     for (boolean value : new boolean[] { false, true }) {
       assertEquals(resources.message(HIGH_RESOLUTION + "." + value),
@@ -1517,7 +1517,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isReadOnly());
     assertTrue(design.proteinIdentificationLink.isReadOnly());
     assertTrue(design.quantification.isReadOnly());
-    assertTrue(design.quantificationLabels.isReadOnly());
+    assertTrue(design.quantificationComment.isReadOnly());
     assertTrue(design.highResolution.isReadOnly());
     assertTrue(design.acetonitrileSolvents.isReadOnly());
     assertTrue(design.methanolSolvents.isReadOnly());
@@ -1607,7 +1607,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.proteinIdentification.isReadOnly());
     assertFalse(design.proteinIdentificationLink.isReadOnly());
     assertFalse(design.quantification.isReadOnly());
-    assertFalse(design.quantificationLabels.isReadOnly());
+    assertFalse(design.quantificationComment.isReadOnly());
     assertFalse(design.highResolution.isReadOnly());
     assertFalse(design.acetonitrileSolvents.isReadOnly());
     assertFalse(design.methanolSolvents.isReadOnly());
@@ -1707,7 +1707,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -1784,7 +1784,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -1905,7 +1905,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -1982,7 +1982,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -2065,7 +2065,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -2142,7 +2142,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertTrue(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -2236,7 +2236,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertFalse(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertTrue(design.highResolution.isVisible());
     assertTrue(design.acetonitrileSolvents.isVisible());
     assertTrue(design.methanolSolvents.isVisible());
@@ -2313,7 +2313,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertFalse(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertTrue(design.highResolution.isVisible());
     assertTrue(design.acetonitrileSolvents.isVisible());
     assertTrue(design.methanolSolvents.isVisible());
@@ -2407,7 +2407,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertFalse(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertTrue(design.highResolution.isVisible());
     assertTrue(design.acetonitrileSolvents.isVisible());
     assertTrue(design.methanolSolvents.isVisible());
@@ -2484,7 +2484,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertFalse(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertTrue(design.highResolution.isVisible());
     assertTrue(design.acetonitrileSolvents.isVisible());
     assertTrue(design.methanolSolvents.isVisible());
@@ -2567,7 +2567,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertFalse(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -2644,7 +2644,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertFalse(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -2727,7 +2727,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertFalse(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -2804,7 +2804,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.proteinIdentification.isVisible());
     assertFalse(design.proteinIdentificationLink.isVisible());
     assertFalse(design.quantification.isVisible());
-    assertFalse(design.quantificationLabels.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
     assertFalse(design.highResolution.isVisible());
     assertFalse(design.acetonitrileSolvents.isVisible());
     assertFalse(design.methanolSolvents.isVisible());
@@ -4404,13 +4404,13 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_MissingQuantificationLabels() throws Throwable {
+  public void save_MissingQuantificationComment() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
     design.sampleSupport.setValue(support);
     setFields();
     design.quantification.setValue(Quantification.SILAC);
-    design.quantificationLabels.setValue("");
+    design.quantificationComment.setValue("");
     uploadFiles();
 
     design.save.click();
@@ -4418,7 +4418,7 @@ public class SubmissionFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.quantificationLabels.getErrorMessage().getFormattedHtmlMessage());
+        design.quantificationComment.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4556,7 +4556,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
-    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -4690,7 +4690,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
-    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -4838,7 +4838,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
-    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -4972,7 +4972,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
-    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -5107,7 +5107,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
-    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -5252,7 +5252,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
-    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -5354,7 +5354,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
-    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -5482,7 +5482,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(lightSensitive, submission.isLightSensitive());
     assertEquals(storageTemperature, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
-    assertEquals(null, submission.getQuantificationLabels());
+    assertEquals(null, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -5586,7 +5586,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(lightSensitive, submission.isLightSensitive());
     assertEquals(storageTemperature, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
-    assertEquals(null, submission.getQuantificationLabels());
+    assertEquals(null, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -5694,7 +5694,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
-    assertEquals(null, submission.getQuantificationLabels());
+    assertEquals(null, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -5828,7 +5828,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
-    assertEquals(null, submission.getQuantificationLabels());
+    assertEquals(null, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(null, submission.getSubmissionDate());
     assertEquals(null, submission.getPrice());
@@ -5993,7 +5993,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
-    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(LocalDate.of(2011, 11, 16), toLocalDate(submission.getSubmissionDate()));
     assertEquals(null, submission.getPrice());
@@ -6147,7 +6147,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(database.isLightSensitive(), submission.isLightSensitive());
     assertEquals(database.getStorageTemperature(), submission.getStorageTemperature());
     assertEquals(database.getQuantification(), submission.getQuantification());
-    assertEquals(database.getQuantificationLabels(), submission.getQuantificationLabels());
+    assertEquals(database.getQuantificationComment(), submission.getQuantificationComment());
     assertEquals(database.getComment(), submission.getComment());
     assertEquals(database.getSubmissionDate(), submission.getSubmissionDate());
     assertEquals(database.getPrice(), submission.getPrice());
@@ -6259,7 +6259,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(false, submission.isLightSensitive());
     assertEquals(null, submission.getStorageTemperature());
     assertEquals(quantification, submission.getQuantification());
-    assertEquals(quantificationLabels, submission.getQuantificationLabels());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(LocalDate.of(2014, 10, 8), toLocalDate(submission.getSubmissionDate()));
     assertEquals(null, submission.getPrice());
@@ -6439,7 +6439,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinIdentification, design.proteinIdentification.getValue());
     assertEquals(proteinIdentificationLink, design.proteinIdentificationLink.getValue());
     assertEquals(quantification, design.quantification.getValue());
-    assertEquals(quantificationLabels, design.quantificationLabels.getValue());
+    assertEquals(quantificationComment, design.quantificationComment.getValue());
     assertEquals(highResolution, design.highResolution.getValue());
     assertEquals(acetonitrileSolvents, design.acetonitrileSolvents.getValue());
     assertEquals(methanolSolvents, design.methanolSolvents.getValue());
@@ -6532,7 +6532,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinIdentification, design.proteinIdentification.getValue());
     assertEquals(proteinIdentificationLink, design.proteinIdentificationLink.getValue());
     assertEquals(quantification, design.quantification.getValue());
-    assertEquals(quantificationLabels, design.quantificationLabels.getValue());
+    assertEquals(quantificationComment, design.quantificationComment.getValue());
     assertEquals(highResolution, design.highResolution.getValue());
     assertEquals(acetonitrileSolvents, design.acetonitrileSolvents.getValue());
     assertEquals(methanolSolvents, design.methanolSolvents.getValue());
@@ -6620,7 +6620,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinIdentification, design.proteinIdentification.getValue());
     assertEquals(proteinIdentificationLink, design.proteinIdentificationLink.getValue());
     assertEquals(quantification, design.quantification.getValue());
-    assertEquals(quantificationLabels, design.quantificationLabels.getValue());
+    assertEquals(quantificationComment, design.quantificationComment.getValue());
     assertEquals(highResolution, design.highResolution.getValue());
     assertEquals(acetonitrileSolvents, design.acetonitrileSolvents.getValue());
     assertEquals(methanolSolvents, design.methanolSolvents.getValue());
@@ -6708,7 +6708,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinIdentification, design.proteinIdentification.getValue());
     assertEquals(proteinIdentificationLink, design.proteinIdentificationLink.getValue());
     assertEquals(quantification, design.quantification.getValue());
-    assertEquals(quantificationLabels, design.quantificationLabels.getValue());
+    assertEquals(quantificationComment, design.quantificationComment.getValue());
     assertEquals(highResolution, design.highResolution.getValue());
     assertEquals(acetonitrileSolvents, design.acetonitrileSolvents.getValue());
     assertEquals(methanolSolvents, design.methanolSolvents.getValue());

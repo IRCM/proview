@@ -231,7 +231,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setProteinIdentification(ProteinIdentification.OTHER);
     assertTrue(optional(() -> proteinIdentificationLinkField()).isPresent());
     assertTrue(optional(() -> quantificationOptions()).isPresent());
-    assertTrue(optional(() -> quantificationLabelsField()).isPresent());
+    assertTrue(optional(() -> quantificationCommentField()).isPresent());
     setService(SMALL_MOLECULE);
     assertTrue(optional(() -> highResolutionOptions()).isPresent());
     assertTrue(optional(() -> acetonitrileField()).isPresent());
@@ -284,7 +284,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(proteinIdentification, submission.getProteinIdentification());
     assertEquals(null, submission.getQuantification());
-    assertEquals(null, submission.getQuantificationLabels());
+    assertEquals(null, submission.getQuantificationComment());
     assertEquals(comment, submission.getComment());
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
