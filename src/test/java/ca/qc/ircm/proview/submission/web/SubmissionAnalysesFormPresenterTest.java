@@ -33,7 +33,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
@@ -65,6 +64,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.EditorImpl;
 import org.junit.Before;
@@ -304,17 +304,11 @@ public class SubmissionAnalysesFormPresenterTest {
     assertTrue(scoreEditor.getStyleName().contains(SCORE));
     assertEquals(3, scoreEditor.getRows());
     assertNotNull(design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding());
-    assertTrue(
-        design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField() instanceof ComboBox);
-    ComboBox<Double> workTimeEditor =
-        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    assertTrue(design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding()
+        .getField() instanceof TextField);
+    TextField workTimeEditor =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
     assertTrue(workTimeEditor.getStyleName().contains(WORK_TIME));
-    assertFalse(workTimeEditor.isEmptySelectionAllowed());
-    List<Double> workTimeValues = items(workTimeEditor);
-    assertEquals(SubmissionAnalysesFormPresenter.getWorkTimeValues().length, workTimeValues.size());
-    for (Double value : SubmissionAnalysesFormPresenter.getWorkTimeValues()) {
-      assertTrue(workTimeValues.contains(value));
-    }
     assertNotNull(design.dataAnalyses.getColumn(STATUS).getEditorBinding());
     assertTrue(
         design.dataAnalyses.getColumn(STATUS).getEditorBinding().getField() instanceof ComboBox);
@@ -330,47 +324,29 @@ public class SubmissionAnalysesFormPresenterTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void dataAnalysesGrid_NewValue() {
+  public void dataAnalysesGrid_WorkTimeInvalid() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
 
-    ComboBox<Double> field =
-        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    field.getNewItemHandler().accept("8.0");
-    List<Double> values = items(field);
-    assertEquals(SubmissionAnalysesFormPresenter.getWorkTimeValues().length + 1, values.size());
-    assertTrue(values.contains(8.0));
-    for (Double value : SubmissionAnalysesFormPresenter.getWorkTimeValues()) {
-      assertTrue(values.contains(value));
-    }
+    TextField field =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    field.setValue("a");
+    BindingValidationStatus<?> validation =
+        design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().validate();
+    assertTrue(validation.isError());
+    assertEquals(generalResources.message(INVALID_NUMBER), validation.getMessage().get());
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void dataAnalysesGrid_NewValueInvalid() {
+  public void dataAnalysesGrid_WorkTimeBelowMinimum() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
 
-    ComboBox<Double> field =
-        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    field.getNewItemHandler().accept("a");
-    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
-        field.getErrorMessage().getFormattedHtmlMessage());
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void dataAnalysesGrid_NewValueBelowMinimum() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-    presenter.setValue(submission);
-
-    ComboBox<Double> field =
-        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    field.getNewItemHandler().accept("-1.0");
+    TextField field =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    field.setValue("-1.0");
     BindingValidationStatus<?> validation =
         design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().validate();
     assertTrue(validation.isError());
@@ -389,9 +365,9 @@ public class SubmissionAnalysesFormPresenterTest {
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("");
-    ComboBox<Double> workTimeField =
-        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    workTimeField.setValue(1.25);
+    TextField workTimeField =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue("1.25");
     ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
         .getColumn(STATUS).getEditorBinding().getField();
     statusField.setValue(DataAnalysisStatus.ANALYSED);
@@ -406,6 +382,79 @@ public class SubmissionAnalysesFormPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_SaveCancelledNoScore() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+    DataAnalysis dataAnalysis = dataAnalyses.get(0);
+    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
+    doEdit(dataAnalysis);
+    TextArea scoreField =
+        (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
+    scoreField.setValue("");
+    TextField workTimeField =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue("1.25");
+    ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
+        .getColumn(STATUS).getEditorBinding().getField();
+    statusField.setValue(DataAnalysisStatus.CANCELLED);
+    design.dataAnalyses.getEditor().save();
+
+    verify(dataAnalysisService).update(any(), any());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_SaveAnalysedNoWorkTime() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+    DataAnalysis dataAnalysis = dataAnalyses.get(0);
+    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
+    doEdit(dataAnalysis);
+    TextArea scoreField =
+        (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
+    scoreField.setValue("Test");
+    TextField workTimeField =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue("");
+    ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
+        .getColumn(STATUS).getEditorBinding().getField();
+    statusField.setValue(DataAnalysisStatus.ANALYSED);
+    design.dataAnalyses.getEditor().save();
+
+    verify(dataAnalysisService, never()).update(any(), any());
+    BindingValidationStatus<?> validation =
+        design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().validate();
+    assertTrue(validation.isError());
+    assertEquals(generalResources.message(REQUIRED), validation.getMessage().get());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dataAnalysesGrid_SaveCancelledNoWorkTime() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    presenter.init(view);
+    presenter.setValue(submission);
+    DataAnalysis dataAnalysis = dataAnalyses.get(0);
+    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
+    doEdit(dataAnalysis);
+    TextArea scoreField =
+        (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
+    scoreField.setValue("Test");
+    TextField workTimeField =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue("");
+    ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
+        .getColumn(STATUS).getEditorBinding().getField();
+    statusField.setValue(DataAnalysisStatus.CANCELLED);
+    design.dataAnalyses.getEditor().save();
+
+    verify(dataAnalysisService).update(any(), any());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
   public void dataAnalysesGrid_Save() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
@@ -416,9 +465,9 @@ public class SubmissionAnalysesFormPresenterTest {
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("Test");
-    ComboBox<Double> workTimeField =
-        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    workTimeField.setValue(1.25);
+    TextField workTimeField =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue("1.25");
     ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
         .getColumn(STATUS).getEditorBinding().getField();
     statusField.setValue(DataAnalysisStatus.ANALYSED);
@@ -441,9 +490,9 @@ public class SubmissionAnalysesFormPresenterTest {
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("Test");
-    ComboBox<Double> workTimeField =
-        (ComboBox<Double>) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    workTimeField.setValue(1.25);
+    TextField workTimeField =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue("1.25");
     ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
         .getColumn(STATUS).getEditorBinding().getField();
     statusField.setValue(DataAnalysisStatus.ANALYSED);

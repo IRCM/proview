@@ -36,14 +36,13 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.ValueContext;
-import com.vaadin.data.provider.DataProvider;
-import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.server.UserError;
+import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -86,14 +84,6 @@ public class SubmissionAnalysesFormPresenter {
   public static final String STATUS = dataAnalysis.status.getMetadata().getName();
   public static final String DESCRIPTION = "description";
   public static final String VALUE = "value";
-  private static final Double[] WORK_TIME_VALUES;
-
-  static {
-    WORK_TIME_VALUES = new Double[11];
-    for (int i = 0; i < WORK_TIME_VALUES.length; i++) {
-      WORK_TIME_VALUES[i] = 0.5 + i * 0.25;
-    }
-  }
 
   @SuppressWarnings("unused")
   private static final Logger logger =
@@ -172,23 +162,12 @@ public class SubmissionAnalysesFormPresenter {
       design.dataAnalyses.getColumn(SCORE)
           .setEditorBinding(binder.forField(scoreEditor).withNullRepresentation("")
               .withValidator((value, context) -> validateScore(value, context)).bind(SCORE));
-      ComboBox<Double> workTimeEditor = new ComboBox<>();
+      TextField workTimeEditor = new TextField();
       workTimeEditor.addStyleName(WORK_TIME);
-      workTimeEditor.setEmptySelectionAllowed(false);
-      ListDataProvider<Double> dataProvider = DataProvider.fromStream(Stream.of(WORK_TIME_VALUES));
-      workTimeEditor.setDataProvider(dataProvider);
-      workTimeEditor.setNewItemHandler(workTime -> {
-        try {
-          Double value = Double.valueOf(workTime);
-          dataProvider.getItems().add(value);
-          dataProvider.refreshItem(value);
-          workTimeEditor.setValue(value);
-        } catch (NumberFormatException e) {
-          workTimeEditor.setComponentError(new UserError(generalResources.message(INVALID_NUMBER)));
-        }
-      });
-      design.dataAnalyses.getColumn(WORK_TIME).setEditorBinding(binder.forField(workTimeEditor)
-          .asRequired(generalResources.message(REQUIRED)).bind(WORK_TIME));
+      design.dataAnalyses.getColumn(WORK_TIME)
+          .setEditorBinding(binder.forField(workTimeEditor)
+              .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
+              .withValidator((value, context) -> validateWorkTime(value, context)).bind(WORK_TIME));
       ComboBox<DataAnalysisStatus> statusEditor = new ComboBox<>();
       statusEditor.addStyleName(STATUS);
       statusEditor.setEmptySelectionAllowed(false);
@@ -212,6 +191,16 @@ public class SubmissionAnalysesFormPresenter {
   }
 
   private ValidationResult validateScore(String value, ValueContext context) {
+    DataAnalysis dataAnalysis = design.dataAnalyses.getEditor().getBinder().getBean();
+    if (value == null && dataAnalysis.getStatus() == DataAnalysisStatus.ANALYSED) {
+      MessageResource generalResources = view.getGeneralResources();
+      return ValidationResult.error(generalResources.message(REQUIRED));
+    } else {
+      return ValidationResult.ok();
+    }
+  }
+
+  private ValidationResult validateWorkTime(Double value, ValueContext context) {
     DataAnalysis dataAnalysis = design.dataAnalyses.getEditor().getBinder().getBean();
     if (value == null && dataAnalysis.getStatus() == DataAnalysisStatus.ANALYSED) {
       MessageResource generalResources = view.getGeneralResources();
@@ -264,9 +253,5 @@ public class SubmissionAnalysesFormPresenter {
     List<DataAnalysis> dataAnalyses = dataAnalysisService.all(submission);
     design.dataAnalyses.setItems(dataAnalyses);
     design.dataAnalysesPanel.setVisible(!dataAnalyses.isEmpty());
-  }
-
-  public static Double[] getWorkTimeValues() {
-    return WORK_TIME_VALUES.clone();
   }
 }
