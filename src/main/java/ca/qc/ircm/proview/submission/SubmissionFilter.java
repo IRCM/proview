@@ -15,23 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.submission.web;
+package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
+
+import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.submission.Submission;
-import com.vaadin.server.SerializablePredicate;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPAQuery;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 
 /**
  * Filters submissions.
  */
-public class SubmissionWebFilter implements SerializablePredicate<Submission> {
-  private static final long serialVersionUID = -5902082214544061745L;
+public class SubmissionFilter implements Predicate<Submission> {
   public String experienceContains;
   public String userContains;
   public String anySampleNameContains;
@@ -39,9 +45,16 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
   public SampleStatus anySampleStatus;
   public Range<LocalDate> dateRange;
   public Boolean results;
+  public List<OrderSpecifier<?>> sortOrders;
+  public Integer offset;
+  public Integer limit;
   private final Locale locale;
 
-  public SubmissionWebFilter(Locale locale) {
+  public SubmissionFilter() {
+    this(Locale.getDefault());
+  }
+
+  public SubmissionFilter(Locale locale) {
     this.locale = locale;
   }
 
@@ -80,5 +93,63 @@ public class SubmissionWebFilter implements SerializablePredicate<Submission> {
       test &= submission.getSamples().isEmpty() || results ? analysed : !analysed;
     }
     return test;
+  }
+
+  private void addFilterConditions(JPAQuery<?> query) {
+    if (experienceContains != null) {
+      query.where(submission.experience.contains(experienceContains));
+    }
+    if (userContains != null) {
+      query.where(submission.user.email.contains(userContains)
+          .or(submission.user.name.contains(userContains)));
+    }
+    if (anySampleNameContains != null) {
+      query.join(submission.samples, submissionSample);
+      query.where(submissionSample.name.contains(anySampleNameContains));
+    }
+    if (goalContains != null) {
+      query.where(submission.goal.contains(goalContains));
+    }
+    if (anySampleStatus != null) {
+      query.join(submission.samples, submissionSample);
+      query.where(submissionSample.status.eq(anySampleStatus));
+    }
+    if (dateRange != null) {
+      if (dateRange.hasLowerBound()) {
+        LocalDate date = dateRange.lowerEndpoint();
+        if (dateRange.lowerBoundType() == BoundType.OPEN) {
+          date = date.plusDays(1);
+        }
+        query.where(submission.submissionDate.goe(toInstant(date)));
+      }
+      if (dateRange.hasUpperBound()) {
+        LocalDate date = dateRange.upperEndpoint();
+        if (dateRange.upperBoundType() == BoundType.CLOSED) {
+          date = date.plusDays(1);
+        }
+        query.where(submission.submissionDate.before(toInstant(date)));
+      }
+    }
+    if (results != null) {
+      query.join(submission.samples, submissionSample);
+      query.where(submissionSample.status.in(SampleStatus.analysedStatuses()));
+    }
+  }
+
+  public void addCountConditions(JPAQuery<?> query) {
+    addFilterConditions(query);
+  }
+
+  public void addConditions(JPAQuery<?> query) {
+    addFilterConditions(query);
+    if (sortOrders != null) {
+      query.orderBy(sortOrders.toArray(new OrderSpecifier[0]));
+    }
+    if (offset != null) {
+      query.offset(offset);
+    }
+    if (limit != null) {
+      query.limit(limit);
+    }
   }
 }

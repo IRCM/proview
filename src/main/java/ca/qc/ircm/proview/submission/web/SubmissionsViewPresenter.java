@@ -29,6 +29,7 @@ import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
+import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -39,15 +40,22 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
 import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.data.provider.CallbackDataProvider;
+import com.vaadin.data.provider.CallbackDataProvider.CountCallback;
+import com.vaadin.data.provider.CallbackDataProvider.FetchCallback;
+import com.vaadin.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.data.provider.DataProvider;
-import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.provider.Query;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.ContentMode;
@@ -71,10 +79,14 @@ import java.text.Collator;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -131,7 +143,8 @@ public class SubmissionsViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
   private SubmissionsView view;
   private SubmissionsViewDesign design;
-  private SubmissionWebFilter filter;
+  private SubmissionFilter filter;
+  private Map<String, ComparableExpressionBase<?>> columnProperties = new HashMap<>();
   @Inject
   private SubmissionService submissionService;
   @Inject
@@ -190,7 +203,7 @@ public class SubmissionsViewPresenter {
     logger.debug("View submissions");
     this.view = view;
     design = view.design;
-    filter = new SubmissionWebFilter(view.getLocale());
+    filter = new SubmissionFilter();
     prepareComponents();
     searchSubmissions();
   }
@@ -268,27 +281,38 @@ public class SubmissionsViewPresenter {
         .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE))
         .setComparator((s1, s2) -> collator.compare(Objects.toString(s1.getExperience(), ""),
             Objects.toString(s2.getExperience(), "")));
+    columnProperties.put(EXPERIENCE, submission.experience);
     design.submissionsGrid.addColumn(submission -> submission.getUser().getName()).setId(USER)
         .setCaption(resources.message(USER))
         .setDescriptionGenerator(submission -> submission.getUser().getEmail());
+    columnProperties.put(USER, submission.user.name);
     design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
-    design.submissionsGrid.addColumn(submission -> submission.getSamples().get(0).getName())
+    columnProperties.put(SAMPLE_COUNT, submission.samples.size());
+    design.submissionsGrid
+        .addColumn(submission -> resources.message(SAMPLE_NAME + ".value",
+            submission.getSamples().get(0).getName(), submission.getSamples().size()))
         .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME))
         .setDescriptionGenerator(submission -> submission.getSamples().stream()
             .map(sample -> sample.getName()).sorted(collator).collect(Collectors.joining("\n")));
+    columnProperties.put(SAMPLE_NAME, submission.samples.any().name);
     design.submissionsGrid.addColumn(Submission::getGoal).setId(EXPERIENCE_GOAL)
         .setCaption(resources.message(EXPERIENCE_GOAL));
+    columnProperties.put(EXPERIENCE_GOAL, submission.goal);
     design.submissionsGrid.addColumn(submission -> statusesLabel(submission)).setId(SAMPLE_STATUSES)
         .setCaption(resources.message(SAMPLE_STATUSES))
         .setDescriptionGenerator(submission -> statusesDescription(submission));
+    columnProperties.put(SAMPLE_STATUSES, submission.samples.any().status);
     design.submissionsGrid
         .addColumn(submission -> dateFormatter.format(submission.getSubmissionDate())).setId(DATE)
         .setCaption(resources.message(DATE));
+    columnProperties.put(DATE, submission.submissionDate);
     design.submissionsGrid
         .addColumn(submission -> viewResultsButton(submission), new ComponentRenderer())
         .setId(LINKED_TO_RESULTS).setCaption(resources.message(LINKED_TO_RESULTS))
         .setComparator((s1, s2) -> Boolean.compare(linkedToResults(s1), linkedToResults(s2)));
+    columnProperties.put(LINKED_TO_RESULTS,
+        submission.samples.any().status.in(SampleStatus.analysedStatuses()));
     design.submissionsGrid
         .addColumn(submission -> viewTreatmentsButton(submission), new ComponentRenderer())
         .setId(TREATMENTS).setCaption(resources.message(TREATMENTS)).setSortable(false);
@@ -477,11 +501,31 @@ public class SubmissionsViewPresenter {
     return filter;
   }
 
-  private ListDataProvider<Submission> searchSubmissions() {
-    List<Submission> submissions = submissionService.all();
-    ListDataProvider<Submission> dataProvider = DataProvider.ofCollection(submissions);
-    dataProvider.setFilter(filter);
-    return dataProvider;
+  private DataProvider<Submission, Void> searchSubmissions() {
+    Function<Query<Submission, SubmissionFilter>, List<OrderSpecifier<?>>> filterSortOrders =
+        query -> query.getSortOrders() != null
+            ? query.getSortOrders().stream()
+                .filter(order -> columnProperties.containsKey(order.getSorted()))
+                .map(order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
+                    order.getDirection() == SortDirection.DESCENDING))
+                .collect(Collectors.toList())
+            : Collections.emptyList();
+    FetchCallback<Submission, SubmissionFilter> fetchCallback = query -> {
+      SubmissionFilter filter = query.getFilter().orElse(new SubmissionFilter());
+      filter.sortOrders = filterSortOrders.apply(query);
+      return submissionService.all(filter).stream();
+    };
+    CountCallback<Submission, SubmissionFilter> countCallback = query -> {
+      SubmissionFilter filter = query.getFilter().orElse(new SubmissionFilter());
+      filter.sortOrders = filterSortOrders.apply(query);
+      return submissionService.count(filter);
+    };
+    DataProvider<Submission, SubmissionFilter> dataProvider =
+        new CallbackDataProvider<>(fetchCallback, countCallback);
+    ConfigurableFilterDataProvider<Submission, Void, SubmissionFilter> wrapper =
+        dataProvider.withConfigurableFilter();
+    wrapper.setFilter(filter);
+    return wrapper;
   }
 
   private void viewSubmission(Submission submission) {
@@ -650,7 +694,7 @@ public class SubmissionsViewPresenter {
     }
   }
 
-  SubmissionWebFilter getFilter() {
+  SubmissionFilter getFilter() {
     return filter;
   }
 }

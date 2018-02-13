@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission;
 
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
@@ -127,23 +126,63 @@ public class SubmissionService {
    * @return current user's submissions or more for managers / administrators
    */
   public List<Submission> all() {
+    return all(null);
+  }
+
+  /**
+   * Returns current user's submissions.<br>
+   * For managers, returns all submissions made a user of his laboratory<br>
+   * For administrators, returns all submissions.
+   *
+   * @param filter
+   *          filter submissions to return
+   * @return current user's submissions or more for managers / administrators
+   */
+  public List<Submission> all(SubmissionFilter filter) {
     authorizationService.checkUserRole();
+
+    JPAQuery<Submission> query = queryFactory.select(submission);
+    initializeAllQuery(query);
+    if (filter != null) {
+      filter.addConditions(query);
+    }
+    return query.distinct().fetch();
+  }
+
+  /**
+   * Returns number of current user's submissions.<br>
+   * For managers, returns number of submissions made a user of his laboratory<br>
+   * For administrators, returns number of submissions.
+   *
+   * @param filter
+   *          filter submissions to return
+   * @return current user's submissions or more for managers / administrators
+   */
+  public int count(SubmissionFilter filter) {
+    authorizationService.checkUserRole();
+
+    JPAQuery<Long> query = queryFactory.select(submission.count());
+    initializeAllQuery(query);
+    if (filter != null) {
+      filter.addCountConditions(query);
+    }
+    return query.fetchFirst().intValue();
+  }
+
+  private void initializeAllQuery(JPAQuery<?> query) {
     final User currentUser = authorizationService.getCurrentUser();
     final Laboratory currentLaboratory = currentUser.getLaboratory();
 
-    JPAQuery<Submission> query = queryFactory.select(submission);
     query.from(submission);
-    query.join(submission.samples, submissionSample);
-    query.join(submission.laboratory, laboratory);
-    query.join(submission.user, user);
     if (!authorizationService.hasAdminRole()) {
       if (authorizationService.hasLaboratoryManagerPermission(currentLaboratory)) {
+        query.join(submission.laboratory, laboratory);
         query.where(laboratory.eq(currentLaboratory));
       } else {
+        query.join(submission.user, user);
         query.where(user.eq(currentUser));
       }
     }
-    return query.distinct().fetch();
   }
 
   /**

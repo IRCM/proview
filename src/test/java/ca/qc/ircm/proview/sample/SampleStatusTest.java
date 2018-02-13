@@ -26,12 +26,23 @@ import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
 import static ca.qc.ircm.proview.sample.SampleStatus.TO_APPROVE;
 import static ca.qc.ircm.proview.sample.SampleStatus.TO_RECEIVE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class SampleStatusTest {
+  @Test
+  public void analysedStatuses() {
+    List<SampleStatus> analysedStatuses = Arrays.asList(SampleStatus.analysedStatuses());
+    assertTrue(analysedStatuses.contains(ANALYSED));
+    assertTrue(analysedStatuses.contains(CANCELLED));
+    assertTrue(analysedStatuses.contains(DATA_ANALYSIS));
+  }
+
   @Test
   public void getNullLabel() {
     assertEquals("Undetermined", SampleStatus.getNullLabel(Locale.ENGLISH));

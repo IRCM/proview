@@ -55,7 +55,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.USER;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
@@ -86,6 +85,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
 import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.web.TransferView;
@@ -217,7 +217,8 @@ public class SubmissionsViewPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     submissions = queryFactory.select(submission).from(submission).fetch();
-    when(submissionService.all()).thenReturn(submissions);
+    when(submissionService.all(any())).thenReturn(submissions);
+    when(submissionService.count(any())).thenReturn(submissions.size());
     when(userPreferenceService.get(any(), any(), any())).thenAnswer(i -> i.getArguments()[2]);
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
@@ -356,7 +357,9 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(SAMPLE_NAME),
         design.submissionsGrid.getColumn(SAMPLE_NAME).getCaption());
     for (Submission submission : submissions) {
-      assertEquals(submission.getSamples().get(0).getName(),
+      assertEquals(
+          resources.message(SAMPLE_NAME + ".value", submission.getSamples().get(0).getName(),
+              submission.getSamples().size()),
           design.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
       assertEquals(
           submission.getSamples().stream().map(sample -> sample.getName()).sorted(collator)
@@ -632,7 +635,7 @@ public class SubmissionsViewPresenterTest {
     listener.valueChange(event);
 
     verify(submissionsDataProvider).refreshAll();
-    SubmissionWebFilter filter = presenter.getFilter();
+    SubmissionFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.experienceContains);
   }
 
@@ -653,7 +656,7 @@ public class SubmissionsViewPresenterTest {
     listener.valueChange(event);
 
     verify(submissionsDataProvider).refreshAll();
-    SubmissionWebFilter filter = presenter.getFilter();
+    SubmissionFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.userContains);
   }
 
@@ -674,7 +677,7 @@ public class SubmissionsViewPresenterTest {
     listener.valueChange(event);
 
     verify(submissionsDataProvider).refreshAll();
-    SubmissionWebFilter filter = presenter.getFilter();
+    SubmissionFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.anySampleNameContains);
   }
 
@@ -695,7 +698,7 @@ public class SubmissionsViewPresenterTest {
     listener.valueChange(event);
 
     verify(submissionsDataProvider).refreshAll();
-    SubmissionWebFilter filter = presenter.getFilter();
+    SubmissionFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.goalContains);
   }
 
@@ -716,7 +719,7 @@ public class SubmissionsViewPresenterTest {
     comboBox.setValue(filterValue);
 
     verify(submissionsDataProvider).refreshAll();
-    SubmissionWebFilter filter = presenter.getFilter();
+    SubmissionFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.anySampleStatus);
   }
 
@@ -736,7 +739,7 @@ public class SubmissionsViewPresenterTest {
     listener.saved(new SaveEvent<>(cell.getComponent(), range));
 
     verify(submissionsDataProvider).refreshAll();
-    SubmissionWebFilter filter = presenter.getFilter();
+    SubmissionFilter filter = presenter.getFilter();
     assertEquals(range, filter.dateRange);
   }
 
@@ -758,7 +761,7 @@ public class SubmissionsViewPresenterTest {
     comboBox.setValue(filterValue);
 
     verify(submissionsDataProvider).refreshAll();
-    SubmissionWebFilter filter = presenter.getFilter();
+    SubmissionFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.results);
   }
 
@@ -794,7 +797,7 @@ public class SubmissionsViewPresenterTest {
   @Test
   public void defaultSubmissions() {
     presenter.init(view);
-    Collection<Submission> gridSubmissions = dataProvider(design.submissionsGrid).getItems();
+    Collection<Submission> gridSubmissions = items(design.submissionsGrid);
 
     Set<Long> expectedSubmissionIds =
         submissions.stream().map(s -> s.getId()).collect(Collectors.toSet());
@@ -843,7 +846,8 @@ public class SubmissionsViewPresenterTest {
     assertEquals(submission.getExperience(), button.getCaption());
     assertEquals(submission.getSamples().size(),
         design.submissionsGrid.getColumn(SAMPLE_COUNT).getValueProvider().apply(submission));
-    assertEquals(sample.getName(),
+    assertEquals(
+        resources.message(SAMPLE_NAME + ".value", sample.getName(), submission.getSamples().size()),
         design.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
     assertEquals(submission.getGoal(),
         design.submissionsGrid.getColumn(EXPERIENCE_GOAL).getValueProvider().apply(submission));

@@ -30,6 +30,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -398,6 +399,92 @@ public class SubmissionServiceTest {
     assertTrue(find(submissions, 34).isPresent());
     assertTrue(find(submissions, 35).isPresent());
     assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void all_Filter() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = mock(SubmissionFilter.class);
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    verify(filter).addConditions(any());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+  }
+
+  @Test
+  public void all_FilterExperiment() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.experienceContains = "exp";
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertTrue(find(submissions, 32).isPresent());
+    assertFalse(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+  }
+
+  @Test
+  public void all_NullFilter() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
+    List<Submission> submissions = submissionService.all(null);
+
+    verify(authorizationService).checkUserRole();
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+  }
+
+  @Test
+  public void count_Filter() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = mock(SubmissionFilter.class);
+
+    int count = submissionService.count(filter);
+
+    verify(authorizationService).checkUserRole();
+    verify(filter).addCountConditions(any());
+    assertEquals(3, count);
+  }
+
+  @Test
+  public void count_FilterExperiment() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.experienceContains = "exp";
+
+    int count = submissionService.count(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(1, count);
+  }
+
+  @Test
+  public void count_NullFilter() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
+    int count = submissionService.count(null);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(3, count);
   }
 
   @Test

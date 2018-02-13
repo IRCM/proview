@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.test.utils;
 
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.provider.Query;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
@@ -25,6 +26,7 @@ import com.vaadin.ui.RadioButtonGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VaadinTestUtils {
   @SuppressWarnings("unchecked")
@@ -42,8 +44,14 @@ public class VaadinTestUtils {
     return (ListDataProvider<V>) radios.getDataProvider();
   }
 
+  @SuppressWarnings("unchecked")
   public static <V> List<V> items(Grid<V> grid) {
-    return new ArrayList<>(dataProvider(grid).getItems());
+    if (grid.getDataProvider() instanceof ListDataProvider) {
+      return new ArrayList<>(((ListDataProvider<V>) grid.getDataProvider()).getItems());
+    } else {
+      return grid.getDataProvider().fetch(new Query<>(0, Integer.MAX_VALUE, null, null, null))
+          .collect(Collectors.toList());
+    }
   }
 
   public static <V> List<V> items(ComboBox<V> comboBox) {

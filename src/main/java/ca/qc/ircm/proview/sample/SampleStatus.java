@@ -58,6 +58,10 @@ public enum SampleStatus {
    */
   CANCELLED;
 
+  public static SampleStatus[] analysedStatuses() {
+    return new SampleStatus[] { DATA_ANALYSIS, ANALYSED, CANCELLED };
+  }
+
   private static MessageResource getResources(Locale locale) {
     return new MessageResource(SampleStatus.class, locale);
   }

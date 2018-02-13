@@ -30,6 +30,10 @@ public class TimeConverter {
     return dateTime.atZone(ZoneId.systemDefault()).toInstant();
   }
 
+  public static Instant toInstant(LocalDate date) {
+    return date.atTime(0, 0).atZone(ZoneId.systemDefault()).toInstant();
+  }
+
   public static LocalDateTime toLocalDateTime(Instant instant) {
     return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
   }

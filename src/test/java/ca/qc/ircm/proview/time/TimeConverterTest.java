@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -37,6 +38,15 @@ public class TimeConverterTest {
 
     assertEquals(dateTime1.atZone(ZoneId.systemDefault()).toInstant(), toInstant(dateTime1));
     assertEquals(dateTime2.atZone(ZoneId.systemDefault()).toInstant(), toInstant(dateTime2));
+  }
+
+  @Test
+  public void toInstant_LocalDate() {
+    LocalDate date1 = LocalDate.now();
+    LocalDate date2 = LocalDate.now().minusDays(2);
+
+    assertEquals(date1.atTime(0, 0).atZone(ZoneId.systemDefault()).toInstant(), toInstant(date1));
+    assertEquals(date2.atTime(0, 0).atZone(ZoneId.systemDefault()).toInstant(), toInstant(date2));
   }
 
   @Test
