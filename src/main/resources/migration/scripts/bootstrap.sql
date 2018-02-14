@@ -92,6 +92,26 @@ CREATE TABLE forgotpassword (
   KEY user (userId),
   CONSTRAINT forgotpasswordUser_ibfk FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE TABLE preference (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  referer varchar(255) NOT NULL,
+  name varchar(255) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY referer (referer,name),
+  KEY name (name)
+);
+CREATE TABLE userpreference (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  preferenceId bigint(20) NOT NULL,
+  userId bigint(20) NOT NULL,
+  value longblob,
+  PRIMARY KEY (id),
+  UNIQUE KEY userpreference (preferenceId,userId),
+  KEY preference (preferenceId),
+  KEY user (userId),
+  CONSTRAINT userpreferencePreference_ibfk FOREIGN KEY (preferenceId) REFERENCES preference (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT userpreferenceUser_ibfk FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 CREATE TABLE submission (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   service varchar(50) DEFAULT NULL,
@@ -353,29 +373,9 @@ CREATE TABLE activityupdate (
   KEY activity (activityId),
   CONSTRAINT activityupdateActivity_ibfk FOREIGN KEY (activityId) REFERENCES activity (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE preference (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  referer varchar(255) NOT NULL,
-  name varchar(255) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE KEY referer (referer,name),
-  KEY name (name)
-);
-CREATE TABLE userpreference (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  preferenceId bigint(20) NOT NULL,
-  userId bigint(20) NOT NULL,
-  value longblob,
-  PRIMARY KEY (id),
-  UNIQUE KEY userpreference (preferenceId,userId),
-  KEY preference (preferenceId),
-  KEY user (userId),
-  CONSTRAINT userpreferencePreference_ibfk FOREIGN KEY (preferenceId) REFERENCES preference (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT userpreferenceUser_ibfk FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
 CREATE TABLE changelog (
-  id NUMERIC(20,0) NOT NULL,
-  applied_at VARCHAR(25) NOT NULL,
-  description VARCHAR(255) NOT NULL,
+  id decimal(20,0) NOT NULL,
+  applied_at varchar(25) NOT NULL,
+  description varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );
