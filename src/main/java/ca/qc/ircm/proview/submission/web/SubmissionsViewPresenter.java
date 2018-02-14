@@ -108,6 +108,7 @@ public class SubmissionsViewPresenter {
   public static final String EXPERIENCE =
       SUBMISSION + "." + submission.experience.getMetadata().getName();
   public static final String USER = SUBMISSION + "." + submission.user.getMetadata().getName();
+  public static final String DIRECTOR = SUBMISSION + "." + "director";
   public static final String EXPERIENCE_GOAL =
       SUBMISSION + "." + submission.goal.getMetadata().getName();
   public static final String SAMPLE_NAME =
@@ -286,6 +287,9 @@ public class SubmissionsViewPresenter {
         .setCaption(resources.message(USER))
         .setDescriptionGenerator(submission -> submission.getUser().getEmail());
     columnProperties.put(USER, submission.user.name);
+    design.submissionsGrid.addColumn(submission -> submission.getLaboratory().getDirector())
+        .setId(DIRECTOR).setCaption(resources.message(DIRECTOR));
+    columnProperties.put(DIRECTOR, submission.laboratory.director);
     design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
     columnProperties.put(SAMPLE_COUNT, submission.samples.size());
@@ -323,8 +327,12 @@ public class SubmissionsViewPresenter {
       design.submissionsGrid.getColumn(USER).setHidable(true);
       design.submissionsGrid.getColumn(USER)
           .setHidden(userPreferenceService.get(this, USER, false));
+      design.submissionsGrid.getColumn(DIRECTOR).setHidable(true);
+      design.submissionsGrid.getColumn(DIRECTOR)
+          .setHidden(userPreferenceService.get(this, DIRECTOR, false));
     } else {
       design.submissionsGrid.getColumn(USER).setHidden(true);
+      design.submissionsGrid.getColumn(DIRECTOR).setHidden(true);
     }
     design.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_COUNT)
@@ -378,6 +386,10 @@ public class SubmissionsViewPresenter {
     }));
     filterRow.getCell(USER).setComponent(textFilter(e -> {
       filter.userContains = e.getValue();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }));
+    filterRow.getCell(DIRECTOR).setComponent(textFilter(e -> {
+      filter.directorContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
@@ -513,12 +525,15 @@ public class SubmissionsViewPresenter {
     FetchCallback<Submission, SubmissionFilter> fetchCallback = query -> {
       SubmissionFilter filter = query.getFilter().orElse(new SubmissionFilter());
       filter.sortOrders = filterSortOrders.apply(query);
+      filter.offset = query.getOffset();
+      filter.limit = query.getLimit();
       return submissionService.all(filter).stream();
     };
     CountCallback<Submission, SubmissionFilter> countCallback = query -> {
       SubmissionFilter filter = query.getFilter().orElse(new SubmissionFilter());
       filter.sortOrders = filterSortOrders.apply(query);
-      return submissionService.count(filter);
+      int count = submissionService.count(filter);
+      return count;
     };
     DataProvider<Submission, SubmissionFilter> dataProvider =
         new CallbackDataProvider<>(fetchCallback, countCallback);

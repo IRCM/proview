@@ -38,6 +38,7 @@ import com.google.common.collect.Range;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -93,6 +94,15 @@ public class SubmissionFilterTest {
 
     verify(query)
         .where(submission.user.email.contains("test").or(submission.user.name.contains("test")));
+  }
+
+  @Test
+  public void addConditions_DirectorContains() throws Exception {
+    filter.directorContains = "test";
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.laboratory.director.contains("test"));
   }
 
   @Test
@@ -310,6 +320,15 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addCountConditions_DirectorContains() throws Exception {
+    filter.directorContains = "test";
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.laboratory.director.contains("test"));
+  }
+
+  @Test
   public void addCountConditions_AnySampleNameContains() throws Exception {
     filter.anySampleNameContains = "test";
 
@@ -523,6 +542,15 @@ public class SubmissionFilterTest {
     return submission;
   }
 
+  private Submission director(String userName) {
+    Submission submission = new Submission();
+    Laboratory laboratory = new Laboratory();
+    laboratory.setDirector(userName);
+    submission.setLaboratory(laboratory);
+    submission.setSamples(Collections.emptyList());
+    return submission;
+  }
+
   private Submission goal(String goal) {
     Submission submission = new Submission();
     submission.setGoal(goal);
@@ -600,6 +628,24 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(user("My email", "My test")));
     assertTrue(filter.test(user("Email", "Test")));
     assertTrue(filter.test(user("My experience", "My name")));
+  }
+
+  @Test
+  public void test_directorContains() {
+    filter.directorContains = "test";
+
+    assertTrue(filter.test(director("My test")));
+    assertTrue(filter.test(director("Test")));
+    assertFalse(filter.test(director("My name")));
+  }
+
+  @Test
+  public void test_directorContains_Null() {
+    filter.directorContains = null;
+
+    assertTrue(filter.test(director("My test")));
+    assertTrue(filter.test(director("Test")));
+    assertTrue(filter.test(director("My name")));
   }
 
   @Test

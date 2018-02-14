@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findSampleSolvent;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
@@ -84,6 +85,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -434,6 +436,45 @@ public class SubmissionServiceTest {
   }
 
   @Test
+  public void all_FilterOffset() throws Throwable {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.sortOrders = Arrays.asList(submission.id.asc());
+    filter.offset = 2;
+    filter.limit = 3;
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(3, submissions.size());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+  }
+
+  @Test
+  public void all_FilterOffsetJoin() throws Throwable {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.anySampleNameContains = "POLR2A";
+    filter.sortOrders = Arrays.asList(submission.id.asc());
+    filter.offset = 2;
+    filter.limit = 3;
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(3, submissions.size());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+  }
+
+  @Test
   public void all_NullFilter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
@@ -473,6 +514,38 @@ public class SubmissionServiceTest {
 
     verify(authorizationService).checkUserRole();
     assertEquals(1, count);
+  }
+
+  @Test
+  public void count_FilterOffset() throws Throwable {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.offset = 2;
+    filter.limit = 2;
+
+    int count = submissionService.count(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(15, count);
+  }
+
+  @Test
+  public void count_FilterOffsetJoin() throws Throwable {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.anySampleNameContains = "POLR2A";
+    filter.sortOrders = Arrays.asList(submission.id.asc());
+    filter.offset = 2;
+    filter.limit = 3;
+
+    int count = submissionService.count(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(10, count);
   }
 
   @Test

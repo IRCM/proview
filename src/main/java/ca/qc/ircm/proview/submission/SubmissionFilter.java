@@ -40,6 +40,7 @@ import java.util.function.Predicate;
 public class SubmissionFilter implements Predicate<Submission> {
   public String experienceContains;
   public String userContains;
+  public String directorContains;
   public String anySampleNameContains;
   public String goalContains;
   public SampleStatus anySampleStatus;
@@ -70,6 +71,10 @@ public class SubmissionFilter implements Predicate<Submission> {
           .contains(userContains.toLowerCase(locale))
           || submission.getUser().getName().toLowerCase(locale)
               .contains(userContains.toLowerCase(locale));
+    }
+    if (directorContains != null) {
+      test &= submission.getLaboratory().getDirector().toLowerCase(locale)
+          .contains(directorContains.toLowerCase(locale));
     }
     if (anySampleNameContains != null) {
       test &= submission.getSamples().isEmpty()
@@ -102,6 +107,9 @@ public class SubmissionFilter implements Predicate<Submission> {
     if (userContains != null) {
       query.where(submission.user.email.contains(userContains)
           .or(submission.user.name.contains(userContains)));
+    }
+    if (directorContains != null) {
+      query.where(submission.laboratory.director.contains(directorContains));
     }
     if (anySampleNameContains != null) {
       query.join(submission.samples, submissionSample);

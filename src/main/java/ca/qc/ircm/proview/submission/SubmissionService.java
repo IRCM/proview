@@ -28,7 +28,6 @@ import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
-import ca.qc.ircm.proview.sample.QSubmissionSample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -162,7 +161,7 @@ public class SubmissionService {
   public int count(SubmissionFilter filter) {
     authorizationService.checkUserRole();
 
-    JPAQuery<Long> query = queryFactory.select(submission.count());
+    JPAQuery<Long> query = queryFactory.select(submission.id.countDistinct());
     initializeAllQuery(query);
     if (filter != null) {
       filter.addCountConditions(query);
@@ -175,7 +174,6 @@ public class SubmissionService {
     final Laboratory currentLaboratory = currentUser.getLaboratory();
 
     query.from(submission);
-    query.join(submission.samples, new QSubmissionSample("submissionSampleFetch")).fetchJoin();
     if (!authorizationService.hasAdminRole()) {
       if (authorizationService.hasLaboratoryManagerPermission(currentLaboratory)) {
         query.join(submission.laboratory, laboratory);
