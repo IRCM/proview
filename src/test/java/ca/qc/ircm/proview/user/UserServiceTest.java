@@ -142,8 +142,12 @@ public class UserServiceTest {
     assertEquals("4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8"
         + "ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535", user.getSalt());
     assertEquals((Integer) 1, user.getPasswordVersion());
-    assertEquals((Long) 2L, user.getLaboratory().getId());
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
+    Laboratory laboratory = user.getLaboratory();
+    assertEquals((Long) 2L, laboratory.getId());
+    assertEquals("Translational Proteomics", laboratory.getName());
+    assertEquals("IRCM", laboratory.getOrganization());
+    assertEquals("Benoit Coulombe", laboratory.getDirector());
     Address address = user.getAddress();
     assertEquals("110, avenue des Pins Ouest", address.getLine());
     assertEquals("Montréal", address.getTown());
@@ -180,8 +184,12 @@ public class UserServiceTest {
     assertEquals("4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8"
         + "ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535", user.getSalt());
     assertEquals((Integer) 1, user.getPasswordVersion());
-    assertEquals((Long) 2L, user.getLaboratory().getId());
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
+    Laboratory laboratory = user.getLaboratory();
+    assertEquals((Long) 2L, laboratory.getId());
+    assertEquals("Translational Proteomics", laboratory.getName());
+    assertEquals("IRCM", laboratory.getOrganization());
+    assertEquals("Benoit Coulombe", laboratory.getDirector());
     Address address = user.getAddress();
     assertEquals("110, avenue des Pins Ouest", address.getLine());
     assertEquals("Montréal", address.getTown());

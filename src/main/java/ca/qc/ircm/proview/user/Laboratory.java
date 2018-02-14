@@ -80,6 +80,15 @@ public class Laboratory implements Data, Serializable {
     this.id = id;
   }
 
+  public String getDirector() {
+    if (managers == null) {
+      return null;
+    }
+    long id = managers.stream().mapToLong(manager -> manager.getId()).min().orElse(-1);
+    return managers.stream().filter(manager -> manager.getId() == id && manager.getName() != null)
+        .map(manager -> manager.getName()).findAny().orElse(null);
+  }
+
   @Override
   public String toString() {
     return "Laboratory [id=" + id + ", organization=" + organization + ", name=" + name + "]";
