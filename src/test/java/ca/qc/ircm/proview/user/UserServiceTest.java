@@ -666,7 +666,10 @@ public class UserServiceTest {
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
-    assertEquals(laboratory.getId(), user.getLaboratory().getId());
+    laboratory = user.getLaboratory();
+    assertEquals("IRCM", laboratory.getOrganization());
+    assertEquals("Ribonucleoprotein Biochemistry", laboratory.getName());
+    assertEquals("Christian Poitras", laboratory.getDirector());
     assertEquals(hashedPassword.getPassword(), user.getHashedPassword());
     assertEquals(hashedPassword.getSalt(), user.getSalt());
     assertEquals((Integer) hashedPassword.getPasswordVersion(), user.getPasswordVersion());
@@ -739,44 +742,19 @@ public class UserServiceTest {
 
   @Test
   public void update() throws Throwable {
-    User user = entityManager.find(User.class, 3L);
+    User user = entityManager.find(User.class, 12L);
     entityManager.detach(user);
-    assertEquals((Long) 3L, user.getId());
-    assertEquals("benoit.coulombe@ircm.qc.ca", user.getEmail());
-    assertEquals("Benoit Coulombe", user.getName());
-    assertEquals("da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d",
-        user.getHashedPassword());
-    assertEquals("4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8"
-        + "ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535", user.getSalt());
-    assertEquals((Integer) 1, user.getPasswordVersion());
-    assertEquals((Long) 2L, user.getLaboratory().getId());
-    assertEquals(Locale.CANADA_FRENCH, user.getLocale());
-    Address address = user.getAddress();
-    assertEquals("110, avenue des Pins Ouest", address.getLine());
-    assertEquals("Montréal", address.getTown());
-    assertEquals("Québec", address.getState());
-    assertEquals("H2W 1R7", address.getPostalCode());
-    assertEquals("Canada", address.getCountry());
-    assertEquals(1, user.getPhoneNumbers().size());
-    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
-    assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
-    assertEquals("514-555-5556", phoneNumber.getNumber());
-    assertEquals(null, phoneNumber.getExtension());
-    assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
-
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
     user.setLocale(Locale.US);
-    address = new Address();
+    Address address = new Address();
     address.setLine("110 av des Pins West");
     address.setTown("Montreal");
     address.setState("Quebec");
     address.setPostalCode("H2W 1R8");
     address.setCountry("USA");
     user.setAddress(address);
-    phoneNumber = new PhoneNumber();
+    PhoneNumber phoneNumber = new PhoneNumber();
     phoneNumber.setType(PhoneNumberType.WORK);
     phoneNumber.setNumber("514-987-5501");
     phoneNumber.setExtension("3218");
@@ -795,6 +773,8 @@ public class UserServiceTest {
     verify(authorizationService).checkUserWritePermission(user);
     user = entityManager.find(User.class, user.getId());
     entityManager.refresh(user);
+    Laboratory laboratory = entityManager.find(Laboratory.class, user.getLaboratory().getId());
+    entityManager.refresh(laboratory);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -804,6 +784,78 @@ public class UserServiceTest {
         + "ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535", user.getSalt());
     assertEquals((Integer) 1, user.getPasswordVersion());
     assertEquals((Long) 2L, user.getLaboratory().getId());
+    assertEquals("Translational Proteomics", user.getLaboratory().getName());
+    assertEquals("IRCM", user.getLaboratory().getOrganization());
+    assertEquals("Benoit Coulombe", user.getLaboratory().getDirector());
+    assertEquals(Locale.US, user.getLocale());
+    address = user.getAddress();
+    assertEquals("110 av des Pins West", address.getLine());
+    assertEquals("Montreal", address.getTown());
+    assertEquals("Quebec", address.getState());
+    assertEquals("H2W 1R8", address.getPostalCode());
+    assertEquals("USA", address.getCountry());
+    assertEquals(2, user.getPhoneNumbers().size());
+    phoneNumber = findPhoneNumber(user.getPhoneNumbers(), PhoneNumberType.WORK);
+    assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
+    assertEquals("514-987-5501", phoneNumber.getNumber());
+    assertEquals("3218", phoneNumber.getExtension());
+    phoneNumber = user.getPhoneNumbers().get(1);
+    phoneNumber = findPhoneNumber(user.getPhoneNumbers(), PhoneNumberType.FAX);
+    assertEquals("514-987-5502", phoneNumber.getNumber());
+    assertEquals("1234", phoneNumber.getExtension());
+    assertEquals(false, user.isActive());
+    assertEquals(true, user.isValid());
+    assertEquals(false, user.isAdmin());
+  }
+
+  @Test
+  public void update_Director() throws Throwable {
+    when(authorizationService.hasManagerRole()).thenReturn(true);
+    User user = entityManager.find(User.class, 3L);
+    entityManager.detach(user);
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.setName("Christian Poitras");
+    user.setLocale(Locale.US);
+    Address address = new Address();
+    address.setLine("110 av des Pins West");
+    address.setTown("Montreal");
+    address.setState("Quebec");
+    address.setPostalCode("H2W 1R8");
+    address.setCountry("USA");
+    user.setAddress(address);
+    PhoneNumber phoneNumber = new PhoneNumber();
+    phoneNumber.setType(PhoneNumberType.WORK);
+    phoneNumber.setNumber("514-987-5501");
+    phoneNumber.setExtension("3218");
+    PhoneNumber phoneNumber2 = new PhoneNumber();
+    phoneNumber2.setType(PhoneNumberType.FAX);
+    phoneNumber2.setNumber("514-987-5502");
+    phoneNumber2.setExtension("1234");
+    List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    phoneNumbers.add(phoneNumber);
+    phoneNumbers.add(phoneNumber2);
+    user.setPhoneNumbers(phoneNumbers);
+
+    userService.update(user, null);
+
+    entityManager.flush();
+    verify(authorizationService).checkUserWritePermission(user);
+    user = entityManager.find(User.class, user.getId());
+    entityManager.refresh(user);
+    Laboratory laboratory = entityManager.find(Laboratory.class, user.getLaboratory().getId());
+    entityManager.refresh(laboratory);
+    assertEquals(user.getId(), user.getId());
+    assertEquals("unit_test@ircm.qc.ca", user.getEmail());
+    assertEquals("Christian Poitras", user.getName());
+    assertEquals("da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d",
+        user.getHashedPassword());
+    assertEquals("4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8"
+        + "ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535", user.getSalt());
+    assertEquals((Integer) 1, user.getPasswordVersion());
+    assertEquals((Long) 2L, user.getLaboratory().getId());
+    assertEquals("Translational Proteomics", user.getLaboratory().getName());
+    assertEquals("IRCM", user.getLaboratory().getOrganization());
+    assertEquals("Christian Poitras", user.getLaboratory().getDirector());
     assertEquals(Locale.US, user.getLocale());
     address = user.getAddress();
     assertEquals("110 av des Pins West", address.getLine());
@@ -1119,6 +1171,23 @@ public class UserServiceTest {
   }
 
   @Test
+  public void addManager_DirectorChange() throws Exception {
+    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    laboratory.setDirector("Test");
+    entityManager.merge(laboratory);
+    entityManager.flush();
+    entityManager.detach(laboratory);
+    User user = entityManager.find(User.class, 10L);
+    entityManager.detach(user);
+
+    userService.addManager(laboratory, user);
+
+    entityManager.flush();
+    laboratory = entityManager.find(Laboratory.class, 2L);
+    assertEquals("Benoit Coulombe", laboratory.getDirector());
+  }
+
+  @Test
   public void removeManagerAdmin() throws Exception {
     Laboratory laboratory = entityManager.find(Laboratory.class, 1L);
     entityManager.detach(laboratory);
@@ -1195,6 +1264,23 @@ public class UserServiceTest {
     entityManager.detach(user);
 
     userService.removeManager(laboratory, user);
+  }
+
+  @Test
+  public void removeManager_DirectorChange() throws Exception {
+    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    laboratory.setDirector("Test");
+    entityManager.merge(laboratory);
+    entityManager.flush();
+    entityManager.detach(laboratory);
+    User user = entityManager.find(User.class, 27L);
+    entityManager.detach(user);
+
+    userService.removeManager(laboratory, user);
+
+    entityManager.flush();
+    laboratory = entityManager.find(Laboratory.class, 2L);
+    assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test

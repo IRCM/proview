@@ -15,16 +15,16 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-INSERT INTO laboratory (id,name,organization)
-VALUES ('1', 'Admin', 'IRCM');
-INSERT INTO laboratory (id,name,organization)
-VALUES ('2', 'Translational Proteomics', 'IRCM');
-INSERT INTO laboratory (id,name,organization)
-VALUES ('3', 'Chromatin and Genomic Expression', 'IRCM');
-INSERT INTO laboratory (id,name,organization)
-VALUES ('4', 'Biochemistry of Epigenetic Inheritance', 'IRCM');
-INSERT INTO laboratory (id,name,organization)
-VALUES ('5', 'Génétique moléculaire et développement', 'IRCM');
+INSERT INTO laboratory (id,name,organization,director)
+VALUES ('1', 'Admin', 'IRCM', 'Robot');
+INSERT INTO laboratory (id,name,organization,director)
+VALUES ('2', 'Translational Proteomics', 'IRCM', 'Benoit Coulombe');
+INSERT INTO laboratory (id,name,organization,director)
+VALUES ('3', 'Chromatin and Genomic Expression', 'IRCM', 'François Robert');
+INSERT INTO laboratory (id,name,organization,director)
+VALUES ('4', 'Biochemistry of Epigenetic Inheritance', 'IRCM', 'Robert Williams');
+INSERT INTO laboratory (id,name,organization,director)
+VALUES ('5', 'Génétique moléculaire et développement', 'IRCM', 'Marie Trudel');
 INSERT INTO address (id,line,town,state,country,postalCode)
 VALUES ('1', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
 INSERT INTO address (id,line,town,state,country,postalCode)
@@ -80,7 +80,7 @@ VALUES ('24', 'nicole.francis@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8e
 INSERT INTO user (id,email,password,salt,passwordVersion,signAttempts,lastSignAttempt,name,locale,addressId,active,valid,admin,registerTime)
 VALUES ('25', 'marie.trudel@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', null, null, 'Marie Trudel', 'en_US', 12, '0', '1', '0', '2011-07-07 15:48:24');
 INSERT INTO user (id,email,password,salt,passwordVersion,signAttempts,lastSignAttempt,name,locale,addressId,active,valid,admin,registerTime)
-VALUES ('26', 'patricia.jones@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', null, null, 'Marie Trudel', 'en_US', 13, '1', '1', '0', '2011-07-07 15:48:24');
+VALUES ('26', 'patricia.jones@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', null, null, 'Patricia Jones', 'en_US', 13, '1', '1', '0', '2011-07-07 15:48:24');
 INSERT INTO user (id,email,password,salt,passwordVersion,signAttempts,lastSignAttempt,name,locale,addressId,active,valid,admin,registerTime)
 VALUES ('27', 'lucas.martin@ircm.qc.ca', 'da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d', '4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535', '1', null, null, 'Lucas Martin', 'en_US', 14, '1', '1', '0', '2011-07-07 15:48:24');
 INSERT INTO phonenumber (id,userId,type,number,extension)

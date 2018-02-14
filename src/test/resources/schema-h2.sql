@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS laboratory (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(255) NOT NULL,
   organization varchar(255) NOT NULL,
+  director varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS address (

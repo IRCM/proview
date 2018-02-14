@@ -64,6 +64,12 @@ public class Laboratory implements Data, Serializable {
   @Size(max = 255)
   private String organization;
   /**
+   * Director.
+   */
+  @Column(name = "director", nullable = false)
+  @Size(max = 255)
+  private String director;
+  /**
    * Managers of this laboratory.
    */
   @ManyToMany(cascade = CascadeType.PERSIST)
@@ -78,15 +84,6 @@ public class Laboratory implements Data, Serializable {
 
   public Laboratory(Long id) {
     this.id = id;
-  }
-
-  public String getDirector() {
-    if (managers == null) {
-      return null;
-    }
-    long id = managers.stream().mapToLong(manager -> manager.getId()).min().orElse(-1);
-    return managers.stream().filter(manager -> manager.getId() == id && manager.getName() != null)
-        .map(manager -> manager.getName()).findAny().orElse(null);
   }
 
   @Override
@@ -125,5 +122,13 @@ public class Laboratory implements Data, Serializable {
 
   public void setManagers(List<User> managers) {
     this.managers = managers;
+  }
+
+  public String getDirector() {
+    return director;
+  }
+
+  public void setDirector(String director) {
+    this.director = director;
   }
 }

@@ -307,6 +307,7 @@ public class UserService {
       RegisterUserWebContext webContext) {
     setUserPassword(manager, password);
     Laboratory laboratory = manager.getLaboratory();
+    laboratory.setDirector(manager.getName());
     laboratory.setManagers(new ArrayList<User>());
     laboratory.getManagers().add(manager);
     entityManager.persist(laboratory);
@@ -406,10 +407,22 @@ public class UserService {
 
     if (authorizationService.hasManagerRole()) {
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
+      updateDirectorName(user.getLaboratory(), user);
       entityManager.merge(user.getLaboratory());
     }
 
     logger.info("User {} updated", user);
+  }
+
+  private void updateDirectorName(Laboratory laboratory, User possibleDirector) {
+    long id =
+        laboratory.getManagers().stream().mapToLong(manager -> manager.getId()).min().orElse(-1);
+    if (possibleDirector != null && possibleDirector.getId() == id) {
+      laboratory.setDirector(possibleDirector.getName());
+    } else {
+      laboratory.getManagers().stream().filter(manager -> manager.getId() == id).findAny()
+          .ifPresent(director -> laboratory.setDirector(director.getName()));
+    }
   }
 
   /**
@@ -556,6 +569,7 @@ public class UserService {
       laboratory.getManagers().add(user);
     }
     user.setActive(true);
+    updateDirectorName(laboratory, null);
 
     cacheFlusher.flushShiroCache();
   }
@@ -590,6 +604,7 @@ public class UserService {
     } else {
       laboratory.getManagers().remove(manager);
     }
+    updateDirectorName(laboratory, null);
 
     cacheFlusher.flushShiroCache();
   }
