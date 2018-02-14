@@ -110,6 +110,11 @@ public class User implements Data, Named, Serializable {
   @Column(name = "lastSignAttempt")
   private Instant lastSignAttempt;
   /**
+   * Register time.
+   */
+  @Column(name = "registerTime")
+  private Instant registerTime;
+  /**
    * User's prefered locale.
    */
   @Column(name = "locale")
@@ -273,5 +278,13 @@ public class User implements Data, Named, Serializable {
 
   public void setLastSignAttempt(Instant lastSignAttempt) {
     this.lastSignAttempt = lastSignAttempt;
+  }
+
+  public Instant getRegisterTime() {
+    return registerTime;
+  }
+
+  public void setRegisterTime(Instant registerTime) {
+    this.registerTime = registerTime;
   }
 }

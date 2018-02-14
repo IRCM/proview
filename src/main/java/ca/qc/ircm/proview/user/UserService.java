@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -230,6 +231,7 @@ public class UserService {
    */
   public void register(User user, String password, User manager,
       RegisterUserWebContext webContext) {
+    user.setRegisterTime(Instant.now());
     if (user.isAdmin()) {
       registerAdmin(user, password);
     } else if (manager == null) {

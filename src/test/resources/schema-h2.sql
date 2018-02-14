@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS user (
   active tinyint(1) NOT NULL DEFAULT '0',
   valid tinyint(1) NOT NULL DEFAULT '0',
   admin tinyint(1) NOT NULL DEFAULT '0',
-  registerTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  registerTime datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY userEmail (email),
   CONSTRAINT user_ibfk_1 FOREIGN KEY (addressId) REFERENCES address (id) ON UPDATE CASCADE
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS laboratorymanager (
 CREATE TABLE IF NOT EXISTS forgotpassword (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   userId bigint(20) NOT NULL,
-  requestMoment timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  requestMoment datetime NOT NULL,
   confirmNumber int(11) NOT NULL,
   used tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS submission (
   comment clob,
   price double DEFAULT NULL,
   additionalPrice double DEFAULT NULL,
-  submissionDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  submissionDate datetime NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   userId bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS plate (
   name varchar(100) NOT NULL,
   columnCount int NOT NULL,
   rowCount int NOT NULL,
-  insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  insertTime datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY plateName (name)
 );
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS samplecontainer (
   locationRow int(11) DEFAULT NULL,
   sampleId bigint(20) DEFAULT NULL,
   version int(11) DEFAULT 0,
-  time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  time datetime NOT NULL,
   banned tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   UNIQUE KEY samplecontainerName (name),
@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS treatment (
   protocolId bigint(20) DEFAULT NULL,
   fractionationType varchar(50) DEFAULT NULL,
   userId bigint(20) DEFAULT NULL,
-  insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  insertTime datetime NOT NULL,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   deletionType varchar(50) DEFAULT NULL,
   deletionExplanation clob,
@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS msanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   source varchar(100) DEFAULT NULL,
   massDetectionInstrument varchar(100) NOT NULL,
-  insertTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  insertTime datetime NOT NULL,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   deletionType varchar(50) DEFAULT NULL,
   deletionExplanation clob,
@@ -308,7 +308,7 @@ CREATE TABLE IF NOT EXISTS activity (
   tableName varchar(50) NOT NULL,
   recordId bigint(20) NOT NULL,
   actionType varchar(50) NOT NULL,
-  time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  time datetime NOT NULL,
   explanation clob,
   PRIMARY KEY (id)
 );
