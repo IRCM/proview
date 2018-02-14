@@ -379,3 +379,16 @@ CREATE TABLE changelog (
   description varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );
+
+INSERT INTO laboratory (id,name,organization)
+VALUES ('1', 'Admin', 'IRCM');
+INSERT INTO address (id,line,town,state,country,postalCode)
+VALUES ('1', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
+INSERT INTO user (id,email,password,salt,passwordVersion,signAttempts,lastSignAttempt,name,locale,addressId,active,valid,admin,registerTime)
+VALUES ('1', 'proview@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', null, null, 'Robot', null, null, '1', '1', '1', '2008-08-10 12:34:22');
+INSERT INTO laboratoryuser (userId,laboratoryId)
+VALUES ('1', '1');
+INSERT INTO laboratorymanager (userId,laboratoryId)
+VALUES ('1', '1');
+INSERT INTO changelog (id, applied_at, description)
+VALUES ('20180115145708', CURRENT_TIMESTAMP, 'create changelog');
