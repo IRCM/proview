@@ -151,6 +151,18 @@ public class PlateServiceTest {
   }
 
   @Test
+  public void all_OnlyProteomicPlates() throws Exception {
+    PlateFilter filter = new PlateFilter();
+    filter.onlyProteomicPlates();
+
+    List<Plate> plates = plateService.all(filter);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(17, plates.size());
+    assertFalse(find(plates, 123L).isPresent());
+  }
+
+  @Test
   public void all_Null() throws Exception {
     List<Plate> plates = plateService.all(null);
 

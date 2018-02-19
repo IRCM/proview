@@ -122,6 +122,9 @@ public class PlateService {
       query.from(plate.wells, well);
       query.where(well.sample.in(filter.containsAnySamples));
     }
+    if (filter.onlyProteomicPlates) {
+      query.where(plate.submission.eq(false));
+    }
     return query.distinct().fetch();
   }
 

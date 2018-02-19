@@ -76,6 +76,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateFilter;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.WellComparator;
@@ -145,6 +146,8 @@ public class TransferViewPresenterTest {
   private ArgumentCaptor<Collection<Well>> wellsCaptor;
   @Captor
   private ArgumentCaptor<Transfer> transferCaptor;
+  @Captor
+  private ArgumentCaptor<PlateFilter> plateFilterCaptor;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -529,6 +532,10 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
+    verify(plateService).all(plateFilterCaptor.capture());
+    PlateFilter plateFilter = plateFilterCaptor.getValue();
+    assertNull(plateFilter.containsAnySamples);
+    assertTrue(plateFilter.onlyProteomicPlates);
     assertFalse(design.destinationPlatesField.isEmptySelectionAllowed());
     assertNotNull(design.destinationPlatesField.getNewItemHandler());
     assertTrue(design.destinationPlatesField.isRequiredIndicatorVisible());

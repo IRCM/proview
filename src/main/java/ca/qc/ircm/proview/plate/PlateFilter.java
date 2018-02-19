@@ -26,4 +26,10 @@ import java.util.List;
  */
 public class PlateFilter {
   public List<Sample> containsAnySamples;
+  public boolean onlyProteomicPlates;
+
+  public PlateFilter onlyProteomicPlates() {
+    onlyProteomicPlates = true;
+    return this;
+  }
 }
