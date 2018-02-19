@@ -59,42 +59,42 @@ INSERT INTO submissionfiles (id,submissionId,filename,content)
 VALUES (2,1,'frag.jpg',FILE_READ('${project.build.testOutputDirectory}/gelimages1.png'));
 INSERT INTO submissionfiles (id,submissionId,filename,content)
 VALUES (3,33,'glucose.png',FILE_READ('${project.build.testOutputDirectory}/structure1.png'));
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (26,'A_20111108',12,8,'2011-11-08 13:33:21');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (107,'G_20141008_01',12,8,'2014-10-08 10:41:39');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (108,'A_20141008_01',12,8,'2014-10-08 11:18:03');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (109,'A_20141008_02',12,8,'2014-10-08 11:24:47');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (110,'A_20141009_01',12,8,'2014-10-09 12:19:34');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (111,'PM_20141009_01',12,8,'2014-10-09 12:20:19');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (112,'A_20141009_02',12,8,'2014-10-09 13:29:26');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (113,'A_20141014_01',12,8,'2014-10-14 14:06:42');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (114,'A_20141014_02',12,8,'2014-10-14 14:06:46');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (115,'A_20141015_01',12,8,'2014-10-15 09:57:17');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (116,'A_20141015_02',12,8,'2014-10-15 09:57:20');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (117,'A_20141015_03',12,8,'2014-10-15 16:03:39');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (118,'A_20141017_01',12,8,'2014-10-17 11:32:34');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (119,'A_20141017_02',12,8,'2014-10-17 11:50:01');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (120,'A_20141022_01',12,8,'2014-10-22 09:51:11');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (121,'A_20141022_02',12,8,'2014-10-22 09:56:23');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (122,'A_20141024_01',12,8,'2014-10-24 14:30:21');
-INSERT INTO plate (id,name,columnCount,rowCount,insertTime)
-VALUES (123,'Andrew-20171108',12,8,'2017-11-08 10:30:15');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (26,'A_20111108',12,8,0,'2011-11-08 13:33:21');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (107,'G_20141008_01',12,8,0,'2014-10-08 10:41:39');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (108,'A_20141008_01',12,8,0,'2014-10-08 11:18:03');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (109,'A_20141008_02',12,8,0,'2014-10-08 11:24:47');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (110,'A_20141009_01',12,8,0,'2014-10-09 12:19:34');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (111,'PM_20141009_01',12,8,0,'2014-10-09 12:20:19');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (112,'A_20141009_02',12,8,0,'2014-10-09 13:29:26');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (113,'A_20141014_01',12,8,0,'2014-10-14 14:06:42');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (114,'A_20141014_02',12,8,0,'2014-10-14 14:06:46');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (115,'A_20141015_01',12,8,0,'2014-10-15 09:57:17');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (116,'A_20141015_02',12,8,0,'2014-10-15 09:57:20');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (117,'A_20141015_03',12,8,0,'2014-10-15 16:03:39');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (118,'A_20141017_01',12,8,0,'2014-10-17 11:32:34');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (119,'A_20141017_02',12,8,0,'2014-10-17 11:50:01');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (120,'A_20141022_01',12,8,0,'2014-10-22 09:51:11');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (121,'A_20141022_02',12,8,0,'2014-10-22 09:56:23');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (122,'A_20141024_01',12,8,0,'2014-10-24 14:30:21');
+INSERT INTO plate (id,name,columnCount,rowCount,submission,insertTime)
+VALUES (123,'Andrew-20171108',12,8,1,'2017-11-08 10:30:15');
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,version,time,banned)
 VALUES (1,'TUBE','FAM119A_band_01',NULL,NULL,NULL,1,1,'2010-10-15 10:44:27',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,version,time,banned)

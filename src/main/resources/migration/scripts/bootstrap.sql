@@ -181,6 +181,7 @@ CREATE TABLE plate (
   name varchar(100) NOT NULL,
   columnCount int(11) NOT NULL,
   rowCount int(11) NOT NULL,
+  submission tinyint(1) NOT NULL DEFAULT '0',
   insertTime datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY name (name)

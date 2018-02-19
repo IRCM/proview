@@ -268,6 +268,7 @@ public class TransferServiceTest {
     assertTrue(destinationWell.getVersion() >= 1);
     assertNotNull(destinationWell.getPlate().getId());
     assertEquals("test_plate", destinationWell.getPlate().getName());
+    assertFalse(destinationWell.getPlate().isSubmission());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(transferedSample.getDestinationContainer().getTimestamp()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -414,6 +415,7 @@ public class TransferServiceTest {
     destinationWell = (Well) transferedSample.getDestinationContainer();
     assertNotNull(destinationWell.getPlate().getId());
     assertEquals("test_plate", destinationWell.getPlate().getName());
+    assertFalse(destinationWell.getPlate().isSubmission());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(transferedSample.getDestinationContainer().getTimestamp()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();

@@ -151,6 +151,7 @@ CREATE TABLE IF NOT EXISTS plate (
   name varchar(100) NOT NULL,
   columnCount int NOT NULL,
   rowCount int NOT NULL,
+  submission tinyint NOT NULL DEFAULT '0',
   insertTime datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY plateName (name)

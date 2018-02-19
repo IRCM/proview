@@ -1007,6 +1007,7 @@ public class SubmissionServiceTest {
     Well well = (Well) submissionSample.getOriginalContainer();
     assertNotNull(well);
     assertEquals("unit_test_plate", well.getPlate().getName());
+    assertTrue(well.getPlate().isSubmission());
     assertEquals(96, well.getPlate().getWells().size());
     for (Well plateWell : well.getPlate().getWells()) {
       if (plateWell != well.getPlate().well(0, 0) && plateWell != well.getPlate().well(1, 0)) {

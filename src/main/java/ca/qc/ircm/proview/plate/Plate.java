@@ -75,6 +75,11 @@ public class Plate implements Data, Serializable, Named {
   @Min(1)
   private int rowCount = 8;
   /**
+   * True if plate was submitted by a user.
+   */
+  @Column(name = "submission")
+  private boolean submission;
+  /**
    * Time when analysis was inserted.
    */
   @Column(name = "insertTime", nullable = false)
@@ -324,5 +329,13 @@ public class Plate implements Data, Serializable, Named {
 
   public void setRowCount(int rowCount) {
     this.rowCount = rowCount;
+  }
+
+  public boolean isSubmission() {
+    return submission;
+  }
+
+  public void setSubmission(boolean submission) {
+    this.submission = submission;
   }
 }

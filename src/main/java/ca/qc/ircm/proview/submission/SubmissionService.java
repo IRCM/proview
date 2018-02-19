@@ -238,6 +238,7 @@ public class SubmissionService {
 
   private void persistPlate(Submission submission, Plate plate) {
     plate.setInsertTime(Instant.now());
+    plate.setSubmission(true);
     plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
     submission.getSamples().forEach(sample -> {
       sample.getOriginalContainer().setSample(sample);
