@@ -451,7 +451,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.sampleName.setRequiredIndicatorVisible(true);
     firstSampleBinder.forField(design.sampleName)
         .withValidator(requiredTextIfVisible(design.sampleName)).withNullRepresentation("")
-        .withValidator(validateSampleName(true)).bind(SAMPLE_NAME);
+        .withValidator(validateSampleName(false)).bind(SAMPLE_NAME);
     design.formula.addStyleName(FORMULA);
     design.formula.setCaption(resources.message(FORMULA));
     design.formula.setRequiredIndicatorVisible(true);
@@ -531,7 +531,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
-          .withNullRepresentation("").withValidator(validateSampleName(true)).bind(SAMPLE_NAME);
+          .withNullRepresentation("").withValidator(validateSampleName(false)).bind(SAMPLE_NAME);
       sampleBinders.put(sample, binder);
       sampleNameFields.put(sample, field);
       return field;
@@ -1395,7 +1395,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
   }
 
-  private Validator<String> validateSampleName(boolean testExists) {
+  private Validator<String> validateSampleName(boolean includeSampleNameInError) {
     return (value, context) -> {
       if (value == null || value.isEmpty()) {
         return ValidationResult.ok();
@@ -1404,11 +1404,16 @@ public class SubmissionFormPresenter implements BinderValidator {
       if (!Pattern.matches("\\w*", value)) {
         return ValidationResult.error(generalResources.message(ONLY_WORDS));
       }
-      if (testExists && submissionSampleService.exists(value)) {
+      if (submissionSampleService.exists(value)) {
         if (submissionBinder.getBean().getId() == null
             || !submissionService.get(submissionBinder.getBean().getId()).getSamples().stream()
                 .filter(sample -> sample.getName().equalsIgnoreCase(value)).findAny().isPresent()) {
-          return ValidationResult.error(generalResources.message(ALREADY_EXISTS));
+          if (includeSampleNameInError) {
+            MessageResource resources = view.getResources();
+            return ValidationResult.error(resources.message(SAMPLE_NAME + ".exists", value));
+          } else {
+            return ValidationResult.error(generalResources.message(ALREADY_EXISTS));
+          }
         }
       }
       return ValidationResult.ok();
@@ -1450,7 +1455,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         }
       } else {
         valid &= validate(plateBinder);
-        valid &= validate(validateSampleName(false), view.plateComponent, plateSampleNames());
+        valid &= validate(validateSampleName(true), view.plateComponent, plateSampleNames());
       }
       valid &= validate(() -> validateSampleNames());
       if (sample.getSupport() == DRY || sample.getSupport() == SOLUTION) {
@@ -1485,7 +1490,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   }
 
   private ValidationResult validateSampleNames() {
-    view.plateComponent.setComponentError(null);
     MessageResource resources = view.getResources();
     Set<String> names = new HashSet<>();
     if (design.sampleContainerType.getValue() != WELL) {
@@ -1503,14 +1507,14 @@ public class SubmissionFormPresenter implements BinderValidator {
         count++;
         if (!names.add(name)) {
           String error = resources.message(SAMPLE_NAME + ".duplicate", name);
-          view.plateComponent.setComponentError(new UserError(error));
+          addError(new UserError(error), view.plateComponent);
           return ValidationResult.error(error);
         }
       }
       if (count < sampleCountBinder.getBean().getCount()) {
         String error =
             resources.message(SAMPLES + ".missing", sampleCountBinder.getBean().getCount());
-        view.plateComponent.setComponentError(new UserError(error));
+        addError(new UserError(error), view.plateComponent);
         return ValidationResult.error(error);
       }
     }

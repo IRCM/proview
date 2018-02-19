@@ -111,4 +111,16 @@ public interface BinderValidator {
           status.getBinder().getBean());
     });
   }
+
+  public default void addError(ErrorMessage error, AbstractComponent component) {
+    if (component.getComponentError() == null) {
+      component.setComponentError(error);
+    } else if (component.getComponentError() instanceof CompositeErrorMessage) {
+      CompositeErrorMessage componentError = (CompositeErrorMessage) component.getComponentError();
+      componentError.addCause(error);
+    } else {
+      ErrorMessage componentError = component.getComponentError();
+      component.setComponentError(new CompositeErrorMessage(componentError, error));
+    }
+  }
 }

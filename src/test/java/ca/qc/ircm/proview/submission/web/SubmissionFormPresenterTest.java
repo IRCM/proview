@@ -184,10 +184,12 @@ import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.server.StreamResource;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -3406,15 +3408,22 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
     design.sampleSupport.setValue(support);
+    when(submissionSampleService.exists(sampleName1)).thenReturn(true);
     setFields();
     design.sampleContainerType.setValue(WELL);
     uploadFiles();
-    when(submissionSampleService.exists(sampleName1)).thenReturn(true);
 
     design.save.click();
 
-    verify(view, never()).showError(stringCaptor.capture());
-    verify(submissionService).insert(any());
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    verify(view.plateComponent, atLeastOnce()).setComponentError(errorMessageCaptor.capture());
+    assertEquals(
+        new CompositeErrorMessage(
+            new UserError(resources.message(SAMPLE_NAME + ".exists", sampleName1)))
+                .getFormattedHtmlMessage(),
+        errorMessageCaptor.getValue().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
   }
 
   @Test
@@ -3440,17 +3449,24 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_ExistsPlateSampleNames_2() throws Throwable {
     presenter.init(view);
+    when(submissionSampleService.exists(sampleName2)).thenReturn(true);
     design.service.setValue(LC_MS_MS);
     design.sampleSupport.setValue(support);
     setFields();
     design.sampleContainerType.setValue(WELL);
     uploadFiles();
-    when(submissionSampleService.exists(sampleName2)).thenReturn(true);
 
     design.save.click();
 
-    verify(view, never()).showError(stringCaptor.capture());
-    verify(submissionService).insert(any());
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    verify(view.plateComponent, atLeastOnce()).setComponentError(errorMessageCaptor.capture());
+    assertEquals(
+        new CompositeErrorMessage(
+            new UserError(resources.message(SAMPLE_NAME + ".exists", sampleName2)))
+                .getFormattedHtmlMessage(),
+        errorMessageCaptor.getValue().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
   }
 
   @Test
