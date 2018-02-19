@@ -38,10 +38,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -126,98 +123,5 @@ public class TubeServiceTest {
     List<Tube> tubes = tubeService.all(null);
 
     assertEquals(0, tubes.size());
-  }
-
-  @Test
-  public void generateTubeName_1() throws Throwable {
-    Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
-    Set<String> exludes = Collections.emptySet();
-
-    String tubeName = tubeService.generateTubeName(sample, exludes);
-
-    verify(authorizationService).checkUserRole();
-    assertEquals("FAM119A_band_01_1", tubeName);
-  }
-
-  @Test
-  public void generateTubeName_1WithExcludes() throws Throwable {
-    Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
-    Set<String> exludes = new HashSet<>();
-    exludes.add("FAM119A_band_01_1");
-
-    String tubeName = tubeService.generateTubeName(sample, exludes);
-
-    verify(authorizationService).checkUserRole();
-    assertEquals("FAM119A_band_01_2", tubeName);
-  }
-
-  @Test
-  public void generateTubeName_1WithRandomExcludes() throws Throwable {
-    Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
-    Set<String> exludes = new HashSet<>();
-    exludes.add("test");
-
-    String tubeName = tubeService.generateTubeName(sample, exludes);
-
-    verify(authorizationService).checkUserRole();
-    assertEquals("FAM119A_band_01_1", tubeName);
-  }
-
-  @Test
-  public void generateTubeName_New() throws Throwable {
-    Sample sample = new SubmissionSample(null, "test");
-    Set<String> exludes = Collections.emptySet();
-
-    String tubeName = tubeService.generateTubeName(sample, exludes);
-
-    verify(authorizationService).checkUserRole();
-    assertEquals("test", tubeName);
-  }
-
-  @Test
-  public void generateTubeName_NewWithExcludes() throws Throwable {
-    Sample sample = new SubmissionSample(null, "test");
-    Set<String> exludes = new HashSet<>();
-    exludes.add("test");
-    exludes.add("test_1");
-    exludes.add("test_2");
-
-    String tubeName = tubeService.generateTubeName(sample, exludes);
-
-    verify(authorizationService).checkUserRole();
-    assertEquals("test_3", tubeName);
-  }
-
-  @Test
-  public void generateTubeName_NewWithRandomExcludes() throws Throwable {
-    Sample sample = new SubmissionSample(null, "test");
-    Set<String> exludes = new HashSet<>();
-    exludes.add("abc");
-    exludes.add("abc_1");
-    exludes.add("abc_2");
-
-    String tubeName = tubeService.generateTubeName(sample, exludes);
-
-    verify(authorizationService).checkUserRole();
-    assertEquals("test", tubeName);
-  }
-
-  @Test
-  public void generateTubeName_NullSample() throws Throwable {
-    Set<String> exludes = Collections.emptySet();
-
-    String tubeName = tubeService.generateTubeName(null, exludes);
-
-    assertNull(tubeName);
-  }
-
-  @Test
-  public void generateTubeName_NullExcludes() throws Throwable {
-    Sample sample = new SubmissionSample(null, "test");
-
-    String tubeName = tubeService.generateTubeName(sample, null);
-
-    verify(authorizationService).checkUserRole();
-    assertEquals("test", tubeName);
   }
 }

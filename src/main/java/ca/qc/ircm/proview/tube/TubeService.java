@@ -27,8 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -118,43 +116,5 @@ public class TubeService {
     query.from(tube);
     query.where(tube.sample.eq(sample));
     return query.fetch();
-  }
-
-  private boolean exists(String name) {
-    JPAQuery<Long> query = queryFactory.select(tube.id);
-    query.from(tube);
-    query.where(tube.name.eq(name));
-    return query.fetchCount() > 0;
-  }
-
-  /**
-   * Generates an available tube name for sample. <br>
-   * For speed purposes, excludes' contains operation should be fast. Using a Set is recommended.
-   *
-   * @param sample
-   *          sample
-   * @param excludes
-   *          names to excludes
-   * @return available tube name for sample
-   */
-  public String generateTubeName(Sample sample, Collection<String> excludes) {
-    if (sample == null) {
-      return null;
-    }
-    if (excludes == null) {
-      excludes = Collections.emptySet();
-    }
-    authorizationService.checkUserRole();
-
-    if (!exists(sample.getName()) && !excludes.contains(sample.getName())) {
-      return sample.getName();
-    }
-
-    int index = 0;
-    String name = sample.getName() + "_" + ++index;
-    while (exists(name) || excludes.contains(name)) {
-      name = sample.getName() + "_" + ++index;
-    }
-    return name;
   }
 }

@@ -168,10 +168,10 @@ CREATE TABLE IF NOT EXISTS samplecontainer (
   time datetime NOT NULL,
   banned tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  UNIQUE KEY samplecontainerName (name),
   UNIQUE KEY samplecontainerPlateId (plateId,locationColumn,locationRow),
   CONSTRAINT samplecontainer_ibfk_1 FOREIGN KEY (plateId) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE INDEX IF NOT EXISTS samplecontainerName ON samplecontainer (name);
 CREATE TABLE IF NOT EXISTS sample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(150) DEFAULT NULL,

@@ -145,6 +145,14 @@ public class SubmissionSampleServiceTest {
   }
 
   @Test
+  public void exists_ControlName() throws Throwable {
+    boolean exists = submissionSampleService.exists("control_01");
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(false, exists);
+  }
+
+  @Test
   public void exists_Null() throws Throwable {
     boolean exists = submissionSampleService.exists(null);
 

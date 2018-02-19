@@ -33,7 +33,6 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
-import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -77,8 +76,6 @@ public class SubmissionService {
   @Inject
   private TemplateEngine templateEngine;
   @Inject
-  private TubeService tubeService;
-  @Inject
   private EmailService emailService;
   @Inject
   private AuthorizationService authorizationService;
@@ -88,15 +85,14 @@ public class SubmissionService {
 
   protected SubmissionService(EntityManager entityManager, JPAQueryFactory queryFactory,
       SubmissionActivityService submissionActivityService, ActivityService activityService,
-      PricingEvaluator pricingEvaluator, TemplateEngine templateEngine, TubeService tubeService,
-      EmailService emailService, AuthorizationService authorizationService) {
+      PricingEvaluator pricingEvaluator, TemplateEngine templateEngine, EmailService emailService,
+      AuthorizationService authorizationService) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.submissionActivityService = submissionActivityService;
     this.activityService = activityService;
     this.pricingEvaluator = pricingEvaluator;
     this.templateEngine = templateEngine;
-    this.tubeService = tubeService;
     this.emailService = emailService;
     this.authorizationService = authorizationService;
   }
@@ -254,7 +250,7 @@ public class SubmissionService {
   private void persistTube(SubmissionSample sample, Set<String> otherTubeNames) {
     Tube tube = new Tube();
     tube.setSample(sample);
-    tube.setName(tubeService.generateTubeName(sample, otherTubeNames));
+    tube.setName(sample.getName());
     tube.setTimestamp(Instant.now());
     otherTubeNames.add(tube.getName());
     sample.setOriginalContainer(tube);
@@ -360,9 +356,7 @@ public class SubmissionService {
         if (tube == null || tube.getId() == null) {
           persistTube(sample, otherTubeNames);
         } else {
-          if (!tube.getName().startsWith(sample.getName())) {
-            tube.setName(tubeService.generateTubeName(sample, otherTubeNames));
-          }
+          tube.setName(sample.getName());
           entityManager.merge(tube);
         }
       }

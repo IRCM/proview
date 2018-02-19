@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.QControl.control;
 import static ca.qc.ircm.proview.sample.QStandard.standard;
+import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -335,6 +336,12 @@ public class ControlFormPresenter implements BinderValidator {
       MessageResource generalResources = view.getGeneralResources();
       if (!Pattern.matches("\\w*", value)) {
         return ValidationResult.error(generalResources.message(ONLY_WORDS));
+      }
+      if (controlService.exists(value)) {
+        if (sampleBinder.getBean().getId() == null || !controlService
+            .get(sampleBinder.getBean().getId()).getName().equalsIgnoreCase(value)) {
+          return ValidationResult.error(generalResources.message(ALREADY_EXISTS));
+        }
       }
       return ValidationResult.ok();
     };

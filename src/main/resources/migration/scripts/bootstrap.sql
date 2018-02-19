@@ -198,8 +198,8 @@ CREATE TABLE samplecontainer (
   time datetime NOT NULL,
   banned tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  UNIQUE KEY name (name),
   UNIQUE KEY plateLocation (plateId,locationColumn,locationRow),
+  KEY name (name),
   KEY plate (plateId),
   KEY sample (sampleId),
   CONSTRAINT samplecontainerPlate_ibfk FOREIGN KEY (plateId) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE

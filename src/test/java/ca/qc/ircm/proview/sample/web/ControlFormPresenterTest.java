@@ -39,6 +39,7 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
+import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -556,6 +557,24 @@ public class ControlFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(ONLY_WORDS)),
+        design.nameField.getErrorMessage().getFormattedHtmlMessage());
+    verify(controlService, never()).insert(controlCaptor.capture());
+  }
+
+  @Test
+  public void save_NameExists() {
+    presenter.init(view);
+    final Control control = entityManager.find(Control.class, 444L);
+    presenter.setValue(control);
+    when(controlService.exists(any())).thenReturn(true);
+    when(controlService.get(any())).thenReturn(control);
+    setFields();
+
+    design.saveButton.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(ALREADY_EXISTS)),
         design.nameField.getErrorMessage().getFormattedHtmlMessage());
     verify(controlService, never()).insert(controlCaptor.capture());
   }

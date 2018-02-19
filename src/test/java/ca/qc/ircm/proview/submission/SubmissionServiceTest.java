@@ -28,7 +28,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -58,7 +57,6 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
-import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -68,8 +66,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.TemplateEngine;
@@ -86,13 +82,10 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -112,8 +105,6 @@ public class SubmissionServiceTest {
   private SubmissionActivityService submissionActivityService;
   @Mock
   private ActivityService activityService;
-  @Mock
-  private TubeService tubeService;
   @Mock
   private EmailService emailService;
   @Mock
@@ -139,9 +130,9 @@ public class SubmissionServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    submissionService = new SubmissionService(entityManager, queryFactory,
-        submissionActivityService, activityService, pricingEvaluator, templateEngine, tubeService,
-        emailService, authorizationService);
+    submissionService =
+        new SubmissionService(entityManager, queryFactory, submissionActivityService,
+            activityService, pricingEvaluator, templateEngine, emailService, authorizationService);
     user = entityManager.find(User.class, 4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(emailService.htmlEmail()).thenReturn(email);
@@ -569,17 +560,6 @@ public class SubmissionServiceTest {
     sample.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
-    final Set<String> excludes = new HashSet<>();
-    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
-        .thenAnswer(new Answer<String>() {
-          @Override
-          public String answer(InvocationOnMock invocation) throws Throwable {
-            @SuppressWarnings("unchecked")
-            Collection<String> methodExcludes = (Collection<String>) invocation.getArguments()[1];
-            excludes.addAll(methodExcludes);
-            return "unit_test_gel_01";
-          }
-        });
     when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
@@ -634,8 +614,6 @@ public class SubmissionServiceTest {
     entityManager.flush();
     verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
-    verify(tubeService).generateTubeName(eq(sample), anyCollectionOf(String.class));
-    assertEquals(true, excludes.isEmpty());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
     submission = entityManager.find(Submission.class, submission.getId());
@@ -738,26 +716,6 @@ public class SubmissionServiceTest {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    final Set<String> excludes1 = new HashSet<>();
-    final Set<String> excludes2 = new HashSet<>();
-    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
-        .thenAnswer(new Answer<String>() {
-          @Override
-          public String answer(InvocationOnMock invocation) throws Throwable {
-            @SuppressWarnings("unchecked")
-            Collection<String> methodExcludes = (Collection<String>) invocation.getArguments()[1];
-            excludes1.addAll(methodExcludes);
-            return "unit_test_eluate_01";
-          }
-        }).thenAnswer(new Answer<String>() {
-          @Override
-          public String answer(InvocationOnMock invocation) throws Throwable {
-            @SuppressWarnings("unchecked")
-            Collection<String> methodExcludes = (Collection<String>) invocation.getArguments()[1];
-            excludes2.addAll(methodExcludes);
-            return "unit_test_eluate_02";
-          }
-        });
     when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
@@ -796,11 +754,6 @@ public class SubmissionServiceTest {
     entityManager.flush();
     verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
-    verify(tubeService).generateTubeName(eq(sample), anyCollectionOf(String.class));
-    assertEquals(true, excludes1.isEmpty());
-    verify(tubeService).generateTubeName(eq(sample2), anyCollectionOf(String.class));
-    assertEquals(1, excludes2.size());
-    assertEquals(true, excludes2.contains("unit_test_eluate_01"));
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
     submission = entityManager.find(Submission.class, submission.getId());
@@ -951,7 +904,6 @@ public class SubmissionServiceTest {
     entityManager.flush();
     verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
-    verify(tubeService, never()).generateTubeName(any(), any());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
     submission = entityManager.find(Submission.class, submission.getId());
@@ -1044,17 +996,6 @@ public class SubmissionServiceTest {
     sample.setSupport(SampleSupport.SOLUTION);
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
-    final Set<String> excludes = new HashSet<>();
-    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
-        .thenAnswer(new Answer<String>() {
-          @Override
-          public String answer(InvocationOnMock invocation) throws Throwable {
-            @SuppressWarnings("unchecked")
-            Collection<String> methodExcludes = (Collection<String>) invocation.getArguments()[1];
-            excludes.addAll(methodExcludes);
-            return "unit_test_molecule_01";
-          }
-        });
     when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
@@ -1104,8 +1045,6 @@ public class SubmissionServiceTest {
     entityManager.flush();
     verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
-    verify(tubeService).generateTubeName(eq(sample), anyCollectionOf(String.class));
-    assertEquals(true, excludes.isEmpty());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
     submission = entityManager.find(Submission.class, submission.getId());
@@ -1192,8 +1131,6 @@ public class SubmissionServiceTest {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
-        .thenReturn("unit_test_eluate_01");
     when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
@@ -1344,8 +1281,6 @@ public class SubmissionServiceTest {
     submission.getSamples().get(0).setVolume(20.0);
     submission.getSamples().get(0).setQuantity("2.0 μg");
     when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
-    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
-        .thenReturn("unit_test_01");
 
     submissionService.update(submission);
 
@@ -1426,26 +1361,6 @@ public class SubmissionServiceTest {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    final Set<String> excludes1 = new HashSet<>();
-    final Set<String> excludes2 = new HashSet<>();
-    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
-        .thenAnswer(new Answer<String>() {
-          @Override
-          public String answer(InvocationOnMock invocation) throws Throwable {
-            @SuppressWarnings("unchecked")
-            Collection<String> methodExcludes = (Collection<String>) invocation.getArguments()[1];
-            excludes1.addAll(methodExcludes);
-            return "unit_test_eluate_01";
-          }
-        }).thenAnswer(new Answer<String>() {
-          @Override
-          public String answer(InvocationOnMock invocation) throws Throwable {
-            @SuppressWarnings("unchecked")
-            Collection<String> methodExcludes = (Collection<String>) invocation.getArguments()[1];
-            excludes2.addAll(methodExcludes);
-            return "unit_test_eluate_02";
-          }
-        });
     when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
@@ -1462,11 +1377,6 @@ public class SubmissionServiceTest {
     verify(submissionActivityService).update(submissionCaptor.capture());
     verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
-    verify(tubeService).generateTubeName(eq(sample), anyCollectionOf(String.class));
-    assertEquals(true, excludes1.isEmpty());
-    verify(tubeService).generateTubeName(eq(sample2), anyCollectionOf(String.class));
-    assertEquals(1, excludes2.size());
-    assertEquals(true, excludes2.contains("unit_test_eluate_01"));
     verify(activityService).insert(activity);
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
@@ -1561,7 +1471,6 @@ public class SubmissionServiceTest {
     verify(submissionActivityService).update(submissionCaptor.capture());
     verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
-    verify(tubeService, never()).generateTubeName(any(), any());
     verify(activityService).insert(activity);
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
@@ -1790,8 +1699,6 @@ public class SubmissionServiceTest {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
-        .thenReturn("unit_test_eluate_01");
     Submission submission = entityManager.find(Submission.class, 147L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -1810,7 +1717,6 @@ public class SubmissionServiceTest {
         submissionCaptor.capture());
     verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
-    verify(tubeService).generateTubeName(eq(sample), anyCollectionOf(String.class));
     verify(activityService).insert(activity);
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);

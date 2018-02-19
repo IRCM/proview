@@ -23,14 +23,12 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
-import ca.qc.ircm.proview.tube.TubeService;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,8 +51,6 @@ public class ControlService {
   @Inject
   private ActivityService activityService;
   @Inject
-  private TubeService tubeService;
-  @Inject
   private AuthorizationService authorizationService;
 
   protected ControlService() {
@@ -62,12 +58,11 @@ public class ControlService {
 
   protected ControlService(EntityManager entityManager, JPAQueryFactory queryFactory,
       SampleActivityService sampleActivityService, ActivityService activityService,
-      TubeService tubeService, AuthorizationService authorizationService) {
+      AuthorizationService authorizationService) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.sampleActivityService = sampleActivityService;
     this.activityService = activityService;
-    this.tubeService = tubeService;
     this.authorizationService = authorizationService;
   }
 
@@ -101,6 +96,25 @@ public class ControlService {
   }
 
   /**
+   * Returns true if a control with this name is already in database, false otherwise.
+   *
+   * @param name
+   *          name of control
+   * @return true if a control with this name is already in database, false otherwise
+   */
+  public boolean exists(String name) {
+    if (name == null) {
+      return false;
+    }
+    authorizationService.checkUserRole();
+
+    JPAQuery<Long> query = queryFactory.select(control.id);
+    query.from(control);
+    query.where(control.name.eq(name));
+    return query.fetchCount() > 0;
+  }
+
+  /**
    * Inserts a control.
    *
    * @param control
@@ -114,7 +128,7 @@ public class ControlService {
     // Insert tube.
     Tube tube = new Tube();
     tube.setSample(control);
-    tube.setName(tubeService.generateTubeName(control, new HashSet<String>()));
+    tube.setName(control.getName());
     tube.setTimestamp(Instant.now());
     entityManager.persist(tube);
     control.setOriginalContainer(tube);

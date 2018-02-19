@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,7 +32,6 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
-import ca.qc.ircm.proview.tube.TubeService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +42,6 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,8 +62,6 @@ public class ControlServiceTest {
   @Mock
   private ActivityService activityService;
   @Mock
-  private TubeService tubeService;
-  @Mock
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -74,8 +69,6 @@ public class ControlServiceTest {
   private ArgumentCaptor<Control> controlCaptor;
   @Captor
   private ArgumentCaptor<Sample> sampleCaptor;
-  @Captor
-  private ArgumentCaptor<Collection<String>> stringsCaptor;
   private Optional<Activity> optionalActivity;
 
   /**
@@ -84,7 +77,7 @@ public class ControlServiceTest {
   @Before
   public void beforeTest() {
     controlService = new ControlService(entityManager, queryFactory, sampleActivityService,
-        activityService, tubeService, authorizationService);
+        activityService, authorizationService);
     optionalActivity = Optional.of(activity);
   }
 
@@ -121,6 +114,37 @@ public class ControlServiceTest {
   }
 
   @Test
+  public void exists_True() throws Throwable {
+    boolean exists = controlService.exists("control_01");
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(true, exists);
+  }
+
+  @Test
+  public void exists_False() throws Throwable {
+    boolean exists = controlService.exists("control_AB");
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(false, exists);
+  }
+
+  @Test
+  public void exists_SubmissionSampleName() throws Throwable {
+    boolean exists = controlService.exists("CAP_20111013_05");
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(false, exists);
+  }
+
+  @Test
+  public void exists_Null() throws Throwable {
+    boolean exists = controlService.exists(null);
+
+    assertEquals(false, exists);
+  }
+
+  @Test
   public void insert() {
     Control control = new Control();
     control.setName("nc_test_000001");
@@ -139,8 +163,6 @@ public class ControlServiceTest {
     standard2.setQuantity("2 ug");
     standard2.setComment("com2");
     control.getStandards().add(standard2);
-    when(tubeService.generateTubeName(any(Sample.class), anyCollectionOf(String.class)))
-        .thenReturn("nc_test_000001");
     when(sampleActivityService.insertControl(any(Control.class))).thenReturn(activity);
 
     controlService.insert(control);
@@ -148,8 +170,6 @@ public class ControlServiceTest {
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).insertControl(controlCaptor.capture());
-    verify(tubeService).generateTubeName(eq(control), stringsCaptor.capture());
-    assertEquals(true, stringsCaptor.getValue().isEmpty());
     verify(activityService).insert(activity);
     Control testControl = controlService.get(control.getId());
     assertEquals("nc_test_000001", testControl.getName());
