@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,21 +82,25 @@ public class SubmissionSampleService {
   }
 
   /**
-   * Returns true if a sample with this name is already in database, false otherwise.
+   * Returns true if a sample with this name is already in database for current user, false
+   * otherwise.
    *
    * @param name
    *          name of sample
-   * @return true if a sample with this name is already in database, false otherwise
+   * @return true if a sample with this name is already in database for current user, false
+   *         otherwise
    */
   public boolean exists(String name) {
     if (name == null) {
       return false;
     }
     authorizationService.checkUserRole();
+    User currentUser = authorizationService.getCurrentUser();
 
     JPAQuery<Long> query = queryFactory.select(submissionSample.id);
     query.from(submissionSample);
     query.where(submissionSample.name.eq(name));
+    query.where(submissionSample.submission.user.eq(currentUser));
     return query.fetchCount() > 0;
   }
 

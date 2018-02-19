@@ -32,6 +32,7 @@ import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -130,6 +131,9 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void exists_True() throws Throwable {
+    User user = new User(3L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
     boolean exists = submissionSampleService.exists("CAP_20111013_05");
 
     verify(authorizationService).checkUserRole();
@@ -138,6 +142,9 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void exists_False() throws Throwable {
+    User user = new User(3L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
     boolean exists = submissionSampleService.exists("CAP_20111013_80");
 
     verify(authorizationService).checkUserRole();
@@ -145,7 +152,21 @@ public class SubmissionSampleServiceTest {
   }
 
   @Test
+  public void exists_OtherUSer() throws Throwable {
+    User user = new User(10L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
+    boolean exists = submissionSampleService.exists("CAP_20111013_05");
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(false, exists);
+  }
+
+  @Test
   public void exists_ControlName() throws Throwable {
+    User user = new User(3L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
     boolean exists = submissionSampleService.exists("control_01");
 
     verify(authorizationService).checkUserRole();
@@ -154,6 +175,9 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void exists_Null() throws Throwable {
+    User user = new User(3L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
     boolean exists = submissionSampleService.exists(null);
 
     assertEquals(false, exists);
