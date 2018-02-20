@@ -50,6 +50,7 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationResult;
+import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
@@ -130,6 +131,7 @@ public class TransferViewPresenter implements BinderValidator {
   private TransferViewDesign design;
   private Binder<Transfer> binder = new BeanValidationBinder<>(Transfer.class);
   private List<TransferedSample> transfers = new ArrayList<>();
+  private ListDataProvider<TransferedSample> transfersDataProvider = DataProvider.ofItems();
   private Map<TransferedSample, Binder<TransferedSample>> transferBinders = new HashMap<>();
   private Map<TransferedSample, ComboBox<Tube>> destinationTubes = new HashMap<>();
   private Map<TransferedSample, ComboBox<Well>> destinationWells = new HashMap<>();
@@ -244,6 +246,7 @@ public class TransferViewPresenter implements BinderValidator {
     final MessageResource resources = view.getResources();
     design.transfers.addStyleName(TRANSFERS);
     design.transfers.addStyleName(COMPONENTS);
+    design.transfers.setDataProvider(transfersDataProvider);
     design.transfers.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.transfers
@@ -357,16 +360,6 @@ public class TransferViewPresenter implements BinderValidator {
       view.destinationPlateForm.setValue(plate);
       destinationWells.values().forEach(dw -> dw.setItems(plate.getWells()));
     }
-  }
-
-  private void updateTransferedSamples() {
-    design.transfers.setItems(transfers);
-    transfers.stream().forEach(ts -> {
-      binder(ts);
-      destinationTube(ts);
-      destinationWell(ts);
-    });
-    updateType();
   }
 
   private void down(TransferedSample ts) {
@@ -639,7 +632,14 @@ public class TransferViewPresenter implements BinderValidator {
       }
     }
 
-    updateTransferedSamples();
+    transfersDataProvider.getItems().addAll(transfers);
+    transfersDataProvider.refreshAll();
+    transfers.stream().forEach(ts -> {
+      binder(ts);
+      destinationTube(ts);
+      destinationWell(ts);
+    });
+    updateType();
     updateVisibility();
   }
 }

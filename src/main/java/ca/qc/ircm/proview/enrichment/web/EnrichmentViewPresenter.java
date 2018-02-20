@@ -93,6 +93,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
   private Binder<Enrichment> binder = new BeanValidationBinder<>(Enrichment.class);
   private ListDataProvider<EnrichmentProtocol> protocolsProvider;
   private List<EnrichedSample> enrichments = new ArrayList<>();
+  private ListDataProvider<EnrichedSample> enrichmentsDataProvider = DataProvider.ofItems();
   private Map<EnrichedSample, Binder<EnrichedSample>> enrichmentBinders = new HashMap<>();
   private Map<EnrichedSample, TextField> commentFields = new HashMap<>();
   @Inject
@@ -160,6 +161,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
     design.enrichmentsPanel.setCaption(resources.message(ENRICHMENTS_PANEL));
     design.enrichments.addStyleName(ENRICHMENTS);
     design.enrichments.addStyleName(COMPONENTS);
+    design.enrichments.setDataProvider(enrichmentsDataProvider);
     design.enrichments.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.enrichments.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
@@ -360,7 +362,8 @@ public class EnrichmentViewPresenter implements BinderValidator {
       }
     }
 
-    design.enrichments.setItems(enrichments);
+    enrichmentsDataProvider.getItems().addAll(enrichments);
+    enrichmentsDataProvider.refreshAll();
     enrichments.stream().forEach(ts -> {
       binder(ts);
     });

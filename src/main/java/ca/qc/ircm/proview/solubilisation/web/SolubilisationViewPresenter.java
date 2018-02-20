@@ -37,6 +37,8 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.TextField;
@@ -90,6 +92,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
   private SolubilisationViewDesign design;
   private Binder<Solubilisation> binder = new BeanValidationBinder<>(Solubilisation.class);
   private List<SolubilisedSample> solubilisations = new ArrayList<>();
+  private ListDataProvider<SolubilisedSample> solubilisationsDataProvider = DataProvider.ofItems();
   private Map<SolubilisedSample, Binder<SolubilisedSample>> solubilisationBinders = new HashMap<>();
   private Map<SolubilisedSample, TextField> solventFields = new HashMap<>();
   private Map<SolubilisedSample, TextField> solventVolumeFields = new HashMap<>();
@@ -137,6 +140,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     design.solubilisationsPanel.setCaption(resources.message(SOLUBILISATIONS_PANEL));
     design.solubilisations.addStyleName(SOLUBILISATIONS);
     design.solubilisations.addStyleName(COMPONENTS);
+    design.solubilisations.setDataProvider(solubilisationsDataProvider);
     design.solubilisations.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.solubilisations.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
@@ -380,7 +384,8 @@ public class SolubilisationViewPresenter implements BinderValidator {
       }
     }
 
-    design.solubilisations.setItems(solubilisations);
+    solubilisationsDataProvider.getItems().addAll(solubilisations);
+    solubilisationsDataProvider.refreshAll();
     solubilisations.stream().forEach(ts -> {
       binder(ts);
     });

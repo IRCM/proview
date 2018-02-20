@@ -37,6 +37,8 @@ import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeComparator;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.ComboBox;
@@ -77,6 +79,7 @@ public class ContainerSelectionFormPresenter {
   private static final Logger logger =
       LoggerFactory.getLogger(ContainerSelectionFormPresenter.class);
   private List<Sample> samples;
+  private ListDataProvider<Sample> tubesDataProvider = DataProvider.ofItems();
   private ContainerSelectionForm view;
   private ContainerSelectionFormDesign design;
   private Map<Sample, ComboBox<Tube>> tubes = new HashMap<>();
@@ -120,6 +123,7 @@ public class ContainerSelectionFormPresenter {
     design.tubesPanel.setCaption(resources.message(TUBES_PANEL));
     design.tubes.addStyleName(TUBES);
     design.tubes.addStyleName(COMPONENTS);
+    design.tubes.setDataProvider(tubesDataProvider);
     design.tubes.addColumn(Sample::getName).setId(SAMPLE).setCaption(resources.message(SAMPLE));
     design.tubes.addColumn(sample -> tubesField(sample), new ComponentRenderer())
         .setId(CONTAINER_TUBE).setCaption(resources.message(CONTAINER_TUBE)).setSortable(false);
@@ -178,7 +182,9 @@ public class ContainerSelectionFormPresenter {
 
   private void updateSamples() {
     final Locale locale = view.getLocale();
-    design.tubes.setItems(samples);
+    tubesDataProvider.getItems().clear();
+    tubesDataProvider.getItems().addAll(samples);
+    tubesDataProvider.refreshAll();
     samples.forEach(sample -> {
       List<Tube> tubes = tubeService.all(sample);
       Collections.sort(tubes,
