@@ -139,7 +139,7 @@ public class PlateService {
     if (name == null) {
       return false;
     }
-    authorizationService.checkAdminRole();
+    authorizationService.checkUserRole();
 
     JPAQuery<Long> query = queryFactory.select(plate.id);
     query.from(plate);

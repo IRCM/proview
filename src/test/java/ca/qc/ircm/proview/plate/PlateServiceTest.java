@@ -174,7 +174,7 @@ public class PlateServiceTest {
   public void nameAvailable_True() throws Exception {
     boolean available = plateService.nameAvailable("unit_test");
 
-    verify(authorizationService).checkAdminRole();
+    verify(authorizationService).checkUserRole();
     assertEquals(true, available);
   }
 
@@ -182,7 +182,7 @@ public class PlateServiceTest {
   public void nameAvailable_False() throws Exception {
     boolean available = plateService.nameAvailable("A_20111108");
 
-    verify(authorizationService).checkAdminRole();
+    verify(authorizationService).checkUserRole();
     assertEquals(false, available);
   }
 
