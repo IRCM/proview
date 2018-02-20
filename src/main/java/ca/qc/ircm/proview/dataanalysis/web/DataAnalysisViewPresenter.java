@@ -107,7 +107,7 @@ public class DataAnalysisViewPresenter implements BinderValidator {
 
   /**
    * Initializes presenter.
-   * 
+   *
    * @param view
    *          view
    */
@@ -260,7 +260,7 @@ public class DataAnalysisViewPresenter implements BinderValidator {
     if (validate()) {
       MessageResource resources = view.getResources();
       Collection<DataAnalysis> dataAnalysis = analysisBinders.keySet().stream()
-          .filter(da -> !da.getProtein().isEmpty()).collect(Collectors.toList());
+          .filter(da -> da.getProtein() != null).collect(Collectors.toList());
       dataAnalysisService.insert(dataAnalysis);
       view.showTrayNotification(resources.message(SAVED, dataAnalysis.size()));
       view.navigateTo(SubmissionsView.VIEW_NAME);

@@ -389,9 +389,6 @@ public class SubmissionAnalysesFormPresenterTest {
     DataAnalysis dataAnalysis = dataAnalyses.get(0);
     design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
     doEdit(dataAnalysis);
-    TextArea scoreField =
-        (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
-    scoreField.setValue("");
     TextField workTimeField =
         (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
     workTimeField.setValue("1.25");
@@ -442,9 +439,6 @@ public class SubmissionAnalysesFormPresenterTest {
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("Test");
-    TextField workTimeField =
-        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    workTimeField.setValue("");
     ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
         .getColumn(STATUS).getEditorBinding().getField();
     statusField.setValue(DataAnalysisStatus.CANCELLED);

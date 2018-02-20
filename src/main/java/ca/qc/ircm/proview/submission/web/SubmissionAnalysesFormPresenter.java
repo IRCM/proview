@@ -165,7 +165,7 @@ public class SubmissionAnalysesFormPresenter {
       TextField workTimeEditor = new TextField();
       workTimeEditor.addStyleName(WORK_TIME);
       design.dataAnalyses.getColumn(WORK_TIME)
-          .setEditorBinding(binder.forField(workTimeEditor)
+          .setEditorBinding(binder.forField(workTimeEditor).withNullRepresentation("")
               .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
               .withValidator((value, context) -> validateWorkTime(value, context)).bind(WORK_TIME));
       ComboBox<DataAnalysisStatus> statusEditor = new ComboBox<>();
