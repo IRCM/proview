@@ -19,19 +19,19 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COUNT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DECOLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DEVELOPMENT_TIME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
@@ -49,24 +49,24 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SE
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_COMMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_CONTAINER_TYPE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_PLATE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_QUANTITY;
@@ -75,15 +75,15 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_T
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COUNT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
@@ -101,6 +101,7 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleSupport;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.ProteinContent;
+import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -187,8 +188,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected RadioButtonGroupElement storageTemperatureOptions() {
-    return wrap(RadioButtonGroupElement.class,
-        findElement(className(STORAGE_TEMPERATURE)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(STORAGE_TEMPERATURE)));
   }
 
   protected TextFieldElement sampleCountField() {
@@ -208,8 +208,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected RadioButtonGroupElement sampleContainerTypeOptions() {
-    return wrap(RadioButtonGroupElement.class,
-        findElement(className(SAMPLES_CONTAINER_TYPE)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(SAMPLES_CONTAINER_TYPE)));
   }
 
   protected void setSampleContainerType(SampleContainerType type) {
@@ -217,16 +216,15 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement plateNameField() {
-    return wrap(TextFieldElement.class,
-        findElement(className(PLATE + "-" + PLATE_NAME)));
+    return wrap(TextFieldElement.class, findElement(className(PLATE + "-" + PLATE_NAME)));
   }
 
   protected LabelElement samplesLabel() {
-    return wrap(LabelElement.class, findElement(className(SAMPLES)));
+    return wrap(LabelElement.class, findElement(className(SAMPLES_LABEL)));
   }
 
   protected GridElement samplesGrid() {
-    return wrap(GridElement.class, findElement(className(SAMPLES_LABEL)));
+    return wrap(GridElement.class, findElement(className(SAMPLES)));
   }
 
   protected void setSampleNameInGrid(int row, String name) {
@@ -290,8 +288,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement postTranslationModificationField() {
-    return wrap(TextFieldElement.class,
-        findElement(className(POST_TRANSLATION_MODIFICATION)));
+    return wrap(TextFieldElement.class, findElement(className(POST_TRANSLATION_MODIFICATION)));
   }
 
   protected TextFieldElement quantityField() {
@@ -471,8 +468,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected RadioButtonGroupElement proteinIdentificationOptions() {
-    return wrap(RadioButtonGroupElement.class,
-        findElement(className(PROTEIN_IDENTIFICATION)));
+    return wrap(RadioButtonGroupElement.class, findElement(className(PROTEIN_IDENTIFICATION)));
   }
 
   protected void setProteinIdentification(ProteinIdentification proteinIdentification) {
@@ -480,12 +476,15 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement proteinIdentificationLinkField() {
-    return wrap(TextFieldElement.class,
-        findElement(className(PROTEIN_IDENTIFICATION_LINK)));
+    return wrap(TextFieldElement.class, findElement(className(PROTEIN_IDENTIFICATION_LINK)));
   }
 
   protected RadioButtonGroupElement quantificationOptions() {
     return wrap(RadioButtonGroupElement.class, findElement(className(QUANTIFICATION)));
+  }
+
+  protected void setQuantification(Quantification quantification) {
+    quantificationOptions().selectByText(quantification.getLabel(currentLocale()));
   }
 
   protected TextAreaElement quantificationCommentField() {
