@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -44,6 +45,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.ProteinContent;
+import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
@@ -231,6 +233,8 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setProteinIdentification(ProteinIdentification.OTHER);
     assertTrue(optional(() -> proteinIdentificationLinkField()).isPresent());
     assertTrue(optional(() -> quantificationOptions()).isPresent());
+    assertFalse(optional(() -> quantificationCommentField()).isPresent());
+    setQuantification(Quantification.SILAC);
     assertTrue(optional(() -> quantificationCommentField()).isPresent());
     setService(SMALL_MOLECULE);
     assertTrue(optional(() -> highResolutionOptions()).isPresent());

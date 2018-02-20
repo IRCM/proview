@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission;
 
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 
@@ -112,15 +111,13 @@ public class SubmissionFilter implements Predicate<Submission> {
       query.where(submission.laboratory.director.contains(directorContains));
     }
     if (anySampleNameContains != null) {
-      query.join(submission.samples, submissionSample);
-      query.where(submissionSample.name.contains(anySampleNameContains));
+      query.where(submission.samples.any().name.contains(anySampleNameContains));
     }
     if (goalContains != null) {
       query.where(submission.goal.contains(goalContains));
     }
     if (anySampleStatus != null) {
-      query.join(submission.samples, submissionSample);
-      query.where(submissionSample.status.eq(anySampleStatus));
+      query.where(submission.samples.any().status.eq(anySampleStatus));
     }
     if (dateRange != null) {
       if (dateRange.hasLowerBound()) {
@@ -139,8 +136,11 @@ public class SubmissionFilter implements Predicate<Submission> {
       }
     }
     if (results != null) {
-      query.join(submission.samples, submissionSample);
-      query.where(submissionSample.status.in(SampleStatus.analysedStatuses()));
+      if (results) {
+        query.where(submission.samples.any().status.in(SampleStatus.analysedStatuses()));
+      } else {
+        query.where(submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
+      }
     }
   }
 

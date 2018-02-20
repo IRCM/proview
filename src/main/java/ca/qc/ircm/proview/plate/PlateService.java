@@ -19,12 +19,14 @@ package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.plate.QWell.well;
+import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -139,12 +141,23 @@ public class PlateService {
     if (name == null) {
       return false;
     }
-    authorizationService.checkAdminRole();
+    authorizationService.checkUserRole();
+    User user = authorizationService.getCurrentUser();
 
-    JPAQuery<Long> query = queryFactory.select(plate.id);
-    query.from(plate);
-    query.where(plate.name.eq(name));
-    return query.fetchCount() == 0;
+    if (authorizationService.hasAdminRole()) {
+      JPAQuery<Long> query = queryFactory.select(plate.id);
+      query.from(plate);
+      query.where(plate.name.eq(name));
+      return query.fetchCount() == 0;
+    } else {
+      JPAQuery<Long> query = queryFactory.select(plate.id);
+      query.from(plate);
+      query.from(submissionSample);
+      query.where(plate.name.eq(name));
+      query.where(submissionSample.submission.user.eq(user));
+      query.where(plate.wells.any().id.eq(submissionSample.originalContainer.id));
+      return query.fetchCount() == 0;
+    }
   }
 
   /**

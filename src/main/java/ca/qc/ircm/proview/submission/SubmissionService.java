@@ -172,11 +172,9 @@ public class SubmissionService {
     query.from(submission);
     if (!authorizationService.hasAdminRole()) {
       if (authorizationService.hasLaboratoryManagerPermission(currentLaboratory)) {
-        query.join(submission.laboratory, laboratory);
-        query.where(laboratory.eq(currentLaboratory));
+        query.where(submission.laboratory.eq(currentLaboratory));
       } else {
-        query.join(submission.user, user);
-        query.where(user.eq(currentUser));
+        query.where(submission.user.eq(currentUser));
       }
     }
   }
