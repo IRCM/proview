@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package ca.qc.ircm.proview.cache;
+
+import ca.qc.ircm.proview.security.SecurityConfiguration;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.mgt.CachingSecurityManager;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+
+/**
+ * Flushes different caches.
+ */
+@Component
+public class CacheFlusher {
+  @Inject
+  private SecurityConfiguration securityConfiguration;
+
+  protected CacheFlusher() {
+  }
+
+  protected CacheFlusher(SecurityConfiguration securityConfiguration) {
+    this.securityConfiguration = securityConfiguration;
+  }
+
+  private CacheManager getCacheManager() {
+    return ((CachingSecurityManager) SecurityUtils.getSecurityManager()).getCacheManager();
+  }
+
+  /**
+   * Flushes Shiro and MyBatis caches so that permissions are correct.
+   */
+  public void flushShiroCache() {
+    getCacheManager().getCache(securityConfiguration.authorizationCacheName()).clear();
+  }
+}

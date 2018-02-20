@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="8.0.5">
+ </head>
+ <body>
+  <vaadin-vertical-layout margin="false">
+   <vaadin-panel caption="Sample" size-auto _id="samplePanel">
+    <vaadin-vertical-layout>
+     <vaadin-form-layout size-auto margin="false">
+      <vaadin-text-field caption="Name" _id="nameField"></vaadin-text-field>
+      <vaadin-combo-box caption="Support" data-item-type="ca.qc.ircm.proview.sample.SampleSupport" _id="supportField"></vaadin-combo-box>
+      <vaadin-text-field caption="Volume" _id="volumeField"></vaadin-text-field>
+      <vaadin-text-field caption="Quantity" _id="quantityField"></vaadin-text-field>
+      <vaadin-combo-box caption="Control type" data-item-type="ca.qc.ircm.proview.sample.ControlType" _id="controlTypeField"></vaadin-combo-box>
+     </vaadin-form-layout>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Standards" size-auto _id="standardsPanel">
+    <vaadin-vertical-layout>
+     <vaadin-form-layout spacing="false" size-auto margin="false">
+      <vaadin-text-field caption="Number of standards" _id="standardCountField"></vaadin-text-field>
+     </vaadin-form-layout>
+     <vaadin-horizontal-layout _id="standardsTableLayout">
+      <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.Standard" _id="standardsGrid"></vaadin-grid>
+      <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fillStandardsButton">
+        Fill down 
+      </vaadin-button>
+     </vaadin-horizontal-layout>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Explanation" size-auto _id="explanationPanel">
+    <vaadin-vertical-layout>
+     <vaadin-text-area _id="explanation"></vaadin-text-area>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-horizontal-layout>
+    <vaadin-button style-name="primary" plain-text _id="saveButton">
+      Save 
+    </vaadin-button>
+   </vaadin-horizontal-layout>
+  </vaadin-vertical-layout>
+ </body>
+</html>

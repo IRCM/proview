@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package ca.qc.ircm.proview.plate;
+
+import static org.junit.Assert.assertEquals;
+
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@NonTransactionalTestAnnotations
+public class WellTest {
+  @Test
+  public void getName() {
+    assertEquals("C-4", new Well(2, 3).getName());
+    assertEquals("Z-4", new Well(25, 3).getName());
+    assertEquals("AA-31", new Well(26, 30).getName());
+    assertEquals("AE-31", new Well(30, 30).getName());
+    assertEquals("BA-31", new Well(52, 30).getName());
+    assertEquals("ZZ-31", new Well(701, 30).getName());
+    assertEquals("AAA-31", new Well(702, 30).getName());
+    assertEquals("ZZZ-31", new Well(18277, 30).getName());
+    assertEquals("AAAA-31", new Well(18278, 30).getName());
+  }
+
+  @Test
+  public void getFullName() {
+    Plate plate = new Plate(1L, "test_plate");
+    plate.setColumnCount(31);
+    plate.setRowCount(18279);
+    plate.initWells();
+    assertEquals("test_plate (C-4)", plate.well(2, 3).getFullName());
+    assertEquals("test_plate (Z-31)", plate.well(25, 30).getFullName());
+    assertEquals("test_plate (AA-31)", plate.well(26, 30).getFullName());
+    assertEquals("test_plate (AE-31)", plate.well(30, 30).getFullName());
+    assertEquals("test_plate (BA-31)", plate.well(52, 30).getFullName());
+    assertEquals("test_plate (ZZ-31)", plate.well(701, 30).getFullName());
+    assertEquals("test_plate (AAA-31)", plate.well(702, 30).getFullName());
+    assertEquals("test_plate (ZZZ-31)", plate.well(18277, 30).getFullName());
+    assertEquals("test_plate (AAAA-31)", plate.well(18278, 30).getFullName());
+  }
+}

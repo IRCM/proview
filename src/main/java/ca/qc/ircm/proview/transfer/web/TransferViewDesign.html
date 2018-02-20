@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="8.0.5">
+ </head>
+ <body>
+  <vaadin-vertical-layout>
+   <vaadin-label plain-text _id="headerLabel">
+     Sample transfer 
+   </vaadin-label>
+   <vaadin-label style-name="failure" plain-text _id="deleted">
+     Transfer was removed 
+   </vaadin-label>
+   <vaadin-panel size-auto _id="typePanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-radio-button-group data-item-type="ca.qc.ircm.proview.sample.SampleContainerType" _id="type"></vaadin-radio-button-group>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel _id="transfersPanel">
+    <vaadin-vertical-layout>
+     <vaadin-horizontal-layout width-full>
+      <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.transfer.TransferedSample" _id="transfers" :expand></vaadin-grid>
+     </vaadin-horizontal-layout>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Destination" _id="destination">
+    <vaadin-vertical-layout _id="destinationPlateLayout">
+     <vaadin-form-layout size-auto margin="false">
+      <vaadin-combo-box data-item-type="ca.qc.ircm.proview.plate.Plate" _id="destinationPlatesField"></vaadin-combo-box>
+     </vaadin-form-layout>
+     <vaadin-panel _id="destinationPlatePanel">
+      <vaadin-vertical-layout spacing="false" margin="false" _id="destinationPlateFormLayout"></vaadin-vertical-layout>
+     </vaadin-panel>
+     <vaadin-button plain-text _id="test">
+       Test 
+     </vaadin-button>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel caption="Explanation" size-auto _id="explanationPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-text-area _id="explanation"></vaadin-text-area>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-button style-name="primary" plain-text _id="save">
+     Save 
+   </vaadin-button>
+   <vaadin-horizontal-layout _id="removeLayout">
+    <vaadin-button style-name="danger" plain-text _id="remove">
+      Undo 
+    </vaadin-button>
+    <vaadin-radio-button-group data-item-type="java.lang.String" _id="containersModification"></vaadin-radio-button-group>
+   </vaadin-horizontal-layout>
+  </vaadin-vertical-layout>
+ </body>
+</html>
