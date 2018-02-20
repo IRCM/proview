@@ -38,6 +38,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -171,7 +172,11 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void nameAvailable_True() throws Exception {
+  public void nameAvailable_ProteomicTrue() throws Exception {
+    User user = new User(1L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+
     boolean available = plateService.nameAvailable("unit_test");
 
     verify(authorizationService).checkUserRole();
@@ -179,7 +184,11 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void nameAvailable_False() throws Exception {
+  public void nameAvailable_ProteomicFalse() throws Exception {
+    User user = new User(1L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+
     boolean available = plateService.nameAvailable("A_20111108");
 
     verify(authorizationService).checkUserRole();
@@ -187,7 +196,58 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void nameAvailable_Null() throws Exception {
+  public void nameAvailable_SubmissionTrue() throws Exception {
+    User user = new User(10L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasAdminRole()).thenReturn(false);
+
+    boolean available = plateService.nameAvailable("unit_test");
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(true, available);
+  }
+
+  @Test
+  public void nameAvailable_SubmissionFalse() throws Exception {
+    User user = new User(10L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasAdminRole()).thenReturn(false);
+
+    boolean available = plateService.nameAvailable("Andrew-20171108");
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(false, available);
+  }
+
+  @Test
+  public void nameAvailable_OtherUser() throws Exception {
+    User user = new User(3L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasAdminRole()).thenReturn(false);
+
+    boolean available = plateService.nameAvailable("Andrew-20171108");
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(true, available);
+  }
+
+  @Test
+  public void nameAvailable_ProteomicNull() throws Exception {
+    User user = new User(1L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+
+    boolean available = plateService.nameAvailable(null);
+
+    assertEquals(false, available);
+  }
+
+  @Test
+  public void nameAvailable_SubmissionNull() throws Exception {
+    User user = new User(3L);
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasAdminRole()).thenReturn(false);
+
     boolean available = plateService.nameAvailable(null);
 
     assertEquals(false, available);
