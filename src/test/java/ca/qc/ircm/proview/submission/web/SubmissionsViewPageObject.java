@@ -45,16 +45,12 @@ import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
   private static final int EXPERIENCE_COLUMN = 1;
   private static final int USER_COLUMN = 2;
-  private static final int LINKED_TO_RESULTS_COLUMN = 8;
-  private static final int TREATMENTS_COLUMN = 9;
-  private static final int HISTORY_COLUMN = 10;
+  private static final int LINKED_TO_RESULTS_COLUMN = 9;
+  private static final int TREATMENTS_COLUMN = 10;
+  private static final int HISTORY_COLUMN = 11;
 
   protected void open() {
     openView(SubmissionsView.VIEW_NAME);
@@ -66,7 +62,7 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   private int gridColumnIndex(int column) {
     if (!isAdmin() && !isManager() && column >= USER_COLUMN) {
-      column--; // User column is hidden.
+      column -= 2; // User column is hidden.
     }
     if (!isAdmin()) {
       column--; // Select column is hidden.
@@ -89,17 +85,11 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     return button.getCaption();
   }
 
-  protected void selectSubmissions(int... rows) {
-    GridElement grid = submissionsGrid();
+  protected void selectSubmission(int row) {
     if (isAdmin()) {
-      Set<Integer> rowsSet = IntStream.of(rows).mapToObj(v -> v).collect(Collectors.toSet());
-      IntStream.range(0, (int) grid.getRowCount()).forEach(row -> {
-        if (rowsSet.contains(row)) {
-          grid.getCell(row, 0).findElement(tagName("input")).click();
-        }
-      });
-    } else if (rows.length > 0) {
-      grid.getRow(rows[0]).getCell(1).click();
+      submissionsGrid().getCell(row, 0).findElement(tagName("input")).click();
+    } else {
+      submissionsGrid().getCell(row, 1).click();
     }
   }
 

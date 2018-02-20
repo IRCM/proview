@@ -155,8 +155,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     String experience = experienceByRow(1);
     assertTrue(resources(SubmissionWindow.class).message(SubmissionWindow.TITLE, experience)
         .contains(submissionWindow.getCaption()));
-    assertTrue(
-        optional(() -> submissionWindow.findElement(className(SERVICE))).isPresent());
+    assertTrue(optional(() -> submissionWindow.findElement(className(SERVICE))).isPresent());
   }
 
   @Test
@@ -243,7 +242,8 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void selectContainers() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(2, 4);
+    selectSubmission(2);
+    selectSubmission(4);
 
     clickSelectContainersButton();
 
@@ -262,7 +262,8 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void updateStatus() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(2, 4);
+    selectSubmission(2);
+    selectSubmission(4);
 
     clickUpdateStatusButton();
 
@@ -274,7 +275,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void transfer() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(4);
+    selectSubmission(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -290,7 +291,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void digestion() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(4);
+    selectSubmission(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -306,7 +307,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void enrichment() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(4);
+    selectSubmission(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -322,7 +323,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void solubilisation() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(4);
+    selectSubmission(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -338,7 +339,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void dilution() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(4);
+    selectSubmission(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -354,7 +355,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void standardAddition() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(4);
+    selectSubmission(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -370,7 +371,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void msAnalysis() throws Throwable {
     admin = true;
     open();
-    selectSubmissions(4);
+    selectSubmission(4);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -384,7 +385,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   @Test
   public void dataAnalysis() throws Throwable {
     open();
-    selectSubmissions(4);
+    selectSubmission(4);
 
     clickDataAnalysisButton();
 
