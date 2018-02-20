@@ -55,9 +55,8 @@ public class SampleContainerComparator implements Comparator<SampleContainer>, S
           case WELL:
             Well well1 = (Well) o1;
             Well well2 = (Well) o2;
-            int compare = Integer.valueOf(well1.getColumn()).compareTo(well2.getColumn());
-            compare =
-                compare == 0 ? Integer.valueOf(well1.getRow()).compareTo(well2.getRow()) : compare;
+            int compare = Integer.compare(well1.getColumn(), well2.getColumn());
+            compare = compare == 0 ? Integer.compare(well1.getRow(), well2.getRow()) : compare;
             return compare;
           default:
         }

@@ -21,11 +21,13 @@ import ca.qc.ircm.utils.XmlResourceBundleControl;
 import org.thymeleaf.messageresolver.StandardMessageResolver;
 import org.thymeleaf.templateresource.ITemplateResource;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -35,8 +37,9 @@ public class XmlClasspathMessageResolver extends StandardMessageResolver {
   @Override
   protected Map<String, String> resolveMessagesForTemplate(String template,
       ITemplateResource templateResource, Locale locale) {
-    String resourceLocation =
-        Paths.get(template).getParent().resolve(templateResource.getBaseName()).toString();
+    Path parent = Paths.get(template).getParent();
+    Path file = parent != null ? parent.resolve(templateResource.getBaseName()) : null;
+    String resourceLocation = Objects.toString(file, "");
     if (resourceLocation.startsWith("/")) {
       resourceLocation = resourceLocation.substring(1);
     }
