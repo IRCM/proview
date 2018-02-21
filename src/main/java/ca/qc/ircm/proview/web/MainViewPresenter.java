@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Binder;
@@ -199,7 +200,7 @@ public class MainViewPresenter {
       logger.debug("Create forgot password for user {}", email);
       if (userService.exists(email)) {
         forgotPasswordService.insert(email,
-            (forgotPassword, locale) -> view.getUrl(MainView.VIEW_NAME) + "/"
+            (forgotPassword, locale) -> view.getUrl(ForgotPasswordView.VIEW_NAME) + "/"
                 + forgotPassword.getId() + "/" + forgotPassword.getConfirmNumber());
       }
       MessageResource resources = view.getResources();
