@@ -9,9 +9,14 @@
  </head>
  <body>
   <vaadin-vertical-layout size-full>
-   <vaadin-label style-name="h1" plain-text _id="headerLabel">
-     My submissions 
-   </vaadin-label>
+   <vaadin-horizontal-layout>
+    <vaadin-label style-name="h1" plain-text _id="headerLabel">
+      My submissions 
+    </vaadin-label>
+    <vaadin-button icon="fonticon://Vaadin-Icons/e72f" style-name="link large icon-only" plain-text _id="help" :middle>
+      Help 
+    </vaadin-button>
+   </vaadin-horizontal-layout>
    <vaadin-grid size-full data-item-type="ca.qc.ircm.proview.submission.Submission" _id="submissionsGrid" :expand></vaadin-grid>
    <vaadin-button plain-text _id="addSubmission">
      Add submission 

@@ -31,7 +31,9 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.GridSortOrder;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -42,6 +44,8 @@ import org.springframework.stereotype.Controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -71,6 +75,7 @@ public class SampleSelectionFormPresenter {
   private SampleSelectionForm view;
   private SampleSelectionFormDesign design;
   private List<Sample> selectedSamples = new ArrayList<>();
+  private ListDataProvider<Control> controlsDataProvider = DataProvider.ofItems();
   @Inject
   private SampleContainerService sampleContainerService;
   @Inject
@@ -120,7 +125,9 @@ public class SampleSelectionFormPresenter {
     design.controlsPanel.addStyleName(CONTROLS_PANEL);
     design.controlsPanel.setCaption(resources.message(CONTROLS_PANEL));
     design.controlsGrid.addStyleName(CONTROLS);
-    design.controlsGrid.setItems(controlService.all());
+    design.controlsGrid.setDataProvider(controlsDataProvider);
+    controlsDataProvider.getItems().addAll(controlService.all());
+    controlsDataProvider.refreshAll();
     design.controlsGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
     design.controlsGrid
         .addColumn(
@@ -155,8 +162,11 @@ public class SampleSelectionFormPresenter {
     selectedSamples.stream().filter(sample -> sample instanceof SubmissionSample)
         .map(sample -> (SubmissionSample) sample)
         .forEach(sample -> design.samplesGrid.select(sample));
-    selectedSamples.stream().filter(sample -> sample instanceof Control)
-        .map(sample -> (Control) sample).forEach(sample -> design.controlsGrid.select(sample));
+    design.controlsGrid.deselectAll();
+    Map<Long, Control> controlsMap = controlsDataProvider.getItems().stream()
+        .collect(Collectors.toMap(sample -> sample.getId(), sample -> sample));
+    selectedSamples.stream().filter(sample -> controlsMap.containsKey(sample.getId()))
+        .forEach(sample -> design.controlsGrid.select(controlsMap.get(sample.getId())));
   }
 
   private Button updateButton(Control control) {

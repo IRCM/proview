@@ -27,7 +27,7 @@
   <groupId>ca.qc.ircm.proteomique</groupId>
   <artifactId>proview</artifactId>
   <name>ProView</name>
-  <version>2.1</version>
+  <version>2.2</version>
   <inceptionYear>2006</inceptionYear>
   <description>LIMS managing sample analysis by mass spectrometry (MS)</description>
   <url>http://bitbucket.org/ircm/proview-2</url>
@@ -55,22 +55,22 @@
     <eclipselink.version>2.6.5</eclipselink.version>
     <querydsl.version>4.1.4</querydsl.version>
     <shiro.version>1.3.2</shiro.version>
-    <vaadin.version>8.1.6</vaadin.version>
+    <vaadin.version>8.3.1</vaadin.version>
     <vaadin.theme>${project.artifactId}</vaadin.theme>
     <vaadin-spreadsheet.version>2.0.1</vaadin-spreadsheet.version> 
     <confirmdialog.version>3.2.0</confirmdialog.version>
     <popupbutton.version>3.0.0</popupbutton.version>
     <easyuploads.version>8.0.0</easyuploads.version>
-    <guava.version>19.0</guava.version>
+    <guava.version>21.0</guava.version>
     <commons-lang3.version>3.5</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
     <mariadb-connector.version>1.5.7</mariadb-connector.version>
     <thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
     <findbugs.version>3.0.0</findbugs.version>
-    <selenium.version>3.0.1</selenium.version>
+    <selenium.version>3.4.0</selenium.version>
     <greenmail.version>1.5.2</greenmail.version>
     <testbench.skip>true</testbench.skip>
-    <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
+    <testbench.driver>org.openqa.selenium.phantomjs.PhantomJSDriver</testbench.driver>
     <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
     <resources-plugin.version>2.6</resources-plugin.version>
     <staticweave-maven-plugin.version>1.0.0</staticweave-maven-plugin.version>
@@ -770,6 +770,12 @@
       <id>chrome</id>
       <properties>
       	<testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
+      </properties>
+    </profile>
+    <profile>
+      <id>opera</id>
+      <properties>
+        <testbench.driver>org.openqa.selenium.opera.OperaDriver</testbench.driver>
       </properties>
     </profile>
     <profile>

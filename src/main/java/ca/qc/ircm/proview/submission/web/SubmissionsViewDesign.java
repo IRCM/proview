@@ -22,6 +22,7 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class SubmissionsViewDesign extends VerticalLayout {
   protected Label headerLabel;
+  protected Button help;
   protected Grid<ca.qc.ircm.proview.submission.Submission> submissionsGrid;
   protected Button addSubmission;
   protected HorizontalLayout sampleSelectionLayout;

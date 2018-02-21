@@ -50,11 +50,13 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationResult;
+import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
@@ -95,6 +97,8 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String DESTINATION_CONTAINER =
       transferedSample.destinationContainer.getMetadata().getName();
   public static final String DESTINATION_CONTAINER_DUPLICATE = DESTINATION_CONTAINER + ".duplicate";
+  public static final String DESTINATION_COUNT = DESTINATION_CONTAINER + "Count";
+  public static final String DESTINATION_COUNT_FIELD_WIDTH = "60px";
   public static final String DESTINATION_TUBE = DESTINATION_CONTAINER + "Tube";
   public static final String DESTINATION_WELL = DESTINATION_CONTAINER + "Well";
   public static final String DESTINATION_WELL_IN_USE = DESTINATION_WELL + ".inUse";
@@ -129,8 +133,10 @@ public class TransferViewPresenter implements BinderValidator {
   private TransferView view;
   private TransferViewDesign design;
   private Binder<Transfer> binder = new BeanValidationBinder<>(Transfer.class);
-  private List<TransferedSample> transfers = new ArrayList<>();
+  private Map<SampleContainer, TransferedSample> firstTransfers = new HashMap<>();
+  private ListDataProvider<TransferedSample> transfersDataProvider = DataProvider.ofItems();
   private Map<TransferedSample, Binder<TransferedSample>> transferBinders = new HashMap<>();
+  private Map<TransferedSample, TextField> destinationCounts = new HashMap<>();
   private Map<TransferedSample, ComboBox<Tube>> destinationTubes = new HashMap<>();
   private Map<TransferedSample, ComboBox<Well>> destinationWells = new HashMap<>();
   private Map<TransferedSample, Button> downs = new HashMap<>();
@@ -244,6 +250,7 @@ public class TransferViewPresenter implements BinderValidator {
     final MessageResource resources = view.getResources();
     design.transfers.addStyleName(TRANSFERS);
     design.transfers.addStyleName(COMPONENTS);
+    design.transfers.setDataProvider(transfersDataProvider);
     design.transfers.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.transfers
@@ -254,6 +261,9 @@ public class TransferViewPresenter implements BinderValidator {
         ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
             : "")
         .setId(DESTINATION).setCaption(resources.message(DESTINATION)).setHidden(true);
+    design.transfers.addColumn(ts -> destinationCount(ts), new ComponentRenderer())
+        .setId(DESTINATION_COUNT).setCaption(resources.message(DESTINATION_COUNT))
+        .setSortable(false);
     design.transfers.addColumn(ts -> destinationTube(ts), new ComponentRenderer())
         .setId(DESTINATION_TUBE).setCaption(resources.message(DESTINATION_TUBE)).setSortable(false);
     design.transfers.addColumn(ts -> destinationWell(ts), new ComponentRenderer())
@@ -267,6 +277,58 @@ public class TransferViewPresenter implements BinderValidator {
     binder.setBean(ts);
     transferBinders.put(ts, binder);
     return binder;
+  }
+
+  private TextField destinationCount(TransferedSample ts) {
+    if (destinationCounts.get(ts) != null) {
+      return destinationCounts.get(ts);
+    } else if (firstTransfers.get(ts.getContainer()).equals(ts)) {
+      TextField field = new TextField();
+      field.addStyleName(DESTINATION_COUNT);
+      field.setValue("1");
+      field.setWidth(DESTINATION_COUNT_FIELD_WIDTH);
+      field.addValueChangeListener(e -> updateCount(ts, e.getValue()));
+      destinationCounts.put(ts, field);
+      return field;
+    } else {
+      return null;
+    }
+  }
+
+  private void updateCount(TransferedSample ts, String rawCount) {
+    int count;
+    try {
+      count = Math.max(Integer.parseInt(rawCount), 1);
+    } catch (NumberFormatException e) {
+      count = 1;
+    }
+
+    SampleContainer container = ts.getContainer();
+    List<TransferedSample> others = transfersDataProvider.getItems().stream()
+        .filter(other -> other.getContainer().equals(container)).collect(Collectors.toList());
+    int countDifference = count - others.size();
+    while (countDifference > 0) {
+      TransferedSample newTs = new TransferedSample();
+      newTs.setSample(container.getSample());
+      newTs.setContainer(container);
+      transfersDataProvider.getItems().add(newTs);
+      countDifference--;
+    }
+    while (countDifference < 0) {
+      others.stream().filter(other -> !other.equals(firstTransfers.get(container))).findAny()
+          .ifPresent(other -> {
+            transfersDataProvider.getItems().remove(other);
+            others.remove(other);
+            transferBinders.remove(other);
+            destinationCounts.remove(other);
+            destinationTubes.remove(other);
+            destinationWells.remove(other);
+            downs.remove(other);
+          });
+      countDifference++;
+    }
+    transfersDataProvider.refreshAll();
+    updateBinders();
   }
 
   private ComboBox<Tube> destinationTube(TransferedSample ts) {
@@ -322,11 +384,16 @@ public class TransferViewPresenter implements BinderValidator {
   }
 
   private void updateType() {
+    transfersDataProvider.refreshAll();
+    updateBinders();
+    updateVisibility();
+  }
+
+  private void updateBinders() {
     final MessageResource generalResources = view.getGeneralResources();
     final SampleContainerType destinationType = design.type.getValue();
-    design.transfers.getDataProvider().refreshAll();
     if (binder.getBean().getId() == null) {
-      transfers.forEach(ts -> {
+      transfersDataProvider.getItems().forEach(ts -> {
         HasValue<? extends SampleContainer> destination =
             destinationType == WELL ? destinationWell(ts) : destinationTube(ts);
         ts.setDestinationContainer(destination.getValue());
@@ -335,11 +402,12 @@ public class TransferViewPresenter implements BinderValidator {
             .bind(DESTINATION_CONTAINER);
       });
     }
-    updateVisibility();
   }
 
   private void updateVisibility() {
     final SampleContainerType destinationType = design.type.getValue();
+    design.transfers.getColumn(DESTINATION_COUNT)
+        .setHidden(binder.getBean().getId() != null || destinationType != WELL);
     design.transfers.getColumn(DESTINATION_TUBE)
         .setHidden(binder.getBean().getId() != null || destinationType != TUBE);
     design.transfers.getColumn(DESTINATION_WELL)
@@ -357,16 +425,6 @@ public class TransferViewPresenter implements BinderValidator {
       view.destinationPlateForm.setValue(plate);
       destinationWells.values().forEach(dw -> dw.setItems(plate.getWells()));
     }
-  }
-
-  private void updateTransferedSamples() {
-    design.transfers.setItems(transfers);
-    transfers.stream().forEach(ts -> {
-      binder(ts);
-      destinationTube(ts);
-      destinationWell(ts);
-    });
-    updateType();
   }
 
   private void down(TransferedSample ts) {
@@ -412,7 +470,7 @@ public class TransferViewPresenter implements BinderValidator {
   private boolean validate() {
     logger.trace("Validate transfer");
     final MessageResource resources = view.getResources();
-    if (transfers.isEmpty()) {
+    if (transfersDataProvider.getItems().isEmpty()) {
       String message = resources.message(NO_CONTAINERS);
       logger.debug("Validation error: {}", message);
       view.showError(message);
@@ -444,7 +502,7 @@ public class TransferViewPresenter implements BinderValidator {
   private ValidationResult validateDestinations() {
     final MessageResource resources = view.getResources();
     Set<String> containerNames = new HashSet<>();
-    for (TransferedSample ts : transfers) {
+    for (TransferedSample ts : transfersDataProvider.getItems()) {
       if (ts.getDestinationContainer() != null
           && !containerNames.add(ts.getDestinationContainer().getName())) {
         String message = resources.message(DESTINATION_CONTAINER_DUPLICATE,
@@ -461,14 +519,8 @@ public class TransferViewPresenter implements BinderValidator {
     return ValidationResult.ok();
   }
 
-  private List<SampleContainer> sources() {
-    return new ArrayList<>(
-        transfers.stream().map(ts -> ts.getContainer()).collect(Collectors.toList()));
-  }
-
-  private List<SampleContainer> destinations() {
-    return new ArrayList<>(
-        transfers.stream().map(ts -> ts.getDestinationContainer()).collect(Collectors.toList()));
+  private List<TransferedSample> transfers() {
+    return new ArrayList<>(transfersDataProvider.getItems().stream().collect(Collectors.toList()));
   }
 
   private void test() {
@@ -485,13 +537,8 @@ public class TransferViewPresenter implements BinderValidator {
               well -> well.setSample(database.well(well.getRow(), well.getColumn()).getSample()));
         }
         // Set samples.
-        List<SampleContainer> sources = sources();
-        List<SampleContainer> destinations = destinations();
-        for (int i = 0; i < sources.size(); i++) {
-          SampleContainer source = sources.get(i);
-          SampleContainer destination = destinations.get(i);
-          destination.setSample(source.getSample());
-        }
+        List<TransferedSample> transfers = transfers();
+        transfers.forEach(ts -> ts.getDestinationContainer().setSample(ts.getSample()));
         view.destinationPlateForm.setValue(design.destinationPlatesField.getValue());
       }
     }
@@ -501,18 +548,7 @@ public class TransferViewPresenter implements BinderValidator {
     if (validate()) {
       final MessageResource resources = view.getResources();
       final MessageResource generalResources = view.getGeneralResources();
-      List<SampleContainer> sources = sources();
-      List<SampleContainer> destinations = destinations();
-      List<TransferedSample> transferedSamples = new ArrayList<>();
-      for (int i = 0; i < sources.size(); i++) {
-        SampleContainer source = sources.get(i);
-        SampleContainer destination = destinations.get(i);
-        TransferedSample ts = new TransferedSample();
-        ts.setSample(source.getSample());
-        ts.setContainer(source);
-        ts.setDestinationContainer(destination);
-        transferedSamples.add(ts);
-      }
+      List<TransferedSample> transferedSamples = transfers();
       Transfer transfer = new Transfer();
       transfer.setTreatmentSamples(transferedSamples);
       try {
@@ -521,8 +557,8 @@ public class TransferViewPresenter implements BinderValidator {
         view.showError(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
         return;
       }
-      view.showTrayNotification(resources.message(SAVED,
-          transfers.stream().map(ts -> ts.getSample().getId()).distinct().count()));
+      view.showTrayNotification(resources.message(SAVED, transfersDataProvider.getItems().stream()
+          .map(ts -> ts.getSample().getId()).distinct().count()));
       view.saveContainers(transferedSamples.stream().map(ts -> ts.getDestinationContainer())
           .collect(Collectors.toList()));
       view.navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
@@ -555,8 +591,8 @@ public class TransferViewPresenter implements BinderValidator {
         view.showError(resources.message(DESTINATION_IN_USE));
         return;
       }
-      view.showTrayNotification(resources.message(REMOVED,
-          transfers.stream().map(ts -> ts.getSample().getId()).distinct().count()));
+      view.showTrayNotification(resources.message(REMOVED, transfersDataProvider.getItems().stream()
+          .map(ts -> ts.getSample().getId()).distinct().count()));
       view.navigateTo(TransferView.VIEW_NAME, String.valueOf(transfer.getId()));
     }
   }
@@ -589,6 +625,7 @@ public class TransferViewPresenter implements BinderValidator {
   public void enter(String parameters) {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
+    List<TransferedSample> transfers = new ArrayList<>();
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       transfers = view.savedContainers().stream().map(container -> {
@@ -639,7 +676,16 @@ public class TransferViewPresenter implements BinderValidator {
       }
     }
 
-    updateTransferedSamples();
+    firstTransfers =
+        transfers.stream().collect(Collectors.toMap(ts -> ts.getContainer(), ts -> ts));
+    transfersDataProvider.getItems().addAll(transfers);
+    transfersDataProvider.refreshAll();
+    transfers.stream().forEach(ts -> {
+      binder(ts);
+      destinationTube(ts);
+      destinationWell(ts);
+    });
+    updateType();
     updateVisibility();
   }
 }

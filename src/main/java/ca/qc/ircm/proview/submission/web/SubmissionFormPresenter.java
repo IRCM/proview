@@ -366,13 +366,13 @@ public class SubmissionFormPresenter implements BinderValidator {
     view.filesUploader.setMaxFileSize(MAXIMUM_FILES_SIZE);
     design.files.addStyleName(FILES);
     design.files.addStyleName(COMPONENTS);
+    design.files.setDataProvider(filesDataProvider);
     design.files.addColumn(file -> downloadFileButton(file), new ComponentRenderer())
         .setId(FILE_FILENAME).setCaption(resources.message(FILES + "." + FILE_FILENAME))
         .setSortable(false);
     design.files.addColumn(file -> removeFileButton(file), new ComponentRenderer())
         .setId(REMOVE_FILE).setCaption(resources.message(FILES + "." + REMOVE_FILE))
         .setSortable(false);
-    design.files.setDataProvider(filesDataProvider);
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.addStyleName(REQUIRED);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));

@@ -49,4 +49,10 @@ public class SearchUtils {
   public static <V> boolean containsInstanceOf(Collection<V> values, Class<? extends V> clazz) {
     return values.stream().filter(extension -> clazz.isInstance(extension)).findAny().isPresent();
   }
+
+  @SuppressWarnings("unchecked")
+  public static <V, R extends V> Optional<R> findInstanceOf(Collection<V> values, Class<R> clazz) {
+    return values.stream().filter(extension -> clazz.isInstance(extension))
+        .map(extension -> (R) extension).findAny();
+  }
 }

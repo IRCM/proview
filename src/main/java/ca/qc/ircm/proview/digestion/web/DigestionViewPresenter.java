@@ -93,6 +93,7 @@ public class DigestionViewPresenter implements BinderValidator {
   private Binder<Digestion> binder = new BeanValidationBinder<>(Digestion.class);
   private ListDataProvider<DigestionProtocol> protocolsProvider;
   private List<DigestedSample> digestions = new ArrayList<>();
+  private ListDataProvider<DigestedSample> digestionsDataProvider = DataProvider.ofItems();
   private Map<DigestedSample, Binder<DigestedSample>> digestionBinders = new HashMap<>();
   private Map<DigestedSample, TextField> commentFields = new HashMap<>();
   @Inject
@@ -160,6 +161,7 @@ public class DigestionViewPresenter implements BinderValidator {
     design.digestionsPanel.setCaption(resources.message(DIGESTIONS_PANEL));
     design.digestions.addStyleName(DIGESTIONS);
     design.digestions.addStyleName(COMPONENTS);
+    design.digestions.setDataProvider(digestionsDataProvider);
     design.digestions.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.digestions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
@@ -360,7 +362,8 @@ public class DigestionViewPresenter implements BinderValidator {
       }
     }
 
-    design.digestions.setItems(digestions);
+    digestionsDataProvider.getItems().addAll(digestions);
+    digestionsDataProvider.refreshAll();
     digestions.stream().forEach(ts -> {
       binder(ts);
     });

@@ -94,9 +94,9 @@ public class SampleSelectionFormPresenterTest {
   private SampleSelectionFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SampleSelectionForm.class, locale);
-  private List<SubmissionSample> selectedSamples;
+  private List<Sample> selectedSamples;
   private List<SubmissionSample> allSamples;
-  private List<Control> controls;
+  private List<Control> allControls;
   private List<SampleContainer> lastContainers;
 
   /**
@@ -109,9 +109,16 @@ public class SampleSelectionFormPresenterTest {
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    allSamples = new ArrayList<>();
+    allSamples
+        .addAll(entityManager.find(SubmissionSample.class, 442L).getSubmission().getSamples());
+    allSamples
+        .addAll(entityManager.find(SubmissionSample.class, 627L).getSubmission().getSamples());
     selectedSamples = new ArrayList<>();
     selectedSamples.add(entityManager.find(SubmissionSample.class, 442L));
     selectedSamples.add(entityManager.find(SubmissionSample.class, 627L));
+    selectedSamples.add(entityManager.find(Control.class, 444L));
+    selectedSamples.stream().forEach(sample -> entityManager.detach(sample));
     Well well = new Well(1, 2);
     well.setPlate(new Plate(10L, "test_plate"));
     lastContainers = new ArrayList<>();
@@ -119,12 +126,19 @@ public class SampleSelectionFormPresenterTest {
     lastContainers.add(new Tube(10L, "test_tube"));
     when(sampleContainerService.last(selectedSamples.get(0))).thenReturn(lastContainers.get(0));
     when(sampleContainerService.last(selectedSamples.get(1))).thenReturn(lastContainers.get(1));
-    allSamples =
-        selectedSamples.stream().flatMap(sample -> sample.getSubmission().getSamples().stream())
-            .collect(Collectors.toList());
-    controls = new ArrayList<>();
-    controls.add(entityManager.find(Control.class, 444L));
-    controls.add(entityManager.find(Control.class, 448L));
+    allControls = new ArrayList<>();
+    allControls.add(entityManager.find(Control.class, 444L));
+    allControls.add(entityManager.find(Control.class, 448L));
+  }
+
+  private List<SubmissionSample> selectedSubmissionSamples() {
+    return selectedSamples.stream().filter(sample -> sample instanceof SubmissionSample)
+        .map(sample -> (SubmissionSample) sample).collect(Collectors.toList());
+  }
+
+  private List<Control> selectedControls() {
+    return selectedSamples.stream().filter(sample -> sample instanceof Control)
+        .map(sample -> (Control) sample).collect(Collectors.toList());
   }
 
   @Test
@@ -143,7 +157,7 @@ public class SampleSelectionFormPresenterTest {
   @Test
   public void captions() {
     presenter.setItems(new ArrayList<>(selectedSamples));
-    when(controlService.all()).thenReturn(controls);
+    when(controlService.all()).thenReturn(allControls);
     presenter.init(view);
 
     assertEquals(resources.message(SAMPLES_PANEL), design.samplesPanel.getCaption());
@@ -170,7 +184,7 @@ public class SampleSelectionFormPresenterTest {
     assertEquals(resources.message(STATUS), design.samplesGrid.getColumn(STATUS).getCaption());
     assertEquals(resources.message(SAMPLES_LAST_CONTAINER),
         design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getCaption());
-    SubmissionSample sample = selectedSamples.get(0);
+    SubmissionSample sample = (SubmissionSample) selectedSamples.get(0);
     assertEquals(sample.getName(),
         design.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
     assertEquals(sample.getSubmission().getExperience(),
@@ -181,7 +195,7 @@ public class SampleSelectionFormPresenterTest {
         design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getValueProvider().apply(sample));
     assertEquals("",
         design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getStyleGenerator().apply(sample));
-    sample = selectedSamples.get(1);
+    sample = (SubmissionSample) selectedSamples.get(1);
     assertEquals(sample.getName(),
         design.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
     assertEquals(sample.getSubmission().getExperience(),
@@ -204,28 +218,28 @@ public class SampleSelectionFormPresenterTest {
     assertEquals(4, columns.size());
     assertEquals(NAME, columns.get(0).getId());
     assertEquals(resources.message(NAME), design.controlsGrid.getColumn(NAME).getCaption());
-    for (Control control : controls) {
+    for (Control control : allControls) {
       assertEquals(control.getName(),
           design.controlsGrid.getColumn(NAME).getValueProvider().apply(control));
     }
     assertEquals(CONTROL_TYPE, columns.get(1).getId());
     assertEquals(resources.message(CONTROL_TYPE),
         design.controlsGrid.getColumn(CONTROL_TYPE).getCaption());
-    for (Control control : controls) {
+    for (Control control : allControls) {
       assertEquals(control.getControlType().getLabel(locale),
           design.controlsGrid.getColumn(CONTROL_TYPE).getValueProvider().apply(control));
     }
     assertEquals(ORIGINAL_CONTAINER_NAME, columns.get(2).getId());
     assertEquals(resources.message(ORIGINAL_CONTAINER_NAME),
         design.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getCaption());
-    for (Control control : controls) {
+    for (Control control : allControls) {
       assertEquals(control.getOriginalContainer().getName(),
           design.controlsGrid.getColumn(ORIGINAL_CONTAINER_NAME).getValueProvider().apply(control));
     }
     assertEquals(UPDATE, columns.get(3).getId());
     assertEquals("", design.controlsGrid.getColumn(UPDATE).getCaption());
     assertFalse(design.controlsGrid.getColumn(UPDATE).isSortable());
-    for (Control control : controls) {
+    for (Control control : allControls) {
       Button button =
           (Button) design.controlsGrid.getColumn(UPDATE).getValueProvider().apply(control);
       assertEquals(resources.message(UPDATE), button.getCaption());
@@ -244,31 +258,37 @@ public class SampleSelectionFormPresenterTest {
     assertTrue(allSamples.containsAll(dataProvider.getItems()));
     assertTrue(dataProvider.getItems().containsAll(allSamples));
     Collection<SubmissionSample> selection = design.samplesGrid.getSelectedItems();
-    assertEquals(selectedSamples.size(), selection.size());
-    assertTrue(selectedSamples.containsAll(selection));
-    assertTrue(selection.containsAll(selectedSamples));
+    assertEquals(selectedSubmissionSamples().size(), selection.size());
   }
 
   @Test
   public void defaultControls() {
-    when(controlService.all()).thenReturn(controls);
+    when(controlService.all()).thenReturn(allControls);
+    presenter.setItems(new ArrayList<>(selectedSamples));
     presenter.init(view);
 
     ListDataProvider<Control> dataProvider = dataProvider(design.controlsGrid);
 
-    assertEquals(controls.size(), dataProvider.getItems().size());
-    assertTrue(controls.containsAll(dataProvider.getItems()));
-    assertTrue(dataProvider.getItems().containsAll(controls));
+    assertEquals(allControls.size(), dataProvider.getItems().size());
+    assertTrue(allControls.containsAll(dataProvider.getItems()));
+    assertTrue(dataProvider.getItems().containsAll(allControls));
     Collection<Control> selection = design.controlsGrid.getSelectedItems();
-    assertEquals(0, selection.size());
+    assertEquals(selectedControls().size(), selection.size());
+    List<Long> selectedIds =
+        selectedControls().stream().map(sample -> sample.getId()).collect(Collectors.toList());
+    List<Long> selectionIds =
+        selection.stream().map(sample -> sample.getId()).collect(Collectors.toList());
+    assertTrue(selectedIds.containsAll(selectionIds));
+    assertTrue(selectionIds.containsAll(selectedIds));
   }
 
   @Test
   public void select_Samples() {
     presenter.setItems(new ArrayList<>(selectedSamples));
-    when(controlService.all()).thenReturn(controls);
+    when(controlService.all()).thenReturn(allControls);
     presenter.init(view);
     allSamples.forEach(sample -> design.samplesGrid.select(sample));
+    design.controlsGrid.deselectAll();
 
     design.selectButton.click();
 
@@ -279,41 +299,45 @@ public class SampleSelectionFormPresenterTest {
   @Test
   public void select_Controls() {
     presenter.setItems(new ArrayList<>(selectedSamples));
-    when(controlService.all()).thenReturn(controls);
+    when(controlService.all()).thenReturn(allControls);
     presenter.init(view);
     design.samplesGrid.deselectAll();
-    controls.forEach(sample -> design.controlsGrid.select(sample));
+    allControls.forEach(sample -> design.controlsGrid.select(sample));
 
     design.selectButton.click();
 
     verify(view).fireSaveEvent(samplesCaptor.capture());
-    assertEquals(controls, samplesCaptor.getValue());
+    assertEquals(allControls, samplesCaptor.getValue());
   }
 
   @Test
   public void select_SamplesAndControls() {
     presenter.setItems(new ArrayList<>(selectedSamples));
-    when(controlService.all()).thenReturn(controls);
+    when(controlService.all()).thenReturn(allControls);
     presenter.init(view);
-    design.controlsGrid.select(controls.get(0));
+    design.controlsGrid.select(allControls.get(1));
 
     design.selectButton.click();
 
     verify(view).fireSaveEvent(samplesCaptor.capture());
     List<Sample> samples = samplesCaptor.getValue();
     assertEquals(selectedSamples.size() + 1, samples.size());
-    assertTrue(samples.containsAll(this.selectedSamples));
-    assertEquals(selectedSamples, samples.subList(0, selectedSamples.size()));
-    assertTrue(samples.contains(this.controls.get(0)));
-    assertEquals(this.controls.get(0), samples.get(selectedSamples.size()));
+    List<Long> selectedIds =
+        selectedSamples.stream().map(sample -> sample.getId()).collect(Collectors.toList());
+    selectedIds.add(allControls.get(1).getId());
+    List<Long> selectionIds =
+        samples.stream().map(sample -> sample.getId()).collect(Collectors.toList());
+    assertTrue(selectedIds.containsAll(selectionIds));
+    assertTrue(selectionIds.containsAll(selectedIds));
   }
 
   @Test
   public void select_None() {
     presenter.setItems(new ArrayList<>(selectedSamples));
-    when(controlService.all()).thenReturn(controls);
+    when(controlService.all()).thenReturn(allControls);
     presenter.init(view);
     design.samplesGrid.deselectAll();
+    design.controlsGrid.deselectAll();
 
     design.selectButton.click();
 
@@ -324,9 +348,9 @@ public class SampleSelectionFormPresenterTest {
   @Test
   public void clear() {
     presenter.setItems(new ArrayList<>(selectedSamples));
-    when(controlService.all()).thenReturn(controls);
+    when(controlService.all()).thenReturn(allControls);
     presenter.init(view);
-    design.controlsGrid.select(controls.get(0));
+    design.controlsGrid.select(allControls.get(0));
 
     design.clearButton.click();
 
@@ -337,9 +361,9 @@ public class SampleSelectionFormPresenterTest {
   @Test
   public void updateControl() {
     presenter.setItems(new ArrayList<>(selectedSamples));
-    when(controlService.all()).thenReturn(controls);
+    when(controlService.all()).thenReturn(allControls);
     presenter.init(view);
-    Control control = controls.get(0);
+    Control control = allControls.get(0);
     Button button =
         (Button) design.controlsGrid.getColumn(UPDATE).getValueProvider().apply(control);
 

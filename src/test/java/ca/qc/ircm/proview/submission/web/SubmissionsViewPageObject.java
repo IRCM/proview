@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTIO
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.MS_ANALYSIS;
@@ -72,6 +73,14 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected LabelElement header() {
     return wrap(LabelElement.class, findElement(className(HEADER)));
+  }
+
+  protected ButtonElement help() {
+    return wrap(ButtonElement.class, findElement(className(HELP)));
+  }
+
+  protected void clickHelp() {
+    help().click();
   }
 
   protected GridElement submissionsGrid() {

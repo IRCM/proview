@@ -42,6 +42,8 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.converter.StringToIntegerConverter;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
@@ -104,9 +106,11 @@ public class MsAnalysisViewPresenter implements BinderValidator {
   private MsAnalysisView view;
   private MsAnalysisViewDesign design;
   private Binder<MsAnalysis> binder = new BeanValidationBinder<>(MsAnalysis.class);
+  private ListDataProvider<SampleContainer> containersDataProvider = DataProvider.ofItems();
   private Map<SampleContainer, Binder<ItemCount>> acquisitionCountBinders = new HashMap<>();
   private Map<SampleContainer, TextField> acquisitionCountFields = new HashMap<>();
   private List<Acquisition> acquisitions = new ArrayList<>();
+  private ListDataProvider<Acquisition> acquisitionsDataProvider = DataProvider.ofItems();
   private Map<Acquisition, Binder<Acquisition>> acquisitionBinders = new HashMap<>();
   private Map<Acquisition, TextField> acquisitionFileFields = new HashMap<>();
   private Map<Acquisition, TextField> sampleListNameFields = new HashMap<>();
@@ -175,6 +179,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     design.containersPanel.setCaption(resources.message(CONTAINERS_PANEL));
     design.containers.addStyleName(CONTAINERS);
     design.containers.addStyleName(COMPONENTS);
+    design.containers.setDataProvider(containersDataProvider);
     design.containers.addColumn(container -> container.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.containers.addColumn(container -> container.getFullName()).setId(CONTAINER)
@@ -188,6 +193,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     design.acquisitionsPanel.setCaption(resources.message(ACQUISITIONS_PANEL));
     design.acquisitions.addStyleName(ACQUISITIONS);
     design.acquisitions.addStyleName(COMPONENTS);
+    design.acquisitions.setDataProvider(acquisitionsDataProvider);
     design.acquisitions.addColumn(acquisition -> acquisition.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.acquisitions.addColumn(acquisition -> acquisition.getContainer().getFullName())
@@ -518,11 +524,13 @@ public class MsAnalysisViewPresenter implements BinderValidator {
       }
     }
 
-    design.containers.setItems(containers);
+    containersDataProvider.getItems().addAll(containers);
+    containersDataProvider.refreshAll();
     containers.stream().forEach(sc -> {
       binder(sc);
     });
-    design.acquisitions.setItems(acquisitions);
+    acquisitionsDataProvider.getItems().addAll(acquisitions);
+    acquisitionsDataProvider.refreshAll();
     acquisitions.stream().forEach(ac -> {
       binder(ac);
     });

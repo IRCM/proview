@@ -35,6 +35,8 @@ import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.TextField;
@@ -87,6 +89,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
   private StandardAdditionViewDesign design;
   private Binder<StandardAddition> binder = new BeanValidationBinder<>(StandardAddition.class);
   private List<AddedStandard> standardAdditions = new ArrayList<>();
+  private ListDataProvider<AddedStandard> standardAdditionsDataProvider = DataProvider.ofItems();
   private Map<AddedStandard, Binder<AddedStandard>> standardAdditionBinders = new HashMap<>();
   private Map<AddedStandard, TextField> nameFields = new HashMap<>();
   private Map<AddedStandard, TextField> quantityFields = new HashMap<>();
@@ -134,6 +137,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     design.standardAdditionsPanel.setCaption(resources.message(STANDARD_ADDITIONS_PANEL));
     design.standardAdditions.addStyleName(STANDARD_ADDITIONS);
     design.standardAdditions.addStyleName(COMPONENTS);
+    design.standardAdditions.setDataProvider(standardAdditionsDataProvider);
     design.standardAdditions.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.standardAdditions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
@@ -375,7 +379,8 @@ public class StandardAdditionViewPresenter implements BinderValidator {
       }
     }
 
-    design.standardAdditions.setItems(standardAdditions);
+    standardAdditionsDataProvider.getItems().addAll(standardAdditions);
+    standardAdditionsDataProvider.refreshAll();
     standardAdditions.stream().forEach(ts -> {
       binder(ts);
     });

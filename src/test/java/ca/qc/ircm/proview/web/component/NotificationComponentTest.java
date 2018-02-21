@@ -17,12 +17,15 @@
 
 package ca.qc.ircm.proview.web.component;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findInstanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.server.Page;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Notification;
@@ -37,25 +40,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
-@SuppressWarnings("deprecation")
 public class NotificationComponentTest {
   private NotificationComponent notificationComponent;
-  @Mock
-  private UI ui;
   @Mock
   private Page page;
   @Mock
   private ConnectorTracker connectorTracker;
   @Captor
   private ArgumentCaptor<Notification> notificationCaptor;
+  private TestUi ui = new TestUi();
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() {
-    when(ui.getPage()).thenReturn(page);
-    when(ui.getConnectorTracker()).thenReturn(connectorTracker);
+    when(page.getUI()).thenReturn(ui);
     notificationComponent = new TestNotificationComponent();
   }
 
@@ -65,9 +65,8 @@ public class NotificationComponentTest {
 
     notificationComponent.showError(message);
 
-    verify(ui).getPage();
-    verify(page).showNotification(notificationCaptor.capture());
-    Notification notification = notificationCaptor.getValue();
+    assertTrue(containsInstanceOf(ui.getExtensions(), Notification.class));
+    Notification notification = findInstanceOf(ui.getExtensions(), Notification.class).get();
     assertEquals(message, notification.getCaption());
     assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getStyleName());
   }
@@ -78,9 +77,8 @@ public class NotificationComponentTest {
 
     notificationComponent.showWarning(message);
 
-    verify(ui).getPage();
-    verify(page).showNotification(notificationCaptor.capture());
-    Notification notification = notificationCaptor.getValue();
+    assertTrue(containsInstanceOf(ui.getExtensions(), Notification.class));
+    Notification notification = findInstanceOf(ui.getExtensions(), Notification.class).get();
     assertEquals(message, notification.getCaption());
     assertEquals(Notification.Type.WARNING_MESSAGE.getStyle(), notification.getStyleName());
   }
@@ -91,9 +89,8 @@ public class NotificationComponentTest {
 
     notificationComponent.showMessage(message);
 
-    verify(ui).getPage();
-    verify(page).showNotification(notificationCaptor.capture());
-    Notification notification = notificationCaptor.getValue();
+    assertTrue(containsInstanceOf(ui.getExtensions(), Notification.class));
+    Notification notification = findInstanceOf(ui.getExtensions(), Notification.class).get();
     assertEquals(message, notification.getCaption());
     assertEquals(Notification.Type.HUMANIZED_MESSAGE.getStyle(), notification.getStyleName());
   }
@@ -104,9 +101,8 @@ public class NotificationComponentTest {
 
     notificationComponent.showTrayNotification(message);
 
-    verify(ui).getPage();
-    verify(page).showNotification(notificationCaptor.capture());
-    Notification notification = notificationCaptor.getValue();
+    assertTrue(containsInstanceOf(ui.getExtensions(), Notification.class));
+    Notification notification = findInstanceOf(ui.getExtensions(), Notification.class).get();
     assertEquals(message, notification.getCaption());
     assertEquals(Notification.Type.TRAY_NOTIFICATION.getStyle(), notification.getStyleName());
   }
@@ -116,6 +112,18 @@ public class NotificationComponentTest {
     @Override
     public UI getUI() {
       return ui;
+    }
+  }
+
+  @SuppressWarnings("serial")
+  private class TestUi extends UI {
+    @Override
+    public Page getPage() {
+      return page;
+    }
+
+    @Override
+    protected void init(VaadinRequest request) {
     }
   }
 }
