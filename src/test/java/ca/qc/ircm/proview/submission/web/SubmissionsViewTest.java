@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
+import static ca.qc.ircm.proview.web.HelpWindow.WINDOW_STYLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -103,6 +104,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     open();
 
     assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> help()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertTrue(optional(() -> addSubmissionButton()).isPresent());
     assertFalse(optional(() -> selectSamplesButton()).isPresent());
@@ -126,6 +128,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     open();
 
     assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> help()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertFalse(optional(() -> addSubmissionButton()).isPresent());
     assertTrue(optional(() -> selectSamplesButton()).isPresent());
@@ -141,6 +144,15 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> standardAdditionButton()).isPresent());
     assertTrue(optional(() -> msAnalysisButton()).isPresent());
     assertFalse(optional(() -> dataAnalysisButton()).isPresent());
+  }
+
+  @Test
+  public void helpWindow() throws Throwable {
+    open();
+
+    clickHelp();
+
+    assertTrue(optional(() -> findElement(className(WINDOW_STYLE))).isPresent());
   }
 
   @Test

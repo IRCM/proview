@@ -31,6 +31,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHM
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE_GOAL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.MS_ANALYSIS;
@@ -93,6 +94,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.UserPreferenceService;
+import ca.qc.ircm.proview.web.HelpWindow;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
@@ -105,6 +107,7 @@ import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.Column;
@@ -170,6 +173,8 @@ public class SubmissionsViewPresenterTest {
   @Mock
   private Provider<ContainerSelectionWindow> containerSelectionWindowProvider;
   @Mock
+  private Provider<HelpWindow> helpWindowProvider;
+  @Mock
   private SubmissionsView view;
   @Mock
   private SubmissionWindow submissionWindow;
@@ -183,6 +188,8 @@ public class SubmissionsViewPresenterTest {
   private SampleSelectionWindow sampleSelectionWindow;
   @Mock
   private ContainerSelectionWindow containerSelectionWindow;
+  @Mock
+  private HelpWindow helpWindow;
   @Mock
   private ListDataProvider<Submission> submissionsDataProvider;
   @Mock
@@ -213,7 +220,7 @@ public class SubmissionsViewPresenterTest {
         userPreferenceService, localDateFilterComponentProvider, submissionWindowProvider,
         submissionAnalysesWindowProvider, submissionTreatmentsWindowProvider,
         submissionHistoryWindowProvider, sampleSelectionWindowProvider,
-        containerSelectionWindowProvider, applicationName);
+        containerSelectionWindowProvider, helpWindowProvider, applicationName);
     design = new SubmissionsViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
@@ -229,6 +236,7 @@ public class SubmissionsViewPresenterTest {
     when(submissionHistoryWindowProvider.get()).thenReturn(submissionHistoryWindow);
     when(sampleSelectionWindowProvider.get()).thenReturn(sampleSelectionWindow);
     when(containerSelectionWindowProvider.get()).thenReturn(containerSelectionWindow);
+    when(helpWindowProvider.get()).thenReturn(helpWindow);
   }
 
   private String statusesValue(Submission submission) {
@@ -242,6 +250,10 @@ public class SubmissionsViewPresenterTest {
     presenter.init(view);
 
     assertTrue(design.headerLabel.getStyleName().contains(HEADER));
+    assertTrue(design.help.getStyleName().contains(ValoTheme.BUTTON_LINK));
+    assertTrue(design.help.getStyleName().contains(ValoTheme.BUTTON_LARGE));
+    assertTrue(design.help.getStyleName().contains(ValoTheme.BUTTON_ICON_ONLY));
+    assertTrue(design.help.getStyleName().contains(HELP));
     assertTrue(design.submissionsGrid.getStyleName().contains(SUBMISSIONS));
     assertTrue(design.submissionsGrid.getStyleName().contains(COMPONENTS));
     final Submission submission = submissions.get(0);
@@ -273,8 +285,8 @@ public class SubmissionsViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.headerLabel.getValue());
-    assertEquals(resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()),
-        design.submissionsGrid.getDescription());
+    assertEquals(resources.message(HELP), design.help.getCaption());
+    assertEquals(VaadinIcons.QUESTION_CIRCLE_O, design.help.getIcon());
     for (Column<Submission, ?> column : design.submissionsGrid.getColumns()) {
       assertEquals(resources.message(column.getId()), column.getCaption());
     }
@@ -299,6 +311,16 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(DATA_ANALYSIS), design.dataAnalysis.getCaption());
     assertEquals(resources.message(DATA_ANALYSIS_DESCRIPTION),
         design.dataAnalysis.getDescription());
+  }
+
+  @Test
+  public void help() {
+    presenter.init(view);
+
+    design.help.click();
+
+    verify(helpWindow).setHelp(
+        resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()), ContentMode.HTML);
   }
 
   @Test

@@ -45,6 +45,7 @@ import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.UserPreferenceService;
+import ca.qc.ircm.proview.web.HelpWindow;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
@@ -101,6 +102,7 @@ import javax.inject.Provider;
 public class SubmissionsViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
+  public static final String HELP = "help";
   public static final String SUBMISSIONS = "submissions";
   public static final String SUBMISSIONS_DESCRIPTION = SUBMISSIONS + ".description";
   public static final String SAMPLE_COUNT = "sampleCount";
@@ -167,6 +169,8 @@ public class SubmissionsViewPresenter {
   private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
   @Inject
   private Provider<ContainerSelectionWindow> containerSelectionWindowProvider;
+  @Inject
+  private Provider<HelpWindow> helpWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -181,7 +185,8 @@ public class SubmissionsViewPresenter {
       Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider,
       Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider,
       Provider<SampleSelectionWindow> sampleSelectionWindowProvider,
-      Provider<ContainerSelectionWindow> containerSelectionWindowProvider, String applicationName) {
+      Provider<ContainerSelectionWindow> containerSelectionWindowProvider,
+      Provider<HelpWindow> helpWindowProvider, String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
     this.userPreferenceService = userPreferenceService;
@@ -192,6 +197,7 @@ public class SubmissionsViewPresenter {
     this.submissionHistoryWindowProvider = submissionHistoryWindowProvider;
     this.sampleSelectionWindowProvider = sampleSelectionWindowProvider;
     this.containerSelectionWindowProvider = containerSelectionWindowProvider;
+    this.helpWindowProvider = helpWindowProvider;
     this.applicationName = applicationName;
   }
 
@@ -215,6 +221,14 @@ public class SubmissionsViewPresenter {
     view.setTitle(resources.message(TITLE, applicationName));
     design.headerLabel.addStyleName(HEADER);
     design.headerLabel.setValue(resources.message(HEADER));
+    design.help.addStyleName(HELP);
+    design.help.setCaption(resources.message(HELP));
+    design.help.addClickListener(e -> {
+      HelpWindow helpWindow = helpWindowProvider.get();
+      helpWindow.setHelp(resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()),
+          ContentMode.HTML);
+      view.addWindow(helpWindow);
+    });
     prepareSumissionsGrid();
     design.addSubmission.addStyleName(ADD_SUBMISSION);
     design.addSubmission.setCaption(resources.message(ADD_SUBMISSION));
@@ -276,8 +290,6 @@ public class SubmissionsViewPresenter {
     final Collator collator = Collator.getInstance(locale);
     design.submissionsGrid.addStyleName(SUBMISSIONS);
     design.submissionsGrid.addStyleName(COMPONENTS);
-    design.submissionsGrid.setDescription(
-        resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()), ContentMode.HTML);
     design.submissionsGrid.setDataProvider(searchSubmissions());
     design.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
         .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE))
