@@ -6,6 +6,7 @@ DROP INDEX name;
 ALTER TABLE plate
 ADD INDEX name (name);
 
+
 -- //@UNDO
 -- SQL to undo the change goes here.
 
