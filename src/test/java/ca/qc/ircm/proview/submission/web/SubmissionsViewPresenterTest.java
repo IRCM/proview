@@ -85,6 +85,7 @@ import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
 import ca.qc.ircm.proview.standard.web.StandardAdditionView;
+import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
@@ -315,7 +316,11 @@ public class SubmissionsViewPresenterTest {
       Button experienceButton = (Button) design.submissionsGrid.getColumn(EXPERIENCE)
           .getValueProvider().apply(submission);
       assertTrue(experienceButton.getStyleName().contains(EXPERIENCE));
-      assertEquals(submission.getExperience(), experienceButton.getCaption());
+      if (submission.getService() == Service.SMALL_MOLECULE) {
+        assertEquals(submission.getSamples().get(0).getName(), experienceButton.getCaption());
+      } else {
+        assertEquals(submission.getExperience(), experienceButton.getCaption());
+      }
     }
     assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidable());
     assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());

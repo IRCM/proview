@@ -39,6 +39,7 @@ import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
 import ca.qc.ircm.proview.standard.web.StandardAdditionView;
+import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
@@ -418,7 +419,12 @@ public class SubmissionsViewPresenter {
   private Button viewButton(Submission submission) {
     Button button = new Button();
     button.addStyleName(EXPERIENCE);
-    button.setCaption(submission.getExperience());
+    if (submission.getService() == Service.SMALL_MOLECULE) {
+      button.setCaption(
+          submission.getSamples().stream().findFirst().map(sample -> sample.getName()).orElse(""));
+    } else {
+      button.setCaption(submission.getExperience());
+    }
     button.addClickListener(e -> viewSubmission(submission));
     return button;
   }
