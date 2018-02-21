@@ -37,6 +37,8 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.TextField;
@@ -90,6 +92,7 @@ public class DilutionViewPresenter implements BinderValidator {
   private DilutionViewDesign design;
   private Binder<Dilution> binder = new BeanValidationBinder<>(Dilution.class);
   private List<DilutedSample> dilutions = new ArrayList<>();
+  private ListDataProvider<DilutedSample> dilutionsDataProvider = DataProvider.ofItems();
   private Map<DilutedSample, Binder<DilutedSample>> dilutionBinders = new HashMap<>();
   private Map<DilutedSample, TextField> sourceVolumeFields = new HashMap<>();
   private Map<DilutedSample, TextField> solventFields = new HashMap<>();
@@ -138,6 +141,7 @@ public class DilutionViewPresenter implements BinderValidator {
     design.dilutionsPanel.setCaption(resources.message(DILUTIONS_PANEL));
     design.dilutions.addStyleName(DILUTIONS);
     design.dilutions.addStyleName(COMPONENTS);
+    design.dilutions.setDataProvider(dilutionsDataProvider);
     design.dilutions.addColumn(ts -> ts.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.dilutions.addColumn(ts -> ts.getContainer().getFullName()).setId(CONTAINER)
@@ -402,7 +406,8 @@ public class DilutionViewPresenter implements BinderValidator {
       }
     }
 
-    design.dilutions.setItems(dilutions);
+    dilutionsDataProvider.getItems().addAll(dilutions);
+    dilutionsDataProvider.refreshAll();
     dilutions.stream().forEach(ts -> {
       binder(ts);
     });

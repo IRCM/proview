@@ -50,6 +50,7 @@ import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.user.ForgotPasswordWebContext;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import ca.qc.ircm.proview.user.web.RegisterView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Button;
@@ -239,8 +240,7 @@ public class MainViewPresenterTest {
   public void forgotPassword() {
     when(userService.exists(any())).thenReturn(true);
     design.forgotPasswordEmailField.setValue(username);
-    String forgotPasswordUrl = "/proview/forgotpassword";
-    when(view.getUrl(any())).thenReturn(forgotPasswordUrl);
+    when(view.getUrl(any())).thenAnswer(context -> context.getArgumentAt(0, String.class));
     when(forgotPasswordService.insert(any(), any())).thenReturn(forgotPassword);
     long id = 357604839027601809L;
     int confirmNumber = 135495343;
@@ -254,7 +254,7 @@ public class MainViewPresenterTest {
     verify(forgotPasswordService).insert(eq(username), forgotPasswordWebContextCaptor.capture());
     String url = forgotPasswordWebContextCaptor.getValue()
         .getChangeForgottenPasswordUrl(forgotPassword, locale);
-    assertEquals(forgotPasswordUrl + "/" + id + "/" + confirmNumber, url);
+    assertEquals(ForgotPasswordView.VIEW_NAME + "/" + id + "/" + confirmNumber, url);
     verify(view).showWarning(resources.message(FORGOTTED_PASSWORD));
   }
 

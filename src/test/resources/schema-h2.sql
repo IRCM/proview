@@ -153,9 +153,9 @@ CREATE TABLE IF NOT EXISTS plate (
   rowCount int NOT NULL,
   submission tinyint NOT NULL DEFAULT '0',
   insertTime datetime NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE KEY plateName (name)
+  PRIMARY KEY (id)
 );
+CREATE INDEX IF NOT EXISTS plateName ON plate (name);
 CREATE TABLE IF NOT EXISTS samplecontainer (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   type varchar(50) NOT NULL,

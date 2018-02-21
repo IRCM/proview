@@ -19,16 +19,19 @@ package ca.qc.ircm.proview.mail;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
-import org.apache.commons.mail.util.MimeMessageParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.vaadin.easyuploads.Streams;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -105,11 +108,16 @@ public class EmailService {
   }
 
   private String message(MimeMessageHelper email) {
-    MimeMessageParser parser = new MimeMessageParser(email.getMimeMessage());
-    if (parser.getPlainContent() != null) {
-      return parser.getPlainContent();
-    } else {
-      return parser.getHtmlContent();
+    try {
+      if (email.isMultipart()) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Streams.copy(email.getMimeMultipart().getBodyPart(0).getInputStream(), output);
+        return new String(output.toByteArray(), StandardCharsets.UTF_8);
+      } else {
+        return String.valueOf(email.getMimeMessage().getContent());
+      }
+    } catch (IOException | IllegalStateException | MessagingException e) {
+      return null;
     }
   }
 

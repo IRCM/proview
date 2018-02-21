@@ -30,9 +30,9 @@ public enum SampleStatus {
    */
   TO_APPROVE,
   /**
-   * Sample is not received yet.
+   * Sample is approved.
    */
-  TO_RECEIVE,
+  APPROVED,
   /**
    * Sample was received and awaits treatments and analysis.
    */
