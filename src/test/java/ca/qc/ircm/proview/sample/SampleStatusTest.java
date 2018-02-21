@@ -18,13 +18,13 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
+import static ca.qc.ircm.proview.sample.SampleStatus.APPROVED;
 import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
 import static ca.qc.ircm.proview.sample.SampleStatus.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.sample.SampleStatus.DIGESTED;
 import static ca.qc.ircm.proview.sample.SampleStatus.ENRICHED;
 import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
 import static ca.qc.ircm.proview.sample.SampleStatus.TO_APPROVE;
-import static ca.qc.ircm.proview.sample.SampleStatus.TO_RECEIVE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -56,9 +56,9 @@ public class SampleStatusTest {
   }
 
   @Test
-  public void getLabel_Toreceive() {
-    assertEquals("To receive", TO_RECEIVE.getLabel(Locale.ENGLISH));
-    assertEquals("À recevoir", TO_RECEIVE.getLabel(Locale.FRENCH));
+  public void getLabel_Approved() {
+    assertEquals("Approved", APPROVED.getLabel(Locale.ENGLISH));
+    assertEquals("Approuvé", APPROVED.getLabel(Locale.FRENCH));
   }
 
   @Test
