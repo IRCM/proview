@@ -80,11 +80,11 @@ public abstract class Sample implements Data, Named, Serializable {
   @Size(min = 3, max = 150)
   private String name;
   /**
-   * Support for this molecule.
+   * Type of sample.
    */
-  @Column(name = "support")
+  @Column(name = "type")
   @Enumerated(STRING)
-  private SampleSupport support;
+  private SampleType type;
   /**
    * Volume of Sample (generally in ul).
    */
@@ -184,12 +184,12 @@ public abstract class Sample implements Data, Named, Serializable {
     this.volume = volume;
   }
 
-  public SampleSupport getSupport() {
-    return support;
+  public SampleType getType() {
+    return type;
   }
 
-  public void setSupport(SampleSupport support) {
-    this.support = support;
+  public void setType(SampleType type) {
+    this.type = type;
   }
 
 }

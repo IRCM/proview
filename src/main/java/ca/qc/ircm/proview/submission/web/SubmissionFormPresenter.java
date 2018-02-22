@@ -26,9 +26,9 @@ import static ca.qc.ircm.proview.sample.QContaminant.contaminant;
 import static ca.qc.ircm.proview.sample.QStandard.standard;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
-import static ca.qc.ircm.proview.sample.SampleSupport.DRY;
-import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
-import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
+import static ca.qc.ircm.proview.sample.SampleType.DRY;
+import static ca.qc.ircm.proview.sample.SampleType.GEL;
+import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static ca.qc.ircm.proview.submission.GelSeparation.ONE_DIMENSION;
 import static ca.qc.ircm.proview.submission.GelThickness.ONE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
@@ -66,7 +66,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
@@ -149,7 +149,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String SERVICE = "service";
   public static final String SAMPLES = submission.samples.getMetadata().getName();
   public static final String SAMPLES_PANEL = "samplesPanel";
-  public static final String SAMPLE_SUPPORT = submissionSample.support.getMetadata().getName();
+  public static final String SAMPLE_TYPE = submissionSample.type.getMetadata().getName();
   public static final String SOLUTION_SOLVENT = submission.solutionSolvent.getMetadata().getName();
   public static final String SAMPLE_COUNT = "sampleCount";
   public static final String SAMPLE_NAME = submissionSample.name.getMetadata().getName();
@@ -341,7 +341,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.service.setItemEnabledProvider(service -> service.available);
     design.service.addValueChangeListener(e -> updateVisible());
     design.service
-        .addValueChangeListener(e -> design.sampleSupport.getDataProvider().refreshItem(GEL));
+        .addValueChangeListener(e -> design.sampleType.getDataProvider().refreshItem(GEL));
     submissionBinder.forField(design.service).asRequired(generalResources.message(REQUIRED))
         .bind(SERVICE);
     prepareSamplesComponents();
@@ -422,13 +422,13 @@ public class SubmissionFormPresenter implements BinderValidator {
     final MessageResource generalResources = view.getGeneralResources();
     design.samplesPanel.addStyleName(SAMPLES_PANEL);
     design.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
-    design.sampleSupport.addStyleName(SAMPLE_SUPPORT);
-    design.sampleSupport.setCaption(resources.message(SAMPLE_SUPPORT));
-    design.sampleSupport.setItems(SampleSupport.values());
-    design.sampleSupport.setItemCaptionGenerator(support -> support.getLabel(locale));
-    design.sampleSupport.addValueChangeListener(e -> updateVisible());
-    firstSampleBinder.forField(design.sampleSupport).asRequired(generalResources.message(REQUIRED))
-        .bind(SAMPLE_SUPPORT);
+    design.sampleType.addStyleName(SAMPLE_TYPE);
+    design.sampleType.setCaption(resources.message(SAMPLE_TYPE));
+    design.sampleType.setItems(SampleType.values());
+    design.sampleType.setItemCaptionGenerator(support -> support.getLabel(locale));
+    design.sampleType.addValueChangeListener(e -> updateVisible());
+    firstSampleBinder.forField(design.sampleType).asRequired(generalResources.message(REQUIRED))
+        .bind(SAMPLE_TYPE);
     design.solutionSolvent.addStyleName(SOLUTION_SOLVENT);
     design.solutionSolvent.setCaption(resources.message(SOLUTION_SOLVENT));
     design.solutionSolvent.setRequiredIndicatorVisible(true);
@@ -1090,12 +1090,11 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   private void updateVisible() {
     final Service service = design.service.getValue();
-    final SampleSupport support = design.sampleSupport.getValue();
+    final SampleType support = design.sampleType.getValue();
     design.sampleTypeWarning.setVisible(!readOnly);
     design.inactiveWarning.setVisible(!readOnly);
-    design.sampleSupport.setItemEnabledProvider(value -> value != GEL || service == LC_MS_MS);
-    design.solutionSolvent
-        .setVisible(service == SMALL_MOLECULE && support == SampleSupport.SOLUTION);
+    design.sampleType.setItemEnabledProvider(value -> value != GEL || service == LC_MS_MS);
+    design.solutionSolvent.setVisible(service == SMALL_MOLECULE && support == SampleType.SOLUTION);
     design.sampleName.setVisible(service == SMALL_MOLECULE);
     design.formula.setVisible(service == SMALL_MOLECULE);
     design.monoisotopicMass.setVisible(service == SMALL_MOLECULE);
@@ -1194,7 +1193,7 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   private void updateReadOnly() {
     design.service.setReadOnly(readOnly);
-    design.sampleSupport.setReadOnly(readOnly);
+    design.sampleType.setReadOnly(readOnly);
     design.solutionSolvent.setReadOnly(readOnly);
     design.sampleName.setReadOnly(readOnly);
     design.formula.setReadOnly(readOnly);
@@ -1458,7 +1457,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         valid &= validate(validateSampleName(true), view.plateComponent, plateSampleNames());
       }
       valid &= validate(() -> validateSampleNames());
-      if (sample.getSupport() == DRY || sample.getSupport() == SOLUTION) {
+      if (sample.getType() == DRY || sample.getType() == SOLUTION) {
         valid &= validate(standardCountBinder);
         for (Standard standard : standardsDataProvider.getItems()) {
           valid &= validate(standardBinders.get(standard));
@@ -1658,7 +1657,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       } else {
         submission.setSource(null);
       }
-      if (firstSample.getSupport() != GEL) {
+      if (firstSample.getType() != GEL) {
         submission.setSeparation(null);
         submission.setThickness(null);
       }
@@ -1695,14 +1694,14 @@ public class SubmissionFormPresenter implements BinderValidator {
     List<SubmissionSample> samples = new ArrayList<>();
     SubmissionSample firstSample = firstSampleBinder.getBean();
     for (SubmissionSample sample : samplesDataProvider.getItems()) {
-      sample.setSupport(firstSample.getSupport());
+      sample.setType(firstSample.getType());
       sample.setQuantity(firstSample.getQuantity());
       sample.setVolume(firstSample.getVolume());
       if (submission.getService() != INTACT_PROTEIN) {
         sample.setNumberProtein(null);
         sample.setMolecularWeight(firstSample.getMolecularWeight());
       }
-      if (firstSample.getSupport() != GEL) {
+      if (firstSample.getType() != GEL) {
         copyStandardsFromTableToSample(sample);
         copyContaminantsFromTableToSample(sample);
       }
@@ -1718,12 +1717,12 @@ public class SubmissionFormPresenter implements BinderValidator {
       if (well.getSample() != null && well.getSample() instanceof SubmissionSample
           && well.getSample().getName() != null && !well.getSample().getName().isEmpty()) {
         SubmissionSample sample = (SubmissionSample) well.getSample();
-        sample.setSupport(firstSample.getSupport());
+        sample.setType(firstSample.getType());
         sample.setQuantity(firstSample.getQuantity());
         sample.setVolume(firstSample.getVolume());
         sample.setNumberProtein(null);
         sample.setMolecularWeight(firstSample.getMolecularWeight());
-        if (firstSample.getSupport() != GEL) {
+        if (firstSample.getType() != GEL) {
           copyStandardsFromTableToSample(sample);
           copyContaminantsFromTableToSample(sample);
         }
@@ -1782,7 +1781,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     SubmissionSample firstSample;
     if (samples.isEmpty()) {
       firstSample = new SubmissionSample();
-      firstSample.setSupport(SOLUTION);
+      firstSample.setType(SOLUTION);
       firstSample.setOriginalContainer(new Tube());
       samples.add(new SubmissionSample());
       samples.get(0).setNumberProtein(1);
@@ -1797,7 +1796,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       firstSample.setOriginalContainer(original.getOriginalContainer());
       firstSample.setQuantity(original.getQuantity());
       firstSample.setStandards(original.getStandards());
-      firstSample.setSupport(original.getSupport());
+      firstSample.setType(original.getType());
       firstSample.setVolume(original.getVolume());
     }
     SampleContainer container = firstSample.getOriginalContainer();

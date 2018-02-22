@@ -22,9 +22,9 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.UNIPROT;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
-import static ca.qc.ircm.proview.sample.SampleSupport.DRY;
-import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
-import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
+import static ca.qc.ircm.proview.sample.SampleType.DRY;
+import static ca.qc.ircm.proview.sample.SampleType.GEL;
+import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
@@ -90,7 +90,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_C
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NUMBER_PROTEIN;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_QUANTITY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_SUPPORT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
@@ -155,7 +155,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
@@ -257,7 +257,7 @@ public class SubmissionFormPresenterTest {
   private final MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private final Random random = new Random();
-  private SampleSupport support = SOLUTION;
+  private SampleType type = SOLUTION;
   private int sampleCount = 2;
   private String solutionSolvent = "h2o";
   private String sampleName = "my_sample";
@@ -576,7 +576,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setId(21L);
     sample.setName(sampleName1);
-    sample.setSupport(support);
+    sample.setType(type);
     sample.setVolume(sampleVolume);
     sample.setQuantity(sampleQuantity);
     sample.setNumberProtein(sampleNumberProtein1);
@@ -616,7 +616,7 @@ public class SubmissionFormPresenterTest {
     sample = new SubmissionSample();
     sample.setId(22L);
     sample.setName(sampleName2);
-    sample.setSupport(support);
+    sample.setType(type);
     sample.setVolume(sampleVolume);
     sample.setQuantity(sampleQuantity);
     sample.setNumberProtein(sampleNumberProtein2);
@@ -844,7 +844,7 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
 
     assertTrue(design.service.isRequiredIndicatorVisible());
-    assertTrue(design.sampleSupport.isRequiredIndicatorVisible());
+    assertTrue(design.sampleType.isRequiredIndicatorVisible());
     assertTrue(design.solutionSolvent.isRequiredIndicatorVisible());
     assertTrue(design.sampleCount.isRequiredIndicatorVisible());
     assertTrue(design.sampleName.isRequiredIndicatorVisible());
@@ -993,19 +993,19 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void gelSupportDisabled_Smallmolecule() {
+  public void gelTypeDisabled_Smallmolecule() {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
 
-    assertFalse(design.sampleSupport.getItemEnabledProvider().test(GEL));
+    assertFalse(design.sampleType.getItemEnabledProvider().test(GEL));
   }
 
   @Test
-  public void gelSupportDisabled_Intactprotein() {
+  public void gelTypeDisabled_Intactprotein() {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
 
-    assertFalse(design.sampleSupport.getItemEnabledProvider().test(GEL));
+    assertFalse(design.sampleType.getItemEnabledProvider().test(GEL));
   }
 
   @Test
@@ -1172,7 +1172,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.servicePanel.getStyleName().contains(REQUIRED));
     assertTrue(design.service.getStyleName().contains(SERVICE));
     assertTrue(design.samplesPanel.getStyleName().contains(SAMPLES_PANEL));
-    assertTrue(design.sampleSupport.getStyleName().contains(SAMPLE_SUPPORT));
+    assertTrue(design.sampleType.getStyleName().contains(SAMPLE_TYPE));
     assertTrue(design.solutionSolvent.getStyleName().contains(SOLUTION_SOLVENT));
     assertTrue(design.sampleCount.getStyleName().contains(SAMPLE_COUNT));
     assertTrue(design.sampleName.getStyleName().contains(SAMPLE_NAME));
@@ -1271,10 +1271,9 @@ public class SubmissionFormPresenterTest {
           design.service.getItemCaptionGenerator().apply(service));
     }
     assertEquals(resources.message(SAMPLES_PANEL), design.samplesPanel.getCaption());
-    assertEquals(resources.message(SAMPLE_SUPPORT), design.sampleSupport.getCaption());
-    for (SampleSupport support : SampleSupport.values()) {
-      assertEquals(support.getLabel(locale),
-          design.sampleSupport.getItemCaptionGenerator().apply(support));
+    assertEquals(resources.message(SAMPLE_TYPE), design.sampleType.getCaption());
+    for (SampleType type : SampleType.values()) {
+      assertEquals(type.getLabel(locale), design.sampleType.getItemCaptionGenerator().apply(type));
     }
     assertEquals(resources.message(SOLUTION_SOLVENT), design.solutionSolvent.getCaption());
     assertEquals(resources.message(SAMPLE_COUNT), design.sampleCount.getCaption());
@@ -1461,7 +1460,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(support);
+    sample.setType(type);
     sample.setOriginalContainer(new Tube());
     sample.setStandards(Arrays.asList(new Standard()));
     sample.setContaminants(Arrays.asList(new Contaminant()));
@@ -1471,7 +1470,7 @@ public class SubmissionFormPresenterTest {
     presenter.setValue(submission);
 
     assertTrue(design.service.isReadOnly());
-    assertTrue(design.sampleSupport.isReadOnly());
+    assertTrue(design.sampleType.isReadOnly());
     assertTrue(design.solutionSolvent.isReadOnly());
     assertTrue(design.sampleCount.isReadOnly());
     assertTrue(design.sampleName.isReadOnly());
@@ -1552,7 +1551,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(support);
+    sample.setType(type);
     sample.setOriginalContainer(new Tube());
     sample.setStandards(Arrays.asList(new Standard()));
     sample.setContaminants(Arrays.asList(new Contaminant()));
@@ -1561,7 +1560,7 @@ public class SubmissionFormPresenterTest {
     presenter.setValue(submission);
 
     assertFalse(design.service.isReadOnly());
-    assertFalse(design.sampleSupport.isReadOnly());
+    assertFalse(design.sampleType.isReadOnly());
     assertFalse(design.solutionSolvent.isReadOnly());
     assertFalse(design.sampleCount.isReadOnly());
     assertFalse(design.sampleName.isReadOnly());
@@ -1642,7 +1641,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(support);
+    sample.setType(type);
     sample.setOriginalContainer(new Tube());
     sample.setStatus(SampleStatus.RECEIVED);
     sample.setStandards(Arrays.asList(new Standard()));
@@ -1660,7 +1659,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(support);
+    sample.setType(type);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
@@ -1670,7 +1669,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleTypeWarning.isVisible());
     assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -1742,12 +1741,12 @@ public class SubmissionFormPresenterTest {
   public void visible_Lcmsms_Solution() {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
 
     assertTrue(design.sampleTypeWarning.isVisible());
     assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -1819,7 +1818,7 @@ public class SubmissionFormPresenterTest {
   public void visible_Lcmsms_UsedDigestion() {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
 
     design.digestion.setValue(DIGESTED);
 
@@ -1830,7 +1829,7 @@ public class SubmissionFormPresenterTest {
   public void visible_Lcmsms_OtherDigestion() {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
 
     design.digestion.setValue(ProteolyticDigestion.OTHER);
 
@@ -1842,7 +1841,7 @@ public class SubmissionFormPresenterTest {
   public void visible_Lcmsms_Plate() {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
 
     design.sampleContainerType.setValue(WELL);
 
@@ -1858,7 +1857,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(DRY);
+    sample.setType(DRY);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
@@ -1868,7 +1867,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleTypeWarning.isVisible());
     assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -1940,12 +1939,12 @@ public class SubmissionFormPresenterTest {
   public void visible_Lcmsms_Dry() {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(DRY);
+    design.sampleType.setValue(DRY);
 
     assertTrue(design.sampleTypeWarning.isVisible());
     assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -2018,7 +2017,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(GEL);
+    sample.setType(GEL);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
@@ -2028,7 +2027,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleTypeWarning.isVisible());
     assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -2100,12 +2099,12 @@ public class SubmissionFormPresenterTest {
   public void visible_Lcmsms_Gel() {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(GEL);
+    design.sampleType.setValue(GEL);
 
     assertTrue(design.sampleTypeWarning.isVisible());
     assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -2177,7 +2176,7 @@ public class SubmissionFormPresenterTest {
   public void visible_Lcmsms_Gel_OtherColoration() {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(GEL);
+    design.sampleType.setValue(GEL);
 
     design.coloration.setValue(GelColoration.OTHER);
 
@@ -2189,7 +2188,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(SMALL_MOLECULE);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(SOLUTION);
+    sample.setType(SOLUTION);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
@@ -2199,7 +2198,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleTypeWarning.isVisible());
     assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertTrue(design.solutionSolvent.isVisible());
     assertFalse(design.sampleCount.isVisible());
     assertTrue(design.sampleName.isVisible());
@@ -2271,12 +2270,12 @@ public class SubmissionFormPresenterTest {
   public void visible_Smallmolecule_Solution() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
 
     assertTrue(design.sampleTypeWarning.isVisible());
     assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertTrue(design.solutionSolvent.isVisible());
     assertFalse(design.sampleCount.isVisible());
     assertTrue(design.sampleName.isVisible());
@@ -2348,7 +2347,7 @@ public class SubmissionFormPresenterTest {
   public void visible_Smallmolecule_Solution_OtherSolvents() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     design.otherSolvents.setValue(true);
 
     assertTrue(design.otherSolvent.isVisible());
@@ -2360,7 +2359,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(SMALL_MOLECULE);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(DRY);
+    sample.setType(DRY);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
@@ -2370,7 +2369,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleTypeWarning.isVisible());
     assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertFalse(design.sampleCount.isVisible());
     assertTrue(design.sampleName.isVisible());
@@ -2442,12 +2441,12 @@ public class SubmissionFormPresenterTest {
   public void visible_Smallmolecule_Dry() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(DRY);
+    design.sampleType.setValue(DRY);
 
     assertTrue(design.sampleTypeWarning.isVisible());
     assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertFalse(design.sampleCount.isVisible());
     assertTrue(design.sampleName.isVisible());
@@ -2520,7 +2519,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(INTACT_PROTEIN);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(SOLUTION);
+    sample.setType(SOLUTION);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
@@ -2530,7 +2529,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleTypeWarning.isVisible());
     assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -2602,12 +2601,12 @@ public class SubmissionFormPresenterTest {
   public void visible_Intactprotein_Solution() {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
 
     assertTrue(design.sampleTypeWarning.isVisible());
     assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -2680,7 +2679,7 @@ public class SubmissionFormPresenterTest {
     Submission submission = new Submission();
     submission.setService(INTACT_PROTEIN);
     SubmissionSample sample = new SubmissionSample();
-    sample.setSupport(DRY);
+    sample.setType(DRY);
     sample.setOriginalContainer(new Tube());
     submission.setSamples(Arrays.asList(sample));
     presenter.init(view);
@@ -2690,7 +2689,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleTypeWarning.isVisible());
     assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -2762,12 +2761,12 @@ public class SubmissionFormPresenterTest {
   public void visible_Intactprotein_Dry() {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(DRY);
+    design.sampleType.setValue(DRY);
 
     assertTrue(design.sampleTypeWarning.isVisible());
     assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
-    assertTrue(design.sampleSupport.isVisible());
+    assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
     assertTrue(design.sampleCount.isVisible());
     assertFalse(design.sampleName.isVisible());
@@ -2956,7 +2955,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingService() throws Throwable {
     presenter.init(view);
     design.service.setValue(null);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
 
@@ -2970,10 +2969,10 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_MissingSupport() throws Throwable {
+  public void save_MissingType() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(null);
+    design.sampleType.setValue(null);
     setFields();
     uploadFiles();
 
@@ -2982,7 +2981,7 @@ public class SubmissionFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.sampleSupport.getErrorMessage().getFormattedHtmlMessage());
+        design.sampleType.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -2990,7 +2989,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSolutionSolvent() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.solutionSolvent.setValue("");
     uploadFiles();
@@ -3008,7 +3007,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSampleCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleCount.setValue("");
     uploadFiles();
@@ -3026,7 +3025,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidSampleCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleCount.setValue("a");
     uploadFiles();
@@ -3044,7 +3043,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowOneSampleCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleCount.setValue("-1");
     uploadFiles();
@@ -3062,7 +3061,7 @@ public class SubmissionFormPresenterTest {
   public void save_AboveMaxSampleCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleCount.setValue("200000");
     uploadFiles();
@@ -3080,7 +3079,7 @@ public class SubmissionFormPresenterTest {
   public void save_DoubleSampleCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleCount.setValue("1.3");
     uploadFiles();
@@ -3098,7 +3097,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSampleName() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleName.setValue("");
     uploadFiles();
@@ -3116,7 +3115,7 @@ public class SubmissionFormPresenterTest {
   public void save_ExistsSampleName() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
     when(submissionSampleService.exists(any())).thenReturn(true);
@@ -3135,7 +3134,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingFormula() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.formula.setValue("");
     uploadFiles();
@@ -3153,7 +3152,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingMonoisotopicMass() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.monoisotopicMass.setValue("");
     uploadFiles();
@@ -3171,7 +3170,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidMonoisotopicMass() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.monoisotopicMass.setValue("a");
     uploadFiles();
@@ -3189,7 +3188,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowZeroMonoisotopicMass() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.monoisotopicMass.setValue("-1");
     uploadFiles();
@@ -3206,7 +3205,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidAverageMass() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.averageMass.setValue("a");
     uploadFiles();
@@ -3224,7 +3223,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowZeroAverageMass() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.averageMass.setValue("-1");
     uploadFiles();
@@ -3241,7 +3240,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingStorageTemperature() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.storageTemperature.setValue(null);
     uploadFiles();
@@ -3259,7 +3258,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingPlateName() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     design.plateName.setValue("");
@@ -3278,7 +3277,7 @@ public class SubmissionFormPresenterTest {
   public void save_ExistsPlateName() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     uploadFiles();
@@ -3298,7 +3297,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSampleNames_1() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNameField1.setValue("");
     uploadFiles();
@@ -3315,7 +3314,7 @@ public class SubmissionFormPresenterTest {
   public void save_ExistsSampleNames_1() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
@@ -3334,7 +3333,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSampleNames_2() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNameField2.setValue("");
     uploadFiles();
@@ -3352,7 +3351,7 @@ public class SubmissionFormPresenterTest {
   public void save_ExistsSampleNames_2() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
@@ -3371,7 +3370,7 @@ public class SubmissionFormPresenterTest {
   public void save_DuplicateSampleNames() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNameField2.setValue(sampleName1);
     uploadFiles();
@@ -3389,7 +3388,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingPlateSampleNames_1() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     plate.well(0, 0).setSample(new SubmissionSample(null, ""));
@@ -3409,7 +3408,7 @@ public class SubmissionFormPresenterTest {
   public void save_ExistsPlateSampleNames_1() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     when(submissionSampleService.exists(sampleName1)).thenReturn(true);
     setFields();
     design.sampleContainerType.setValue(WELL);
@@ -3432,7 +3431,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingPlateSampleNames_2() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     plate.well(1, 0).setSample(new SubmissionSample(null, ""));
@@ -3453,7 +3452,7 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     when(submissionSampleService.exists(sampleName2)).thenReturn(true);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     uploadFiles();
@@ -3475,7 +3474,7 @@ public class SubmissionFormPresenterTest {
   public void save_DuplicatePlateSampleNames() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     plate.well(1, 0).setSample(new SubmissionSample(null, sampleName1));
@@ -3495,7 +3494,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSampleNumberProtein1() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNumberProteinField1.setValue("");
     uploadFiles();
@@ -3513,7 +3512,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidSampleNumberProtein1() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNumberProteinField1.setValue("a");
     uploadFiles();
@@ -3531,7 +3530,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowZeroSampleNumberProtein1() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNumberProteinField1.setValue("-1");
     uploadFiles();
@@ -3548,7 +3547,7 @@ public class SubmissionFormPresenterTest {
   public void save_DoubleSampleNumberProtein1() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNumberProteinField1.setValue("1.2");
     uploadFiles();
@@ -3566,7 +3565,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSampleNumberProtein2() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNumberProteinField2.setValue("");
     uploadFiles();
@@ -3584,7 +3583,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidSampleNumberProtein2() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNumberProteinField2.setValue("a");
     uploadFiles();
@@ -3602,7 +3601,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowZeroSampleNumberProtein2() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNumberProteinField2.setValue("-1");
     uploadFiles();
@@ -3619,7 +3618,7 @@ public class SubmissionFormPresenterTest {
   public void save_DoubleSampleNumberProtein2() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleNumberProteinField2.setValue("1.2");
     uploadFiles();
@@ -3637,7 +3636,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingProteinWeight1() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleProteinWeightField1.setValue("");
     uploadFiles();
@@ -3655,7 +3654,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidProteinWeight1() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleProteinWeightField1.setValue("a");
     uploadFiles();
@@ -3673,7 +3672,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowZeroProteinWeight1() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleProteinWeightField1.setValue("-1");
     uploadFiles();
@@ -3690,7 +3689,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingProteinWeight2() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleProteinWeightField2.setValue("");
     uploadFiles();
@@ -3708,7 +3707,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidProteinWeight2() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleProteinWeightField2.setValue("a");
     uploadFiles();
@@ -3726,7 +3725,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowZeroProteinWeight2() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     sampleProteinWeightField2.setValue("-1");
     uploadFiles();
@@ -3743,7 +3742,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingExperience() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.experience.setValue("");
     uploadFiles();
@@ -3761,7 +3760,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingTaxonomy() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.taxonomy.setValue("");
     uploadFiles();
@@ -3779,7 +3778,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidProteinWeight() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.proteinWeight.setValue("a");
     uploadFiles();
@@ -3797,7 +3796,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowZeroProteinWeight() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.proteinWeight.setValue("-1");
     uploadFiles();
@@ -3814,7 +3813,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSampleQuantity() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleQuantity.setValue("");
     uploadFiles();
@@ -3832,7 +3831,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSampleVolume() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleVolume.setValue("");
     uploadFiles();
@@ -3850,7 +3849,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingStandardCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.standardCount.setValue("");
     uploadFiles();
@@ -3865,7 +3864,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidStandardCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.standardCount.setValue("a");
     uploadFiles();
@@ -3883,7 +3882,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowZeroStandardCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.standardCount.setValue("-1");
     uploadFiles();
@@ -3901,7 +3900,7 @@ public class SubmissionFormPresenterTest {
   public void save_AboveMaxStandardCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.standardCount.setValue("200");
     uploadFiles();
@@ -3919,7 +3918,7 @@ public class SubmissionFormPresenterTest {
   public void save_DoubleStandardCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.standardCount.setValue("1.2");
     uploadFiles();
@@ -3937,7 +3936,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingStandardName_1() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     standardNameField1.setValue("");
     uploadFiles();
@@ -3955,7 +3954,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingStandardName_2() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     standardNameField2.setValue("");
     uploadFiles();
@@ -3973,7 +3972,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingStandardQuantity_1() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     standardQuantityField1.setValue("");
     uploadFiles();
@@ -3991,7 +3990,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingStandardQuantity_2() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     standardQuantityField2.setValue("");
     uploadFiles();
@@ -4009,7 +4008,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingContaminantCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.contaminantCount.setValue("");
     uploadFiles();
@@ -4024,7 +4023,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidContaminantCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.contaminantCount.setValue("a");
     uploadFiles();
@@ -4042,7 +4041,7 @@ public class SubmissionFormPresenterTest {
   public void save_BelowZeroContaminantCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.contaminantCount.setValue("-1");
     uploadFiles();
@@ -4060,7 +4059,7 @@ public class SubmissionFormPresenterTest {
   public void save_AboveMaxContaminantCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.contaminantCount.setValue("200");
     uploadFiles();
@@ -4078,7 +4077,7 @@ public class SubmissionFormPresenterTest {
   public void save_DoubleContaminantCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.contaminantCount.setValue("1.2");
     uploadFiles();
@@ -4096,7 +4095,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingContaminantName_1() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     contaminantNameField1.setValue("");
     uploadFiles();
@@ -4114,7 +4113,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingContaminantName_2() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     contaminantNameField2.setValue("");
     uploadFiles();
@@ -4132,7 +4131,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingContaminantQuantity_1() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     contaminantQuantityField1.setValue("");
     uploadFiles();
@@ -4150,7 +4149,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingContaminantQuantity_2() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     contaminantQuantityField2.setValue("");
     uploadFiles();
@@ -4168,7 +4167,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingGelSeparation() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(GEL);
+    design.sampleType.setValue(GEL);
     setFields();
     design.separation.setValue(null);
     uploadFiles();
@@ -4186,7 +4185,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingGelThickness() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(GEL);
+    design.sampleType.setValue(GEL);
     setFields();
     design.thickness.setValue(null);
     uploadFiles();
@@ -4204,7 +4203,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingOtherGelColoration() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(GEL);
+    design.sampleType.setValue(GEL);
     setFields();
     design.coloration.setValue(GelColoration.OTHER);
     design.otherColoration.setValue("");
@@ -4223,7 +4222,7 @@ public class SubmissionFormPresenterTest {
   public void save_InvalidWeightMarkerQuantity() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(GEL);
+    design.sampleType.setValue(GEL);
     setFields();
     design.weightMarkerQuantity.setValue("a");
     uploadFiles();
@@ -4241,7 +4240,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingDigestion() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.digestion.setValue(null);
     uploadFiles();
@@ -4259,7 +4258,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingUsedDigestion() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.digestion.setValue(DIGESTED);
     design.usedProteolyticDigestionMethod.setValue("");
@@ -4278,7 +4277,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingOtherDigestion() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.digestion.setValue(ProteolyticDigestion.OTHER);
     design.otherProteolyticDigestionMethod.setValue("");
@@ -4297,7 +4296,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingInjectionType() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.injectionType.setValue(null);
     uploadFiles();
@@ -4315,7 +4314,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSource() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.source.setValue(null);
     uploadFiles();
@@ -4333,7 +4332,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingProteinContent() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.proteinContent.setValue(null);
     uploadFiles();
@@ -4351,7 +4350,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingInstrument() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.instrument.setValue(null);
     uploadFiles();
@@ -4366,7 +4365,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingProteinIdentification() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.proteinIdentification.setValue(null);
     uploadFiles();
@@ -4384,7 +4383,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingProteinIdentificationLink() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.proteinIdentification.setValue(ProteinIdentification.OTHER);
     design.proteinIdentificationLink.setValue("");
@@ -4403,7 +4402,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingQuantificationComment_Silac() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.quantification.setValue(Quantification.SILAC);
     design.quantificationComment.setValue("");
@@ -4422,7 +4421,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingQuantificationComment_Tmt() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.quantification.setValue(Quantification.TMT);
     design.quantificationComment.setValue("");
@@ -4441,7 +4440,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingHighResolution() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.highResolution.setValue(null);
     uploadFiles();
@@ -4459,7 +4458,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingSolvents() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.acetonitrileSolvents.setValue(false);
     design.methanolSolvents.setValue(false);
@@ -4480,7 +4479,7 @@ public class SubmissionFormPresenterTest {
   public void save_MissingOtherSolvent() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.otherSolvents.setValue(true);
     design.otherSolvent.setValue("");
@@ -4520,7 +4519,7 @@ public class SubmissionFormPresenterTest {
   public void save_Lcmsms_Solution() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
 
@@ -4583,7 +4582,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -4612,7 +4611,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -4653,7 +4652,7 @@ public class SubmissionFormPresenterTest {
   public void save_Lcmsms_Solution_Plate() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     uploadFiles();
@@ -4717,7 +4716,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -4752,7 +4751,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -4800,7 +4799,7 @@ public class SubmissionFormPresenterTest {
     final ProteolyticDigestion digestion = ProteolyticDigestion.OTHER;
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.digestion.setValue(digestion);
     design.otherProteolyticDigestionMethod.setValue(otherDigestion);
@@ -4865,7 +4864,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -4894,7 +4893,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -4933,10 +4932,10 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_Lcmsms_Dry() throws Throwable {
-    final SampleSupport support = DRY;
+    final SampleType type = DRY;
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
 
@@ -4999,7 +4998,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5028,7 +5027,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5067,10 +5066,10 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_Lcmsms_Dry_Plate() throws Throwable {
-    final SampleSupport support = DRY;
+    final SampleType type = DRY;
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     uploadFiles();
@@ -5134,7 +5133,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5169,7 +5168,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5216,7 +5215,7 @@ public class SubmissionFormPresenterTest {
   public void save_Lcmsms_Gel() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(GEL);
+    design.sampleType.setValue(GEL);
     setFields();
     uploadFiles();
 
@@ -5279,7 +5278,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(GEL, sample.getSupport());
+    assertEquals(GEL, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(null, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5292,7 +5291,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(GEL, sample.getSupport());
+    assertEquals(GEL, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(null, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5317,7 +5316,7 @@ public class SubmissionFormPresenterTest {
   public void save_Lcmsms_Gel_Plate() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(GEL);
+    design.sampleType.setValue(GEL);
     setFields();
     design.sampleContainerType.setValue(WELL);
     uploadFiles();
@@ -5381,7 +5380,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(GEL, sample.getSupport());
+    assertEquals(GEL, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(null, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5400,7 +5399,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(GEL, sample.getSupport());
+    assertEquals(GEL, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(null, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5431,7 +5430,7 @@ public class SubmissionFormPresenterTest {
   public void save_SmallMolecule_Solution() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
 
@@ -5509,7 +5508,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(null, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5532,10 +5531,10 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_SmallMolecule_Dry() throws Throwable {
-    final SampleSupport support = DRY;
+    final SampleType type = DRY;
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
 
@@ -5613,7 +5612,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(null, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -5638,7 +5637,7 @@ public class SubmissionFormPresenterTest {
   public void save_SmallMolecule_Plate() throws Throwable {
     presenter.init(view);
     design.service.setValue(SMALL_MOLECULE);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     uploadFiles();
@@ -5658,7 +5657,7 @@ public class SubmissionFormPresenterTest {
   public void save_Intactprotein_Solution() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
 
@@ -5721,7 +5720,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals((Integer) sampleNumberProtein1, sample.getNumberProtein());
@@ -5750,7 +5749,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
@@ -5789,10 +5788,10 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_Intactprotein_Dry() throws Throwable {
-    final SampleSupport support = DRY;
+    final SampleType type = DRY;
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
 
@@ -5855,7 +5854,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals((Integer) sampleNumberProtein1, sample.getNumberProtein());
@@ -5884,7 +5883,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(null, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
@@ -5925,7 +5924,7 @@ public class SubmissionFormPresenterTest {
   public void save_IntactProtein_Plate() throws Throwable {
     presenter.init(view);
     design.service.setValue(INTACT_PROTEIN);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     design.sampleContainerType.setValue(WELL);
     uploadFiles();
@@ -5957,7 +5956,7 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
 
@@ -6020,7 +6019,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals((Long) 447L, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -6052,7 +6051,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -6176,7 +6175,7 @@ public class SubmissionFormPresenterTest {
       SubmissionSample sample = submission.getSamples().get(i);
       assertEquals(dsample.getId(), sample.getId());
       assertEquals(dsample.getName(), sample.getName());
-      assertEquals(dsample.getSupport(), sample.getSupport());
+      assertEquals(dsample.getType(), sample.getType());
       assertEquals(dsample.getVolume(), sample.getVolume());
       assertEquals(dsample.getQuantity(), sample.getQuantity());
       assertEquals(dsample.getNumberProtein(), sample.getNumberProtein());
@@ -6223,7 +6222,7 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
 
@@ -6286,7 +6285,7 @@ public class SubmissionFormPresenterTest {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals((Long) 559L, sample.getId());
     assertEquals(sampleName1, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -6318,7 +6317,7 @@ public class SubmissionFormPresenterTest {
     sample = submission.getSamples().get(1);
     assertEquals((Long) 560L, sample.getId());
     assertEquals(sampleName2, sample.getName());
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
@@ -6365,7 +6364,7 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
     design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
+    design.sampleType.setValue(type);
     setFields();
     uploadFiles();
     doThrow(new PersistenceException("Could not update submission")).when(submissionService)
@@ -6385,7 +6384,7 @@ public class SubmissionFormPresenterTest {
     presenter.setValue(submission);
 
     assertEquals(LC_MS_MS, design.service.getValue());
-    assertEquals(SOLUTION, design.sampleSupport.getValue());
+    assertEquals(SOLUTION, design.sampleType.getValue());
     assertEquals(solutionSolvent, design.solutionSolvent.getValue());
     assertEquals(sampleName1, design.sampleName.getValue());
     assertEquals(formula, design.formula.getValue());
@@ -6476,7 +6475,7 @@ public class SubmissionFormPresenterTest {
     presenter.setValue(submission);
 
     assertEquals(LC_MS_MS, design.service.getValue());
-    assertEquals(SOLUTION, design.sampleSupport.getValue());
+    assertEquals(SOLUTION, design.sampleType.getValue());
     assertEquals(solutionSolvent, design.solutionSolvent.getValue());
     assertEquals(sampleName1, design.sampleName.getValue());
     assertEquals(formula, design.formula.getValue());
@@ -6566,7 +6565,7 @@ public class SubmissionFormPresenterTest {
     presenter.setValue(submission);
 
     assertEquals(SMALL_MOLECULE, design.service.getValue());
-    assertEquals(SOLUTION, design.sampleSupport.getValue());
+    assertEquals(SOLUTION, design.sampleType.getValue());
     assertEquals(solutionSolvent, design.solutionSolvent.getValue());
     assertEquals(sampleName1, design.sampleName.getValue());
     assertEquals(formula, design.formula.getValue());
@@ -6654,7 +6653,7 @@ public class SubmissionFormPresenterTest {
     presenter.setValue(submission);
 
     assertEquals(INTACT_PROTEIN, design.service.getValue());
-    assertEquals(SOLUTION, design.sampleSupport.getValue());
+    assertEquals(SOLUTION, design.sampleType.getValue());
     assertEquals(solutionSolvent, design.solutionSolvent.getValue());
     assertEquals(sampleName1, design.sampleName.getValue());
     assertEquals(formula, design.formula.getValue());

@@ -70,7 +70,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLES_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_QUANTITY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_SUPPORT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
@@ -98,7 +98,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainerType;
-import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
@@ -151,12 +151,12 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(PanelElement.class, findElement(className(SAMPLES_PANEL)));
   }
 
-  protected RadioButtonGroupElement sampleSupportOptions() {
-    return wrap(RadioButtonGroupElement.class, findElement(className(SAMPLE_SUPPORT)));
+  protected RadioButtonGroupElement sampleTypeOptions() {
+    return wrap(RadioButtonGroupElement.class, findElement(className(SAMPLE_TYPE)));
   }
 
-  protected void setSampleSupport(SampleSupport support) {
-    sampleSupportOptions().setValue(support.getLabel(currentLocale()));
+  protected void setSampleType(SampleType type) {
+    sampleTypeOptions().setValue(type.getLabel(currentLocale()));
   }
 
   protected TextFieldElement solutionSolventField() {

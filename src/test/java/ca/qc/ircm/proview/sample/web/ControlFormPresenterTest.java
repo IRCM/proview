@@ -34,7 +34,7 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COMMEN
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COUNT;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_QUANTITY;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SUPPORT;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
@@ -58,7 +58,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.ControlType;
-import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -103,7 +103,7 @@ public class ControlFormPresenterTest {
   private MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private String name = "ADH";
-  private SampleSupport support = SampleSupport.SOLUTION;
+  private SampleType type = SampleType.SOLUTION;
   private String quantity = "10 g/L";
   private String volume = "10000000.0 ul";
   private ControlType controlType = ControlType.NEGATIVE_CONTROL;
@@ -134,7 +134,7 @@ public class ControlFormPresenterTest {
 
   private void setFields() {
     design.nameField.setValue(name);
-    design.supportField.setValue(support);
+    design.type.setValue(type);
     design.quantityField.setValue(quantity);
     design.volumeField.setValue(volume);
     design.controlTypeField.setValue(controlType);
@@ -166,7 +166,7 @@ public class ControlFormPresenterTest {
 
     assertTrue(design.samplePanel.getStyleName().contains(SAMPLE_PANEL));
     assertTrue(design.nameField.getStyleName().contains(NAME));
-    assertTrue(design.supportField.getStyleName().contains(SUPPORT));
+    assertTrue(design.type.getStyleName().contains(TYPE));
     assertTrue(design.quantityField.getStyleName().contains(QUANTITY));
     assertTrue(design.volumeField.getStyleName().contains(VOLUME));
     assertTrue(design.controlTypeField.getStyleName().contains(CONTROL_TYPE));
@@ -204,10 +204,9 @@ public class ControlFormPresenterTest {
 
     assertEquals(resources.message(SAMPLE_PANEL), design.samplePanel.getCaption());
     assertEquals(resources.message(NAME), design.nameField.getCaption());
-    assertEquals(resources.message(SUPPORT), design.supportField.getCaption());
-    for (SampleSupport support : SampleSupport.values()) {
-      assertEquals(support.getLabel(locale),
-          design.supportField.getItemCaptionGenerator().apply(support));
+    assertEquals(resources.message(TYPE), design.type.getCaption());
+    for (SampleType type : SampleType.values()) {
+      assertEquals(type.getLabel(locale), design.type.getItemCaptionGenerator().apply(type));
     }
     assertEquals(resources.message(QUANTITY), design.quantityField.getCaption());
     assertEquals(resources.message(QUANTITY + "." + EXAMPLE),
@@ -242,13 +241,12 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void supportChoices() {
+  public void typeChoices() {
     presenter.init(view);
 
-    assertEquals(SampleSupport.values().length,
-        dataProvider(design.supportField).getItems().size());
-    for (SampleSupport support : SampleSupport.values()) {
-      assertTrue(dataProvider(design.supportField).getItems().contains(support));
+    assertEquals(SampleType.values().length, dataProvider(design.type).getItems().size());
+    for (SampleType type : SampleType.values()) {
+      assertTrue(dataProvider(design.type).getItems().contains(type));
     }
   }
 
@@ -284,7 +282,7 @@ public class ControlFormPresenterTest {
     presenter.init(view);
 
     assertTrue(design.nameField.isRequiredIndicatorVisible());
-    assertTrue(design.supportField.isRequiredIndicatorVisible());
+    assertTrue(design.type.isRequiredIndicatorVisible());
     assertFalse(design.quantityField.isRequiredIndicatorVisible());
     assertFalse(design.volumeField.isRequiredIndicatorVisible());
     assertTrue(design.controlTypeField.isRequiredIndicatorVisible());
@@ -297,7 +295,7 @@ public class ControlFormPresenterTest {
     presenter.setReadOnly(true);
 
     assertTrue(design.nameField.isReadOnly());
-    assertTrue(design.supportField.isReadOnly());
+    assertTrue(design.type.isReadOnly());
     assertTrue(design.quantityField.isReadOnly());
     assertTrue(design.volumeField.isReadOnly());
     assertTrue(design.controlTypeField.isReadOnly());
@@ -337,7 +335,7 @@ public class ControlFormPresenterTest {
         .getColumn(STANDARD_COMMENT).getValueProvider().apply(standard);
     presenter.setReadOnly(true);
     assertTrue(design.nameField.isReadOnly());
-    assertTrue(design.supportField.isReadOnly());
+    assertTrue(design.type.isReadOnly());
     assertTrue(design.quantityField.isReadOnly());
     assertTrue(design.volumeField.isReadOnly());
     assertTrue(design.controlTypeField.isReadOnly());
@@ -358,7 +356,7 @@ public class ControlFormPresenterTest {
     presenter.setValue(control);
 
     assertTrue(design.nameField.isReadOnly());
-    assertTrue(design.supportField.isReadOnly());
+    assertTrue(design.type.isReadOnly());
     assertTrue(design.quantityField.isReadOnly());
     assertTrue(design.volumeField.isReadOnly());
     assertTrue(design.controlTypeField.isReadOnly());
@@ -386,7 +384,7 @@ public class ControlFormPresenterTest {
     presenter.init(view);
 
     assertFalse(design.nameField.isReadOnly());
-    assertFalse(design.supportField.isReadOnly());
+    assertFalse(design.type.isReadOnly());
     assertFalse(design.quantityField.isReadOnly());
     assertFalse(design.volumeField.isReadOnly());
     assertFalse(design.controlTypeField.isReadOnly());
@@ -426,7 +424,7 @@ public class ControlFormPresenterTest {
         .getColumn(STANDARD_COMMENT).getValueProvider().apply(standard);
     presenter.setReadOnly(false);
     assertFalse(design.nameField.isReadOnly());
-    assertFalse(design.supportField.isReadOnly());
+    assertFalse(design.type.isReadOnly());
     assertFalse(design.quantityField.isReadOnly());
     assertFalse(design.volumeField.isReadOnly());
     assertFalse(design.controlTypeField.isReadOnly());
@@ -446,7 +444,7 @@ public class ControlFormPresenterTest {
     presenter.setValue(control);
 
     assertFalse(design.nameField.isReadOnly());
-    assertFalse(design.supportField.isReadOnly());
+    assertFalse(design.type.isReadOnly());
     assertFalse(design.quantityField.isReadOnly());
     assertFalse(design.volumeField.isReadOnly());
     assertFalse(design.controlTypeField.isReadOnly());
@@ -736,7 +734,7 @@ public class ControlFormPresenterTest {
     verify(controlService).insert(controlCaptor.capture());
     Control control = controlCaptor.getValue();
     assertEquals(name, control.getName());
-    assertEquals(support, control.getSupport());
+    assertEquals(type, control.getType());
     assertEquals(quantity, control.getQuantity());
     assertEquals(volume, control.getVolume());
     assertEquals(controlType, control.getControlType());
@@ -767,7 +765,7 @@ public class ControlFormPresenterTest {
     control = controlCaptor.getValue();
     assertEquals((Long) 444L, control.getId());
     assertEquals(name, control.getName());
-    assertEquals(support, control.getSupport());
+    assertEquals(type, control.getType());
     assertEquals(quantity, control.getQuantity());
     assertEquals(volume, control.getVolume());
     assertEquals(controlType, control.getControlType());
@@ -800,7 +798,7 @@ public class ControlFormPresenterTest {
     presenter.setValue(control);
 
     assertEquals(control.getName(), design.nameField.getValue());
-    assertEquals(control.getSupport(), design.supportField.getValue());
+    assertEquals(control.getType(), design.type.getValue());
     assertEquals(Objects.toString(control.getQuantity(), ""), design.quantityField.getValue());
     assertEquals(Objects.toString(control.getVolume(), ""), design.volumeField.getValue());
     assertEquals(control.getControlType(), design.controlTypeField.getValue());

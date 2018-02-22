@@ -50,7 +50,7 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -201,7 +201,7 @@ public class SubmissionServiceTest {
     assertEquals("FAM119A_band_01", sample.getName());
     assertEquals((Long) 1L, sample.getOriginalContainer().getId());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
-    assertEquals(SampleSupport.GEL, sample.getSupport());
+    assertEquals(SampleType.GEL, sample.getType());
     assertEquals(Sample.Category.SUBMISSION, sample.getCategory());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(null, sample.getNumberProtein());
@@ -286,7 +286,7 @@ public class SubmissionServiceTest {
     assertEquals("CAP_20111013_05", sample.getName());
     assertEquals((Long) 3L, sample.getOriginalContainer().getId());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
-    assertEquals(SampleSupport.SOLUTION, sample.getSupport());
+    assertEquals(SampleType.SOLUTION, sample.getType());
     assertEquals(Sample.Category.SUBMISSION, sample.getCategory());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(null, sample.getNumberProtein());
@@ -687,14 +687,14 @@ public class SubmissionServiceTest {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
-    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setType(SampleType.SOLUTION);
     sample.setVolume("10.0 μl");
     sample.setQuantity("2.0 μg");
     sample.setNumberProtein(10);
     sample.setMolecularWeight(120.0);
     SubmissionSample sample2 = new SubmissionSample();
     sample2.setName("unit_test_eluate_02");
-    sample2.setSupport(SampleSupport.SOLUTION);
+    sample2.setType(SampleType.SOLUTION);
     sample2.setVolume("10.0 μl");
     sample2.setQuantity("2.0 μg");
     sample2.setNumberProtein(10);
@@ -789,7 +789,7 @@ public class SubmissionServiceTest {
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
     SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
-    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
@@ -835,7 +835,7 @@ public class SubmissionServiceTest {
     plate.setName("unit_test_plate");
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
-    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setType(SampleType.SOLUTION);
     sample.setVolume("10.0 μl");
     sample.setQuantity("2.0 μg");
     sample.setOriginalContainer(plate.well(0, 0));
@@ -843,7 +843,7 @@ public class SubmissionServiceTest {
     sample.setMolecularWeight(120.0);
     SubmissionSample sample2 = new SubmissionSample();
     sample2.setName("unit_test_eluate_02");
-    sample2.setSupport(SampleSupport.SOLUTION);
+    sample2.setType(SampleType.SOLUTION);
     sample2.setVolume("10.0 μl");
     sample2.setQuantity("2.0 μg");
     sample2.setOriginalContainer(plate.well(1, 0));
@@ -939,7 +939,7 @@ public class SubmissionServiceTest {
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
     SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
-    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
@@ -993,7 +993,7 @@ public class SubmissionServiceTest {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_molecule_01");
-    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setType(SampleType.SOLUTION);
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
@@ -1081,7 +1081,7 @@ public class SubmissionServiceTest {
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
     assertEquals("unit_test_molecule_01", submissionSample.getName());
-    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
     Tube tube = (Tube) submissionSample.getOriginalContainer();
     assertNotNull(tube);
     assertEquals("unit_test_molecule_01", tube.getName());
@@ -1110,7 +1110,7 @@ public class SubmissionServiceTest {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
-    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setType(SampleType.SOLUTION);
     sample.setVolume("10.0 μl");
     sample.setQuantity("2.0 μg");
     sample.setNumberProtein(10);
@@ -1236,7 +1236,7 @@ public class SubmissionServiceTest {
     SubmissionSample submissionSample = samples.get(0);
     assertEquals((Long) 447L, submissionSample.getId());
     assertEquals("CAP_20111116_01", submissionSample.getName());
-    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("50 μl", submissionSample.getVolume());
     assertEquals("1.5 μg", submissionSample.getQuantity());
     assertEquals(null, submissionSample.getNumberProtein());
@@ -1297,7 +1297,7 @@ public class SubmissionServiceTest {
     SubmissionSample submissionSample = samples.get(0);
     assertEquals((Long) 447L, submissionSample.getId());
     assertEquals("unit_test_01", submissionSample.getName());
-    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("20.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(null, submissionSample.getNumberProtein());
@@ -1332,14 +1332,14 @@ public class SubmissionServiceTest {
   public void update_NewSamples() throws Exception {
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
-    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setType(SampleType.SOLUTION);
     sample.setVolume("10.0 μl");
     sample.setQuantity("2.0 μg");
     sample.setNumberProtein(10);
     sample.setMolecularWeight(120.0);
     SubmissionSample sample2 = new SubmissionSample();
     sample2.setName("unit_test_eluate_02");
-    sample2.setSupport(SampleSupport.SOLUTION);
+    sample2.setType(SampleType.SOLUTION);
     sample2.setVolume("10.0 μl");
     sample2.setQuantity("2.0 μg");
     sample2.setNumberProtein(10);
@@ -1385,7 +1385,7 @@ public class SubmissionServiceTest {
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
     SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
-    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
@@ -1424,7 +1424,7 @@ public class SubmissionServiceTest {
     plate.setName("unit_test_plate");
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
-    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setType(SampleType.SOLUTION);
     sample.setVolume("10.0 μl");
     sample.setQuantity("2.0 μg");
     sample.setOriginalContainer(plate.well(0, 0));
@@ -1432,7 +1432,7 @@ public class SubmissionServiceTest {
     sample.setMolecularWeight(120.0);
     SubmissionSample sample2 = new SubmissionSample();
     sample2.setName("unit_test_eluate_02");
-    sample2.setSupport(SampleSupport.SOLUTION);
+    sample2.setType(SampleType.SOLUTION);
     sample2.setVolume("10.0 μl");
     sample2.setQuantity("2.0 μg");
     sample2.setOriginalContainer(plate.well(1, 0));
@@ -1481,7 +1481,7 @@ public class SubmissionServiceTest {
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
     SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
-    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
@@ -1680,7 +1680,7 @@ public class SubmissionServiceTest {
   public void forceUpdate_NewSample() throws Exception {
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
-    sample.setSupport(SampleSupport.SOLUTION);
+    sample.setType(SampleType.SOLUTION);
     sample.setVolume("10.0 μl");
     sample.setQuantity("2.0 μg");
     sample.setNumberProtein(10);
@@ -1725,7 +1725,7 @@ public class SubmissionServiceTest {
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
     SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
     assertEquals("unit_test_eluate_01", submissionSample.getName());
-    assertEquals(SampleSupport.SOLUTION, submissionSample.getSupport());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());

@@ -31,7 +31,7 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.ControlType;
-import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -70,7 +70,7 @@ import javax.inject.Inject;
 public class ControlFormPresenter implements BinderValidator {
   public static final String SAMPLE_PANEL = "samplePanel";
   public static final String NAME = control.name.getMetadata().getName();
-  public static final String SUPPORT = control.support.getMetadata().getName();
+  public static final String TYPE = control.type.getMetadata().getName();
   public static final String QUANTITY = control.quantity.getMetadata().getName();
   public static final String VOLUME = control.volume.getMetadata().getName();
   public static final String CONTROL_TYPE = control.controlType.getMetadata().getName();
@@ -147,12 +147,11 @@ public class ControlFormPresenter implements BinderValidator {
     design.nameField.setCaption(resources.message(NAME));
     sampleBinder.forField(design.nameField).asRequired(generalResources.message(REQUIRED))
         .withNullRepresentation("").withValidator(validateSampleName()).bind(NAME);
-    design.supportField.addStyleName(SUPPORT);
-    design.supportField.setCaption(resources.message(SUPPORT));
-    design.supportField.setItems(SampleSupport.values());
-    design.supportField.setItemCaptionGenerator(support -> support.getLabel(locale));
-    sampleBinder.forField(design.supportField).asRequired(generalResources.message(REQUIRED))
-        .bind(SUPPORT);
+    design.type.addStyleName(TYPE);
+    design.type.setCaption(resources.message(TYPE));
+    design.type.setItems(SampleType.values());
+    design.type.setItemCaptionGenerator(support -> support.getLabel(locale));
+    sampleBinder.forField(design.type).asRequired(generalResources.message(REQUIRED)).bind(TYPE);
     design.quantityField.addStyleName(QUANTITY);
     design.quantityField.setCaption(resources.message(QUANTITY));
     design.quantityField.setPlaceholder(resources.message(QUANTITY + "." + EXAMPLE));
@@ -306,7 +305,7 @@ public class ControlFormPresenter implements BinderValidator {
     design.nameField.setReadOnly(readOnly);
     design.quantityField.setReadOnly(readOnly);
     design.volumeField.setReadOnly(readOnly);
-    design.supportField.setReadOnly(readOnly);
+    design.type.setReadOnly(readOnly);
     design.controlTypeField.setReadOnly(readOnly);
     design.standardCountField.setReadOnly(readOnly);
     design.fillStandardsButton.setVisible(!readOnly);
@@ -411,7 +410,7 @@ public class ControlFormPresenter implements BinderValidator {
   void setValue(Control control) {
     if (control == null) {
       control = new Control();
-      control.setSupport(SampleSupport.SOLUTION);
+      control.setType(SampleType.SOLUTION);
       control.setControlType(ControlType.NEGATIVE_CONTROL);
       control.setStandards(new ArrayList<>());
     }

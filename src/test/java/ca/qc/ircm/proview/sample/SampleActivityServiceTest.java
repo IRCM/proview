@@ -66,7 +66,7 @@ public class SampleActivityServiceTest {
     control.setId(123456L);
     control.setName("unit_test_control");
     control.setQuantity("200.0 μg");
-    control.setSupport(SampleSupport.SOLUTION);
+    control.setType(SampleType.SOLUTION);
     control.setControlType(ControlType.NEGATIVE_CONTROL);
     control.setVolume("300.0 μl");
 
@@ -85,7 +85,7 @@ public class SampleActivityServiceTest {
     SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 442L);
     entityManager.detach(submissionSample);
     submissionSample.setName("new_solution_tag_0001");
-    submissionSample.setSupport(SampleSupport.DRY);
+    submissionSample.setType(SampleType.DRY);
     submissionSample.setQuantity("12 pmol");
     submissionSample.setVolume("70.0 μl");
     submissionSample.setNumberProtein(2);
@@ -115,8 +115,8 @@ public class SampleActivityServiceTest {
     supportActivity.setTableName("sample");
     supportActivity.setRecordId(submissionSample.getId());
     supportActivity.setColumn("support");
-    supportActivity.setOldValue(SampleSupport.SOLUTION.name());
-    supportActivity.setNewValue(SampleSupport.DRY.name());
+    supportActivity.setOldValue(SampleType.SOLUTION.name());
+    supportActivity.setNewValue(SampleType.DRY.name());
     expectedUpdateActivities.add(supportActivity);
     UpdateActivity quantityActivity = new UpdateActivity();
     quantityActivity.setActionType(ActionType.UPDATE);
@@ -371,7 +371,7 @@ public class SampleActivityServiceTest {
     entityManager.detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
-    control.setSupport(SampleSupport.SOLUTION);
+    control.setType(SampleType.SOLUTION);
     control.setVolume("2.0 μl");
     control.setQuantity("40 μg");
 
@@ -406,8 +406,8 @@ public class SampleActivityServiceTest {
     supportActivity.setTableName("sample");
     supportActivity.setRecordId(control.getId());
     supportActivity.setColumn("support");
-    supportActivity.setOldValue(SampleSupport.GEL.name());
-    supportActivity.setNewValue(SampleSupport.SOLUTION.name());
+    supportActivity.setOldValue(SampleType.GEL.name());
+    supportActivity.setNewValue(SampleType.SOLUTION.name());
     expectedUpdateActivities.add(supportActivity);
     UpdateActivity volumeActivity = new UpdateActivity();
     volumeActivity.setActionType(ActionType.UPDATE);

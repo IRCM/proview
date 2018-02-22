@@ -32,7 +32,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Panel servicePanel;
   protected RadioButtonGroup<ca.qc.ircm.proview.submission.Service> service;
   protected Panel samplesPanel;
-  protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleSupport> sampleSupport;
+  protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleType> sampleType;
   protected TextField solutionSolvent;
   protected TextField sampleCount;
   protected TextField sampleName;

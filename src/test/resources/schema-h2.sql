@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS sample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(150) DEFAULT NULL,
   controlType varchar(50) DEFAULT NULL,
-  support varchar(50) DEFAULT NULL,
+  type varchar(50) DEFAULT NULL,
   containerId bigint(20) DEFAULT NULL,
   status varchar(50),
   numberProtein int(11) DEFAULT NULL,

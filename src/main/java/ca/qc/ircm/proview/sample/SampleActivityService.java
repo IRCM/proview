@@ -140,7 +140,7 @@ public class SampleActivityService {
     updateBuilders.add(new SampleUpdateActivityBuilder().column("name")
         .oldValue(oldSample.getName()).newValue(newSample.getName()));
     updateBuilders.add(new SampleUpdateActivityBuilder().column("support")
-        .oldValue(oldSample.getSupport()).newValue(newSample.getSupport()));
+        .oldValue(oldSample.getType()).newValue(newSample.getType()));
     updateBuilders.add(new SampleUpdateActivityBuilder().column("volume")
         .oldValue(oldSample.getVolume()).newValue(newSample.getVolume()));
     updateBuilders.add(new SampleUpdateActivityBuilder().column("quantity")
@@ -199,10 +199,12 @@ public class SampleActivityService {
           .oldValue(oldSubmission.getMolecularWeight())
           .newValue(newSubmission.getMolecularWeight()));
       // Contaminants.
-      List<Contaminant> oldContaminants = oldSubmission.getContaminants() != null
-          ? oldSubmission.getContaminants() : new ArrayList<>();
-      List<Contaminant> newContaminants = newSubmission.getContaminants() != null
-          ? newSubmission.getContaminants() : new ArrayList<>();
+      List<Contaminant> oldContaminants =
+          oldSubmission.getContaminants() != null ? oldSubmission.getContaminants()
+              : new ArrayList<>();
+      List<Contaminant> newContaminants =
+          newSubmission.getContaminants() != null ? newSubmission.getContaminants()
+              : new ArrayList<>();
       for (Contaminant oldContaminant : oldContaminants) {
         boolean deleted = true;
         for (Contaminant newContaminant : newContaminants) {

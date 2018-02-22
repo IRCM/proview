@@ -17,20 +17,20 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static ca.qc.ircm.proview.sample.SampleSupport.DRY;
-import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
-import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
+import static ca.qc.ircm.proview.sample.SampleType.DRY;
+import static ca.qc.ircm.proview.sample.SampleType.GEL;
+import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import java.util.Locale;
 
-public class SampleSupportTest {
+public class SampleTypeTest {
   @Test
   public void getNullLabel() {
-    assertEquals("Undetermined", SampleSupport.getNullLabel(Locale.ENGLISH));
-    assertEquals("Indéterminé", SampleSupport.getNullLabel(Locale.FRENCH));
+    assertEquals("Undetermined", SampleType.getNullLabel(Locale.ENGLISH));
+    assertEquals("Indéterminé", SampleType.getNullLabel(Locale.FRENCH));
   }
 
   @Test

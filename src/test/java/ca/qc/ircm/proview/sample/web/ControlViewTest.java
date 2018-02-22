@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlType;
-import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -57,7 +57,7 @@ public class ControlViewTest extends ControlViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
   private final String name = "ADH_test";
-  private final SampleSupport support = SampleSupport.GEL;
+  private final SampleType type = SampleType.GEL;
   private final String quantity = "10 ug";
   private final Double volume = 102.4;
   private final ControlType controlType = ControlType.POSITIVE_CONTROL;
@@ -72,7 +72,7 @@ public class ControlViewTest extends ControlViewPageObject {
 
   private void setFields() {
     setName(name);
-    setSupport(support.getLabel(currentLocale()));
+    setType(type.getLabel(currentLocale()));
     setQuantity(quantity);
     setVolume(Objects.toString(volume));
     setControlType(controlType.getLabel(currentLocale()));
@@ -151,7 +151,7 @@ public class ControlViewTest extends ControlViewPageObject {
 
     assertTrue(optional(() -> headerLabel()).isPresent());
     assertTrue(optional(() -> nameField()).isPresent());
-    assertTrue(optional(() -> supportField()).isPresent());
+    assertTrue(optional(() -> type()).isPresent());
     assertTrue(optional(() -> quantityField()).isPresent());
     assertTrue(optional(() -> volumeField()).isPresent());
     assertTrue(optional(() -> controlTypeField()).isPresent());
@@ -171,7 +171,7 @@ public class ControlViewTest extends ControlViewPageObject {
 
     assertTrue(optional(() -> headerLabel()).isPresent());
     assertTrue(optional(() -> nameField()).isPresent());
-    assertTrue(optional(() -> supportField()).isPresent());
+    assertTrue(optional(() -> type()).isPresent());
     assertTrue(optional(() -> quantityField()).isPresent());
     assertTrue(optional(() -> volumeField()).isPresent());
     assertTrue(optional(() -> controlTypeField()).isPresent());
@@ -195,7 +195,7 @@ public class ControlViewTest extends ControlViewPageObject {
     Long id = Long.valueOf(matcher.group(1));
     Control control = entityManager.find(Control.class, id);
     assertEquals(name, control.getName());
-    assertEquals(support, control.getSupport());
+    assertEquals(type, control.getType());
     assertEquals(quantity, control.getQuantity());
     assertEquals(volume, control.getVolume());
     assertEquals(controlType, control.getControlType());

@@ -93,7 +93,7 @@ public class SubmissionSampleServiceTest {
     assertEquals("FAM119A_band_01", gelSample.getName());
     assertEquals(true, gelSample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 1L, gelSample.getOriginalContainer().getId());
-    assertEquals(SampleSupport.GEL, gelSample.getSupport());
+    assertEquals(SampleType.GEL, gelSample.getType());
     assertEquals(Sample.Category.SUBMISSION, gelSample.getCategory());
     assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
     assertEquals(null, gelSample.getNumberProtein());
@@ -112,7 +112,7 @@ public class SubmissionSampleServiceTest {
     assertEquals("CAP_20111013_01", eluateSample.getName());
     assertEquals(true, eluateSample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
-    assertEquals(SampleSupport.SOLUTION, eluateSample.getSupport());
+    assertEquals(SampleType.SOLUTION, eluateSample.getType());
     assertEquals(Sample.Category.SUBMISSION, eluateSample.getCategory());
     assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());

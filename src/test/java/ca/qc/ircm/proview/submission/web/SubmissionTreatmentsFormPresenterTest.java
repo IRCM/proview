@@ -55,7 +55,7 @@ import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
@@ -159,7 +159,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     submission = new Submission();
     sample1 = new SubmissionSample(1L);
     sample1.setName("sample_name");
-    sample1.setSupport(SampleSupport.SOLUTION);
+    sample1.setType(SampleType.SOLUTION);
     sample1.setStatus(SampleStatus.ANALYSED);
     sample1.setQuantity("10.4 ug");
     sample1.setVolume("10.3 ul");
@@ -171,7 +171,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     sample1.setOriginalContainer(tube1);
     sample2 = new SubmissionSample(2L);
     sample2.setName("sample_name");
-    sample2.setSupport(SampleSupport.SOLUTION);
+    sample2.setType(SampleType.SOLUTION);
     sample2.setStatus(SampleStatus.ANALYSED);
     sample2.setQuantity("10.4 ug");
     sample2.setVolume("10.3 ul");
