@@ -43,13 +43,11 @@ import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -107,7 +105,7 @@ public class ControlFormPresenterTest {
   private String name = "ADH";
   private SampleSupport support = SampleSupport.SOLUTION;
   private String quantity = "10 g/L";
-  private double volume = 10000000.0;
+  private String volume = "10000000.0 ul";
   private ControlType controlType = ControlType.NEGATIVE_CONTROL;
   private String standardName1 = "std1";
   private String standardQuantity1 = "1 ug";
@@ -138,7 +136,7 @@ public class ControlFormPresenterTest {
     design.nameField.setValue(name);
     design.supportField.setValue(support);
     design.quantityField.setValue(quantity);
-    design.volumeField.setValue(Double.toString(volume));
+    design.volumeField.setValue(volume);
     design.controlTypeField.setValue(controlType);
     design.standardCountField.setValue("2");
     List<Standard> standards = new ArrayList<>(dataProvider(design.standardsGrid).getItems());
@@ -580,35 +578,6 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void save_InvalidSampleVolume() throws Throwable {
-    presenter.init(view);
-    setFields();
-    design.volumeField.setValue("a");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
-        design.volumeField.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(any());
-  }
-
-  @Test
-  public void save_BelowZeroSampleVolume() throws Throwable {
-    presenter.init(view);
-    setFields();
-    design.volumeField.setValue("-1");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertNotNull(design.volumeField.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(any());
-  }
-
-  @Test
   public void save_MissingStandardCount() throws Throwable {
     presenter.init(view);
     setFields();
@@ -769,7 +738,7 @@ public class ControlFormPresenterTest {
     assertEquals(name, control.getName());
     assertEquals(support, control.getSupport());
     assertEquals(quantity, control.getQuantity());
-    assertEquals(volume, control.getVolume(), 0.001);
+    assertEquals(volume, control.getVolume());
     assertEquals(controlType, control.getControlType());
     assertEquals(2, control.getStandards().size());
     assertEquals(standardName1, control.getStandards().get(0).getName());
@@ -800,7 +769,7 @@ public class ControlFormPresenterTest {
     assertEquals(name, control.getName());
     assertEquals(support, control.getSupport());
     assertEquals(quantity, control.getQuantity());
-    assertEquals(volume, control.getVolume(), 0.001);
+    assertEquals(volume, control.getVolume());
     assertEquals(controlType, control.getControlType());
     assertEquals(2, control.getStandards().size());
     assertEquals(standardName1, control.getStandards().get(0).getName());

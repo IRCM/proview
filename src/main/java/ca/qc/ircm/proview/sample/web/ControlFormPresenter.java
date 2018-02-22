@@ -24,7 +24,6 @@ import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -40,7 +39,6 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
-import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
@@ -161,9 +159,7 @@ public class ControlFormPresenter implements BinderValidator {
     sampleBinder.forField(design.quantityField).withNullRepresentation("").bind(QUANTITY);
     design.volumeField.addStyleName(VOLUME);
     design.volumeField.setCaption(resources.message(VOLUME));
-    sampleBinder.forField(design.volumeField).withNullRepresentation("")
-        .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
-        .bind(VOLUME);
+    sampleBinder.forField(design.volumeField).withNullRepresentation("").bind(VOLUME);
     design.controlTypeField.addStyleName(CONTROL_TYPE);
     design.controlTypeField.setCaption(resources.message(CONTROL_TYPE));
     design.controlTypeField.setItems(ControlType.values());

@@ -629,10 +629,10 @@ public class SubmissionFormPresenter implements BinderValidator {
         .bind(SAMPLE_QUANTITY);
     design.sampleVolume.addStyleName(SAMPLE_VOLUME);
     design.sampleVolume.setCaption(resources.message(SAMPLE_VOLUME));
+    design.sampleVolume.setPlaceholder(resources.message(SAMPLE_VOLUME + "." + EXAMPLE));
     design.sampleVolume.setRequiredIndicatorVisible(true);
     firstSampleBinder.forField(design.sampleVolume)
         .withValidator(requiredTextIfVisible(design.sampleVolume)).withNullRepresentation("")
-        .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
         .bind(SAMPLE_VOLUME);
   }
 

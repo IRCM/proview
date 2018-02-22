@@ -39,7 +39,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 /**
@@ -87,13 +86,13 @@ public abstract class Sample implements Data, Named, Serializable {
   @Enumerated(STRING)
   private SampleSupport support;
   /**
-   * Volume of Sample (in ul).
+   * Volume of Sample (generally in ul).
    */
   @Column(name = "volume")
-  @Min(0)
-  private Double volume;
+  @Size(max = 100)
+  private String volume;
   /**
-   * Quantity of Sample (in ug or pmol).
+   * Quantity of Sample (generally in ug or pmol).
    */
   @Column(name = "quantity", nullable = false)
   @Size(max = 100)
@@ -177,11 +176,11 @@ public abstract class Sample implements Data, Named, Serializable {
     this.quantity = quantity;
   }
 
-  public Double getVolume() {
+  public String getVolume() {
     return volume;
   }
 
-  public void setVolume(Double volume) {
+  public void setVolume(String volume) {
     this.volume = volume;
   }
 

@@ -68,7 +68,7 @@ public class SampleActivityServiceTest {
     control.setQuantity("200.0 μg");
     control.setSupport(SampleSupport.SOLUTION);
     control.setControlType(ControlType.NEGATIVE_CONTROL);
-    control.setVolume(300.0);
+    control.setVolume("300.0 μl");
 
     Activity activity = sampleActivityService.insertControl(control);
 
@@ -87,7 +87,7 @@ public class SampleActivityServiceTest {
     submissionSample.setName("new_solution_tag_0001");
     submissionSample.setSupport(SampleSupport.DRY);
     submissionSample.setQuantity("12 pmol");
-    submissionSample.setVolume(70.0);
+    submissionSample.setVolume("70.0 μl");
     submissionSample.setNumberProtein(2);
     submissionSample.setMolecularWeight(20.0);
 
@@ -131,8 +131,8 @@ public class SampleActivityServiceTest {
     volumeActivity.setTableName("sample");
     volumeActivity.setRecordId(submissionSample.getId());
     volumeActivity.setColumn("volume");
-    volumeActivity.setOldValue("50.0");
-    volumeActivity.setNewValue("70.0");
+    volumeActivity.setOldValue("50 μl");
+    volumeActivity.setNewValue("70.0 μl");
     expectedUpdateActivities.add(volumeActivity);
     UpdateActivity sampleNumberProteinActivity = new UpdateActivity();
     sampleNumberProteinActivity.setActionType(ActionType.UPDATE);
@@ -372,7 +372,7 @@ public class SampleActivityServiceTest {
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
     control.setSupport(SampleSupport.SOLUTION);
-    control.setVolume(2.0);
+    control.setVolume("2.0 μl");
     control.setQuantity("40 μg");
 
     Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
@@ -415,7 +415,7 @@ public class SampleActivityServiceTest {
     volumeActivity.setRecordId(control.getId());
     volumeActivity.setColumn("volume");
     volumeActivity.setOldValue(null);
-    volumeActivity.setNewValue("2.0");
+    volumeActivity.setNewValue("2.0 μl");
     expectedUpdateActivities.add(volumeActivity);
     UpdateActivity quantityActivity = new UpdateActivity();
     quantityActivity.setActionType(ActionType.UPDATE);

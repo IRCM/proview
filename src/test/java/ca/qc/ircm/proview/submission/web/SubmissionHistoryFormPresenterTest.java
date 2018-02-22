@@ -142,7 +142,7 @@ public class SubmissionHistoryFormPresenterTest {
     sample1.setSupport(SampleSupport.SOLUTION);
     sample1.setStatus(SampleStatus.ANALYSED);
     sample1.setQuantity("10.4 ug");
-    sample1.setVolume(10.3);
+    sample1.setVolume("10.3 ul");
     sample1.setNumberProtein(4);
     sample1.setMolecularWeight(5.6);
     sample1.setSubmission(submission);
@@ -154,7 +154,7 @@ public class SubmissionHistoryFormPresenterTest {
     sample2.setSupport(SampleSupport.SOLUTION);
     sample2.setStatus(SampleStatus.ANALYSED);
     sample2.setQuantity("10.4 ug");
-    sample2.setVolume(10.3);
+    sample2.setVolume("10.3 ul");
     sample2.setNumberProtein(4);
     sample2.setMolecularWeight(5.6);
     sample2.setSubmission(submission);

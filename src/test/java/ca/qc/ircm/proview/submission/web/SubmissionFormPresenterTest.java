@@ -283,7 +283,7 @@ public class SubmissionFormPresenterTest {
   private double proteinWeight = 217076;
   private String postTranslationModification = "Methylation on A75";
   private String sampleQuantity = "150 ug";
-  private double sampleVolume = 21.5;
+  private String sampleVolume = "21.5 μl";
   private int standardsCount = 2;
   private String standardName1 = "ADH";
   private String standardQuantity1 = "5 ug";
@@ -1319,6 +1319,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(SAMPLE_QUANTITY + "." + EXAMPLE),
         design.sampleQuantity.getPlaceholder());
     assertEquals(resources.message(SAMPLE_VOLUME), design.sampleVolume.getCaption());
+    assertEquals(resources.message(SAMPLE_VOLUME + "." + EXAMPLE),
+        design.sampleVolume.getPlaceholder());
     assertEquals(resources.message(STANDARDS_PANEL), design.standardsPanel.getCaption());
     assertEquals(resources.message(STANDARD_COUNT), design.standardCount.getCaption());
     assertEquals(null, design.standards.getCaption());
@@ -3845,41 +3847,6 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_InvalidSampleVolume() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
-    setFields();
-    design.sampleVolume.setValue("a");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
-        design.sampleVolume.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_BelowZeroSampleVolume() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleSupport.setValue(support);
-    setFields();
-    design.sampleVolume.setValue("-1");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertNotNull(design.sampleVolume.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
   public void save_MissingStandardCount() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
@@ -4617,7 +4584,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -4646,7 +4613,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -4751,7 +4718,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -4786,7 +4753,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -4899,7 +4866,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -4928,7 +4895,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -5755,7 +5722,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals((Integer) sampleNumberProtein1, sample.getNumberProtein());
     assertEquals(proteinWeight1, sample.getMolecularWeight(), 0.0001);
@@ -5784,7 +5751,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.0001);
@@ -6054,7 +6021,7 @@ public class SubmissionFormPresenterTest {
     assertEquals((Long) 447L, sample.getId());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -6086,7 +6053,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, sample.getId());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -6210,7 +6177,7 @@ public class SubmissionFormPresenterTest {
       assertEquals(dsample.getId(), sample.getId());
       assertEquals(dsample.getName(), sample.getName());
       assertEquals(dsample.getSupport(), sample.getSupport());
-      assertEquals(dsample.getVolume(), sample.getVolume(), 0.00001);
+      assertEquals(dsample.getVolume(), sample.getVolume());
       assertEquals(dsample.getQuantity(), sample.getQuantity());
       assertEquals(dsample.getNumberProtein(), sample.getNumberProtein());
       assertEquals(dsample.getMolecularWeight(), sample.getMolecularWeight());
@@ -6320,7 +6287,7 @@ public class SubmissionFormPresenterTest {
     assertEquals((Long) 559L, sample.getId());
     assertEquals(sampleName1, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -6352,7 +6319,7 @@ public class SubmissionFormPresenterTest {
     assertEquals((Long) 560L, sample.getId());
     assertEquals(sampleName2, sample.getName());
     assertEquals(support, sample.getSupport());
-    assertEquals(sampleVolume, sample.getVolume(), 0.00001);
+    assertEquals(sampleVolume, sample.getVolume());
     assertEquals(sampleQuantity, sample.getQuantity());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(proteinWeight, sample.getMolecularWeight(), 0.0001);
@@ -6447,7 +6414,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
     assertEquals(postTranslationModification, design.postTranslationModification.getValue());
     assertEquals(sampleQuantity, design.sampleQuantity.getValue());
-    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolume), 0.001);
+    assertEquals(sampleVolume, design.sampleVolume.getValue());
     assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
     ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
     List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
@@ -6540,7 +6507,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
     assertEquals(postTranslationModification, design.postTranslationModification.getValue());
     assertEquals(sampleQuantity, design.sampleQuantity.getValue());
-    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolume), 0.001);
+    assertEquals(sampleVolume, design.sampleVolume.getValue());
     assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
     ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
     List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
@@ -6628,7 +6595,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
     assertEquals(postTranslationModification, design.postTranslationModification.getValue());
     assertEquals(sampleQuantity, design.sampleQuantity.getValue());
-    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolume), 0.001);
+    assertEquals(sampleVolume, design.sampleVolume.getValue());
     assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
     ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
     List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
@@ -6716,7 +6683,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
     assertEquals(postTranslationModification, design.postTranslationModification.getValue());
     assertEquals(sampleQuantity, design.sampleQuantity.getValue());
-    assertEquals(sampleVolume, convert(doubleConverter, design.sampleVolume), 0.001);
+    assertEquals(sampleVolume, design.sampleVolume.getValue());
     assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
     ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
     List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());

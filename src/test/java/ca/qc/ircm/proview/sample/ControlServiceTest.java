@@ -150,7 +150,7 @@ public class ControlServiceTest {
     control.setName("nc_test_000001");
     control.setControlType(ControlType.NEGATIVE_CONTROL);
     control.setSupport(SampleSupport.GEL);
-    control.setVolume(20.0);
+    control.setVolume("20.0 μl");
     control.setQuantity("12.0 μg");
     control.setStandards(new ArrayList<>());
     Standard standard1 = new Standard();
@@ -174,7 +174,7 @@ public class ControlServiceTest {
     Control testControl = controlService.get(control.getId());
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(SampleSupport.GEL, testControl.getSupport());
-    assertEquals((Double) 20.0, testControl.getVolume());
+    assertEquals("20.0 μl", testControl.getVolume());
     assertEquals("12.0 μg", testControl.getQuantity());
     assertEquals(2, testControl.getStandards().size());
     Standard standard = testControl.getStandards().get(0);
@@ -191,7 +191,7 @@ public class ControlServiceTest {
     testControl = controlCaptor.getValue();
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(SampleSupport.GEL, testControl.getSupport());
-    assertEquals((Double) 20.0, testControl.getVolume());
+    assertEquals("20.0 μl", testControl.getVolume());
     assertEquals("12.0 μg", testControl.getQuantity());
     assertEquals(2, testControl.getStandards().size());
     standard = testControl.getStandards().get(0);
@@ -213,7 +213,7 @@ public class ControlServiceTest {
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
     control.setSupport(SampleSupport.SOLUTION);
-    control.setVolume(2.0);
+    control.setVolume("2.0 μl");
     control.setQuantity("40 μg");
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -229,7 +229,7 @@ public class ControlServiceTest {
     assertEquals("nc_test_000001", test.getName());
     assertEquals(ControlType.POSITIVE_CONTROL, test.getControlType());
     assertEquals(SampleSupport.SOLUTION, test.getSupport());
-    assertEquals((Double) 2.0, test.getVolume());
+    assertEquals("2.0 μl", test.getVolume());
     assertEquals("40 μg", test.getQuantity());
     assertEquals(0, test.getStandards().size());
     // Validate log.
@@ -239,7 +239,7 @@ public class ControlServiceTest {
     assertEquals("nc_test_000001", newControl.getName());
     assertEquals(ControlType.POSITIVE_CONTROL, newControl.getControlType());
     assertEquals(SampleSupport.SOLUTION, newControl.getSupport());
-    assertEquals((Double) 2.0, newControl.getVolume());
+    assertEquals("2.0 μl", newControl.getVolume());
     assertEquals("40 μg", newControl.getQuantity());
     assertEquals(0, newControl.getStandards().size());
   }
