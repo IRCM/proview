@@ -604,4 +604,24 @@ public class PlateComponentPresenterTest {
     assertTrue(presenter.getValue().well(0, 1).getSample() instanceof SubmissionSample);
     assertEquals("test 2", presenter.getValue().well(0, 1).getSample().getName());
   }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void updateCell_Empty() {
+    presenter.init(view);
+
+    Sheet sheet = view.spreadsheet.getActiveSheet();
+    sheet.getRow(1).getCell(1).setCellValue("test 1");
+    sheet.getRow(1).getCell(2).setCellValue("");
+    Collection<CellValueChangeListener> listeners =
+        (Collection<CellValueChangeListener>) view.spreadsheet
+            .getListeners(CellValueChangeEvent.class);
+    CellValueChangeEvent event = new CellValueChangeEvent(view.spreadsheet,
+        new HashSet<>(Arrays.asList(new CellReference(1, 1), new CellReference(1, 2))));
+    listeners.stream().forEach(lis -> lis.onCellValueChange(event));
+    assertNotNull(presenter.getValue().well(0, 0).getSample());
+    assertTrue(presenter.getValue().well(0, 0).getSample() instanceof SubmissionSample);
+    assertEquals("test 1", presenter.getValue().well(0, 0).getSample().getName());
+    assertNull(presenter.getValue().well(0, 1).getSample());
+  }
 }
