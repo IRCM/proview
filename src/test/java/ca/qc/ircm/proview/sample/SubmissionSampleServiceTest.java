@@ -117,7 +117,7 @@ public class SubmissionSampleServiceTest {
     assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
     assertEquals("1.5 μg", eluateSample.getQuantity());
-    assertEquals(50.0, eluateSample.getVolume());
+    assertEquals("50 μl", eluateSample.getVolume());
     assertEquals(null, eluateSample.getNumberProtein());
     assertEquals(null, eluateSample.getMolecularWeight());
   }
