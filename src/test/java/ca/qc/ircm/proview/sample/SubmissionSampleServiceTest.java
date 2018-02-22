@@ -94,7 +94,7 @@ public class SubmissionSampleServiceTest {
     assertEquals(true, gelSample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 1L, gelSample.getOriginalContainer().getId());
     assertEquals(SampleSupport.GEL, gelSample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, gelSample.getType());
+    assertEquals(Sample.Category.SUBMISSION, gelSample.getCategory());
     assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
     assertEquals(null, gelSample.getNumberProtein());
     assertEquals(null, gelSample.getMolecularWeight());
@@ -113,11 +113,11 @@ public class SubmissionSampleServiceTest {
     assertEquals(true, eluateSample.getOriginalContainer() instanceof Tube);
     assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
     assertEquals(SampleSupport.SOLUTION, eluateSample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, eluateSample.getType());
+    assertEquals(Sample.Category.SUBMISSION, eluateSample.getCategory());
     assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
     assertEquals("1.5 μg", eluateSample.getQuantity());
-    assertEquals((Double) 50.0, eluateSample.getVolume());
+    assertEquals(50.0, eluateSample.getVolume());
     assertEquals(null, eluateSample.getNumberProtein());
     assertEquals(null, eluateSample.getMolecularWeight());
   }

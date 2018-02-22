@@ -97,8 +97,8 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
   }
 
   @Override
-  public Type getType() {
-    return Type.SUBMISSION;
+  public Category getCategory() {
+    return Category.SUBMISSION;
   }
 
   public Submission getSubmission() {

@@ -42,17 +42,17 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 /**
- * A Sample.
+ * Sample.
  */
 @Entity
 @Table(name = Sample.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
-@DiscriminatorColumn(name = "sampleType")
+@DiscriminatorColumn(name = "category")
 public abstract class Sample implements Data, Named, Serializable {
   /**
-   * Sample type.
+   * Sample category.
    */
-  public static enum Type {
+  public static enum Category {
     /**
      * Submission of sample to analyse.
      */
@@ -123,11 +123,11 @@ public abstract class Sample implements Data, Named, Serializable {
   }
 
   /**
-   * Returns type of Sample.
+   * Returns sample's category.
    *
-   * @return Sample type.
+   * @return sample's category
    */
-  public abstract Type getType();
+  public abstract Category getCategory();
 
   @Override
   public String toString() {

@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS sample (
   molecularWeight double DEFAULT NULL,
   quantity varchar(100) DEFAULT NULL,
   volume varchar(100) DEFAULT NULL,
-  sampleType varchar(50) DEFAULT NULL,
+  category varchar(50) DEFAULT NULL,
   PRIMARY KEY (id),
   CONSTRAINT sample_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT sample_ibfk_2 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE

@@ -202,7 +202,7 @@ public class SubmissionServiceTest {
     assertEquals((Long) 1L, sample.getOriginalContainer().getId());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
     assertEquals(SampleSupport.GEL, sample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, sample.getType());
+    assertEquals(Sample.Category.SUBMISSION, sample.getCategory());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(null, sample.getMolecularWeight());
@@ -287,7 +287,7 @@ public class SubmissionServiceTest {
     assertEquals((Long) 3L, sample.getOriginalContainer().getId());
     assertEquals(true, sample.getOriginalContainer() instanceof Tube);
     assertEquals(SampleSupport.SOLUTION, sample.getSupport());
-    assertEquals(Sample.Type.SUBMISSION, sample.getType());
+    assertEquals(Sample.Category.SUBMISSION, sample.getCategory());
     assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
     assertEquals(null, sample.getNumberProtein());
     assertEquals(null, sample.getMolecularWeight());

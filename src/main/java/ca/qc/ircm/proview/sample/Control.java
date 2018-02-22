@@ -54,8 +54,8 @@ public class Control extends Sample implements Named {
   }
 
   @Override
-  public Type getType() {
-    return Sample.Type.CONTROL;
+  public Category getCategory() {
+    return Sample.Category.CONTROL;
   }
 
   public void setControlType(ControlType controlType) {
