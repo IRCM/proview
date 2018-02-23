@@ -8,27 +8,31 @@
  </head>
  <body>
   <vaadin-vertical-layout>
-   <vaadin-label style-name="h1" plain-text _id="header">
-     Proteomics-MS Core Facility 
+   <vaadin-label style-name="h1" width="1200px" plain-text _id="header">
+     Welcome to the LIMS of the IRCM Proteomics Platform 
    </vaadin-label>
-   <vaadin-panel caption="Sign in" size-auto _id="signPanel">
-    <vaadin-vertical-layout>
-     <vaadin-vertical-layout spacing="false" margin="false" _id="signLayout"></vaadin-vertical-layout>
-     <vaadin-button style-name="link" plain-text _id="registerButton">
-       Register 
-     </vaadin-button>
-    </vaadin-vertical-layout>
-   </vaadin-panel>
-   <vaadin-panel caption="Forgot password" size-auto _id="forgotPasswordPanel">
-    <vaadin-vertical-layout>
-     <vaadin-form-layout margin="false">
-      <vaadin-text-field caption="Email" _id="forgotPasswordEmailField"></vaadin-text-field>
-      <vaadin-button plain-text _id="forgotPasswordButton">
-        Submit 
-      </vaadin-button>
-     </vaadin-form-layout>
-    </vaadin-vertical-layout>
-   </vaadin-panel>
+   <vaadin-label width="1200px" _id="servicesDescription">
+     We make available to users four procedures for the quantification of proteins and the mapping of protein interaction networks 
+   </vaadin-label>
+   <vaadin-label _id="services">
+    <ul>
+     <li>SILAC</li>
+     <li>TMT</li>
+    </ul>
+   </vaadin-label>
+   <vaadin-link caption="For more information, please click here" href="https://www.translationalproteomics.ca/biomarker-pipeline" _id="biomarkerSite"></vaadin-link>
+   <vaadin-label width-full>
+    <hr>
+   </vaadin-label>
+   <vaadin-label width="1200px" _id="analyses">
+     A number of additional analyses are available 
+   </vaadin-label>
+   <vaadin-label width="1200px" _id="responsabilities">
+     The platform performs exclusively the MS analysis 
+   </vaadin-label>
+   <vaadin-button style-name="primary" plain-text _id="signin">
+     Sign in 
+   </vaadin-button>
   </vaadin-vertical-layout>
  </body>
 </html>

@@ -17,22 +17,19 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD;
-import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_BUTTON;
-import static ca.qc.ircm.proview.web.MainViewPresenter.FORGOT_PASSWORD_EMAIL;
+import static ca.qc.ircm.proview.web.MainViewPresenter.ANALYSES;
+import static ca.qc.ircm.proview.web.MainViewPresenter.BIOMARKER_SITE;
 import static ca.qc.ircm.proview.web.MainViewPresenter.HEADER;
-import static ca.qc.ircm.proview.web.MainViewPresenter.REGISTER_BUTTON;
-import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_BUTTON;
-import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PANEL;
-import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_PASSWORD;
-import static ca.qc.ircm.proview.web.MainViewPresenter.SIGN_USERNAME;
+import static ca.qc.ircm.proview.web.MainViewPresenter.RESPONSABILITIES;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SERVICES;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SERVICES_DESCRIPTION;
+import static ca.qc.ircm.proview.web.MainViewPresenter.SIGNIN;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.LabelElement;
-import com.vaadin.testbench.elements.PanelElement;
-import com.vaadin.testbench.elements.TextFieldElement;
+import com.vaadin.testbench.elements.LinkElement;
 
 public abstract class MainPageObject extends AbstractTestBenchTestCase {
   protected void open() {
@@ -43,71 +40,35 @@ public abstract class MainPageObject extends AbstractTestBenchTestCase {
     return wrap(LabelElement.class, findElement(className(HEADER)));
   }
 
-  protected PanelElement signPanel() {
-    return wrap(PanelElement.class, findElement(className(SIGN_PANEL)));
+  protected LabelElement servicesDescription() {
+    return wrap(LabelElement.class, findElement(className(SERVICES_DESCRIPTION)));
   }
 
-  protected TextFieldElement signUsernameField() {
-    return wrap(TextFieldElement.class, findElement(className(SIGN_USERNAME)));
+  protected LabelElement services() {
+    return wrap(LabelElement.class, findElement(className(SERVICES)));
   }
 
-  protected String getSignUsername() {
-    return signUsernameField().getValue();
+  protected LinkElement biomarkerSite() {
+    return wrap(LinkElement.class, findElement(className(BIOMARKER_SITE)));
   }
 
-  protected void setSignUsername(String value) {
-    signUsernameField().setValue(value);
+  protected void clickBiomarkerSite() {
+    biomarkerSite().click();
   }
 
-  protected TextFieldElement signPasswordField() {
-    return wrap(TextFieldElement.class, findElement(className(SIGN_PASSWORD)));
+  protected LabelElement analyses() {
+    return wrap(LabelElement.class, findElement(className(ANALYSES)));
   }
 
-  protected String getSignPassword() {
-    return signPasswordField().getValue();
+  protected LabelElement responsabilities() {
+    return wrap(LabelElement.class, findElement(className(RESPONSABILITIES)));
   }
 
-  protected void setSignPassword(String value) {
-    signPasswordField().setValue(value);
+  protected ButtonElement signin() {
+    return wrap(ButtonElement.class, findElement(className(SIGNIN)));
   }
 
-  protected ButtonElement signButton() {
-    return wrap(ButtonElement.class, findElement(className(SIGN_BUTTON)));
-  }
-
-  protected void clickSignButton() {
-    signButton().click();
-  }
-
-  protected LabelElement forgotPasswordPanel() {
-    return wrap(LabelElement.class, findElement(className(FORGOT_PASSWORD)));
-  }
-
-  protected TextFieldElement forgotPasswordEmailField() {
-    return wrap(TextFieldElement.class, findElement(className(FORGOT_PASSWORD_EMAIL)));
-  }
-
-  protected String getForgotPasswordEmail() {
-    return forgotPasswordEmailField().getValue();
-  }
-
-  protected void setForgotPasswordEmail(String value) {
-    forgotPasswordEmailField().setValue(value);
-  }
-
-  protected ButtonElement forgotPasswordButton() {
-    return wrap(ButtonElement.class, findElement(className(FORGOT_PASSWORD_BUTTON)));
-  }
-
-  protected void clickForgotPasswordButton() {
-    forgotPasswordButton().click();
-  }
-
-  protected ButtonElement registerButton() {
-    return wrap(ButtonElement.class, findElement(className(REGISTER_BUTTON)));
-  }
-
-  protected void clickRegisterButton() {
-    registerButton().click();
+  protected void clickSignin() {
+    signin().click();
   }
 }

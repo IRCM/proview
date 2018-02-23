@@ -31,6 +31,7 @@ import static ca.qc.ircm.proview.web.Menu.MS_ANALYSIS;
 import static ca.qc.ircm.proview.web.Menu.PLATE;
 import static ca.qc.ircm.proview.web.Menu.PROFILE;
 import static ca.qc.ircm.proview.web.Menu.REGISTER;
+import static ca.qc.ircm.proview.web.Menu.SIGNIN;
 import static ca.qc.ircm.proview.web.Menu.SIGNOUT;
 import static ca.qc.ircm.proview.web.Menu.SIGN_AS;
 import static ca.qc.ircm.proview.web.Menu.SOLUBILISATION;
@@ -243,6 +244,14 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
 
   protected void clickContact() {
     contactMenuItem().click();
+  }
+
+  protected WebElement signin() {
+    return menuItemByStyle(SIGNIN);
+  }
+
+  protected void clickSignin() {
+    signin().click();
   }
 
   protected void signas(String email) {
