@@ -26,7 +26,7 @@ import com.vaadin.ui.declarative.Design;
 public class ControlFormDesign extends VerticalLayout {
   protected Panel samplePanel;
   protected TextField nameField;
-  protected ComboBox<ca.qc.ircm.proview.sample.SampleSupport> supportField;
+  protected ComboBox<ca.qc.ircm.proview.sample.SampleType> type;
   protected TextField volumeField;
   protected TextField quantityField;
   protected ComboBox<ca.qc.ircm.proview.sample.ControlType> controlTypeField;

@@ -22,8 +22,8 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
-import static ca.qc.ircm.proview.sample.SampleSupport.GEL;
-import static ca.qc.ircm.proview.sample.SampleSupport.SOLUTION;
+import static ca.qc.ircm.proview.sample.SampleType.GEL;
+import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static ca.qc.ircm.proview.submission.ProteinContent.LARGE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
@@ -40,7 +40,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainerType;
-import ca.qc.ircm.proview.sample.SampleSupport;
+import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.GelColoration;
@@ -79,7 +79,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
   private Service service = LC_MS_MS;
-  private SampleSupport support = SOLUTION;
+  private SampleType type = SOLUTION;
   private int sampleCount = 2;
   private String sampleName1 = "sample_01";
   private String sampleName2 = "sample_02";
@@ -112,7 +112,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
 
   private void setFields() {
     setService(service);
-    setSampleSupport(support);
+    setSampleType(type);
     setSampleContainerType(sampleContainerType);
     setSampleCount(sampleCount);
     setSampleNameInGrid(0, sampleName1);
@@ -162,7 +162,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertTrue(optional(() -> servicePanel()).isPresent());
     assertTrue(optional(() -> serviceOptions()).isPresent());
     assertTrue(optional(() -> samplesPanel()).isPresent());
-    assertTrue(optional(() -> sampleSupportOptions()).isPresent());
+    assertTrue(optional(() -> sampleTypeOptions()).isPresent());
     setService(SMALL_MOLECULE);
     assertTrue(optional(() -> solutionSolventField()).isPresent());
     assertTrue(optional(() -> sampleNameField()).isPresent());
@@ -203,7 +203,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setContaminantCount(1);
     assertTrue(optional(() -> contaminantsGrid()).isPresent());
     assertTrue(optional(() -> fillContaminantsButton()).isPresent());
-    setSampleSupport(GEL);
+    setSampleType(GEL);
     assertTrue(optional(() -> gelPanel()).isPresent());
     assertTrue(optional(() -> separationField()).isPresent());
     assertTrue(optional(() -> thicknessField()).isPresent());
@@ -214,7 +214,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertTrue(optional(() -> decolorationField()).isPresent());
     assertTrue(optional(() -> weightMarkerQuantityField()).isPresent());
     assertTrue(optional(() -> proteinQuantityField()).isPresent());
-    setSampleSupport(SOLUTION);
+    setSampleType(SOLUTION);
     assertTrue(optional(() -> servicesPanel()).isPresent());
     assertTrue(optional(() -> digestionOptions()).isPresent());
     setDigestion(ProteolyticDigestion.DIGESTED);
@@ -251,7 +251,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setService(SMALL_MOLECULE);
     assertTrue(optional(() -> structureFile()).isPresent());
     setService(LC_MS_MS);
-    setSampleSupport(SampleSupport.GEL);
+    setSampleType(SampleType.GEL);
     assertTrue(optional(() -> gelImageFile()).isPresent());
     assertTrue(optional(() -> filesPanel()).isPresent());
     assertTrue(optional(() -> filesUploader()).isPresent());
@@ -292,7 +292,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertEquals(comment, submission.getComment());
     assertEquals(2, submission.getSamples().size());
     SubmissionSample sample = submission.getSamples().get(0);
-    assertEquals(support, sample.getSupport());
+    assertEquals(type, sample.getType());
     assertEquals(1, submission.getFiles().size());
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(additionalFile1.getFileName().toString(), file.getFilename());

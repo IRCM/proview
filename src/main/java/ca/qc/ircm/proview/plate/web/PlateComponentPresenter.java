@@ -85,10 +85,15 @@ public class PlateComponentPresenter {
     view.spreadsheet.addCellValueChangeListener(e -> e.getChangedCells().stream().forEach(ref -> {
       Cell cell = view.spreadsheet.getActiveSheet().getRow(ref.getRow()).getCell(ref.getCol());
       Well well = plate.well(ref.getRow() - 1, ref.getCol() - 1);
-      if (well.getSample() == null) {
-        well.setSample(new SubmissionSample());
+      String name = view.spreadsheet.getCellValue(cell);
+      if (name != null && !name.isEmpty()) {
+        if (well.getSample() == null) {
+          well.setSample(new SubmissionSample());
+        }
+        well.getSample().setName(name);
+      } else {
+        well.setSample(null);
       }
-      well.getSample().setName(view.spreadsheet.getCellValue(cell));
     }));
   }
 

@@ -29,7 +29,7 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COMMEN
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COUNT;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_QUANTITY;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SUPPORT;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.HEADER;
 import static org.openqa.selenium.By.className;
@@ -72,16 +72,16 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
     nameField().setValue(value);
   }
 
-  protected ComboBoxElement supportField() {
-    return wrap(ComboBoxElement.class, findElement(className(SUPPORT)));
+  protected ComboBoxElement type() {
+    return wrap(ComboBoxElement.class, findElement(className(TYPE)));
   }
 
-  protected String getSupport() {
-    return supportField().getValue();
+  protected String getType() {
+    return type().getValue();
   }
 
-  protected void setSupport(String value) {
-    supportField().selectByText(value);
+  protected void setType(String value) {
+    type().selectByText(value);
   }
 
   protected TextFieldElement quantityField() {

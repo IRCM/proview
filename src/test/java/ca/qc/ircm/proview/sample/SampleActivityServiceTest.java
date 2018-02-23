@@ -66,9 +66,9 @@ public class SampleActivityServiceTest {
     control.setId(123456L);
     control.setName("unit_test_control");
     control.setQuantity("200.0 μg");
-    control.setSupport(SampleSupport.SOLUTION);
+    control.setType(SampleType.SOLUTION);
     control.setControlType(ControlType.NEGATIVE_CONTROL);
-    control.setVolume(300.0);
+    control.setVolume("300.0 μl");
 
     Activity activity = sampleActivityService.insertControl(control);
 
@@ -85,9 +85,9 @@ public class SampleActivityServiceTest {
     SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 442L);
     entityManager.detach(submissionSample);
     submissionSample.setName("new_solution_tag_0001");
-    submissionSample.setSupport(SampleSupport.DRY);
+    submissionSample.setType(SampleType.DRY);
     submissionSample.setQuantity("12 pmol");
-    submissionSample.setVolume(70.0);
+    submissionSample.setVolume("70.0 μl");
     submissionSample.setNumberProtein(2);
     submissionSample.setMolecularWeight(20.0);
 
@@ -115,8 +115,8 @@ public class SampleActivityServiceTest {
     supportActivity.setTableName("sample");
     supportActivity.setRecordId(submissionSample.getId());
     supportActivity.setColumn("support");
-    supportActivity.setOldValue(SampleSupport.SOLUTION.name());
-    supportActivity.setNewValue(SampleSupport.DRY.name());
+    supportActivity.setOldValue(SampleType.SOLUTION.name());
+    supportActivity.setNewValue(SampleType.DRY.name());
     expectedUpdateActivities.add(supportActivity);
     UpdateActivity quantityActivity = new UpdateActivity();
     quantityActivity.setActionType(ActionType.UPDATE);
@@ -131,8 +131,8 @@ public class SampleActivityServiceTest {
     volumeActivity.setTableName("sample");
     volumeActivity.setRecordId(submissionSample.getId());
     volumeActivity.setColumn("volume");
-    volumeActivity.setOldValue("50.0");
-    volumeActivity.setNewValue("70.0");
+    volumeActivity.setOldValue("50 μl");
+    volumeActivity.setNewValue("70.0 μl");
     expectedUpdateActivities.add(volumeActivity);
     UpdateActivity sampleNumberProteinActivity = new UpdateActivity();
     sampleNumberProteinActivity.setActionType(ActionType.UPDATE);
@@ -371,8 +371,8 @@ public class SampleActivityServiceTest {
     entityManager.detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
-    control.setSupport(SampleSupport.SOLUTION);
-    control.setVolume(2.0);
+    control.setType(SampleType.SOLUTION);
+    control.setVolume("2.0 μl");
     control.setQuantity("40 μg");
 
     Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
@@ -406,8 +406,8 @@ public class SampleActivityServiceTest {
     supportActivity.setTableName("sample");
     supportActivity.setRecordId(control.getId());
     supportActivity.setColumn("support");
-    supportActivity.setOldValue(SampleSupport.GEL.name());
-    supportActivity.setNewValue(SampleSupport.SOLUTION.name());
+    supportActivity.setOldValue(SampleType.GEL.name());
+    supportActivity.setNewValue(SampleType.SOLUTION.name());
     expectedUpdateActivities.add(supportActivity);
     UpdateActivity volumeActivity = new UpdateActivity();
     volumeActivity.setActionType(ActionType.UPDATE);
@@ -415,7 +415,7 @@ public class SampleActivityServiceTest {
     volumeActivity.setRecordId(control.getId());
     volumeActivity.setColumn("volume");
     volumeActivity.setOldValue(null);
-    volumeActivity.setNewValue("2.0");
+    volumeActivity.setNewValue("2.0 μl");
     expectedUpdateActivities.add(volumeActivity);
     UpdateActivity quantityActivity = new UpdateActivity();
     quantityActivity.setActionType(ActionType.UPDATE);

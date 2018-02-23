@@ -24,7 +24,7 @@ import java.util.Locale;
 /**
  * Sample support.
  */
-public enum SampleSupport {
+public enum SampleType {
   /**
    * Sample is dry.
    */
@@ -38,7 +38,7 @@ public enum SampleSupport {
    */
   GEL;
   private static MessageResource getResources(Locale locale) {
-    return new MessageResource(SampleSupport.class, locale);
+    return new MessageResource(SampleType.class, locale);
   }
 
   public static String getNullLabel(Locale locale) {
