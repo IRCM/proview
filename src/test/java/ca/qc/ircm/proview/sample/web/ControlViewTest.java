@@ -59,7 +59,7 @@ public class ControlViewTest extends ControlViewPageObject {
   private final String name = "ADH_test";
   private final SampleType type = SampleType.GEL;
   private final String quantity = "10 ug";
-  private final Double volume = 102.4;
+  private final String volume = "102.4 ul";
   private final ControlType controlType = ControlType.POSITIVE_CONTROL;
   private final int standardCount = 2;
   private final String standardName1 = "std-test-1";
@@ -74,7 +74,7 @@ public class ControlViewTest extends ControlViewPageObject {
     setName(name);
     setType(type.getLabel(currentLocale()));
     setQuantity(quantity);
-    setVolume(Objects.toString(volume));
+    setVolume(volume);
     setControlType(controlType.getLabel(currentLocale()));
     setStandardCount(Objects.toString(standardCount));
     //waitFor(() -> standardsGrid());
