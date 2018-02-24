@@ -19,15 +19,10 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.web.MainViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.user.web.RegisterView;
-import com.vaadin.testbench.elements.NotificationElement;
-import com.vaadin.ui.Notification;
+import ca.qc.ircm.proview.user.web.SigninView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,97 +46,31 @@ public class MainViewTest extends MainPageObject {
   public void fieldsExistence() throws Throwable {
     open();
 
-    assertNotNull(header());
-    assertNotNull(signPanel());
-    assertNotNull(signUsernameField());
-    assertNotNull(signPasswordField());
-    assertNotNull(signButton());
-    assertNotNull(forgotPasswordPanel());
-    assertNotNull(forgotPasswordEmailField());
-    assertNotNull(forgotPasswordButton());
-    assertNotNull(registerButton());
+    assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> servicesDescription()).isPresent());
+    assertTrue(optional(() -> services()).isPresent());
+    assertTrue(optional(() -> biomarkerSite()).isPresent());
+    assertTrue(optional(() -> analyses()).isPresent());
+    assertTrue(optional(() -> responsabilities()).isPresent());
+    assertTrue(optional(() -> signin()).isPresent());
   }
 
   @Test
-  public void sign_Error() throws Throwable {
+  public void biomarkerSiteLink() throws Throwable {
     open();
-    setSignUsername("unit.test@ircm.qc.ca");
-    setSignPassword("password");
 
-    clickSignButton();
+    clickBiomarkerSite();
 
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
-    assertNotNull(notification.getCaption());
+    assertEquals("https://www.translationalproteomics.ca/biomarker-pipeline",
+        getDriver().getCurrentUrl());
   }
 
   @Test
-  public void sign_Admin() throws Throwable {
-    open();
-    setSignUsername("proview@ircm.qc.ca");
-    setSignPassword("password");
-
-    clickSignButton();
-
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  public void sign_User() throws Throwable {
-    open();
-    setSignUsername("benoit.coulombe@ircm.qc.ca");
-    setSignPassword("password");
-
-    clickSignButton();
-
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  public void forgotPassword_Error() throws Throwable {
-    open();
-    setForgotPasswordEmail("unit.test@ircm.qc.ca");
-
-    clickForgotPasswordButton();
-
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals(Notification.Type.WARNING_MESSAGE.getStyle(), notification.getType());
-    assertNotNull(notification.getCaption());
-  }
-
-  @Test
-  public void forgotPassword() throws Throwable {
-    open();
-    setForgotPasswordEmail("benoit.coulombe@ircm.qc.ca");
-
-    clickForgotPasswordButton();
-
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals(Notification.Type.WARNING_MESSAGE.getStyle(), notification.getType());
-    assertNotNull(notification.getCaption());
-  }
-
-  @Test
-  public void register() throws Throwable {
+  public void signinButton() throws Throwable {
     open();
 
-    clickRegisterButton();
+    clickSignin();
 
-    assertEquals(viewUrl(RegisterView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  public void enter_NotSigned() throws Throwable {
-    open();
-
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject(userId = 10)
-  public void enter_User() throws Throwable {
-    open();
-
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }
