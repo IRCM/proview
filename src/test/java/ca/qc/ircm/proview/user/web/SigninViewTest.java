@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import org.junit.Test;
@@ -134,7 +133,7 @@ public class SigninViewTest extends SigninPageObject {
   public void enter_NotSigned() throws Throwable {
     open();
 
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
