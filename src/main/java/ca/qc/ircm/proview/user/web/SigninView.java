@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web;
+package ca.qc.ircm.proview.user.web;
 
+import ca.qc.ircm.proview.web.CustomLoginForm;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
@@ -27,24 +28,27 @@ import javax.inject.Inject;
 /**
  * Main view.
  */
-@SpringView(name = MainView.VIEW_NAME)
-public class MainView extends CustomComponent implements BaseView {
+@SpringView(name = SigninView.VIEW_NAME)
+public class SigninView extends CustomComponent implements BaseView {
   private static final long serialVersionUID = -2537732272999926530L;
-  public static final String VIEW_NAME = "";
-  protected MainViewDesign design = new MainViewDesign();
+  public static final String VIEW_NAME = "user/signin";
+  protected SigninViewDesign design = new SigninViewDesign();
+  protected CustomLoginForm signForm = new CustomLoginForm();
   @Inject
-  private transient MainViewPresenter presenter;
+  private transient SigninViewPresenter presenter;
 
   /**
    * Creates main view.
    */
-  public MainView() {
+  public SigninView() {
     setCompositionRoot(design);
+    design.signLayout.addComponent(signForm);
   }
 
   @Override
   public void attach() {
     super.attach();
+    signForm.getLayout().setMargin(false);
     presenter.init(this);
   }
 
