@@ -27,7 +27,6 @@ import ca.qc.ircm.proview.security.PasswordVersion;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import org.apache.shiro.codec.Hex;
@@ -95,7 +94,7 @@ public class ForgotPasswordViewTest extends ForgotPasswordPageObject {
 
     clickSave();
 
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = entityManager.find(User.class, 10L);
     PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
     assertNotNull(user.getSalt());

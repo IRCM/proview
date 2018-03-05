@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.testbench.TestBenchTestCase;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.crypto.AesCipherService;
@@ -37,7 +36,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.test.context.TestContext;
 
@@ -54,11 +52,9 @@ import javax.inject.Inject;
 public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener
     implements SeleniumDriverTypePredicate {
   public static final String REMEMBER_ME_COOKIE_NAME = "rememberMe";
-  private static final String ANONYMOUS_VIEW = MainView.VIEW_NAME;
+  public static final String DOMAIN = "localhost";
   private static final Logger logger = LoggerFactory.getLogger(ShiroTestExecutionListener.class);
   private ThreadState threadState;
-  @Value("localhost")
-  protected String domain;
   @Inject
   private SecurityConfiguration securityConfiguration;
 
@@ -109,10 +105,9 @@ public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener
       AbstractTestBenchTestCase testInstance =
           (AbstractTestBenchTestCase) testContext.getTestInstance();
       WebDriver driver = testInstance.getDriver();
-      testInstance.openView(ANONYMOUS_VIEW);
-      String domain = this.domain;
+      String domain = DOMAIN;
       if (isPhantomjsDriver(driver)) {
-        domain = "." + domain;
+        domain = "." + DOMAIN;
       }
       logger.debug("Set cookie for user {} in domain {}", userId.get(), domain);
       Cookie cookie = new Cookie("rememberMe", rememberCookie(userId.get()), domain, "/", null);

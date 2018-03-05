@@ -19,10 +19,8 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.web.ContactViewPresenter.TITLE;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.web.ContactView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +44,7 @@ public class ContactViewTest extends ContactPageObject {
   public void fieldsExistence() throws Throwable {
     open();
 
-    assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> headerLabel()).isPresent());
     assertTrue(optional(() -> proteomicPanel()).isPresent());
     assertTrue(optional(() -> proteomicNameLink()).isPresent());
     assertTrue(optional(() -> proteomicAddressLink()).isPresent());

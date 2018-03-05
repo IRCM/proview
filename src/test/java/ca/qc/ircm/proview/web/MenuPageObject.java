@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.web.Menu.ABOUT;
 import static ca.qc.ircm.proview.web.Menu.ACCESS;
 import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.Menu.CONTACT;
@@ -25,6 +26,7 @@ import static ca.qc.ircm.proview.web.Menu.CONTROL;
 import static ca.qc.ircm.proview.web.Menu.DIGESTION;
 import static ca.qc.ircm.proview.web.Menu.DILUTION;
 import static ca.qc.ircm.proview.web.Menu.ENRICHMENT;
+import static ca.qc.ircm.proview.web.Menu.GUIDELINES;
 import static ca.qc.ircm.proview.web.Menu.HOME;
 import static ca.qc.ircm.proview.web.Menu.MANAGER;
 import static ca.qc.ircm.proview.web.Menu.MS_ANALYSIS;
@@ -246,12 +248,28 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
     contactMenuItem().click();
   }
 
+  protected WebElement guidelines() {
+    return menuItemByStyle(GUIDELINES);
+  }
+
+  protected void clickGuidelines() {
+    guidelines().click();
+  }
+
   protected WebElement signin() {
     return menuItemByStyle(SIGNIN);
   }
 
   protected void clickSignin() {
     signin().click();
+  }
+
+  protected WebElement about() {
+    return menuItemByStyle(ABOUT);
+  }
+
+  protected void clickAbout() {
+    about().click();
   }
 
   protected void signas(String email) {

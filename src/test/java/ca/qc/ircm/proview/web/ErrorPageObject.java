@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.web.ErrorView;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.LabelElement;
 
@@ -27,15 +26,15 @@ public abstract class ErrorPageObject extends AbstractTestBenchTestCase {
     openView(ErrorView.VIEW_NAME);
   }
 
-  protected LabelElement errorLabel() {
+  protected LabelElement error() {
     return $(LabelElement.class).first();
   }
 
-  protected ButtonElement mainViewButton() {
+  protected ButtonElement home() {
     return $(ButtonElement.class).first();
   }
 
-  protected void clickMainViewButton() {
-    mainViewButton().click();
+  protected void clickHome() {
+    home().click();
   }
 }

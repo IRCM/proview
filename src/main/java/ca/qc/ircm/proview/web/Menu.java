@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.web;
 import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
+import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.plate.web.PlateView;
 import ca.qc.ircm.proview.sample.web.ControlView;
@@ -82,7 +83,9 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
   public static final String REGISTER = "register";
   public static final String STOP_SIGN_AS = "stopSignas";
   public static final String CONTACT = "contact";
+  public static final String GUIDELINES = "guidelines";
   public static final String SIGNIN = "signin";
+  public static final String ABOUT = "about";
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
   private MenuBar menu = new MenuBar();
@@ -108,7 +111,9 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
   private MenuItem register;
   private MenuItem stopSignas;
   private MenuItem contact;
+  private MenuItem guidelines;
   private MenuItem signin;
+  private MenuItem about;
   @Inject
   private transient AuthorizationService authorizationService;
   @Inject
@@ -203,9 +208,15 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
     stopSignas.setVisible(false);
     contact = menu.addItem(resources.message(CONTACT), item -> changeView(ContactView.VIEW_NAME));
     contact.setStyleName(CONTACT);
+    guidelines =
+        menu.addItem(resources.message(GUIDELINES), item -> changeView(GuidelinesView.VIEW_NAME));
+    guidelines.setStyleName(GUIDELINES);
+    guidelines.setVisible(false);
     signin = menu.addItem(resources.message(SIGNIN), item -> changeView(SigninView.VIEW_NAME));
     signin.setStyleName(SIGNIN);
     signin.setVisible(false);
+    about = menu.addItem(resources.message(ABOUT), item -> changeView(AboutView.VIEW_NAME));
+    about.setStyleName(ABOUT);
   }
 
   private void updateVisible() {
@@ -223,6 +234,7 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
     signas.setVisible(authorizationService.hasAdminRole());
     register.setVisible(authorizationService.hasAdminRole());
     stopSignas.setVisible(authorizationService.isRunAs());
+    guidelines.setVisible(authorizationService.hasUserRole());
     signin.setVisible(!authorizationService.isUser());
   }
 

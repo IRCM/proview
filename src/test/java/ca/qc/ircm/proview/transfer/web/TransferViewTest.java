@@ -39,6 +39,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -175,6 +176,7 @@ public class TransferViewTest extends TransferViewPageObject {
   }
 
   @Test
+  @Ignore
   public void save_PlateToPlate() throws Throwable {
     openWithWells();
     String plateName = "test_plate";
@@ -272,6 +274,7 @@ public class TransferViewTest extends TransferViewPageObject {
   }
 
   @Test
+  @Ignore
   public void save_TubesToPlate() throws Throwable {
     openWithTubes();
     String plateName = "test_plate";
