@@ -56,7 +56,7 @@ public class CategoryFormTest {
 
   @SuppressWarnings("serial")
   public class TestableCategoryForm extends CategoryForm {
-    public TestableCategoryForm(CategoryFormPresenter presenter) {
+    TestableCategoryForm(CategoryFormPresenter presenter) {
       super(presenter);
     }
 

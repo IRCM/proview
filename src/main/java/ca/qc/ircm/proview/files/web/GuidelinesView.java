@@ -18,6 +18,8 @@ public class GuidelinesView extends CustomComponent implements BaseView {
   private static final long serialVersionUID = -2957789867158175076L;
   protected GuidelinesViewDesign design = new GuidelinesViewDesign();
   @Inject
+  protected GuidelinesForm guidelinesForm;
+  @Inject
   private transient GuidelinesViewPresenter presenter;
 
   /**
@@ -26,6 +28,7 @@ public class GuidelinesView extends CustomComponent implements BaseView {
   @PostConstruct
   public void init() {
     setCompositionRoot(design);
+    design.guidelinesLayout.addComponent(guidelinesForm);
   }
 
   @Override

@@ -1,7 +1,5 @@
 package ca.qc.ircm.proview.files.web;
 
-import ca.qc.ircm.proview.files.Category;
-import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.utils.MessageResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 /**
  * Guidelines view presenter.
@@ -26,20 +19,13 @@ public class GuidelinesViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(GuidelinesViewPresenter.class);
   private GuidelinesView view;
   private GuidelinesViewDesign design;
-  @Inject
-  private Provider<CategoryForm> categoryFormProvider;
-  @Inject
-  private GuidelinesConfiguration guidelinesConfiguration;
   @Value("${spring.application.name}")
   private String applicationName;
 
   protected GuidelinesViewPresenter() {
   }
 
-  protected GuidelinesViewPresenter(Provider<CategoryForm> categoryFormProvider,
-      GuidelinesConfiguration guidelinesConfiguration, String applicationName) {
-    this.categoryFormProvider = categoryFormProvider;
-    this.guidelinesConfiguration = guidelinesConfiguration;
+  protected GuidelinesViewPresenter(String applicationName) {
     this.applicationName = applicationName;
   }
 
@@ -61,11 +47,5 @@ public class GuidelinesViewPresenter {
     view.setTitle(resources.message(TITLE, applicationName));
     design.header.addStyleName(HEADER);
     design.header.setValue(resources.message(HEADER));
-    List<Category> categories = guidelinesConfiguration.categories(view.getLocale());
-    categories.forEach(category -> {
-      CategoryForm form = categoryFormProvider.get();
-      form.setValue(category);
-      design.categories.addComponent(form);
-    });
   }
 }

@@ -51,15 +51,27 @@ public class CloseWindowOnViewChange extends AbstractExtension {
   }
 
   private ViewChangeListener listener() {
-    return e -> {
-      remove();
-      return true;
-    };
+    return new CloseWindowOnViewChangeListener(this);
   }
 
   public static CloseWindowOnViewChange closeWindowOnViewChange(Window window) {
     CloseWindowOnViewChange instance = new CloseWindowOnViewChange();
     instance.extend(window);
     return instance;
+  }
+
+  public static class CloseWindowOnViewChangeListener implements ViewChangeListener {
+    private static final long serialVersionUID = -7398291644106825356L;
+    private CloseWindowOnViewChange extension;
+
+    private CloseWindowOnViewChangeListener(CloseWindowOnViewChange extension) {
+      this.extension = extension;
+    }
+
+    @Override
+    public boolean beforeViewChange(ViewChangeEvent event) {
+      extension.remove();
+      return true;
+    }
   }
 }

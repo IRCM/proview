@@ -41,6 +41,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STA
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTION_TYPE;
@@ -133,6 +134,14 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected LabelElement inactiveLabel() {
     return wrap(LabelElement.class, findElement(className(INACTIVE_WARNING)));
+  }
+
+  protected ButtonElement guidelines() {
+    return wrap(ButtonElement.class, findElement(className(GUIDELINES)));
+  }
+
+  protected void clickGuidelines() {
+    guidelines().click();
   }
 
   protected PanelElement servicePanel() {

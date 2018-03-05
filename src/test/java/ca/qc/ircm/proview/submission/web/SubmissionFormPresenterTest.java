@@ -59,6 +59,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STA
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.HIGH_RESOLUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTION_TYPE;
@@ -141,6 +142,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.files.web.GuidelinesWindow;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -219,6 +221,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import javax.inject.Provider;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
@@ -239,6 +242,10 @@ public class SubmissionFormPresenterTest {
   private AuthorizationService authorizationService;
   @Mock
   private SubmissionForm view;
+  @Mock
+  private Provider<GuidelinesWindow> guidelinesWindowProvider;
+  @Mock
+  private GuidelinesWindow guidelinesWindow;
   @Mock
   private DefaultMultiFileUpload filesUploader;
   @Captor
@@ -355,7 +362,7 @@ public class SubmissionFormPresenterTest {
   @Before
   public void beforeTest() throws Throwable {
     presenter = new SubmissionFormPresenter(submissionService, submissionSampleService,
-        plateService, authorizationService);
+        plateService, authorizationService, guidelinesWindowProvider);
     design = new SubmissionFormDesign();
     view.design = design;
     view.plateComponent = mock(PlateComponent.class);
@@ -363,6 +370,7 @@ public class SubmissionFormPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
+    when(guidelinesWindowProvider.get()).thenReturn(guidelinesWindow);
     when(plateService.nameAvailable(any())).thenReturn(true);
     plate = new Plate();
     plate.initWells();
@@ -1168,6 +1176,8 @@ public class SubmissionFormPresenterTest {
 
     assertTrue(design.sampleTypeWarning.getStyleName().contains(SAMPLE_TYPE_WARNING));
     assertTrue(design.inactiveWarning.getStyleName().contains(INACTIVE_WARNING));
+    assertTrue(design.guidelines.getStyleName().contains(ValoTheme.BUTTON_FRIENDLY));
+    assertTrue(design.guidelines.getStyleName().contains(GUIDELINES));
     assertTrue(design.servicePanel.getStyleName().contains(SERVICE_PANEL));
     assertTrue(design.servicePanel.getStyleName().contains(REQUIRED));
     assertTrue(design.service.getStyleName().contains(SERVICE));
@@ -1264,6 +1274,7 @@ public class SubmissionFormPresenterTest {
 
     assertEquals(resources.message(SAMPLE_TYPE_WARNING), design.sampleTypeWarning.getValue());
     assertEquals(resources.message(INACTIVE_WARNING), design.inactiveWarning.getValue());
+    assertEquals(resources.message(GUIDELINES), design.guidelines.getCaption());
     assertEquals(resources.message(SERVICE), design.servicePanel.getCaption());
     assertEquals(null, design.service.getCaption());
     for (Service service : Service.availables()) {
@@ -2832,6 +2843,17 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.buttons.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
+  }
+
+  @Test
+  public void guidelines() throws Throwable {
+    presenter.init(view);
+
+    design.guidelines.click();
+
+    verify(guidelinesWindowProvider).get();
+    verify(guidelinesWindow).center();
+    verify(view).addWindow(guidelinesWindow);
   }
 
   @Test

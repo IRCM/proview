@@ -35,7 +35,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.By.className;
 
+import ca.qc.ircm.proview.files.web.GuidelinesWindowPresenter;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -159,6 +161,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertTrue(optional(() -> header()).isPresent());
     assertTrue(optional(() -> sampleTypeLabel()).isPresent());
     assertTrue(optional(() -> inactiveLabel()).isPresent());
+    assertTrue(optional(() -> guidelines()).isPresent());
     assertTrue(optional(() -> servicePanel()).isPresent());
     assertTrue(optional(() -> serviceOptions()).isPresent());
     assertTrue(optional(() -> samplesPanel()).isPresent());
@@ -297,5 +300,15 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals(additionalFile1.getFileName().toString(), file.getFilename());
     assertArrayEquals(Files.readAllBytes(additionalFile1), file.getContent());
+  }
+
+  @Test
+  public void guidelinesWindow() throws Throwable {
+    open();
+
+    clickGuidelines();
+
+    assertTrue(
+        optional(() -> findElement(className(GuidelinesWindowPresenter.WINDOW_STYLE))).isPresent());
   }
 }
