@@ -20,6 +20,7 @@ public class CategoryForm extends CustomComponent implements BaseComponent {
   protected CategoryFormDesign design = new CategoryFormDesign();
   @Inject
   private transient CategoryFormPresenter presenter;
+  private Category category;
 
   protected CategoryForm() {
   }
@@ -40,13 +41,13 @@ public class CategoryForm extends CustomComponent implements BaseComponent {
   public void attach() {
     super.attach();
     presenter.init(this);
+    presenter.setValue(category);
   }
 
   public void setValue(Category category) {
+    this.category = category;
     if (isAttached()) {
       presenter.setValue(category);
-    } else {
-      addAttachListener(e -> presenter.setValue(category));
     }
   }
 }

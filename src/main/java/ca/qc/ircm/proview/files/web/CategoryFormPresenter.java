@@ -10,8 +10,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import javax.annotation.PostConstruct;
-
 /**
  * Form containing one category of guidelines.
  */
@@ -20,6 +18,7 @@ import javax.annotation.PostConstruct;
 public class CategoryFormPresenter {
   public static final String CATEGORY = "category";
   public static final String GUIDELINE = "guideline";
+  private CategoryForm view;
   private CategoryFormDesign design;
   private Category category;
 
@@ -29,15 +28,19 @@ public class CategoryFormPresenter {
    * @param view
    *          view
    */
-  @PostConstruct
   public void init(CategoryForm view) {
+    this.view = view;
     design = view.design;
   }
 
   private void prepareComponents() {
+    view.setVisible(category != null);
     design.category.addStyleName(CATEGORY);
-    design.category.setCaption(category.name());
-    category.guidelines().forEach(guide -> design.guidelines.addComponent(button(guide)));
+    if (category != null) {
+      design.category.setCaption(category.name());
+      design.guidelines.removeAllComponents();
+      category.guidelines().forEach(guide -> design.guidelines.addComponent(button(guide)));
+    }
   }
 
   private Button button(Guideline guideline) {

@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findInstanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.files.Category;
@@ -111,5 +112,13 @@ public class CategoryFormPresenterTest {
     assertTrue(fileDownloader.getFileDownloadResource() instanceof FileResource);
     fileResource = (FileResource) fileDownloader.getFileDownloadResource();
     assertEquals(guidelinePath2.toFile(), fileResource.getSourceFile());
+  }
+
+  @Test
+  public void guidelines_NullCategory() {
+    presenter.init(view);
+    presenter.setValue(null);
+
+    verify(view).setVisible(false);
   }
 }

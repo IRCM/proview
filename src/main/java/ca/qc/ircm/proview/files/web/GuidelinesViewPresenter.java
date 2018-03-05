@@ -3,6 +3,9 @@ package ca.qc.ircm.proview.files.web;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.utils.MessageResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -20,13 +23,14 @@ import javax.inject.Provider;
 public class GuidelinesViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
+  private static final Logger logger = LoggerFactory.getLogger(GuidelinesViewPresenter.class);
   private GuidelinesView view;
   private GuidelinesViewDesign design;
   @Inject
   private Provider<CategoryForm> categoryFormProvider;
   @Inject
   private GuidelinesConfiguration guidelinesConfiguration;
-  @Inject
+  @Value("${spring.application.name}")
   private String applicationName;
 
   protected GuidelinesViewPresenter() {
@@ -46,6 +50,7 @@ public class GuidelinesViewPresenter {
    *          view
    */
   public void init(GuidelinesView view) {
+    logger.debug("Guidelines view");
     this.view = view;
     design = view.design;
     prepareComponents();
@@ -62,14 +67,5 @@ public class GuidelinesViewPresenter {
       form.setValue(category);
       design.categories.addComponent(form);
     });
-  }
-
-  /**
-   * Called when view is entered.
-   *
-   * @param parameters
-   *          parameters
-   */
-  public void enter(String parameters) {
   }
 }

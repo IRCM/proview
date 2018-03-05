@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.files.web;
 
 import ca.qc.ircm.proview.web.view.BaseView;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.CustomComponent;
 
@@ -33,10 +32,5 @@ public class GuidelinesView extends CustomComponent implements BaseView {
   public void attach() {
     super.attach();
     presenter.init(this);
-  }
-
-  @Override
-  public void enter(ViewChangeEvent event) {
-    presenter.enter(event.getParameters());
   }
 }
