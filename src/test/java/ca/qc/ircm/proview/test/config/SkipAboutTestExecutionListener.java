@@ -25,20 +25,20 @@ import org.springframework.test.context.TestContext;
 /**
  * Sets Shiro's subject.
  */
-public class SkipIntroTestExecutionListener extends InjectIntoTestExecutionListener
+public class SkipAboutTestExecutionListener extends InjectIntoTestExecutionListener
     implements SeleniumDriverTypePredicate {
-  private static final String ANONYMOUS_VIEW = SkipIntroView.VIEW_NAME;
+  private static final String ANONYMOUS_VIEW = SkipAboutView.VIEW_NAME;
   private static final Logger logger =
-      LoggerFactory.getLogger(SkipIntroTestExecutionListener.class);
+      LoggerFactory.getLogger(SkipAboutTestExecutionListener.class);
 
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     if (isTestBenchTest(testContext)) {
-      DontSkipIntro dontSkipIntro =
-          AnnotationUtils.getAnnotation(testContext.getTestMethod(), DontSkipIntro.class);
+      DontSkipAbout dontSkipIntro =
+          AnnotationUtils.getAnnotation(testContext.getTestMethod(), DontSkipAbout.class);
       if (dontSkipIntro == null) {
         dontSkipIntro =
-            AnnotationUtils.getAnnotation(testContext.getTestClass(), DontSkipIntro.class);
+            AnnotationUtils.getAnnotation(testContext.getTestClass(), DontSkipAbout.class);
       }
       if (dontSkipIntro == null) {
         logger.trace("Skip introduction view");

@@ -22,4 +22,4 @@ org.springframework.test.context.TestExecutionListener = \
   ca.qc.ircm.proview.test.config.ShiroTestExecutionListener,\
   ca.qc.ircm.proview.test.config.SlowTestExecutionListener,\
   ca.qc.ircm.proview.test.config.TestBenchTestExecutionListener,\
-  ca.qc.ircm.proview.test.config.SkipIntroTestExecutionListener
+  ca.qc.ircm.proview.test.config.SkipAboutTestExecutionListener
