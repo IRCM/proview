@@ -50,7 +50,7 @@ public class GuidelinesConfigurationTest {
   @Test
   public void categories_French() {
     List<Category> categories = guidelinesConfiguration.categories(Locale.FRENCH);
-    assertEquals(1, categories.size());
+    assertEquals(2, categories.size());
     Category category = categories.get(0);
     assertEquals("Directives", category.name());
     List<Guideline> guidelines = category.guidelines();
