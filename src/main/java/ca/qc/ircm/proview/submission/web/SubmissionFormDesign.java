@@ -29,6 +29,7 @@ import com.vaadin.ui.declarative.Design;
 public class SubmissionFormDesign extends VerticalLayout {
   protected Label sampleTypeWarning;
   protected Label inactiveWarning;
+  protected Button guidelines;
   protected Panel servicePanel;
   protected RadioButtonGroup<ca.qc.ircm.proview.submission.Service> service;
   protected Panel samplesPanel;

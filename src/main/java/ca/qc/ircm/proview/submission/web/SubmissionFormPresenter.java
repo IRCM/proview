@@ -53,6 +53,7 @@ import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.Named;
+import ca.qc.ircm.proview.files.web.GuidelinesWindow;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -135,6 +136,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.persistence.PersistenceException;
 
 /**
@@ -145,6 +147,7 @@ import javax.persistence.PersistenceException;
 public class SubmissionFormPresenter implements BinderValidator {
   public static final String SAMPLE_TYPE_WARNING = "sampleTypeWarning";
   public static final String INACTIVE_WARNING = "inactive";
+  public static final String GUIDELINES = "guidelines";
   public static final String SERVICE_PANEL = "servicePanel";
   public static final String SERVICE = "service";
   public static final String SAMPLES = submission.samples.getMetadata().getName();
@@ -291,17 +294,21 @@ public class SubmissionFormPresenter implements BinderValidator {
   private PlateService plateService;
   @Inject
   private AuthorizationService authorizationService;
+  @Inject
+  private Provider<GuidelinesWindow> guidelinesWindowProvider;
 
   protected SubmissionFormPresenter() {
   }
 
   protected SubmissionFormPresenter(SubmissionService submissionService,
       SubmissionSampleService submissionSampleService, PlateService plateService,
-      AuthorizationService authorizationService) {
+      AuthorizationService authorizationService,
+      Provider<GuidelinesWindow> guidelinesWindowProvider) {
     this.submissionService = submissionService;
     this.submissionSampleService = submissionSampleService;
     this.plateService = plateService;
     this.authorizationService = authorizationService;
+    this.guidelinesWindowProvider = guidelinesWindowProvider;
   }
 
   /**
@@ -331,6 +338,13 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.sampleTypeWarning.setValue(resources.message(SAMPLE_TYPE_WARNING));
     design.inactiveWarning.addStyleName(INACTIVE_WARNING);
     design.inactiveWarning.setValue(resources.message(INACTIVE_WARNING));
+    design.guidelines.addStyleName(GUIDELINES);
+    design.guidelines.setCaption(resources.message(GUIDELINES));
+    design.guidelines.addClickListener(e -> {
+      GuidelinesWindow window = guidelinesWindowProvider.get();
+      window.center();
+      view.addWindow(window);
+    });
     design.servicePanel.addStyleName(SERVICE_PANEL);
     design.servicePanel.addStyleName(REQUIRED);
     design.servicePanel.setCaption(resources.message(SERVICE));

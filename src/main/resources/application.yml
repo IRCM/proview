@@ -71,6 +71,32 @@ email:
   from: proview@ircm.qc.ca
   to: christian.poitras@ircm.qc.ca
 
+guidelines:
+  home: ${user.dir}/guidelines
+  categories:
+    default:
+      - name: 'Guidelines'
+        guidelines:
+          - name: 'Gel-free sample preparation'
+            path: 'Guidelines_Gel-free_sample_preparation.doc'
+      - name: 'Protocols'
+        guidelines:
+          - name: 'Gel staining protocols'
+            path: 'Gel staining protocols.doc'
+          - name: 'Immunoprecipitation Magnetic Dynabeads protocol'
+            path: 'Immunoprecipitation Magnetic Dynabeads protocol.docx'
+    fr:
+      - name: 'Directives'
+        guidelines:
+          - name: 'Préparation des échantillons sans gel'
+            path: 'Directives_de_préparation_des_échantillons_sans_gel.doc'
+      - name: 'Protocoles'
+        guidelines:
+          - name: 'Protocoles coloration de gels'
+            path: 'Protocoles coloration de gels.doc'
+          - name: 'Protocole Immunoprecipitation Dynabeads'
+            path: 'Protocole Immunoprecipitation Dynabeads.docx'
+
 # Address to display by default on user registration page.
 address:
   address: 110 avenue des Pins Ouest
