@@ -34,8 +34,6 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.web.RegisterView;
-import ca.qc.ircm.proview.web.MainView;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.testbench.elements.NotificationElement;
@@ -180,7 +178,7 @@ public class RegisterViewTest extends RegisterPageObject {
 
     clickSave();
 
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = getUser(email);
     assertNotNull(user);
     assertNotNull(user.getId());
@@ -223,7 +221,7 @@ public class RegisterViewTest extends RegisterPageObject {
 
     clickSave();
 
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = getUser(email);
     assertNotNull(user);
     assertNotNull(user.getId());

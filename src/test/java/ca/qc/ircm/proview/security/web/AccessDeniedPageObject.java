@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.security.web;
 
-import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.LabelElement;
@@ -27,15 +26,15 @@ public abstract class AccessDeniedPageObject extends AbstractTestBenchTestCase {
     openView(AccessDeniedView.VIEW_NAME);
   }
 
-  protected LabelElement errorLabel() {
+  protected LabelElement error() {
     return $(LabelElement.class).first();
   }
 
-  protected ButtonElement mainViewButton() {
+  protected ButtonElement home() {
     return $(ButtonElement.class).first();
   }
 
-  protected void clickMainViewButton() {
-    mainViewButton().click();
+  protected void clickHome() {
+    home().click();
   }
 }

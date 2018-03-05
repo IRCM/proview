@@ -17,60 +17,36 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.MainViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.web.SigninView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
-public class MainViewTest extends MainPageObject {
-  @Value("${spring.application.name}")
-  private String applicationName;
-
-  @Test
-  public void title() throws Throwable {
-    open();
-
-    assertTrue(
-        resources(MainView.class).message(TITLE, applicationName).contains(getDriver().getTitle()));
+public class MainViewTest extends AbstractTestBenchTestCase {
+  private void open() {
+    openView(MainView.VIEW_NAME);
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void notsigned() throws Throwable {
     open();
-
-    assertTrue(optional(() -> header()).isPresent());
-    assertTrue(optional(() -> servicesDescription()).isPresent());
-    assertTrue(optional(() -> services()).isPresent());
-    assertTrue(optional(() -> biomarkerSite()).isPresent());
-    assertTrue(optional(() -> analyses()).isPresent());
-    assertTrue(optional(() -> responsabilities()).isPresent());
-    assertTrue(optional(() -> signin()).isPresent());
-  }
-
-  @Test
-  public void biomarkerSiteLink() throws Throwable {
-    open();
-
-    clickBiomarkerSite();
-
-    assertEquals("https://www.translationalproteomics.ca/biomarker-pipeline",
-        getDriver().getCurrentUrl());
-  }
-
-  @Test
-  public void signinButton() throws Throwable {
-    open();
-
-    clickSignin();
 
     assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void signed() throws Throwable {
+    open();
+
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

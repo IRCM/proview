@@ -17,10 +17,12 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.ContactViewPresenter.TITLE;
+import static ca.qc.ircm.proview.web.AboutViewPresenter.TITLE;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.user.web.SigninView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +30,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
-public class ContactViewTest extends ContactPageObject {
+public class AboutViewTest extends AboutPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -36,7 +38,7 @@ public class ContactViewTest extends ContactPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(ContactView.class).message(TITLE, applicationName)
+    assertTrue(resources(AboutView.class).message(TITLE, applicationName)
         .contains(getDriver().getTitle()));
   }
 
@@ -44,14 +46,31 @@ public class ContactViewTest extends ContactPageObject {
   public void fieldsExistence() throws Throwable {
     open();
 
-    assertTrue(optional(() -> headerLabel()).isPresent());
-    assertTrue(optional(() -> proteomicPanel()).isPresent());
-    assertTrue(optional(() -> proteomicNameLink()).isPresent());
-    assertTrue(optional(() -> proteomicAddressLink()).isPresent());
-    assertTrue(optional(() -> proteomicPhoneLink()).isPresent());
-    assertTrue(optional(() -> websitePanel()).isPresent());
-    assertTrue(optional(() -> websiteNameLink()).isPresent());
-    assertTrue(optional(() -> websiteAddressLink()).isPresent());
-    assertTrue(optional(() -> websitePhoneLink()).isPresent());
+    assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> servicesDescription()).isPresent());
+    assertTrue(optional(() -> services()).isPresent());
+    assertTrue(optional(() -> biomarkerSite()).isPresent());
+    assertTrue(optional(() -> analyses()).isPresent());
+    assertTrue(optional(() -> responsabilities()).isPresent());
+    assertTrue(optional(() -> signin()).isPresent());
+  }
+
+  @Test
+  public void biomarkerSiteLink() throws Throwable {
+    open();
+
+    clickBiomarkerSite();
+
+    assertEquals("https://www.translationalproteomics.ca/biomarker-pipeline",
+        getDriver().getCurrentUrl());
+  }
+
+  @Test
+  public void signinButton() throws Throwable {
+    open();
+
+    clickSignin();
+
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

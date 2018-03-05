@@ -24,10 +24,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.user.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import org.junit.Test;
@@ -74,24 +74,34 @@ public class AccessDeniedViewTest extends AccessDeniedPageObject {
   public void fieldsExistence() throws Throwable {
     open();
 
-    assertNotNull(errorLabel());
-    assertNotNull(mainViewButton());
+    assertNotNull(error());
+    assertNotNull(home());
   }
 
   @Test
   public void captions() throws Throwable {
     open();
 
-    assertTrue(messages(LABEL).contains(errorLabel().getText()));
-    assertTrue(messages(BUTTON).contains(mainViewButton().getCaption()));
+    assertTrue(messages(LABEL).contains(error().getText()));
+    assertTrue(messages(BUTTON).contains(home().getCaption()));
   }
 
   @Test
-  public void returnMainView() throws Throwable {
+  public void home_NotSigned() throws Throwable {
     open();
 
-    clickMainViewButton();
+    clickHome();
 
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void home_Signed() throws Throwable {
+    open();
+
+    clickHome();
+
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

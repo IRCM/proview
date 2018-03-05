@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
+import static ca.qc.ircm.proview.web.Menu.ABOUT;
 import static ca.qc.ircm.proview.web.Menu.ACCESS;
 import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.Menu.CONTACT;
@@ -261,6 +262,14 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
 
   protected void clickSignin() {
     signin().click();
+  }
+
+  protected WebElement about() {
+    return menuItemByStyle(ABOUT);
+  }
+
+  protected void clickAbout() {
+    about().click();
   }
 
   protected void signas(String email) {

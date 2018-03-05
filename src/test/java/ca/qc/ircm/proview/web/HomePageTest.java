@@ -17,41 +17,36 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.ContactViewPresenter.TITLE;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
+import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.DontSkipIntro;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.test.config.WithSubject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
-public class ContactViewTest extends ContactPageObject {
-  @Value("${spring.application.name}")
-  private String applicationName;
-
-  @Test
-  public void title() throws Throwable {
-    open();
-
-    assertTrue(resources(ContactView.class).message(TITLE, applicationName)
-        .contains(getDriver().getTitle()));
+@DontSkipIntro
+public class HomePageTest extends AbstractTestBenchTestCase {
+  private void open() {
+    openView(MainView.VIEW_NAME);
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void intro_NotSigned() throws Throwable {
     open();
 
-    assertTrue(optional(() -> headerLabel()).isPresent());
-    assertTrue(optional(() -> proteomicPanel()).isPresent());
-    assertTrue(optional(() -> proteomicNameLink()).isPresent());
-    assertTrue(optional(() -> proteomicAddressLink()).isPresent());
-    assertTrue(optional(() -> proteomicPhoneLink()).isPresent());
-    assertTrue(optional(() -> websitePanel()).isPresent());
-    assertTrue(optional(() -> websiteNameLink()).isPresent());
-    assertTrue(optional(() -> websiteAddressLink()).isPresent());
-    assertTrue(optional(() -> websitePhoneLink()).isPresent());
+    assertEquals(viewUrl(AboutView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void intro_Signed() throws Throwable {
+    open();
+
+    assertEquals(viewUrl(AboutView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

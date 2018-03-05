@@ -17,24 +17,33 @@
 
 package ca.qc.ircm.proview.web;
 
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import com.vaadin.testbench.elements.ButtonElement;
-import com.vaadin.testbench.elements.LabelElement;
+import ca.qc.ircm.proview.web.view.BaseView;
+import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.CustomComponent;
 
-public abstract class ErrorPageObject extends AbstractTestBenchTestCase {
-  protected void open() {
-    openView(ErrorView.VIEW_NAME);
+import javax.inject.Inject;
+
+/**
+ * About view.
+ */
+@SpringView(name = AboutView.VIEW_NAME)
+public class AboutView extends CustomComponent implements BaseView {
+  private static final long serialVersionUID = -2537732272999926530L;
+  public static final String VIEW_NAME = "about";
+  protected AboutViewDesign design = new AboutViewDesign();
+  @Inject
+  private transient AboutViewPresenter presenter;
+
+  /**
+   * Creates introduction view.
+   */
+  public AboutView() {
+    setCompositionRoot(design);
   }
 
-  protected LabelElement error() {
-    return $(LabelElement.class).first();
-  }
-
-  protected ButtonElement home() {
-    return $(ButtonElement.class).first();
-  }
-
-  protected void clickHome() {
-    home().click();
+  @Override
+  public void attach() {
+    super.attach();
+    presenter.init(this);
   }
 }

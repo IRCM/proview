@@ -31,16 +31,8 @@ import javax.inject.Inject;
 public class MainView extends CustomComponent implements BaseView {
   private static final long serialVersionUID = -2537732272999926530L;
   public static final String VIEW_NAME = "";
-  protected MainViewDesign design = new MainViewDesign();
   @Inject
   private transient MainViewPresenter presenter;
-
-  /**
-   * Creates main view.
-   */
-  public MainView() {
-    setCompositionRoot(design);
-  }
 
   @Override
   public void attach() {

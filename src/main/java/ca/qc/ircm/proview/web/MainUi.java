@@ -72,6 +72,7 @@ public class MainUi extends UI {
       // TODO Use user's locale rather than a default one.
       getUI().getSession().setLocale(Locale.FRENCH);
     }
+    getNavigator().navigateTo(AboutView.VIEW_NAME);
   }
 
   public ServletContext getServletContext() {

@@ -17,13 +17,13 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.MainViewPresenter.ANALYSES;
-import static ca.qc.ircm.proview.web.MainViewPresenter.BIOMARKER_SITE;
-import static ca.qc.ircm.proview.web.MainViewPresenter.HEADER;
-import static ca.qc.ircm.proview.web.MainViewPresenter.RESPONSABILITIES;
-import static ca.qc.ircm.proview.web.MainViewPresenter.SERVICES;
-import static ca.qc.ircm.proview.web.MainViewPresenter.SERVICES_DESCRIPTION;
-import static ca.qc.ircm.proview.web.MainViewPresenter.SIGNIN;
+import static ca.qc.ircm.proview.web.AboutViewPresenter.ANALYSES;
+import static ca.qc.ircm.proview.web.AboutViewPresenter.BIOMARKER_SITE;
+import static ca.qc.ircm.proview.web.AboutViewPresenter.HEADER;
+import static ca.qc.ircm.proview.web.AboutViewPresenter.RESPONSABILITIES;
+import static ca.qc.ircm.proview.web.AboutViewPresenter.SERVICES;
+import static ca.qc.ircm.proview.web.AboutViewPresenter.SERVICES_DESCRIPTION;
+import static ca.qc.ircm.proview.web.AboutViewPresenter.SIGNIN;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -31,9 +31,9 @@ import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.LinkElement;
 
-public abstract class MainPageObject extends AbstractTestBenchTestCase {
+public abstract class AboutPageObject extends AbstractTestBenchTestCase {
   protected void open() {
-    openView(MainView.VIEW_NAME);
+    openView(AboutView.VIEW_NAME);
   }
 
   protected LabelElement header() {

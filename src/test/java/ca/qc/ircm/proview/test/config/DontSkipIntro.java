@@ -15,26 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web;
+package ca.qc.ircm.proview.test.config;
 
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import com.vaadin.testbench.elements.ButtonElement;
-import com.vaadin.testbench.elements.LabelElement;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public abstract class ErrorPageObject extends AbstractTestBenchTestCase {
-  protected void open() {
-    openView(ErrorView.VIEW_NAME);
-  }
-
-  protected LabelElement error() {
-    return $(LabelElement.class).first();
-  }
-
-  protected ButtonElement home() {
-    return $(ButtonElement.class).first();
-  }
-
-  protected void clickHome() {
-    home().click();
-  }
+/**
+ * Don't skip introduction view.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
+public @interface DontSkipIntro {
 }

@@ -85,6 +85,7 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
   public static final String CONTACT = "contact";
   public static final String GUIDELINES = "guidelines";
   public static final String SIGNIN = "signin";
+  public static final String ABOUT = "about";
   private static final long serialVersionUID = 4442788596052318607L;
   private static final Logger logger = LoggerFactory.getLogger(Menu.class);
   private MenuBar menu = new MenuBar();
@@ -112,6 +113,7 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
   private MenuItem contact;
   private MenuItem guidelines;
   private MenuItem signin;
+  private MenuItem about;
   @Inject
   private transient AuthorizationService authorizationService;
   @Inject
@@ -213,6 +215,8 @@ public class Menu extends CustomComponent implements BaseComponent, ViewChangeLi
     signin = menu.addItem(resources.message(SIGNIN), item -> changeView(SigninView.VIEW_NAME));
     signin.setStyleName(SIGNIN);
     signin.setVisible(false);
+    about = menu.addItem(resources.message(ABOUT), item -> changeView(AboutView.VIEW_NAME));
+    about.setStyleName(ABOUT);
   }
 
   private void updateVisible() {

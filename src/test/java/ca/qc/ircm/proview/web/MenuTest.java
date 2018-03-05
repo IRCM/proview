@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.test.config.ShiroTestExecutionListener.REMEMBER_ME_COOKIE_NAME;
+import static ca.qc.ircm.proview.web.Menu.ABOUT;
 import static ca.qc.ircm.proview.web.Menu.ACCESS;
 import static ca.qc.ircm.proview.web.Menu.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.Menu.CONTACT;
@@ -111,6 +112,7 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertFalse(optional(() -> guidelines()).isPresent());
     assertTrue(optional(() -> signin()).isPresent());
+    assertTrue(optional(() -> about()).isPresent());
   }
 
   @Test
@@ -142,6 +144,7 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> guidelines()).isPresent());
     assertFalse(optional(() -> signin()).isPresent());
+    assertTrue(optional(() -> about()).isPresent());
   }
 
   @Test
@@ -174,6 +177,7 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> guidelines()).isPresent());
     assertFalse(optional(() -> signin()).isPresent());
+    assertTrue(optional(() -> about()).isPresent());
   }
 
   @Test
@@ -207,6 +211,7 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> guidelines()).isPresent());
     assertFalse(optional(() -> signin()).isPresent());
+    assertTrue(optional(() -> about()).isPresent());
   }
 
   @Test
@@ -241,6 +246,7 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> contactMenuItem()).isPresent());
     assertTrue(optional(() -> guidelines()).isPresent());
     assertFalse(optional(() -> signin()).isPresent());
+    assertTrue(optional(() -> about()).isPresent());
   }
 
   @Test
@@ -275,6 +281,7 @@ public class MenuTest extends MenuPageObject {
     clickManager();
     assertEquals(resources.message(CONTACT), contactMenuItem().getText());
     assertEquals(resources.message(GUIDELINES), guidelines().getText());
+    assertEquals(resources.message(ABOUT), about().getText());
     signas("christopher.anderson@ircm.qc.ca");
     clickManager();
     assertEquals(resources.message(STOP_SIGN_AS), stopSignasMenuItem().getText());
@@ -310,6 +317,7 @@ public class MenuTest extends MenuPageObject {
     clickManager();
     assertEquals(resources.message(CONTACT), contactMenuItem().getText());
     assertEquals(resources.message(GUIDELINES), guidelines().getText());
+    assertEquals(resources.message(ABOUT), about().getText());
     signas("christopher.anderson@ircm.qc.ca");
     clickManager();
     assertEquals(resources.message(STOP_SIGN_AS), stopSignasMenuItem().getText());
@@ -325,12 +333,22 @@ public class MenuTest extends MenuPageObject {
   }
 
   @Test
-  public void home() throws Throwable {
+  public void home_NotSigned() throws Throwable {
     openView(ContactView.VIEW_NAME);
 
     clickHome();
 
-    assertEquals(viewUrl(MainView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void home_Signed() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickHome();
+
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
@@ -563,5 +581,14 @@ public class MenuTest extends MenuPageObject {
     clickSignin();
 
     assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  public void aboutMenu() throws Throwable {
+    openView(ContactView.VIEW_NAME);
+
+    clickAbout();
+
+    assertEquals(viewUrl(AboutView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }
