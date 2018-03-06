@@ -466,6 +466,70 @@ public class SubmissionServiceTest {
   }
 
   @Test
+  public void all_SortExperience() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.sortOrders = Arrays.asList(submission.experience.asc());
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals((Long) 33L, submissions.get(0).getId());
+    assertEquals((Long) 32L, submissions.get(1).getId());
+    assertEquals((Long) 1L, submissions.get(2).getId());
+  }
+
+  @Test
+  public void all_SortSampleName() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.sortOrders = Arrays.asList(submission.samples.any().name.asc());
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals((Long) 32L, submissions.get(0).getId());
+    assertEquals((Long) 33L, submissions.get(1).getId());
+    assertEquals((Long) 1L, submissions.get(2).getId());
+  }
+
+  @Test
+  public void all_SortSampleStatus() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.sortOrders = Arrays.asList(submission.samples.any().status.asc());
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals((Long) 33L, submissions.get(0).getId());
+    assertEquals((Long) 32L, submissions.get(1).getId());
+    assertEquals((Long) 1L, submissions.get(2).getId());
+  }
+
+  @Test
+  public void all_SortResults() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.sortOrders = Arrays.asList(submission.samples.any().status.desc());
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals((Long) 1L, submissions.get(0).getId());
+    assertEquals((Long) 32L, submissions.get(1).getId());
+    assertEquals((Long) 33L, submissions.get(2).getId());
+  }
+
+  @Test
   public void all_NullFilter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));

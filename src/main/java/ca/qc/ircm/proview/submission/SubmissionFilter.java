@@ -29,8 +29,11 @@ import com.querydsl.jpa.impl.JPAQuery;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -92,8 +95,10 @@ public class SubmissionFilter implements Predicate<Submission> {
           .contains(submission.getSubmissionDate().atZone(ZoneId.systemDefault()).toLocalDate());
     }
     if (results != null) {
+      Set<SampleStatus> analysedStatuses =
+          new HashSet<>(Arrays.asList(SampleStatus.analysedStatuses()));
       boolean analysed = submission.getSamples().isEmpty() || submission.getSamples().stream()
-          .anyMatch(sample -> SampleStatus.ANALYSED.compareTo(sample.getStatus()) <= 0);
+          .anyMatch(sample -> analysedStatuses.contains(sample.getStatus()));
       test &= submission.getSamples().isEmpty() || results ? analysed : !analysed;
     }
     return test;
