@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.test.config.SeleniumDriverTypePredicate.actualDriver;
+import static ca.qc.ircm.proview.test.config.SeleniumDriverTypePredicate.isPhantomjsDriver;
 import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
 import static org.openqa.selenium.By.className;
 
@@ -41,8 +43,7 @@ import java.util.function.Supplier;
 /**
  * Additional functions for TestBenchTestCase.
  */
-public abstract class AbstractTestBenchTestCase extends TestBenchTestCase
-    implements SeleniumDriverTypePredicate {
+public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   private static final Logger logger = LoggerFactory.getLogger(AbstractTestBenchTestCase.class);
   @Value("http://localhost:${local.server.port}")
   protected String baseUrl;

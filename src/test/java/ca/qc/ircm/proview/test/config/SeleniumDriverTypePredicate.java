@@ -26,7 +26,7 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 /**
  * Test selenium driver type.
  */
-public interface SeleniumDriverTypePredicate {
+public class SeleniumDriverTypePredicate {
   /**
    * Returns actual selenium driver.
    *
@@ -34,22 +34,22 @@ public interface SeleniumDriverTypePredicate {
    *          driver
    * @return actual selenium driver
    */
-  public default WebDriver actualDriver(WebDriver driver) {
+  public static WebDriver actualDriver(WebDriver driver) {
     if (driver instanceof TestBenchDriverProxy) {
       driver = ((TestBenchDriverProxy) driver).getActualDriver();
     }
     return driver;
   }
 
-  public default boolean isPhantomjsDriver(WebDriver driver) {
+  public static boolean isPhantomjsDriver(WebDriver driver) {
     return actualDriver(driver) instanceof PhantomJSDriver;
   }
 
-  public default boolean isChromeDriver(WebDriver driver) {
+  public static boolean isChromeDriver(WebDriver driver) {
     return actualDriver(driver) instanceof ChromeDriver;
   }
 
-  public default boolean isFirefoxDriver(WebDriver driver) {
+  public static boolean isFirefoxDriver(WebDriver driver) {
     return actualDriver(driver) instanceof FirefoxDriver;
   }
 }

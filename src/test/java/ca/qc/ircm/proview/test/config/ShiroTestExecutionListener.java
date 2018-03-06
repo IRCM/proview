@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.test.config.SeleniumDriverTypePredicate.isPhantomjsDriver;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,8 +50,7 @@ import javax.inject.Inject;
 /**
  * Sets Shiro's subject.
  */
-public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener
-    implements SeleniumDriverTypePredicate {
+public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener {
   public static final String REMEMBER_ME_COOKIE_NAME = "rememberMe";
   public static final String DOMAIN = "localhost";
   private static final Logger logger = LoggerFactory.getLogger(ShiroTestExecutionListener.class);

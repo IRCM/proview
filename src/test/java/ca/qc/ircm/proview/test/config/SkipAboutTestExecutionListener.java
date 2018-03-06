@@ -23,10 +23,9 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.test.context.TestContext;
 
 /**
- * Sets Shiro's subject.
+ * Skips about view.
  */
-public class SkipAboutTestExecutionListener extends InjectIntoTestExecutionListener
-    implements SeleniumDriverTypePredicate {
+public class SkipAboutTestExecutionListener extends InjectIntoTestExecutionListener {
   private static final String ANONYMOUS_VIEW = SkipAboutView.VIEW_NAME;
   private static final Logger logger =
       LoggerFactory.getLogger(SkipAboutTestExecutionListener.class);
