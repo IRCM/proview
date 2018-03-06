@@ -36,7 +36,7 @@ public enum SampleType {
   /**
    * Sample is in a Gel.
    */
-  GEL;
+  GEL, BIOID_BEADS, MAGNETIC_BEADS, AGAROSE_BEADS;
   private static MessageResource getResources(Locale locale) {
     return new MessageResource(SampleType.class, locale);
   }
@@ -49,5 +49,22 @@ public enum SampleType {
   public String getLabel(Locale locale) {
     MessageResource resources = getResources(locale);
     return resources.message(name());
+  }
+
+  public boolean isDry() {
+    return this == DRY;
+  }
+
+  public boolean isSolution() {
+    return this == SOLUTION || this == BIOID_BEADS || this == MAGNETIC_BEADS
+        || this == AGAROSE_BEADS;
+  }
+
+  public boolean isGel() {
+    return this == GEL;
+  }
+
+  public boolean isBeads() {
+    return this == BIOID_BEADS || this == MAGNETIC_BEADS || this == AGAROSE_BEADS;
   }
 }

@@ -22,8 +22,11 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.UNIPROT;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
+import static ca.qc.ircm.proview.sample.SampleType.AGAROSE_BEADS;
+import static ca.qc.ircm.proview.sample.SampleType.BIOID_BEADS;
 import static ca.qc.ircm.proview.sample.SampleType.DRY;
 import static ca.qc.ircm.proview.sample.SampleType.GEL;
+import static ca.qc.ircm.proview.sample.SampleType.MAGNETIC_BEADS;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
@@ -94,6 +97,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_Q
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME_BEADS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
@@ -124,6 +128,7 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
+import static ca.qc.ircm.proview.web.WebConstants.INVALID;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
@@ -1017,6 +1022,54 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void bioidBeadsDisabled_Smallmolecule() {
+    presenter.init(view);
+    design.service.setValue(SMALL_MOLECULE);
+
+    assertFalse(design.sampleType.getItemEnabledProvider().test(BIOID_BEADS));
+  }
+
+  @Test
+  public void bioidBeadsDisabled_Intactprotein() {
+    presenter.init(view);
+    design.service.setValue(INTACT_PROTEIN);
+
+    assertFalse(design.sampleType.getItemEnabledProvider().test(BIOID_BEADS));
+  }
+
+  @Test
+  public void magneticBeadsDisabled_Smallmolecule() {
+    presenter.init(view);
+    design.service.setValue(SMALL_MOLECULE);
+
+    assertFalse(design.sampleType.getItemEnabledProvider().test(MAGNETIC_BEADS));
+  }
+
+  @Test
+  public void magneticBeadsDisabled_Intactprotein() {
+    presenter.init(view);
+    design.service.setValue(INTACT_PROTEIN);
+
+    assertFalse(design.sampleType.getItemEnabledProvider().test(MAGNETIC_BEADS));
+  }
+
+  @Test
+  public void agaroseBeadsDisabled_Smallmolecule() {
+    presenter.init(view);
+    design.service.setValue(SMALL_MOLECULE);
+
+    assertFalse(design.sampleType.getItemEnabledProvider().test(AGAROSE_BEADS));
+  }
+
+  @Test
+  public void agaroseBeadsDisabled_Intactprotein() {
+    presenter.init(view);
+    design.service.setValue(INTACT_PROTEIN);
+
+    assertFalse(design.sampleType.getItemEnabledProvider().test(AGAROSE_BEADS));
+  }
+
+  @Test
   public void digestion_RequiredText() {
     presenter.init(view);
 
@@ -1753,6 +1806,486 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(type);
+
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleType.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
+    assertTrue(design.samplesLabel.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertTrue(design.fillSamples.isVisible());
+    assertFalse(design.samplesPlateContainer.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
+    assertTrue(design.standardsPanel.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertTrue(design.fillStandards.isVisible());
+    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertTrue(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
+    assertTrue(design.enrichment.isVisible());
+    assertTrue(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
+    assertTrue(design.buttons.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_BioidBeads_ReadOnly() {
+    Submission submission = new Submission();
+    submission.setService(LC_MS_MS);
+    SubmissionSample sample = new SubmissionSample();
+    sample.setType(BIOID_BEADS);
+    sample.setOriginalContainer(new Tube());
+    submission.setSamples(Arrays.asList(sample));
+    presenter.init(view);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
+
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleType.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
+    assertTrue(design.samplesLabel.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
+    assertFalse(design.samplesPlateContainer.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
+    assertTrue(design.standardsPanel.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
+    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
+    assertFalse(design.buttons.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_BioidBeads() {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(BIOID_BEADS);
+
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleType.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
+    assertTrue(design.samplesLabel.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertTrue(design.fillSamples.isVisible());
+    assertFalse(design.samplesPlateContainer.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
+    assertTrue(design.standardsPanel.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertTrue(design.fillStandards.isVisible());
+    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertTrue(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
+    assertTrue(design.enrichment.isVisible());
+    assertTrue(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
+    assertTrue(design.buttons.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_MagneticBeads_ReadOnly() {
+    Submission submission = new Submission();
+    submission.setService(LC_MS_MS);
+    SubmissionSample sample = new SubmissionSample();
+    sample.setType(MAGNETIC_BEADS);
+    sample.setOriginalContainer(new Tube());
+    submission.setSamples(Arrays.asList(sample));
+    presenter.init(view);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
+
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleType.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
+    assertTrue(design.samplesLabel.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
+    assertFalse(design.samplesPlateContainer.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
+    assertTrue(design.standardsPanel.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
+    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
+    assertFalse(design.buttons.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_MagneticBeads() {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(MAGNETIC_BEADS);
+
+    assertTrue(design.sampleTypeWarning.isVisible());
+    assertTrue(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleType.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
+    assertTrue(design.samplesLabel.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertTrue(design.fillSamples.isVisible());
+    assertFalse(design.samplesPlateContainer.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
+    assertTrue(design.standardsPanel.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertTrue(design.fillStandards.isVisible());
+    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertTrue(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
+    assertTrue(design.enrichment.isVisible());
+    assertTrue(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
+    assertTrue(design.buttons.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_AgaroseBeads_ReadOnly() {
+    Submission submission = new Submission();
+    submission.setService(LC_MS_MS);
+    SubmissionSample sample = new SubmissionSample();
+    sample.setType(AGAROSE_BEADS);
+    sample.setOriginalContainer(new Tube());
+    submission.setSamples(Arrays.asList(sample));
+    presenter.init(view);
+    presenter.setReadOnly(true);
+    presenter.setValue(submission);
+
+    assertFalse(design.sampleTypeWarning.isVisible());
+    assertFalse(design.inactiveWarning.isVisible());
+    assertTrue(design.service.isVisible());
+    assertTrue(design.sampleType.isVisible());
+    assertFalse(design.solutionSolvent.isVisible());
+    assertTrue(design.sampleCount.isVisible());
+    assertFalse(design.sampleName.isVisible());
+    assertFalse(design.formula.isVisible());
+    assertFalse(design.monoisotopicMass.isVisible());
+    assertFalse(design.averageMass.isVisible());
+    assertFalse(design.toxicity.isVisible());
+    assertFalse(design.lightSensitive.isVisible());
+    assertFalse(design.storageTemperature.isVisible());
+    assertTrue(design.sampleContainerType.isVisible());
+    assertFalse(design.plateName.isVisible());
+    assertTrue(design.samplesLabel.isVisible());
+    assertTrue(design.samplesLayout.isVisible());
+    assertTrue(design.samples.isVisible());
+    assertFalse(design.fillSamples.isVisible());
+    assertFalse(design.samplesPlateContainer.isVisible());
+    assertTrue(design.experience.isVisible());
+    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.taxonomy.isVisible());
+    assertTrue(design.proteinName.isVisible());
+    assertTrue(design.proteinWeight.isVisible());
+    assertTrue(design.postTranslationModification.isVisible());
+    assertTrue(design.sampleQuantity.isVisible());
+    assertTrue(design.sampleVolume.isVisible());
+    assertTrue(design.standardsPanel.isVisible());
+    assertTrue(design.standardCount.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertFalse(design.fillStandards.isVisible());
+    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantCount.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertFalse(design.fillContaminants.isVisible());
+    assertFalse(design.separation.isVisible());
+    assertFalse(design.thickness.isVisible());
+    assertFalse(design.coloration.isVisible());
+    assertFalse(design.otherColoration.isVisible());
+    assertFalse(design.developmentTime.isVisible());
+    assertFalse(design.decoloration.isVisible());
+    assertFalse(design.weightMarkerQuantity.isVisible());
+    assertFalse(design.proteinQuantity.isVisible());
+    assertTrue(design.digestion.isVisible());
+    assertFalse(design.usedProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethod.isVisible());
+    assertFalse(design.otherProteolyticDigestionMethodNote.isVisible());
+    assertFalse(design.enrichment.isVisible());
+    assertFalse(design.exclusions.isVisible());
+    assertFalse(design.injectionType.isVisible());
+    assertFalse(design.source.isVisible());
+    assertTrue(design.proteinContent.isVisible());
+    assertTrue(design.instrument.isVisible());
+    assertTrue(design.proteinIdentification.isVisible());
+    assertFalse(design.proteinIdentificationLink.isVisible());
+    assertTrue(design.quantification.isVisible());
+    assertFalse(design.quantificationComment.isVisible());
+    assertFalse(design.highResolution.isVisible());
+    assertFalse(design.acetonitrileSolvents.isVisible());
+    assertFalse(design.methanolSolvents.isVisible());
+    assertFalse(design.chclSolvents.isVisible());
+    assertFalse(design.otherSolvents.isVisible());
+    assertFalse(design.otherSolvent.isVisible());
+    assertFalse(design.otherSolventNote.isVisible());
+    assertFalse(design.explanationPanel.isVisible());
+    assertFalse(design.buttons.isVisible());
+    assertFalse(design.structureFile.isVisible());
+    assertFalse(design.gelImageFile.isVisible());
+  }
+
+  @Test
+  public void visible_Lcmsms_AgaroseBeads() {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(AGAROSE_BEADS);
 
     assertTrue(design.sampleTypeWarning.isVisible());
     assertTrue(design.inactiveWarning.isVisible());
@@ -2857,6 +3390,16 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void sampleVolume_BioidBeads() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(BIOID_BEADS);
+
+    assertTrue(design.sampleVolume.isReadOnly());
+    assertEquals(resources.message(SAMPLE_VOLUME_BEADS), design.sampleVolume.getValue());
+  }
+
+  @Test
   public void fillSamples_Lcmsms() throws Throwable {
     presenter.init(view);
     design.sampleCount.setValue("3");
@@ -3003,6 +3546,150 @@ public class SubmissionFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
+        design.sampleType.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void save_SmallMoleculeGel() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(GEL);
+    setFields();
+    uploadFiles();
+    design.service.setValue(SMALL_MOLECULE);
+
+    design.save.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID)),
+        design.sampleType.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void save_SmallMoleculeBioidBeads() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(BIOID_BEADS);
+    setFields();
+    uploadFiles();
+    design.service.setValue(SMALL_MOLECULE);
+
+    design.save.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID)),
+        design.sampleType.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void save_SmallMoleculeMagneticBeads() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(MAGNETIC_BEADS);
+    setFields();
+    uploadFiles();
+    design.service.setValue(SMALL_MOLECULE);
+
+    design.save.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID)),
+        design.sampleType.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void save_SmallMoleculeAgaroseBeads() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(AGAROSE_BEADS);
+    setFields();
+    uploadFiles();
+    design.service.setValue(SMALL_MOLECULE);
+
+    design.save.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID)),
+        design.sampleType.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void save_IntactProteinGel() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(GEL);
+    setFields();
+    uploadFiles();
+    design.service.setValue(INTACT_PROTEIN);
+
+    design.save.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID)),
+        design.sampleType.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void save_IntactProteinBioidBeads() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(BIOID_BEADS);
+    setFields();
+    uploadFiles();
+    design.service.setValue(INTACT_PROTEIN);
+
+    design.save.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID)),
+        design.sampleType.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void save_IntactProteinMagneticBeads() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(MAGNETIC_BEADS);
+    setFields();
+    uploadFiles();
+    design.service.setValue(INTACT_PROTEIN);
+
+    design.save.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID)),
+        design.sampleType.getErrorMessage().getFormattedHtmlMessage());
+    verify(submissionService, never()).insert(any());
+  }
+
+  @Test
+  public void save_IntactProteinAgaroseBeads() throws Throwable {
+    presenter.init(view);
+    design.service.setValue(LC_MS_MS);
+    design.sampleType.setValue(AGAROSE_BEADS);
+    setFields();
+    uploadFiles();
+    design.service.setValue(INTACT_PROTEIN);
+
+    design.save.click();
+
+    verify(view).showError(stringCaptor.capture());
+    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
+    assertEquals(errorMessage(generalResources.message(INVALID)),
         design.sampleType.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }

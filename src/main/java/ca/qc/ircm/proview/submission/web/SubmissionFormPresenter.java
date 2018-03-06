@@ -26,8 +26,6 @@ import static ca.qc.ircm.proview.sample.QContaminant.contaminant;
 import static ca.qc.ircm.proview.sample.QStandard.standard;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
-import static ca.qc.ircm.proview.sample.SampleType.DRY;
-import static ca.qc.ircm.proview.sample.SampleType.GEL;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static ca.qc.ircm.proview.submission.GelSeparation.ONE_DIMENSION;
 import static ca.qc.ircm.proview.submission.GelThickness.ONE;
@@ -46,6 +44,7 @@ import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
+import static ca.qc.ircm.proview.web.WebConstants.INVALID;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
@@ -183,6 +182,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       submission.postTranslationModification.getMetadata().getName();
   public static final String SAMPLE_QUANTITY = submissionSample.quantity.getMetadata().getName();
   public static final String SAMPLE_VOLUME = submissionSample.volume.getMetadata().getName();
+  public static final String SAMPLE_VOLUME_BEADS = SAMPLE_VOLUME + ".beads";
   public static final String STANDARDS_PANEL = "standardsPanel";
   public static final String STANDARD_COUNT = "standardCount";
   public static final String STANDARDS = submissionSample.standards.getMetadata().getName();
@@ -354,8 +354,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.service.setItemCaptionGenerator(service -> service.getLabel(locale));
     design.service.setItemEnabledProvider(service -> service.available);
     design.service.addValueChangeListener(e -> updateVisible());
-    design.service
-        .addValueChangeListener(e -> design.sampleType.getDataProvider().refreshItem(GEL));
+    design.service.addValueChangeListener(e -> design.sampleType.getDataProvider().refreshAll());
     submissionBinder.forField(design.service).asRequired(generalResources.message(REQUIRED))
         .bind(SERVICE);
     prepareSamplesComponents();
@@ -438,11 +437,13 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
     design.sampleType.addStyleName(SAMPLE_TYPE);
     design.sampleType.setCaption(resources.message(SAMPLE_TYPE));
+    design.sampleType.setItemEnabledProvider(
+        value -> design.service.getValue() == LC_MS_MS || (!value.isGel() && !value.isBeads()));
     design.sampleType.setItems(SampleType.values());
-    design.sampleType.setItemCaptionGenerator(support -> support.getLabel(locale));
-    design.sampleType.addValueChangeListener(e -> updateVisible());
+    design.sampleType.setItemCaptionGenerator(type -> type.getLabel(locale));
+    design.sampleType.addValueChangeListener(e -> updateSampleType());
     firstSampleBinder.forField(design.sampleType).asRequired(generalResources.message(REQUIRED))
-        .bind(SAMPLE_TYPE);
+        .withValidator(validateSampleType()).bind(SAMPLE_TYPE);
     design.solutionSolvent.addStyleName(SOLUTION_SOLVENT);
     design.solutionSolvent.setCaption(resources.message(SOLUTION_SOLVENT));
     design.solutionSolvent.setRequiredIndicatorVisible(true);
@@ -1102,13 +1103,30 @@ public class SubmissionFormPresenter implements BinderValidator {
     };
   }
 
+  private void updateSampleType() {
+    MessageResource resources = view.getResources();
+    final SampleType type = design.sampleType.getValue();
+    if (type == null) {
+      return;
+    }
+    if (type.isBeads()) {
+      design.sampleVolume.setValue(resources.message(SAMPLE_VOLUME_BEADS));
+    } else {
+      design.sampleVolume.setValue("");
+    }
+    design.sampleVolume.setReadOnly(readOnly || type.isBeads());
+    updateVisible();
+  }
+
   private void updateVisible() {
     final Service service = design.service.getValue();
-    final SampleType support = design.sampleType.getValue();
+    final SampleType type = design.sampleType.getValue();
+    if (type == null) {
+      return;
+    }
     design.sampleTypeWarning.setVisible(!readOnly);
     design.inactiveWarning.setVisible(!readOnly);
-    design.sampleType.setItemEnabledProvider(value -> value != GEL || service == LC_MS_MS);
-    design.solutionSolvent.setVisible(service == SMALL_MOLECULE && support == SampleType.SOLUTION);
+    design.solutionSolvent.setVisible(service == SMALL_MOLECULE && type.isSolution());
     design.sampleName.setVisible(service == SMALL_MOLECULE);
     design.formula.setVisible(service == SMALL_MOLECULE);
     design.monoisotopicMass.setVisible(service == SMALL_MOLECULE);
@@ -1142,34 +1160,33 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.proteinWeight.setVisible(service == LC_MS_MS);
     design.postTranslationModification.setVisible(service != SMALL_MOLECULE);
     design.sampleQuantity
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    design.sampleVolume.setVisible(service != SMALL_MOLECULE && support == SOLUTION);
+        .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
+    design.sampleVolume.setVisible(service != SMALL_MOLECULE && type.isSolution());
     design.standardsPanel
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+        .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
     design.standardCount
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    design.standards
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    design.fillStandards.setVisible(
-        service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && !readOnly);
+        .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
+    design.standards.setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
+    design.fillStandards
+        .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()) && !readOnly);
     design.contaminantsPanel
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+        .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
     design.contaminantCount
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
+        .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
     design.contaminants
-        .setVisible(service != SMALL_MOLECULE && (support == SOLUTION || support == DRY));
-    design.fillContaminants.setVisible(
-        service != SMALL_MOLECULE && (support == SOLUTION || support == DRY) && !readOnly);
-    design.gelPanel.setVisible(service == LC_MS_MS && support == GEL);
-    design.separation.setVisible(service == LC_MS_MS && support == GEL);
-    design.thickness.setVisible(service == LC_MS_MS && support == GEL);
-    design.coloration.setVisible(service == LC_MS_MS && support == GEL);
-    design.otherColoration.setVisible(service == LC_MS_MS && support == GEL
-        && design.coloration.getValue() == GelColoration.OTHER);
-    design.developmentTime.setVisible(service == LC_MS_MS && support == GEL);
-    design.decoloration.setVisible(service == LC_MS_MS && support == GEL);
-    design.weightMarkerQuantity.setVisible(service == LC_MS_MS && support == GEL);
-    design.proteinQuantity.setVisible(service == LC_MS_MS && support == GEL);
+        .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
+    design.fillContaminants
+        .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()) && !readOnly);
+    design.gelPanel.setVisible(service == LC_MS_MS && type.isGel());
+    design.separation.setVisible(service == LC_MS_MS && type.isGel());
+    design.thickness.setVisible(service == LC_MS_MS && type.isGel());
+    design.coloration.setVisible(service == LC_MS_MS && type.isGel());
+    design.otherColoration.setVisible(
+        service == LC_MS_MS && type.isGel() && design.coloration.getValue() == GelColoration.OTHER);
+    design.developmentTime.setVisible(service == LC_MS_MS && type.isGel());
+    design.decoloration.setVisible(service == LC_MS_MS && type.isGel());
+    design.weightMarkerQuantity.setVisible(service == LC_MS_MS && type.isGel());
+    design.proteinQuantity.setVisible(service == LC_MS_MS && type.isGel());
     design.digestion.setVisible(service == LC_MS_MS);
     design.usedProteolyticDigestionMethod
         .setVisible(design.digestion.isVisible() && design.digestion.getValue() == DIGESTED);
@@ -1200,7 +1217,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.otherSolventNote
         .setVisible(service == SMALL_MOLECULE && design.otherSolvents.getValue());
     design.structureFile.setVisible(service == SMALL_MOLECULE);
-    design.gelImageFile.setVisible(service == LC_MS_MS && support == GEL);
+    design.gelImageFile.setVisible(service == LC_MS_MS && type.isGel());
     view.filesUploader.setVisible(!readOnly);
     design.buttons.setVisible(!readOnly);
   }
@@ -1408,6 +1425,18 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
   }
 
+  private Validator<SampleType> validateSampleType() {
+    return (value, context) -> {
+      Service service = design.service.getValue();
+      if ((service == SMALL_MOLECULE || service == INTACT_PROTEIN)
+          && (value.isGel() || value.isBeads())) {
+        MessageResource generalResources = view.getGeneralResources();
+        return ValidationResult.error(generalResources.message(INVALID));
+      }
+      return ValidationResult.ok();
+    };
+  }
+
   private Validator<String> validateSampleName(boolean includeSampleNameInError) {
     return (value, context) -> {
       if (value == null || value.isEmpty()) {
@@ -1471,7 +1500,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         valid &= validate(validateSampleName(true), view.plateComponent, plateSampleNames());
       }
       valid &= validate(() -> validateSampleNames());
-      if (sample.getType() == DRY || sample.getType() == SOLUTION) {
+      if (sample.getType().isDry() || sample.getType().isSolution()) {
         valid &= validate(standardCountBinder);
         for (Standard standard : standardsDataProvider.getItems()) {
           valid &= validate(standardBinders.get(standard));
@@ -1671,7 +1700,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       } else {
         submission.setSource(null);
       }
-      if (firstSample.getType() != GEL) {
+      if (!firstSample.getType().isGel()) {
         submission.setSeparation(null);
         submission.setThickness(null);
       }
@@ -1715,7 +1744,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         sample.setNumberProtein(null);
         sample.setMolecularWeight(firstSample.getMolecularWeight());
       }
-      if (firstSample.getType() != GEL) {
+      if (!firstSample.getType().isGel()) {
         copyStandardsFromTableToSample(sample);
         copyContaminantsFromTableToSample(sample);
       }
@@ -1736,7 +1765,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         sample.setVolume(firstSample.getVolume());
         sample.setNumberProtein(null);
         sample.setMolecularWeight(firstSample.getMolecularWeight());
-        if (firstSample.getType() != GEL) {
+        if (!firstSample.getType().isGel()) {
           copyStandardsFromTableToSample(sample);
           copyContaminantsFromTableToSample(sample);
         }

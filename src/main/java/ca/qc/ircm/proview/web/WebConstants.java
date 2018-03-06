@@ -37,6 +37,7 @@ public class WebConstants {
   public static final String REQUIRED = "required";
   public static final String REQUIRED_CAPTION = "required.caption";
   public static final String LABEL_WARNING = "warning";
+  public static final String INVALID = "invalid";
   public static final String INVALID_NUMBER = "invalidNumber";
   public static final String INVALID_INTEGER = "invalidInteger";
   public static final String INVALID_EMAIL = "invalidEmail";
