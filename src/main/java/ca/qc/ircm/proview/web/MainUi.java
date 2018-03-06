@@ -45,6 +45,7 @@ import javax.servlet.ServletContext;
 @Push(value = PushMode.AUTOMATIC, transport = Transport.LONG_POLLING)
 @Widgetset("ca.qc.ircm.proview.ProviewWidgetset")
 public class MainUi extends UI {
+  private static final String SKIP_ABOUT = "SKIP_ABOUT";
   private static final long serialVersionUID = 5623532890650543834L;
   @Inject
   private MainLayout layout;
@@ -72,7 +73,10 @@ public class MainUi extends UI {
       // TODO Use user's locale rather than a default one.
       getUI().getSession().setLocale(Locale.FRENCH);
     }
-    getNavigator().navigateTo(AboutView.VIEW_NAME);
+    if (getUI().getSession().getAttribute(SKIP_ABOUT) == null) {
+      getUI().getSession().setAttribute(SKIP_ABOUT, true);
+      getNavigator().navigateTo(AboutView.VIEW_NAME);
+    }
   }
 
   public ServletContext getServletContext() {
