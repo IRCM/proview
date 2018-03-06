@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.test.config;
 
-import static ca.qc.ircm.proview.web.Menu.HOME;
+import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.web.Menu;

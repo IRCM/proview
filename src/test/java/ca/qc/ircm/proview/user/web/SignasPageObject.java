@@ -21,8 +21,8 @@ import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.web.Menu.MANAGER;
-import static ca.qc.ircm.proview.web.Menu.STOP_SIGN_AS;
+import static ca.qc.ircm.proview.web.MenuPresenter.MANAGER;
+import static ca.qc.ircm.proview.web.MenuPresenter.STOP_SIGN_AS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
