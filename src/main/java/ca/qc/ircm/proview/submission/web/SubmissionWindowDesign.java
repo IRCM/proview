@@ -22,7 +22,6 @@ public class SubmissionWindowDesign extends VerticalLayout {
   protected Panel panel;
   protected VerticalLayout submissionLayout;
   protected Button update;
-  protected Button print;
 
   public SubmissionWindowDesign() {
     Design.read(this);

@@ -91,7 +91,7 @@ public class ForgotPasswordServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    TemplateEngine templateEngine = springConfiguration.templateEngine();
+    TemplateEngine templateEngine = springConfiguration.emailTemplateEngine();
     forgotPasswordServiceDefault = new ForgotPasswordService(entityManager, jpaQueryFactory,
         authenticationService, templateEngine, emailService, applicationConfiguration);
     user = entityManager.find(User.class, 10L);

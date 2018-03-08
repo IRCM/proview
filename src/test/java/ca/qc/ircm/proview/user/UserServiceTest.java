@@ -100,7 +100,7 @@ public class UserServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    TemplateEngine templateEngine = springConfiguration.templateEngine();
+    TemplateEngine templateEngine = springConfiguration.emailTemplateEngine();
     userService = new UserService(entityManager, authenticationService, templateEngine,
         emailService, cacheFlusher, applicationConfiguration, authorizationService);
     when(applicationConfiguration.getUrl(any(String.class))).thenAnswer(new Answer<String>() {

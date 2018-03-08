@@ -17,15 +17,11 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.PrintSubmissionController.printSubmissionUrl;
 import static ca.qc.ircm.proview.web.CloseWindowOnViewChange.closeWindowOnViewChange;
 
-import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.server.BrowserWindowOpener;
-import com.vaadin.server.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -43,22 +39,17 @@ public class SubmissionWindowPresenter {
   public static final String WINDOW_STYLE = "submission-window";
   public static final String TITLE = "title";
   public static final String UPDATE = "update";
-  public static final String PRINT = "print";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionWindowPresenter.class);
   private SubmissionWindow window = new SubmissionWindow();
   private SubmissionWindowDesign design = new SubmissionWindowDesign();
   @Inject
   private AuthorizationService authorizationService;
-  @Inject
-  private ApplicationConfiguration applicationConfiguration;
 
   protected SubmissionWindowPresenter() {
   }
 
-  protected SubmissionWindowPresenter(AuthorizationService authorizationService,
-      ApplicationConfiguration applicationConfiguration) {
+  protected SubmissionWindowPresenter(AuthorizationService authorizationService) {
     this.authorizationService = authorizationService;
-    this.applicationConfiguration = applicationConfiguration;
   }
 
   public void init(SubmissionWindow window) {
@@ -75,8 +66,6 @@ public class SubmissionWindowPresenter {
     window.setWidth("1200px");
     design.update.addStyleName(UPDATE);
     design.update.setCaption(resources.message(UPDATE));
-    design.print.addStyleName(PRINT);
-    design.print.setCaption(resources.message(PRINT));
     window.submissionForm.setReadOnly(true);
   }
 
@@ -90,9 +79,5 @@ public class SubmissionWindowPresenter {
       window.close();
     });
     window.submissionForm.setValue(submission);
-    ExternalResource printResource = new ExternalResource(
-        applicationConfiguration.getUrl(printSubmissionUrl(submission, window.getLocale())));
-    BrowserWindowOpener opener = new BrowserWindowOpener(printResource);
-    opener.extend(design.print);
   }
 }

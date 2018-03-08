@@ -82,7 +82,7 @@ public class SpringConfiguration {
    * @return Thymeleaf's template engine
    */
   @Bean
-  public TemplateEngine templateEngine() {
+  public TemplateEngine emailTemplateEngine() {
     TemplateEngine templateEngine = new TemplateEngine();
     templateEngine.setTemplateResolver(new ClassLoaderTemplateResolver());
     templateEngine.setMessageResolver(new XmlClasspathMessageResolver());
