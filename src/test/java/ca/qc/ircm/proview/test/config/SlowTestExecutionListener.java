@@ -17,12 +17,12 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.test.config.AnnotationFinder.findAnnotation;
 import static org.junit.Assume.assumeTrue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
@@ -44,7 +44,7 @@ public class SlowTestExecutionListener extends AbstractTestExecutionListener {
   @Override
   public void beforeTestClass(TestContext testContext) throws Exception {
     if (skipSlowTests) {
-      Slow slow = AnnotationUtils.getAnnotation(testContext.getTestClass(), Slow.class);
+      Slow slow = findAnnotation(testContext.getTestClass(), Slow.class);
       if (slow != null) {
         String message = "Test class " + testContext.getTestClass().getName() + " is skipped";
         logger.info(message);
@@ -56,7 +56,8 @@ public class SlowTestExecutionListener extends AbstractTestExecutionListener {
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     if (skipSlowTests) {
-      Slow slow = AnnotationUtils.getAnnotation(testContext.getTestMethod(), Slow.class);
+      Slow slow =
+          findAnnotation(testContext.getTestClass(), testContext.getTestMethod(), Slow.class);
       if (slow != null) {
         String message = "Test " + testContext.getTestMethod().getName() + " of class "
             + testContext.getTestClass().getName() + " is skipped";

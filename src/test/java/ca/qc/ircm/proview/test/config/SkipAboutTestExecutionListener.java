@@ -17,9 +17,10 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.test.config.AnnotationFinder.findAnnotation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.test.context.TestContext;
 
 /**
@@ -33,12 +34,8 @@ public class SkipAboutTestExecutionListener extends InjectIntoTestExecutionListe
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     if (isTestBenchTest(testContext)) {
-      DontSkipAbout dontSkipIntro =
-          AnnotationUtils.getAnnotation(testContext.getTestMethod(), DontSkipAbout.class);
-      if (dontSkipIntro == null) {
-        dontSkipIntro =
-            AnnotationUtils.getAnnotation(testContext.getTestClass(), DontSkipAbout.class);
-      }
+      DontSkipAbout dontSkipIntro = findAnnotation(testContext.getTestClass(),
+          testContext.getTestMethod(), DontSkipAbout.class);
       if (dontSkipIntro == null) {
         logger.trace("Skip introduction view");
         AbstractTestBenchTestCase testInstance =

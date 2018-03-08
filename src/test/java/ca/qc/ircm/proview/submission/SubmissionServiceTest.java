@@ -100,7 +100,7 @@ public class SubmissionServiceTest {
   @Inject
   private JPAQueryFactory queryFactory;
   @Inject
-  private TemplateEngine templateEngine;
+  private TemplateEngine emailTemplateEngine;
   @Mock
   private SubmissionActivityService submissionActivityService;
   @Mock
@@ -130,9 +130,9 @@ public class SubmissionServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    submissionService =
-        new SubmissionService(entityManager, queryFactory, submissionActivityService,
-            activityService, pricingEvaluator, templateEngine, emailService, authorizationService);
+    submissionService = new SubmissionService(entityManager, queryFactory,
+        submissionActivityService, activityService, pricingEvaluator, emailTemplateEngine,
+        emailService, authorizationService);
     user = entityManager.find(User.class, 4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(emailService.htmlEmail()).thenReturn(email);

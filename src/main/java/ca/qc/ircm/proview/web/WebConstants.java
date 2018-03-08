@@ -30,6 +30,7 @@ import java.util.Set;
  * Constants for Web.
  */
 public class WebConstants {
+  public static final Locale DEFAULT_LOCALE = Locale.FRENCH;
   public static final String GENERAL_MESSAGES = "VaadinMessages";
   public static final String COMPONENTS = "components";
   public static final String FIELD_NOTIFICATION = "field.notification";

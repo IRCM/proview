@@ -161,12 +161,13 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
 
     clickViewSubmissionByRow(1);
 
-    assertNotNull(findElement(className(SubmissionWindow.WINDOW_STYLE)));
+    assertNotNull(findElement(className(SubmissionWindowPresenter.WINDOW_STYLE)));
     WindowElement submissionWindow =
-        wrap(WindowElement.class, findElement(className(SubmissionWindow.WINDOW_STYLE)));
+        wrap(WindowElement.class, findElement(className(SubmissionWindowPresenter.WINDOW_STYLE)));
     String experience = experienceByRow(1);
-    assertTrue(resources(SubmissionWindow.class).message(SubmissionWindow.TITLE, experience)
-        .contains(submissionWindow.getCaption()));
+    assertTrue(
+        resources(SubmissionWindow.class).message(SubmissionWindowPresenter.TITLE, experience)
+            .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(SERVICE))).isPresent());
   }
 

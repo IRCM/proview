@@ -112,6 +112,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextArea explanation;
   protected HorizontalLayout buttons;
   protected Button save;
+  protected Button print;
 
   public SubmissionFormDesign() {
     Design.read(this);

@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -74,6 +75,8 @@ public class UserServiceTest {
   private UserService userService;
   @PersistenceContext
   private EntityManager entityManager;
+  @Inject
+  private SpringConfiguration springConfiguration;
   @Mock
   private AuthenticationService authenticationService;
   @Mock
@@ -97,8 +100,7 @@ public class UserServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    SpringConfiguration springConfiguration = new SpringConfiguration();
-    TemplateEngine templateEngine = springConfiguration.templateEngine();
+    TemplateEngine templateEngine = springConfiguration.emailTemplateEngine();
     userService = new UserService(entityManager, authenticationService, templateEngine,
         emailService, cacheFlusher, applicationConfiguration, authorizationService);
     when(applicationConfiguration.getUrl(any(String.class))).thenAnswer(new Answer<String>() {

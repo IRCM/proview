@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.DEFAULT_LOCALE;
+
 import ca.qc.ircm.proview.logging.web.MdcFilter;
 import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
@@ -25,7 +27,11 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextListener;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.util.IntrospectorCleanupListener;
 
 /**
@@ -65,5 +71,24 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
   public ServletListenerRegistrationBean<ShiroWebEnvironmentListener>
       shiroWebEnvironmentListener() {
     return new ServletListenerRegistrationBean<>(new ShiroWebEnvironmentListener());
+  }
+
+  @Bean
+  public LocaleResolver localeResolver() {
+    SessionLocaleResolver slr = new SessionLocaleResolver();
+    slr.setDefaultLocale(DEFAULT_LOCALE);
+    return slr;
+  }
+
+  @Bean
+  public LocaleChangeInterceptor localeChangeInterceptor() {
+    LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+    lci.setParamName("lang");
+    return lci;
+  }
+
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(localeChangeInterceptor());
   }
 }

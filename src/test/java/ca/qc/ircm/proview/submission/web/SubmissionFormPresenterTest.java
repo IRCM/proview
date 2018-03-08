@@ -76,6 +76,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PRINT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK;
@@ -121,6 +122,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.UPDATE_E
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
@@ -147,6 +149,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.files.web.GuidelinesWindow;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -191,8 +194,10 @@ import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.server.StreamResource;
@@ -224,6 +229,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Random;
 
 import javax.inject.Provider;
@@ -247,6 +253,8 @@ public class SubmissionFormPresenterTest {
   private AuthorizationService authorizationService;
   @Mock
   private SubmissionForm view;
+  @Mock
+  private ApplicationConfiguration applicationConfiguration;
   @Mock
   private Provider<GuidelinesWindow> guidelinesWindowProvider;
   @Mock
@@ -360,6 +368,7 @@ public class SubmissionFormPresenterTest {
   private StringToIntegerConverter integerConverter = new StringToIntegerConverter("");
   private StringToDoubleConverter doubleConverter = new StringToDoubleConverter("");
   private SerializableFunction<String, Exception> throwableFunction = s -> new Exception();
+  private String baseUrl = "http://localhost:8080";
 
   /**
    * Before test.
@@ -367,7 +376,7 @@ public class SubmissionFormPresenterTest {
   @Before
   public void beforeTest() throws Throwable {
     presenter = new SubmissionFormPresenter(submissionService, submissionSampleService,
-        plateService, authorizationService, guidelinesWindowProvider);
+        plateService, authorizationService, applicationConfiguration, guidelinesWindowProvider);
     design = new SubmissionFormDesign();
     view.design = design;
     view.plateComponent = mock(PlateComponent.class);
@@ -380,6 +389,9 @@ public class SubmissionFormPresenterTest {
     plate = new Plate();
     plate.initWells();
     when(view.plateComponent.getValue()).thenReturn(plate);
+    when(applicationConfiguration.getUrl(any())).then(inv -> {
+      return baseUrl + inv.getArgumentAt(0, String.class);
+    });
   }
 
   private void setFields() {
@@ -1319,6 +1331,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
+    assertTrue(design.print.getStyleName().contains(PRINT));
   }
 
   @Test
@@ -1517,11 +1530,12 @@ public class SubmissionFormPresenterTest {
         design.files.getColumn(REMOVE_FILE).getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());
+    assertEquals(resources.message(PRINT), design.print.getCaption());
   }
 
   @Test
   public void readOnly_True() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(Service.LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(type);
@@ -1607,12 +1621,13 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.comment.isReadOnly());
     assertTrue(design.files.getColumn(REMOVE_FILE).isHidden());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
   }
 
   @Test
   public void readOnly_False() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(Service.LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(type);
@@ -1697,7 +1712,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.comment.isReadOnly());
     assertFalse(design.files.getColumn(REMOVE_FILE).isHidden());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertTrue(design.print.isVisible());
   }
 
   @Test
@@ -1720,7 +1736,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void visible_Lcmsms_Solution_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(type);
@@ -1796,7 +1812,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -1873,14 +1890,15 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
   public void visible_Lcmsms_BioidBeads_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(BIOID_BEADS);
@@ -1956,7 +1974,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2033,14 +2052,15 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
   public void visible_Lcmsms_MagneticBeads_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(MAGNETIC_BEADS);
@@ -2116,7 +2136,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2193,14 +2214,15 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
   public void visible_Lcmsms_AgaroseBeads_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(AGAROSE_BEADS);
@@ -2276,7 +2298,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2353,7 +2376,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2398,7 +2422,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void visible_Lcmsms_Dry_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(DRY);
@@ -2474,7 +2498,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2551,14 +2576,15 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
   public void visible_Lcmsms_Gel_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(GEL);
@@ -2634,7 +2660,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertTrue(design.gelImageFile.isVisible());
   }
@@ -2711,7 +2738,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertTrue(design.gelImageFile.isVisible());
   }
@@ -2729,7 +2757,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void visible_Smallmolecule_Solution_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(SMALL_MOLECULE);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(SOLUTION);
@@ -2805,7 +2833,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertTrue(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2882,7 +2911,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertTrue(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -2900,7 +2930,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void visible_Smallmolecule_Dry_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(SMALL_MOLECULE);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(DRY);
@@ -2976,7 +3006,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertTrue(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -3053,14 +3084,15 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertTrue(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
   public void visible_Intactprotein_Solution_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(INTACT_PROTEIN);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(SOLUTION);
@@ -3136,7 +3168,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -3213,14 +3246,15 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
 
   @Test
   public void visible_Intactprotein_Dry_ReadOnly() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(INTACT_PROTEIN);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(DRY);
@@ -3296,7 +3330,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.buttons.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -3373,7 +3408,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.otherSolvent.isVisible());
     assertFalse(design.otherSolventNote.isVisible());
     assertFalse(design.explanationPanel.isVisible());
-    assertTrue(design.buttons.isVisible());
+    assertTrue(design.save.isVisible());
+    assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
   }
@@ -7083,6 +7119,22 @@ public class SubmissionFormPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(resources.message(UPDATE_ERROR, experience), stringCaptor.getValue());
+  }
+
+  @Test
+  public void print() {
+    presenter.init(view);
+    Submission submission = createSubmission();
+    presenter.setValue(submission);
+
+    Optional<BrowserWindowOpener> optionalBrowserWindowOpener =
+        findInstanceOf(design.print.getExtensions(), BrowserWindowOpener.class);
+    assertTrue(optionalBrowserWindowOpener.isPresent());
+    BrowserWindowOpener browserWindowOpener = optionalBrowserWindowOpener.get();
+    assertTrue(browserWindowOpener.getResource() instanceof ExternalResource);
+    ExternalResource resource = (ExternalResource) browserWindowOpener.getResource();
+    assertEquals(baseUrl + PrintSubmissionController.printSubmissionUrl(submission, locale),
+        resource.getURL());
   }
 
   @Test

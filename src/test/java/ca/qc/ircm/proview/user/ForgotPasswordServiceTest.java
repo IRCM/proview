@@ -69,6 +69,8 @@ public class ForgotPasswordServiceTest {
   private EntityManager entityManager;
   @Inject
   private JPAQueryFactory jpaQueryFactory;
+  @Inject
+  private SpringConfiguration springConfiguration;
   @Mock
   private ApplicationConfiguration applicationConfiguration;
   @Mock
@@ -89,8 +91,7 @@ public class ForgotPasswordServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    SpringConfiguration springConfiguration = new SpringConfiguration();
-    TemplateEngine templateEngine = springConfiguration.templateEngine();
+    TemplateEngine templateEngine = springConfiguration.emailTemplateEngine();
     forgotPasswordServiceDefault = new ForgotPasswordService(entityManager, jpaQueryFactory,
         authenticationService, templateEngine, emailService, applicationConfiguration);
     user = entityManager.find(User.class, 10L);

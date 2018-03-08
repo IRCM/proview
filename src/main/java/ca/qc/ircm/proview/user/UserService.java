@@ -64,7 +64,7 @@ public class UserService {
   @Inject
   private EmailService emailService;
   @Inject
-  private TemplateEngine templateEngine;
+  private TemplateEngine emailTemplateEngine;
   @Inject
   private CacheFlusher cacheFlusher;
   @Inject
@@ -76,12 +76,12 @@ public class UserService {
   }
 
   protected UserService(EntityManager entityManager, AuthenticationService authenticationService,
-      TemplateEngine templateEngine, EmailService emailService, CacheFlusher cacheFlusher,
+      TemplateEngine emailTemplateEngine, EmailService emailService, CacheFlusher cacheFlusher,
       ApplicationConfiguration applicationConfiguration,
       AuthorizationService authorizationService) {
     this.entityManager = entityManager;
     this.authenticationService = authenticationService;
-    this.templateEngine = templateEngine;
+    this.emailTemplateEngine = emailTemplateEngine;
     this.emailService = emailService;
     this.cacheFlusher = cacheFlusher;
     this.applicationConfiguration = applicationConfiguration;
@@ -294,10 +294,10 @@ public class UserService {
     context.setVariable("url", url);
     String htmlTemplateLocation =
         "/" + UserService.class.getName().replace(".", "/") + "_RegisterEmail.html";
-    String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
+    String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
     String textTemplateLocation =
         "/" + UserService.class.getName().replace(".", "/") + "_RegisterEmail.txt";
-    String textEmail = templateEngine.process(textTemplateLocation, context);
+    String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
 
     emailService.send(email);
@@ -358,10 +358,10 @@ public class UserService {
       context.setVariable("url", url);
       String htmlTemplateLocation =
           UserService.class.getName().replace(".", "/") + "_RegisterEmail.html";
-      String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
+      String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
       String textTemplateLocation =
           UserService.class.getName().replace(".", "/") + "_RegisterEmail.txt";
-      String textEmail = templateEngine.process(textTemplateLocation, context);
+      String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
       email.setText(textEmail, htmlEmail);
 
       emailService.send(email);
@@ -478,10 +478,10 @@ public class UserService {
     context.setVariable("url", url);
     String htmlTemplateLocation =
         "/" + UserService.class.getName().replace(".", "/") + "_ValidateEmail.html";
-    String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
+    String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
     String textTemplateLocation =
         "/" + UserService.class.getName().replace(".", "/") + "_ValidateEmail.txt";
-    String textEmail = templateEngine.process(textTemplateLocation, context);
+    String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
 
     emailService.send(email);

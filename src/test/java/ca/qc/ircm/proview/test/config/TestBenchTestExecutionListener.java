@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.test.config.AnnotationFinder.findAnnotation;
 import static org.junit.Assume.assumeTrue;
 
 import com.vaadin.testbench.Parameters;
@@ -42,8 +43,7 @@ import java.text.MessageFormat;
  * Rule for integration tests using Vaadin's test bench.
  */
 @Order(TestBenchTestExecutionListener.ORDER)
-public class TestBenchTestExecutionListener extends AbstractTestExecutionListener
-    implements AnnotationFinder {
+public class TestBenchTestExecutionListener extends AbstractTestExecutionListener {
   public static final int ORDER = 0;
   private static final String LICENSE_ERROR_MESSAGE =
       "License for Vaadin TestBench not found. Skipping test class {0} .";
@@ -107,8 +107,8 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
       TestBenchTestCase target = getInstance(testContext);
       target.getDriver().manage().deleteAllCookies();
       boolean useScreenshotRule = false;
-      TestBenchTestAnnotations testBenchTestAnnotations =
-          findAnnotation(target, testContext.getTestMethod(), TestBenchTestAnnotations.class);
+      TestBenchTestAnnotations testBenchTestAnnotations = findAnnotation(target.getClass(),
+          testContext.getTestMethod(), TestBenchTestAnnotations.class);
       if (testBenchTestAnnotations != null) {
         useScreenshotRule = testBenchTestAnnotations.useScreenshotRule();
       }

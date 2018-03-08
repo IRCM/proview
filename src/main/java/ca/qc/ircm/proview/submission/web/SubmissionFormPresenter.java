@@ -36,6 +36,7 @@ import static ca.qc.ircm.proview.submission.Quantification.TMT;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
+import static ca.qc.ircm.proview.submission.web.PrintSubmissionController.printSubmissionUrl;
 import static ca.qc.ircm.proview.treatment.Solvent.ACETONITRILE;
 import static ca.qc.ircm.proview.treatment.Solvent.CHCL3;
 import static ca.qc.ircm.proview.treatment.Solvent.METHANOL;
@@ -51,6 +52,7 @@ import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.files.web.GuidelinesWindow;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
@@ -98,6 +100,8 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.BrowserWindowOpener;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.StreamResource;
@@ -247,6 +251,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String FILE_FILENAME = submissionFile.filename.getMetadata().getName();
   public static final String REMOVE_FILE = "removeFile";
   public static final String SAVE = "save";
+  public static final String PRINT = "print";
   public static final String UPDATE_ERROR = "updateError";
   public static final String EXAMPLE = "example";
   public static final String HIDE_REQUIRED_STYLE = "hide-required";
@@ -295,6 +300,8 @@ public class SubmissionFormPresenter implements BinderValidator {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
+  private ApplicationConfiguration applicationConfiguration;
+  @Inject
   private Provider<GuidelinesWindow> guidelinesWindowProvider;
 
   protected SubmissionFormPresenter() {
@@ -302,12 +309,13 @@ public class SubmissionFormPresenter implements BinderValidator {
 
   protected SubmissionFormPresenter(SubmissionService submissionService,
       SubmissionSampleService submissionSampleService, PlateService plateService,
-      AuthorizationService authorizationService,
+      AuthorizationService authorizationService, ApplicationConfiguration applicationConfiguration,
       Provider<GuidelinesWindow> guidelinesWindowProvider) {
     this.submissionService = submissionService;
     this.submissionSampleService = submissionSampleService;
     this.plateService = plateService;
     this.authorizationService = authorizationService;
+    this.applicationConfiguration = applicationConfiguration;
     this.guidelinesWindowProvider = guidelinesWindowProvider;
   }
 
@@ -393,6 +401,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));
     design.save.addClickListener(e -> save());
+    design.print.addStyleName(PRINT);
+    design.print.setCaption(resources.message(PRINT));
   }
 
   private Button downloadFileButton(SubmissionFile file) {
@@ -1219,7 +1229,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.structureFile.setVisible(service == SMALL_MOLECULE);
     design.gelImageFile.setVisible(service == LC_MS_MS && type.isGel());
     view.filesUploader.setVisible(!readOnly);
-    design.buttons.setVisible(!readOnly);
+    design.save.setVisible(!readOnly);
+    design.print.setVisible(submissionBinder.getBean().getId() != null);
   }
 
   private void updateReadOnly() {
@@ -1924,6 +1935,12 @@ public class SubmissionFormPresenter implements BinderValidator {
         .filter(
             sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.TO_APPROVE)
         .findAny().isPresent());
+    if (submission.getId() != null) {
+      ExternalResource printResource = new ExternalResource(
+          applicationConfiguration.getUrl(printSubmissionUrl(submission, view.getLocale())));
+      BrowserWindowOpener opener = new BrowserWindowOpener(printResource);
+      opener.extend(design.print);
+    }
     updateVisible();
     updateReadOnly();
   }
