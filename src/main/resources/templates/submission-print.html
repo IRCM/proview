@@ -22,9 +22,6 @@
     xmlns:th="http://www.thymeleaf.org">
   <head>
     <style type="text/css">
-      body {
-        width: 1100px;
-      }
       h1 {
         font-size: 2em;
         margin: 1em 0;
@@ -115,30 +112,40 @@
         border-width: 1px;
       }
       .plate-information td {
-        width: 86px;
-        height: 86px;
+        width: 102px;
+        height: 102px;
         margin: 0;
         padding: 0;
       }
       .plate-information span {
         margin: 1px;
         display: inline-block;
-        width: 80px;
-        height: 80px;
+        width: 96px;
+        height: 96px;
         word-wrap: break-word;
         overflow: hidden;
       }
-      .pagebreak {
-        page-break-before: always;
-      }
     </style>
     <style type="text/css" media="print">
-      @page { size: 6in 9in; }
-      @page landscape { size: 9in 6in; }
+      .section {
+        width: 11in;
+      }
       .plate-information {
-        page: landscape;
-        -webkit-transform: rotate(90deg); 
-        -moz-transform: rotate(90deg);
+        width: 13in;
+        transform: rotate(-90deg) translateX(-1.9in) translateY(-1in); 
+        -webkit-transform: rotate(-90deg) translateX(-1.9in) translateY(-1in);
+        -moz-transform: rotate(-90deg) translateX(-1.9in) translateY(-1in);
+      }
+      .plate-information td {
+        width: 1.05in;
+        height: 1.05in;
+      }
+      .plate-information span {
+        width: 0.8in;
+        height: 0.8in;
+      }
+      .pagebreak {
+        page-break-before: always;
       }
     </style>
   </head>
@@ -363,9 +370,9 @@
       <table>
         <thead>
           <tr>
-            <th th:text="#{sample.name}">Sample name</th>
-            <th th:text="#{sample.numberProtein}">Number of proteins</th>
-            <th th:text="#{sample.molecularWeight}">Molecular weight</th>
+            <th th:text="#{sample.name.header}">Sample name</th>
+            <th th:text="#{sample.numberProtein.header}">Number of proteins</th>
+            <th th:text="#{sample.molecularWeight.header}">Molecular weight</th>
           </tr>
         </thead>
         <tbody>
@@ -384,21 +391,10 @@
         <tbody>
           <tr>
             <th class="top-left"></th>
-            <th class="header">1</th>
-            <th class="header">2</th>
-            <th class="header">3</th>
-            <th class="header">4</th>
-            <th class="header">5</th>
-            <th class="header">6</th>
-            <th class="header">7</th>
-            <th class="header">8</th>
-            <th class="header">9</th>
-            <th class="header">10</th>
-            <th class="header">11</th>
-            <th class="header">12</th>
+            <th class="header" th:each="column : ${#numbers.sequence(0, plate.columnCount - 1)}" th:text="${plate.columnLabel(column)}">1</th>
           </tr>
           <tr th:each="row : ${#numbers.sequence(0, plate.rowCount - 1)}">
-            <th th:text="${row}">A</th>
+            <th th:text="${plate.rowLabel(row)}">A</th>
             <td th:each="column : ${#numbers.sequence(0, plate.columnCount - 1)}"><span class="sample-name" th:if="${plate.well(row, column).sample != null}" th:text="${plate.well(row, column).sample.name}">My sample</span></td>
           </tr>
         </tbody>
