@@ -20,7 +20,10 @@ package ca.qc.ircm.proview.user;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.utils.MessageResource;
+
 import java.io.Serializable;
+import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -74,6 +77,12 @@ public class PhoneNumber implements Serializable {
   public String toString() {
     return "PhoneNumber [id=" + id + ", type=" + type + ", number=" + number + ", extension="
         + extension + "]";
+  }
+
+  public String getValue(Locale locale) {
+    MessageResource resources = new MessageResource(PhoneNumber.class, locale);
+    return resources.message("value", number, extension != null && !extension.isEmpty() ? 1 : 0,
+        extension);
   }
 
   public Long getId() {

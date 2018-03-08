@@ -65,7 +65,8 @@
     <commons-lang3.version>3.5</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
     <mariadb-connector.version>1.5.7</mariadb-connector.version>
-    <thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
+    <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
+    <thymeleaf-layout-dialect.version>2.1.1</thymeleaf-layout-dialect.version>
     <findbugs.version>3.0.0</findbugs.version>
     <selenium.version>3.4.0</selenium.version>
     <greenmail.version>1.5.2</greenmail.version>
@@ -88,6 +89,12 @@
         <artifactId>thymeleaf</artifactId>
         <version>${thymeleaf.version}</version>
       </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>${spring-boot.version}</version>
+      <type>pom</type>
+    </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
@@ -218,6 +225,14 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
     <dependency>
@@ -320,11 +335,11 @@
       <artifactId>popupbutton</artifactId>
       <version>${popupbutton.version}</version>
     </dependency>
-		<dependency>
-			<groupId>org.vaadin.addon</groupId>
-			<artifactId>easyuploads</artifactId>
-			<version>${easyuploads.version}</version>
-		</dependency>
+    <dependency>
+      <groupId>org.vaadin.addon</groupId>
+      <artifactId>easyuploads</artifactId>
+      <version>${easyuploads.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -343,6 +358,16 @@
     <dependency>
       <groupId>org.thymeleaf</groupId>
       <artifactId>thymeleaf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.thymeleaf</groupId>
+      <artifactId>thymeleaf-spring4</artifactId>
+      <version>${thymeleaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>nz.net.ultraq.thymeleaf</groupId>
+      <artifactId>thymeleaf-layout-dialect</artifactId>
+      <version>${thymeleaf-layout-dialect.version}</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -573,7 +598,7 @@
           <artifactId>migrations-maven-plugin</artifactId>
           <version>${migrations-maven-plugin.version}</version>
           <configuration>
-          		<repository>src/main/resources/migration</repository>
+              <repository>src/main/resources/migration</repository>
           </configuration>
           <dependencies>
             <dependency>
@@ -763,13 +788,13 @@
     <profile>
       <id>firefox</id>
       <properties>
-      	<testbench.driver>org.openqa.selenium.firefox.FirefoxDriver</testbench.driver>
+        <testbench.driver>org.openqa.selenium.firefox.FirefoxDriver</testbench.driver>
       </properties>
     </profile>
     <profile>
       <id>chrome</id>
       <properties>
-      	<testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
+        <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
       </properties>
     </profile>
     <profile>
