@@ -222,15 +222,15 @@
         <span class="label" th:text="#{sample.type}">Type:</span>
         <span th:text="${sample.type.getLabel(locale)}">Solution</span>
       </div>
-      <div th:if="${submission.protein != null}">
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.protein}">Protein name:</span>
         <span th:text="${submission.protein}">POLR2A</span>
       </div>
-      <div th:if="${sample.molecularWeight != null}">
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{sample.molecularWeight}">Molecular weight:</span>
         <span th:text="${sample.molecularWeight}">20 KDa</span>
       </div>
-      <div th:if="${submission.postTranslationModification != null}">
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.postTranslationModification}">Post-translationnal modification:</span>
         <span th:text="${submission.postTranslationModification}">Phosphopeptides</span>
       </div>
@@ -328,7 +328,7 @@
         <span class="label" th:text="#{submission.proteinContent}">Number of proteins:</span>
         <span th:text="${submission.proteinContent.getLabel(locale)}">1 to 4</span>
       </div>
-      <div th:if="${submission.massDetectionInstrument != null}">
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.massDetectionInstrument}">Instrument selection:</span>
         <span th:text="${submission.massDetectionInstrument.getLabel(locale)}">Velos</span>
       </div>
