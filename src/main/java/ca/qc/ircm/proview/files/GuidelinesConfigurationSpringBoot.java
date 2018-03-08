@@ -26,8 +26,8 @@ public class GuidelinesConfigurationSpringBoot implements GuidelinesConfiguratio
 
   @Override
   public List<Category> categories(Locale locale) {
-    if (locale != null && Locale.FRENCH.getLanguage().equals(locale.getLanguage())) {
-      return new ArrayList<>(categories.get(Locale.FRENCH.getLanguage()));
+    if (locale != null && categories.containsKey(locale.getLanguage())) {
+      return new ArrayList<>(categories.get(locale.getLanguage()));
     }
     return new ArrayList<>(categories.get(DEFAULT_GUIDELINES));
   }
