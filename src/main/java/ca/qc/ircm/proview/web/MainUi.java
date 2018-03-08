@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.DEFAULT_LOCALE;
+
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
@@ -29,8 +31,6 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringNavigator;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.UI;
-
-import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -71,7 +71,7 @@ public class MainUi extends UI {
   protected void init(VaadinRequest vaadinRequest) {
     if (getUI().getLocale() == null) {
       // TODO Use user's locale rather than a default one.
-      getUI().getSession().setLocale(Locale.FRENCH);
+      getUI().getSession().setLocale(DEFAULT_LOCALE);
     }
     if (getUI().getSession().getAttribute(SKIP_ABOUT) == null) {
       getUI().getSession().setAttribute(SKIP_ABOUT, true);

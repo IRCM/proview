@@ -330,7 +330,8 @@
       </div>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.massDetectionInstrument}">Instrument selection:</span>
-        <span th:text="${submission.massDetectionInstrument.getLabel(locale)}">Velos</span>
+        <span th:if="${submission.massDetectionInstrument != null}" th:text="${submission.massDetectionInstrument.getLabel(locale)}">Velos</span>
+        <span th:if="${submission.massDetectionInstrument == null}" th:text="${T(ca.qc.ircm.proview.msanalysis.MassDetectionInstrument).getNullLabel(locale)}">Velos</span>
       </div>
       <div th:if="${submission.proteinIdentification != null}">
         <span class="label" th:text="#{submission.proteinIdentification}">Protein identification database:</span>
