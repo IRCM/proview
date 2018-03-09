@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.web;
 import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.test.config.DontSkipIntro;
+import ca.qc.ircm.proview.test.config.DontSkipAbout;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
-@DontSkipIntro
+@DontSkipAbout
 public class HomePageTest extends AbstractTestBenchTestCase {
   private void open() {
     openView(MainView.VIEW_NAME);

@@ -17,29 +17,25 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.test.config.AnnotationFinder.findAnnotation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.test.context.TestContext;
 
 /**
- * Sets Shiro's subject.
+ * Skips about view.
  */
-public class SkipIntroTestExecutionListener extends InjectIntoTestExecutionListener
-    implements SeleniumDriverTypePredicate {
-  private static final String ANONYMOUS_VIEW = SkipIntroView.VIEW_NAME;
+public class SkipAboutTestExecutionListener extends InjectIntoTestExecutionListener {
+  private static final String ANONYMOUS_VIEW = SkipAboutView.VIEW_NAME;
   private static final Logger logger =
-      LoggerFactory.getLogger(SkipIntroTestExecutionListener.class);
+      LoggerFactory.getLogger(SkipAboutTestExecutionListener.class);
 
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     if (isTestBenchTest(testContext)) {
-      DontSkipIntro dontSkipIntro =
-          AnnotationUtils.getAnnotation(testContext.getTestMethod(), DontSkipIntro.class);
-      if (dontSkipIntro == null) {
-        dontSkipIntro =
-            AnnotationUtils.getAnnotation(testContext.getTestClass(), DontSkipIntro.class);
-      }
+      DontSkipAbout dontSkipIntro = findAnnotation(testContext.getTestClass(),
+          testContext.getTestMethod(), DontSkipAbout.class);
       if (dontSkipIntro == null) {
         logger.trace("Skip introduction view");
         AbstractTestBenchTestCase testInstance =

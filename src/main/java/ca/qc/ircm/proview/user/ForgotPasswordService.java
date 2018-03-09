@@ -64,7 +64,7 @@ public class ForgotPasswordService {
   @Inject
   private AuthenticationService authenticatingService;
   @Inject
-  private TemplateEngine templateEngine;
+  private TemplateEngine emailTemplateEngine;
   @Inject
   private EmailService emailService;
   @Inject
@@ -76,12 +76,12 @@ public class ForgotPasswordService {
   }
 
   protected ForgotPasswordService(EntityManager entityManager, JPAQueryFactory jpaQueryFactory,
-      AuthenticationService authenticatingService, TemplateEngine templateEngine,
+      AuthenticationService authenticatingService, TemplateEngine emailTemplateEngine,
       EmailService emailService, ApplicationConfiguration applicationConfiguration) {
     this.entityManager = entityManager;
     this.jpaQueryFactory = jpaQueryFactory;
     this.authenticatingService = authenticatingService;
-    this.templateEngine = templateEngine;
+    this.emailTemplateEngine = emailTemplateEngine;
     this.emailService = emailService;
     this.applicationConfiguration = applicationConfiguration;
     random = new Random();
@@ -171,10 +171,10 @@ public class ForgotPasswordService {
     context.setVariable("url", url);
     String htmlTemplateLocation =
         ForgotPasswordService.class.getName().replace(".", "/") + "_Email.html";
-    String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
+    String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
     String textTemplateLocation =
         ForgotPasswordService.class.getName().replace(".", "/") + "_Email.txt";
-    String textEmail = templateEngine.process(textTemplateLocation, context);
+    String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
 
     emailService.send(email);

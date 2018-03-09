@@ -16,7 +16,7 @@
 #
 
 main:
-  serverUrl: http://localhost
+  serverUrl: http://localhost:8080
 
 spring:
   application:
@@ -39,6 +39,8 @@ spring:
   http:
     multipart:
       enabled: false
+  thymeleaf:
+    cache: false
 
 # Web server.
 server:
@@ -112,12 +114,33 @@ logging:
 spring:
   profiles: test
 
+logos:
+  files:
+    it: IRCM_horizontal_IT.png
+
+guidelines:
+  categories:
+    it:
+      - name: 'Linee guida'
+        guidelines:
+          - name: 'Preparazione del campione senza gel'
+            path: 'Preparazione_del_campione_senza_gel.doc'
+      - name: 'Protocolli'
+        guidelines:
+          - name: 'Protocolli di colorazione gel'
+            path: 'Protocolli_di_colorazione_gel.doc'
+          - name: 'Protocollo di immunoprecipitazione magnetica Dynabeads'
+            path: 'Protocollo_di_immunoprecipitazione_magnetica_Dynabeads.docx'
+
 logging:
   file: test.log
 
 ---
 spring:
   profiles: integration-test
+
+main:
+  serverUrl: http://localhost:${local.server.port}
 
 email:
   enabled: false

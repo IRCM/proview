@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static javax.persistence.EnumType.STRING;
+import static javax.persistence.EnumType.ORDINAL;
 
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.submission.Submission;
@@ -49,7 +49,7 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
    * Sample status.
    */
   @Column(name = "status", nullable = false)
-  @Enumerated(STRING)
+  @Enumerated(ORDINAL)
   private SampleStatus status;
   /**
    * Number of Proteins in Sample.

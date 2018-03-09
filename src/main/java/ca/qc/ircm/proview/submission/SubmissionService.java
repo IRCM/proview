@@ -74,7 +74,7 @@ public class SubmissionService {
   @Inject
   private PricingEvaluator pricingEvaluator;
   @Inject
-  private TemplateEngine templateEngine;
+  private TemplateEngine emailTemplateEngine;
   @Inject
   private EmailService emailService;
   @Inject
@@ -85,14 +85,14 @@ public class SubmissionService {
 
   protected SubmissionService(EntityManager entityManager, JPAQueryFactory queryFactory,
       SubmissionActivityService submissionActivityService, ActivityService activityService,
-      PricingEvaluator pricingEvaluator, TemplateEngine templateEngine, EmailService emailService,
-      AuthorizationService authorizationService) {
+      PricingEvaluator pricingEvaluator, TemplateEngine emailTemplateEngine,
+      EmailService emailService, AuthorizationService authorizationService) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.submissionActivityService = submissionActivityService;
     this.activityService = activityService;
     this.pricingEvaluator = pricingEvaluator;
-    this.templateEngine = templateEngine;
+    this.emailTemplateEngine = emailTemplateEngine;
     this.emailService = emailService;
     this.authorizationService = authorizationService;
   }
@@ -287,10 +287,10 @@ public class SubmissionService {
     email.setSubject("New samples were submitted");
     String htmlTemplateLocation =
         "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.html";
-    String htmlEmail = templateEngine.process(htmlTemplateLocation, context);
+    String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
     String textTemplateLocation =
         "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.txt";
-    String textEmail = templateEngine.process(textTemplateLocation, context);
+    String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
     for (User proteomicUser : proteomicUsers) {
       email.addTo(proteomicUser.getEmail());

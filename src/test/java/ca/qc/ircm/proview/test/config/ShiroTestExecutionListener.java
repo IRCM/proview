@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.test.config.AnnotationFinder.findAnnotation;
+import static ca.qc.ircm.proview.test.config.SeleniumDriverTypePredicate.isPhantomjsDriver;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +38,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.test.context.TestContext;
 
 import java.io.ByteArrayOutputStream;
@@ -49,8 +50,7 @@ import javax.inject.Inject;
 /**
  * Sets Shiro's subject.
  */
-public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener
-    implements SeleniumDriverTypePredicate {
+public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener {
   public static final String REMEMBER_ME_COOKIE_NAME = "rememberMe";
   public static final String DOMAIN = "localhost";
   private static final Logger logger = LoggerFactory.getLogger(ShiroTestExecutionListener.class);
@@ -63,10 +63,7 @@ public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener
     long userId = 1L;
     boolean anonymous = false;
     WithSubject withSubject =
-        AnnotationUtils.getAnnotation(testContext.getTestMethod(), WithSubject.class);
-    if (withSubject == null) {
-      withSubject = AnnotationUtils.getAnnotation(testContext.getTestClass(), WithSubject.class);
-    }
+        findAnnotation(testContext.getTestClass(), testContext.getTestMethod(), WithSubject.class);
     if (withSubject != null) {
       userId = withSubject.userId();
       anonymous = withSubject.anonymous();

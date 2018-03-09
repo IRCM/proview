@@ -18,16 +18,11 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.FindbugsExplanations.DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD;
-import static ca.qc.ircm.proview.web.CloseWindowOnViewChange.closeWindowOnViewChange;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
-import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Window;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -44,34 +39,25 @@ import javax.inject.Inject;
     value = "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
     justification = DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD)
 public class SubmissionWindow extends Window implements BaseComponent {
-  public static final String WINDOW_STYLE = "submission-window";
-  public static final String TITLE = "title";
-  public static final String UPDATE = "update";
   private static final long serialVersionUID = 4789125002422549258L;
-  private static final Logger logger = LoggerFactory.getLogger(SubmissionWindow.class);
-  private SubmissionWindowDesign view = new SubmissionWindowDesign();
+  protected SubmissionWindowDesign design = new SubmissionWindowDesign();
+  private Submission submission;
   @Inject
-  private SubmissionForm submissionForm;
+  protected SubmissionForm submissionForm;
   @Inject
-  private AuthorizationService authorizationService;
+  protected SubmissionWindowPresenter presenter;
 
   @PostConstruct
   protected void init() {
-    addStyleName(WINDOW_STYLE);
-    setContent(view);
-    view.submissionLayout.addComponent(submissionForm);
-    view.update.addStyleName(UPDATE);
-    view.update.setVisible(false);
-    setHeight("700px");
-    setWidth("1200px");
+    setContent(design);
+    design.submissionLayout.addComponent(submissionForm);
   }
 
   @Override
   public void attach() {
     super.attach();
-    MessageResource resources = getResources();
-    view.update.setCaption(resources.message(UPDATE));
-    closeWindowOnViewChange(this);
+    presenter.init(this);
+    presenter.setValue(submission);
   }
 
   /**
@@ -81,22 +67,9 @@ public class SubmissionWindow extends Window implements BaseComponent {
    *          submission
    */
   public void setValue(Submission submission) {
+    this.submission = submission;
     if (isAttached()) {
-      updateSubmission(submission);
-    } else {
-      addAttachListener(e -> updateSubmission(submission));
+      presenter.setValue(submission);
     }
-  }
-
-  private void updateSubmission(Submission submission) {
-    logger.debug("Submission window for submission {}", submission);
-    setCaption(getResources().message(TITLE, submission.getExperience()));
-    view.update.setVisible(authorizationService.hasSubmissionWritePermission(submission));
-    view.update.addClickListener(e -> {
-      navigateTo(SubmissionView.VIEW_NAME, String.valueOf(submission.getId()));
-      close();
-    });
-    submissionForm.setValue(submission);
-    submissionForm.setReadOnly(true);
   }
 }

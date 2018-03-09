@@ -100,7 +100,7 @@ public class SubmissionServiceTest {
   @Inject
   private JPAQueryFactory queryFactory;
   @Inject
-  private TemplateEngine templateEngine;
+  private TemplateEngine emailTemplateEngine;
   @Mock
   private SubmissionActivityService submissionActivityService;
   @Mock
@@ -130,9 +130,9 @@ public class SubmissionServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    submissionService =
-        new SubmissionService(entityManager, queryFactory, submissionActivityService,
-            activityService, pricingEvaluator, templateEngine, emailService, authorizationService);
+    submissionService = new SubmissionService(entityManager, queryFactory,
+        submissionActivityService, activityService, pricingEvaluator, emailTemplateEngine,
+        emailService, authorizationService);
     user = entityManager.find(User.class, 4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(emailService.htmlEmail()).thenReturn(email);
@@ -463,6 +463,70 @@ public class SubmissionServiceTest {
     assertTrue(find(submissions, 149).isPresent());
     assertTrue(find(submissions, 150).isPresent());
     assertTrue(find(submissions, 151).isPresent());
+  }
+
+  @Test
+  public void all_SortExperience() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.sortOrders = Arrays.asList(submission.experience.asc());
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals((Long) 33L, submissions.get(0).getId());
+    assertEquals((Long) 32L, submissions.get(1).getId());
+    assertEquals((Long) 1L, submissions.get(2).getId());
+  }
+
+  @Test
+  public void all_SortSampleName() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.sortOrders = Arrays.asList(submission.samples.any().name.asc());
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals((Long) 32L, submissions.get(0).getId());
+    assertEquals((Long) 33L, submissions.get(1).getId());
+    assertEquals((Long) 1L, submissions.get(2).getId());
+  }
+
+  @Test
+  public void all_SortSampleStatus() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.sortOrders = Arrays.asList(submission.samples.any().status.asc());
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals((Long) 33L, submissions.get(0).getId());
+    assertEquals((Long) 32L, submissions.get(1).getId());
+    assertEquals((Long) 1L, submissions.get(2).getId());
+  }
+
+  @Test
+  public void all_SortResults() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.sortOrders = Arrays.asList(submission.samples.any().status.desc());
+
+    List<Submission> submissions = submissionService.all(filter);
+
+    verify(authorizationService).checkUserRole();
+    assertEquals((Long) 1L, submissions.get(0).getId());
+    assertEquals((Long) 32L, submissions.get(1).getId());
+    assertEquals((Long) 33L, submissions.get(2).getId());
   }
 
   @Test

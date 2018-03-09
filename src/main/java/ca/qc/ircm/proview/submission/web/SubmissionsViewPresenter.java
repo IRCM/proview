@@ -213,7 +213,6 @@ public class SubmissionsViewPresenter {
     design = view.design;
     filter = new SubmissionFilter();
     prepareComponents();
-    searchSubmissions();
   }
 
   private void prepareComponents() {
@@ -327,9 +326,8 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid
         .addColumn(submission -> viewResultsButton(submission), new ComponentRenderer())
         .setId(LINKED_TO_RESULTS).setCaption(resources.message(LINKED_TO_RESULTS))
-        .setComparator((s1, s2) -> Boolean.compare(linkedToResults(s1), linkedToResults(s2)));
-    columnProperties.put(LINKED_TO_RESULTS,
-        submission.samples.any().status.in(SampleStatus.analysedStatuses()));
+        .setComparator((s1, s2) -> Boolean.compare(linkedToResults(s1), linkedToResults(s2)))
+        .setSortable(false);
     design.submissionsGrid
         .addColumn(submission -> viewTreatmentsButton(submission), new ComponentRenderer())
         .setId(TREATMENTS).setCaption(resources.message(TREATMENTS)).setSortable(false);

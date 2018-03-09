@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.DEFAULT_LOCALE;
+
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
@@ -29,8 +31,6 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringNavigator;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.UI;
-
-import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -45,6 +45,7 @@ import javax.servlet.ServletContext;
 @Push(value = PushMode.AUTOMATIC, transport = Transport.LONG_POLLING)
 @Widgetset("ca.qc.ircm.proview.ProviewWidgetset")
 public class MainUi extends UI {
+  private static final String SKIP_ABOUT = "SKIP_ABOUT";
   private static final long serialVersionUID = 5623532890650543834L;
   @Inject
   private MainLayout layout;
@@ -70,9 +71,12 @@ public class MainUi extends UI {
   protected void init(VaadinRequest vaadinRequest) {
     if (getUI().getLocale() == null) {
       // TODO Use user's locale rather than a default one.
-      getUI().getSession().setLocale(Locale.FRENCH);
+      getUI().getSession().setLocale(DEFAULT_LOCALE);
     }
-    getNavigator().navigateTo(AboutView.VIEW_NAME);
+    if (getUI().getSession().getAttribute(SKIP_ABOUT) == null) {
+      getUI().getSession().setAttribute(SKIP_ABOUT, true);
+      getNavigator().navigateTo(AboutView.VIEW_NAME);
+    }
   }
 
   public ServletContext getServletContext() {

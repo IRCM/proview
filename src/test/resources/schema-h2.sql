@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS sample (
   controlType varchar(50) DEFAULT NULL,
   type varchar(50) DEFAULT NULL,
   containerId bigint(20) DEFAULT NULL,
-  status varchar(50),
+  status int(5) DEFAULT NULL,
   numberProtein int(11) DEFAULT NULL,
   submissionId bigint(20) DEFAULT NULL,
   molecularWeight double DEFAULT NULL,
