@@ -58,6 +58,7 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
   private long maximumSignAttempsDelay;
   private int disableSignAttemps;
   private List<PasswordVersionSpringBoot> passwords;
+  private LdapConfigurationSpringBoot ldap;
   @Inject
   private Provider<AuthenticationService> authenticationServiceProvider;
   @Value("spring.application.name")
@@ -180,6 +181,11 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
     return disableSignAttemps;
   }
 
+  @Bean
+  public LdapConfiguration ldapConfiguration() {
+    return ldap;
+  }
+
   public String getCipherKey() {
     return cipherKey;
   }
@@ -218,5 +224,13 @@ public class SecurityConfigurationSpringBoot implements SecurityConfiguration {
 
   public void setDisableSignAttemps(int disableSignAttemps) {
     this.disableSignAttemps = disableSignAttemps;
+  }
+
+  public LdapConfigurationSpringBoot getLdap() {
+    return ldap;
+  }
+
+  public void setLdap(LdapConfigurationSpringBoot ldap) {
+    this.ldap = ldap;
   }
 }

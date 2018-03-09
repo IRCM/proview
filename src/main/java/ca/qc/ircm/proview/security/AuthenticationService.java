@@ -68,6 +68,10 @@ public class AuthenticationService {
   private EntityManager entityManager;
   @Inject
   private SecurityConfiguration securityConfiguration;
+  @Inject
+  private LdapConfiguration ldapConfiguration;
+  @Inject
+  private LdapService ldapService;
   /**
    * Used to generate salt for passwords.
    */
@@ -77,9 +81,12 @@ public class AuthenticationService {
   }
 
   public AuthenticationService(EntityManager entityManager,
-      SecurityConfiguration securityConfiguration) {
+      SecurityConfiguration securityConfiguration, LdapConfiguration ldapConfiguration,
+      LdapService ldapService) {
     this.entityManager = entityManager;
     this.securityConfiguration = securityConfiguration;
+    this.ldapConfiguration = ldapConfiguration;
+    this.ldapService = ldapService;
   }
 
   private Subject getSubject() {
@@ -183,8 +190,33 @@ public class AuthenticationService {
     if (token == null || token.getPrincipal() == null || token.getCredentials() == null) {
       throw new UnknownAccountException("No account found for user []");
     }
-    String username = token.getUsername();
+    if (ldapConfiguration.enabled()) {
+      try {
+        return getLdapAuthenticationInfo(token);
+      } catch (AuthenticationException ldapAuthenticationException) {
+        return getLocalAuthenticationInfo(token);
+      }
+    } else {
+      return getLocalAuthenticationInfo(token);
+    }
+  }
 
+  private AuthenticationInfo getLdapAuthenticationInfo(UsernamePasswordToken token) {
+    String username = token.getUsername();
+    String email = ldapService.getEmail(username, String.valueOf(token.getPassword()));
+    User user = getUser(email);
+    if (user == null) {
+      throw new UnknownAccountException("No account found for user [" + username + "]");
+    }
+    user.setSignAttempts(0);
+    user.setLastSignAttempt(Instant.now());
+    entityManager.merge(user);
+    return new SimpleAuthenticationInfo(user.getId(), user.getHashedPassword(),
+        new SimpleByteSource(Hex.decode(user.getSalt())), realmName());
+  }
+
+  private AuthenticationInfo getLocalAuthenticationInfo(UsernamePasswordToken token) {
+    String username = token.getUsername();
     User user = getUser(username);
     if (user == null) {
       throw new UnknownAccountException("No account found for user [" + username + "]");

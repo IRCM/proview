@@ -41,8 +41,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -92,6 +94,10 @@ public class AuthenticationServiceTest {
   private SecurityConfiguration realSecurityConfiguration;
   @Mock
   private SecurityConfiguration securityConfiguration;
+  @Mock
+  private LdapConfiguration ldapConfiguration;
+  @Mock
+  private LdapService ldapService;
   @Captor
   private ArgumentCaptor<PrincipalCollection> principalCollectionCaptor;
   @Captor
@@ -108,7 +114,8 @@ public class AuthenticationServiceTest {
    */
   @Before
   public void beforeTest() {
-    authenticationService = new AuthenticationService(entityManager, securityConfiguration);
+    authenticationService = new AuthenticationService(entityManager, securityConfiguration,
+        ldapConfiguration, ldapService);
     passwordVersion = realSecurityConfiguration.getPasswordVersion();
     when(securityConfiguration.getPasswordVersions())
         .thenReturn(Collections.nCopies(1, passwordVersion));
@@ -259,6 +266,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -283,6 +291,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+    verifyZeroInteractions(ldapService);
   }
 
   @Test(expected = InvalidAccountException.class)
@@ -338,6 +347,7 @@ public class AuthenticationServiceTest {
     assertEquals(1, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -354,6 +364,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -374,6 +385,7 @@ public class AuthenticationServiceTest {
 
     assertEquals(maximumSignAttemps, user.getSignAttempts());
     assertEquals(lastSignAttempt, user.getLastSignAttempt());
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -389,6 +401,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -410,6 +423,7 @@ public class AuthenticationServiceTest {
     assertEquals(maximumSignAttemps + 1, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -432,6 +446,65 @@ public class AuthenticationServiceTest {
     assertFalse(user.isActive());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+    verifyZeroInteractions(ldapService);
+  }
+
+  @Test
+  public void getAuthenticationInfo_Ldap() throws Throwable {
+    when(ldapConfiguration.enabled()).thenReturn(true);
+    when(ldapService.getEmail(any(), any())).thenReturn("christian.poitras@ircm.qc.ca");
+    UsernamePasswordToken token = new UsernamePasswordToken("poitrasc", "password");
+
+    AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
+
+    assertEquals(2L, authentication.getPrincipals().getPrimaryPrincipal());
+    assertEquals(1, authentication.getPrincipals().fromRealm(realmName).size());
+    assertEquals(2L, authentication.getPrincipals().fromRealm(realmName).iterator().next());
+    assertEquals("b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7",
+        authentication.getCredentials());
+    assertTrue(authentication instanceof SaltedAuthenticationInfo);
+    SaltedAuthenticationInfo saltedAuthentication = (SaltedAuthenticationInfo) authentication;
+    assertEquals(
+        "d04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d"
+            + "58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d",
+        saltedAuthentication.getCredentialsSalt().toHex());
+    User user = entityManager.find(User.class, 2L);
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+  }
+
+  @Test
+  public void getAuthenticationInfo_LdapNotExists_LocalExists() throws Throwable {
+    when(ldapConfiguration.enabled()).thenReturn(true);
+    UsernamePasswordToken token =
+        new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
+
+    AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
+
+    assertEquals(2L, authentication.getPrincipals().getPrimaryPrincipal());
+    assertEquals(1, authentication.getPrincipals().fromRealm(realmName).size());
+    assertEquals(2L, authentication.getPrincipals().fromRealm(realmName).iterator().next());
+    assertEquals("b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7",
+        authentication.getCredentials());
+    assertTrue(authentication instanceof SaltedAuthenticationInfo);
+    SaltedAuthenticationInfo saltedAuthentication = (SaltedAuthenticationInfo) authentication;
+    assertEquals(
+        "d04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d"
+            + "58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d",
+        saltedAuthentication.getCredentialsSalt().toHex());
+    User user = entityManager.find(User.class, 2L);
+    assertEquals(0, user.getSignAttempts());
+    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
+    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
+  }
+
+  @Test(expected = UnknownAccountException.class)
+  public void getAuthenticationInfo_LdapInvalid_LocalNotExists() throws Throwable {
+    when(ldapConfiguration.enabled()).thenReturn(true);
+    UsernamePasswordToken token = new UsernamePasswordToken("poitrasc", "password");
+
+    authenticationService.getAuthenticationInfo(token);
   }
 
   @Test
