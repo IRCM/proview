@@ -121,16 +121,16 @@ logos:
 guidelines:
   categories:
     it:
-      - name: 'Directives'
+      - name: 'Linee guida'
         guidelines:
-          - name: 'Préparation des échantillons sans gel'
-            path: 'Directives_de_préparation_des_échantillons_sans_gel.doc'
-      - name: 'Protocoles'
+          - name: 'Preparazione del campione senza gel'
+            path: 'Preparazione_del_campione_senza_gel.doc'
+      - name: 'Protocolli'
         guidelines:
-          - name: 'Protocoles coloration de gels'
-            path: 'Protocoles coloration de gels.doc'
-          - name: 'Protocole Immunoprecipitation Dynabeads'
-            path: 'Protocole Immunoprecipitation Dynabeads.docx'
+          - name: 'Protocolli di colorazione gel'
+            path: 'Protocolli_di_colorazione_gel.doc'
+          - name: 'Protocollo di immunoprecipitazione magnetica Dynabeads'
+            path: 'Protocollo_di_immunoprecipitazione_magnetica_Dynabeads.docx'
 
 logging:
   file: test.log
