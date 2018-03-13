@@ -43,8 +43,9 @@ public class LdapConfigurationTest {
     assertTrue(ldapConfiguration.enabled());
     assertEquals(contextSource.getUrls()[0], ldapConfiguration.url());
     assertEquals("uid={0},ou=people,dc=mycompany,dc=com", ldapConfiguration.userDnTemplate());
-    assertEquals("dc=mycompany,dc=com", ldapConfiguration.searchBase());
-    assertEquals("(&(objectClass=person)(uid={0}))", ldapConfiguration.searchFilter());
+    assertEquals("dc=mycompany,dc=com", ldapConfiguration.base());
+    assertEquals("(&(objectClass=person)(uid={0}))", ldapConfiguration.userFilter());
+    assertEquals("uid", ldapConfiguration.idAttribute());
     assertEquals("mail", ldapConfiguration.mailAttribute());
   }
 }

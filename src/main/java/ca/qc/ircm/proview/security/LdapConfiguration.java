@@ -27,9 +27,11 @@ public interface LdapConfiguration {
 
   public String userDnTemplate();
 
-  public String searchBase();
+  public String base();
 
-  public String searchFilter();
+  public String userFilter();
+
+  public String idAttribute();
 
   public String mailAttribute();
 }

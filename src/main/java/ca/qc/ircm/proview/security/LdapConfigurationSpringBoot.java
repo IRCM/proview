@@ -17,18 +17,24 @@
 
 package ca.qc.ircm.proview.security;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+@Configuration
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix = LdapConfigurationSpringBoot.PREFIX)
 public class LdapConfigurationSpringBoot implements LdapConfiguration {
-  private boolean enabled;
-  private String url;
+  public static final String PREFIX = "spring.ldap";
+  private String base;
   private String userDnTemplate;
-  private String searchBase;
-  private String searchFilter;
+  private String userFilter;
+  private String idAttribute;
   private String mailAttribute;
   private LdapContextSource contextSource;
   @Inject
@@ -41,12 +47,14 @@ public class LdapConfigurationSpringBoot implements LdapConfiguration {
 
   @Override
   public boolean enabled() {
-    return enabled;
+    return contextSource.getUrls() != null && contextSource.getUrls().length > 0;
   }
 
   @Override
   public String url() {
-    return contextSource.getUrls()[0];
+    return contextSource.getUrls() != null && contextSource.getUrls().length > 0
+        ? contextSource.getUrls()[0]
+        : null;
   }
 
   @Override
@@ -55,13 +63,18 @@ public class LdapConfigurationSpringBoot implements LdapConfiguration {
   }
 
   @Override
-  public String searchBase() {
-    return searchBase;
+  public String base() {
+    return base;
   }
 
   @Override
-  public String searchFilter() {
-    return searchFilter;
+  public String userFilter() {
+    return userFilter;
+  }
+
+  @Override
+  public String idAttribute() {
+    return idAttribute;
   }
 
   @Override
@@ -69,20 +82,12 @@ public class LdapConfigurationSpringBoot implements LdapConfiguration {
     return mailAttribute;
   }
 
-  public boolean isEnabled() {
-    return enabled;
+  public String getBase() {
+    return base;
   }
 
-  public void setEnabled(boolean enabled) {
-    this.enabled = enabled;
-  }
-
-  public String getUrl() {
-    return url;
-  }
-
-  public void setUrl(String url) {
-    this.url = url;
+  public void setBase(String base) {
+    this.base = base;
   }
 
   public String getUserDnTemplate() {
@@ -93,20 +98,20 @@ public class LdapConfigurationSpringBoot implements LdapConfiguration {
     this.userDnTemplate = userDnTemplate;
   }
 
-  public String getSearchBase() {
-    return searchBase;
+  public String getUserFilter() {
+    return userFilter;
   }
 
-  public void setSearchBase(String searchBase) {
-    this.searchBase = searchBase;
+  public void setUserFilter(String userFilter) {
+    this.userFilter = userFilter;
   }
 
-  public String getSearchFilter() {
-    return searchFilter;
+  public String getIdAttribute() {
+    return idAttribute;
   }
 
-  public void setSearchFilter(String searchFilter) {
-    this.searchFilter = searchFilter;
+  public void setIdAttribute(String idAttribute) {
+    this.idAttribute = idAttribute;
   }
 
   public String getMailAttribute() {
