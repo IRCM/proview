@@ -23,12 +23,15 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.LdapConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.Validator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.shiro.authc.AuthenticationException;
@@ -71,6 +74,8 @@ public class SigninViewPresenter {
   private UserService userService;
   @Inject
   private ForgotPasswordService forgotPasswordService;
+  @Inject
+  private LdapConfiguration ldapConfiguration;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -79,11 +84,13 @@ public class SigninViewPresenter {
 
   protected SigninViewPresenter(AuthenticationService authenticationService,
       AuthorizationService authorizationService, UserService userService,
-      ForgotPasswordService forgotPasswordService, String applicationName) {
+      ForgotPasswordService forgotPasswordService, LdapConfiguration ldapConfiguration,
+      String applicationName) {
     this.authenticationService = authenticationService;
     this.authorizationService = authorizationService;
     this.userService = userService;
     this.forgotPasswordService = forgotPasswordService;
+    this.ldapConfiguration = ldapConfiguration;
     this.applicationName = applicationName;
   }
 
@@ -100,7 +107,6 @@ public class SigninViewPresenter {
     signBinder.setBean(new SigninInformation());
     forgotPasswordBinder.setBean(new SigninInformation());
     prepareComponents();
-    addFieldListeners();
   }
 
   private void prepareComponents() {
@@ -114,8 +120,7 @@ public class SigninViewPresenter {
     view.signForm.getUserNameField().addStyleName(SIGN_USERNAME);
     view.signForm.getUserNameField().setCaption(resources.message(SIGN_USERNAME));
     signBinder.forField(view.signForm.getUserNameField())
-        .asRequired(generalResources.message(REQUIRED))
-        .withValidator(new EmailValidator(generalResources.message(INVALID_EMAIL)))
+        .asRequired(generalResources.message(REQUIRED)).withValidator(signEmailValidator())
         .bind(SigninInformation::getUsername, SigninInformation::setUsername);
     view.signForm.getPasswordField().addStyleName(SIGN_PASSWORD);
     view.signForm.getPasswordField().setCaption(resources.message(SIGN_PASSWORD));
@@ -125,6 +130,7 @@ public class SigninViewPresenter {
     view.signForm.getLoginButton().addStyleName(SIGN_BUTTON);
     view.signForm.getLoginButton().addStyleName(ValoTheme.BUTTON_PRIMARY);
     view.signForm.getLoginButton().setCaption(resources.message(SIGN_BUTTON));
+    view.signForm.addLoginListener(e -> sign());
     design.forgotPasswordPanel.addStyleName(FORGOT_PASSWORD);
     design.forgotPasswordPanel.setCaption(resources.message(FORGOT_PASSWORD));
     design.forgotPasswordEmailField.addStyleName(FORGOT_PASSWORD_EMAIL);
@@ -135,16 +141,21 @@ public class SigninViewPresenter {
         .bind(SigninInformation::getUsername, SigninInformation::setUsername);
     design.forgotPasswordButton.addStyleName(FORGOT_PASSWORD_BUTTON);
     design.forgotPasswordButton.setCaption(resources.message(FORGOT_PASSWORD_BUTTON));
+    design.forgotPasswordButton.addClickListener(e -> forgotPassword());
     design.registerButton.addStyleName(REGISTER_BUTTON);
     design.registerButton.setCaption(resources.message(REGISTER_BUTTON));
-  }
-
-  private void addFieldListeners() {
-    view.signForm.addLoginListener(e -> sign());
-    design.forgotPasswordButton.addClickListener(e -> forgotPassword());
     design.registerButton.addClickListener(e -> {
       view.navigateTo(RegisterView.VIEW_NAME);
     });
+  }
+
+  private Validator<String> signEmailValidator() {
+    if (ldapConfiguration.enabled()) {
+      return (value, context) -> ValidationResult.ok();
+    } else {
+      MessageResource generalResources = view.getGeneralResources();
+      return new EmailValidator(generalResources.message(INVALID_EMAIL));
+    }
   }
 
   private boolean validateSign() {

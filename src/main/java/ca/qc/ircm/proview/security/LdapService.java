@@ -107,9 +107,11 @@ public class LdapService {
    * @return user email from LDAP or null if user does not exists or if password is invalid
    */
   public String getEmail(String username, String password) {
+    logger.debug("Retrieving email for user [{}]", username);
     try {
       LdapContext context = createLdapContext(username, password);
       try {
+        logger.debug("LDAP accessed successfully for user [{}]", username);
         SearchControls searchCtls = new SearchControls();
         searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
         Object[] searchArguments = new Object[] { username };
@@ -117,7 +119,6 @@ public class LdapService {
             ldapConfiguration.searchFilter(), searchArguments, searchCtls);
         while (answer.hasMoreElements()) {
           SearchResult sr = answer.next();
-          logger.debug("Retrieving email for user [{}]", username);
           Attributes attrs = sr.getAttributes();
           if (attrs != null) {
             NamingEnumeration<? extends Attribute> ae = attrs.getAll();
@@ -125,7 +126,9 @@ public class LdapService {
               Attribute attr = ae.next();
               if (attr.getID().equals(ldapConfiguration.mailAttribute())) {
                 Collection<String> rawMail = LdapUtils.getAllAttributeValues(attr);
-                return rawMail.iterator().next();
+                String mail = rawMail.iterator().next();
+                logger.debug("Found email {} for user [{}]", mail, username);
+                return mail;
               }
             }
           }
