@@ -23,7 +23,8 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
@@ -33,16 +34,17 @@ import javax.inject.Inject;
 public class LdapConfigurationTest {
   @Inject
   private LdapConfiguration ldapConfiguration;
-  @Value("${spring.ldap.embedded.port}")
-  private int ldapPort;
+  @Inject
+  private LdapTemplate ldapTemplate;
 
   @Test
   public void defaultProperties() throws Throwable {
+    LdapContextSource contextSource = (LdapContextSource) ldapTemplate.getContextSource();
     assertTrue(ldapConfiguration.enabled());
-    assertEquals("ldap://ldap.mycompany.com:" + ldapPort, ldapConfiguration.url());
-    assertEquals("uid={0},ou=user,dc=mycompany,dc=com", ldapConfiguration.userDnTemplate());
+    assertEquals(contextSource.getUrls()[0], ldapConfiguration.url());
+    assertEquals("uid={0},ou=people,dc=mycompany,dc=com", ldapConfiguration.userDnTemplate());
     assertEquals("dc=mycompany,dc=com", ldapConfiguration.searchBase());
-    assertEquals("(&(objectClass=user)(uid={0}))", ldapConfiguration.searchFilter());
+    assertEquals("(&(objectClass=person)(uid={0}))", ldapConfiguration.searchFilter());
     assertEquals("mail", ldapConfiguration.mailAttribute());
   }
 }

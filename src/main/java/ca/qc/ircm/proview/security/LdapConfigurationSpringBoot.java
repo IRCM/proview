@@ -17,6 +17,12 @@
 
 package ca.qc.ircm.proview.security;
 
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.LdapContextSource;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 public class LdapConfigurationSpringBoot implements LdapConfiguration {
   private boolean enabled;
   private String url;
@@ -24,6 +30,14 @@ public class LdapConfigurationSpringBoot implements LdapConfiguration {
   private String searchBase;
   private String searchFilter;
   private String mailAttribute;
+  private LdapContextSource contextSource;
+  @Inject
+  private LdapTemplate ldapTemplate;
+
+  @PostConstruct
+  public void init() {
+    contextSource = (LdapContextSource) ldapTemplate.getContextSource();
+  }
 
   @Override
   public boolean enabled() {
@@ -32,7 +46,7 @@ public class LdapConfigurationSpringBoot implements LdapConfiguration {
 
   @Override
   public String url() {
-    return url;
+    return contextSource.getUrls()[0];
   }
 
   @Override

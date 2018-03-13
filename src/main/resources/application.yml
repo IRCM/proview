@@ -68,7 +68,6 @@ security:
     name: admin
   ldap:
     enabled: false
-    url: ldap://ldap.mycompany.com
     userDnTemplate: uid={0},ou=people,dc=mycompany,dc=com
     domain: mycompany.com
     searchBase: dc=mycompany,dc=com
@@ -123,19 +122,15 @@ spring:
   profiles: test
   ldap:
     base: dc=mycompany,dc=com
-    username: poitrasc
-    password: secret
     embedded:
       base-dn: dc=mycompany,dc=com
       credential:
         username: uid=poitrasc
         password: secret
-      port: 8389
 
 security:
   ldap:
     enabled: true
-    url: ldap://localhost:${spring.ldap.embedded.port}
 
 logos:
   files:

@@ -117,21 +117,29 @@ public class LdapService {
         Object[] searchArguments = new Object[] { username };
         NamingEnumeration<SearchResult> answer = context.search(ldapConfiguration.searchBase(),
             ldapConfiguration.searchFilter(), searchArguments, searchCtls);
-        while (answer.hasMoreElements()) {
-          SearchResult sr = answer.next();
-          Attributes attrs = sr.getAttributes();
-          if (attrs != null) {
-            NamingEnumeration<? extends Attribute> ae = attrs.getAll();
-            while (ae.hasMore()) {
-              Attribute attr = ae.next();
-              if (attr.getID().equals(ldapConfiguration.mailAttribute())) {
-                Collection<String> rawMail = LdapUtils.getAllAttributeValues(attr);
-                String mail = rawMail.iterator().next();
-                logger.debug("Found email {} for user [{}]", mail, username);
-                return mail;
+        try {
+          while (answer.hasMoreElements()) {
+            SearchResult sr = answer.next();
+            Attributes attrs = sr.getAttributes();
+            if (attrs != null) {
+              NamingEnumeration<? extends Attribute> ae = attrs.getAll();
+              try {
+                while (ae.hasMore()) {
+                  Attribute attr = ae.next();
+                  if (attr.getID().equals(ldapConfiguration.mailAttribute())) {
+                    Collection<String> rawMail = LdapUtils.getAllAttributeValues(attr);
+                    String mail = rawMail.iterator().next();
+                    logger.debug("Found email {} for user [{}]", mail, username);
+                    return mail;
+                  }
+                }
+              } finally {
+                LdapUtils.closeEnumeration(ae);
               }
             }
           }
+        } finally {
+          LdapUtils.closeEnumeration(answer);
         }
         return null;
       } finally {
