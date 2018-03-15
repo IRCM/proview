@@ -2023,6 +2023,32 @@ public class TransferViewPresenterTest {
   }
 
   @Test
+  public void enter_Transfer_SourceMultipleDestination() {
+    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
+        realPlateService, sampleContainerService, applicationName);
+    Transfer transfer = entityManager.find(Transfer.class, 303L);
+    transfer.getTreatmentSamples()
+        .forEach(ts -> ts.setContainer(entityManager.find(SampleContainer.class, 1475L)));
+    when(transferService.get(any())).thenReturn(transfer);
+    presenter.init(view);
+    presenter.enter("303");
+
+    verify(transferService).get(303L);
+    assertFalse(design.typePanel.isVisible());
+    assertFalse(design.deleted.isVisible());
+    assertTrue(design.transfersPanel.isVisible());
+    assertFalse(design.destination.isVisible());
+    assertTrue(design.explanationPanel.isVisible());
+    assertFalse(design.save.isVisible());
+    assertTrue(design.removeLayout.isVisible());
+    List<TransferedSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
+    assertEquals(transfer.getTreatmentSamples().size(), tss.size());
+    for (int i = 0; i < transfer.getTreatmentSamples().size(); i++) {
+      assertEquals(transfer.getTreatmentSamples().get(i), tss.get(i));
+    }
+  }
+
+  @Test
   public void enter_TransferDeleted() {
     presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
         realPlateService, sampleContainerService, applicationName);
