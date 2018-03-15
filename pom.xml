@@ -133,6 +133,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.unboundid</groupId>
+      <artifactId>unboundid-ldapsdk</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-testbench-api</artifactId>
       <scope>test</scope>
@@ -242,6 +247,10 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-ldap</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

@@ -43,6 +43,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.LdapConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
@@ -86,6 +87,8 @@ public class SigninViewPresenterTest {
   @Mock
   private ForgotPasswordService forgotPasswordService;
   @Mock
+  private LdapConfiguration ldapConfiguration;
+  @Mock
   private CustomLoginForm signForm;
   @Mock
   private User user;
@@ -116,7 +119,7 @@ public class SigninViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new SigninViewPresenter(authenticationService, authorizationService, userService,
-        forgotPasswordService, applicationName);
+        forgotPasswordService, ldapConfiguration, applicationName);
     design = new SigninViewDesign();
     view.design = design;
     view.signForm = signForm;
@@ -126,11 +129,12 @@ public class SigninViewPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    presenter.init(view);
   }
 
   @Test
   public void styles() {
+    presenter.init(view);
+
     assertTrue(design.header.getStyleName().contains(HEADER));
     assertTrue(design.signPanel.getStyleName().contains(SIGN_PANEL));
     assertTrue(signFormUsername.getStyleName().contains(SIGN_USERNAME));
@@ -145,6 +149,9 @@ public class SigninViewPresenterTest {
 
   @Test
   public void captions() {
+    presenter.init(view);
+
+    verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
     assertEquals(resources.message(SIGN_PANEL), design.signPanel.getCaption());
     assertEquals(resources.message(SIGN_USERNAME), signFormUsername.getCaption());
@@ -158,11 +165,6 @@ public class SigninViewPresenterTest {
     assertEquals(resources.message(REGISTER_BUTTON), design.registerButton.getCaption());
   }
 
-  @Test
-  public void title() {
-    verify(view).setTitle(resources.message(TITLE, applicationName));
-  }
-
   private void clickLoginButton() {
     verify(signForm).addLoginListener(loginListenerCaptor.capture());
     List<LoginListener> listeners = loginListenerCaptor.getAllValues();
@@ -173,9 +175,10 @@ public class SigninViewPresenterTest {
 
   @Test
   public void sign_User() {
+    when(authorizationService.isUser()).thenReturn(true);
+    presenter.init(view);
     signFormUsername.setValue(username);
     signFormPassword.setValue(password);
-    when(authorizationService.isUser()).thenReturn(true);
 
     clickLoginButton();
 
@@ -185,6 +188,7 @@ public class SigninViewPresenterTest {
 
   @Test
   public void sign_EmailEmpty() {
+    presenter.init(view);
     signFormPassword.setValue(password);
 
     clickLoginButton();
@@ -198,6 +202,7 @@ public class SigninViewPresenterTest {
 
   @Test
   public void sign_EmailInvalid() {
+    presenter.init(view);
     signFormUsername.setValue("aaa");
     signFormPassword.setValue(password);
 
@@ -211,7 +216,21 @@ public class SigninViewPresenterTest {
   }
 
   @Test
+  public void sign_EmailInvalid_Ldap() {
+    when(ldapConfiguration.enabled()).thenReturn(true);
+    presenter.init(view);
+    signFormUsername.setValue("aaa");
+    signFormPassword.setValue(password);
+
+    clickLoginButton();
+
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(authenticationService).sign("aaa", password, true);
+  }
+
+  @Test
   public void sign_PasswordEmpty() {
+    presenter.init(view);
     signFormUsername.setValue(username);
 
     clickLoginButton();
@@ -225,9 +244,10 @@ public class SigninViewPresenterTest {
 
   @Test
   public void sign_AuthenticationException() {
+    when(authorizationService.isUser()).thenThrow(new AuthenticationException());
+    presenter.init(view);
     signFormUsername.setValue(username);
     signFormPassword.setValue(password);
-    when(authorizationService.isUser()).thenThrow(new AuthenticationException());
 
     clickLoginButton();
 
@@ -239,6 +259,7 @@ public class SigninViewPresenterTest {
   @Test
   public void forgotPassword() {
     when(userService.exists(any())).thenReturn(true);
+    presenter.init(view);
     design.forgotPasswordEmailField.setValue(username);
     when(view.getUrl(any())).thenAnswer(context -> context.getArgumentAt(0, String.class));
     when(forgotPasswordService.insert(any(), any())).thenReturn(forgotPassword);
@@ -261,6 +282,7 @@ public class SigninViewPresenterTest {
   @Test
   public void forgotPassword_EmailNoUser() {
     when(userService.exists(any())).thenReturn(false);
+    presenter.init(view);
     design.forgotPasswordEmailField.setValue(username);
 
     design.forgotPasswordButton.click();
@@ -273,6 +295,7 @@ public class SigninViewPresenterTest {
 
   @Test
   public void forgotPassword_EmailEmpty() {
+    presenter.init(view);
     design.forgotPasswordButton.click();
 
     verify(view).showError(stringCaptor.capture());
@@ -284,6 +307,7 @@ public class SigninViewPresenterTest {
 
   @Test
   public void forgotPassword_EmailInvalid() {
+    presenter.init(view);
     design.forgotPasswordEmailField.setValue("aaa");
 
     design.forgotPasswordButton.click();
@@ -297,6 +321,7 @@ public class SigninViewPresenterTest {
 
   @Test
   public void register() {
+    presenter.init(view);
     design.registerButton.click();
 
     verify(view).navigateTo(RegisterView.VIEW_NAME);
@@ -305,6 +330,7 @@ public class SigninViewPresenterTest {
   @Test
   public void enter_NotSigned() {
     when(authorizationService.isUser()).thenReturn(false);
+    presenter.init(view);
 
     presenter.enter("");
 
@@ -314,6 +340,7 @@ public class SigninViewPresenterTest {
   @Test
   public void enter_User() {
     when(authorizationService.isUser()).thenReturn(true);
+    presenter.init(view);
 
     presenter.enter("");
 
