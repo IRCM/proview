@@ -1047,7 +1047,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     submissionBinder.forField(design.quantificationComment).withValidator((value, context) -> {
       if (value.isEmpty() && (design.quantification.getValue() == SILAC
           || design.quantification.getValue() == TMT)) {
-        return ValidationResult.error(generalResources.message(REQUIRED));
+        String error = generalResources.message(REQUIRED);
+        logger.debug("validation error on {}: {}", QUANTIFICATION_COMMENT, error);
+        return ValidationResult.error(error);
       }
       return ValidationResult.ok();
     }).withNullRepresentation("").bind(QUANTIFICATION_COMMENT);
@@ -1086,7 +1088,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     final MessageResource generalResources = view.getGeneralResources();
     return (value, context) -> {
       if (field.isVisible() && value == null) {
-        return ValidationResult.error(generalResources.message(REQUIRED));
+        String error = generalResources.message(REQUIRED);
+        logger.debug("validation error on {}: {}", field.getStyleName(), error);
+        return ValidationResult.error(error);
       }
       return ValidationResult.ok();
     };
@@ -1096,17 +1100,22 @@ public class SubmissionFormPresenter implements BinderValidator {
     final MessageResource generalResources = view.getGeneralResources();
     return (value, context) -> {
       if (field.isVisible() && value.isEmpty()) {
-        return ValidationResult.error(generalResources.message(REQUIRED));
+        String error = generalResources.message(REQUIRED);
+        logger.debug("validation error on {}: {}", field.getStyleName(), error);
+        return ValidationResult.error(error);
       }
       return ValidationResult.ok();
     };
   }
 
   private Validator<String> requiredTextIf(Predicate<Void> predicate) {
+    final MessageResource generalResources = view.getGeneralResources();
     return (value, context) -> {
       if (predicate.test(null) && value.isEmpty()) {
-        final MessageResource generalResources = view.getGeneralResources();
-        return ValidationResult.error(generalResources.message(REQUIRED));
+        String error = generalResources.message(REQUIRED);
+        logger.debug("validation error on {}: {}",
+            context.getComponent().map(com -> com.getStyleName()).orElse(null), error);
+        return ValidationResult.error(error);
       } else {
         return ValidationResult.ok();
       }
@@ -1442,7 +1451,9 @@ public class SubmissionFormPresenter implements BinderValidator {
       if ((service == SMALL_MOLECULE || service == INTACT_PROTEIN)
           && (value.isGel() || value.isBeads())) {
         MessageResource generalResources = view.getGeneralResources();
-        return ValidationResult.error(generalResources.message(INVALID));
+        String error = generalResources.message(INVALID);
+        logger.debug("validation error on {}: {}", SAMPLE_TYPE, error);
+        return ValidationResult.error(error);
       }
       return ValidationResult.ok();
     };
@@ -1455,7 +1466,9 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       MessageResource generalResources = view.getGeneralResources();
       if (!Pattern.matches("\\w*", value)) {
-        return ValidationResult.error(generalResources.message(ONLY_WORDS));
+        String error = generalResources.message(ONLY_WORDS);
+        logger.debug("validation error on {}: {}", SAMPLE_NAME, error);
+        return ValidationResult.error(error);
       }
       if (submissionSampleService.exists(value)) {
         if (submissionBinder.getBean().getId() == null
@@ -1463,9 +1476,13 @@ public class SubmissionFormPresenter implements BinderValidator {
                 .filter(sample -> sample.getName().equalsIgnoreCase(value)).findAny().isPresent()) {
           if (includeSampleNameInError) {
             MessageResource resources = view.getResources();
-            return ValidationResult.error(resources.message(SAMPLE_NAME + ".exists", value));
+            String error = resources.message(SAMPLE_NAME + ".exists", value);
+            logger.debug("validation error on {}: {}", SAMPLE_NAME, error);
+            return ValidationResult.error(error);
           } else {
-            return ValidationResult.error(generalResources.message(ALREADY_EXISTS));
+            String error = generalResources.message(ALREADY_EXISTS);
+            logger.debug("validation error on {}: {}", SAMPLE_NAME, error);
+            return ValidationResult.error(error);
           }
         }
       }
@@ -1480,7 +1497,12 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       MessageResource generalResources = view.getGeneralResources();
       if (!plateService.nameAvailable(value)) {
-        return ValidationResult.error(generalResources.message(ALREADY_EXISTS));
+        if (plateBinder.getBean().getId() == null
+            || !plateService.get(plateBinder.getBean().getId()).getName().equalsIgnoreCase(value)) {
+          String error = generalResources.message(ALREADY_EXISTS);
+          logger.debug("validation error on {}: {}", PLATE_NAME, error);
+          return ValidationResult.error(error);
+        }
       }
       return ValidationResult.ok();
     };
@@ -1550,6 +1572,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         if (!names.add(sample.getName())) {
           String error = resources.message(SAMPLE_NAME + ".duplicate", sample.getName());
           sampleNameFields.get(sample).setComponentError(new UserError(error));
+          logger.debug("validation error on {}: {}", SAMPLE_NAME, error);
           return ValidationResult.error(error);
         }
       }
@@ -1561,6 +1584,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         if (!names.add(name)) {
           String error = resources.message(SAMPLE_NAME + ".duplicate", name);
           addError(new UserError(error), view.plateComponent);
+          logger.debug("validation error on {}: {}", SAMPLE_NAME, error);
           return ValidationResult.error(error);
         }
       }
@@ -1568,6 +1592,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         String error =
             resources.message(SAMPLES + ".missing", sampleCountBinder.getBean().getCount());
         addError(new UserError(error), view.plateComponent);
+        logger.debug("validation error on {}: {}", SAMPLE_NAME, error);
         return ValidationResult.error(error);
       }
     }
@@ -1582,6 +1607,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       MessageResource resources = view.getResources();
       String error = resources.message(SOLVENTS + "." + REQUIRED);
       design.solventsLayout.setComponentError(new UserError(error));
+      logger.debug("validation error on {}: {}", SOLVENTS, error);
       return ValidationResult.error(error);
     }
     return ValidationResult.ok();
@@ -1593,6 +1619,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       MessageResource generalResources = view.getGeneralResources();
       String error = generalResources.message(REQUIRED);
       design.explanation.setComponentError(new UserError(error));
+      logger.debug("validation error on {}: {}", EXPLANATION, error);
       return ValidationResult.error(error);
     }
     return ValidationResult.ok();
