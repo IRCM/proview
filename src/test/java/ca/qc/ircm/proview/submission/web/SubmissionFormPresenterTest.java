@@ -4039,6 +4039,24 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
+  public void save_ExistsPlateName_Update() throws Throwable {
+    Submission submission = entityManager.find(Submission.class, 163L);
+    Plate plate = ((Well) submission.getSamples().get(0).getOriginalContainer()).getPlate();
+    presenter.init(view);
+    presenter.setValue(submission);
+    when(plateService.nameAvailable(any())).thenReturn(false);
+    when(plateService.get(any())).thenReturn(plate);
+    when(view.plateComponent.getValue()).thenReturn(plate);
+
+    design.save.click();
+
+    verify(plateService, atLeastOnce()).nameAvailable(plate.getName());
+    verify(plateService, atLeastOnce()).get(plate.getId());
+    verify(view, never()).showError(any());
+    verify(submissionService).update(submission);
+  }
+
+  @Test
   public void save_MissingSampleNames_1() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);

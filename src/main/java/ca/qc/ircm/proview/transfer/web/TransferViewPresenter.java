@@ -676,8 +676,8 @@ public class TransferViewPresenter implements BinderValidator {
       }
     }
 
-    firstTransfers =
-        transfers.stream().collect(Collectors.toMap(ts -> ts.getContainer(), ts -> ts));
+    firstTransfers = transfers.stream()
+        .collect(Collectors.toMap(ts -> ts.getContainer(), ts -> ts, (ts1, ts2) -> ts1));
     transfersDataProvider.getItems().addAll(transfers);
     transfersDataProvider.refreshAll();
     transfers.stream().forEach(ts -> {

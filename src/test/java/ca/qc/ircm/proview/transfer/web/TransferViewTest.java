@@ -176,7 +176,7 @@ public class TransferViewTest extends TransferViewPageObject {
   }
 
   @Test
-  @Ignore
+  @Ignore("Test takes more than 20 minutes with phantomjs")
   public void save_PlateToPlate() throws Throwable {
     openWithWells();
     String plateName = "test_plate";
@@ -274,7 +274,7 @@ public class TransferViewTest extends TransferViewPageObject {
   }
 
   @Test
-  @Ignore
+  @Ignore("Test takes more than 20 minutes with phantomjs")
   public void save_TubesToPlate() throws Throwable {
     openWithTubes();
     String plateName = "test_plate";
