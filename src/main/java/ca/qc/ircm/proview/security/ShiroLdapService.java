@@ -39,15 +39,15 @@ import javax.naming.ldap.LdapContext;
  * Services for LDAP (active directory).
  */
 @Component
-public class LdapService {
-  private static final Logger logger = LoggerFactory.getLogger(LdapService.class);
+public class ShiroLdapService {
+  private static final Logger logger = LoggerFactory.getLogger(ShiroLdapService.class);
   @Inject
   private LdapConfiguration ldapConfiguration;
 
-  protected LdapService() {
+  protected ShiroLdapService() {
   }
 
-  public LdapService(LdapConfiguration ldapConfiguration) {
+  public ShiroLdapService(LdapConfiguration ldapConfiguration) {
     this.ldapConfiguration = ldapConfiguration;
   }
 

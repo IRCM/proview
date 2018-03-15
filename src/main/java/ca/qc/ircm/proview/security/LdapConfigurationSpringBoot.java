@@ -43,6 +43,7 @@ public class LdapConfigurationSpringBoot implements LdapConfiguration {
   @PostConstruct
   public void init() {
     contextSource = (LdapContextSource) ldapTemplate.getContextSource();
+    ldapTemplate.setIgnorePartialResultException(true);
   }
 
   @Override

@@ -14,14 +14,14 @@ import javax.inject.Inject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class LdapServiceTest {
-  private LdapService ldapService;
+public class ShiroLdapServiceTest {
+  private ShiroLdapService ldapService;
   @Inject
   private LdapConfiguration ldapConfiguration;
 
   @Before
   public void beforeTest() {
-    ldapService = new LdapService(ldapConfiguration);
+    ldapService = new ShiroLdapService(ldapConfiguration);
   }
 
   @Test
