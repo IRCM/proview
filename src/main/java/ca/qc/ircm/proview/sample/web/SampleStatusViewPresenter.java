@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -73,7 +74,7 @@ public class SampleStatusViewPresenter implements BinderValidator {
   public static final String STATUS = submissionSample.status.getMetadata().getName();
   public static final String SUBMISSION = submission.getMetadata().getName();
   public static final String EXPERIENCE =
-      SUBMISSION + "." + submission.experience.getMetadata().getName();
+      property(SUBMISSION, submission.experience.getMetadata().getName());
   public static final String NEW_STATUS = "newStatus";
   public static final String DOWN = "down";
   public static final String REGRESS = "regress";
@@ -247,7 +248,7 @@ public class SampleStatusViewPresenter implements BinderValidator {
         .map(binder -> binder.getBean()).collect(Collectors.toList());
     submissionSampleService.updateStatus(new ArrayList<>(samples));
     refresh();
-    view.showTrayNotification(resources.message(SAVE + ".done", samples.size()));
+    view.showTrayNotification(resources.message(property(SAVE, "done"), samples.size()));
   }
 
   private void refresh() {

@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.tube.QTube.tube;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 
 import ca.qc.ircm.proview.sample.Control;
@@ -65,11 +66,11 @@ public class SampleSelectionFormPresenter {
   public static final String CONTROL_TYPE = control.controlType.getMetadata().getName();
   public static final String ORIGINAL_CONTAINER = sample.originalContainer.getMetadata().getName();
   public static final String ORIGINAL_CONTAINER_NAME =
-      ORIGINAL_CONTAINER + "." + tube.name.getMetadata().getName();
+      property(ORIGINAL_CONTAINER, tube.name.getMetadata().getName());
   public static final String UPDATE = "update";
   public static final String SUBMISSION = submission.getMetadata().getName();
   public static final String EXPERIENCE =
-      SUBMISSION + "." + submission.experience.getMetadata().getName();
+      property(SUBMISSION, submission.experience.getMetadata().getName());
   public static final String SELECT = "select";
   public static final String CLEAR = "clear";
   private SampleSelectionForm view;
