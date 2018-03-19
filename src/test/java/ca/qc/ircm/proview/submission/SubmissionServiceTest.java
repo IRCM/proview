@@ -396,6 +396,25 @@ public class SubmissionServiceTest {
   }
 
   @Test
+  public void all_Approver() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasApproverRole()).thenReturn(true);
+
+    List<Submission> submissions = submissionService.all();
+
+    verify(authorizationService).checkUserRole();
+    assertEquals(19, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
   public void all_Filter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
