@@ -64,7 +64,10 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   private int gridColumnIndex(int column) {
     if (!isAdmin() && !isManager() && column >= USER_COLUMN) {
-      column -= 2; // User column is hidden.
+      column--; // Director column is hidden.
+    }
+    if (!isAdmin() && column >= USER_COLUMN) {
+      column--; // User column is hidden.
     }
     if (!isAdmin()) {
       column--; // Select column is hidden.

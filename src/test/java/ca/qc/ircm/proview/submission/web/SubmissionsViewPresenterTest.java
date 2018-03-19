@@ -526,7 +526,7 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidable());
     assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());
     assertTrue(design.submissionsGrid.getColumn(USER).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(DIRECTOR).isHidable());
+    assertTrue(design.submissionsGrid.getColumn(DIRECTOR).isHidden());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());

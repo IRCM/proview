@@ -341,13 +341,18 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
         .setId(HISTORY).setCaption(resources.message(HISTORY)).setSortable(false);
-    if (authorizationService.hasManagerRole() || authorizationService.hasAdminRole()) {
+    if (authorizationService.hasAdminRole()) {
       design.submissionsGrid.getColumn(USER).setHidable(true);
       design.submissionsGrid.getColumn(USER)
           .setHidden(userPreferenceService.get(this, USER, false));
       design.submissionsGrid.getColumn(DIRECTOR).setHidable(true);
       design.submissionsGrid.getColumn(DIRECTOR)
           .setHidden(userPreferenceService.get(this, DIRECTOR, false));
+    } else if (authorizationService.hasManagerRole()) {
+      design.submissionsGrid.getColumn(USER).setHidable(true);
+      design.submissionsGrid.getColumn(USER)
+          .setHidden(userPreferenceService.get(this, USER, false));
+      design.submissionsGrid.getColumn(DIRECTOR).setHidden(true);
     } else {
       design.submissionsGrid.getColumn(USER).setHidden(true);
       design.submissionsGrid.getColumn(DIRECTOR).setHidden(true);
