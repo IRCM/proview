@@ -164,6 +164,7 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(true, user.isApprover());
   }
 
   @Test
@@ -206,6 +207,7 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(true, user.isApprover());
   }
 
   @Test
@@ -457,6 +459,7 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(true, user.isAdmin());
+    assertEquals(false, user.isApprover());
 
     verifyZeroInteractions(emailService);
   }
@@ -519,6 +522,7 @@ public class UserServiceTest {
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isApprover());
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo("benoit.coulombe@ircm.qc.ca");
@@ -690,6 +694,7 @@ public class UserServiceTest {
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isApprover());
     verify(emailService, times(3)).htmlEmail();
     verify(emailService, times(3)).send(email);
     Set<String> subjects = new HashSet<>();
@@ -808,6 +813,7 @@ public class UserServiceTest {
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isApprover());
   }
 
   @Test
@@ -877,6 +883,7 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(true, user.isApprover());
   }
 
   @Test
@@ -936,6 +943,7 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isApprover());
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo(user.getEmail());
@@ -1011,6 +1019,7 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isApprover());
   }
 
   @Test
@@ -1029,6 +1038,7 @@ public class UserServiceTest {
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isApprover());
   }
 
   @Test
@@ -1047,6 +1057,7 @@ public class UserServiceTest {
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(true, user.isApprover());
   }
 
   @Test
@@ -1065,6 +1076,7 @@ public class UserServiceTest {
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(true, user.isAdmin());
+    assertEquals(false, user.isApprover());
   }
 
   @Test(expected = IllegalArgumentException.class)

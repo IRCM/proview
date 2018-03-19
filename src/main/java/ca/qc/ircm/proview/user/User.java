@@ -83,6 +83,11 @@ public class User implements Data, Named, Serializable {
   @Column(name = "admin", nullable = false)
   private boolean admin = false;
   /**
+   * True if user can approve samples.
+   */
+  @Column(name = "approver", nullable = false)
+  private boolean approver = false;
+  /**
    * Hashed password.
    */
   @Column(name = "password")
@@ -286,5 +291,13 @@ public class User implements Data, Named, Serializable {
 
   public void setRegisterTime(Instant registerTime) {
     this.registerTime = registerTime;
+  }
+
+  public boolean isApprover() {
+    return approver;
+  }
+
+  public void setApprover(boolean approver) {
+    this.approver = approver;
   }
 }

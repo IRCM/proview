@@ -419,7 +419,7 @@ public class SubmissionService {
    *          submissions
    */
   public void approve(Collection<Submission> submissions) {
-    authorizationService.checkAdminRole();
+    authorizationService.checkApproverRole();
 
     for (Submission submission : submissions) {
       submission.getSamples().stream()

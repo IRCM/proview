@@ -199,6 +199,26 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  public void hasApproverRole_False() {
+    when(subject.hasRole(any(String.class))).thenReturn(false);
+
+    boolean hasRole = authorizationService.hasApproverRole();
+
+    verify(subject).hasRole("APPROVER");
+    assertEquals(false, hasRole);
+  }
+
+  @Test
+  public void hasApproverRole_True() {
+    when(subject.hasRole(any(String.class))).thenReturn(true);
+
+    boolean hasRole = authorizationService.hasApproverRole();
+
+    verify(subject).hasRole("APPROVER");
+    assertEquals(true, hasRole);
+  }
+
+  @Test
   public void hasUserRole_False() {
     when(subject.hasRole(any(String.class))).thenReturn(false);
 

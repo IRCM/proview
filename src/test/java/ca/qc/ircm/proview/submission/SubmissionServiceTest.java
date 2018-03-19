@@ -1834,7 +1834,7 @@ public class SubmissionServiceTest {
 
     submissionService.approve(Arrays.asList(submission1, submission2));
 
-    verify(authorizationService).checkAdminRole();
+    verify(authorizationService).checkApproverRole();
     for (SubmissionSample sample : submission1.getSamples()) {
       assertEquals(SampleStatus.APPROVED, sample.getStatus());
     }
@@ -1864,7 +1864,7 @@ public class SubmissionServiceTest {
 
     submissionService.approve(Arrays.asList(submission1, submission2));
 
-    verify(authorizationService).checkAdminRole();
+    verify(authorizationService).checkApproverRole();
     entityManager.flush();
     verify(submissionActivityService).approve(submission1);
     verify(submissionActivityService).approve(submission2);
