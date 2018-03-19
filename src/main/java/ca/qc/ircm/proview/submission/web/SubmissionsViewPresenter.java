@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import com.google.common.collect.Range;
@@ -104,22 +105,22 @@ public class SubmissionsViewPresenter {
   public static final String HEADER = "header";
   public static final String HELP = "help";
   public static final String SUBMISSIONS = "submissions";
-  public static final String SUBMISSIONS_DESCRIPTION = SUBMISSIONS + ".description";
+  public static final String SUBMISSIONS_DESCRIPTION = property(SUBMISSIONS, "description");
   public static final String SAMPLE_COUNT = "sampleCount";
   public static final String SUBMISSION = submission.getMetadata().getName();
   public static final String SAMPLE = sample.getMetadata().getName();
   public static final String EXPERIENCE =
-      SUBMISSION + "." + submission.experience.getMetadata().getName();
-  public static final String USER = SUBMISSION + "." + submission.user.getMetadata().getName();
-  public static final String DIRECTOR = SUBMISSION + "." + "director";
+      property(SUBMISSION, submission.experience.getMetadata().getName());
+  public static final String USER = property(SUBMISSION, submission.user.getMetadata().getName());
+  public static final String DIRECTOR = property(SUBMISSION, "director");
   public static final String EXPERIENCE_GOAL =
-      SUBMISSION + "." + submission.goal.getMetadata().getName();
+      property(SUBMISSION, submission.goal.getMetadata().getName());
   public static final String SAMPLE_NAME =
-      SAMPLE + "." + submissionSample.name.getMetadata().getName();
+      property(SAMPLE, submissionSample.name.getMetadata().getName());
   public static final String SAMPLE_STATUSES = "statuses";
-  public static final String SAMPLE_STATUSES_SEPARATOR = SAMPLE_STATUSES + ".separator";
+  public static final String SAMPLE_STATUSES_SEPARATOR = property(SAMPLE_STATUSES, "separator");
   public static final String DATE =
-      SUBMISSION + "." + submission.submissionDate.getMetadata().getName();
+      property(SUBMISSION, submission.submissionDate.getMetadata().getName());
   public static final String LINKED_TO_RESULTS = "results";
   public static final String TREATMENTS = "treatments";
   public static final String HISTORY = "history";
@@ -131,6 +132,9 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_CONTAINERS_NO_SAMPLES = "selectContainers.noSamples";
   public static final String SELECT_CONTAINERS_LABEL = "selectContainersLabel";
   public static final String UPDATE_STATUS = "updateStatus";
+  public static final String APPROVE = "approve";
+  public static final String APPROVE_EMPTY = "approve.empty";
+  public static final String APPROVED = "approved";
   public static final String TRANSFER = "transfer";
   public static final String DIGESTION = "digestion";
   public static final String ENRICHMENT = "enrichment";
@@ -139,7 +143,7 @@ public class SubmissionsViewPresenter {
   public static final String STANDARD_ADDITION = "standardAddition";
   public static final String MS_ANALYSIS = "msAnalysis";
   public static final String DATA_ANALYSIS = "dataAnalysis";
-  public static final String DATA_ANALYSIS_DESCRIPTION = DATA_ANALYSIS + ".description";
+  public static final String DATA_ANALYSIS_DESCRIPTION = property(DATA_ANALYSIS, "description");
   public static final String NO_SELECTION = "noSelection";
   public static final String NO_CONTAINERS = "noContainers";
   public static final String CONDITION_FALSE = "condition-false";
@@ -251,6 +255,10 @@ public class SubmissionsViewPresenter {
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
     design.updateStatusButton.addClickListener(e -> updateStatus());
+    design.approve.addStyleName(APPROVE);
+    design.approve.setCaption(resources.message(APPROVE));
+    design.approve.setVisible(authorizationService.hasApproverRole());
+    design.approve.addClickListener(e -> approve());
     design.treatmentButtons.setVisible(authorizationService.hasAdminRole());
     design.transfer.addStyleName(TRANSFER);
     design.transfer.setCaption(resources.message(TRANSFER));
@@ -306,7 +314,7 @@ public class SubmissionsViewPresenter {
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
     columnProperties.put(SAMPLE_COUNT, submission.samples.size());
     design.submissionsGrid
-        .addColumn(submission -> resources.message(SAMPLE_NAME + ".value",
+        .addColumn(submission -> resources.message(property(SAMPLE_NAME, "value"),
             submission.getSamples().get(0).getName(), submission.getSamples().size()))
         .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME))
         .setDescriptionGenerator(submission -> submission.getSamples().stream()
@@ -334,13 +342,18 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
         .setId(HISTORY).setCaption(resources.message(HISTORY)).setSortable(false);
-    if (authorizationService.hasManagerRole() || authorizationService.hasAdminRole()) {
+    if (authorizationService.hasAdminRole()) {
       design.submissionsGrid.getColumn(USER).setHidable(true);
       design.submissionsGrid.getColumn(USER)
           .setHidden(userPreferenceService.get(this, USER, false));
       design.submissionsGrid.getColumn(DIRECTOR).setHidable(true);
       design.submissionsGrid.getColumn(DIRECTOR)
           .setHidden(userPreferenceService.get(this, DIRECTOR, false));
+    } else if (authorizationService.hasManagerRole()) {
+      design.submissionsGrid.getColumn(USER).setHidable(true);
+      design.submissionsGrid.getColumn(USER)
+          .setHidden(userPreferenceService.get(this, USER, false));
+      design.submissionsGrid.getColumn(DIRECTOR).setHidden(true);
     } else {
       design.submissionsGrid.getColumn(USER).setHidden(true);
       design.submissionsGrid.getColumn(DIRECTOR).setHidden(true);
@@ -387,7 +400,7 @@ public class SubmissionsViewPresenter {
           .getColumns().stream().map(col -> col.getId()).toArray(String[]::new));
     });
     design.submissionsGrid.setFrozenColumnCount(1);
-    if (authorizationService.hasAdminRole()) {
+    if (authorizationService.hasAdminRole() || authorizationService.hasApproverRole()) {
       design.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
     }
     HeaderRow filterRow = design.submissionsGrid.appendHeaderRow();
@@ -422,7 +435,8 @@ public class SubmissionsViewPresenter {
     filterRow.getCell(LINKED_TO_RESULTS).setComponent(comboBoxFilter(e -> {
       filter.results = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
-    }, new Boolean[] { true, false }, value -> resources.message(LINKED_TO_RESULTS + "." + value)));
+    }, new Boolean[] { true, false },
+        value -> resources.message(property(LINKED_TO_RESULTS, value))));
     design.submissionsGrid.sort(DATE, SortDirection.DESCENDING);
   }
 
@@ -459,7 +473,7 @@ public class SubmissionsViewPresenter {
     boolean results = linkedToResults(submission);
     Button button = new Button();
     button.addStyleName(LINKED_TO_RESULTS);
-    button.setCaption(resources.message(LINKED_TO_RESULTS + "." + results));
+    button.setCaption(resources.message(property(LINKED_TO_RESULTS, results)));
     if (results) {
       button.addClickListener(e -> viewSubmissionResults(submission));
     } else {
@@ -649,6 +663,21 @@ public class SubmissionsViewPresenter {
   private void updateStatus() {
     saveSelectedSamples();
     view.navigateTo(SampleStatusView.VIEW_NAME);
+  }
+
+  private void approve() {
+    MessageResource resources = view.getResources();
+    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
+      Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
+      logger.debug("Approve submissions {}", submissions);
+      submissionService.approve(submissions);
+      view.showTrayNotification(resources.message(APPROVED, submissions.size()));
+      view.navigateTo(SubmissionsView.VIEW_NAME);
+    } else {
+      String error = resources.message(APPROVE_EMPTY);
+      logger.debug("Validation error: {}", error);
+      view.showError(error);
+    }
   }
 
   private void transfer() {

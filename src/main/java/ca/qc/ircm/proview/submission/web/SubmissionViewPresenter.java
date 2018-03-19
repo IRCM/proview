@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
@@ -38,7 +40,7 @@ import javax.inject.Inject;
 public class SubmissionViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER_STYLE = "header";
-  public static final String INVALID_SUBMISSION = "submission.invalid";
+  public static final String INVALID_SUBMISSION = property("submission", "invalid");
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);
   private SubmissionView view;
   private SubmissionViewDesign design;

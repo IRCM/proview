@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_QUANTI
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.HEADER;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -138,7 +139,7 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
 
   protected TextFieldElement standardNameField(int row) {
     return wrap(TextFieldElement.class, standardsGrid().getCell(row, NAME_COLUMN)
-        .findElement(className(STANDARDS + "." + STANDARD_NAME)));
+        .findElement(className(styleName(STANDARDS, STANDARD_NAME))));
   }
 
   protected String getStandardName(int row) {
@@ -151,7 +152,7 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
 
   protected TextFieldElement standardQuantityField(int row) {
     return wrap(TextFieldElement.class, standardsGrid().getCell(row, QUANTITY_COLUMN)
-        .findElement(className(STANDARDS + "." + STANDARD_QUANTITY)));
+        .findElement(className(styleName(STANDARDS, STANDARD_QUANTITY))));
   }
 
   protected String getStandardQuantity(int row) {
@@ -164,7 +165,7 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
 
   protected TextFieldElement standardCommentField(int row) {
     return wrap(TextFieldElement.class, standardsGrid().getCell(row, COMMENT_COLUMN)
-        .findElement(className(STANDARDS + "." + STANDARD_COMMENT)));
+        .findElement(className(styleName(STANDARDS, STANDARD_COMMENT))));
   }
 
   protected String getStandardComment(int row) {

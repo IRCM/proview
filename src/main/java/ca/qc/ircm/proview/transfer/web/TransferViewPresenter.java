@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
@@ -29,6 +30,7 @@ import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 
+import ca.qc.ircm.proview.NamedComparator;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateFilter;
 import ca.qc.ircm.proview.plate.PlateService;
@@ -96,19 +98,21 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String CONTAINER = transferedSample.container.getMetadata().getName();
   public static final String DESTINATION_CONTAINER =
       transferedSample.destinationContainer.getMetadata().getName();
-  public static final String DESTINATION_CONTAINER_DUPLICATE = DESTINATION_CONTAINER + ".duplicate";
+  public static final String DESTINATION_CONTAINER_DUPLICATE =
+      property(DESTINATION_CONTAINER, "duplicate");
   public static final String DESTINATION_COUNT = DESTINATION_CONTAINER + "Count";
   public static final String DESTINATION_COUNT_FIELD_WIDTH = "60px";
   public static final String DESTINATION_TUBE = DESTINATION_CONTAINER + "Tube";
   public static final String DESTINATION_WELL = DESTINATION_CONTAINER + "Well";
-  public static final String DESTINATION_WELL_IN_USE = DESTINATION_WELL + ".inUse";
+  public static final String DESTINATION_WELL_IN_USE = property(DESTINATION_WELL, "inUse");
   public static final String DESTINATION = "destination";
   public static final String DESTINATION_PLATES = "destinationPlates";
   public static final String DESTINATION_PLATE_PANEL = "destinationPlatePanel";
   public static final String DESTINATION_PLATE = "destinationPlate";
-  public static final String DESTINATION_PLATE_NO_SELECTION = "destinationPlate.noSelection";
+  public static final String DESTINATION_PLATE_NO_SELECTION =
+      property(DESTINATION_PLATE, "noSelection");
   public static final String DESTINATION_PLATE_NOT_ENOUGH_FREE_SPACE =
-      "destinationPlate.notEnoughFreeSpace";
+      property(DESTINATION_PLATE, "notEnoughFreeSpace");
   public static final String TEST = "test";
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
@@ -116,7 +120,7 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String SAVED = "saved";
   public static final String DESTINATION_SAMPLE = sample.getMetadata().getName();
   public static final String DESTINATION_SAMPLE_NAME =
-      DESTINATION_SAMPLE + "." + sample.name.getMetadata().getName();
+      property(DESTINATION_SAMPLE, sample.name.getMetadata().getName());
   public static final String DOWN = "down";
   public static final String REMOVE = "remove";
   public static final String REMOVED = "removed";
@@ -219,8 +223,8 @@ public class TransferViewPresenter implements BinderValidator {
       design.destinationPlatesField.getDataProvider().refreshItem(plate);
       design.destinationPlatesField.setValue(plate);
     });
-    design.destinationPlatesField
-        .setItems(plateService.all(new PlateFilter().onlyProteomicPlates()));
+    design.destinationPlatesField.setItems(plateService.all(new PlateFilter().onlyProteomicPlates())
+        .stream().sorted(new NamedComparator(view.getLocale())));
     design.destinationPlatesField.addValueChangeListener(e -> updateDestinationPlate());
     design.destinationPlatePanel.addStyleName(DESTINATION_PLATE_PANEL);
     design.destinationPlatePanel.setVisible(false);

@@ -134,13 +134,13 @@ public class DataAnalysisViewPresenter implements BinderValidator {
     design.analyses.addColumn(da -> da.getSample().getName()).setId(SAMPLE)
         .setCaption(resources.message(SAMPLE));
     design.analyses.addColumn(da -> proteinField(da), new ComponentRenderer()).setId(PROTEIN)
-        .setCaption(resources.message(PROTEIN));
+        .setCaption(resources.message(PROTEIN)).setSortable(false);
     design.analyses.addColumn(da -> peptideField(da), new ComponentRenderer()).setId(PEPTIDE)
-        .setCaption(resources.message(PEPTIDE));
+        .setCaption(resources.message(PEPTIDE)).setSortable(false);
     design.analyses.addColumn(da -> typeField(da), new ComponentRenderer()).setId(TYPE)
-        .setCaption(resources.message(TYPE));
+        .setCaption(resources.message(TYPE)).setSortable(false);
     design.analyses.addColumn(da -> maxWorkTimeField(da), new ComponentRenderer())
-        .setId(MAX_WORK_TIME).setCaption(resources.message(MAX_WORK_TIME));
+        .setId(MAX_WORK_TIME).setCaption(resources.message(MAX_WORK_TIME)).setSortable(false);
     design.save.addStyleName(SAVE);
     design.save.setCaption(resources.message(SAVE));
     design.save.addClickListener(e -> save());
@@ -315,6 +315,10 @@ public class DataAnalysisViewPresenter implements BinderValidator {
     }
 
     design.analyses.setItems(analyses);
+    design.analyses.getColumn(PROTEIN).setSortable(false);
+    design.analyses.getColumn(PEPTIDE).setSortable(false);
+    design.analyses.getColumn(TYPE).setSortable(false);
+    design.analyses.getColumn(MAX_WORK_TIME).setSortable(false);
     analyses.stream().forEach(da -> binder(da));
   }
 

@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.digestion.web.DigestionView;
@@ -61,16 +62,16 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
   public static final String SAMPLES_PANEL = "samplesPanel";
   public static final String SAMPLES = QSubmission.submission.samples.getMetadata().getName();
   public static final String SAMPLES_NAME =
-      SAMPLES + "." + submissionSample.name.getMetadata().getName();
+      property(SAMPLES, submissionSample.name.getMetadata().getName());
   public static final String SAMPLES_STATUS =
-      SAMPLES + "." + submissionSample.status.getMetadata().getName();
-  public static final String SAMPLES_LAST_CONTAINER = SAMPLES + "." + "lastContainer";
+      property(SAMPLES, submissionSample.status.getMetadata().getName());
+  public static final String SAMPLES_LAST_CONTAINER = property(SAMPLES, "lastContainer");
   public static final String TREATMENTS_PANEL = "treatmentsPanel";
   public static final String TREATMENTS = "treatments";
-  public static final String TREATMENT_TYPE = TREATMENTS + ".type";
+  public static final String TREATMENT_TYPE = property(TREATMENTS, "type");
   public static final String TREATMENT_TIME =
-      TREATMENTS + "." + treatment.insertTime.getMetadata().getName();
-  public static final String TREATMENT_SAMPLES = TREATMENTS + ".samples";
+      property(TREATMENTS, treatment.insertTime.getMetadata().getName());
+  public static final String TREATMENT_SAMPLES = property(TREATMENTS, "samples");
   private SubmissionTreatmentsForm view;
   private SubmissionTreatmentsFormDesign design;
   private Submission submission;

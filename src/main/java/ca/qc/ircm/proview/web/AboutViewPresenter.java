@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.web.SigninView;
 import ca.qc.ircm.utils.MessageResource;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
 
 /**
  * About view presenter.
@@ -40,16 +43,20 @@ public class AboutViewPresenter {
   public static final String ANALYSES = "analyses";
   public static final String RESPONSABILITIES = "responsabilities";
   public static final String SIGNIN = "signin";
+  public static final String SIGNIN_SIGNED = SIGNIN + ".signed";
   private static final Logger logger = LoggerFactory.getLogger(AboutViewPresenter.class);
   private AboutView view;
   private AboutViewDesign design;
+  @Inject
+  private AuthorizationService authorizationService;
   @Value("${spring.application.name}")
   private String applicationName;
 
   public AboutViewPresenter() {
   }
 
-  protected AboutViewPresenter(String applicationName) {
+  protected AboutViewPresenter(AuthorizationService authorizationService, String applicationName) {
+    this.authorizationService = authorizationService;
     this.applicationName = applicationName;
   }
 
@@ -82,7 +89,11 @@ public class AboutViewPresenter {
     design.responsabilities.addStyleName(RESPONSABILITIES);
     design.responsabilities.setValue(resources.message(RESPONSABILITIES));
     design.signin.addStyleName(SIGNIN);
-    design.signin.setCaption(resources.message(SIGNIN));
+    if (authorizationService.isUser()) {
+      design.signin.setCaption(resources.message(SIGNIN_SIGNED));
+    } else {
+      design.signin.setCaption(resources.message(SIGNIN));
+    }
     design.signin.addClickListener(e -> view.navigateTo(SigninView.VIEW_NAME));
   }
 }

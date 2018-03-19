@@ -19,6 +19,8 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.QControl.control;
 import static ca.qc.ircm.proview.sample.QStandard.standard;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
@@ -154,7 +156,7 @@ public class ControlFormPresenter implements BinderValidator {
     sampleBinder.forField(design.type).asRequired(generalResources.message(REQUIRED)).bind(TYPE);
     design.quantityField.addStyleName(QUANTITY);
     design.quantityField.setCaption(resources.message(QUANTITY));
-    design.quantityField.setPlaceholder(resources.message(QUANTITY + "." + EXAMPLE));
+    design.quantityField.setPlaceholder(resources.message(property(QUANTITY, EXAMPLE)));
     sampleBinder.forField(design.quantityField).withNullRepresentation("").bind(QUANTITY);
     design.volumeField.addStyleName(VOLUME);
     design.volumeField.setCaption(resources.message(VOLUME));
@@ -186,13 +188,15 @@ public class ControlFormPresenter implements BinderValidator {
     design.standardsGrid.setDataProvider(standardsDataProvider);
     design.standardsGrid
         .addColumn(standard -> standardNameTextField(standard), new ComponentRenderer())
-        .setId(STANDARD_NAME).setCaption(resources.message(STANDARD + "." + STANDARD_NAME));
+        .setId(STANDARD_NAME).setCaption(resources.message(property(STANDARD, STANDARD_NAME)));
     design.standardsGrid
         .addColumn(standard -> standardQuantityTextField(standard), new ComponentRenderer())
-        .setId(STANDARD_QUANTITY).setCaption(resources.message(STANDARD + "." + STANDARD_QUANTITY));
+        .setId(STANDARD_QUANTITY)
+        .setCaption(resources.message(property(STANDARD, STANDARD_QUANTITY)));
     design.standardsGrid
         .addColumn(standard -> standardCommentTextField(standard), new ComponentRenderer())
-        .setId(STANDARD_COMMENT).setCaption(resources.message(STANDARD + "." + STANDARD_COMMENT));
+        .setId(STANDARD_COMMENT)
+        .setCaption(resources.message(property(STANDARD, STANDARD_COMMENT)));
     design.fillStandardsButton.addStyleName(FILL_STANDARDS);
     design.fillStandardsButton.addStyleName(BUTTON_SKIP_ROW);
     design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS));
@@ -211,7 +215,7 @@ public class ControlFormPresenter implements BinderValidator {
         binder.setBean(standard);
       }
       TextField field = new TextField();
-      field.addStyleName(STANDARD + "." + STANDARD_NAME);
+      field.addStyleName(styleName(STANDARD, STANDARD_NAME));
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
@@ -234,10 +238,10 @@ public class ControlFormPresenter implements BinderValidator {
         binder.setBean(standard);
       }
       TextField field = new TextField();
-      field.addStyleName(STANDARD + "." + STANDARD_QUANTITY);
+      field.addStyleName(styleName(STANDARD, STANDARD_QUANTITY));
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
-      field.setPlaceholder(resources.message(STANDARD + "." + STANDARD_QUANTITY + "." + EXAMPLE));
+      field.setPlaceholder(resources.message(property(STANDARD, STANDARD_QUANTITY, EXAMPLE)));
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
           .withNullRepresentation("").bind(STANDARD_QUANTITY);
       standardBinders.put(standard, binder);
@@ -256,7 +260,7 @@ public class ControlFormPresenter implements BinderValidator {
         binder.setBean(standard);
       }
       TextField field = new TextField();
-      field.addStyleName(STANDARD + "." + STANDARD_COMMENT);
+      field.addStyleName(styleName(STANDARD, STANDARD_COMMENT));
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       binder.forField(field).withNullRepresentation("").bind(STANDARD_COMMENT);

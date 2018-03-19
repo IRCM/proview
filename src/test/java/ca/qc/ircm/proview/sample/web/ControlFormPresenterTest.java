@@ -39,6 +39,7 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -179,15 +180,16 @@ public class ControlFormPresenterTest {
     }
     TextField standardNameField = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
         .getValueProvider().apply(standard);
-    assertTrue(standardNameField.getStyleName().contains(STANDARD + "." + STANDARD_NAME));
+    assertTrue(standardNameField.getStyleName().contains(styleName(STANDARD, STANDARD_NAME)));
     assertTrue(standardNameField.getStyleName().contains(ValoTheme.TEXTFIELD_TINY));
     TextField standardQuantityField = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
         .getValueProvider().apply(standard);
-    assertTrue(standardQuantityField.getStyleName().contains(STANDARD + "." + STANDARD_QUANTITY));
+    assertTrue(
+        standardQuantityField.getStyleName().contains(styleName(STANDARD, STANDARD_QUANTITY)));
     assertTrue(standardQuantityField.getStyleName().contains(ValoTheme.TEXTFIELD_TINY));
     TextField standardCommentField = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
         .getValueProvider().apply(standard);
-    assertTrue(standardCommentField.getStyleName().contains(STANDARD + "." + STANDARD_COMMENT));
+    assertTrue(standardCommentField.getStyleName().contains(styleName(STANDARD, STANDARD_COMMENT)));
     assertTrue(standardCommentField.getStyleName().contains(ValoTheme.TEXTFIELD_TINY));
     assertTrue(design.fillStandardsButton.getStyleName().contains(FILL_STANDARDS));
     assertTrue(design.fillStandardsButton.getStyleName().contains(BUTTON_SKIP_ROW));

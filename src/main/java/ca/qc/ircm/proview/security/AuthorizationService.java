@@ -59,6 +59,7 @@ public class AuthorizationService {
   private static final String ADMIN = UserRole.ADMIN.name();
   private static final String MANAGER = UserRole.MANAGER.name();
   private static final String USER = UserRole.USER.name();
+  private static final String APPROVER = UserRole.APPROVER.name();
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -148,6 +149,15 @@ public class AuthorizationService {
   }
 
   /**
+   * Returns true if user has approver role, false otherwise.
+   *
+   * @return true if user has approver role, false otherwise
+   */
+  public boolean hasApproverRole() {
+    return getSubject().hasRole(APPROVER);
+  }
+
+  /**
    * Returns true if user has user role, false otherwise.
    *
    * @return true if user has user role, false otherwise
@@ -161,6 +171,13 @@ public class AuthorizationService {
    */
   public void checkAdminRole() {
     getSubject().checkRole(ADMIN);
+  }
+
+  /**
+   * Checks that current user has approver role.
+   */
+  public void checkApproverRole() {
+    getSubject().checkRole(APPROVER);
   }
 
   /**

@@ -24,11 +24,17 @@ public enum UserRole {
   /**
    * Normal user.
    */
-  USER, /**
-         * Laboratory manager.
-         */
-  MANAGER, /**
-            * Administartor.
-            */
-  ADMIN
+  USER,
+  /**
+   * Laboratory manager.
+   */
+  MANAGER,
+  /**
+   * Administartor.
+   */
+  ADMIN,
+  /**
+   * Can approve samples.
+   */
+  APPROVER
 }

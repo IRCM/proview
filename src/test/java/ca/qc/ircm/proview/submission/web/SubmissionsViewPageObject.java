@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.APPROVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
@@ -63,7 +64,10 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   private int gridColumnIndex(int column) {
     if (!isAdmin() && !isManager() && column >= USER_COLUMN) {
-      column -= 2; // User column is hidden.
+      column--; // Director column is hidden.
+    }
+    if (!isAdmin() && column >= USER_COLUMN) {
+      column--; // User column is hidden.
     }
     if (!isAdmin()) {
       column--; // Select column is hidden.
@@ -164,6 +168,14 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickUpdateStatusButton() {
     updateStatusButton().click();
+  }
+
+  protected ButtonElement approveButton() {
+    return wrap(ButtonElement.class, findElement(className(APPROVE)));
+  }
+
+  protected void clickApproveButton() {
+    approveButton().click();
   }
 
   protected ButtonElement transferButton() {

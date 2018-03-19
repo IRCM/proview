@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -29,6 +30,7 @@ import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.utils.MessageResource;
@@ -37,6 +39,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.ValueContext;
 import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
@@ -68,9 +71,11 @@ import javax.inject.Inject;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionAnalysesFormPresenter {
   public static final String ANALYSIS = msAnalysis.getMetadata().getName();
+  public static final String VIEW = "view";
   public static final String ACQUISITIONS = msAnalysis.acquisitions.getMetadata().getName();
   public static final String SAMPLE = acquisition.sample.getMetadata().getName();
-  public static final String NAME = SAMPLE + "." + acquisition.sample.name.getMetadata().getName();
+  public static final String NAME =
+      property(SAMPLE, acquisition.sample.name.getMetadata().getName());
   public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
   public static final String ACQUISITION_INDEX = acquisition.listIndex.getMetadata().getName();
   public static final String DATA_ANALYSES_PANEL = "dataAnalysesPanel";
@@ -131,10 +136,10 @@ public class SubmissionAnalysesFormPresenter {
         .setCaption(resources.message(NAME));
     design.dataAnalyses.addColumn(da -> da.getProtein()).setId(PROTEIN)
         .setCaption(resources.message(PROTEIN))
-        .setDescriptionGenerator(da -> resources.message(PROTEIN + "." + DESCRIPTION));
+        .setDescriptionGenerator(da -> resources.message(property(PROTEIN, DESCRIPTION)));
     design.dataAnalyses.addColumn(da -> da.getPeptide()).setId(PEPTIDE)
         .setCaption(resources.message(PEPTIDE))
-        .setDescriptionGenerator(da -> resources.message(PEPTIDE + "." + DESCRIPTION));
+        .setDescriptionGenerator(da -> resources.message(property(PEPTIDE, DESCRIPTION)));
     design.dataAnalyses.addColumn(da -> da.getType().getLabel(locale)).setId(DATA_ANALYSIS_TYPE)
         .setCaption(resources.message(DATA_ANALYSIS_TYPE));
     design.dataAnalyses.addColumn(da -> da.getScore()).setId(SCORE)
@@ -180,13 +185,13 @@ public class SubmissionAnalysesFormPresenter {
 
   private String workTime(DataAnalysis dataAnalysis) {
     final MessageResource resources = view.getResources();
-    return resources.message(WORK_TIME + "." + VALUE,
+    return resources.message(property(WORK_TIME, VALUE),
         Objects.toString(dataAnalysis.getWorkTime(), "0"), dataAnalysis.getMaxWorkTime());
   }
 
   private String workTimeDescription(DataAnalysis dataAnalysis) {
     final MessageResource resources = view.getResources();
-    return resources.message(WORK_TIME + "." + DESCRIPTION,
+    return resources.message(property(WORK_TIME, DESCRIPTION),
         Objects.toString(dataAnalysis.getWorkTime(), "0"), dataAnalysis.getMaxWorkTime());
   }
 
@@ -225,6 +230,11 @@ public class SubmissionAnalysesFormPresenter {
     panel.setSizeFull();
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
     panel.setCaption(resources.message(ANALYSIS, formatter.format(date(analysis.getInsertTime()))));
+    Button view = new Button();
+    view.addStyleName(VIEW);
+    view.setCaption(resources.message(VIEW));
+    view.addClickListener(e -> view(analysis));
+    layout.addComponent(view);
     Grid<Acquisition> grid = new Grid<>();
     grid.addStyleName(ACQUISITIONS);
     grid.setSizeFull();
@@ -237,6 +247,10 @@ public class SubmissionAnalysesFormPresenter {
         .setHidden(true);
     grid.sort(ACQUISITION_INDEX);
     layout.addComponent(grid);
+  }
+
+  private void view(MsAnalysis analysis) {
+    view.navigateTo(MsAnalysisView.VIEW_NAME, String.valueOf(analysis.getId()));
   }
 
   Submission getValue() {

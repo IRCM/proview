@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -48,6 +49,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +74,7 @@ public class SampleStatusViewPresenter implements BinderValidator {
   public static final String STATUS = submissionSample.status.getMetadata().getName();
   public static final String SUBMISSION = submission.getMetadata().getName();
   public static final String EXPERIENCE =
-      SUBMISSION + "." + submission.experience.getMetadata().getName();
+      property(SUBMISSION, submission.experience.getMetadata().getName());
   public static final String NEW_STATUS = "newStatus";
   public static final String DOWN = "down";
   public static final String REGRESS = "regress";
@@ -116,7 +118,6 @@ public class SampleStatusViewPresenter implements BinderValidator {
     this.view = view;
     design = view.design;
     prepareComponents();
-    addListeners();
   }
 
   private void prepareComponents() {
@@ -140,9 +141,6 @@ public class SampleStatusViewPresenter implements BinderValidator {
     design.samplesGrid.setSelectionMode(SelectionMode.NONE);
     design.saveButton.addStyleName(SAVE);
     design.saveButton.setCaption(resources.message(SAVE));
-  }
-
-  private void addListeners() {
     design.saveButton.addClickListener(e -> save());
   }
 
@@ -157,8 +155,11 @@ public class SampleStatusViewPresenter implements BinderValidator {
       ComboBox<SampleStatus> statuses = new ComboBox<>();
       statuses.addStyleName(NEW_STATUS);
       statuses.setEmptySelectionAllowed(false);
-      statuses.setItems(SampleStatus.values());
+      List<SampleStatus> items = new ArrayList<>(Arrays.asList(SampleStatus.values()));
+      items.remove(0);
+      statuses.setItems(items);
       statuses.setItemCaptionGenerator(status -> status.getLabel(locale));
+      statuses.setEnabled(sample.getStatus() != SampleStatus.TO_APPROVE);
       binder.forField(statuses).asRequired(generalResources.message(REQUIRED))
           .bind(SubmissionSample::getStatus, SubmissionSample::setStatus);
       sampleBinders.put(sample, binder);
@@ -242,11 +243,12 @@ public class SampleStatusViewPresenter implements BinderValidator {
   private void saveToDatabase() {
     logger.debug("Save statuses to database");
     final MessageResource resources = view.getResources();
-    List<SubmissionSample> samples = sampleBinders.values().stream().map(binder -> binder.getBean())
-        .collect(Collectors.toList());
+    List<SubmissionSample> samples = sampleBinders.values().stream()
+        .filter(binder -> sampleStatusFields.get(binder.getBean()).isEnabled())
+        .map(binder -> binder.getBean()).collect(Collectors.toList());
     submissionSampleService.updateStatus(new ArrayList<>(samples));
     refresh();
-    view.showTrayNotification(resources.message(SAVE + ".done", samples.size()));
+    view.showTrayNotification(resources.message(property(SAVE, "done"), samples.size()));
   }
 
   private void refresh() {
