@@ -29,6 +29,7 @@ import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 
+import ca.qc.ircm.proview.NamedComparator;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateFilter;
 import ca.qc.ircm.proview.plate.PlateService;
@@ -219,8 +220,8 @@ public class TransferViewPresenter implements BinderValidator {
       design.destinationPlatesField.getDataProvider().refreshItem(plate);
       design.destinationPlatesField.setValue(plate);
     });
-    design.destinationPlatesField
-        .setItems(plateService.all(new PlateFilter().onlyProteomicPlates()));
+    design.destinationPlatesField.setItems(plateService.all(new PlateFilter().onlyProteomicPlates())
+        .stream().sorted(new NamedComparator(view.getLocale())));
     design.destinationPlatesField.addValueChangeListener(e -> updateDestinationPlate());
     design.destinationPlatePanel.addStyleName(DESTINATION_PLATE_PANEL);
     design.destinationPlatePanel.setVisible(false);
