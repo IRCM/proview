@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -73,7 +74,8 @@ public class SubmissionAnalysesFormPresenter {
   public static final String VIEW = "view";
   public static final String ACQUISITIONS = msAnalysis.acquisitions.getMetadata().getName();
   public static final String SAMPLE = acquisition.sample.getMetadata().getName();
-  public static final String NAME = SAMPLE + "." + acquisition.sample.name.getMetadata().getName();
+  public static final String NAME =
+      property(SAMPLE, acquisition.sample.name.getMetadata().getName());
   public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
   public static final String ACQUISITION_INDEX = acquisition.listIndex.getMetadata().getName();
   public static final String DATA_ANALYSES_PANEL = "dataAnalysesPanel";
@@ -134,10 +136,10 @@ public class SubmissionAnalysesFormPresenter {
         .setCaption(resources.message(NAME));
     design.dataAnalyses.addColumn(da -> da.getProtein()).setId(PROTEIN)
         .setCaption(resources.message(PROTEIN))
-        .setDescriptionGenerator(da -> resources.message(PROTEIN + "." + DESCRIPTION));
+        .setDescriptionGenerator(da -> resources.message(property(PROTEIN, DESCRIPTION)));
     design.dataAnalyses.addColumn(da -> da.getPeptide()).setId(PEPTIDE)
         .setCaption(resources.message(PEPTIDE))
-        .setDescriptionGenerator(da -> resources.message(PEPTIDE + "." + DESCRIPTION));
+        .setDescriptionGenerator(da -> resources.message(property(PEPTIDE, DESCRIPTION)));
     design.dataAnalyses.addColumn(da -> da.getType().getLabel(locale)).setId(DATA_ANALYSIS_TYPE)
         .setCaption(resources.message(DATA_ANALYSIS_TYPE));
     design.dataAnalyses.addColumn(da -> da.getScore()).setId(SCORE)
@@ -183,13 +185,13 @@ public class SubmissionAnalysesFormPresenter {
 
   private String workTime(DataAnalysis dataAnalysis) {
     final MessageResource resources = view.getResources();
-    return resources.message(WORK_TIME + "." + VALUE,
+    return resources.message(property(WORK_TIME, VALUE),
         Objects.toString(dataAnalysis.getWorkTime(), "0"), dataAnalysis.getMaxWorkTime());
   }
 
   private String workTimeDescription(DataAnalysis dataAnalysis) {
     final MessageResource resources = view.getResources();
-    return resources.message(WORK_TIME + "." + DESCRIPTION,
+    return resources.message(property(WORK_TIME, DESCRIPTION),
         Objects.toString(dataAnalysis.getWorkTime(), "0"), dataAnalysis.getMaxWorkTime());
   }
 

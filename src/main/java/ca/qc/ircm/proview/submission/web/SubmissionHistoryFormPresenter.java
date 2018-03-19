@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.history.QActivity.activity;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
@@ -81,7 +82,7 @@ public class SubmissionHistoryFormPresenter {
   public static final String ACTION_TYPE = activity.actionType.getMetadata().getName();
   public static final String TIMESTAMP = activity.timestamp.getMetadata().getName();
   public static final String DESCRIPTION = "description";
-  public static final String DESCRIPTION_LONG = DESCRIPTION + ".long";
+  public static final String DESCRIPTION_LONG = property(DESCRIPTION, "long");
   public static final String EXPLANATION = activity.explanation.getMetadata().getName();
   public static final String VIEW = "view";
   public static final String VIEW_ERROR = "view.error";
