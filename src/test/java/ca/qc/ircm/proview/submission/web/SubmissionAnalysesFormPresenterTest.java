@@ -31,6 +31,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.SCORE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.VALUE;
+import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.VIEW;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
@@ -53,12 +54,14 @@ import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BindingValidationStatus;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
@@ -140,10 +143,15 @@ public class SubmissionAnalysesFormPresenterTest {
         .mapToObj(i -> (Panel) design.analysesLayout.getComponent(i)).collect(Collectors.toList());
   }
 
+  private List<Button> viewAnalyses() {
+    return viewPanels().stream().map(panel -> (VerticalLayout) panel.getContent())
+        .map(layout -> (Button) layout.getComponent(0)).collect(Collectors.toList());
+  }
+
   @SuppressWarnings("unchecked")
   private List<Grid<Acquisition>> viewGrids() {
     return viewPanels().stream().map(panel -> (VerticalLayout) panel.getContent())
-        .map(layout -> (Grid<Acquisition>) layout.getComponent(0)).collect(Collectors.toList());
+        .map(layout -> (Grid<Acquisition>) layout.getComponent(1)).collect(Collectors.toList());
   }
 
   private void doEdit(DataAnalysis analysis) {
@@ -199,10 +207,18 @@ public class SubmissionAnalysesFormPresenterTest {
   }
 
   @Test
-  public void msAnalysisGrids() {
+  public void msAnalysisPanels() {
     presenter.init(view);
     presenter.setValue(submission);
 
+    for (int i = 0; i < analyses.size(); i++) {
+      MsAnalysis analysis = analyses.get(i);
+      Button button = viewAnalyses().get(i);
+      assertTrue(button.getStyleName().contains(VIEW));
+      assertEquals(resources.message(VIEW), button.getCaption());
+      button.click();
+      verify(view).navigateTo(MsAnalysisView.VIEW_NAME, analysis.getId().toString());
+    }
     for (Grid<Acquisition> acquisitionsGrid : viewGrids()) {
       List<Column<Acquisition, ?>> columns = acquisitionsGrid.getColumns();
 

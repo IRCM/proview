@@ -29,6 +29,7 @@ import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.utils.MessageResource;
@@ -37,6 +38,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.ValueContext;
 import com.vaadin.data.converter.StringToDoubleConverter;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
@@ -68,6 +70,7 @@ import javax.inject.Inject;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionAnalysesFormPresenter {
   public static final String ANALYSIS = msAnalysis.getMetadata().getName();
+  public static final String VIEW = "view";
   public static final String ACQUISITIONS = msAnalysis.acquisitions.getMetadata().getName();
   public static final String SAMPLE = acquisition.sample.getMetadata().getName();
   public static final String NAME = SAMPLE + "." + acquisition.sample.name.getMetadata().getName();
@@ -225,6 +228,11 @@ public class SubmissionAnalysesFormPresenter {
     panel.setSizeFull();
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
     panel.setCaption(resources.message(ANALYSIS, formatter.format(date(analysis.getInsertTime()))));
+    Button view = new Button();
+    view.addStyleName(VIEW);
+    view.setCaption(resources.message(VIEW));
+    view.addClickListener(e -> view(analysis));
+    layout.addComponent(view);
     Grid<Acquisition> grid = new Grid<>();
     grid.addStyleName(ACQUISITIONS);
     grid.setSizeFull();
@@ -237,6 +245,10 @@ public class SubmissionAnalysesFormPresenter {
         .setHidden(true);
     grid.sort(ACQUISITION_INDEX);
     layout.addComponent(grid);
+  }
+
+  private void view(MsAnalysis analysis) {
+    view.navigateTo(MsAnalysisView.VIEW_NAME, String.valueOf(analysis.getId()));
   }
 
   Submission getValue() {
