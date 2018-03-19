@@ -19,6 +19,9 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.APPROVE;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.APPROVED;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.APPROVE_EMPTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
@@ -202,6 +205,8 @@ public class SubmissionsViewPresenterTest {
   @Captor
   private ArgumentCaptor<Collection<Sample>> samplesCaptor;
   @Captor
+  private ArgumentCaptor<Collection<Submission>> submissionsCaptor;
+  @Captor
   private ArgumentCaptor<List<Sample>> samplesListCaptor;
   @Captor
   private ArgumentCaptor<SubmissionFilter> submissionFilterCaptor;
@@ -276,6 +281,7 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.selectContainers.getStyleName().contains(SELECT_CONTAINERS));
     assertTrue(design.selectedContainersLabel.getStyleName().contains(SELECT_CONTAINERS_LABEL));
     assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
+    assertTrue(design.approve.getStyleName().contains(APPROVE));
     assertTrue(design.transfer.getStyleName().contains(TRANSFER));
     assertTrue(design.digestion.getStyleName().contains(DIGESTION));
     assertTrue(design.enrichment.getStyleName().contains(ENRICHMENT));
@@ -308,6 +314,7 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(SELECT_CONTAINERS_LABEL, 0),
         design.selectedContainersLabel.getValue());
     assertEquals(resources.message(UPDATE_STATUS), design.updateStatusButton.getCaption());
+    assertEquals(resources.message(APPROVE), design.approve.getCaption());
     assertEquals(resources.message(TRANSFER), design.transfer.getCaption());
     assertEquals(resources.message(DIGESTION), design.digestion.getCaption());
     assertEquals(resources.message(ENRICHMENT), design.enrichment.getCaption());
@@ -1139,9 +1146,26 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.sampleSelectionLayout.isVisible());
     assertTrue(design.containerSelectionLayout.isVisible());
     assertTrue(design.updateStatusButton.isVisible());
+    assertFalse(design.approve.isVisible());
     assertTrue(design.treatmentButtons.isVisible());
     assertTrue(design.msAnalysis.isVisible());
     assertFalse(design.dataAnalysis.isVisible());
+  }
+
+  @Test
+  public void visible_Approver() {
+    when(authorizationService.hasApproverRole()).thenReturn(true);
+    presenter.init(view);
+
+    assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Multi);
+    assertTrue(design.addSubmission.isVisible());
+    assertFalse(design.sampleSelectionLayout.isVisible());
+    assertFalse(design.containerSelectionLayout.isVisible());
+    assertFalse(design.updateStatusButton.isVisible());
+    assertTrue(design.approve.isVisible());
+    assertFalse(design.treatmentButtons.isVisible());
+    assertFalse(design.msAnalysis.isVisible());
+    assertTrue(design.dataAnalysis.isVisible());
   }
 
   @Test
@@ -1419,6 +1443,34 @@ public class SubmissionsViewPresenterTest {
             submission1.getSamples().size() + submission2.getSamples().size()),
         design.selectedSamplesLabel.getValue());
     verify(view).navigateTo(SampleStatusView.VIEW_NAME);
+  }
+
+  @Test
+  public void approve() {
+    when(authorizationService.hasApproverRole()).thenReturn(true);
+    presenter.init(view);
+    design.submissionsGrid.select(submissions.get(0));
+    design.submissionsGrid.select(submissions.get(1));
+
+    design.approve.click();
+
+    verify(submissionService).approve(submissionsCaptor.capture());
+    assertEquals(2, submissionsCaptor.getValue().size());
+    assertTrue(find(submissionsCaptor.getValue(), submissions.get(0).getId()).isPresent());
+    assertTrue(find(submissionsCaptor.getValue(), submissions.get(1).getId()).isPresent());
+    verify(view).showTrayNotification(resources.message(APPROVED, 2));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
+  }
+
+  @Test
+  public void approve_NoSelection() {
+    when(authorizationService.hasApproverRole()).thenReturn(true);
+    presenter.init(view);
+
+    design.approve.click();
+
+    verify(submissionService, never()).approve(any());
+    verify(view).showError(resources.message(APPROVE_EMPTY));
   }
 
   @Test

@@ -106,7 +106,7 @@ public class SampleStatusViewTest extends SampleStatusPageObject {
   @Test
   public void save_Regress() throws Throwable {
     openWithSubmissions();
-    setSampleStatus(0, SampleStatus.TO_APPROVE);
+    setSampleStatus(0, SampleStatus.APPROVED);
 
     clickSave();
 
@@ -128,7 +128,7 @@ public class SampleStatusViewTest extends SampleStatusPageObject {
         notification.getCaption());
     Submission submission = entityManager.find(Submission.class, 32L);
     assertEquals(SampleStatus.ANALYSED, submission.getSamples().get(0).getStatus());
-    submission = entityManager.find(Submission.class, 33L);
+    submission = entityManager.find(Submission.class, 147L);
     assertEquals(SampleStatus.CANCELLED, submission.getSamples().get(0).getStatus());
   }
 }

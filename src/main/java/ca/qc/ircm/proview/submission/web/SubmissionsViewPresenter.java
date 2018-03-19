@@ -131,6 +131,9 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_CONTAINERS_NO_SAMPLES = "selectContainers.noSamples";
   public static final String SELECT_CONTAINERS_LABEL = "selectContainersLabel";
   public static final String UPDATE_STATUS = "updateStatus";
+  public static final String APPROVE = "approve";
+  public static final String APPROVE_EMPTY = "approve.empty";
+  public static final String APPROVED = "approved";
   public static final String TRANSFER = "transfer";
   public static final String DIGESTION = "digestion";
   public static final String ENRICHMENT = "enrichment";
@@ -251,6 +254,10 @@ public class SubmissionsViewPresenter {
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
     design.updateStatusButton.addClickListener(e -> updateStatus());
+    design.approve.addStyleName(APPROVE);
+    design.approve.setCaption(resources.message(APPROVE));
+    design.approve.setVisible(authorizationService.hasApproverRole());
+    design.approve.addClickListener(e -> approve());
     design.treatmentButtons.setVisible(authorizationService.hasAdminRole());
     design.transfer.addStyleName(TRANSFER);
     design.transfer.setCaption(resources.message(TRANSFER));
@@ -387,7 +394,7 @@ public class SubmissionsViewPresenter {
           .getColumns().stream().map(col -> col.getId()).toArray(String[]::new));
     });
     design.submissionsGrid.setFrozenColumnCount(1);
-    if (authorizationService.hasAdminRole()) {
+    if (authorizationService.hasAdminRole() || authorizationService.hasApproverRole()) {
       design.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
     }
     HeaderRow filterRow = design.submissionsGrid.appendHeaderRow();
@@ -649,6 +656,21 @@ public class SubmissionsViewPresenter {
   private void updateStatus() {
     saveSelectedSamples();
     view.navigateTo(SampleStatusView.VIEW_NAME);
+  }
+
+  private void approve() {
+    MessageResource resources = view.getResources();
+    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
+      Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
+      logger.debug("Approve submissions {}", submissions);
+      submissionService.approve(submissions);
+      view.showTrayNotification(resources.message(APPROVED, submissions.size()));
+      view.navigateTo(SubmissionsView.VIEW_NAME);
+    } else {
+      String error = resources.message(APPROVE_EMPTY);
+      logger.debug("Validation error: {}", error);
+      view.showError(error);
+    }
   }
 
   private void transfer() {

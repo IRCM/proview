@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.DatabaseLogUtil;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -314,5 +317,58 @@ public class SubmissionActivityService {
     } else {
       return Optional.empty();
     }
+  }
+
+  /**
+   * Creates an activity aobut approval of analysis of samples in submission.
+   *
+   * @param submission
+   *          submission with new sample statuses
+   * @return activity about approval of analysis of samples in submission
+   */
+  public Optional<Activity> approve(final Submission submission) {
+    User user = authorizationService.getCurrentUser();
+
+    Submission old = entityManager.find(Submission.class, submission.getId());
+    Map<Long, SubmissionSample> oldSamplesMap =
+        old.getSamples().stream().collect(Collectors.toMap(Sample::getId, sample -> sample));
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+
+    for (SubmissionSample sample : submission.getSamples()) {
+      oldSamplesMap.get(sample.getId());
+      UpdateActivityBuilder builder = sampleUpdate(sample);
+      builder.column(submissionSample.status.getMetadata().getName());
+      builder.newValue(sample.getStatus().name());
+      builder.oldValue(oldSamplesMap.get(sample.getId()).getStatus().name());
+      updateBuilders.add(builder);
+    }
+
+    // Keep updates that changed.
+    final Collection<UpdateActivity> updates = new ArrayList<>();
+    for (UpdateActivityBuilder builder : updateBuilders) {
+      if (builder.isChanged()) {
+        updates.add(builder.build());
+      }
+    }
+
+    if (!updates.isEmpty()) {
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(submission.getId());
+      activity.setUser(user);
+      activity.setTableName(Submission.TABLE_NAME);
+      activity.setUpdates(new LinkedList<>(updates));
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  private UpdateActivityBuilder sampleUpdate(SubmissionSample sample) {
+    UpdateActivityBuilder builder = new UpdateActivityBuilder();
+    builder.tableName(Sample.TABLE_NAME);
+    builder.actionType(ActionType.UPDATE);
+    builder.recordId(sample.getId());
+    return builder;
   }
 }

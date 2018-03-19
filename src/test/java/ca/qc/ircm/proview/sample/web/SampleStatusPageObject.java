@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.web.component.ConfirmDialogComponent.CONFIRM_DI
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
@@ -43,7 +42,7 @@ public abstract class SampleStatusPageObject extends AbstractTestBenchTestCase {
   }
 
   protected void openWithSubmissions() {
-    openView(SampleStatusView.VIEW_NAME, "442,443");
+    openView(SampleStatusView.VIEW_NAME, "442,559");
   }
 
   protected LabelElement headerLabel() {
