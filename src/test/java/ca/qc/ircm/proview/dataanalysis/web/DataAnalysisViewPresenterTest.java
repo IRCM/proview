@@ -201,6 +201,7 @@ public class DataAnalysisViewPresenterTest {
     assertEquals(resources.message(PROTEIN), design.analyses.getColumn(PROTEIN).getCaption());
     assertTrue(containsInstanceOf(design.analyses.getColumn(PROTEIN).getExtensions(),
         ComponentRenderer.class));
+    assertFalse(design.analyses.getColumn(PROTEIN).isSortable());
     for (DataAnalysis analysis : analyses) {
       TextField field =
           (TextField) design.analyses.getColumn(PROTEIN).getValueProvider().apply(analysis);
@@ -210,6 +211,7 @@ public class DataAnalysisViewPresenterTest {
     assertEquals(resources.message(PEPTIDE), design.analyses.getColumn(PEPTIDE).getCaption());
     assertTrue(containsInstanceOf(design.analyses.getColumn(PEPTIDE).getExtensions(),
         ComponentRenderer.class));
+    assertFalse(design.analyses.getColumn(PEPTIDE).isSortable());
     for (DataAnalysis analysis : analyses) {
       TextField field =
           (TextField) design.analyses.getColumn(PEPTIDE).getValueProvider().apply(analysis);
@@ -219,6 +221,7 @@ public class DataAnalysisViewPresenterTest {
     assertEquals(resources.message(TYPE), design.analyses.getColumn(TYPE).getCaption());
     assertTrue(containsInstanceOf(design.analyses.getColumn(TYPE).getExtensions(),
         ComponentRenderer.class));
+    assertFalse(design.analyses.getColumn(TYPE).isSortable());
     for (DataAnalysis analysis : analyses) {
       ComboBox<DataAnalysisType> field = (ComboBox<DataAnalysisType>) design.analyses
           .getColumn(TYPE).getValueProvider().apply(analysis);
@@ -236,6 +239,7 @@ public class DataAnalysisViewPresenterTest {
         design.analyses.getColumn(MAX_WORK_TIME).getCaption());
     assertTrue(containsInstanceOf(design.analyses.getColumn(MAX_WORK_TIME).getExtensions(),
         ComponentRenderer.class));
+    assertFalse(design.analyses.getColumn(MAX_WORK_TIME).isSortable());
     for (DataAnalysis analysis : analyses) {
       ComboBox<Double> field = (ComboBox<Double>) design.analyses.getColumn(MAX_WORK_TIME)
           .getValueProvider().apply(analysis);
