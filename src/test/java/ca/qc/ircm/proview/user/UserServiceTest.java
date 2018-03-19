@@ -164,7 +164,7 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
-    assertEquals(true, user.isApprover());
+    assertEquals(false, user.isApprover());
   }
 
   @Test
@@ -207,7 +207,7 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
-    assertEquals(true, user.isApprover());
+    assertEquals(false, user.isApprover());
   }
 
   @Test
@@ -883,7 +883,7 @@ public class UserServiceTest {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
-    assertEquals(true, user.isApprover());
+    assertEquals(false, user.isApprover());
   }
 
   @Test
@@ -1057,7 +1057,7 @@ public class UserServiceTest {
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
-    assertEquals(true, user.isApprover());
+    assertEquals(false, user.isApprover());
   }
 
   @Test
