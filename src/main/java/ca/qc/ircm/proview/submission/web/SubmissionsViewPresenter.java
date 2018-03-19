@@ -118,7 +118,7 @@ public class SubmissionsViewPresenter {
   public static final String SAMPLE_NAME =
       property(SAMPLE, submissionSample.name.getMetadata().getName());
   public static final String SAMPLE_STATUSES = "statuses";
-  public static final String SAMPLE_STATUSES_SEPARATOR = property(SAMPLE_STATUSES, ".separator");
+  public static final String SAMPLE_STATUSES_SEPARATOR = property(SAMPLE_STATUSES, "separator");
   public static final String DATE =
       property(SUBMISSION, submission.submissionDate.getMetadata().getName());
   public static final String LINKED_TO_RESULTS = "results";
