@@ -45,6 +45,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -408,6 +409,27 @@ public class SubmissionService {
         submissionActivityService.forceUpdate(submission, explanation, old);
     if (activity.isPresent()) {
       activityService.insert(activity.get());
+    }
+  }
+
+  /**
+   * Approve analysis of all samples in submissions.
+   *
+   * @param submissions
+   *          submissions
+   */
+  public void approve(Collection<Submission> submissions) {
+    authorizationService.checkAdminRole();
+
+    for (Submission submission : submissions) {
+      submission.getSamples().stream()
+          .filter(sample -> sample.getStatus() == SampleStatus.TO_APPROVE)
+          .forEach(sample -> sample.setStatus(SampleStatus.APPROVED));
+      entityManager.merge(submission);
+      Optional<Activity> activity = submissionActivityService.approve(submission);
+      if (activity.isPresent()) {
+        activityService.insert(activity.get());
+      }
     }
   }
 }
