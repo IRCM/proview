@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.APPROVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
@@ -164,6 +165,14 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickUpdateStatusButton() {
     updateStatusButton().click();
+  }
+
+  protected ButtonElement approveButton() {
+    return wrap(ButtonElement.class, findElement(className(APPROVE)));
+  }
+
+  protected void clickApproveButton() {
+    approveButton().click();
   }
 
   protected ButtonElement transferButton() {

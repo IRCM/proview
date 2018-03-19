@@ -1459,6 +1459,7 @@ public class SubmissionsViewPresenterTest {
     assertTrue(find(submissionsCaptor.getValue(), submissions.get(0).getId()).isPresent());
     assertTrue(find(submissionsCaptor.getValue(), submissions.get(1).getId()).isPresent());
     verify(view).showTrayNotification(resources.message(APPROVED, 2));
+    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
   @Test

@@ -665,6 +665,7 @@ public class SubmissionsViewPresenter {
       logger.debug("Approve submissions {}", submissions);
       submissionService.approve(submissions);
       view.showTrayNotification(resources.message(APPROVED, submissions.size()));
+      view.navigateTo(SubmissionsView.VIEW_NAME);
     } else {
       String error = resources.message(APPROVE_EMPTY);
       logger.debug("Validation error: {}", error);

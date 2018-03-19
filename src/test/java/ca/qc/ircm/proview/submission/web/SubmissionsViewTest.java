@@ -33,6 +33,8 @@ import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
+import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.ContainerSelectionFormPresenter;
 import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter;
@@ -41,6 +43,7 @@ import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
 import ca.qc.ircm.proview.standard.web.StandardAdditionView;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.transfer.web.TransferView;
@@ -55,10 +58,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithSubject(userId = 10)
 public class SubmissionsViewTest extends SubmissionsViewPageObject {
+  @PersistenceContext
+  private EntityManager entityManager;
   @Value("${spring.application.name}")
   private String applicationName;
   private boolean admin;
@@ -112,6 +120,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertFalse(optional(() -> selectContainersButton()).isPresent());
     assertFalse(optional(() -> selectedContainersLabel()).isPresent());
     assertFalse(optional(() -> updateStatusButton()).isPresent());
+    assertFalse(optional(() -> approveButton()).isPresent());
     assertFalse(optional(() -> transferButton()).isPresent());
     assertFalse(optional(() -> digestionButton()).isPresent());
     assertFalse(optional(() -> enrichmentButton()).isPresent());
@@ -136,6 +145,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> selectContainersButton()).isPresent());
     assertTrue(optional(() -> selectedContainersLabel()).isPresent());
     assertTrue(optional(() -> updateStatusButton()).isPresent());
+    assertTrue(optional(() -> approveButton()).isPresent());
     assertTrue(optional(() -> transferButton()).isPresent());
     assertTrue(optional(() -> digestionButton()).isPresent());
     assertTrue(optional(() -> enrichmentButton()).isPresent());
@@ -281,6 +291,22 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     clickUpdateStatusButton();
 
     assertEquals(viewUrl(SampleStatusView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithSubject
+  public void approve() throws Throwable {
+    admin = true;
+    open();
+    selectSubmission(0);
+
+    clickApproveButton();
+
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    Submission submission = entityManager.find(Submission.class, 163L);
+    for (SubmissionSample sample : submission.getSamples()) {
+      assertEquals(SampleStatus.APPROVED, sample.getStatus());
+    }
   }
 
   @Test
