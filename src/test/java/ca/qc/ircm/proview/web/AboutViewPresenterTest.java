@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.web.AboutViewPresenter.RESPONSABILITIES;
 import static ca.qc.ircm.proview.web.AboutViewPresenter.SERVICES;
 import static ca.qc.ircm.proview.web.AboutViewPresenter.SERVICES_DESCRIPTION;
 import static ca.qc.ircm.proview.web.AboutViewPresenter.SIGNIN;
+import static ca.qc.ircm.proview.web.AboutViewPresenter.SIGNIN_SIGNED;
 import static ca.qc.ircm.proview.web.AboutViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -67,7 +68,7 @@ public class AboutViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new AboutViewPresenter(applicationName);
+    presenter = new AboutViewPresenter(authorizationService, applicationName);
     design = new AboutViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
@@ -106,6 +107,15 @@ public class AboutViewPresenterTest {
     assertEquals(resources.message(RESPONSABILITIES), design.responsabilities.getValue());
     assertEquals(ContentMode.HTML, design.responsabilities.getContentMode());
     assertEquals(resources.message(SIGNIN), design.signin.getCaption());
+  }
+
+  @Test
+  public void captions_Signed() {
+    when(authorizationService.isUser()).thenReturn(true);
+
+    presenter.init(view);
+
+    assertEquals(resources.message(SIGNIN_SIGNED), design.signin.getCaption());
   }
 
   @Test
