@@ -21,37 +21,27 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXAMPLE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION_PANEL;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_STANDARDS;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAMPLE_PANEL;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVED;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS_PANEL;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COMMENT;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COUNT;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_NAME;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
-import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
-import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
-import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,9 +54,6 @@ import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,6 +82,8 @@ public class ControlFormPresenterTest {
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   @Captor
+  private ArgumentCaptor<Boolean> booleanCaptor;
+  @Captor
   private ArgumentCaptor<Control> controlCaptor;
   @PersistenceContext
   private EntityManager entityManager;
@@ -115,10 +104,6 @@ public class ControlFormPresenterTest {
   private String standardQuantity2 = "2 ug";
   private String standardComment2 = "com2";
   private String explanation = "test explanation";
-  private TextField standardNameField1;
-  private TextField standardNameField2;
-  private TextField standardQuantityField1;
-  private TextField standardQuantityField2;
 
   /**
    * Before test.
@@ -128,9 +113,11 @@ public class ControlFormPresenterTest {
     presenter = new ControlFormPresenter(controlService);
     design = new ControlFormDesign();
     view.design = design;
+    view.standardsForm = mock(StandardsForm.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
+    when(view.standardsForm.validate()).thenReturn(true);
   }
 
   private void setFields() {
@@ -139,26 +126,18 @@ public class ControlFormPresenterTest {
     design.quantityField.setValue(quantity);
     design.volumeField.setValue(volume);
     design.controlTypeField.setValue(controlType);
-    design.standardCountField.setValue("2");
-    List<Standard> standards = new ArrayList<>(dataProvider(design.standardsGrid).getItems());
-    Standard standard = standards.get(0);
-    standardNameField1 = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(standard);
-    standardNameField1.setValue(standardName1);
-    standardQuantityField1 = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(standard);
-    standardQuantityField1.setValue(standardQuantity1);
-    ((TextField) design.standardsGrid.getColumn(STANDARD_COMMENT).getValueProvider()
-        .apply(standard)).setValue(standardComment1);
-    standard = standards.get(1);
-    standardNameField2 = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(standard);
-    standardNameField2.setValue(standardName2);
-    standardQuantityField2 = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(standard);
-    standardQuantityField2.setValue(standardQuantity2);
-    ((TextField) design.standardsGrid.getColumn(STANDARD_COMMENT).getValueProvider()
-        .apply(standard)).setValue(standardComment2);
+    List<Standard> standards = new ArrayList<>();
+    Standard standard1 = new Standard();
+    standard1.setName(standardName1);
+    standard1.setQuantity(standardQuantity1);
+    standard1.setComment(standardComment1);
+    standards.add(standard1);
+    Standard standard2 = new Standard();
+    standard2.setName(standardName2);
+    standard2.setQuantity(standardQuantity2);
+    standard2.setComment(standardComment2);
+    standards.add(standard2);
+    when(view.standardsForm.getValue()).thenReturn(standards);
   }
 
   @Test
@@ -172,27 +151,6 @@ public class ControlFormPresenterTest {
     assertTrue(design.volumeField.getStyleName().contains(VOLUME));
     assertTrue(design.controlTypeField.getStyleName().contains(CONTROL_TYPE));
     assertTrue(design.standardsPanel.getStyleName().contains(STANDARDS_PANEL));
-    assertTrue(design.standardCountField.getStyleName().contains(STANDARD_COUNT));
-    assertTrue(design.standardsGrid.getStyleName().contains(STANDARDS));
-    Standard standard = new Standard();
-    if (dataProvider(design.standardsGrid).getItems().size() < 1) {
-      dataProvider(design.standardsGrid).getItems().add(standard);
-    }
-    TextField standardNameField = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(standard);
-    assertTrue(standardNameField.getStyleName().contains(styleName(STANDARD, STANDARD_NAME)));
-    assertTrue(standardNameField.getStyleName().contains(ValoTheme.TEXTFIELD_TINY));
-    TextField standardQuantityField = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(standard);
-    assertTrue(
-        standardQuantityField.getStyleName().contains(styleName(STANDARD, STANDARD_QUANTITY)));
-    assertTrue(standardQuantityField.getStyleName().contains(ValoTheme.TEXTFIELD_TINY));
-    TextField standardCommentField = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
-        .getValueProvider().apply(standard);
-    assertTrue(standardCommentField.getStyleName().contains(styleName(STANDARD, STANDARD_COMMENT)));
-    assertTrue(standardCommentField.getStyleName().contains(ValoTheme.TEXTFIELD_TINY));
-    assertTrue(design.fillStandardsButton.getStyleName().contains(FILL_STANDARDS));
-    assertTrue(design.fillStandardsButton.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanationPanel.getStyleName().contains(REQUIRED));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
@@ -220,23 +178,6 @@ public class ControlFormPresenterTest {
           design.controlTypeField.getItemCaptionGenerator().apply(type));
     }
     assertEquals(resources.message(STANDARDS_PANEL), design.standardsPanel.getCaption());
-    assertEquals(resources.message(STANDARD_COUNT), design.standardCountField.getCaption());
-    assertEquals(resources.message(STANDARD + "." + STANDARD_NAME),
-        design.standardsGrid.getColumn(STANDARD_NAME).getCaption());
-    assertEquals(resources.message(STANDARD + "." + STANDARD_QUANTITY),
-        design.standardsGrid.getColumn(STANDARD_QUANTITY).getCaption());
-    assertEquals(resources.message(STANDARD + "." + STANDARD_COMMENT),
-        design.standardsGrid.getColumn(STANDARD_COMMENT).getCaption());
-    Standard standard = new Standard();
-    if (dataProvider(design.standardsGrid).getItems().size() < 1) {
-      dataProvider(design.standardsGrid).getItems().add(standard);
-    }
-    TextField standardQuantityField = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(standard);
-    assertEquals(resources.message(STANDARD + "." + STANDARD_QUANTITY + "." + EXAMPLE),
-        standardQuantityField.getPlaceholder());
-    assertEquals(resources.message(FILL_STANDARDS), design.fillStandardsButton.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.fillStandardsButton.getIcon());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(null, design.explanation.getCaption());
     assertEquals(resources.message(SAVE), design.saveButton.getCaption());
@@ -264,22 +205,6 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void standardsGrid_Column() {
-    presenter.init(view);
-
-    assertEquals(3, design.standardsGrid.getColumns().size());
-    assertEquals(STANDARD_NAME, design.standardsGrid.getColumns().get(0).getId());
-    assertTrue(containsInstanceOf(design.standardsGrid.getColumns().get(0).getExtensions(),
-        ComponentRenderer.class));
-    assertEquals(STANDARD_QUANTITY, design.standardsGrid.getColumns().get(1).getId());
-    assertTrue(containsInstanceOf(design.standardsGrid.getColumns().get(1).getExtensions(),
-        ComponentRenderer.class));
-    assertEquals(STANDARD_COMMENT, design.standardsGrid.getColumns().get(2).getId());
-    assertTrue(containsInstanceOf(design.standardsGrid.getColumns().get(2).getExtensions(),
-        ComponentRenderer.class));
-  }
-
-  @Test
   public void required() {
     presenter.init(view);
 
@@ -301,51 +226,8 @@ public class ControlFormPresenterTest {
     assertTrue(design.quantityField.isReadOnly());
     assertTrue(design.volumeField.isReadOnly());
     assertTrue(design.controlTypeField.isReadOnly());
-    assertTrue(design.standardCountField.isReadOnly());
-    Standard standard = new Standard();
-    if (dataProvider(design.standardsGrid).getItems().size() < 1) {
-      dataProvider(design.standardsGrid).getItems().add(standard);
-    }
-    TextField standardNameField = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(standard);
-    assertTrue(standardNameField.isReadOnly());
-    TextField standardQuantityField = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(standard);
-    assertTrue(standardQuantityField.isReadOnly());
-    TextField standardCommentField = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
-        .getValueProvider().apply(standard);
-    assertTrue(standardCommentField.isReadOnly());
-    assertFalse(design.fillStandardsButton.isVisible());
-    assertFalse(design.explanationPanel.isVisible());
-    assertFalse(design.saveButton.isVisible());
-  }
-
-  @Test
-  public void readOnly_True_AfterStandards() {
-    presenter.init(view);
-    presenter.setReadOnly(false);
-
-    Standard standard = new Standard();
-    if (dataProvider(design.standardsGrid).getItems().size() < 1) {
-      dataProvider(design.standardsGrid).getItems().add(standard);
-    }
-    final TextField standardNameField = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(standard);
-    final TextField standardQuantityField = (TextField) design.standardsGrid
-        .getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
-    final TextField standardCommentField = (TextField) design.standardsGrid
-        .getColumn(STANDARD_COMMENT).getValueProvider().apply(standard);
-    presenter.setReadOnly(true);
-    assertTrue(design.nameField.isReadOnly());
-    assertTrue(design.type.isReadOnly());
-    assertTrue(design.quantityField.isReadOnly());
-    assertTrue(design.volumeField.isReadOnly());
-    assertTrue(design.controlTypeField.isReadOnly());
-    assertTrue(design.standardCountField.isReadOnly());
-    assertTrue(standardNameField.isReadOnly());
-    assertTrue(standardQuantityField.isReadOnly());
-    assertTrue(standardCommentField.isReadOnly());
-    assertFalse(design.fillStandardsButton.isVisible());
+    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.saveButton.isVisible());
   }
@@ -362,27 +244,15 @@ public class ControlFormPresenterTest {
     assertTrue(design.quantityField.isReadOnly());
     assertTrue(design.volumeField.isReadOnly());
     assertTrue(design.controlTypeField.isReadOnly());
-    assertTrue(design.standardCountField.isReadOnly());
-    Standard standard = new Standard();
-    if (dataProvider(design.standardsGrid).getItems().size() < 1) {
-      dataProvider(design.standardsGrid).getItems().add(standard);
-    }
-    TextField standardNameField = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(standard);
-    assertTrue(standardNameField.isReadOnly());
-    TextField standardQuantityField = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(standard);
-    assertTrue(standardQuantityField.isReadOnly());
-    TextField standardCommentField = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
-        .getValueProvider().apply(standard);
-    assertTrue(standardCommentField.isReadOnly());
-    assertFalse(design.fillStandardsButton.isVisible());
+    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
+    verify(view.standardsForm).setValue(control.getStandards());
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.saveButton.isVisible());
   }
 
   @Test
-  public void readOnly_False() {
+  public void readOnly_Default() {
     presenter.init(view);
 
     assertFalse(design.nameField.isReadOnly());
@@ -390,51 +260,24 @@ public class ControlFormPresenterTest {
     assertFalse(design.quantityField.isReadOnly());
     assertFalse(design.volumeField.isReadOnly());
     assertFalse(design.controlTypeField.isReadOnly());
-    assertFalse(design.standardCountField.isReadOnly());
-    Standard standard = new Standard();
-    if (dataProvider(design.standardsGrid).getItems().size() < 1) {
-      dataProvider(design.standardsGrid).getItems().add(standard);
-    }
-    TextField standardNameField = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(standard);
-    assertFalse(standardNameField.isReadOnly());
-    TextField standardQuantityField = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(standard);
-    assertFalse(standardQuantityField.isReadOnly());
-    TextField standardCommentField = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
-        .getValueProvider().apply(standard);
-    assertFalse(standardCommentField.isReadOnly());
-    assertTrue(design.fillStandardsButton.isVisible());
+    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.saveButton.isVisible());
   }
 
   @Test
-  public void readOnly_False_AfterStandards() {
+  public void readOnly_False() {
     presenter.init(view);
-    presenter.setReadOnly(true);
-
-    Standard standard = new Standard();
-    if (dataProvider(design.standardsGrid).getItems().size() < 1) {
-      dataProvider(design.standardsGrid).getItems().add(standard);
-    }
-    final TextField standardNameField = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(standard);
-    final TextField standardQuantityField = (TextField) design.standardsGrid
-        .getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
-    final TextField standardCommentField = (TextField) design.standardsGrid
-        .getColumn(STANDARD_COMMENT).getValueProvider().apply(standard);
     presenter.setReadOnly(false);
+
     assertFalse(design.nameField.isReadOnly());
     assertFalse(design.type.isReadOnly());
     assertFalse(design.quantityField.isReadOnly());
     assertFalse(design.volumeField.isReadOnly());
     assertFalse(design.controlTypeField.isReadOnly());
-    assertFalse(design.standardCountField.isReadOnly());
-    assertFalse(standardNameField.isReadOnly());
-    assertFalse(standardQuantityField.isReadOnly());
-    assertFalse(standardCommentField.isReadOnly());
-    assertTrue(design.fillStandardsButton.isVisible());
+    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.saveButton.isVisible());
   }
@@ -450,83 +293,11 @@ public class ControlFormPresenterTest {
     assertFalse(design.quantityField.isReadOnly());
     assertFalse(design.volumeField.isReadOnly());
     assertFalse(design.controlTypeField.isReadOnly());
-    assertFalse(design.standardCountField.isReadOnly());
-    Standard standard = new Standard();
-    if (dataProvider(design.standardsGrid).getItems().size() < 1) {
-      dataProvider(design.standardsGrid).getItems().add(standard);
-    }
-    TextField standardNameField = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(standard);
-    assertFalse(standardNameField.isReadOnly());
-    TextField standardQuantityField = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(standard);
-    assertFalse(standardQuantityField.isReadOnly());
-    TextField standardCommentField = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
-        .getValueProvider().apply(standard);
-    assertFalse(standardCommentField.isReadOnly());
-    assertTrue(design.fillStandardsButton.isVisible());
+    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    verify(view.standardsForm).setValue(control.getStandards());
     assertTrue(design.explanationPanel.isVisible());
     assertTrue(design.saveButton.isVisible());
-  }
-
-  @Test
-  public void updateStandardCount() {
-    presenter.init(view);
-    assertFalse(design.standardsTableLayout.isVisible());
-
-    design.standardCountField.setValue("2");
-
-    assertTrue(design.standardsTableLayout.isVisible());
-    assertEquals(2, dataProvider(design.standardsGrid).getItems().size());
-    for (Standard standard : dataProvider(design.standardsGrid).getItems()) {
-      TextField nameField = (TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-          .getValueProvider().apply(standard);
-      assertEquals("", nameField.getValue());
-      assertTrue(nameField.isRequiredIndicatorVisible());
-      TextField quantityField = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-          .getValueProvider().apply(standard);
-      assertEquals("", quantityField.getValue());
-      assertTrue(quantityField.isRequiredIndicatorVisible());
-      TextField commentField = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
-          .getValueProvider().apply(standard);
-      assertEquals("", commentField.getValue());
-      assertFalse(commentField.isRequiredIndicatorVisible());
-    }
-  }
-
-  @Test
-  public void fillStandards() {
-    presenter.init(view);
-
-    design.standardCountField.setValue("3");
-
-    Standard first = dataProvider(design.standardsGrid).getItems().iterator().next();
-    TextField firstName =
-        (TextField) design.standardsGrid.getColumn(STANDARD_NAME).getValueProvider().apply(first);
-    firstName.setValue("std1");
-    TextField firstQuantity = (TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(first);
-    firstQuantity.setValue("2 ug");
-    TextField firstComment = (TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
-        .getValueProvider().apply(first);
-    firstComment.setValue("com1");
-    for (Standard standard : dataProvider(design.standardsGrid).getItems()) {
-      design.standardsGrid.getColumn(STANDARD_NAME).getValueProvider().apply(standard);
-      design.standardsGrid.getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
-      design.standardsGrid.getColumn(STANDARD_COMMENT).getValueProvider().apply(standard);
-    }
-    design.fillStandardsButton.click();
-    for (Standard standard : dataProvider(design.standardsGrid).getItems()) {
-      assertEquals("std1", standard.getName());
-      assertEquals("2 ug", standard.getQuantity());
-      assertEquals("com1", standard.getComment());
-      assertEquals("std1", ((TextField) design.standardsGrid.getColumn(STANDARD_NAME)
-          .getValueProvider().apply(standard)).getValue());
-      assertEquals("2 ug", ((TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-          .getValueProvider().apply(standard)).getValue());
-      assertEquals("com1", ((TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
-          .getValueProvider().apply(standard)).getValue());
-    }
   }
 
   @Test
@@ -578,134 +349,15 @@ public class ControlFormPresenterTest {
   }
 
   @Test
-  public void save_MissingStandardCount() throws Throwable {
+  public void save_StandardsFormFail() throws Throwable {
     presenter.init(view);
     setFields();
-    design.standardCountField.setValue("");
-
-    design.saveButton.click();
-
-    verify(view, never()).showError(any());
-    verify(controlService).insert(any());
-  }
-
-  @Test
-  public void save_InvalidStandardCount() throws Throwable {
-    presenter.init(view);
-    setFields();
-    design.standardCountField.setValue("a");
+    when(view.standardsForm.validate()).thenReturn(false);
 
     design.saveButton.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.standardCountField.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(any());
-  }
-
-  @Test
-  public void save_BelowZeroStandardCount() throws Throwable {
-    presenter.init(view);
-    setFields();
-    design.standardCountField.setValue("-1");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.standardCountField.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(any());
-  }
-
-  @Test
-  public void save_AboveMaxStandardCount() throws Throwable {
-    presenter.init(view);
-    setFields();
-    design.standardCountField.setValue("200");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.standardCountField.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(any());
-  }
-
-  @Test
-  public void save_DoubleStandardCount() throws Throwable {
-    presenter.init(view);
-    setFields();
-    design.standardCountField.setValue("1.2");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.standardCountField.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingStandardName_1() throws Throwable {
-    presenter.init(view);
-    setFields();
-    standardNameField1.setValue("");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        standardNameField1.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingStandardName_2() throws Throwable {
-    presenter.init(view);
-    setFields();
-    standardNameField2.setValue("");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        standardNameField2.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingStandardQuantity_1() throws Throwable {
-    presenter.init(view);
-    setFields();
-    standardQuantityField1.setValue("");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        standardQuantityField1.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingStandardQuantity_2() throws Throwable {
-    presenter.init(view);
-    setFields();
-    standardQuantityField2.setValue("");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        standardQuantityField2.getErrorMessage().getFormattedHtmlMessage());
     verify(controlService, never()).insert(any());
   }
 
@@ -804,17 +456,7 @@ public class ControlFormPresenterTest {
     assertEquals(Objects.toString(control.getQuantity(), ""), design.quantityField.getValue());
     assertEquals(Objects.toString(control.getVolume(), ""), design.volumeField.getValue());
     assertEquals(control.getControlType(), design.controlTypeField.getValue());
-    assertEquals(control.getStandards().size(),
-        dataProvider(design.standardsGrid).getItems().size());
-    for (Standard cs : control.getStandards()) {
-      assertEquals(cs.getName(),
-          ((TextField) design.standardsGrid.getColumn(STANDARD_NAME).getValueProvider().apply(cs))
-              .getValue());
-      assertEquals(cs.getQuantity(), ((TextField) design.standardsGrid.getColumn(STANDARD_QUANTITY)
-          .getValueProvider().apply(cs)).getValue());
-      assertEquals(cs.getComment(), ((TextField) design.standardsGrid.getColumn(STANDARD_COMMENT)
-          .getValueProvider().apply(cs)).getValue());
-    }
+    verify(view.standardsForm).setValue(control.getStandards());
     assertEquals("", design.explanation.getValue());
   }
 }

@@ -20,19 +20,16 @@ package ca.qc.ircm.proview.sample.web;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION_PANEL;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.FILL_STANDARDS;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COMMENT;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_COUNT;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_NAME;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARD_QUANTITY;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS_PANEL;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.HEADER;
-import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
+import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.COUNT;
+import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.FILL;
+import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -45,6 +42,9 @@ import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 public class ControlViewPageObject extends AbstractTestBenchTestCase {
+  private static final String STANDARD_NAME = StandardsFormPresenter.NAME;
+  private static final String STANDARD_QUANTITY = StandardsFormPresenter.QUANTITY;
+  private static final String STANDARD_COMMENT = StandardsFormPresenter.COMMENT;
   private static final int NAME_COLUMN = 0;
   private static final int QUANTITY_COLUMN = 1;
   private static final int COMMENT_COLUMN = 2;
@@ -121,8 +121,12 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
     controlTypeField().selectByText(value);
   }
 
+  protected PanelElement standardPanel() {
+    return wrap(PanelElement.class, findElement(className(STANDARDS_PANEL)));
+  }
+
   protected TextFieldElement standardCountField() {
-    return wrap(TextFieldElement.class, findElement(className(STANDARD_COUNT)));
+    return wrap(TextFieldElement.class, standardPanel().findElement(className(COUNT)));
   }
 
   protected String getStandardCount() {
@@ -138,8 +142,8 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement standardNameField(int row) {
-    return wrap(TextFieldElement.class, standardsGrid().getCell(row, NAME_COLUMN)
-        .findElement(className(styleName(STANDARDS, STANDARD_NAME))));
+    return wrap(TextFieldElement.class,
+        standardsGrid().getCell(row, NAME_COLUMN).findElement(className(STANDARD_NAME)));
   }
 
   protected String getStandardName(int row) {
@@ -151,8 +155,8 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement standardQuantityField(int row) {
-    return wrap(TextFieldElement.class, standardsGrid().getCell(row, QUANTITY_COLUMN)
-        .findElement(className(styleName(STANDARDS, STANDARD_QUANTITY))));
+    return wrap(TextFieldElement.class,
+        standardsGrid().getCell(row, QUANTITY_COLUMN).findElement(className(STANDARD_QUANTITY)));
   }
 
   protected String getStandardQuantity(int row) {
@@ -164,8 +168,8 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement standardCommentField(int row) {
-    return wrap(TextFieldElement.class, standardsGrid().getCell(row, COMMENT_COLUMN)
-        .findElement(className(styleName(STANDARDS, STANDARD_COMMENT))));
+    return wrap(TextFieldElement.class,
+        standardsGrid().getCell(row, COMMENT_COLUMN).findElement(className(STANDARD_COMMENT)));
   }
 
   protected String getStandardComment(int row) {
@@ -177,7 +181,7 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
   }
 
   protected ButtonElement fillStandardsButton() {
-    return wrap(ButtonElement.class, findElement(className(FILL_STANDARDS)));
+    return wrap(ButtonElement.class, standardPanel().findElement(className(FILL)));
   }
 
   protected PanelElement explanationPanel() {

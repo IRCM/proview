@@ -39,12 +39,15 @@ public class ControlForm extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = 5637791915365273858L;
   protected ControlFormDesign design = new ControlFormDesign();
   @Inject
+  protected StandardsForm standardsForm;
+  @Inject
   private transient ControlFormPresenter presenter;
 
   protected ControlForm() {
   }
 
-  protected ControlForm(ControlFormPresenter presenter) {
+  protected ControlForm(StandardsForm standardsForm, ControlFormPresenter presenter) {
+    this.standardsForm = standardsForm;
     this.presenter = presenter;
   }
 
@@ -52,6 +55,7 @@ public class ControlForm extends CustomComponent implements BaseComponent {
   public void init() {
     setSizeFull();
     setCompositionRoot(design);
+    design.standardsPanel.setContent(standardsForm);
   }
 
   @Override

@@ -15,47 +15,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.submission.web;
+package ca.qc.ircm.proview.sample.web;
 
-import ca.qc.ircm.proview.plate.web.PlateComponent;
-import ca.qc.ircm.proview.sample.web.StandardsForm;
-import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
-import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.CustomComponent;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.vaadin.easyuploads.MultiFileUpload;
+
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
- * Submission form.
+ * Standards form.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SubmissionForm extends CustomComponent implements BaseComponent {
+public class StandardsForm extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
-  protected SubmissionFormDesign design = new SubmissionFormDesign();
+  protected StandardsFormDesign design = new StandardsFormDesign();
   protected DefaultMultiFileUpload filesUploader;
   @Inject
-  protected PlateComponent plateComponent;
-  @Inject
-  protected StandardsForm standardsForm;
-  @Inject
-  private transient SubmissionFormPresenter presenter;
+  private transient StandardsFormPresenter presenter;
 
-  protected SubmissionForm() {
+  protected StandardsForm() {
   }
 
-  protected SubmissionForm(SubmissionFormPresenter presenter, PlateComponent plateComponent,
-      StandardsForm standardsForm) {
+  protected StandardsForm(StandardsFormPresenter presenter) {
     this.presenter = presenter;
-    this.plateComponent = plateComponent;
-    this.standardsForm = standardsForm;
   }
 
   /**
@@ -63,10 +54,7 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
    */
   @PostConstruct
   public void init() {
-    setSizeFull();
     setCompositionRoot(design);
-    design.samplesPlateContainer.addComponent(plateComponent);
-    design.standardsPanel.setContent(standardsForm);
   }
 
   @Override
@@ -75,26 +63,24 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
     presenter.init(this);
   }
 
-  /**
-   * Creates uploader for additional files.
-   *
-   * @param fileHandler
-   *          handles uploaded files
-   * @return uploader for additional files
-   */
-  public MultiFileUpload createFilesUploader(MultiFileUploadFileHandler fileHandler) {
-    filesUploader = new DefaultMultiFileUpload();
-    filesUploader.setFileHandler(fileHandler);
-    design.filesUploaderLayout.addComponent(filesUploader);
-    return filesUploader;
+  public boolean validate() {
+    return presenter.validate();
   }
 
-  public Submission getValue() {
+  public List<Standard> getValue() {
     return presenter.getValue();
   }
 
-  public void setValue(Submission submission) {
-    presenter.setValue(submission);
+  public void setValue(List<Standard> standards) {
+    presenter.setValue(standards);
+  }
+
+  public int getMaxCount() {
+    return presenter.getMaxCount();
+  }
+
+  public void setMaxCount(int maxCount) {
+    presenter.setMaxCount(maxCount);
   }
 
   @Override

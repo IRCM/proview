@@ -18,16 +18,10 @@
 package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.QControl.control;
-import static ca.qc.ircm.proview.sample.QStandard.standard;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
-import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
-import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
-import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.sample.Control;
@@ -41,15 +35,7 @@ import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
-import com.vaadin.data.converter.StringToIntegerConverter;
-import com.vaadin.data.provider.DataProvider;
-import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.data.validator.IntegerRangeValidator;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.renderers.ComponentRenderer;
-import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -57,9 +43,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -77,32 +61,16 @@ public class ControlFormPresenter implements BinderValidator {
   public static final String VOLUME = control.volume.getMetadata().getName();
   public static final String CONTROL_TYPE = control.controlType.getMetadata().getName();
   public static final String STANDARDS_PANEL = "standardsPanel";
-  public static final String STANDARD_COUNT = "standardCount";
-  public static final String STANDARDS = "standards";
-  public static final String STANDARD = control.standards.getMetadata().getName();
-  public static final int STANDARDS_TABLE_LENGTH = 4;
-  public static final String STANDARD_NAME = standard.name.getMetadata().getName();
-  public static final String STANDARD_QUANTITY = standard.quantity.getMetadata().getName();
-  public static final String STANDARD_COMMENT = standard.comment.getMetadata().getName();
-  public static final String FILL_STANDARDS = "fillStandards";
   public static final String EXAMPLE = "example";
   public static final String EXPLANATION_PANEL = "explanationPanel";
   public static final String EXPLANATION = "explanation";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
-  private static final int MAX_STANDARD_COUNT = 10;
   private static final Logger logger = LoggerFactory.getLogger(ControlFormPresenter.class);
   private ControlForm view;
   private ControlFormDesign design;
   private boolean readOnly = false;
   private Binder<Control> sampleBinder = new BeanValidationBinder<>(Control.class);
-  private Binder<ItemCount> standardCountBinder = new Binder<>(ItemCount.class);
-  private ListDataProvider<Standard> standardsDataProvider =
-      DataProvider.ofCollection(new ArrayList<>());
-  private Map<Standard, Binder<Standard>> standardBinders = new HashMap<>();
-  private Map<Standard, TextField> standardNameFields = new HashMap<>();
-  private Map<Standard, TextField> standardQuantityFields = new HashMap<>();
-  private Map<Standard, TextField> standardCommentFields = new HashMap<>();
   @Inject
   private ControlService controlService;
 
@@ -126,8 +94,8 @@ public class ControlFormPresenter implements BinderValidator {
     sampleBinder.setBean(new Control());
     final MessageResource resources = view.getResources();
     prepareSamplesComponents();
-    prepareStandardsComponents();
-    updateStandardsTable(design.standardCountField.getValue());
+    design.standardsPanel.addStyleName(STANDARDS_PANEL);
+    design.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.addStyleName(REQUIRED);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
@@ -169,162 +137,17 @@ public class ControlFormPresenter implements BinderValidator {
         .bind(CONTROL_TYPE);
   }
 
-  private void prepareStandardsComponents() {
-    final MessageResource resources = view.getResources();
-    final MessageResource generalResources = view.getGeneralResources();
-    design.standardsPanel.addStyleName(STANDARDS_PANEL);
-    design.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
-    design.standardCountField.addStyleName(STANDARD_COUNT);
-    design.standardCountField.setCaption(resources.message(STANDARD_COUNT));
-    standardCountBinder.forField(design.standardCountField).withNullRepresentation("0")
-        .withConverter(new StringToIntegerConverter(generalResources.message(INVALID_INTEGER)))
-        .withValidator(new IntegerRangeValidator(
-            generalResources.message(OUT_OF_RANGE, 0, MAX_STANDARD_COUNT), 0, MAX_STANDARD_COUNT))
-        .bind(ItemCount::getCount, ItemCount::setCount);
-    design.standardCountField
-        .addValueChangeListener(e -> updateStandardsTable(design.standardCountField.getValue()));
-    design.standardsGrid.addStyleName(STANDARD);
-    design.standardsGrid.addStyleName(COMPONENTS);
-    design.standardsGrid.setDataProvider(standardsDataProvider);
-    design.standardsGrid
-        .addColumn(standard -> standardNameTextField(standard), new ComponentRenderer())
-        .setId(STANDARD_NAME).setCaption(resources.message(property(STANDARD, STANDARD_NAME)));
-    design.standardsGrid
-        .addColumn(standard -> standardQuantityTextField(standard), new ComponentRenderer())
-        .setId(STANDARD_QUANTITY)
-        .setCaption(resources.message(property(STANDARD, STANDARD_QUANTITY)));
-    design.standardsGrid
-        .addColumn(standard -> standardCommentTextField(standard), new ComponentRenderer())
-        .setId(STANDARD_COMMENT)
-        .setCaption(resources.message(property(STANDARD, STANDARD_COMMENT)));
-    design.fillStandardsButton.addStyleName(FILL_STANDARDS);
-    design.fillStandardsButton.addStyleName(BUTTON_SKIP_ROW);
-    design.fillStandardsButton.setCaption(resources.message(FILL_STANDARDS));
-    design.fillStandardsButton.setIcon(VaadinIcons.ARROW_DOWN);
-    design.fillStandardsButton.addClickListener(e -> fillStandards());
-  }
-
-  private TextField standardNameTextField(Standard standard) {
-    if (standardNameFields.containsKey(standard)) {
-      return standardNameFields.get(standard);
-    } else {
-      final MessageResource generalResources = view.getGeneralResources();
-      Binder<Standard> binder = standardBinders.get(standard);
-      if (binder == null) {
-        binder = new BeanValidationBinder<>(Standard.class);
-        binder.setBean(standard);
-      }
-      TextField field = new TextField();
-      field.addStyleName(styleName(STANDARD, STANDARD_NAME));
-      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(readOnly);
-      binder.forField(field).asRequired(generalResources.message(REQUIRED))
-          .withNullRepresentation("").bind(STANDARD_NAME);
-      standardBinders.put(standard, binder);
-      standardNameFields.put(standard, field);
-      return field;
-    }
-  }
-
-  private TextField standardQuantityTextField(Standard standard) {
-    if (standardQuantityFields.containsKey(standard)) {
-      return standardQuantityFields.get(standard);
-    } else {
-      final MessageResource resources = view.getResources();
-      final MessageResource generalResources = view.getGeneralResources();
-      Binder<Standard> binder = standardBinders.get(standard);
-      if (binder == null) {
-        binder = new BeanValidationBinder<>(Standard.class);
-        binder.setBean(standard);
-      }
-      TextField field = new TextField();
-      field.addStyleName(styleName(STANDARD, STANDARD_QUANTITY));
-      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(readOnly);
-      field.setPlaceholder(resources.message(property(STANDARD, STANDARD_QUANTITY, EXAMPLE)));
-      binder.forField(field).asRequired(generalResources.message(REQUIRED))
-          .withNullRepresentation("").bind(STANDARD_QUANTITY);
-      standardBinders.put(standard, binder);
-      standardQuantityFields.put(standard, field);
-      return field;
-    }
-  }
-
-  private TextField standardCommentTextField(Standard standard) {
-    if (standardCommentFields.containsKey(standard)) {
-      return standardCommentFields.get(standard);
-    } else {
-      Binder<Standard> binder = standardBinders.get(standard);
-      if (binder == null) {
-        binder = new BeanValidationBinder<>(Standard.class);
-        binder.setBean(standard);
-      }
-      TextField field = new TextField();
-      field.addStyleName(styleName(STANDARD, STANDARD_COMMENT));
-      field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(readOnly);
-      binder.forField(field).withNullRepresentation("").bind(STANDARD_COMMENT);
-      standardBinders.put(standard, binder);
-      standardCommentFields.put(standard, field);
-      return field;
-    }
-  }
-
-  private void updateStandardsTable(String countValue) {
-    if (standardCountBinder.isValid()) {
-      int count;
-      try {
-        count = Math.max(Integer.parseInt(countValue), 0);
-      } catch (NumberFormatException e) {
-        count = 0;
-      }
-      while (standardsDataProvider.getItems().size() > count) {
-        Standard remove = standardsDataProvider.getItems().stream()
-            .skip(standardsDataProvider.getItems().size() - 1).findFirst().orElse(null);
-        standardsDataProvider.getItems().remove(remove);
-      }
-      while (standardsDataProvider.getItems().size() < count) {
-        standardsDataProvider.getItems().add(new Standard());
-      }
-      design.standardsTableLayout.setVisible(count > 0);
-      standardsDataProvider.refreshAll();
-    }
-  }
-
-  private void fillStandards() {
-    Standard first = standardsDataProvider.getItems().iterator().next();
-    String name = first.getName();
-    String quantity = first.getQuantity();
-    String comment = first.getComment();
-    standardsDataProvider.getItems().forEach(standard -> {
-      standard.setName(name);
-      standard.setQuantity(quantity);
-      standard.setComment(comment);
-      standardBinders.get(standard).setBean(standard);
-    });
-    standardsDataProvider.refreshAll();
-  }
-
   private void updateReadOnly() {
     design.nameField.setReadOnly(readOnly);
     design.quantityField.setReadOnly(readOnly);
     design.volumeField.setReadOnly(readOnly);
     design.type.setReadOnly(readOnly);
     design.controlTypeField.setReadOnly(readOnly);
-    design.standardCountField.setReadOnly(readOnly);
-    design.fillStandardsButton.setVisible(!readOnly);
+    view.standardsForm.setReadOnly(readOnly);
     design.saveButton.setVisible(!readOnly);
     if (!newControl()) {
       design.explanationPanel.setVisible(!readOnly);
     }
-    standardBinders.values().forEach(binder -> {
-      binder.getBinding(STANDARD_NAME)
-          .ifPresent(binding -> binding.getField().setReadOnly(readOnly));
-      binder.getBinding(STANDARD_QUANTITY)
-          .ifPresent(binding -> binding.getField().setReadOnly(readOnly));
-      binder.getBinding(STANDARD_COMMENT)
-          .ifPresent(binding -> binding.getField().setReadOnly(readOnly));
-    });
   }
 
   private Validator<String> validateSampleName() {
@@ -349,10 +172,7 @@ public class ControlFormPresenter implements BinderValidator {
   private boolean validate() {
     boolean valid = true;
     valid &= validate(sampleBinder);
-    valid &= validate(standardCountBinder);
-    for (Standard standard : standardsDataProvider.getItems()) {
-      valid &= validate(standardBinders.get(standard));
-    }
+    valid &= view.standardsForm.validate();
     if (!newControl() && design.explanation.getValue().isEmpty()) {
       logger.trace("Explanation field is required");
       final MessageResource generalResources = view.getGeneralResources();
@@ -389,7 +209,7 @@ public class ControlFormPresenter implements BinderValidator {
 
   private void copyStandardsFromTableToSample(Control sample) {
     sample.setStandards(new ArrayList<>());
-    for (Standard standard : standardsDataProvider.getItems()) {
+    for (Standard standard : view.standardsForm.getValue()) {
       Standard copy = new Standard();
       copy.setName(standard.getName());
       copy.setQuantity(standard.getQuantity());
@@ -418,30 +238,8 @@ public class ControlFormPresenter implements BinderValidator {
       control.setControlType(ControlType.NEGATIVE_CONTROL);
       control.setStandards(new ArrayList<>());
     }
-    standardCountBinder.setBean(new ItemCount(control.getStandards().size()));
-    standardsDataProvider.getItems().clear();
-    standardsDataProvider.getItems().addAll(control.getStandards());
-    standardsDataProvider.refreshAll();
+    view.standardsForm.setValue(control.getStandards());
     sampleBinder.setBean(control);
     updateReadOnly();
-  }
-
-  private static class ItemCount {
-    private Integer count;
-
-    private ItemCount() {
-    }
-
-    private ItemCount(Integer count) {
-      this.count = count;
-    }
-
-    public Integer getCount() {
-      return count;
-    }
-
-    public void setCount(Integer count) {
-      this.count = count;
-    }
   }
 }

@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
@@ -37,7 +38,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PA
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
@@ -82,9 +82,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
@@ -100,6 +98,7 @@ import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleType;
+import ca.qc.ircm.proview.sample.web.StandardsFormPresenter;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
@@ -120,6 +119,9 @@ import org.openqa.selenium.WebElement;
 import java.nio.file.Path;
 
 public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase {
+  private static final String FILL_STANDARDS = StandardsFormPresenter.FILL;
+  private static final String STANDARD_COUNT = StandardsFormPresenter.COUNT;
+
   protected void open() {
     openView(SubmissionView.VIEW_NAME);
   }
@@ -333,7 +335,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement standardCountField() {
-    return wrap(TextFieldElement.class, findElement(className(STANDARD_COUNT)));
+    return wrap(TextFieldElement.class, standardsPanel().findElement(className(STANDARD_COUNT)));
   }
 
   protected Integer getStandardCount() {
@@ -349,11 +351,11 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected GridElement standardsGrid() {
-    return wrap(GridElement.class, findElement(className(STANDARDS)));
+    return wrap(GridElement.class, standardsPanel().findElement(className(STANDARDS)));
   }
 
   protected ButtonElement fillStandardsButton() {
-    return wrap(ButtonElement.class, findElement(className(FILL_STANDARDS)));
+    return wrap(ButtonElement.class, standardsPanel().findElement(className(FILL_STANDARDS)));
   }
 
   protected PanelElement contaminantsPanel() {

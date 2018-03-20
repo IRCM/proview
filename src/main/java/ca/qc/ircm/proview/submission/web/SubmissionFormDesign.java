@@ -60,10 +60,6 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextField sampleQuantity;
   protected TextField sampleVolume;
   protected Panel standardsPanel;
-  protected TextField standardCount;
-  protected HorizontalLayout standardsLayout;
-  protected Grid<ca.qc.ircm.proview.sample.Standard> standards;
-  protected Button fillStandards;
   protected Panel contaminantsPanel;
   protected TextField contaminantCount;
   protected HorizontalLayout contaminantsLayout;
