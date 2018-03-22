@@ -20,6 +20,8 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.web.WebConstants.DEFAULT_LOCALE;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
+import ca.qc.ircm.proview.user.web.ForgotPasswordView;
+import ca.qc.ircm.proview.user.web.ValidateView;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
@@ -75,7 +77,11 @@ public class MainUi extends UI {
     }
     if (getUI().getSession().getAttribute(SKIP_ABOUT) == null) {
       getUI().getSession().setAttribute(SKIP_ABOUT, true);
-      getNavigator().navigateTo(AboutView.VIEW_NAME);
+      if (getPage().getUriFragment() == null
+          || !(getPage().getUriFragment().contains(ForgotPasswordView.VIEW_NAME)
+              && getPage().getUriFragment().contains(ValidateView.VIEW_NAME))) {
+        getNavigator().navigateTo(AboutView.VIEW_NAME);
+      }
     }
   }
 
