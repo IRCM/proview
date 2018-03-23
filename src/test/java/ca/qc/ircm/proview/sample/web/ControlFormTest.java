@@ -45,6 +45,8 @@ import java.util.List;
 public class ControlFormTest {
   private ControlForm view;
   @Mock
+  private StandardsForm standardsForm;
+  @Mock
   private ControlFormPresenter presenter;
   @Mock
   private SaveListener<Control> saveListener;
@@ -55,7 +57,14 @@ public class ControlFormTest {
 
   @Before
   public void beforeTest() {
-    view = new ControlForm(presenter);
+    view = new ControlForm(standardsForm, presenter);
+  }
+
+  @Test
+  public void init() throws Throwable {
+    view.init();
+
+    assertEquals(standardsForm, view.design.standardsPanel.getContent());
   }
 
   @Test

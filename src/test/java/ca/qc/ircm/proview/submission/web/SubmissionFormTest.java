@@ -24,6 +24,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.web.PlateComponent;
+import ca.qc.ircm.proview.sample.web.ContaminantsForm;
+import ca.qc.ircm.proview.sample.web.StandardsForm;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import org.junit.Before;
@@ -41,6 +43,12 @@ public class SubmissionFormTest {
   @Mock
   private PlateComponent plateComponent;
   @Mock
+  private StandardsForm standardsForm;
+  @Mock
+  private ContaminantsForm contaminantsForm;
+  @Mock
+  private GelForm gelForm;
+  @Mock
   private Submission submission;
 
   /**
@@ -48,7 +56,8 @@ public class SubmissionFormTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    view = new SubmissionForm(presenter, plateComponent);
+    view = new SubmissionForm(presenter, plateComponent, standardsForm, contaminantsForm,
+        gelForm);
   }
 
   @Test
@@ -57,6 +66,9 @@ public class SubmissionFormTest {
 
     assertEquals(1, view.design.samplesPlateContainer.getComponentCount());
     assertEquals(plateComponent, view.design.samplesPlateContainer.getComponent(0));
+    assertEquals(standardsForm, view.design.standardsPanel.getContent());
+    assertEquals(contaminantsForm, view.design.contaminantsPanel.getContent());
+    assertEquals(gelForm, view.design.gelPanel.getContent());
   }
 
   @Test

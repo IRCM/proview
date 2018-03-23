@@ -32,17 +32,9 @@ import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COMMENT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COUNT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_NAME;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_QUANTITY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DECOLORATION;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DEVELOPMENT_TIME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXAMPLE;
@@ -56,9 +48,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILE_FILENAME;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
@@ -69,7 +59,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTIO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
@@ -81,7 +70,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_COMMENT;
@@ -100,27 +88,19 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_T
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME_BEADS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COMMENT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_COUNT;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_NAME;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.UPDATE_ERROR;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
@@ -169,10 +149,9 @@ import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.sample.web.ContaminantsForm;
+import ca.qc.ircm.proview.sample.web.StandardsForm;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.GelColoration;
-import ca.qc.ircm.proview.submission.GelSeparation;
-import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
@@ -264,6 +243,8 @@ public class SubmissionFormPresenterTest {
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   @Captor
+  private ArgumentCaptor<Boolean> booleanCaptor;
+  @Captor
   private ArgumentCaptor<MultiFileUploadFileHandler> uploadFinishedHandlerCaptor;
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
@@ -304,28 +285,18 @@ public class SubmissionFormPresenterTest {
   private String postTranslationModification = "Methylation on A75";
   private String sampleQuantity = "150 ug";
   private String sampleVolume = "21.5 μl";
-  private int standardsCount = 2;
   private String standardName1 = "ADH";
   private String standardQuantity1 = "5 ug";
   private String standardComment1 = "standard 1 comment";
   private String standardName2 = "CBS";
   private String standardQuantity2 = "8 ug";
   private String standardComment2 = "standard 2 comment";
-  private int contaminantsCount = 2;
   private String contaminantName1 = "KRT1";
   private String contaminantQuantity1 = "3 ug";
   private String contaminantComment1 = "contaminant 1 comment";
   private String contaminantName2 = "KRT8";
   private String contaminantQuantity2 = "4 ug";
   private String contaminantComment2 = "contaminant 2 comment";
-  private GelSeparation gelSeparation = GelSeparation.TWO_DIMENSION;
-  private GelThickness gelThickness = GelThickness.ONE_HALF;
-  private GelColoration gelColoration = GelColoration.OTHER;
-  private String otherColoration = "my coloration";
-  private String developmentTime = "300 seconds";
-  private boolean decoloration = true;
-  private double weightMarkerQuantity = 300;
-  private String proteinQuantity = "30 ug";
   private ProteolyticDigestion digestion = DIGESTED;
   private String usedDigestion = "typsinP";
   private String otherDigestion = "typsinP/Y";
@@ -357,14 +328,6 @@ public class SubmissionFormPresenterTest {
   private TextField sampleNumberProteinField2;
   private TextField sampleProteinWeightField1;
   private TextField sampleProteinWeightField2;
-  private TextField standardNameField1;
-  private TextField standardNameField2;
-  private TextField standardQuantityField1;
-  private TextField standardQuantityField2;
-  private TextField contaminantNameField1;
-  private TextField contaminantNameField2;
-  private TextField contaminantQuantityField1;
-  private TextField contaminantQuantityField2;
   private StringToIntegerConverter integerConverter = new StringToIntegerConverter("");
   private StringToDoubleConverter doubleConverter = new StringToDoubleConverter("");
   private SerializableFunction<String, Exception> throwableFunction = s -> new Exception();
@@ -380,10 +343,16 @@ public class SubmissionFormPresenterTest {
     design = new SubmissionFormDesign();
     view.design = design;
     view.plateComponent = mock(PlateComponent.class);
+    view.standardsForm = mock(StandardsForm.class);
+    view.contaminantsForm = mock(ContaminantsForm.class);
+    view.gelForm = mock(GelForm.class);
     view.filesUploader = filesUploader;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
+    when(view.standardsForm.validate()).thenReturn(true);
+    when(view.contaminantsForm.validate()).thenReturn(true);
+    when(view.gelForm.validate()).thenReturn(true);
     when(guidelinesWindowProvider.get()).thenReturn(guidelinesWindow);
     when(plateService.nameAvailable(any())).thenReturn(true);
     plate = new Plate();
@@ -417,18 +386,8 @@ public class SubmissionFormPresenterTest {
     design.postTranslationModification.setValue(postTranslationModification);
     design.sampleQuantity.setValue(sampleQuantity);
     design.sampleVolume.setValue(String.valueOf(sampleVolume));
-    design.standardCount.setValue(String.valueOf(standardsCount));
     setValuesInStandardsTable();
-    design.contaminantCount.setValue(String.valueOf(contaminantsCount));
     setValuesInContaminantsTable();
-    design.separation.setValue(gelSeparation);
-    design.thickness.setValue(gelThickness);
-    design.coloration.setValue(gelColoration);
-    design.otherColoration.setValue(otherColoration);
-    design.developmentTime.setValue(developmentTime);
-    design.decoloration.setValue(decoloration);
-    design.weightMarkerQuantity.setValue(String.valueOf(weightMarkerQuantity));
-    design.proteinQuantity.setValue(proteinQuantity);
     design.digestion.setValue(digestion);
     design.usedProteolyticDigestionMethod.setValue(usedDigestion);
     design.otherProteolyticDigestionMethod.setValue(otherDigestion);
@@ -480,48 +439,33 @@ public class SubmissionFormPresenterTest {
   }
 
   private void setValuesInStandardsTable() {
-    List<Standard> standards = new ArrayList<>(dataProvider(design.standards).getItems());
-    Standard standard = standards.get(0);
-    standardNameField1 = setValueInStandardsGrid(standard, standardName1, STANDARD_NAME);
-    standardQuantityField1 =
-        setValueInStandardsGrid(standard, standardQuantity1, STANDARD_QUANTITY);
-    setValueInStandardsGrid(standard, standardComment1, STANDARD_COMMENT);
-    standard = standards.get(1);
-    standardNameField2 = setValueInStandardsGrid(standard, standardName2, STANDARD_NAME);
-    standardQuantityField2 =
-        setValueInStandardsGrid(standard, standardQuantity2, STANDARD_QUANTITY);
-    setValueInStandardsGrid(standard, standardComment2, STANDARD_COMMENT);
-  }
-
-  private TextField setValueInStandardsGrid(Standard standard, String value, String columnId) {
-    TextField field =
-        (TextField) design.standards.getColumn(columnId).getValueProvider().apply(standard);
-    field.setValue(value);
-    return field;
+    List<Standard> standards = new ArrayList<>();
+    Standard standard1 = new Standard();
+    standard1.setName(standardName1);
+    standard1.setQuantity(standardQuantity1);
+    standard1.setComment(standardComment1);
+    standards.add(standard1);
+    Standard standard2 = new Standard();
+    standard2.setName(standardName2);
+    standard2.setQuantity(standardQuantity2);
+    standard2.setComment(standardComment2);
+    standards.add(standard2);
+    when(view.standardsForm.getValue()).thenReturn(standards);
   }
 
   private void setValuesInContaminantsTable() {
-    List<Contaminant> contaminants = new ArrayList<>(dataProvider(design.contaminants).getItems());
-    Contaminant contaminant = contaminants.get(0);
-    contaminantNameField1 =
-        setValueInContaminantsGrid(contaminant, contaminantName1, CONTAMINANT_NAME);
-    contaminantQuantityField1 =
-        setValueInContaminantsGrid(contaminant, contaminantQuantity1, CONTAMINANT_QUANTITY);
-    setValueInContaminantsGrid(contaminant, contaminantComment1, CONTAMINANT_COMMENT);
-    contaminant = contaminants.get(1);
-    contaminantNameField2 =
-        setValueInContaminantsGrid(contaminant, contaminantName2, CONTAMINANT_NAME);
-    contaminantQuantityField2 =
-        setValueInContaminantsGrid(contaminant, contaminantQuantity2, CONTAMINANT_QUANTITY);
-    setValueInContaminantsGrid(contaminant, contaminantComment2, CONTAMINANT_COMMENT);
-  }
-
-  private TextField setValueInContaminantsGrid(Contaminant contaminant, String value,
-      String columnId) {
-    TextField field =
-        (TextField) design.contaminants.getColumn(columnId).getValueProvider().apply(contaminant);
-    field.setValue(value);
-    return field;
+    List<Contaminant> contaminants = new ArrayList<>();
+    Contaminant contaminant1 = new Contaminant();
+    contaminant1.setName(contaminantName1);
+    contaminant1.setQuantity(contaminantQuantity1);
+    contaminant1.setComment(contaminantComment1);
+    contaminants.add(contaminant1);
+    Contaminant contaminant2 = new Contaminant();
+    contaminant2.setName(contaminantName2);
+    contaminant2.setQuantity(contaminantQuantity2);
+    contaminant2.setComment(contaminantComment2);
+    contaminants.add(contaminant2);
+    when(view.contaminantsForm.getValue()).thenReturn(contaminants);
   }
 
   private void uploadFiles() throws IOException {
@@ -559,14 +503,6 @@ public class SubmissionFormPresenterTest {
     submission.setProteinContent(proteinContent);
     submission.setProtein(proteinName);
     submission.setPostTranslationModification(postTranslationModification);
-    submission.setSeparation(gelSeparation);
-    submission.setThickness(gelThickness);
-    submission.setColoration(gelColoration);
-    submission.setOtherColoration(otherColoration);
-    submission.setDevelopmentTime(developmentTime);
-    submission.setDecoloration(true);
-    submission.setWeightMarkerQuantity(weightMarkerQuantity);
-    submission.setProteinQuantity(proteinQuantity);
     submission.setFormula(formula);
     submission.setMonoisotopicMass(monoisotopicMass);
     submission.setAverageMass(averageMass);
@@ -725,76 +661,6 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void standardsColumns() {
-    presenter.init(view);
-
-    assertEquals(3, design.standards.getColumns().size());
-    assertEquals(STANDARD_NAME, design.standards.getColumns().get(0).getId());
-    assertTrue(containsInstanceOf(design.standards.getColumn(STANDARD_NAME).getExtensions(),
-        ComponentRenderer.class));
-    assertFalse(design.standards.getColumn(STANDARD_NAME).isSortable());
-    {
-      TextField field = (TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider()
-          .apply(new Standard());
-      assertTrue(field.getStyleName().contains(STANDARD_NAME));
-    }
-    assertEquals(STANDARD_QUANTITY, design.standards.getColumns().get(1).getId());
-    assertTrue(containsInstanceOf(design.standards.getColumn(STANDARD_QUANTITY).getExtensions(),
-        ComponentRenderer.class));
-    assertFalse(design.standards.getColumn(STANDARD_QUANTITY).isSortable());
-    {
-      TextField field = (TextField) design.standards.getColumn(STANDARD_QUANTITY).getValueProvider()
-          .apply(new Standard());
-      assertTrue(field.getStyleName().contains(STANDARD_QUANTITY));
-    }
-    assertEquals(STANDARD_COMMENT, design.standards.getColumns().get(2).getId());
-    assertTrue(containsInstanceOf(design.standards.getColumn(STANDARD_COMMENT).getExtensions(),
-        ComponentRenderer.class));
-    assertFalse(design.standards.getColumn(STANDARD_COMMENT).isSortable());
-    {
-      TextField field = (TextField) design.standards.getColumn(STANDARD_COMMENT).getValueProvider()
-          .apply(new Standard());
-      assertTrue(field.getStyleName().contains(STANDARD_COMMENT));
-    }
-  }
-
-  @Test
-  public void contaminantsColumns() {
-    presenter.init(view);
-
-    assertEquals(3, design.contaminants.getColumns().size());
-    assertEquals(CONTAMINANT_NAME, design.contaminants.getColumns().get(0).getId());
-    assertTrue(containsInstanceOf(design.contaminants.getColumn(CONTAMINANT_NAME).getExtensions(),
-        ComponentRenderer.class));
-    assertFalse(design.contaminants.getColumn(CONTAMINANT_NAME).isSortable());
-    {
-      TextField field = (TextField) design.contaminants.getColumn(CONTAMINANT_NAME)
-          .getValueProvider().apply(new Contaminant());
-      assertTrue(field.getStyleName().contains(CONTAMINANT_NAME));
-    }
-    assertEquals(CONTAMINANT_QUANTITY, design.contaminants.getColumns().get(1).getId());
-    assertTrue(
-        containsInstanceOf(design.contaminants.getColumn(CONTAMINANT_QUANTITY).getExtensions(),
-            ComponentRenderer.class));
-    assertFalse(design.contaminants.getColumn(CONTAMINANT_QUANTITY).isSortable());
-    {
-      TextField field = (TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY)
-          .getValueProvider().apply(new Contaminant());
-      assertTrue(field.getStyleName().contains(CONTAMINANT_QUANTITY));
-    }
-    assertEquals(CONTAMINANT_COMMENT, design.contaminants.getColumns().get(2).getId());
-    assertTrue(
-        containsInstanceOf(design.contaminants.getColumn(CONTAMINANT_COMMENT).getExtensions(),
-            ComponentRenderer.class));
-    assertFalse(design.contaminants.getColumn(CONTAMINANT_COMMENT).isSortable());
-    {
-      TextField field = (TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT)
-          .getValueProvider().apply(new Contaminant());
-      assertTrue(field.getStyleName().contains(CONTAMINANT_COMMENT));
-    }
-  }
-
-  @Test
   public void filesColumns_ReadOnly() throws Throwable {
     presenter.init(view);
     presenter.setReadOnly(true);
@@ -903,44 +769,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.postTranslationModification.isRequiredIndicatorVisible());
     assertTrue(design.sampleQuantity.isRequiredIndicatorVisible());
     assertTrue(design.sampleVolume.isRequiredIndicatorVisible());
-    assertFalse(design.standardCount.isRequiredIndicatorVisible());
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
-    if (standardsDataProvider.getItems().size() < 1) {
-      standardsDataProvider.getItems().add(new Standard());
-    }
-    Standard firstStandard = standardsDataProvider.getItems().iterator().next();
-    TextField standardNameTableField = (TextField) design.standards.getColumn(STANDARD_NAME)
-        .getValueProvider().apply(firstStandard);
-    assertTrue(standardNameTableField.isRequiredIndicatorVisible());
-    TextField standardQuantityTableField = (TextField) design.standards.getColumn(STANDARD_QUANTITY)
-        .getValueProvider().apply(firstStandard);
-    assertTrue(standardQuantityTableField.isRequiredIndicatorVisible());
-    TextField standardCommentTableField = (TextField) design.standards.getColumn(STANDARD_COMMENT)
-        .getValueProvider().apply(firstStandard);
-    assertFalse(standardCommentTableField.isRequiredIndicatorVisible());
-    assertFalse(design.contaminantCount.isRequiredIndicatorVisible());
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
-    if (contaminantsDataProvider.getItems().size() < 1) {
-      contaminantsDataProvider.getItems().add(new Contaminant());
-    }
-    Contaminant firstContaminant = contaminantsDataProvider.getItems().iterator().next();
-    TextField contaminantNameTableField = (TextField) design.contaminants
-        .getColumn(CONTAMINANT_NAME).getValueProvider().apply(firstContaminant);
-    assertTrue(contaminantNameTableField.isRequiredIndicatorVisible());
-    TextField contaminantQuantityTableField = (TextField) design.contaminants
-        .getColumn(CONTAMINANT_QUANTITY).getValueProvider().apply(firstContaminant);
-    assertTrue(contaminantQuantityTableField.isRequiredIndicatorVisible());
-    TextField contaminantCommentTableField = (TextField) design.contaminants
-        .getColumn(CONTAMINANT_COMMENT).getValueProvider().apply(firstContaminant);
-    assertFalse(contaminantCommentTableField.isRequiredIndicatorVisible());
-    assertTrue(design.separation.isRequiredIndicatorVisible());
-    assertTrue(design.thickness.isRequiredIndicatorVisible());
-    assertFalse(design.coloration.isRequiredIndicatorVisible());
-    assertTrue(design.otherColoration.isRequiredIndicatorVisible());
-    assertFalse(design.developmentTime.isRequiredIndicatorVisible());
-    assertFalse(design.decoloration.isRequiredIndicatorVisible());
-    assertFalse(design.weightMarkerQuantity.isRequiredIndicatorVisible());
-    assertFalse(design.proteinQuantity.isRequiredIndicatorVisible());
     assertTrue(design.digestion.isRequiredIndicatorVisible());
     assertTrue(design.usedProteolyticDigestionMethod.isRequiredIndicatorVisible());
     assertTrue(design.otherProteolyticDigestionMethod.isRequiredIndicatorVisible());
@@ -1275,24 +1103,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.getStyleName().contains(SAMPLE_QUANTITY));
     assertTrue(design.sampleVolume.getStyleName().contains(SAMPLE_VOLUME));
     assertTrue(design.standardsPanel.getStyleName().contains(STANDARDS_PANEL));
-    assertTrue(design.standardCount.getStyleName().contains(STANDARD_COUNT));
-    assertTrue(design.standards.getStyleName().contains(STANDARDS));
-    assertTrue(design.fillStandards.getStyleName().contains(FILL_STANDARDS));
-    assertTrue(design.fillStandards.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.contaminantsPanel.getStyleName().contains(CONTAMINANTS_PANEL));
-    assertTrue(design.contaminantCount.getStyleName().contains(CONTAMINANT_COUNT));
-    assertTrue(design.contaminants.getStyleName().contains(CONTAMINANTS));
-    assertTrue(design.fillContaminants.getStyleName().contains(FILL_CONTAMINANTS));
-    assertTrue(design.fillContaminants.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.gelPanel.getStyleName().contains(GEL_PANEL));
-    assertTrue(design.separation.getStyleName().contains(SEPARATION));
-    assertTrue(design.thickness.getStyleName().contains(THICKNESS));
-    assertTrue(design.coloration.getStyleName().contains(COLORATION));
-    assertTrue(design.otherColoration.getStyleName().contains(OTHER_COLORATION));
-    assertTrue(design.developmentTime.getStyleName().contains(DEVELOPMENT_TIME));
-    assertTrue(design.decoloration.getStyleName().contains(DECOLORATION));
-    assertTrue(design.weightMarkerQuantity.getStyleName().contains(WEIGHT_MARKER_QUANTITY));
-    assertTrue(design.proteinQuantity.getStyleName().contains(PROTEIN_QUANTITY));
     assertTrue(design.servicesPanel.getStyleName().contains(SERVICES_PANEL));
     assertTrue(design.digestion.getStyleName().contains(DIGESTION));
     assertTrue(design.usedProteolyticDigestionMethod.getStyleName().contains(USED_DIGESTION));
@@ -1398,56 +1210,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(SAMPLE_VOLUME + "." + EXAMPLE),
         design.sampleVolume.getPlaceholder());
     assertEquals(resources.message(STANDARDS_PANEL), design.standardsPanel.getCaption());
-    assertEquals(resources.message(STANDARD_COUNT), design.standardCount.getCaption());
-    assertEquals(null, design.standards.getCaption());
-    assertEquals(resources.message(STANDARDS + "." + STANDARD_NAME),
-        design.standards.getColumn(STANDARD_NAME).getCaption());
-    assertEquals(resources.message(STANDARDS + "." + STANDARD_QUANTITY),
-        design.standards.getColumn(STANDARD_QUANTITY).getCaption());
-    assertEquals(resources.message(STANDARDS + "." + STANDARD_COMMENT),
-        design.standards.getColumn(STANDARD_COMMENT).getCaption());
-    assertEquals(resources.message(FILL_STANDARDS), design.fillStandards.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.fillStandards.getIcon());
     assertEquals(resources.message(CONTAMINANTS_PANEL), design.contaminantsPanel.getCaption());
-    assertEquals(resources.message(CONTAMINANT_COUNT), design.contaminantCount.getCaption());
-    assertEquals(null, design.contaminants.getCaption());
-    assertEquals(resources.message(CONTAMINANTS + "." + CONTAMINANT_NAME),
-        design.contaminants.getColumn(CONTAMINANT_NAME).getCaption());
-    assertEquals(resources.message(CONTAMINANTS + "." + CONTAMINANT_QUANTITY),
-        design.contaminants.getColumn(CONTAMINANT_QUANTITY).getCaption());
-    assertEquals(resources.message(CONTAMINANTS + "." + CONTAMINANT_COMMENT),
-        design.contaminants.getColumn(CONTAMINANT_COMMENT).getCaption());
-    assertEquals(resources.message(FILL_CONTAMINANTS), design.fillContaminants.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.fillContaminants.getIcon());
     assertEquals(resources.message(GEL_PANEL), design.gelPanel.getCaption());
-    assertEquals(resources.message(SEPARATION), design.separation.getCaption());
-    for (GelSeparation separation : GelSeparation.values()) {
-      assertEquals(separation.getLabel(locale),
-          design.separation.getItemCaptionGenerator().apply(separation));
-    }
-    assertEquals(resources.message(THICKNESS), design.thickness.getCaption());
-    for (GelThickness thickness : GelThickness.values()) {
-      assertEquals(thickness.getLabel(locale),
-          design.thickness.getItemCaptionGenerator().apply(thickness));
-    }
-    assertEquals(resources.message(COLORATION), design.coloration.getCaption());
-    assertEquals(GelColoration.getNullLabel(locale), design.coloration.getEmptySelectionCaption());
-    for (GelColoration coloration : GelColoration.values()) {
-      assertEquals(coloration.getLabel(locale),
-          design.coloration.getItemCaptionGenerator().apply(coloration));
-    }
-    assertEquals(resources.message(OTHER_COLORATION), design.otherColoration.getCaption());
-    assertEquals(resources.message(DEVELOPMENT_TIME), design.developmentTime.getCaption());
-    assertEquals(resources.message(DEVELOPMENT_TIME + "." + EXAMPLE),
-        design.developmentTime.getPlaceholder());
-    assertEquals(resources.message(DECOLORATION), design.decoloration.getCaption());
-    assertEquals(resources.message(WEIGHT_MARKER_QUANTITY),
-        design.weightMarkerQuantity.getCaption());
-    assertEquals(resources.message(WEIGHT_MARKER_QUANTITY + "." + EXAMPLE),
-        design.weightMarkerQuantity.getPlaceholder());
-    assertEquals(resources.message(PROTEIN_QUANTITY), design.proteinQuantity.getCaption());
-    assertEquals(resources.message(PROTEIN_QUANTITY + "." + EXAMPLE),
-        design.proteinQuantity.getPlaceholder());
     assertEquals(resources.message(SERVICES_PANEL), design.servicesPanel.getCaption());
     assertEquals(resources.message(DIGESTION), design.digestion.getCaption());
     for (ProteolyticDigestion digestion : ProteolyticDigestion.values()) {
@@ -1577,30 +1341,10 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.postTranslationModification.isReadOnly());
     assertTrue(design.sampleQuantity.isReadOnly());
     assertTrue(design.sampleVolume.isReadOnly());
-    assertTrue(design.standardCount.isReadOnly());
-    Standard firstStandard = dataProvider(design.standards).getItems().iterator().next();
-    assertTrue(((TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider()
-        .apply(firstStandard)).isReadOnly());
-    assertTrue(((TextField) design.standards.getColumn(STANDARD_QUANTITY).getValueProvider()
-        .apply(firstStandard)).isReadOnly());
-    assertTrue(((TextField) design.standards.getColumn(STANDARD_COMMENT).getValueProvider()
-        .apply(firstStandard)).isReadOnly());
-    assertTrue(design.contaminantCount.isReadOnly());
-    Contaminant firstContaminant = dataProvider(design.contaminants).getItems().iterator().next();
-    assertTrue(((TextField) design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider()
-        .apply(firstContaminant)).isReadOnly());
-    assertTrue(((TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider()
-        .apply(firstContaminant)).isReadOnly());
-    assertTrue(((TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider()
-        .apply(firstContaminant)).isReadOnly());
-    assertTrue(design.separation.isReadOnly());
-    assertTrue(design.thickness.isReadOnly());
-    assertTrue(design.coloration.isReadOnly());
-    assertTrue(design.otherColoration.isReadOnly());
-    assertTrue(design.developmentTime.isReadOnly());
-    assertTrue(design.decoloration.isReadOnly());
-    assertTrue(design.weightMarkerQuantity.isReadOnly());
-    assertTrue(design.proteinQuantity.isReadOnly());
+    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
+    verify(view.contaminantsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     assertTrue(design.digestion.isReadOnly());
     assertTrue(design.usedProteolyticDigestionMethod.isReadOnly());
     assertTrue(design.otherProteolyticDigestionMethod.isReadOnly());
@@ -1668,30 +1412,10 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.postTranslationModification.isReadOnly());
     assertFalse(design.sampleQuantity.isReadOnly());
     assertFalse(design.sampleVolume.isReadOnly());
-    assertFalse(design.standardCount.isReadOnly());
-    Standard firstStandard = dataProvider(design.standards).getItems().iterator().next();
-    assertFalse(((TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider()
-        .apply(firstStandard)).isReadOnly());
-    assertFalse(((TextField) design.standards.getColumn(STANDARD_QUANTITY).getValueProvider()
-        .apply(firstStandard)).isReadOnly());
-    assertFalse(((TextField) design.standards.getColumn(STANDARD_COMMENT).getValueProvider()
-        .apply(firstStandard)).isReadOnly());
-    assertFalse(design.contaminantCount.isReadOnly());
-    Contaminant firstContaminant = dataProvider(design.contaminants).getItems().iterator().next();
-    assertFalse(((TextField) design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider()
-        .apply(firstContaminant)).isReadOnly());
-    assertFalse(((TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider()
-        .apply(firstContaminant)).isReadOnly());
-    assertFalse(((TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider()
-        .apply(firstContaminant)).isReadOnly());
-    assertFalse(design.separation.isReadOnly());
-    assertFalse(design.thickness.isReadOnly());
-    assertFalse(design.coloration.isReadOnly());
-    assertFalse(design.otherColoration.isReadOnly());
-    assertFalse(design.developmentTime.isReadOnly());
-    assertFalse(design.decoloration.isReadOnly());
-    assertFalse(design.weightMarkerQuantity.isReadOnly());
-    assertFalse(design.proteinQuantity.isReadOnly());
+    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    verify(view.contaminantsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
     assertFalse(design.digestion.isReadOnly());
     assertFalse(design.usedProteolyticDigestionMethod.isReadOnly());
     assertFalse(design.otherProteolyticDigestionMethod.isReadOnly());
@@ -1775,21 +1499,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -1853,21 +1564,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertTrue(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -1937,21 +1635,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2015,21 +1700,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertTrue(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2099,21 +1771,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2177,21 +1836,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertTrue(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2261,21 +1907,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2339,21 +1972,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertTrue(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2461,21 +2081,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2539,21 +2146,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertTrue(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2623,21 +2217,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCount.isVisible());
-    assertFalse(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCount.isVisible());
-    assertFalse(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertTrue(design.separation.isVisible());
-    assertTrue(design.thickness.isVisible());
-    assertTrue(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertTrue(design.developmentTime.isVisible());
-    assertTrue(design.decoloration.isVisible());
-    assertTrue(design.weightMarkerQuantity.isVisible());
-    assertTrue(design.proteinQuantity.isVisible());
+    assertTrue(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2701,21 +2282,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCount.isVisible());
-    assertFalse(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCount.isVisible());
-    assertFalse(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertTrue(design.separation.isVisible());
-    assertTrue(design.thickness.isVisible());
-    assertTrue(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertTrue(design.developmentTime.isVisible());
-    assertTrue(design.decoloration.isVisible());
-    assertTrue(design.weightMarkerQuantity.isVisible());
-    assertTrue(design.proteinQuantity.isVisible());
+    assertTrue(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2742,17 +2310,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertTrue(design.gelImageFile.isVisible());
-  }
-
-  @Test
-  public void visible_Lcmsms_Gel_OtherColoration() {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(GEL);
-
-    design.coloration.setValue(GelColoration.OTHER);
-
-    assertTrue(design.otherColoration.isVisible());
   }
 
   @Test
@@ -2796,21 +2353,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCount.isVisible());
-    assertFalse(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCount.isVisible());
-    assertFalse(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2874,21 +2418,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCount.isVisible());
-    assertFalse(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCount.isVisible());
-    assertFalse(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -2969,21 +2500,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCount.isVisible());
-    assertFalse(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCount.isVisible());
-    assertFalse(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -3047,21 +2565,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.standardCount.isVisible());
-    assertFalse(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertFalse(design.contaminantsPanel.isVisible());
-    assertFalse(design.contaminantCount.isVisible());
-    assertFalse(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -3131,21 +2636,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -3209,21 +2701,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertTrue(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -3293,21 +2772,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertFalse(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertFalse(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -3371,21 +2837,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.standardCount.isVisible());
-    assertTrue(design.standards.isVisible());
-    assertTrue(design.fillStandards.isVisible());
     assertTrue(design.contaminantsPanel.isVisible());
-    assertTrue(design.contaminantCount.isVisible());
-    assertTrue(design.contaminants.isVisible());
-    assertTrue(design.fillContaminants.isVisible());
-    assertFalse(design.separation.isVisible());
-    assertFalse(design.thickness.isVisible());
-    assertFalse(design.coloration.isVisible());
-    assertFalse(design.otherColoration.isVisible());
-    assertFalse(design.developmentTime.isVisible());
-    assertFalse(design.decoloration.isVisible());
-    assertFalse(design.weightMarkerQuantity.isVisible());
-    assertFalse(design.proteinQuantity.isVisible());
+    assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
     assertFalse(design.otherProteolyticDigestionMethod.isVisible());
@@ -3490,65 +2943,6 @@ public class SubmissionFormPresenterTest {
       assertEquals("200 MW",
           ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(sample))
               .getValue());
-    }
-  }
-
-  @Test
-  public void fillStandards() throws Throwable {
-    presenter.init(view);
-    design.standardCount.setValue("3");
-    List<Standard> standards = items(design.standards);
-    for (Standard standard : standards) {
-      design.standards.getColumn(STANDARD_NAME).getValueProvider().apply(standard);
-      design.standards.getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
-      design.standards.getColumn(STANDARD_COMMENT).getValueProvider().apply(standard);
-    }
-    ((TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider()
-        .apply(standards.get(0))).setValue("std-09");
-    ((TextField) design.standards.getColumn(STANDARD_QUANTITY).getValueProvider()
-        .apply(standards.get(0))).setValue("10 ug");
-    ((TextField) design.standards.getColumn(STANDARD_COMMENT).getValueProvider()
-        .apply(standards.get(0))).setValue("test_comment");
-
-    design.fillStandards.click();
-
-    for (Standard standard : standards) {
-      assertEquals("std-09",
-          ((TextField) design.standards.getColumn(STANDARD_NAME).getValueProvider().apply(standard))
-              .getValue());
-      assertEquals("10 ug", ((TextField) design.standards.getColumn(STANDARD_QUANTITY)
-          .getValueProvider().apply(standard)).getValue());
-      assertEquals("test_comment", ((TextField) design.standards.getColumn(STANDARD_COMMENT)
-          .getValueProvider().apply(standard)).getValue());
-    }
-  }
-
-  @Test
-  public void fillContaminants() throws Throwable {
-    presenter.init(view);
-    design.contaminantCount.setValue("3");
-    List<Contaminant> contaminants = items(design.contaminants);
-    for (Contaminant contaminant : contaminants) {
-      design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider().apply(contaminant);
-      design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider().apply(contaminant);
-      design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider().apply(contaminant);
-    }
-    ((TextField) design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider()
-        .apply(contaminants.get(0))).setValue("cont-09");
-    ((TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider()
-        .apply(contaminants.get(0))).setValue("10 ug");
-    ((TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider()
-        .apply(contaminants.get(0))).setValue("test_comment");
-
-    design.fillContaminants.click();
-
-    for (Contaminant contaminant : contaminants) {
-      assertEquals("cont-09", ((TextField) design.contaminants.getColumn(CONTAMINANT_NAME)
-          .getValueProvider().apply(contaminant)).getValue());
-      assertEquals("10 ug", ((TextField) design.contaminants.getColumn(CONTAMINANT_QUANTITY)
-          .getValueProvider().apply(contaminant)).getValue());
-      assertEquals("test_comment", ((TextField) design.contaminants.getColumn(CONTAMINANT_COMMENT)
-          .getValueProvider().apply(contaminant)).getValue());
     }
   }
 
@@ -4609,393 +4003,47 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_MissingStandardCount() throws Throwable {
+  public void save_StandardsFormFail() throws Throwable {
+    when(view.standardsForm.validate()).thenReturn(false);
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(type);
     setFields();
-    design.standardCount.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view, never()).showError(stringCaptor.capture());
-    verify(submissionService).insert(any());
-  }
-
-  @Test
-  public void save_InvalidStandardCount() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    design.standardCount.setValue("a");
-    uploadFiles();
 
     design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.standardCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
-  public void save_BelowZeroStandardCount() throws Throwable {
+  public void save_ContaminantsFormFail() throws Throwable {
+    when(view.contaminantsForm.validate()).thenReturn(false);
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(type);
     setFields();
-    design.standardCount.setValue("-1");
-    uploadFiles();
 
     design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.standardCount.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
   @Test
-  public void save_AboveMaxStandardCount() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    design.standardCount.setValue("200");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.standardCount.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_DoubleStandardCount() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    design.standardCount.setValue("1.2");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.standardCount.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingStandardName_1() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    standardNameField1.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        standardNameField1.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingStandardName_2() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    standardNameField2.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        standardNameField2.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingStandardQuantity_1() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    standardQuantityField1.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        standardQuantityField1.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingStandardQuantity_2() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    standardQuantityField2.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        standardQuantityField2.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingContaminantCount() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    design.contaminantCount.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view, never()).showError(stringCaptor.capture());
-    verify(submissionService).insert(any());
-  }
-
-  @Test
-  public void save_InvalidContaminantCount() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    design.contaminantCount.setValue("a");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.contaminantCount.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_BelowZeroContaminantCount() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    design.contaminantCount.setValue("-1");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.contaminantCount.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_AboveMaxContaminantCount() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    design.contaminantCount.setValue("200");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, 10)),
-        design.contaminantCount.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_DoubleContaminantCount() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    design.contaminantCount.setValue("1.2");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
-        design.contaminantCount.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingContaminantName_1() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    contaminantNameField1.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        contaminantNameField1.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingContaminantName_2() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    contaminantNameField2.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        contaminantNameField2.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingContaminantQuantity_1() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    contaminantQuantityField1.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        contaminantQuantityField1.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingContaminantQuantity_2() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(type);
-    setFields();
-    contaminantQuantityField2.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        contaminantQuantityField2.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingGelSeparation() throws Throwable {
+  public void save_GelFormFail() throws Throwable {
+    when(view.gelForm.validate()).thenReturn(false);
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(GEL);
     setFields();
-    design.separation.setValue(null);
-    uploadFiles();
 
     design.save.click();
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.separation.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingGelThickness() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(GEL);
-    setFields();
-    design.thickness.setValue(null);
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.thickness.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_MissingOtherGelColoration() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(GEL);
-    setFields();
-    design.coloration.setValue(GelColoration.OTHER);
-    design.otherColoration.setValue("");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.otherColoration.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).insert(any());
-  }
-
-  @Test
-  public void save_InvalidWeightMarkerQuantity() throws Throwable {
-    presenter.init(view);
-    design.service.setValue(LC_MS_MS);
-    design.sampleType.setValue(GEL);
-    setFields();
-    design.weightMarkerQuantity.setValue("a");
-    uploadFiles();
-
-    design.save.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
-        design.weightMarkerQuantity.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -6011,14 +5059,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinContent, submission.getProteinContent());
     assertEquals(proteinName, submission.getProtein());
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
-    assertEquals(gelSeparation, submission.getSeparation());
-    assertEquals(gelThickness, submission.getThickness());
-    assertEquals(gelColoration, submission.getColoration());
-    assertEquals(otherColoration, submission.getOtherColoration());
-    assertEquals(developmentTime, submission.getDevelopmentTime());
-    assertEquals(decoloration, submission.isDecoloration());
-    assertEquals(weightMarkerQuantity, submission.getWeightMarkerQuantity(), 0.0001);
-    assertEquals(proteinQuantity, submission.getProteinQuantity());
     assertEquals(null, submission.getFormula());
     assertEquals(null, submission.getMonoisotopicMass());
     assertEquals(null, submission.getAverageMass());
@@ -6113,14 +5153,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinContent, submission.getProteinContent());
     assertEquals(proteinName, submission.getProtein());
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
-    assertEquals(gelSeparation, submission.getSeparation());
-    assertEquals(gelThickness, submission.getThickness());
-    assertEquals(gelColoration, submission.getColoration());
-    assertEquals(otherColoration, submission.getOtherColoration());
-    assertEquals(developmentTime, submission.getDevelopmentTime());
-    assertEquals(decoloration, submission.isDecoloration());
-    assertEquals(weightMarkerQuantity, submission.getWeightMarkerQuantity(), 0.0001);
-    assertEquals(proteinQuantity, submission.getProteinQuantity());
     assertEquals(null, submission.getFormula());
     assertEquals(null, submission.getMonoisotopicMass());
     assertEquals(null, submission.getAverageMass());
@@ -6857,22 +5889,13 @@ public class SubmissionFormPresenterTest {
     database.setProteinIdentification(REFSEQ);
     when(submissionSampleService.exists(any())).thenReturn(true);
     when(submissionService.get(any())).thenReturn(database);
+    when(view.standardsForm.getValue()).thenReturn(database.getSamples().get(0).getStandards());
+    when(view.contaminantsForm.getValue())
+        .thenReturn(database.getSamples().get(0).getContaminants());
     presenter.init(view);
     presenter.setValue(database);
     database.getSamples()
         .forEach(sample -> design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(sample));
-    database.getSamples().stream().flatMap(sample -> sample.getStandards().stream())
-        .forEach(standard -> {
-          design.standards.getColumn(STANDARD_NAME).getValueProvider().apply(standard);
-          design.standards.getColumn(STANDARD_QUANTITY).getValueProvider().apply(standard);
-          design.standards.getColumn(STANDARD_COMMENT).getValueProvider().apply(standard);
-        });
-    database.getSamples().stream().flatMap(sample -> sample.getContaminants().stream())
-        .forEach(contaminant -> {
-          design.contaminants.getColumn(CONTAMINANT_NAME).getValueProvider().apply(contaminant);
-          design.contaminants.getColumn(CONTAMINANT_QUANTITY).getValueProvider().apply(contaminant);
-          design.contaminants.getColumn(CONTAMINANT_COMMENT).getValueProvider().apply(contaminant);
-        });
 
     design.save.click();
 
@@ -7193,35 +6216,9 @@ public class SubmissionFormPresenterTest {
     assertEquals(postTranslationModification, design.postTranslationModification.getValue());
     assertEquals(sampleQuantity, design.sampleQuantity.getValue());
     assertEquals(sampleVolume, design.sampleVolume.getValue());
-    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
-    List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
-    assertEquals(2, standards.size());
-    Standard standard = standards.get(0);
-    assertEquals(standardName1, standard.getName());
-    assertEquals(standardQuantity1, standard.getQuantity());
-    standard = standards.get(1);
-    assertEquals(standardName2, standard.getName());
-    assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals((Integer) contaminantsCount, convert(integerConverter, design.contaminantCount));
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
-    List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
-    assertEquals(2, contaminants.size());
-    Contaminant contaminant = contaminants.get(0);
-    assertEquals(contaminantName1, contaminant.getName());
-    assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    contaminant = contaminants.get(1);
-    assertEquals(contaminantName2, contaminant.getName());
-    assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(gelSeparation, design.separation.getValue());
-    assertEquals(gelThickness, design.thickness.getValue());
-    assertEquals(gelColoration, design.coloration.getValue());
-    assertEquals(otherColoration, design.otherColoration.getValue());
-    assertEquals(developmentTime, design.developmentTime.getValue());
-    assertEquals(decoloration, design.decoloration.getValue());
-    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantity),
-        0.001);
-    assertEquals(proteinQuantity, design.proteinQuantity.getValue());
+    verify(view.standardsForm).setValue(samples.get(0).getStandards());
+    verify(view.contaminantsForm).setValue(samples.get(0).getContaminants());
+    verify(view.gelForm).setValue(submission);
     assertEquals(digestion, design.digestion.getValue());
     assertEquals(usedDigestion, design.usedProteolyticDigestionMethod.getValue());
     assertEquals(otherDigestion, design.otherProteolyticDigestionMethod.getValue());
@@ -7286,35 +6283,9 @@ public class SubmissionFormPresenterTest {
     assertEquals(postTranslationModification, design.postTranslationModification.getValue());
     assertEquals(sampleQuantity, design.sampleQuantity.getValue());
     assertEquals(sampleVolume, design.sampleVolume.getValue());
-    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
-    List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
-    assertEquals(2, standards.size());
-    Standard standard = standards.get(0);
-    assertEquals(standardName1, standard.getName());
-    assertEquals(standardQuantity1, standard.getQuantity());
-    standard = standards.get(1);
-    assertEquals(standardName2, standard.getName());
-    assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals((Integer) contaminantsCount, convert(integerConverter, design.contaminantCount));
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
-    List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
-    assertEquals(2, contaminants.size());
-    Contaminant contaminant = contaminants.get(0);
-    assertEquals(contaminantName1, contaminant.getName());
-    assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    contaminant = contaminants.get(1);
-    assertEquals(contaminantName2, contaminant.getName());
-    assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(gelSeparation, design.separation.getValue());
-    assertEquals(gelThickness, design.thickness.getValue());
-    assertEquals(gelColoration, design.coloration.getValue());
-    assertEquals(otherColoration, design.otherColoration.getValue());
-    assertEquals(developmentTime, design.developmentTime.getValue());
-    assertEquals(decoloration, design.decoloration.getValue());
-    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantity),
-        0.001);
-    assertEquals(proteinQuantity, design.proteinQuantity.getValue());
+    verify(view.standardsForm).setValue(samples.get(0).getStandards());
+    verify(view.contaminantsForm).setValue(samples.get(0).getContaminants());
+    verify(view.gelForm).setValue(submission);
     assertEquals(digestion, design.digestion.getValue());
     assertEquals(usedDigestion, design.usedProteolyticDigestionMethod.getValue());
     assertEquals(otherDigestion, design.otherProteolyticDigestionMethod.getValue());
@@ -7374,35 +6345,9 @@ public class SubmissionFormPresenterTest {
     assertEquals(postTranslationModification, design.postTranslationModification.getValue());
     assertEquals(sampleQuantity, design.sampleQuantity.getValue());
     assertEquals(sampleVolume, design.sampleVolume.getValue());
-    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
-    List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
-    assertEquals(2, standards.size());
-    Standard standard = standards.get(0);
-    assertEquals(standardName1, standard.getName());
-    assertEquals(standardQuantity1, standard.getQuantity());
-    standard = standards.get(1);
-    assertEquals(standardName2, standard.getName());
-    assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals((Integer) contaminantsCount, convert(integerConverter, design.contaminantCount));
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
-    List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
-    assertEquals(2, contaminants.size());
-    Contaminant contaminant = contaminants.get(0);
-    assertEquals(contaminantName1, contaminant.getName());
-    assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    contaminant = contaminants.get(1);
-    assertEquals(contaminantName2, contaminant.getName());
-    assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(gelSeparation, design.separation.getValue());
-    assertEquals(gelThickness, design.thickness.getValue());
-    assertEquals(gelColoration, design.coloration.getValue());
-    assertEquals(otherColoration, design.otherColoration.getValue());
-    assertEquals(developmentTime, design.developmentTime.getValue());
-    assertEquals(decoloration, design.decoloration.getValue());
-    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantity),
-        0.001);
-    assertEquals(proteinQuantity, design.proteinQuantity.getValue());
+    verify(view.standardsForm).setValue(samples.get(0).getStandards());
+    verify(view.contaminantsForm).setValue(samples.get(0).getContaminants());
+    verify(view.gelForm).setValue(submission);
     assertEquals(digestion, design.digestion.getValue());
     assertEquals(usedDigestion, design.usedProteolyticDigestionMethod.getValue());
     assertEquals(otherDigestion, design.otherProteolyticDigestionMethod.getValue());
@@ -7462,35 +6407,9 @@ public class SubmissionFormPresenterTest {
     assertEquals(postTranslationModification, design.postTranslationModification.getValue());
     assertEquals(sampleQuantity, design.sampleQuantity.getValue());
     assertEquals(sampleVolume, design.sampleVolume.getValue());
-    assertEquals((Integer) standardsCount, convert(integerConverter, design.standardCount));
-    ListDataProvider<Standard> standardsDataProvider = dataProvider(design.standards);
-    List<Standard> standards = new ArrayList<>(standardsDataProvider.getItems());
-    assertEquals(2, standards.size());
-    Standard standard = standards.get(0);
-    assertEquals(standardName1, standard.getName());
-    assertEquals(standardQuantity1, standard.getQuantity());
-    standard = standards.get(1);
-    assertEquals(standardName2, standard.getName());
-    assertEquals(standardQuantity2, standard.getQuantity());
-    assertEquals((Integer) contaminantsCount, convert(integerConverter, design.contaminantCount));
-    ListDataProvider<Contaminant> contaminantsDataProvider = dataProvider(design.contaminants);
-    List<Contaminant> contaminants = new ArrayList<>(contaminantsDataProvider.getItems());
-    assertEquals(2, contaminants.size());
-    Contaminant contaminant = contaminants.get(0);
-    assertEquals(contaminantName1, contaminant.getName());
-    assertEquals(contaminantQuantity1, contaminant.getQuantity());
-    contaminant = contaminants.get(1);
-    assertEquals(contaminantName2, contaminant.getName());
-    assertEquals(contaminantQuantity2, contaminant.getQuantity());
-    assertEquals(gelSeparation, design.separation.getValue());
-    assertEquals(gelThickness, design.thickness.getValue());
-    assertEquals(gelColoration, design.coloration.getValue());
-    assertEquals(otherColoration, design.otherColoration.getValue());
-    assertEquals(developmentTime, design.developmentTime.getValue());
-    assertEquals(decoloration, design.decoloration.getValue());
-    assertEquals(weightMarkerQuantity, convert(doubleConverter, design.weightMarkerQuantity),
-        0.001);
-    assertEquals(proteinQuantity, design.proteinQuantity.getValue());
+    verify(view.standardsForm).setValue(samples.get(0).getStandards());
+    verify(view.contaminantsForm).setValue(samples.get(0).getContaminants());
+    verify(view.gelForm).setValue(submission);
     assertEquals(digestion, design.digestion.getValue());
     assertEquals(usedDigestion, design.usedProteolyticDigestionMethod.getValue());
     assertEquals(otherDigestion, design.otherProteolyticDigestionMethod.getValue());
