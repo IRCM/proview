@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
+  <meta name="vaadin-version" content="8.0.5">
+  <meta name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
+  <meta name="package-mapping" content="org_vaadin_hene_flexibleoptiongroup:org.vaadin.hene.flexibleoptiongroup">
+  <meta name="package-mapping" content="pl_exsio_plupload:pl.exsio.plupload">
+  <meta name="package-mapping" content="pl_exsio_plupload_field:pl.exsio.plupload.field">
+ </head>
+ <body>
+  <vaadin-vertical-layout margin="false">
+   <vaadin-form-layout spacing="false" size-auto margin="false">
+    <vaadin-text-field caption="Number of standards" null-representation="" _id="count"></vaadin-text-field>
+   </vaadin-form-layout>
+   <vaadin-horizontal-layout _id="contaminantsLayout">
+    <vaadin-grid data-item-type="ca.qc.ircm.proview.sample.Contaminant" _id="contaminants"></vaadin-grid>
+    <vaadin-button icon="fonticon://FontAwesome/f063" plain-text _id="fill">
+      Fill down 
+    </vaadin-button>
+   </vaadin-horizontal-layout>
+  </vaadin-vertical-layout>
+ </body>
+</html>

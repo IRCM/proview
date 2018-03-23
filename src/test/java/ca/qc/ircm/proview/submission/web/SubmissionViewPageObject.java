@@ -17,14 +17,13 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANT_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DECOLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DEVELOPMENT_TIME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
@@ -36,7 +35,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIEN
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
@@ -98,6 +96,7 @@ import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleType;
+import ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter;
 import ca.qc.ircm.proview.sample.web.StandardsFormPresenter;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.ProteinContent;
@@ -119,8 +118,10 @@ import org.openqa.selenium.WebElement;
 import java.nio.file.Path;
 
 public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase {
-  private static final String FILL_STANDARDS = StandardsFormPresenter.FILL;
   private static final String STANDARD_COUNT = StandardsFormPresenter.COUNT;
+  private static final String FILL_STANDARDS = StandardsFormPresenter.FILL;
+  private static final String CONTAMINANT_COUNT = ContaminantsFormPresenter.COUNT;
+  private static final String FILL_CONTAMINANTS = ContaminantsFormPresenter.FILL;
 
   protected void open() {
     openView(SubmissionView.VIEW_NAME);
@@ -363,7 +364,8 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected TextFieldElement contaminantCountField() {
-    return wrap(TextFieldElement.class, findElement(className(CONTAMINANT_COUNT)));
+    return wrap(TextFieldElement.class,
+        contaminantsPanel().findElement(className(CONTAMINANT_COUNT)));
   }
 
   protected Integer getContaminantCount() {
@@ -379,11 +381,11 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected GridElement contaminantsGrid() {
-    return wrap(GridElement.class, findElement(className(CONTAMINANTS)));
+    return wrap(GridElement.class, contaminantsPanel().findElement(className(CONTAMINANTS)));
   }
 
   protected ButtonElement fillContaminantsButton() {
-    return wrap(ButtonElement.class, findElement(className(FILL_CONTAMINANTS)));
+    return wrap(ButtonElement.class, contaminantsPanel().findElement(className(FILL_CONTAMINANTS)));
   }
 
   protected PanelElement gelPanel() {

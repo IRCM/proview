@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.QStandard.standard;
+import static ca.qc.ircm.proview.sample.QContaminant.contaminant;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
@@ -26,7 +26,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
-import ca.qc.ircm.proview.sample.Standard;
+import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -54,30 +54,30 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Standards form presenter.
+ * Contaminants form presenter.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class StandardsFormPresenter implements BinderValidator {
+public class ContaminantsFormPresenter implements BinderValidator {
   public static final String COUNT = "count";
-  public static final String STANDARDS = submissionSample.standards.getMetadata().getName();
-  public static final String NAME = standard.name.getMetadata().getName();
-  public static final String QUANTITY = standard.quantity.getMetadata().getName();
-  public static final String COMMENT = standard.comment.getMetadata().getName();
+  public static final String CONTAMINANTS = submissionSample.contaminants.getMetadata().getName();
+  public static final String NAME = contaminant.name.getMetadata().getName();
+  public static final String QUANTITY = contaminant.quantity.getMetadata().getName();
+  public static final String COMMENT = contaminant.comment.getMetadata().getName();
   public static final String FILL = "fill";
   public static final String EXAMPLE = "example";
   private static final int DEFAULT_MAX_COUNT = 10;
-  private static final Logger logger = LoggerFactory.getLogger(StandardsFormPresenter.class);
-  private StandardsForm view;
-  private StandardsFormDesign design;
+  private static final Logger logger = LoggerFactory.getLogger(ContaminantsFormPresenter.class);
+  private ContaminantsForm view;
+  private ContaminantsFormDesign design;
   private boolean readOnly;
   private int maxCount = DEFAULT_MAX_COUNT;
   private Binder<ItemCount> countBinder = new Binder<>(ItemCount.class);
-  private ListDataProvider<Standard> dataProvider = DataProvider.ofCollection(new ArrayList<>());
-  private Map<Standard, Binder<Standard>> binders = new LinkedHashMap<>();
-  private Map<Standard, TextField> nameFields = new HashMap<>();
-  private Map<Standard, TextField> quantityFields = new HashMap<>();
-  private Map<Standard, TextField> commentFields = new HashMap<>();
+  private ListDataProvider<Contaminant> dataProvider = DataProvider.ofCollection(new ArrayList<>());
+  private Map<Contaminant, Binder<Contaminant>> binders = new LinkedHashMap<>();
+  private Map<Contaminant, TextField> nameFields = new HashMap<>();
+  private Map<Contaminant, TextField> quantityFields = new HashMap<>();
+  private Map<Contaminant, TextField> commentFields = new HashMap<>();
 
   /**
    * Called by view when view is initialized.
@@ -85,7 +85,7 @@ public class StandardsFormPresenter implements BinderValidator {
    * @param view
    *          view
    */
-  public void init(StandardsForm view) {
+  public void init(ContaminantsForm view) {
     this.view = view;
     design = view.design;
     prepareComponents();
@@ -99,14 +99,15 @@ public class StandardsFormPresenter implements BinderValidator {
     design.count.addValueChangeListener(e -> updateGrid(e.getValue()));
     design.count.setReadOnly(readOnly);
     countBinder();
-    design.standards.addStyleName(STANDARDS);
-    design.standards.addStyleName(COMPONENTS);
-    design.standards.setDataProvider(dataProvider);
-    design.standards.addColumn(standard -> nameField(standard), new ComponentRenderer()).setId(NAME)
-        .setCaption(resources.message(NAME)).setSortable(false);
-    design.standards.addColumn(standard -> quantityField(standard), new ComponentRenderer())
+    design.contaminants.addStyleName(CONTAMINANTS);
+    design.contaminants.addStyleName(COMPONENTS);
+    design.contaminants.setDataProvider(dataProvider);
+    design.contaminants.addColumn(contaminant -> nameField(contaminant), new ComponentRenderer())
+        .setId(NAME).setCaption(resources.message(NAME)).setSortable(false);
+    design.contaminants
+        .addColumn(contaminant -> quantityField(contaminant), new ComponentRenderer())
         .setId(QUANTITY).setCaption(resources.message(QUANTITY)).setSortable(false);
-    design.standards.addColumn(standard -> commentField(standard), new ComponentRenderer())
+    design.contaminants.addColumn(contaminant -> commentField(contaminant), new ComponentRenderer())
         .setId(COMMENT).setCaption(resources.message(COMMENT)).setSortable(false);
     design.fill.addStyleName(FILL);
     design.fill.addStyleName(BUTTON_SKIP_ROW);
@@ -125,39 +126,39 @@ public class StandardsFormPresenter implements BinderValidator {
         .bind(ItemCount::getCount, ItemCount::setCount);
   }
 
-  private Binder<Standard> binder(Standard standard) {
-    if (binders.containsKey(standard)) {
-      return binders.get(standard);
+  private Binder<Contaminant> binder(Contaminant contaminant) {
+    if (binders.containsKey(contaminant)) {
+      return binders.get(contaminant);
     } else {
       final MessageResource generalResources = view.getGeneralResources();
-      Binder<Standard> binder = new BeanValidationBinder<>(Standard.class);
-      binder.setBean(standard);
-      binder.forField(nameField(standard)).asRequired(generalResources.message(REQUIRED))
+      Binder<Contaminant> binder = new BeanValidationBinder<>(Contaminant.class);
+      binder.setBean(contaminant);
+      binder.forField(nameField(contaminant)).asRequired(generalResources.message(REQUIRED))
           .withNullRepresentation("").bind(NAME);
-      binder.forField(quantityField(standard)).asRequired(generalResources.message(REQUIRED))
+      binder.forField(quantityField(contaminant)).asRequired(generalResources.message(REQUIRED))
           .withNullRepresentation("").bind(QUANTITY);
-      binder.forField(commentField(standard)).withNullRepresentation("").bind(COMMENT);
-      binders.put(standard, binder);
+      binder.forField(commentField(contaminant)).withNullRepresentation("").bind(COMMENT);
+      binders.put(contaminant, binder);
       return binder;
     }
   }
 
-  private TextField nameField(Standard standard) {
-    if (nameFields.containsKey(standard)) {
-      return nameFields.get(standard);
+  private TextField nameField(Contaminant contaminant) {
+    if (nameFields.containsKey(contaminant)) {
+      return nameFields.get(contaminant);
     } else {
       TextField field = new TextField();
       field.addStyleName(NAME);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
-      nameFields.put(standard, field);
+      nameFields.put(contaminant, field);
       return field;
     }
   }
 
-  private TextField quantityField(Standard standard) {
-    if (quantityFields.containsKey(standard)) {
-      return quantityFields.get(standard);
+  private TextField quantityField(Contaminant contaminant) {
+    if (quantityFields.containsKey(contaminant)) {
+      return quantityFields.get(contaminant);
     } else {
       final MessageResource resources = view.getResources();
       TextField field = new TextField();
@@ -165,20 +166,20 @@ public class StandardsFormPresenter implements BinderValidator {
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
       field.setPlaceholder(resources.message(property(QUANTITY, EXAMPLE)));
-      quantityFields.put(standard, field);
+      quantityFields.put(contaminant, field);
       return field;
     }
   }
 
-  private TextField commentField(Standard standard) {
-    if (commentFields.containsKey(standard)) {
-      return commentFields.get(standard);
+  private TextField commentField(Contaminant contaminant) {
+    if (commentFields.containsKey(contaminant)) {
+      return commentFields.get(contaminant);
     } else {
       TextField field = new TextField();
       field.addStyleName(COMMENT);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
-      commentFields.put(standard, field);
+      commentFields.put(contaminant, field);
       return field;
     }
   }
@@ -191,50 +192,51 @@ public class StandardsFormPresenter implements BinderValidator {
       } catch (NumberFormatException e) {
         count = 0;
       }
-      design.standardsLayout.setVisible(count > 0);
+      design.contaminantsLayout.setVisible(count > 0);
       while (dataProvider.getItems().size() > count) {
-        Standard remove = dataProvider.getItems().stream().skip(dataProvider.getItems().size() - 1)
-            .findFirst().orElse(null);
+        Contaminant remove = dataProvider.getItems().stream()
+            .skip(dataProvider.getItems().size() - 1).findFirst().orElse(null);
         dataProvider.getItems().remove(remove);
       }
       if (dataProvider.getItems().size() < count) {
-        List<Standard> standardList = new ArrayList<>(binders.keySet());
+        List<Contaminant> contaminantList = new ArrayList<>(binders.keySet());
         while (dataProvider.getItems().size() < count) {
           if (dataProvider.getItems().size() < binders.size()) {
-            dataProvider.getItems().add(standardList.get(dataProvider.getItems().size()));
+            dataProvider.getItems().add(contaminantList.get(dataProvider.getItems().size()));
           } else {
-            Standard standard = new Standard();
-            binder(standard);
-            dataProvider.getItems().add(standard);
+            Contaminant contaminant = new Contaminant();
+            binder(contaminant);
+            dataProvider.getItems().add(contaminant);
           }
         }
       }
-      design.standardsLayout.setVisible(count > 0);
+      design.contaminantsLayout.setVisible(count > 0);
       dataProvider.refreshAll();
     }
   }
 
   private void fill() {
-    List<Standard> standards = VaadinUtils.gridItems(design.standards).collect(Collectors.toList());
-    if (!standards.isEmpty()) {
-      Standard first = standards.get(0);
+    List<Contaminant> contaminants =
+        VaadinUtils.gridItems(design.contaminants).collect(Collectors.toList());
+    if (!contaminants.isEmpty()) {
+      Contaminant first = contaminants.get(0);
       String name = nameFields.get(first).getValue();
       String quantity = quantityFields.get(first).getValue();
       String comment = commentFields.get(first).getValue();
-      for (Standard standard : standards.subList(1, standards.size())) {
-        nameFields.get(standard).setValue(name);
-        quantityFields.get(standard).setValue(quantity);
-        commentFields.get(standard).setValue(comment);
+      for (Contaminant contaminant : contaminants.subList(1, contaminants.size())) {
+        nameFields.get(contaminant).setValue(name);
+        quantityFields.get(contaminant).setValue(quantity);
+        commentFields.get(contaminant).setValue(comment);
       }
     }
   }
 
   boolean validate() {
-    logger.trace("Validate standards");
+    logger.trace("Validate contaminants");
     boolean valid = true;
     valid &= validate(countBinder);
-    for (Standard standard : dataProvider.getItems()) {
-      valid &= validate(binders.get(standard));
+    for (Contaminant contaminant : dataProvider.getItems()) {
+      valid &= validate(binders.get(contaminant));
     }
     return valid;
   }
@@ -252,19 +254,19 @@ public class StandardsFormPresenter implements BinderValidator {
     }
   }
 
-  List<Standard> getValue() {
+  List<Contaminant> getValue() {
     return new ArrayList<>(dataProvider.getItems());
   }
 
-  void setValue(List<Standard> standards) {
-    if (standards == null) {
-      standards = new ArrayList<>();
+  void setValue(List<Contaminant> contaminants) {
+    if (contaminants == null) {
+      contaminants = new ArrayList<>();
     }
     dataProvider.getItems().clear();
-    dataProvider.getItems().addAll(standards);
+    dataProvider.getItems().addAll(contaminants);
     dataProvider.refreshAll();
-    standards.stream().forEach(standard -> binder(standard));
-    countBinder.setBean(new ItemCount(standards.size()));
+    contaminants.stream().forEach(contaminant -> binder(contaminant));
+    countBinder.setBean(new ItemCount(contaminants.size()));
   }
 
   int getMaxCount() {

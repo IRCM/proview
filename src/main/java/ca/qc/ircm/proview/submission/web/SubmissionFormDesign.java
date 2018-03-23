@@ -61,10 +61,6 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextField sampleVolume;
   protected Panel standardsPanel;
   protected Panel contaminantsPanel;
-  protected TextField contaminantCount;
-  protected HorizontalLayout contaminantsLayout;
-  protected Grid<ca.qc.ircm.proview.sample.Contaminant> contaminants;
-  protected Button fillContaminants;
   protected Panel gelPanel;
   protected ComboBox<ca.qc.ircm.proview.submission.GelSeparation> separation;
   protected ComboBox<ca.qc.ircm.proview.submission.GelThickness> thickness;

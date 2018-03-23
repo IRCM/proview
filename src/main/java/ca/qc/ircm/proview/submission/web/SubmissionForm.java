@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.plate.web.PlateComponent;
+import ca.qc.ircm.proview.sample.web.ContaminantsForm;
 import ca.qc.ircm.proview.sample.web.StandardsForm;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
@@ -46,16 +47,19 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
   @Inject
   protected StandardsForm standardsForm;
   @Inject
+  protected ContaminantsForm contaminantsForm;
+  @Inject
   private transient SubmissionFormPresenter presenter;
 
   protected SubmissionForm() {
   }
 
   protected SubmissionForm(SubmissionFormPresenter presenter, PlateComponent plateComponent,
-      StandardsForm standardsForm) {
+      StandardsForm standardsForm, ContaminantsForm contaminantsForm) {
     this.presenter = presenter;
     this.plateComponent = plateComponent;
     this.standardsForm = standardsForm;
+    this.contaminantsForm = contaminantsForm;
   }
 
   /**
@@ -67,6 +71,7 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
     setCompositionRoot(design);
     design.samplesPlateContainer.addComponent(plateComponent);
     design.standardsPanel.setContent(standardsForm);
+    design.contaminantsPanel.setContent(contaminantsForm);
   }
 
   @Override
