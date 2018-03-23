@@ -72,9 +72,6 @@ import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.submission.GelColoration;
-import ca.qc.ircm.proview.submission.GelSeparation;
-import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
@@ -189,15 +186,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String STANDARDS_PANEL = "standardsPanel";
   public static final String CONTAMINANTS_PANEL = "contaminantsPanel";
   public static final String GEL_PANEL = "gelPanel";
-  public static final String SEPARATION = submission.separation.getMetadata().getName();
-  public static final String THICKNESS = submission.thickness.getMetadata().getName();
-  public static final String COLORATION = submission.coloration.getMetadata().getName();
-  public static final String OTHER_COLORATION = submission.otherColoration.getMetadata().getName();
-  public static final String DEVELOPMENT_TIME = submission.developmentTime.getMetadata().getName();
-  public static final String DECOLORATION = submission.decoloration.getMetadata().getName();
-  public static final String WEIGHT_MARKER_QUANTITY =
-      submission.weightMarkerQuantity.getMetadata().getName();
-  public static final String PROTEIN_QUANTITY = submission.proteinQuantity.getMetadata().getName();
   public static final String SERVICES_PANEL = "servicesPanel";
   public static final String DIGESTION =
       submission.proteolyticDigestionMethod.getMetadata().getName();
@@ -340,7 +328,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
     design.contaminantsPanel.addStyleName(CONTAMINANTS_PANEL);
     design.contaminantsPanel.setCaption(resources.message(CONTAMINANTS_PANEL));
-    prepareGelComponents();
+    design.gelPanel.addStyleName(GEL_PANEL);
+    design.gelPanel.setCaption(resources.message(GEL_PANEL));
     prepareServicesComponents();
     design.commentPanel.setCaption(resources.message(COMMENT_PANEL));
     design.commentPanel.addStyleName(COMMENT_PANEL);
@@ -632,64 +621,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         .bind(SAMPLE_VOLUME);
   }
 
-  private void prepareGelComponents() {
-    final Locale locale = view.getLocale();
-    final MessageResource resources = view.getResources();
-    final MessageResource generalResources = view.getGeneralResources();
-    design.gelPanel.addStyleName(GEL_PANEL);
-    design.gelPanel.setCaption(resources.message(GEL_PANEL));
-    design.separation.addStyleName(SEPARATION);
-    design.separation.setCaption(resources.message(SEPARATION));
-    design.separation.setEmptySelectionAllowed(false);
-    design.separation.setItems(GelSeparation.values());
-    design.separation.setItemCaptionGenerator(separation -> separation.getLabel(locale));
-    design.separation.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(design.separation).withValidator(requiredIfVisible(design.separation))
-        .bind(SEPARATION);
-    design.thickness.addStyleName(THICKNESS);
-    design.thickness.setCaption(resources.message(THICKNESS));
-    design.thickness.setEmptySelectionAllowed(false);
-    design.thickness.setItems(GelThickness.values());
-    design.thickness.setItemCaptionGenerator(thickness -> thickness.getLabel(locale));
-    design.thickness.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(design.thickness).withValidator(requiredIfVisible(design.thickness))
-        .bind(THICKNESS);
-    design.coloration.addStyleName(COLORATION);
-    design.coloration.setCaption(resources.message(COLORATION));
-    design.coloration.setEmptySelectionAllowed(true);
-    design.coloration.setEmptySelectionCaption(GelColoration.getNullLabel(locale));
-    design.coloration.setItems(GelColoration.values());
-    design.coloration.setItemCaptionGenerator(coloration -> coloration.getLabel(locale));
-    design.coloration.addValueChangeListener(e -> updateVisible());
-    submissionBinder.forField(design.coloration).bind(COLORATION);
-    design.otherColoration.addStyleName(OTHER_COLORATION);
-    design.otherColoration.setCaption(resources.message(OTHER_COLORATION));
-    design.otherColoration.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(design.otherColoration)
-        .withValidator(requiredTextIfVisible(design.otherColoration)).withNullRepresentation("")
-        .bind(OTHER_COLORATION);
-    design.developmentTime.addStyleName(DEVELOPMENT_TIME);
-    design.developmentTime.setCaption(resources.message(DEVELOPMENT_TIME));
-    design.developmentTime.setPlaceholder(resources.message(property(DEVELOPMENT_TIME, EXAMPLE)));
-    submissionBinder.forField(design.developmentTime).withNullRepresentation("")
-        .bind(DEVELOPMENT_TIME);
-    design.decoloration.addStyleName(DECOLORATION);
-    design.decoloration.setCaption(resources.message(DECOLORATION));
-    submissionBinder.forField(design.decoloration).bind(DECOLORATION);
-    design.weightMarkerQuantity.addStyleName(WEIGHT_MARKER_QUANTITY);
-    design.weightMarkerQuantity.setCaption(resources.message(WEIGHT_MARKER_QUANTITY));
-    design.weightMarkerQuantity
-        .setPlaceholder(resources.message(property(WEIGHT_MARKER_QUANTITY, EXAMPLE)));
-    submissionBinder.forField(design.weightMarkerQuantity).withNullRepresentation("")
-        .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
-        .bind(WEIGHT_MARKER_QUANTITY);
-    design.proteinQuantity.addStyleName(PROTEIN_QUANTITY);
-    design.proteinQuantity.setCaption(resources.message(PROTEIN_QUANTITY));
-    design.proteinQuantity.setPlaceholder(resources.message(property(PROTEIN_QUANTITY, EXAMPLE)));
-    submissionBinder.forField(design.proteinQuantity).withNullRepresentation("")
-        .bind(PROTEIN_QUANTITY);
-  }
-
   private void prepareServicesComponents() {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
@@ -948,15 +879,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.contaminantsPanel
         .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
     design.gelPanel.setVisible(service == LC_MS_MS && type.isGel());
-    design.separation.setVisible(service == LC_MS_MS && type.isGel());
-    design.thickness.setVisible(service == LC_MS_MS && type.isGel());
-    design.coloration.setVisible(service == LC_MS_MS && type.isGel());
-    design.otherColoration.setVisible(
-        service == LC_MS_MS && type.isGel() && design.coloration.getValue() == GelColoration.OTHER);
-    design.developmentTime.setVisible(service == LC_MS_MS && type.isGel());
-    design.decoloration.setVisible(service == LC_MS_MS && type.isGel());
-    design.weightMarkerQuantity.setVisible(service == LC_MS_MS && type.isGel());
-    design.proteinQuantity.setVisible(service == LC_MS_MS && type.isGel());
     design.digestion.setVisible(service == LC_MS_MS);
     design.usedProteolyticDigestionMethod
         .setVisible(design.digestion.isVisible() && design.digestion.getValue() == DIGESTED);
@@ -1020,14 +942,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.sampleVolume.setReadOnly(readOnly);
     view.standardsForm.setReadOnly(readOnly);
     view.contaminantsForm.setReadOnly(readOnly);
-    design.separation.setReadOnly(readOnly);
-    design.thickness.setReadOnly(readOnly);
-    design.coloration.setReadOnly(readOnly);
-    design.otherColoration.setReadOnly(readOnly);
-    design.developmentTime.setReadOnly(readOnly);
-    design.decoloration.setReadOnly(readOnly);
-    design.weightMarkerQuantity.setReadOnly(readOnly);
-    design.proteinQuantity.setReadOnly(readOnly);
+    view.gelForm.setReadOnly(readOnly);
     design.digestion.setReadOnly(readOnly);
     design.usedProteolyticDigestionMethod.setReadOnly(readOnly);
     design.otherProteolyticDigestionMethod.setReadOnly(readOnly);
@@ -1213,6 +1128,9 @@ public class SubmissionFormPresenter implements BinderValidator {
         valid &= view.standardsForm.validate();
         valid &= view.contaminantsForm.validate();
       }
+      if (sample.getType().isGel()) {
+        valid &= view.gelForm.validate();
+      }
     } else if (submission.getService() == Service.SMALL_MOLECULE) {
       valid &= validate(() -> validateSolvents());
     }
@@ -1330,14 +1248,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     clearInvisibleField(design.postTranslationModification);
     clearInvisibleField(design.sampleQuantity);
     clearInvisibleField(design.sampleVolume);
-    clearInvisibleField(design.separation);
-    clearInvisibleField(design.thickness);
-    clearInvisibleField(design.coloration);
-    clearInvisibleField(design.otherColoration);
-    clearInvisibleField(design.developmentTime);
-    clearInvisibleField(design.decoloration);
-    clearInvisibleField(design.weightMarkerQuantity);
-    clearInvisibleField(design.proteinQuantity);
     clearInvisibleField(design.digestion);
     clearInvisibleField(design.usedProteolyticDigestionMethod);
     clearInvisibleField(design.otherProteolyticDigestionMethod);
@@ -1566,6 +1476,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.sampleContainerType.setValue(firstSample.getOriginalContainer().getType());
     view.standardsForm.setValue(firstSample.getStandards());
     view.contaminantsForm.setValue(firstSample.getContaminants());
+    view.gelForm.setValue(submission);
     MassDetectionInstrumentSource source = submission.getSource();
     if (source != null && !source.available) {
       design.source.setItems(

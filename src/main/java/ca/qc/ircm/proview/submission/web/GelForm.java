@@ -17,53 +17,34 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import ca.qc.ircm.proview.plate.web.PlateComponent;
-import ca.qc.ircm.proview.sample.web.ContaminantsForm;
-import ca.qc.ircm.proview.sample.web.StandardsForm;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
-import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.CustomComponent;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.vaadin.easyuploads.MultiFileUpload;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
- * Submission form.
+ * Submission form for gel properties.
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SubmissionForm extends CustomComponent implements BaseComponent {
+public class GelForm extends CustomComponent implements BaseComponent {
   private static final long serialVersionUID = 7586918222688019429L;
-  protected SubmissionFormDesign design = new SubmissionFormDesign();
+  protected GelFormDesign design = new GelFormDesign();
   protected DefaultMultiFileUpload filesUploader;
   @Inject
-  protected PlateComponent plateComponent;
-  @Inject
-  protected StandardsForm standardsForm;
-  @Inject
-  protected ContaminantsForm contaminantsForm;
-  @Inject
-  protected GelForm gelForm;
-  @Inject
-  private transient SubmissionFormPresenter presenter;
+  private transient GelFormPresenter presenter;
 
-  protected SubmissionForm() {
+  protected GelForm() {
   }
 
-  protected SubmissionForm(SubmissionFormPresenter presenter, PlateComponent plateComponent,
-      StandardsForm standardsForm, ContaminantsForm contaminantsForm,
-      GelForm gelForm) {
+  protected GelForm(GelFormPresenter presenter) {
     this.presenter = presenter;
-    this.plateComponent = plateComponent;
-    this.standardsForm = standardsForm;
-    this.contaminantsForm = contaminantsForm;
-    this.gelForm = gelForm;
   }
 
   /**
@@ -71,12 +52,7 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
    */
   @PostConstruct
   public void init() {
-    setSizeFull();
     setCompositionRoot(design);
-    design.samplesPlateContainer.addComponent(plateComponent);
-    design.standardsPanel.setContent(standardsForm);
-    design.contaminantsPanel.setContent(contaminantsForm);
-    design.gelPanel.setContent(gelForm);
   }
 
   @Override
@@ -85,18 +61,8 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
     presenter.init(this);
   }
 
-  /**
-   * Creates uploader for additional files.
-   *
-   * @param fileHandler
-   *          handles uploaded files
-   * @return uploader for additional files
-   */
-  public MultiFileUpload createFilesUploader(MultiFileUploadFileHandler fileHandler) {
-    filesUploader = new DefaultMultiFileUpload();
-    filesUploader.setFileHandler(fileHandler);
-    design.filesUploaderLayout.addComponent(filesUploader);
-    return filesUploader;
+  public boolean validate() {
+    return presenter.validate();
   }
 
   public Submission getValue() {

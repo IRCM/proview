@@ -20,12 +20,9 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DECOLORATION;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DEVELOPMENT_TIME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS;
@@ -46,7 +43,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INJECTIO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.LIGHT_SENSITIVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.MONOISOTOPIC_MASS;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_COLORATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
@@ -57,7 +53,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_NAME;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_WEIGHT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.QUANTIFICATION_COMMENT;
@@ -73,7 +68,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_T
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SEPARATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PANEL;
@@ -84,10 +78,16 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARD
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.THICKNESS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.WEIGHT_MARKER_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.COLORATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DECOLORATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.OTHER_COLORATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.PROTEIN_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.SEPARATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.THICKNESS;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.HEADER_STYLE;
 import static org.openqa.selenium.By.className;
 

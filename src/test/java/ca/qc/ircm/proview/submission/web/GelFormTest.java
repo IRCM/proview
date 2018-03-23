@@ -23,9 +23,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.plate.web.PlateComponent;
-import ca.qc.ircm.proview.sample.web.ContaminantsForm;
-import ca.qc.ircm.proview.sample.web.StandardsForm;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import org.junit.Before;
@@ -36,18 +33,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
-public class SubmissionFormTest {
-  private SubmissionForm view;
+public class GelFormTest {
+  private GelForm view;
   @Mock
-  private SubmissionFormPresenter presenter;
-  @Mock
-  private PlateComponent plateComponent;
-  @Mock
-  private StandardsForm standardsForm;
-  @Mock
-  private ContaminantsForm contaminantsForm;
-  @Mock
-  private GelForm gelForm;
+  private GelFormPresenter presenter;
   @Mock
   private Submission submission;
 
@@ -56,19 +45,7 @@ public class SubmissionFormTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    view = new SubmissionForm(presenter, plateComponent, standardsForm, contaminantsForm,
-        gelForm);
-  }
-
-  @Test
-  public void init() throws Throwable {
-    view.init();
-
-    assertEquals(1, view.design.samplesPlateContainer.getComponentCount());
-    assertEquals(plateComponent, view.design.samplesPlateContainer.getComponent(0));
-    assertEquals(standardsForm, view.design.standardsPanel.getContent());
-    assertEquals(contaminantsForm, view.design.contaminantsPanel.getContent());
-    assertEquals(gelForm, view.design.gelPanel.getContent());
+    view = new GelForm(presenter);
   }
 
   @Test
