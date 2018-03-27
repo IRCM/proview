@@ -53,11 +53,11 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   }
 
   protected String viewUrl(String view) {
-    return baseUrl + "/" + view;
+    return baseUrl + "/#!" + view;
   }
 
   protected String viewUrl(String view, String parameters) {
-    return baseUrl + "/" + view + "/" + parameters;
+    return baseUrl + "/#!" + view + "/" + parameters;
   }
 
   protected void openView(String view) {
