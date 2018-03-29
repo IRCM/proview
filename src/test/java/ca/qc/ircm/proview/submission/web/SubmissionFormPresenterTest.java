@@ -66,6 +66,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PLATE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.POST_TRANSLATION_MODIFICATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PRINT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PRINT_FILENAME;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PRINT_MIME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_CONTENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.PROTEIN_IDENTIFICATION_LINK;
@@ -129,7 +131,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.files.web.GuidelinesWindow;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -176,7 +177,6 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.ErrorMessage;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.SerializableFunction;
 import com.vaadin.server.StreamResource;
@@ -186,6 +186,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Rule;
@@ -199,6 +200,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
@@ -232,8 +234,6 @@ public class SubmissionFormPresenterTest {
   private AuthorizationService authorizationService;
   @Mock
   private SubmissionForm view;
-  @Mock
-  private ApplicationConfiguration applicationConfiguration;
   @Mock
   private Provider<GuidelinesWindow> guidelinesWindowProvider;
   @Mock
@@ -331,7 +331,6 @@ public class SubmissionFormPresenterTest {
   private StringToIntegerConverter integerConverter = new StringToIntegerConverter("");
   private StringToDoubleConverter doubleConverter = new StringToDoubleConverter("");
   private SerializableFunction<String, Exception> throwableFunction = s -> new Exception();
-  private String baseUrl = "http://localhost:8080";
 
   /**
    * Before test.
@@ -339,7 +338,7 @@ public class SubmissionFormPresenterTest {
   @Before
   public void beforeTest() throws Throwable {
     presenter = new SubmissionFormPresenter(submissionService, submissionSampleService,
-        plateService, authorizationService, applicationConfiguration, guidelinesWindowProvider);
+        plateService, authorizationService, guidelinesWindowProvider);
     design = new SubmissionFormDesign();
     view.design = design;
     view.plateComponent = mock(PlateComponent.class);
@@ -358,9 +357,7 @@ public class SubmissionFormPresenterTest {
     plate = new Plate();
     plate.initWells();
     when(view.plateComponent.getValue()).thenReturn(plate);
-    when(applicationConfiguration.getUrl(any())).then(inv -> {
-      return baseUrl + inv.getArgumentAt(0, String.class);
-    });
+    when(submissionService.print(any(), any())).thenReturn("");
   }
 
   private void setFields() {
@@ -6163,19 +6160,25 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void print() {
+  public void print() throws Throwable {
     presenter.init(view);
     Submission submission = createSubmission();
+    String content = RandomStringUtils.randomAlphanumeric(1000);
+    when(submissionService.print(any(), any())).thenReturn(content);
     presenter.setValue(submission);
 
     Optional<BrowserWindowOpener> optionalBrowserWindowOpener =
         findInstanceOf(design.print.getExtensions(), BrowserWindowOpener.class);
     assertTrue(optionalBrowserWindowOpener.isPresent());
     BrowserWindowOpener browserWindowOpener = optionalBrowserWindowOpener.get();
-    assertTrue(browserWindowOpener.getResource() instanceof ExternalResource);
-    ExternalResource resource = (ExternalResource) browserWindowOpener.getResource();
-    assertEquals(baseUrl + PrintSubmissionController.printSubmissionUrl(submission, locale),
-        resource.getURL());
+    assertTrue(browserWindowOpener.getResource() instanceof StreamResource);
+    StreamResource resource = (StreamResource) browserWindowOpener.getResource();
+    assertEquals(PRINT_MIME, resource.getMIMEType());
+    assertEquals(0, resource.getCacheTime());
+    assertEquals(String.format(PRINT_FILENAME, submission.getId()), resource.getFilename());
+    ByteArrayOutputStream actualOutput = new ByteArrayOutputStream();
+    IOUtils.copy(resource.getStream().getStream(), actualOutput);
+    assertArrayEquals(content.getBytes(StandardCharsets.UTF_8), actualOutput.toByteArray());
   }
 
   @Test

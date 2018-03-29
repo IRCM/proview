@@ -21,6 +21,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="http://www.thymeleaf.org">
   <head>
+    <meta charset="UTF-8">
     <style type="text/css">
       h1 {
         font-size: 2em;
@@ -156,33 +157,33 @@
       <div class="two-columns">
         <div class="right">
           <span class="label" th:text="#{submission.submissionDate}">Date:</span>
-          <span th:text="${#dates.format(submission.submissionDate, 'yyyy-MM-dd')}">2018-03-07</span>
+          <span class="submissionDate" th:text="${#dates.format(submissionDate, 'yyyy-MM-dd')}" th:if="${submissionDate != null}">2018-03-07</span>
         </div>
         <div class="left">
           <span class="label" th:text="#{user.name}">Name:</span>
-          <span th:text="${user.name}">Christian Poitras</span>
+          <span class="user-name" th:text="${user.name}" th:if="${user != null}">Christian Poitras</span>
         </div>
       </div>
       <div class="two-columns">
         <div class="right">
           <span class="label" th:text="#{user.phonenumber}">Phone:</span>
-          <span th:text="${user.phoneNumbers[0].getValue(locale)}">514-987-5500</span>
+          <span class="user-phone" th:text="${user.phoneNumbers[0].getValue(locale)}" th:if="${user != null && !user.phoneNumbers.empty}">514-987-5500</span>
         </div>
         <div class="left">
           <span class="label" th:text="#{laboratory.name}">Lab:</span>
-          <span th:text="${laboratory.name}">Translational Proteomics</span>
+          <span class="laboratory-name" th:text="${laboratory.name}" th:if="${laboratory != null}">Translational Proteomics</span>
         </div>
       </div>
       <div class="two-columns">
         <div class="left">
           <span class="label" th:text="#{laboratory.director}">Director:</span>
-          <span th:text="${laboratory.director}">Benoit Coulombe</span>
+          <span class="laboratory-director" th:text="${laboratory.director}" th:if="${laboratory != null}">Benoit Coulombe</span>
         </div>
       </div>
       <div class="two-columns">
         <div class="left">
           <span class="label" th:text="#{user.email}">Email:</span>
-          <span th:text="${user.email}">christian.poitras@ircm.qc.ca</span>
+          <span class="user-email" th:text="${user.email}" th:if="${user != null}">christian.poitras@ircm.qc.ca</span>
         </div>
       </div>
     </div>
@@ -190,7 +191,7 @@
       <h3 th:text="#{samples}">Samples</h3>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{samples.count}">Number of samples:</span>
-        <span th:text="${submission.samples.size()}">2</span>
+        <span class="sample-count" th:text="${submission.samples.size()}">2</span>
       </div>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{samples.name}">Sample names:</span>
@@ -200,171 +201,171 @@
       </div>
       <div th:if="${submission.service.name() == 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{sample.name}">Sample name:</span>
-        <span th:text="${sample.name}">My sample</span>
+        <span class="sample-name" th:text="${sample.name}">My sample</span>
       </div>
       <div th:if="${plate != null}">
         <span class="label" th:text="#{plate.name}">Plate:</span>
-        <span th:text="${plate.name}">My plate</span>
+        <span class="submission-plate" th:text="${plate.name}">My plate</span>
       </div>
-      <div>
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.experience}">Experience:</span>
-        <span th:text="${submission.experience}">My experience</span>
+        <span class="experience" th:text="${submission.experience}">My experience</span>
       </div>
-      <div th:if="${submission.goal != null}">
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE' && submission.goal != null}">
         <span class="label" th:text="#{submission.goal}">Experience goal:</span>
-        <span th:text="${submission.goal}">My goal</span>
+        <span class="goal" th:text="${submission.goal}">My goal</span>
       </div>
-      <div>
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.taxonomy}">Taxonomy:</span>
-        <span th:text="${submission.taxonomy}">Human</span>
+        <span class="taxonomy" th:text="${submission.taxonomy}">Human</span>
       </div>
       <div>
         <span class="label" th:text="#{sample.type}">Type:</span>
-        <span th:text="${sample.type.getLabel(locale)}">Solution</span>
+        <span class="sample-type" th:text="${sample.type.getLabel(locale)}">Solution</span>
       </div>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.protein}">Protein name:</span>
-        <span th:text="${submission.protein}">POLR2A</span>
+        <span class="protein" th:text="${submission.protein}">POLR2A</span>
       </div>
-      <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
+      <div th:if="${submission.service.name() == 'LC_MS_MS'}">
         <span class="label" th:text="#{sample.molecularWeight}">Molecular weight:</span>
-        <span th:text="${sample.molecularWeight}">20 KDa</span>
+        <span class="sample-molecularWeight" th:text="${sample.molecularWeight}">20 KDa</span>
       </div>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.postTranslationModification}">Post-translationnal modification:</span>
-        <span th:text="${submission.postTranslationModification}">Phosphopeptides</span>
+        <span class="postTranslationModification" th:text="${submission.postTranslationModification}">Phosphopeptides</span>
       </div>
-      <div th:if="${sample.quantity != null}">
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE' && sample.type.name() != 'GEL' && sample.quantity != null}">
         <span class="label" th:text="#{sample.quantity}">Quantity:</span>
-        <span th:text="${sample.quantity}">20 μg</span>
+        <span class="sample-quantity" th:text="${sample.quantity}">20 μg</span>
       </div>
-      <div th:if="${sample.volume != null}">
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE' && sample.type.name() == 'SOLUTION' && sample.volume != null}">
         <span class="label" th:text="#{sample.volume}">Volume:</span>
-        <span th:text="${sample.volume}">10 μl</span>
+        <span class="sample-volume" th:text="${sample.volume}">10 μl</span>
       </div>
-      <div th:if="${submission.separation != null}">
+      <div th:if="${sample.type.name() == 'GEL' && submission.separation != null}">
         <span class="label" th:text="#{submission.separation}">Gel separation:</span>
-        <span th:text="${submission.separation.getLabel(locale)}">1D</span>
+        <span class="separation" th:text="${submission.separation.getLabel(locale)}">1D</span>
       </div>
-      <div th:if="${submission.thickness != null}">
+      <div th:if="${sample.type.name() == 'GEL' && submission.thickness != null}">
         <span class="label" th:text="#{submission.thickness}">Gel thickness:</span>
-        <span th:text="${submission.thickness.getLabel(locale)}">1</span>
+        <span class="thickness" th:text="${submission.thickness.getLabel(locale)}">1</span>
       </div>
-      <div th:if="${submission.coloration != null}">
+      <div th:if="${sample.type.name() == 'GEL' && submission.coloration != null}">
         <span class="label" th:text="#{submission.coloration}">Coloration:</span>
-        <span th:text="${submission.coloration.getLabel(locale)}">Coomassie</span>
+        <span class="coloration" th:text="${submission.coloration.getLabel(locale)}">Coomassie</span>
       </div>
-      <div th:if="${submission.otherColoration != null}">
+      <div th:if="${sample.type.name() == 'GEL' && submission.coloration != null && submission.coloration.name() == 'OTHER'}">
         <span class="label" th:text="#{submission.otherColoration}">Other coloration:</span>
-        <span th:text="${submission.otherColoration}">Coomassie 2</span>
+        <span class="otherColoration" th:text="${submission.otherColoration}">Coomassie 2</span>
       </div>
-      <div th:if="${submission.developmentTime != null}">
+      <div th:if="${sample.type.name() == 'GEL' && submission.developmentTime != null}">
         <span class="label" th:text="#{submission.developmentTime}">Development time:</span>
-        <span th:text="${submission.developmentTime}">300 s</span>
+        <span class="developmentTime" th:text="${submission.developmentTime}">300 s</span>
       </div>
-      <div th:if="${submission.decoloration}">
+      <div th:if="${sample.type.name() == 'GEL' && submission.decoloration}">
         <span class="label" th:text="#{submission.decoloration}">Destained</span>
-        <span th:text="#{submission.decoloration.true}">Yes</span>
+        <span class="decoloration" th:text="#{submission.decoloration.true}">Yes</span>
       </div>
-      <div th:if="${submission.weightMarkerQuantity != null}">
+      <div th:if="${sample.type.name() == 'GEL' && submission.weightMarkerQuantity != null}">
         <span class="label" th:text="#{submission.weightMarkerQuantity}">Weight marker quantity (μg):</span>
-        <span th:text="${submission.weightMarkerQuantity}">20</span>
+        <span class="weightMarkerQuantity" th:text="${submission.weightMarkerQuantity}">20</span>
       </div>
-      <div th:if="${submission.proteinQuantity != null}">
+      <div th:if="${sample.type.name() == 'GEL' && submission.proteinQuantity != null}">
         <span class="label" th:text="#{submission.proteinQuantity}">Total protein quantity in gel:</span>
-        <span th:text="${submission.proteinQuantity}">20 μg</span>
+        <span class="proteinQuantity" th:text="${submission.proteinQuantity}">20 μg</span>
       </div>
-      <div th:if="${submission.solutionSolvent != null}">
+      <div th:if="${submission.service.name() == 'SMALL_MOLECULE' && submission.solutionSolvent != null}">
         <span class="label" th:text="#{submission.solutionSolvent}">Solvent:</span>
-        <span th:text="${submission.solutionSolvent}">CH3OH</span>
+        <span class="solutionSolvent" th:text="${submission.solutionSolvent}">CH3OH</span>
       </div>
-      <div th:if="${submission.formula != null}">
+      <div th:if="${submission.service.name() == 'SMALL_MOLECULE' && submission.formula != null}">
         <span class="label" th:text="#{submission.formula}">Empiric formula:</span>
-        <span th:text="${submission.formula}">C6H12O6</span>
+        <span class="formula" th:text="${submission.formula}">C6H12O6</span>
       </div>
-      <div th:if="${submission.monoisotopicMass != null}">
+      <div th:if="${submission.service.name() == 'SMALL_MOLECULE' && submission.monoisotopicMass != null}">
         <span class="label" th:text="#{submission.monoisotopicMass}">Monoisotopic molecular mass:</span>
-        <span th:text="${submission.monoisotopicMass}">20 KDa</span>
+        <span class="monoisotopicMass" th:text="${submission.monoisotopicMass}">20 KDa</span>
       </div>
-      <div th:if="${submission.averageMass != null}">
+      <div th:if="${submission.service.name() == 'SMALL_MOLECULE' && submission.averageMass != null}">
         <span class="label" th:text="#{submission.averageMass}">Average mass:</span>
-        <span th:text="${submission.averageMass}">20 KDa</span>
+        <span class="averageMass" th:text="${submission.averageMass}">20 KDa</span>
       </div>
-      <div th:if="${submission.toxicity != null}">
+      <div th:if="${submission.service.name() == 'SMALL_MOLECULE' && submission.toxicity != null}">
         <span class="label" th:text="#{submission.toxicity}">Toxicity:</span>
-        <span th:text="${submission.toxicity}">Can kill you</span>
+        <span class="toxicity" th:text="${submission.toxicity}">Can kill you</span>
       </div>
-      <div th:if="${submission.lightSensitive}">
+      <div th:if="${submission.service.name() == 'SMALL_MOLECULE' && submission.lightSensitive}">
         <span class="label" th:text="#{submission.lightSensitive}">Light sensitive:</span>
-        <span th:text="${submission.lightSensitive.true}">Yes</span>
+        <span class="lightSensitive" th:text="#{submission.lightSensitive.true}">Yes</span>
       </div>
-      <div th:if="${submission.storageTemperature != null}">
+      <div th:if="${submission.service.name() == 'SMALL_MOLECULE' && submission.storageTemperature != null}">
         <span class="label" th:text="#{submission.storageTemperature}">Storage temperature:</span>
-        <span th:text="${submission.storageTemperature.getLabel(locale)}">4 °C</span>
+        <span class="storageTemperature" th:text="${submission.storageTemperature.getLabel(locale)}">4 °C</span>
       </div>
     </div>
     <div class="service-information section">
-      <div th:if="${submission.proteolyticDigestionMethod != null}">
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteolyticDigestionMethod != null}">
         <span class="label" th:text="#{submission.proteolyticDigestionMethod}">Proteolytic digestion:</span>
-        <span th:text="${submission.proteolyticDigestionMethod.getLabel(locale)}">Trypsin</span>
+        <span class="proteolyticDigestionMethod" th:text="${submission.proteolyticDigestionMethod.getLabel(locale)}">Trypsin</span>
       </div>
-      <div th:if="${submission.usedProteolyticDigestionMethod != null}">
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteolyticDigestionMethod != null && submission.proteolyticDigestionMethod.name() == 'DIGESTED' && submission.usedProteolyticDigestionMethod != null}">
         <span class="label" th:text="#{submission.usedProteolyticDigestionMethod}">Used enzyme:</span>
-        <span th:text="${submission.usedProteolyticDigestionMethod}">Trypsin</span>
+        <span class="usedProteolyticDigestionMethod" th:text="${submission.usedProteolyticDigestionMethod}">Trypsin</span>
       </div>
-      <div th:if="${submission.otherProteolyticDigestionMethod != null}">
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteolyticDigestionMethod != null && submission.proteolyticDigestionMethod.name() == 'OTHER' && submission.otherProteolyticDigestionMethod != null}">
         <span class="label" th:text="#{submission.otherProteolyticDigestionMethod}">Enzyme to use:</span>
-        <span th:text="${submission.otherProteolyticDigestionMethod}">Trypsin</span>
+        <span class="otherProteolyticDigestionMethod" th:text="${submission.otherProteolyticDigestionMethod}">Trypsin</span>
       </div>
-      <div th:if="${submission.injectionType != null}">
+      <div th:if="${submission.service.name() == 'INTACT_PROTEIN' && submission.injectionType != null}">
         <span class="label" th:text="#{submission.injectionType}">Injection:</span>
-        <span th:text="${submission.injectionType.getLabel(locale)}">LC/MS</span>
+        <span class="injectionType" th:text="${submission.injectionType.getLabel(locale)}">LC/MS</span>
       </div>
-      <div th:if="${submission.source != null}">
+      <div th:if="${submission.service.name() == 'INTACT_PROTEIN' && submission.source != null}">
         <span class="label" th:text="#{submission.source}">Ionization source:</span>
-        <span th:text="${submission.source}">ESI</span>
+        <span class="source" th:text="${submission.source}">ESI</span>
       </div>
-      <div th:if="${submission.proteinContent != null}">
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteinContent != null}">
         <span class="label" th:text="#{submission.proteinContent}">Number of proteins:</span>
-        <span th:text="${submission.proteinContent.getLabel(locale)}">1 to 4</span>
+        <span class="proteinContent" th:text="${submission.proteinContent.getLabel(locale)}">1 to 4</span>
       </div>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.massDetectionInstrument}">Instrument selection:</span>
-        <span th:if="${submission.massDetectionInstrument != null}" th:text="${submission.massDetectionInstrument.getLabel(locale)}">Velos</span>
-        <span th:if="${submission.massDetectionInstrument == null}" th:text="${T(ca.qc.ircm.proview.msanalysis.MassDetectionInstrument).getNullLabel(locale)}">Velos</span>
+        <span class="massDetectionInstrument" th:if="${submission.massDetectionInstrument != null}" th:text="${submission.massDetectionInstrument.getLabel(locale)}">Velos</span>
+        <span class="massDetectionInstrument" th:if="${submission.massDetectionInstrument == null}" th:text="${@ca.qc.ircm.proview.msanalysis.MassDetectionInstrument@getNullLabel(locale)}">Velos</span>
       </div>
-      <div th:if="${submission.proteinIdentification != null}">
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteinIdentification != null}">
         <span class="label" th:text="#{submission.proteinIdentification}">Protein identification database:</span>
-        <span th:text="${submission.proteinIdentification.getLabel(locale)}">Refseq</span>
+        <span class="proteinIdentification" th:text="${submission.proteinIdentification.getLabel(locale)}">Refseq</span>
       </div>
-      <div th:if="${submission.proteinIdentificationLink != null}">
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteinIdentification != null && submission.proteinIdentification.name() == 'OTHER'}">
         <span class="label" th:text="#{submission.proteinIdentificationLink}">Protein identification database:</span>
-        <span th:text="${submission.proteinIdentificationLink}">http://refseq.org</span>
+        <span class="proteinIdentificationLink" th:text="${submission.proteinIdentificationLink}">http://refseq.org</span>
       </div>
-      <div th:if="${submission.quantification != null}">
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.quantification != null}">
         <span class="label" th:text="#{submission.quantification}">Quantification:</span>
-        <span th:text="${submission.quantification.getLabel(locale)}">Silac</span>
+        <span class="quantification" th:text="${submission.quantification.getLabel(locale)}">Silac</span>
       </div>
-      <div th:if="${submission.quantificationComment != null}">
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.quantification != null && (submission.quantification.name() == 'SILAC' || submission.quantification.name() == 'TMT')}">
         <span class="label" th:if="${submission.quantification.name() != 'TMT'}" th:text="#{submission.quantificationComment}">Quantification labels:</span>
         <span class="label" th:if="${submission.quantification.name() == 'TMT'}" th:text="#{submission.quantificationComment.TMT}">Used mass tagging kit:</span>
-        <pre th:text="${submission.quantificationComment}">Heavy: Lys8, Arg10</pre>
+        <pre class="quantificationComment" th:text="${submission.quantificationComment}">Heavy: Lys8, Arg10</pre>
       </div>
       <div th:if="${submission.service.name() == 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.highResolution}">Analysis:</span>
-        <span th:if="${!submission.highResolution}" th:text="${submission.highResolution.false}">Nominal mass</span>
-        <span th:if="${submission.highResolution}" th:text="${submission.highResolution.true}">Accurate mass measurement</span>
+        <span class="highResolution" th:if="${!submission.highResolution}" th:text="#{submission.highResolution.false}">Nominal mass</span>
+        <span class="highResolution" th:if="${submission.highResolution}" th:text="#{submission.highResolution.true}">Accurate mass measurement</span>
       </div>
       <div th:if="${submission.service.name() == 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.solvents}">Soluble in:</span>
         <span th:each="solvent,iterStat : ${submission.solvents}">
-          <span class="solvent" th:text="${ss.name}">CH3OH</span><span class="solvent-separator" th:if="${!iterStat.last}" th:text="#{submission.solvent.separator}">,</span>
+          <span class="solvent" th:utext="${solvent.solvent.getLabel(locale)}" th:if="${solvent.solvent.name() != 'OTHER'}">CH3OH</span><span class="solvent" th:text="${submission.otherSolvent}" th:if="${solvent.solvent.name() == 'OTHER'}">CH3OH</span><span class="solvent-separator" th:if="${!iterStat.last}" th:text="#{submission.solvent.separator}">,</span>
         </span>
       </div>
     </div>
     <div class="comment section">
       <span class="label" th:text="#{submission.comment}">Comment:</span>
-      <pre th:text="${submission.comment}">My comments</pre>
+      <pre class="comment" th:text="${submission.comment}">My comments</pre>
     </div>
     <div class="samples-details section" th:if="${submission.service.name() == 'INTACT_PROTEIN'}">
       <h3 th:text="#{samples-details}">Samples details</h3>
@@ -387,7 +388,7 @@
     </div>
     <div class="plate-information section pagebreak" th:if="${plate != null}">
       <h3 th:text="#{plate}">Plate information</h3>
-      <h3 th:text="${plate.name}">My plate</h3>
+      <h3 class="plate-name" th:text="${plate.name}">My plate</h3>
       <table>
         <tbody>
           <tr>
@@ -396,7 +397,7 @@
           </tr>
           <tr th:each="row : ${#numbers.sequence(0, plate.rowCount - 1)}">
             <th th:text="${plate.rowLabel(row)}">A</th>
-            <td th:each="column : ${#numbers.sequence(0, plate.columnCount - 1)}"><span class="sample-name" th:if="${plate.well(row, column).sample != null}" th:text="${plate.well(row, column).sample.name}">My sample</span></td>
+            <td th:each="column : ${#numbers.sequence(0, plate.columnCount - 1)}"><span class="well-sample-name" th:if="${plate.well(row, column).sample != null}" th:text="${plate.well(row, column).sample.name}">My sample</span></td>
           </tr>
         </tbody>
       </table>

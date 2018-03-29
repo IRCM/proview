@@ -46,8 +46,10 @@ import org.thymeleaf.context.Context;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -178,6 +180,37 @@ public class SubmissionService {
         query.where(submission.user.eq(currentUser));
       }
     }
+  }
+
+  public String print(Submission submission, Locale locale) {
+    if (submission == null || submission.getService() == null || submission.getSamples() == null
+        || submission.getSamples().isEmpty() || submission.getSamples().get(0) == null
+        || submission.getSamples().get(0).getType() == null || locale == null) {
+      return "";
+    }
+
+    Context context = new Context();
+    context.setLocale(locale);
+    context.setVariable("submission", submission);
+    context.setVariable("submissionDate",
+        submission.getSubmissionDate() != null ? Date.from(submission.getSubmissionDate()) : null);
+    context.setVariable("locale", locale);
+    context.setVariable("user", submission.getUser());
+    context.setVariable("laboratory", submission.getLaboratory());
+    if (submission.getSamples() != null && !submission.getSamples().isEmpty()) {
+      SubmissionSample sample = submission.getSamples().get(0);
+      context.setVariable("sample", sample);
+      if (sample.getOriginalContainer() != null
+          && sample.getOriginalContainer().getType() == SampleContainerType.WELL) {
+        Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
+        context.setVariable("plate", plate);
+      }
+    }
+
+    String templateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Print.html";
+    String content = emailTemplateEngine.process(templateLocation, context);
+    return content;
   }
 
   /**

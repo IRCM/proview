@@ -60,6 +60,7 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,13 +81,16 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -614,6 +618,1055 @@ public class SubmissionServiceTest {
 
     verify(authorizationService).checkUserRole();
     assertEquals(3, count);
+  }
+
+  private Submission submissionForPrint(Service service) {
+    Submission submission = new Submission();
+    submission.setService(service);
+    submission.setSubmissionDate(Instant.now().minus(2, ChronoUnit.DAYS));
+    submission.setUser(entityManager.find(User.class, 3L));
+    submission.setLaboratory(entityManager.find(Laboratory.class, 2L));
+    SubmissionSample sample1 = new SubmissionSample(1L, "first sample");
+    sample1.setQuantity("15 ug");
+    sample1.setVolume("10 ul");
+    sample1.setType(SampleType.SOLUTION);
+    sample1.setMolecularWeight(150.0);
+    sample1.setOriginalContainer(new Tube(1L, "first sample"));
+    sample1.setNumberProtein(5);
+    sample1.setMolecularWeight(8.9);
+    SubmissionSample sample2 = new SubmissionSample(2L, "second sample");
+    sample2.setQuantity("15 ug");
+    sample2.setVolume("10 ul");
+    sample2.setType(SampleType.SOLUTION);
+    sample2.setMolecularWeight(150.0);
+    sample2.setOriginalContainer(new Tube(2L, "second sample"));
+    sample2.setNumberProtein(6);
+    sample2.setMolecularWeight(9.3);
+    if (service == Service.SMALL_MOLECULE) {
+      submission.setSamples(new ArrayList<>(Arrays.asList(sample1)));
+    } else {
+      submission.setSamples(new ArrayList<>(Arrays.asList(sample1, sample2)));
+    }
+    submission.setExperience("my experience");
+    submission.setGoal("my goal");
+    submission.setTaxonomy("human");
+    submission.setProtein("POLR2A");
+    submission.setPostTranslationModification("phospho");
+    submission.setSeparation(GelSeparation.ONE_DIMENSION);
+    submission.setThickness(GelThickness.ONE);
+    submission.setColoration(GelColoration.COOMASSIE);
+    submission.setOtherColoration("my coloration");
+    submission.setDevelopmentTime("5 sec");
+    submission.setDecoloration(true);
+    submission.setWeightMarkerQuantity(12.5);
+    submission.setProteinQuantity("5 ug");
+    submission.setSolutionSolvent("H2O");
+    submission.setFormula("CH3OH");
+    submission.setMonoisotopicMass(10.2);
+    submission.setAverageMass(11.2);
+    submission.setToxicity("can kill");
+    submission.setLightSensitive(true);
+    submission.setStorageTemperature(StorageTemperature.MEDIUM);
+    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedProteolyticDigestionMethod("my trypsin");
+    submission.setOtherProteolyticDigestionMethod("other trypsin");
+    submission.setInjectionType(InjectionType.DIRECT_INFUSION);
+    submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setProteinContent(ProteinContent.LARGE);
+    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setProteinIdentification(ProteinIdentification.REFSEQ);
+    submission.setProteinIdentificationLink("https://www.ncbi.nlm.nih.gov/home/download/");
+    submission.setQuantification(Quantification.LABEL_FREE);
+    submission.setQuantificationComment("quantification comment\nsecond line");
+    submission.setHighResolution(true);
+    SampleSolvent solvent1 = new SampleSolvent();
+    solvent1.setSolvent(Solvent.ACETONITRILE);
+    SampleSolvent solvent2 = new SampleSolvent();
+    solvent2.setSolvent(Solvent.CHCL3);
+    submission.setSolvents(new ArrayList<>(Arrays.asList(solvent1, solvent2)));
+    submission.setOtherSolvent("other solvent");
+    submission.setComment("my comment\nsecond line");
+    return submission;
+  }
+
+  @Test
+  public void print_LcmsmsSolution() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    assertFalse(content.contains("??"));
+    assertTrue(content.contains("class=\"platform\""));
+    assertTrue(content.contains(resources.message("platform")));
+    assertTrue(content.contains("class=\"service\""));
+    assertTrue(content.contains(submission.getService().getLabel(locale)));
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+    assertTrue(content.contains("class=\"submissionDate\""));
+    assertTrue(content.contains(dateFormatter.format(toLocalDate(submission.getSubmissionDate()))));
+    assertTrue(content.contains("class=\"user-name\""));
+    assertTrue(content.contains(submission.getUser().getName()));
+    assertTrue(content.contains("class=\"user-phone\""));
+    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    assertTrue(content.contains("class=\"laboratory-name\""));
+    assertTrue(content.contains(submission.getLaboratory().getName()));
+    assertTrue(content.contains("class=\"laboratory-director\""));
+    assertTrue(content.contains(submission.getLaboratory().getDirector()));
+    assertTrue(content.contains("class=\"user-email\""));
+    assertTrue(content.contains(submission.getUser().getEmail()));
+    assertTrue(content.contains("class=\"sample-count\""));
+    assertTrue(content.contains(String.valueOf(submission.getSamples().size())));
+    assertTrue(content.contains("class=\"sample-name\""));
+    for (SubmissionSample sample : submission.getSamples()) {
+      assertTrue(content.contains(sample.getName()));
+    }
+    assertTrue(content.contains("class=\"experience\""));
+    assertTrue(content.contains(submission.getExperience()));
+    assertTrue(content.contains("class=\"goal\""));
+    assertTrue(content.contains(submission.getGoal()));
+    assertTrue(content.contains("class=\"taxonomy\""));
+    assertTrue(content.contains(submission.getTaxonomy()));
+    assertTrue(content.contains("class=\"sample-type\""));
+    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains("class=\"protein\""));
+    assertTrue(content.contains(submission.getProtein()));
+    assertTrue(content.contains("class=\"sample-molecularWeight\""));
+    assertTrue(
+        content.contains(String.valueOf(submission.getSamples().get(0).getMolecularWeight())));
+    assertTrue(content.contains("class=\"postTranslationModification\""));
+    assertTrue(content.contains(submission.getPostTranslationModification()));
+    assertTrue(content.contains("class=\"sample-quantity\""));
+    assertTrue(content.contains(submission.getSamples().get(0).getQuantity()));
+    assertTrue(content.contains("class=\"sample-volume\""));
+    assertTrue(content.contains(submission.getSamples().get(0).getVolume()));
+    assertFalse(content.contains("class=\"separation\""));
+    assertFalse(content.contains("class=\"thickness\""));
+    assertFalse(content.contains("class=\"coloration\""));
+    assertFalse(content.contains("class=\"otherColoration\""));
+    assertFalse(content.contains("class=\"developmentTime\""));
+    assertFalse(content.contains("class=\"decoloration\""));
+    assertFalse(content.contains("class=\"weightMarkerQuantity\""));
+    assertFalse(content.contains("class=\"proteinQuantity\""));
+    assertFalse(content.contains("class=\"solutionSolvent\""));
+    assertFalse(content.contains("class=\"formula\""));
+    assertFalse(content.contains("class=\"monoisotopicMass\""));
+    assertFalse(content.contains("class=\"averageMass\""));
+    assertFalse(content.contains("class=\"toxicity\""));
+    assertFalse(content.contains("class=\"lightSensitive\""));
+    assertFalse(content.contains("class=\"storageTemperature\""));
+    assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
+    assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
+    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"injectionType\""));
+    assertFalse(content.contains("class=\"source\""));
+    assertTrue(content.contains("class=\"proteinContent\""));
+    assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
+    assertTrue(content.contains("class=\"massDetectionInstrument\""));
+    assertTrue(content.contains(submission.getMassDetectionInstrument().getLabel(locale)));
+    assertTrue(content.contains("class=\"proteinIdentification\""));
+    assertTrue(content.contains(submission.getProteinIdentification().getLabel(locale)));
+    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+    assertTrue(content.contains("class=\"quantification\""));
+    assertTrue(content.contains(submission.getQuantification().getLabel(locale)));
+    assertFalse(content.contains("class=\"quantificationComment\""));
+    assertFalse(content.contains("class=\"highResolution\""));
+    assertFalse(content.contains("class=\"solvent\""));
+    assertTrue(content.contains("class=\"comment\""));
+    assertTrue(content.contains(submission.getComment()));
+    assertFalse(content.contains("class=\"samples-details section\""));
+    assertFalse(content.contains("class=\"plate-information section"));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoDate() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setSubmissionDate(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"submissionDate\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoLaboratory() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setLaboratory(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"laboratory-name\""));
+    assertFalse(content.contains("class=\"laboratory-director\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoUser() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setUser(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"user-name\""));
+    assertFalse(content.contains("class=\"user-phone\""));
+    assertFalse(content.contains("class=\"user-email\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoPhone() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    Locale locale = Locale.getDefault();
+    submission.getUser().getPhoneNumbers().clear();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"user-phone\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoExperience() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    Locale locale = Locale.getDefault();
+    submission.setExperience(null);
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"experience\""));
+    assertFalse(content.contains("null"));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoGoal() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    Locale locale = Locale.getDefault();
+    submission.setGoal(null);
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"goal\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoProteinName() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setProtein(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"protein\""));
+    assertFalse(content.contains("null"));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoMolecularWeight() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setMolecularWeight(null));
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"sample-molecularWeight\""));
+    assertFalse(content.contains("null"));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoPostTranslationModification() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setPostTranslationModification(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"postTranslationModification\""));
+    assertFalse(content.contains("null"));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoSampleQuantity() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setQuantity(null));
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"sample-quantity\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoSampleVolume() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setVolume(null));
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"sample-volume\""));
+  }
+
+  @Test
+  public void print_LcmsmsDry() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.DRY));
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"sample-volume\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoDigestion() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setProteolyticDigestionMethod(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"proteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_Digested() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setProteolyticDigestionMethod(ProteolyticDigestion.DIGESTED);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
+    assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
+    assertTrue(content.contains("class=\"usedProteolyticDigestionMethod\""));
+    assertTrue(content.contains(submission.getUsedProteolyticDigestionMethod()));
+    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_OtherDigestion() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setProteolyticDigestionMethod(ProteolyticDigestion.OTHER);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
+    assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
+    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
+    assertTrue(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertTrue(content.contains(submission.getOtherProteolyticDigestionMethod()));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoProteinContent() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setProteinContent(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"proteinContent\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoMassDetectionInstrument() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setMassDetectionInstrument(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"massDetectionInstrument\""));
+    assertTrue(
+        content.contains(MassDetectionInstrument.getNullLabel(locale).replaceAll("'", "&#39;")));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoProteinIdentification() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setProteinIdentification(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"proteinIdentification\""));
+    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_OtherProteinIdentificationLink() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setProteinIdentification(ProteinIdentification.OTHER);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"proteinIdentification\""));
+    assertTrue(content.contains("class=\"proteinIdentificationLink\""));
+    assertTrue(content.contains(submission.getProteinIdentificationLink()));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoProteinIdentificationLink() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setProteinIdentification(ProteinIdentification.OTHER);
+    submission.setProteinIdentificationLink(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"proteinIdentification\""));
+    assertTrue(content.contains("class=\"proteinIdentificationLink\""));
+    assertFalse(content.contains("null"));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_NoQuantification() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setQuantification(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"quantification\""));
+    assertFalse(content.contains("class=\"quantificationComment\""));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_SilacQuantification() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setQuantification(Quantification.SILAC);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    assertTrue(content.contains("class=\"quantification\""));
+    assertTrue(content.contains("class=\"quantificationComment\""));
+    assertTrue(content.contains(resources.message("submission.quantificationComment")));
+    assertTrue(content.contains(submission.getQuantificationComment()));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_SilacQuantificationNoComment() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setQuantification(Quantification.SILAC);
+    submission.setQuantificationComment(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    assertTrue(content.contains("class=\"quantification\""));
+    assertTrue(content.contains("class=\"quantificationComment\""));
+    assertTrue(content.contains(resources.message("submission.quantificationComment")));
+    assertFalse(content.contains("null"));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_TmtQuantification() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setQuantification(Quantification.TMT);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    assertTrue(content.contains("class=\"quantification\""));
+    assertTrue(content.contains("class=\"quantificationComment\""));
+    assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
+    assertTrue(content.contains(submission.getQuantificationComment()));
+  }
+
+  @Test
+  public void print_LcmsmsSolution_TmtQuantificationNoComment() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setQuantification(Quantification.TMT);
+    submission.setQuantificationComment(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    assertTrue(content.contains("class=\"quantification\""));
+    assertTrue(content.contains("class=\"quantificationComment\""));
+    assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
+    assertFalse(content.contains("null"));
+  }
+
+  @Test
+  public void print_LcmsmsGel() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    assertFalse(content.contains("??"));
+    assertTrue(content.contains("class=\"platform\""));
+    assertTrue(content.contains(resources.message("platform")));
+    assertTrue(content.contains("class=\"service\""));
+    assertTrue(content.contains(submission.getService().getLabel(locale)));
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+    assertTrue(content.contains("class=\"submissionDate\""));
+    assertTrue(content.contains(dateFormatter.format(toLocalDate(submission.getSubmissionDate()))));
+    assertTrue(content.contains("class=\"user-name\""));
+    assertTrue(content.contains(submission.getUser().getName()));
+    assertTrue(content.contains("class=\"user-phone\""));
+    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    assertTrue(content.contains("class=\"laboratory-name\""));
+    assertTrue(content.contains(submission.getLaboratory().getName()));
+    assertTrue(content.contains("class=\"laboratory-director\""));
+    assertTrue(content.contains(submission.getLaboratory().getDirector()));
+    assertTrue(content.contains("class=\"user-email\""));
+    assertTrue(content.contains(submission.getUser().getEmail()));
+    assertTrue(content.contains("class=\"sample-count\""));
+    assertTrue(content.contains(String.valueOf(submission.getSamples().size())));
+    assertTrue(content.contains("class=\"sample-name\""));
+    for (SubmissionSample sample : submission.getSamples()) {
+      assertTrue(content.contains(sample.getName()));
+    }
+    assertTrue(content.contains("class=\"experience\""));
+    assertTrue(content.contains(submission.getExperience()));
+    assertTrue(content.contains("class=\"goal\""));
+    assertTrue(content.contains(submission.getGoal()));
+    assertTrue(content.contains("class=\"taxonomy\""));
+    assertTrue(content.contains(submission.getTaxonomy()));
+    assertTrue(content.contains("class=\"sample-type\""));
+    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains("class=\"protein\""));
+    assertTrue(content.contains(submission.getProtein()));
+    assertTrue(content.contains("class=\"sample-molecularWeight\""));
+    assertTrue(
+        content.contains(String.valueOf(submission.getSamples().get(0).getMolecularWeight())));
+    assertTrue(content.contains("class=\"postTranslationModification\""));
+    assertTrue(content.contains(submission.getPostTranslationModification()));
+    assertFalse(content.contains("class=\"sample-quantity\""));
+    assertFalse(content.contains("class=\"sample-volume\""));
+    assertTrue(content.contains("class=\"separation\""));
+    assertTrue(content.contains(submission.getSeparation().getLabel(locale)));
+    assertTrue(content.contains("class=\"thickness\""));
+    assertTrue(content.contains(submission.getThickness().getLabel(locale)));
+    assertTrue(content.contains("class=\"coloration\""));
+    assertTrue(content.contains(submission.getColoration().getLabel(locale)));
+    assertFalse(content.contains("class=\"otherColoration\""));
+    assertTrue(content.contains("class=\"developmentTime\""));
+    assertTrue(content.contains(submission.getDevelopmentTime()));
+    assertTrue(content.contains("class=\"decoloration\""));
+    assertTrue(content.contains(resources.message("submission.decoloration.true")));
+    assertTrue(content.contains("class=\"weightMarkerQuantity\""));
+    assertTrue(content.contains(String.valueOf(submission.getWeightMarkerQuantity())));
+    assertTrue(content.contains("class=\"proteinQuantity\""));
+    assertTrue(content.contains(submission.getProteinQuantity()));
+    assertFalse(content.contains("class=\"solutionSolvent\""));
+    assertFalse(content.contains("class=\"formula\""));
+    assertFalse(content.contains("class=\"monoisotopicMass\""));
+    assertFalse(content.contains("class=\"averageMass\""));
+    assertFalse(content.contains("class=\"toxicity\""));
+    assertFalse(content.contains("class=\"lightSensitive\""));
+    assertFalse(content.contains("class=\"storageTemperature\""));
+    assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
+    assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
+    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"injectionType\""));
+    assertFalse(content.contains("class=\"source\""));
+    assertTrue(content.contains("class=\"proteinContent\""));
+    assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
+    assertTrue(content.contains("class=\"massDetectionInstrument\""));
+    assertTrue(content.contains(submission.getMassDetectionInstrument().getLabel(locale)));
+    assertTrue(content.contains("class=\"proteinIdentification\""));
+    assertTrue(content.contains(submission.getProteinIdentification().getLabel(locale)));
+    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+    assertTrue(content.contains("class=\"quantification\""));
+    assertTrue(content.contains(submission.getQuantification().getLabel(locale)));
+    assertFalse(content.contains("class=\"quantificationComment\""));
+    assertFalse(content.contains("class=\"highResolution\""));
+    assertFalse(content.contains("class=\"solvent\""));
+    assertTrue(content.contains("class=\"comment\""));
+    assertTrue(content.contains(submission.getComment()));
+    assertFalse(content.contains("class=\"samples-details section\""));
+    assertFalse(content.contains("class=\"plate-information section"));
+  }
+
+  @Test
+  public void print_LcmsmsGel_NoSeparation() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    submission.setSeparation(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertFalse(content.contains("class=\"separation\""));
+  }
+
+  @Test
+  public void print_LcmsmsGel_NoThickness() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    submission.setThickness(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertFalse(content.contains("class=\"thickness\""));
+  }
+
+  @Test
+  public void print_LcmsmsGel_NoColoration() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    submission.setColoration(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertFalse(content.contains("class=\"coloration\""));
+  }
+
+  @Test
+  public void print_LcmsmsGel_OtherColoration() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    submission.setColoration(GelColoration.OTHER);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertTrue(content.contains("class=\"coloration\""));
+    assertTrue(content.contains("class=\"otherColoration\""));
+    assertTrue(content.contains(submission.getOtherColoration()));
+  }
+
+  @Test
+  public void print_LcmsmsGel_NoOtherColoration() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    submission.setColoration(GelColoration.OTHER);
+    submission.setOtherColoration(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertTrue(content.contains("class=\"coloration\""));
+    assertTrue(content.contains("class=\"otherColoration\""));
+    assertFalse(content.contains("null"));
+  }
+
+  @Test
+  public void print_LcmsmsGel_NoDevelopmentTime() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    submission.setDevelopmentTime(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertFalse(content.contains("class=\"developmentTime\""));
+  }
+
+  @Test
+  public void print_LcmsmsGel_NoWeightMarkerQuantity() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    submission.setWeightMarkerQuantity(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertFalse(content.contains("class=\"weightMarkerQuantity\""));
+  }
+
+  @Test
+  public void print_LcmsmsGel_NoProteinQuantity() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    submission.setProteinQuantity(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertFalse(content.contains("class=\"proteinQuantity\""));
+  }
+
+  @Test
+  public void print_SmallMolecule() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    assertFalse(content.contains("??"));
+    assertTrue(content.contains("class=\"platform\""));
+    assertTrue(content.contains(resources.message("platform")));
+    assertTrue(content.contains("class=\"service\""));
+    assertTrue(content.contains(submission.getService().getLabel(locale)));
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+    assertTrue(content.contains("class=\"submissionDate\""));
+    assertTrue(content.contains(dateFormatter.format(toLocalDate(submission.getSubmissionDate()))));
+    assertTrue(content.contains("class=\"user-name\""));
+    assertTrue(content.contains(submission.getUser().getName()));
+    assertTrue(content.contains("class=\"user-phone\""));
+    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    assertTrue(content.contains("class=\"laboratory-name\""));
+    assertTrue(content.contains(submission.getLaboratory().getName()));
+    assertTrue(content.contains("class=\"laboratory-director\""));
+    assertTrue(content.contains(submission.getLaboratory().getDirector()));
+    assertTrue(content.contains("class=\"user-email\""));
+    assertTrue(content.contains(submission.getUser().getEmail()));
+    assertFalse(content.contains("class=\"sample-count\""));
+    assertTrue(content.contains("class=\"sample-name\""));
+    for (SubmissionSample sample : submission.getSamples()) {
+      assertTrue(content.contains(sample.getName()));
+    }
+    assertFalse(content.contains("class=\"experience\""));
+    assertFalse(content.contains("class=\"goal\""));
+    assertFalse(content.contains("class=\"taxonomy\""));
+    assertTrue(content.contains("class=\"sample-type\""));
+    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertFalse(content.contains("class=\"protein\""));
+    assertFalse(content.contains("class=\"sample-molecularWeight\""));
+    assertFalse(content.contains("class=\"postTranslationModification\""));
+    assertFalse(content.contains("class=\"sample-quantity\""));
+    assertFalse(content.contains("class=\"sample-volume\""));
+    assertFalse(content.contains("class=\"separation\""));
+    assertFalse(content.contains("class=\"thickness\""));
+    assertFalse(content.contains("class=\"coloration\""));
+    assertFalse(content.contains("class=\"otherColoration\""));
+    assertFalse(content.contains("class=\"developmentTime\""));
+    assertFalse(content.contains("class=\"decoloration\""));
+    assertFalse(content.contains("class=\"weightMarkerQuantity\""));
+    assertFalse(content.contains("class=\"proteinQuantity\""));
+    assertTrue(content.contains("class=\"solutionSolvent\""));
+    assertTrue(content.contains(submission.getSolutionSolvent()));
+    assertTrue(content.contains("class=\"formula\""));
+    assertTrue(content.contains(submission.getFormula()));
+    assertTrue(content.contains("class=\"monoisotopicMass\""));
+    assertTrue(content.contains(String.valueOf(submission.getMonoisotopicMass())));
+    assertTrue(content.contains("class=\"averageMass\""));
+    assertTrue(content.contains(String.valueOf(submission.getAverageMass())));
+    assertTrue(content.contains("class=\"toxicity\""));
+    assertTrue(content.contains(submission.getToxicity()));
+    assertTrue(content.contains("class=\"lightSensitive\""));
+    assertTrue(content.contains(resources.message("submission.lightSensitive.true")));
+    assertTrue(content.contains("class=\"storageTemperature\""));
+    assertTrue(content.contains(submission.getStorageTemperature().getLabel(locale)));
+    assertFalse(content.contains("class=\"proteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"injectionType\""));
+    assertFalse(content.contains("class=\"source\""));
+    assertFalse(content.contains("class=\"proteinContent\""));
+    assertFalse(content.contains("class=\"massDetectionInstrument\""));
+    assertFalse(content.contains("class=\"proteinIdentification\""));
+    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+    assertFalse(content.contains("class=\"quantification\""));
+    assertFalse(content.contains("class=\"quantificationComment\""));
+    assertTrue(content.contains("class=\"highResolution\""));
+    assertTrue(content.contains(resources.message("submission.highResolution.true")));
+    assertTrue(content.contains("class=\"solvent\""));
+    for (Solvent solvent : Solvent.values()) {
+      assertEquals(solvent.name(), submission.getSolvents().stream()
+          .filter(ss -> ss.getSolvent() == solvent).findAny().isPresent(),
+          content.contains(solvent.getLabel(locale)));
+    }
+    assertTrue(content.contains("class=\"comment\""));
+    assertTrue(content.contains(submission.getComment()));
+    assertFalse(content.contains("class=\"samples-details section\""));
+    assertFalse(content.contains("class=\"plate-information section"));
+  }
+
+  @Test
+  public void print_SmallMolecule_NoSolutionSolvent() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setSolutionSolvent(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"solutionSolvent\""));
+  }
+
+  @Test
+  public void print_SmallMolecule_NoFormula() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setFormula(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"formula\""));
+  }
+
+  @Test
+  public void print_SmallMolecule_NoMonoisotopicMass() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setMonoisotopicMass(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"monoisotopicMass\""));
+  }
+
+  @Test
+  public void print_SmallMolecule_NoAverageMass() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setAverageMass(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"averageMass\""));
+  }
+
+  @Test
+  public void print_SmallMolecule_NoToxicity() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setToxicity(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"toxicity\""));
+  }
+
+  @Test
+  public void print_SmallMolecule_NotLightSensitive() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setLightSensitive(false);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"lightSensitive\""));
+  }
+
+  @Test
+  public void print_SmallMolecule_NoStorageTemperature() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setStorageTemperature(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"storageTemperature\""));
+  }
+
+  @Test
+  public void print_SmallMolecule_NotHighResolution() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setHighResolution(false);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    assertTrue(content.contains("class=\"highResolution\""));
+    assertTrue(content.contains(resources.message("submission.highResolution.false")));
+  }
+
+  @Test
+  public void print_SmallMolecule_NoSolvent() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setSolvents(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertFalse(content.contains("class=\"solvent\""));
+  }
+
+  @Test
+  public void print_SmallMolecule_OtherSolvent() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    SampleSolvent ssolvent = new SampleSolvent();
+    ssolvent.setSolvent(Solvent.OTHER);
+    submission.getSolvents().add(ssolvent);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"solvent\""));
+    assertFalse(content.contains(Solvent.OTHER.getLabel(locale)));
+    for (Solvent solvent : Solvent.values()) {
+      assertEquals(solvent.name(),
+          submission.getSolvents().stream().filter(ss -> ss.getSolvent() == solvent).findAny()
+              .isPresent(),
+          content.contains(
+              solvent == Solvent.OTHER ? submission.getOtherSolvent() : solvent.getLabel(locale)));
+    }
+  }
+
+  @Test
+  public void print_IntactProtein() throws Exception {
+    Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    assertFalse(content.contains("??"));
+    assertTrue(content.contains("class=\"platform\""));
+    assertTrue(content.contains(resources.message("platform")));
+    assertTrue(content.contains("class=\"service\""));
+    assertTrue(content.contains(submission.getService().getLabel(locale)));
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+    assertTrue(content.contains("class=\"submissionDate\""));
+    assertTrue(content.contains(dateFormatter.format(toLocalDate(submission.getSubmissionDate()))));
+    assertTrue(content.contains("class=\"user-name\""));
+    assertTrue(content.contains(submission.getUser().getName()));
+    assertTrue(content.contains("class=\"user-phone\""));
+    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    assertTrue(content.contains("class=\"laboratory-name\""));
+    assertTrue(content.contains(submission.getLaboratory().getName()));
+    assertTrue(content.contains("class=\"laboratory-director\""));
+    assertTrue(content.contains(submission.getLaboratory().getDirector()));
+    assertTrue(content.contains("class=\"user-email\""));
+    assertTrue(content.contains(submission.getUser().getEmail()));
+    assertTrue(content.contains("class=\"sample-count\""));
+    assertTrue(content.contains(String.valueOf(submission.getSamples().size())));
+    assertTrue(content.contains("class=\"sample-name\""));
+    for (SubmissionSample sample : submission.getSamples()) {
+      assertTrue(content.contains(sample.getName()));
+    }
+    assertTrue(content.contains("class=\"experience\""));
+    assertTrue(content.contains(submission.getExperience()));
+    assertTrue(content.contains("class=\"goal\""));
+    assertTrue(content.contains(submission.getGoal()));
+    assertTrue(content.contains("class=\"taxonomy\""));
+    assertTrue(content.contains(submission.getTaxonomy()));
+    assertTrue(content.contains("class=\"sample-type\""));
+    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains("class=\"protein\""));
+    assertTrue(content.contains(submission.getProtein()));
+    assertFalse(content.contains("class=\"sample-molecularWeight\""));
+    assertTrue(content.contains("class=\"postTranslationModification\""));
+    assertTrue(content.contains(submission.getPostTranslationModification()));
+    assertTrue(content.contains("class=\"sample-quantity\""));
+    assertTrue(content.contains(submission.getSamples().get(0).getQuantity()));
+    assertTrue(content.contains("class=\"sample-volume\""));
+    assertTrue(content.contains(submission.getSamples().get(0).getVolume()));
+    assertFalse(content.contains("class=\"separation\""));
+    assertFalse(content.contains("class=\"thickness\""));
+    assertFalse(content.contains("class=\"coloration\""));
+    assertFalse(content.contains("class=\"otherColoration\""));
+    assertFalse(content.contains("class=\"developmentTime\""));
+    assertFalse(content.contains("class=\"decoloration\""));
+    assertFalse(content.contains("class=\"weightMarkerQuantity\""));
+    assertFalse(content.contains("class=\"proteinQuantity\""));
+    assertFalse(content.contains("class=\"solutionSolvent\""));
+    assertFalse(content.contains("class=\"formula\""));
+    assertFalse(content.contains("class=\"monoisotopicMass\""));
+    assertFalse(content.contains("class=\"averageMass\""));
+    assertFalse(content.contains("class=\"toxicity\""));
+    assertFalse(content.contains("class=\"lightSensitive\""));
+    assertFalse(content.contains("class=\"storageTemperature\""));
+    assertFalse(content.contains("class=\"proteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertTrue(content.contains("class=\"injectionType\""));
+    assertTrue(content.contains(submission.getInjectionType().getLabel(locale)));
+    assertTrue(content.contains("class=\"source\""));
+    assertTrue(content.contains(submission.getSource().getLabel(locale)));
+    assertFalse(content.contains("class=\"proteinContent\""));
+    assertTrue(content.contains("class=\"massDetectionInstrument\""));
+    assertTrue(content.contains(submission.getMassDetectionInstrument().getLabel(locale)));
+    assertFalse(content.contains("class=\"proteinIdentification\""));
+    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+    assertFalse(content.contains("class=\"quantification\""));
+    assertFalse(content.contains("class=\"quantification\""));
+    assertFalse(content.contains("class=\"quantificationComment\""));
+    assertFalse(content.contains("class=\"highResolution\""));
+    assertFalse(content.contains("class=\"solvent\""));
+    assertTrue(content.contains("class=\"comment\""));
+    assertTrue(content.contains(submission.getComment()));
+    assertTrue(content.contains("class=\"samples-details section\""));
+    for (SubmissionSample sample : submission.getSamples()) {
+      assertTrue(content.contains(String.valueOf(sample.getNumberProtein())));
+      assertTrue(content.contains(String.valueOf(sample.getMolecularWeight())));
+    }
+    assertFalse(content.contains("class=\"plate-information section"));
+  }
+
+  @Test
+  public void print_IntactProtein_NoInjectionType() throws Exception {
+    Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
+    submission.setInjectionType(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertFalse(content.contains("class=\"injectionType\""));
+  }
+
+  @Test
+  public void print_IntactProtein_NoSource() throws Exception {
+    Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
+    submission.setSource(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertFalse(content.contains("class=\"source\""));
+  }
+
+  @Test
+  public void print_Plate() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    Plate plate = new Plate(1L, "my plate");
+    plate.initWells();
+    IntStream.range(0, submission.getSamples().size()).forEach(i -> {
+      submission.getSamples().get(i).setOriginalContainer(plate.getWells().get(i));
+      plate.getWells().get(i).setSample(submission.getSamples().get(i));
+    });
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+
+    assertFalse(content.contains("??"));
+    assertTrue(content.contains("class=\"submission-plate\""));
+    assertTrue(content.contains(plate.getName()));
+    assertTrue(content.contains("class=\"plate-information section"));
+    assertTrue(content.contains("class=\"plate-name\""));
+    assertTrue(content.contains(plate.getName()));
+    assertTrue(content.contains("class=\"well-sample-name\""));
+    for (SubmissionSample sample : submission.getSamples()) {
+      assertTrue(content.contains(sample.getName()));
+    }
+  }
+
+  @Test
+  public void print_NullSubmission() throws Exception {
+    assertEquals("", submissionService.print(null, Locale.getDefault()));
+  }
+
+  @Test
+  public void print_NoService() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setService(null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertEquals("", content);
+  }
+
+  @Test
+  public void print_NoSample() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().clear();
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertEquals("", content);
+  }
+
+  @Test
+  public void print_FirstSampleNull() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().set(0, null);
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertEquals("", content);
+  }
+
+  @Test
+  public void print_NoSampleType() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(null));
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertEquals("", content);
+  }
+
+  @Test
+  public void print_NullLocale() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 1L);
+
+    assertEquals("", submissionService.print(submission, null));
   }
 
   @Test
