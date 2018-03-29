@@ -25,6 +25,7 @@ import ca.qc.ircm.proview.user.web.ValidateView;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
+import com.vaadin.navigator.PushStateNavigation;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.communication.PushMode;
@@ -44,6 +45,7 @@ import javax.servlet.ServletContext;
  */
 @Theme("proview")
 @SpringUI
+@PushStateNavigation
 @Push(value = PushMode.AUTOMATIC, transport = Transport.LONG_POLLING)
 @Widgetset("ca.qc.ircm.proview.ProviewWidgetset")
 public class MainUi extends UI {
@@ -77,10 +79,27 @@ public class MainUi extends UI {
     }
     if (getUI().getSession().getAttribute(SKIP_ABOUT) == null) {
       getUI().getSession().setAttribute(SKIP_ABOUT, true);
-      if (getPage().getUriFragment() == null
-          || !(getPage().getUriFragment().contains(ForgotPasswordView.VIEW_NAME)
-              && getPage().getUriFragment().contains(ValidateView.VIEW_NAME))) {
+      String url = getPage().getLocation().toString();
+      if (!url.contains(ForgotPasswordView.VIEW_NAME) && !url.contains(ValidateView.VIEW_NAME)) {
         getNavigator().navigateTo(AboutView.VIEW_NAME);
+      }
+    }
+    checkForLegacyHashBangUrl();
+  }
+
+  /**
+   * This method supports old style #!foo/bar URLs that people might still link if the app has been
+   * in use before HTML5 History era.
+   */
+  protected void checkForLegacyHashBangUrl() {
+    String uriFragment = getPage().getUriFragment();
+    if (uriFragment != null) {
+      if (uriFragment.startsWith("!")) {
+        // Assume this is a legacy hashbang URL, assign directly to Navigator and clear
+        getNavigator().navigateTo(uriFragment.substring(1));
+        getPage().setUriFragment(null);
+      } else {
+        // Some other fragment, just ignore or do what you have done before
       }
     }
   }
