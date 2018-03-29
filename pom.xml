@@ -759,17 +759,7 @@
           <id>vaadin-addons</id>
           <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
-        <repository>
-          <id>vaadin-prereleases</id>
-          <url>https://maven.vaadin.com/vaadin-prereleases</url>
-        </repository>
       </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>vaadin-prereleases</id>
-          <url>https://maven.vaadin.com/vaadin-prereleases</url>
-        </pluginRepository>
-      </pluginRepositories>
     </profile>
     <profile>
       <id>test-quick</id>
