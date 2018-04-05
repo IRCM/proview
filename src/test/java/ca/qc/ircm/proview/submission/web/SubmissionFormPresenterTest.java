@@ -109,6 +109,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -2881,8 +2882,9 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(BIOID_BEADS);
 
-    assertTrue(design.sampleVolume.isReadOnly());
-    assertEquals(resources.message(SAMPLE_VOLUME_BEADS), design.sampleVolume.getValue());
+    assertFalse(design.sampleVolume.isReadOnly());
+    assertEquals(resources.message(property(SAMPLE_VOLUME_BEADS, EXAMPLE)),
+        design.sampleVolume.getPlaceholder());
   }
 
   @Test

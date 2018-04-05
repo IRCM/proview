@@ -833,11 +833,10 @@ public class SubmissionFormPresenter implements BinderValidator {
       return;
     }
     if (type.isBeads()) {
-      design.sampleVolume.setValue(resources.message(SAMPLE_VOLUME_BEADS));
+      design.sampleVolume.setPlaceholder(resources.message(property(SAMPLE_VOLUME_BEADS, EXAMPLE)));
     } else {
-      design.sampleVolume.setValue("");
+      design.sampleVolume.setPlaceholder(resources.message(property(SAMPLE_VOLUME, EXAMPLE)));
     }
-    design.sampleVolume.setReadOnly(readOnly || type.isBeads());
     updateVisible();
   }
 
