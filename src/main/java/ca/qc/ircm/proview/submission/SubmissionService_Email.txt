@@ -1,7 +1,7 @@
 <html th:inline="text" th:remove="tag">
 [[${sampleCount}]] new samples were submitted by [[${user.email}]]
 
-Sample LIMS	Sample name	[# th:if="${containerType.name() == 'TUBE'}"]Tube[/][# th:if="${containerType.name() == 'WELL'}"]Plate[/]
+Sample name	[# th:if="${containerType.name() == 'TUBE'}"]Tube[/][# th:if="${containerType.name() == 'WELL'}"]Plate[/]
 [# th:each="sample: ${samples}"]
 [[${sample.name}]]	[# th:if="${containerType.name() == 'WELL'}"][[${sample.originalContainer.plate.name}]][/][[${sample.originalContainer.name}]]
 [/]
