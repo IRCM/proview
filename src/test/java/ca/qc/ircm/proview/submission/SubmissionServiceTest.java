@@ -2686,6 +2686,38 @@ public class SubmissionServiceTest {
   }
 
   @Test
+  public void update_Email() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 36L);
+    entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
+    submission.setExperiment("experiment");
+    submission.setGoal("goal");
+    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+
+    submissionService.update(submission);
+
+    entityManager.flush();
+    // Validate email that is sent to proteomic users.
+    verify(emailService, atLeastOnce()).htmlEmail();
+    verify(emailService, atLeastOnce()).send(email);
+    verify(email).addTo("christian.poitras@ircm.qc.ca");
+    verify(email).addTo("liam.li@ircm.qc.ca");
+    verify(email).addTo("jackson.smith@ircm.qc.ca");
+    verify(email, never()).addTo("benoit.coulombe@ircm.qc.ca");
+    verify(email).setSubject("Submission was updated");
+    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
+    String textContent = stringCaptor.getAllValues().get(0);
+    String htmlContent = stringCaptor.getAllValues().get(1);
+    assertEquals(true, textContent.contains("CAP_20111116_01"));
+    assertEquals(true, htmlContent.contains("CAP_20111116_01"));
+    assertFalse(textContent.contains("???"));
+    assertFalse(htmlContent.contains("???"));
+  }
+
+  @Test
   public void forceUpdate() throws Exception {
     Submission submission = entityManager.find(Submission.class, 1L);
     entityManager.detach(submission);
