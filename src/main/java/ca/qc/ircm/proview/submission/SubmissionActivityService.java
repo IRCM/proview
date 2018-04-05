@@ -147,8 +147,8 @@ public class SubmissionActivityService {
         .oldValue(oldSubmission.getService()).newValue(newSubmission.getService()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("taxonomy")
         .oldValue(oldSubmission.getTaxonomy()).newValue(newSubmission.getTaxonomy()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("experience")
-        .oldValue(oldSubmission.getExperience()).newValue(newSubmission.getExperience()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("experiment")
+        .oldValue(oldSubmission.getExperiment()).newValue(newSubmission.getExperiment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("goal")
         .oldValue(oldSubmission.getGoal()).newValue(newSubmission.getGoal()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("massDetectionInstrument")

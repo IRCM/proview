@@ -81,7 +81,7 @@ public class SubmissionHistoryWindow extends Window implements BaseComponent {
 
   private void updateSubmission(Submission submission) {
     logger.debug("Submission history window for submission {}", submission);
-    setCaption(getResources().message(TITLE, submission.getExperience()));
+    setCaption(getResources().message(TITLE, submission.getExperiment()));
     view.setValue(submission);
   }
 }

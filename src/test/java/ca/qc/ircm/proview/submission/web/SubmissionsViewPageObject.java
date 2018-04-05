@@ -23,7 +23,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_AN
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHMENT;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
@@ -48,7 +48,7 @@ import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
 
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
-  private static final int EXPERIENCE_COLUMN = 1;
+  private static final int EXPERIMENT_COLUMN = 1;
   private static final int USER_COLUMN = 2;
   private static final int LINKED_TO_RESULTS_COLUMN = 9;
   private static final int TREATMENTS_COLUMN = 10;
@@ -91,10 +91,10 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     return wrap(GridElement.class, findElement(className(SUBMISSIONS)));
   }
 
-  protected String experienceByRow(int row) {
+  protected String experimentByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
     ButtonElement button = wrap(ButtonElement.class, submissionsGrid
-        .getCell(row, gridColumnIndex(EXPERIENCE_COLUMN)).findElement(className(EXPERIENCE)));
+        .getCell(row, gridColumnIndex(EXPERIMENT_COLUMN)).findElement(className(EXPERIMENT)));
     return button.getCaption();
   }
 
@@ -108,8 +108,8 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickViewSubmissionByRow(int row) {
     GridElement submissionsGrid = submissionsGrid();
-    submissionsGrid.getCell(row, gridColumnIndex(EXPERIENCE_COLUMN))
-        .findElement(className(EXPERIENCE)).click();
+    submissionsGrid.getCell(row, gridColumnIndex(EXPERIMENT_COLUMN))
+        .findElement(className(EXPERIMENT)).click();
   }
 
   protected void clickViewSubmissionResultsByRow(int row) {

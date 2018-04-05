@@ -22,14 +22,12 @@
       xmlns:th="http://www.thymeleaf.org">
     <head></head>
     <body>
-        [[${sampleCount}]] new samples were submitted by [[${user.email}]]
-        
+        <p th:if="${type == 'INSERT'}"><span th:text="${sampleCount}">2</span> new samples were submitted by <span th:text="${user.email}">christian.poitras@ircm.qc.ca</span></p>
+        <p th:if="${type == 'INSERT'}">Submission experiment is <span th:text="${submission.experiment}">my experiment</span></p>
+        <p th:if="${type == 'UPDATE'}">Submission <span th:text="${submission.experiment}">my experiment</span> was updated by <span th:text="${user.email}">christian.poitras@ircm.qc.ca</span></p>
         <table>
             <thead>
                 <tr>
-                    <th>
-                        Sample LIMS
-                    </th>
                     <th>
                         Sample name
                     </th>
@@ -44,14 +42,14 @@
             <tbody>
                 <tr th:each="sample: ${samples}">
                     <td>
-                        [[${sample.name}]]
+                        <span th:text="${sample.name}">my sample</span>
                     </td>
                     <td th:if="${containerType.name() == 'WELL'}">
-                        [[${sample.originalContainer.plate.name}]]
-                        ([[${sample.originalContainer.name}]])
+                        <span th:text="${sample.originalContainer.plate.name}">my plate</span>
+                        (<span th:text="${sample.originalContainer.name}">A-1</span>)
                     </td>
                     <td th:if="${containerType.name() == 'TUBE'}">
-                        [[${sample.originalContainer.name}]]
+                        <span th:text="${sample.originalContainer.name}">my tube</span>
                     </td>
                 </tr>
             </tbody>

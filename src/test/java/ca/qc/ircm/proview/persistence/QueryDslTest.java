@@ -34,8 +34,8 @@ public class QueryDslTest {
 
   @Test
   public void direction_Test() {
-    assertEquals(submission.experience.asc(), direction(submission.experience, false));
-    assertEquals(submission.experience.desc(), direction(submission.experience, true));
+    assertEquals(submission.experiment.asc(), direction(submission.experiment, false));
+    assertEquals(submission.experiment.desc(), direction(submission.experiment, true));
     assertEquals(submission.user.name.asc(), direction(submission.user.name, false));
     assertEquals(submission.user.name.desc(), direction(submission.user.name, true));
   }

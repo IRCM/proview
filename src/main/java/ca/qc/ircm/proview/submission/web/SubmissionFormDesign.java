@@ -49,9 +49,9 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected Grid<ca.qc.ircm.proview.sample.SubmissionSample> samples;
   protected Button fillSamples;
   protected VerticalLayout samplesPlateContainer;
-  protected Panel experiencePanel;
-  protected TextField experience;
-  protected TextField experienceGoal;
+  protected Panel experimentPanel;
+  protected TextField experiment;
+  protected TextField experimentGoal;
   protected TextField taxonomy;
   protected TextField proteinName;
   protected TextField proteinWeight;

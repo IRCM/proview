@@ -1,7 +1,14 @@
 <html th:inline="text" th:remove="tag">
+[# th:if="${type == 'INSERT'}"]
 [[${sampleCount}]] new samples were submitted by [[${user.email}]]
 
-Sample LIMS	Sample name	[# th:if="${containerType.name() == 'TUBE'}"]Tube[/][# th:if="${containerType.name() == 'WELL'}"]Plate[/]
+Submission experiment is [[${submission.experiment}]]
+[/]
+[# th:if="${type == 'UPDATE'}"]
+Submission [[${submission.experiment}]] was updated by [[${user.email}]]
+[/]
+
+Sample name	[# th:if="${containerType.name() == 'TUBE'}"]Tube[/][# th:if="${containerType.name() == 'WELL'}"]Plate[/]
 [# th:each="sample: ${samples}"]
 [[${sample.name}]]	[# th:if="${containerType.name() == 'WELL'}"][[${sample.originalContainer.plate.name}]][/][[${sample.originalContainer.name}]]
 [/]

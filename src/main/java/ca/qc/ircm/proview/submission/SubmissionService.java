@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QUser.user;
 
+import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.mail.EmailService;
@@ -35,6 +36,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.slf4j.Logger;
@@ -244,9 +246,9 @@ public class SubmissionService {
 
     logger.info("Submission {} added to database", submission);
 
-    // Send email to protemic users to inform them of the submission.
+    // Send email to admin users to inform them of the submission.
     try {
-      this.sendSubmissionToProteomicUsers(submission.getSamples(), user);
+      this.sendSubmissionToAdmins(submission, ActionType.INSERT);
     } catch (MessagingException e) {
       logger.error("Could not send email containing new submitted samples", e);
     }
@@ -300,25 +302,29 @@ public class SubmissionService {
   }
 
   /**
-   * Sends an email to all proteomic users containing a summary of submission.
+   * Sends an email to all admisn containing a summary of submission.
    *
-   * @param detailedSubmission
+   * @param submission
    *          submission
-   * @param user
-   *          user who submitted samples
+   * @param type
+   *          type
    */
-  private void sendSubmissionToProteomicUsers(List<SubmissionSample> samples, User user)
+  private void sendSubmissionToAdmins(Submission submission, ActionType type)
       throws MessagingException {
     Context context = new Context();
     context.setVariable("tab", "\t");
-    context.setVariable("user", user);
-    context.setVariable("sampleCount", samples.size());
-    context.setVariable("samples", samples);
-    context.setVariable("containerType", samples.get(0).getOriginalContainer().getType());
+    context.setVariable("type", type.name());
+    context.setVariable("submission", submission);
+    context.setVariable("user", submission.getUser());
+    context.setVariable("sampleCount", submission.getSamples().size());
+    context.setVariable("samples", submission.getSamples());
+    context.setVariable("containerType",
+        submission.getSamples().get(0).getOriginalContainer().getType());
 
+    MessageResource resource = new MessageResource(SubmissionService.class, Locale.ENGLISH);
     final List<User> proteomicUsers = adminUsers();
     MimeMessageHelper email = emailService.htmlEmail();
-    email.setSubject("New samples were submitted");
+    email.setSubject(resource.message("subject." + type.name()));
     String htmlTemplateLocation =
         "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
@@ -360,6 +366,13 @@ public class SubmissionService {
 
     Activity activity = submissionActivityService.update(submission);
     activityService.insert(activity);
+
+    // Send email to admin users to inform them of the changes in submission.
+    try {
+      this.sendSubmissionToAdmins(submission, ActionType.UPDATE);
+    } catch (MessagingException e) {
+      logger.error("Could not send email containing new submitted samples", e);
+    }
   }
 
   private void updateNoSecurity(Submission submission) throws IllegalArgumentException {

@@ -23,6 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.SecurityConfiguration;
+import ca.qc.ircm.proview.web.AboutView;
 import com.vaadin.testbench.TestBenchTestCase;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.crypto.AesCipherService;
@@ -52,6 +53,7 @@ import javax.inject.Inject;
  */
 public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener {
   public static final String REMEMBER_ME_COOKIE_NAME = "rememberMe";
+  private static final String ANONYMOUS_VIEW = AboutView.VIEW_NAME;
   public static final String DOMAIN = "localhost";
   private static final Logger logger = LoggerFactory.getLogger(ShiroTestExecutionListener.class);
   private ThreadState threadState;
@@ -102,6 +104,7 @@ public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener 
       AbstractTestBenchTestCase testInstance =
           (AbstractTestBenchTestCase) testContext.getTestInstance();
       WebDriver driver = testInstance.getDriver();
+      testInstance.openView(ANONYMOUS_VIEW);
       String domain = DOMAIN;
       if (isPhantomjsDriver(driver)) {
         domain = "." + DOMAIN;

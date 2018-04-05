@@ -161,7 +161,7 @@ public class SubmissionServiceTest {
     assertEquals((Long) 1L, submission.getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("Human", submission.getTaxonomy());
-    assertEquals("G100429", submission.getExperience());
+    assertEquals("G100429", submission.getExperiment());
     assertEquals(null, submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
@@ -235,7 +235,7 @@ public class SubmissionServiceTest {
     assertEquals((Long) 33L, submission.getId());
     assertEquals(Service.SMALL_MOLECULE, submission.getService());
     assertEquals(null, submission.getTaxonomy());
-    assertEquals(null, submission.getExperience());
+    assertEquals(null, submission.getExperiment());
     assertEquals(null, submission.getGoal());
     assertEquals(null, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
@@ -325,7 +325,7 @@ public class SubmissionServiceTest {
     assertFalse(find(submissions, 34).isPresent());
     Submission submission = find(submissions, 32).get();
     assertEquals((Long) 32L, submission.getId());
-    assertEquals("cap_experience", submission.getExperience());
+    assertEquals("cap_experiment", submission.getExperiment());
     assertEquals("cap_goal", submission.getGoal());
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals((Long) 442L, sample.getId());
@@ -421,7 +421,7 @@ public class SubmissionServiceTest {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
     SubmissionFilter filter = new SubmissionFilter();
-    filter.experienceContains = "exp";
+    filter.experimentContains = "exp";
 
     List<Submission> submissions = submissionService.all(filter);
 
@@ -471,12 +471,12 @@ public class SubmissionServiceTest {
   }
 
   @Test
-  public void all_SortExperience() throws Throwable {
+  public void all_SortExperiment() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Arrays.asList(submission.experience.asc());
+    filter.sortOrders = Arrays.asList(submission.experiment.asc());
 
     List<Submission> submissions = submissionService.all(filter);
 
@@ -568,7 +568,7 @@ public class SubmissionServiceTest {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
     SubmissionFilter filter = new SubmissionFilter();
-    filter.experienceContains = "exp";
+    filter.experimentContains = "exp";
 
     int count = submissionService.count(filter);
 
@@ -647,7 +647,7 @@ public class SubmissionServiceTest {
     } else {
       submission.setSamples(new ArrayList<>(Arrays.asList(sample1, sample2)));
     }
-    submission.setExperience("my experience");
+    submission.setExperiment("my experiment");
     submission.setGoal("my goal");
     submission.setTaxonomy("human");
     submission.setProtein("POLR2A");
@@ -722,8 +722,8 @@ public class SubmissionServiceTest {
     for (SubmissionSample sample : submission.getSamples()) {
       assertTrue(content.contains(sample.getName()));
     }
-    assertTrue(content.contains("class=\"experience\""));
-    assertTrue(content.contains(submission.getExperience()));
+    assertTrue(content.contains("class=\"experiment\""));
+    assertTrue(content.contains(submission.getExperiment()));
     assertTrue(content.contains("class=\"goal\""));
     assertTrue(content.contains(submission.getGoal()));
     assertTrue(content.contains("class=\"taxonomy\""));
@@ -824,13 +824,13 @@ public class SubmissionServiceTest {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoExperience() throws Exception {
+  public void print_LcmsmsSolution_NoExperiment() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     Locale locale = Locale.getDefault();
-    submission.setExperience(null);
+    submission.setExperiment(null);
 
     String content = submissionService.print(submission, locale);
-    assertTrue(content.contains("class=\"experience\""));
+    assertTrue(content.contains("class=\"experiment\""));
     assertFalse(content.contains("null"));
   }
 
@@ -1112,8 +1112,8 @@ public class SubmissionServiceTest {
     for (SubmissionSample sample : submission.getSamples()) {
       assertTrue(content.contains(sample.getName()));
     }
-    assertTrue(content.contains("class=\"experience\""));
-    assertTrue(content.contains(submission.getExperience()));
+    assertTrue(content.contains("class=\"experiment\""));
+    assertTrue(content.contains(submission.getExperiment()));
     assertTrue(content.contains("class=\"goal\""));
     assertTrue(content.contains(submission.getGoal()));
     assertTrue(content.contains("class=\"taxonomy\""));
@@ -1308,7 +1308,7 @@ public class SubmissionServiceTest {
     for (SubmissionSample sample : submission.getSamples()) {
       assertTrue(content.contains(sample.getName()));
     }
-    assertFalse(content.contains("class=\"experience\""));
+    assertFalse(content.contains("class=\"experiment\""));
     assertFalse(content.contains("class=\"goal\""));
     assertFalse(content.contains("class=\"taxonomy\""));
     assertTrue(content.contains("class=\"sample-type\""));
@@ -1511,8 +1511,8 @@ public class SubmissionServiceTest {
     for (SubmissionSample sample : submission.getSamples()) {
       assertTrue(content.contains(sample.getName()));
     }
-    assertTrue(content.contains("class=\"experience\""));
-    assertTrue(content.contains(submission.getExperience()));
+    assertTrue(content.contains("class=\"experiment\""));
+    assertTrue(content.contains(submission.getExperiment()));
     assertTrue(content.contains("class=\"goal\""));
     assertTrue(content.contains(submission.getGoal()));
     assertTrue(content.contains("class=\"taxonomy\""));
@@ -1682,7 +1682,7 @@ public class SubmissionServiceTest {
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
     submission.setTaxonomy("human");
-    submission.setExperience("experience");
+    submission.setExperiment("experiment");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
@@ -1739,7 +1739,7 @@ public class SubmissionServiceTest {
     assertEquals(user, submission.getUser());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
-    assertEquals("experience", submission.getExperience());
+    assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
@@ -1838,7 +1838,7 @@ public class SubmissionServiceTest {
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
     submission.setTaxonomy("human");
-    submission.setExperience("experience");
+    submission.setExperiment("experiment");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
@@ -1880,7 +1880,7 @@ public class SubmissionServiceTest {
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
-    assertEquals("experience", submission.getExperience());
+    assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
@@ -1988,7 +1988,7 @@ public class SubmissionServiceTest {
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
     submission.setTaxonomy("human");
-    submission.setExperience("experience");
+    submission.setExperiment("experiment");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
@@ -2030,7 +2030,7 @@ public class SubmissionServiceTest {
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
-    assertEquals("experience", submission.getExperience());
+    assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
@@ -2117,7 +2117,7 @@ public class SubmissionServiceTest {
     when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
-    submission.setExperience("experience");
+    submission.setExperiment("experiment");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
@@ -2175,7 +2175,7 @@ public class SubmissionServiceTest {
     verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     assertEquals(Service.LC_MS_MS, submission.getService());
-    assertEquals("experience", submission.getExperience());
+    assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
@@ -2253,7 +2253,7 @@ public class SubmissionServiceTest {
     Submission submission = new Submission();
     submission.setService(Service.LC_MS_MS);
     submission.setTaxonomy("human");
-    submission.setExperience("experience");
+    submission.setExperiment("experiment");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
@@ -2313,7 +2313,7 @@ public class SubmissionServiceTest {
       entityManager.detach(sa);
       entityManager.detach(sa.getOriginalContainer());
     });
-    submission.setExperience("experience");
+    submission.setExperiment("experiment");
     submission.setGoal("goal");
     when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
 
@@ -2331,7 +2331,7 @@ public class SubmissionServiceTest {
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
-    assertEquals("experience", submission.getExperience());
+    assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
@@ -2393,7 +2393,7 @@ public class SubmissionServiceTest {
       entityManager.detach(sample);
       entityManager.detach(sample.getOriginalContainer());
     });
-    submission.setExperience("experience");
+    submission.setExperiment("experiment");
     submission.setGoal("goal");
     submission.getSamples().get(0).setName("unit_test_01");
     submission.getSamples().get(0).setVolume("20.0 μl");
@@ -2686,6 +2686,38 @@ public class SubmissionServiceTest {
   }
 
   @Test
+  public void update_Email() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 36L);
+    entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
+    submission.setExperiment("experiment");
+    submission.setGoal("goal");
+    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+
+    submissionService.update(submission);
+
+    entityManager.flush();
+    // Validate email that is sent to proteomic users.
+    verify(emailService, atLeastOnce()).htmlEmail();
+    verify(emailService, atLeastOnce()).send(email);
+    verify(email).addTo("christian.poitras@ircm.qc.ca");
+    verify(email).addTo("liam.li@ircm.qc.ca");
+    verify(email).addTo("jackson.smith@ircm.qc.ca");
+    verify(email, never()).addTo("benoit.coulombe@ircm.qc.ca");
+    verify(email).setSubject("Submission was updated");
+    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
+    String textContent = stringCaptor.getAllValues().get(0);
+    String htmlContent = stringCaptor.getAllValues().get(1);
+    assertEquals(true, textContent.contains("CAP_20111116_01"));
+    assertEquals(true, htmlContent.contains("CAP_20111116_01"));
+    assertFalse(textContent.contains("???"));
+    assertFalse(htmlContent.contains("???"));
+  }
+
+  @Test
   public void forceUpdate() throws Exception {
     Submission submission = entityManager.find(Submission.class, 1L);
     entityManager.detach(submission);
@@ -2695,7 +2727,7 @@ public class SubmissionServiceTest {
     });
     submission.setService(Service.LC_MS_MS);
     submission.setTaxonomy("human");
-    submission.setExperience("experience");
+    submission.setExperiment("experiment");
     submission.setGoal("goal");
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
@@ -2754,7 +2786,7 @@ public class SubmissionServiceTest {
     assertEquals(user.getLaboratory().getId(), submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
-    assertEquals("experience", submission.getExperience());
+    assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());

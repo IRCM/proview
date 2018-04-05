@@ -31,8 +31,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTI
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIRECTOR;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHMENT;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIENCE_GOAL;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIMENT_GOAL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
@@ -270,8 +270,8 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.submissionsGrid.getStyleName().contains(COMPONENTS));
     final Submission submission = submissions.get(0);
     Button designButton =
-        (Button) design.submissionsGrid.getColumn(EXPERIENCE).getValueProvider().apply(submission);
-    assertTrue(designButton.getStyleName().contains(EXPERIENCE));
+        (Button) design.submissionsGrid.getColumn(EXPERIMENT).getValueProvider().apply(submission);
+    assertTrue(designButton.getStyleName().contains(EXPERIMENT));
     Button designResultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
         .getValueProvider().apply(submission);
     assertTrue(designResultsButton.getStyleName().contains(LINKED_TO_RESULTS));
@@ -344,36 +344,36 @@ public class SubmissionsViewPresenterTest {
     final List<Column<Submission, ?>> columns = design.submissionsGrid.getColumns();
     final List<GridSortOrder<Submission>> sortOrders = design.submissionsGrid.getSortOrder();
 
-    assertEquals(EXPERIENCE, columns.get(0).getId());
+    assertEquals(EXPERIMENT, columns.get(0).getId());
     assertTrue(containsInstanceOf(columns.get(0).getExtensions(), ComponentRenderer.class));
-    assertEquals(resources.message(EXPERIENCE),
-        design.submissionsGrid.getColumn(EXPERIENCE).getCaption());
+    assertEquals(resources.message(EXPERIMENT),
+        design.submissionsGrid.getColumn(EXPERIMENT).getCaption());
     for (Submission submission : submissions) {
-      Button experienceButton = (Button) design.submissionsGrid.getColumn(EXPERIENCE)
+      Button experimentButton = (Button) design.submissionsGrid.getColumn(EXPERIMENT)
           .getValueProvider().apply(submission);
-      assertTrue(experienceButton.getStyleName().contains(EXPERIENCE));
+      assertTrue(experimentButton.getStyleName().contains(EXPERIMENT));
       if (submission.getService() == Service.SMALL_MOLECULE) {
-        assertEquals(submission.getSamples().get(0).getName(), experienceButton.getCaption());
+        assertEquals(submission.getSamples().get(0).getName(), experimentButton.getCaption());
       } else {
-        assertEquals(submission.getExperience(), experienceButton.getCaption());
+        assertEquals(submission.getExperiment(), experimentButton.getCaption());
       }
     }
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidable());
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());
-    assertTrue(design.submissionsGrid.getColumn(EXPERIENCE).isSortable());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(EXPERIMENT).isSortable());
     Collator collator = Collator.getInstance(locale);
-    Comparator<Submission> experienceComparator =
-        (s1, s2) -> collator.compare(Objects.toString(s1.getExperience(), ""),
-            Objects.toString(s2.getExperience(), ""));
+    Comparator<Submission> experimentComparator =
+        (s1, s2) -> collator.compare(Objects.toString(s1.getExperiment(), ""),
+            Objects.toString(s2.getExperiment(), ""));
     List<Submission> expectedSortedSubmissions = new ArrayList<>(submissions);
     List<Submission> sortedSubmissions = new ArrayList<>(submissions);
-    expectedSortedSubmissions.sort(experienceComparator);
+    expectedSortedSubmissions.sort(experimentComparator);
     sortedSubmissions
-        .sort(design.submissionsGrid.getColumn(EXPERIENCE).getComparator(SortDirection.ASCENDING));
+        .sort(design.submissionsGrid.getColumn(EXPERIMENT).getComparator(SortDirection.ASCENDING));
     assertEquals(expectedSortedSubmissions, sortedSubmissions);
-    expectedSortedSubmissions.sort(experienceComparator.reversed());
+    expectedSortedSubmissions.sort(experimentComparator.reversed());
     sortedSubmissions
-        .sort(design.submissionsGrid.getColumn(EXPERIENCE).getComparator(SortDirection.DESCENDING));
+        .sort(design.submissionsGrid.getColumn(EXPERIMENT).getComparator(SortDirection.DESCENDING));
     assertEquals(expectedSortedSubmissions, sortedSubmissions);
     assertEquals(USER, columns.get(1).getId());
     assertEquals(resources.message(USER), design.submissionsGrid.getColumn(USER).getCaption());
@@ -421,15 +421,15 @@ public class SubmissionsViewPresenterTest {
     }
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isSortable());
-    assertEquals(EXPERIENCE_GOAL, columns.get(5).getId());
-    assertEquals(resources.message(EXPERIENCE_GOAL),
-        design.submissionsGrid.getColumn(EXPERIENCE_GOAL).getCaption());
+    assertEquals(EXPERIMENT_GOAL, columns.get(5).getId());
+    assertEquals(resources.message(EXPERIMENT_GOAL),
+        design.submissionsGrid.getColumn(EXPERIMENT_GOAL).getCaption());
     for (Submission submission : submissions) {
       assertEquals(submission.getGoal(),
-          design.submissionsGrid.getColumn(EXPERIENCE_GOAL).getValueProvider().apply(submission));
+          design.submissionsGrid.getColumn(EXPERIMENT_GOAL).getValueProvider().apply(submission));
     }
-    assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isSortable());
+    assertTrue(design.submissionsGrid.getColumn(EXPERIMENT_GOAL).isHidable());
+    assertTrue(design.submissionsGrid.getColumn(EXPERIMENT_GOAL).isSortable());
     assertEquals(SAMPLE_STATUSES, columns.get(6).getId());
     assertEquals(resources.message(SAMPLE_STATUSES),
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getCaption());
@@ -523,14 +523,14 @@ public class SubmissionsViewPresenterTest {
     when(authorizationService.hasManagerRole()).thenReturn(true);
     presenter.init(view);
 
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidable());
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidden());
     assertTrue(design.submissionsGrid.getColumn(USER).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DIRECTOR).isHidden());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
+    assertTrue(design.submissionsGrid.getColumn(EXPERIMENT_GOAL).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DATE).isHidable());
     assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
@@ -545,14 +545,14 @@ public class SubmissionsViewPresenterTest {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
 
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidable());
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidden());
     assertTrue(design.submissionsGrid.getColumn(USER).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DIRECTOR).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
+    assertTrue(design.submissionsGrid.getColumn(EXPERIMENT_GOAL).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DATE).isHidable());
     assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
@@ -565,11 +565,11 @@ public class SubmissionsViewPresenterTest {
   @Test
   public void submissionsGrid_HiddenColumn() {
     when(userPreferenceService.get(any(), eq(SAMPLE_COUNT), any())).thenReturn(true);
-    when(userPreferenceService.get(any(), eq(EXPERIENCE_GOAL), any())).thenReturn(true);
+    when(userPreferenceService.get(any(), eq(EXPERIMENT_GOAL), any())).thenReturn(true);
     presenter.init(view);
 
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidable());
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidden());
     assertFalse(design.submissionsGrid.getColumn(USER).isHidable());
     assertTrue(design.submissionsGrid.getColumn(USER).isHidden());
     assertFalse(design.submissionsGrid.getColumn(DIRECTOR).isHidable());
@@ -580,9 +580,9 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
     assertFalse(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidden());
     verify(userPreferenceService).get(presenter, SAMPLE_NAME, false);
-    assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidden());
-    verify(userPreferenceService).get(presenter, EXPERIENCE_GOAL, false);
+    assertTrue(design.submissionsGrid.getColumn(EXPERIMENT_GOAL).isHidable());
+    assertTrue(design.submissionsGrid.getColumn(EXPERIMENT_GOAL).isHidden());
+    verify(userPreferenceService).get(presenter, EXPERIMENT_GOAL, false);
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
     assertFalse(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidden());
     verify(userPreferenceService).get(presenter, SAMPLE_STATUSES, false);
@@ -601,13 +601,13 @@ public class SubmissionsViewPresenterTest {
   @Test
   public void submissionsGrid_HiddenColumnAdmin() {
     when(userPreferenceService.get(any(), eq(SAMPLE_COUNT), any())).thenReturn(true);
-    when(userPreferenceService.get(any(), eq(EXPERIENCE_GOAL), any())).thenReturn(true);
+    when(userPreferenceService.get(any(), eq(EXPERIMENT_GOAL), any())).thenReturn(true);
     when(userPreferenceService.get(any(), eq(HISTORY), any())).thenReturn(true);
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
 
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidable());
-    assertFalse(design.submissionsGrid.getColumn(EXPERIENCE).isHidden());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidden());
     assertTrue(design.submissionsGrid.getColumn(USER).isHidable());
     assertFalse(design.submissionsGrid.getColumn(USER).isHidden());
     verify(userPreferenceService).get(presenter, USER, false);
@@ -619,9 +619,9 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
     assertFalse(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidden());
     verify(userPreferenceService).get(presenter, SAMPLE_NAME, false);
-    assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(EXPERIENCE_GOAL).isHidden());
-    verify(userPreferenceService).get(presenter, EXPERIENCE_GOAL, false);
+    assertTrue(design.submissionsGrid.getColumn(EXPERIMENT_GOAL).isHidable());
+    assertTrue(design.submissionsGrid.getColumn(EXPERIMENT_GOAL).isHidden());
+    verify(userPreferenceService).get(presenter, EXPERIMENT_GOAL, false);
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
     assertFalse(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidden());
     verify(userPreferenceService).get(presenter, SAMPLE_STATUSES, false);
@@ -649,24 +649,24 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void submissionsGrid_ColumnOrder() {
-    String[] columnOrder = new String[] { EXPERIENCE, USER, DIRECTOR, SAMPLE_NAME, SAMPLE_COUNT,
-        EXPERIENCE_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HISTORY };
+    String[] columnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SAMPLE_NAME, SAMPLE_COUNT,
+        EXPERIMENT_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HISTORY };
     when(userPreferenceService.get(any(), eq(COLUMN_ORDER), any())).thenReturn(columnOrder);
     presenter.init(view);
 
-    assertEquals(EXPERIENCE, design.submissionsGrid.getColumns().get(0).getId());
+    assertEquals(EXPERIMENT, design.submissionsGrid.getColumns().get(0).getId());
     assertEquals(USER, design.submissionsGrid.getColumns().get(1).getId());
     assertEquals(DIRECTOR, design.submissionsGrid.getColumns().get(2).getId());
     assertEquals(SAMPLE_NAME, design.submissionsGrid.getColumns().get(3).getId());
     assertEquals(SAMPLE_COUNT, design.submissionsGrid.getColumns().get(4).getId());
-    assertEquals(EXPERIENCE_GOAL, design.submissionsGrid.getColumns().get(5).getId());
+    assertEquals(EXPERIMENT_GOAL, design.submissionsGrid.getColumns().get(5).getId());
     assertEquals(SAMPLE_STATUSES, design.submissionsGrid.getColumns().get(6).getId());
     assertEquals(DATE, design.submissionsGrid.getColumns().get(7).getId());
     assertEquals(LINKED_TO_RESULTS, design.submissionsGrid.getColumns().get(8).getId());
     assertEquals(TREATMENTS, design.submissionsGrid.getColumns().get(9).getId());
     assertEquals(HISTORY, design.submissionsGrid.getColumns().get(10).getId());
     String[] defaultColumnOrder =
-        new String[] { EXPERIENCE, USER, DIRECTOR, SAMPLE_COUNT, SAMPLE_NAME, EXPERIENCE_GOAL,
+        new String[] { EXPERIMENT, USER, DIRECTOR, SAMPLE_COUNT, SAMPLE_NAME, EXPERIMENT_GOAL,
             SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HISTORY };
     verify(userPreferenceService).get(presenter, COLUMN_ORDER, defaultColumnOrder);
   }
@@ -674,8 +674,8 @@ public class SubmissionsViewPresenterTest {
   @Test
   public void submissionsGrid_ChangeColumnOrder() {
     presenter.init(view);
-    design.submissionsGrid.setColumnOrder(EXPERIENCE, USER, DIRECTOR, SAMPLE_NAME, SAMPLE_COUNT,
-        EXPERIENCE_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HISTORY);
+    design.submissionsGrid.setColumnOrder(EXPERIMENT, USER, DIRECTOR, SAMPLE_NAME, SAMPLE_COUNT,
+        EXPERIMENT_GOAL, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HISTORY);
 
     String[] columnOrder =
         design.submissionsGrid.getColumns().stream().map(col -> col.getId()).toArray(String[]::new);
@@ -684,36 +684,36 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void sort_ExperienceAsc() {
+  public void sort_ExperimentAsc() {
     presenter.init(view);
     DataProvider<Submission, Void> dataProvider =
         (DataProvider<Submission, Void>) design.submissionsGrid.getDataProvider();
     Query<Submission, Void> query = new Query<>(0, Integer.MAX_VALUE,
-        Arrays.asList(new QuerySortOrder(EXPERIENCE, SortDirection.ASCENDING)), null, null);
+        Arrays.asList(new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING)), null, null);
     dataProvider.fetch(query);
 
     verify(submissionService, atLeastOnce()).all(submissionFilterCaptor.capture());
     SubmissionFilter submissionFilter = submissionFilterCaptor.getValue();
     assertEquals(1, submissionFilter.sortOrders.size());
     OrderSpecifier<?> orderSpecifier = submissionFilter.sortOrders.get(0);
-    assertEquals(submission.experience.asc(), orderSpecifier);
+    assertEquals(submission.experiment.asc(), orderSpecifier);
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void sort_ExperienceDesc() {
+  public void sort_ExperimentDesc() {
     presenter.init(view);
     DataProvider<Submission, Void> dataProvider =
         (DataProvider<Submission, Void>) design.submissionsGrid.getDataProvider();
     Query<Submission, Void> query = new Query<>(0, Integer.MAX_VALUE,
-        Arrays.asList(new QuerySortOrder(EXPERIENCE, SortDirection.DESCENDING)), null, null);
+        Arrays.asList(new QuerySortOrder(EXPERIMENT, SortDirection.DESCENDING)), null, null);
     dataProvider.fetch(query);
 
     verify(submissionService, atLeastOnce()).all(submissionFilterCaptor.capture());
     SubmissionFilter submissionFilter = submissionFilterCaptor.getValue();
     assertEquals(1, submissionFilter.sortOrders.size());
     OrderSpecifier<?> orderSpecifier = submissionFilter.sortOrders.get(0);
-    assertEquals(submission.experience.desc(), orderSpecifier);
+    assertEquals(submission.experiment.desc(), orderSpecifier);
   }
 
   @Test
@@ -859,7 +859,7 @@ public class SubmissionsViewPresenterTest {
     DataProvider<Submission, Void> dataProvider =
         (DataProvider<Submission, Void>) design.submissionsGrid.getDataProvider();
     Query<Submission, Void> query = new Query<>(0, Integer.MAX_VALUE,
-        Arrays.asList(new QuerySortOrder(EXPERIENCE_GOAL, SortDirection.ASCENDING)), null, null);
+        Arrays.asList(new QuerySortOrder(EXPERIMENT_GOAL, SortDirection.ASCENDING)), null, null);
     dataProvider.fetch(query);
 
     verify(submissionService, atLeastOnce()).all(submissionFilterCaptor.capture());
@@ -876,7 +876,7 @@ public class SubmissionsViewPresenterTest {
     DataProvider<Submission, Void> dataProvider =
         (DataProvider<Submission, Void>) design.submissionsGrid.getDataProvider();
     Query<Submission, Void> query = new Query<>(0, Integer.MAX_VALUE,
-        Arrays.asList(new QuerySortOrder(EXPERIENCE_GOAL, SortDirection.DESCENDING)), null, null);
+        Arrays.asList(new QuerySortOrder(EXPERIMENT_GOAL, SortDirection.DESCENDING)), null, null);
     dataProvider.fetch(query);
 
     verify(submissionService, atLeastOnce()).all(submissionFilterCaptor.capture());
@@ -956,11 +956,11 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void experienceFilter() {
+  public void experimentFilter() {
     presenter.init(view);
     design.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
-    HeaderCell cell = filterRow.getCell(EXPERIENCE);
+    HeaderCell cell = filterRow.getCell(EXPERIMENT);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
     ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
@@ -972,7 +972,7 @@ public class SubmissionsViewPresenterTest {
 
     verify(submissionsDataProvider).refreshAll();
     SubmissionFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.experienceContains);
+    assertEquals(filterValue, filter.experimentContains);
   }
 
   @Test
@@ -1040,11 +1040,11 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void experienceGoalFilter() {
+  public void experimentGoalFilter() {
     presenter.init(view);
     design.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
-    HeaderCell cell = filterRow.getCell(EXPERIENCE_GOAL);
+    HeaderCell cell = filterRow.getCell(EXPERIMENT_GOAL);
     TextField textField = (TextField) cell.getComponent();
     String filterValue = "test";
     ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
@@ -1188,14 +1188,14 @@ public class SubmissionsViewPresenterTest {
     final SubmissionSample sample = submission.getSamples().get(0);
 
     Button button =
-        (Button) design.submissionsGrid.getColumn(EXPERIENCE).getValueProvider().apply(submission);
-    assertEquals(submission.getExperience(), button.getCaption());
+        (Button) design.submissionsGrid.getColumn(EXPERIMENT).getValueProvider().apply(submission);
+    assertEquals(submission.getExperiment(), button.getCaption());
     assertEquals(submission.getSamples().size(),
         design.submissionsGrid.getColumn(SAMPLE_COUNT).getValueProvider().apply(submission));
     assertEquals(submission.getSamples().get(0).getName(),
         design.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
     assertEquals(submission.getGoal(),
-        design.submissionsGrid.getColumn(EXPERIENCE_GOAL).getValueProvider().apply(submission));
+        design.submissionsGrid.getColumn(EXPERIMENT_GOAL).getValueProvider().apply(submission));
     assertEquals(sample.getStatus().getLabel(locale),
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(submission));
     final DateTimeFormatter dateFormatter =
@@ -1216,15 +1216,15 @@ public class SubmissionsViewPresenterTest {
     final SubmissionSample sample = submission.getSamples().get(0);
 
     Button button =
-        (Button) design.submissionsGrid.getColumn(EXPERIENCE).getValueProvider().apply(submission);
-    assertEquals(submission.getExperience(), button.getCaption());
+        (Button) design.submissionsGrid.getColumn(EXPERIMENT).getValueProvider().apply(submission);
+    assertEquals(submission.getExperiment(), button.getCaption());
     assertEquals(submission.getSamples().size(),
         design.submissionsGrid.getColumn(SAMPLE_COUNT).getValueProvider().apply(submission));
     assertEquals(
         resources.message(SAMPLE_NAME + ".value", sample.getName(), submission.getSamples().size()),
         design.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
     assertEquals(submission.getGoal(),
-        design.submissionsGrid.getColumn(EXPERIENCE_GOAL).getValueProvider().apply(submission));
+        design.submissionsGrid.getColumn(EXPERIMENT_GOAL).getValueProvider().apply(submission));
     assertEquals(statusesValue(submission),
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(submission));
     final DateTimeFormatter dateFormatter =
@@ -1243,7 +1243,7 @@ public class SubmissionsViewPresenterTest {
     presenter.init(view);
     final Submission submission = submissions.get(0);
     Button button =
-        (Button) design.submissionsGrid.getColumn(EXPERIENCE).getValueProvider().apply(submission);
+        (Button) design.submissionsGrid.getColumn(EXPERIMENT).getValueProvider().apply(submission);
 
     button.click();
 

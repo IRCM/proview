@@ -73,8 +73,8 @@ public class SampleStatusViewPresenter implements BinderValidator {
   public static final String NAME = submissionSample.name.getMetadata().getName();
   public static final String STATUS = submissionSample.status.getMetadata().getName();
   public static final String SUBMISSION = submission.getMetadata().getName();
-  public static final String EXPERIENCE =
-      property(SUBMISSION, submission.experience.getMetadata().getName());
+  public static final String EXPERIMENT =
+      property(SUBMISSION, submission.experiment.getMetadata().getName());
   public static final String NEW_STATUS = "newStatus";
   public static final String DOWN = "down";
   public static final String REGRESS = "regress";
@@ -129,8 +129,8 @@ public class SampleStatusViewPresenter implements BinderValidator {
     design.samplesGrid.addStyleName(SAMPLES);
     design.samplesGrid.addStyleName(COMPONENTS);
     design.samplesGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
-    design.samplesGrid.addColumn(sample -> sample.getSubmission().getExperience()).setId(EXPERIENCE)
-        .setCaption(resources.message(EXPERIENCE));
+    design.samplesGrid.addColumn(sample -> sample.getSubmission().getExperiment()).setId(EXPERIMENT)
+        .setCaption(resources.message(EXPERIMENT));
     design.samplesGrid
         .addColumn(sample -> databaseSamples.get(sample.getId()).getStatus().getLabel(locale))
         .setId(STATUS).setCaption(resources.message(STATUS));

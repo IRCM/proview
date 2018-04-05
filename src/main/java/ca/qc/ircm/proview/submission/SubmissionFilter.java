@@ -40,7 +40,7 @@ import java.util.function.Predicate;
  * Filters submissions.
  */
 public class SubmissionFilter implements Predicate<Submission> {
-  public String experienceContains;
+  public String experimentContains;
   public String userContains;
   public String directorContains;
   public String anySampleNameContains;
@@ -64,9 +64,9 @@ public class SubmissionFilter implements Predicate<Submission> {
   @Override
   public boolean test(Submission submission) {
     boolean test = true;
-    if (experienceContains != null) {
-      test &= submission.getExperience().toLowerCase(locale)
-          .contains(experienceContains.toLowerCase(locale));
+    if (experimentContains != null) {
+      test &= submission.getExperiment().toLowerCase(locale)
+          .contains(experimentContains.toLowerCase(locale));
     }
     if (userContains != null) {
       test &= submission.getUser().getEmail().toLowerCase(locale)
@@ -105,8 +105,8 @@ public class SubmissionFilter implements Predicate<Submission> {
   }
 
   private void addFilterConditions(JPAQuery<?> query) {
-    if (experienceContains != null) {
-      query.where(submission.experience.contains(experienceContains));
+    if (experimentContains != null) {
+      query.where(submission.experiment.contains(experimentContains));
     }
     if (userContains != null) {
       query.where(submission.user.email.contains(userContains)

@@ -72,7 +72,7 @@ public class SubmissionWindowPresenter {
   void setValue(Submission submission) {
     logger.debug("Submission window for submission {}", submission);
     MessageResource resources = window.getResources();
-    window.setCaption(resources.message(TITLE, submission.getExperience()));
+    window.setCaption(resources.message(TITLE, submission.getExperiment()));
     design.update.setVisible(authorizationService.hasSubmissionWritePermission(submission));
     design.update.addClickListener(e -> {
       window.navigateTo(SubmissionView.VIEW_NAME, String.valueOf(submission.getId()));

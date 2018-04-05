@@ -76,12 +76,12 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_ExperienceContains() throws Exception {
-    filter.experienceContains = "test";
+  public void addConditions_ExperimentContains() throws Exception {
+    filter.experimentContains = "test";
 
     filter.addConditions(query);
 
-    verify(query).where(submission.experience.contains("test"));
+    verify(query).where(submission.experiment.contains("test"));
   }
 
   @Test
@@ -267,11 +267,11 @@ public class SubmissionFilterTest {
 
   @Test
   public void addConditions_Sort_UserAscAndExperimentDesc() throws Exception {
-    filter.sortOrders = Arrays.asList(submission.user.name.asc(), submission.experience.desc());
+    filter.sortOrders = Arrays.asList(submission.user.name.asc(), submission.experiment.desc());
 
     filter.addConditions(query);
 
-    verify(query).orderBy(submission.user.name.asc(), submission.experience.desc());
+    verify(query).orderBy(submission.user.name.asc(), submission.experiment.desc());
   }
 
   @Test
@@ -304,12 +304,12 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_ExperienceContains() throws Exception {
-    filter.experienceContains = "test";
+  public void addCountConditions_ExperimentContains() throws Exception {
+    filter.experimentContains = "test";
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.experience.contains("test"));
+    verify(query).where(submission.experiment.contains("test"));
   }
 
   @Test
@@ -495,7 +495,7 @@ public class SubmissionFilterTest {
 
   @Test
   public void addCountConditions_Sort_UserAscAndExperimentDesc() throws Exception {
-    filter.sortOrders = Arrays.asList(submission.user.name.asc(), submission.experience.desc());
+    filter.sortOrders = Arrays.asList(submission.user.name.asc(), submission.experiment.desc());
 
     filter.addCountConditions(query);
 
@@ -531,12 +531,12 @@ public class SubmissionFilterTest {
     verify(query, never()).limit(anyInt());
   }
 
-  private Submission experience(String experience) {
-    return experience(new Submission(), experience);
+  private Submission experiment(String experiment) {
+    return experiment(new Submission(), experiment);
   }
 
-  private Submission experience(Submission submission, String experience) {
-    submission.setExperience(experience);
+  private Submission experiment(Submission submission, String experiment) {
+    submission.setExperiment(experiment);
     submission.setSamples(Collections.emptyList());
     return submission;
   }
@@ -599,21 +599,21 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void test_experienceContains() {
-    filter.experienceContains = "test";
+  public void test_experimentContains() {
+    filter.experimentContains = "test";
 
-    assertTrue(filter.test(experience("My test")));
-    assertTrue(filter.test(experience("Test")));
-    assertFalse(filter.test(experience("My experience")));
+    assertTrue(filter.test(experiment("My test")));
+    assertTrue(filter.test(experiment("Test")));
+    assertFalse(filter.test(experiment("My experiment")));
   }
 
   @Test
-  public void test_experienceContains_Null() {
-    filter.experienceContains = null;
+  public void test_experimentContains_Null() {
+    filter.experimentContains = null;
 
-    assertTrue(filter.test(experience("My test")));
-    assertTrue(filter.test(experience("Test")));
-    assertTrue(filter.test(experience("My experience")));
+    assertTrue(filter.test(experiment("My test")));
+    assertTrue(filter.test(experiment("Test")));
+    assertTrue(filter.test(experiment("My experiment")));
   }
 
   @Test
@@ -624,7 +624,7 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(user("Test", "Name")));
     assertTrue(filter.test(user("My email", "My test")));
     assertTrue(filter.test(user("Email", "Test")));
-    assertFalse(filter.test(user("My experience", "My name")));
+    assertFalse(filter.test(user("My experiment", "My name")));
   }
 
   @Test
@@ -635,7 +635,7 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(user("Test", "Name")));
     assertTrue(filter.test(user("My email", "My test")));
     assertTrue(filter.test(user("Email", "Test")));
-    assertTrue(filter.test(user("My experience", "My name")));
+    assertTrue(filter.test(user("My experiment", "My name")));
   }
 
   @Test
@@ -662,7 +662,7 @@ public class SubmissionFilterTest {
 
     assertTrue(filter.test(goal("My test")));
     assertTrue(filter.test(goal("Test")));
-    assertFalse(filter.test(goal("My experience")));
+    assertFalse(filter.test(goal("My experiment")));
   }
 
   @Test
@@ -671,7 +671,7 @@ public class SubmissionFilterTest {
 
     assertTrue(filter.test(goal("My test")));
     assertTrue(filter.test(goal("Test")));
-    assertTrue(filter.test(goal("My experience")));
+    assertTrue(filter.test(goal("My experiment")));
   }
 
   @Test
@@ -771,13 +771,13 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void test_experienceContainsAndAnySampleNameContains() {
-    filter.experienceContains = "test";
+  public void test_experimentContainsAndAnySampleNameContains() {
+    filter.experimentContains = "test";
     filter.anySampleNameContains = "test";
 
-    assertTrue(filter.test(sampleNames(experience("test"), "abc", "sample_test")));
-    assertFalse(filter.test(sampleNames(experience("test"), "my_sample", "abc")));
-    assertFalse(filter.test(sampleNames(experience("abc"), "my_sample", "test")));
-    assertFalse(filter.test(sampleNames(experience("abc"), "my_sample", "abc")));
+    assertTrue(filter.test(sampleNames(experiment("test"), "abc", "sample_test")));
+    assertFalse(filter.test(sampleNames(experiment("test"), "my_sample", "abc")));
+    assertFalse(filter.test(sampleNames(experiment("abc"), "my_sample", "test")));
+    assertFalse(filter.test(sampleNames(experiment("abc"), "my_sample", "abc")));
   }
 }

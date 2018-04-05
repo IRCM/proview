@@ -174,9 +174,9 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertNotNull(findElement(className(SubmissionWindowPresenter.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionWindowPresenter.WINDOW_STYLE)));
-    String experience = experienceByRow(1);
+    String experiment = experimentByRow(1);
     assertTrue(
-        resources(SubmissionWindow.class).message(SubmissionWindowPresenter.TITLE, experience)
+        resources(SubmissionWindow.class).message(SubmissionWindowPresenter.TITLE, experiment)
             .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(SERVICE))).isPresent());
   }
@@ -190,9 +190,9 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertNotNull(findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(3);
+    String experiment = experimentByRow(3);
     assertTrue(resources(SubmissionAnalysesWindow.class)
-        .message(SubmissionAnalysesWindow.TITLE, experience)
+        .message(SubmissionAnalysesWindow.TITLE, experiment)
         .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(ANALYSIS))).isPresent());
   }
@@ -208,9 +208,9 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertNotNull(findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(3);
+    String experiment = experimentByRow(3);
     assertTrue(resources(SubmissionTreatmentsWindow.class)
-        .message(SubmissionTreatmentsWindow.TITLE, experience)
+        .message(SubmissionTreatmentsWindow.TITLE, experiment)
         .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(SAMPLES_PANEL))).isPresent());
   }
@@ -226,9 +226,9 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertNotNull(findElement(className(SubmissionHistoryWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionHistoryWindow.WINDOW_STYLE)));
-    String experience = experienceByRow(3);
+    String experiment = experimentByRow(3);
     assertTrue(
-        resources(SubmissionHistoryWindow.class).message(SubmissionHistoryWindow.TITLE, experience)
+        resources(SubmissionHistoryWindow.class).message(SubmissionHistoryWindow.TITLE, experiment)
             .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(SAMPLES_PANEL))).isPresent());
   }
