@@ -169,9 +169,9 @@ public class SubmissionFormPresenter implements BinderValidator {
       submissionSample.numberProtein.getMetadata().getName();
   public static final String FILL_SAMPLES = "fillSamples";
   public static final String SAMPLES_PLATE = SAMPLES + "Plate";
-  public static final String EXPERIENCE_PANEL = "experiencePanel";
-  public static final String EXPERIENCE = submission.experience.getMetadata().getName();
-  public static final String EXPERIENCE_GOAL = submission.goal.getMetadata().getName();
+  public static final String EXPERIMENT_PANEL = "experimentPanel";
+  public static final String EXPERIMENT = submission.experiment.getMetadata().getName();
+  public static final String EXPERIMENT_GOAL = submission.goal.getMetadata().getName();
   public static final String TAXONOMY = submission.taxonomy.getMetadata().getName();
   public static final String PROTEIN_NAME = submission.protein.getMetadata().getName();
   public static final String PROTEIN_WEIGHT =
@@ -320,7 +320,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     submissionBinder.forField(design.service).asRequired(generalResources.message(REQUIRED))
         .bind(SERVICE);
     prepareSamplesComponents();
-    prepareExperienceComponents();
+    prepareExperimentComponents();
     design.standardsPanel.addStyleName(STANDARDS_PANEL);
     design.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
     design.contaminantsPanel.addStyleName(CONTAMINANTS_PANEL);
@@ -584,21 +584,21 @@ public class SubmissionFormPresenter implements BinderValidator {
     }
   }
 
-  private void prepareExperienceComponents() {
+  private void prepareExperimentComponents() {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    design.experiencePanel.addStyleName(EXPERIENCE_PANEL);
-    design.experiencePanel.setCaption(resources.message(EXPERIENCE_PANEL));
-    design.experience.addStyleName(EXPERIENCE);
-    design.experience.setCaption(resources.message(EXPERIENCE));
-    design.experience.setRequiredIndicatorVisible(true);
-    submissionBinder.forField(design.experience)
-        .withValidator(requiredTextIfVisible(design.experience)).withNullRepresentation("")
-        .bind(EXPERIENCE);
-    design.experienceGoal.addStyleName(EXPERIENCE_GOAL);
-    design.experienceGoal.setCaption(resources.message(EXPERIENCE_GOAL));
-    submissionBinder.forField(design.experienceGoal).withNullRepresentation("")
-        .bind(EXPERIENCE_GOAL);
+    design.experimentPanel.addStyleName(EXPERIMENT_PANEL);
+    design.experimentPanel.setCaption(resources.message(EXPERIMENT_PANEL));
+    design.experiment.addStyleName(EXPERIMENT);
+    design.experiment.setCaption(resources.message(EXPERIMENT));
+    design.experiment.setRequiredIndicatorVisible(true);
+    submissionBinder.forField(design.experiment)
+        .withValidator(requiredTextIfVisible(design.experiment)).withNullRepresentation("")
+        .bind(EXPERIMENT);
+    design.experimentGoal.addStyleName(EXPERIMENT_GOAL);
+    design.experimentGoal.setCaption(resources.message(EXPERIMENT_GOAL));
+    submissionBinder.forField(design.experimentGoal).withNullRepresentation("")
+        .bind(EXPERIMENT_GOAL);
     design.taxonomy.addStyleName(TAXONOMY);
     design.taxonomy.setCaption(resources.message(TAXONOMY));
     design.taxonomy.setRequiredIndicatorVisible(true);
@@ -875,9 +875,9 @@ public class SubmissionFormPresenter implements BinderValidator {
         || (service == LC_MS_MS && design.sampleContainerType.getValue() != WELL)) && !readOnly);
     design.samplesPlateContainer
         .setVisible(service == LC_MS_MS && design.sampleContainerType.getValue() == WELL);
-    design.experiencePanel.setVisible(service != SMALL_MOLECULE);
-    design.experience.setVisible(service != SMALL_MOLECULE);
-    design.experienceGoal.setVisible(service != SMALL_MOLECULE);
+    design.experimentPanel.setVisible(service != SMALL_MOLECULE);
+    design.experiment.setVisible(service != SMALL_MOLECULE);
+    design.experimentGoal.setVisible(service != SMALL_MOLECULE);
     design.taxonomy.setVisible(service != SMALL_MOLECULE);
     design.proteinName.setVisible(service != SMALL_MOLECULE);
     design.proteinWeight.setVisible(service == LC_MS_MS);
@@ -943,8 +943,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     sampleBinders.values().forEach(binder -> binder.setReadOnly(readOnly));
     design.fillSamples.setVisible(!readOnly);
     view.plateComponent.setReadOnly(readOnly);
-    design.experience.setReadOnly(readOnly);
-    design.experienceGoal.setReadOnly(readOnly);
+    design.experiment.setReadOnly(readOnly);
+    design.experimentGoal.setReadOnly(readOnly);
     design.taxonomy.setReadOnly(readOnly);
     design.proteinName.setReadOnly(readOnly);
     design.proteinWeight.setReadOnly(readOnly);
@@ -1251,8 +1251,8 @@ public class SubmissionFormPresenter implements BinderValidator {
       sampleNumberProteinFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
       sampleMolecularWeightFields.values().forEach(field -> field.setValue(field.getEmptyValue()));
     }
-    clearInvisibleField(design.experience);
-    clearInvisibleField(design.experienceGoal);
+    clearInvisibleField(design.experiment);
+    clearInvisibleField(design.experimentGoal);
     clearInvisibleField(design.taxonomy);
     clearInvisibleField(design.proteinName);
     clearInvisibleField(design.proteinWeight);
@@ -1292,7 +1292,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       }
       if (submission.getService() == SMALL_MOLECULE) {
         submission.setMassDetectionInstrument(null);
-        submission.setExperience(firstSample.getName());
+        submission.setExperiment(firstSample.getName());
         submission.setSamples(Arrays.asList(firstSample));
         submission.setSolvents(new ArrayList<>());
         firstSample.setOriginalContainer(null);
@@ -1332,13 +1332,13 @@ public class SubmissionFormPresenter implements BinderValidator {
             submissionService.update(submission);
           }
         } catch (PersistenceException e) {
-          view.showError(resources.message(UPDATE_ERROR, submission.getExperience()));
+          view.showError(resources.message(UPDATE_ERROR, submission.getExperiment()));
         }
       } else {
         submissionService.insert(submission);
       }
       view.showTrayNotification(
-          resources.message(property(SAVE, "done"), submission.getExperience()));
+          resources.message(property(SAVE, "done"), submission.getExperiment()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     }
   }

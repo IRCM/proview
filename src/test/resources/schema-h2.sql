@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS forgotpassword (
 CREATE TABLE IF NOT EXISTS submission (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   service varchar(50) DEFAULT NULL,
-  experience varchar(100) DEFAULT NULL,
+  experiment varchar(100) DEFAULT NULL,
   goal varchar(150) DEFAULT NULL,
   taxonomy varchar(100) DEFAULT NULL,
   massDetectionInstrument varchar(100) DEFAULT NULL,

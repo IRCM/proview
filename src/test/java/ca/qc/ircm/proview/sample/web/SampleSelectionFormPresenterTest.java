@@ -21,7 +21,7 @@ import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CLEAR;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROLS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROLS_PANEL;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROL_TYPE;
-import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.EXPERIENCE;
+import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.EXPERIMENT;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.ORIGINAL_CONTAINER_NAME;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES;
@@ -175,20 +175,20 @@ public class SampleSelectionFormPresenterTest {
 
     assertTrue(design.samplesGrid.getSelectionModel() instanceof SelectionModel.Multi);
     assertEquals(NAME, columns.get(0).getId());
-    assertEquals(EXPERIENCE, columns.get(1).getId());
+    assertEquals(EXPERIMENT, columns.get(1).getId());
     assertEquals(STATUS, columns.get(2).getId());
     assertEquals(1, design.samplesGrid.getFrozenColumnCount());
     assertEquals(resources.message(NAME), design.samplesGrid.getColumn(NAME).getCaption());
-    assertEquals(resources.message(EXPERIENCE),
-        design.samplesGrid.getColumn(EXPERIENCE).getCaption());
+    assertEquals(resources.message(EXPERIMENT),
+        design.samplesGrid.getColumn(EXPERIMENT).getCaption());
     assertEquals(resources.message(STATUS), design.samplesGrid.getColumn(STATUS).getCaption());
     assertEquals(resources.message(SAMPLES_LAST_CONTAINER),
         design.samplesGrid.getColumn(SAMPLES_LAST_CONTAINER).getCaption());
     SubmissionSample sample = (SubmissionSample) selectedSamples.get(0);
     assertEquals(sample.getName(),
         design.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
-    assertEquals(sample.getSubmission().getExperience(),
-        design.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
+    assertEquals(sample.getSubmission().getExperiment(),
+        design.samplesGrid.getColumn(EXPERIMENT).getValueProvider().apply(sample));
     assertEquals(sample.getStatus().getLabel(locale),
         design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
     assertEquals(lastContainers.get(0).getFullName(),
@@ -198,8 +198,8 @@ public class SampleSelectionFormPresenterTest {
     sample = (SubmissionSample) selectedSamples.get(1);
     assertEquals(sample.getName(),
         design.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
-    assertEquals(sample.getSubmission().getExperience(),
-        design.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
+    assertEquals(sample.getSubmission().getExperiment(),
+        design.samplesGrid.getColumn(EXPERIMENT).getValueProvider().apply(sample));
     assertEquals(sample.getStatus().getLabel(locale),
         design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample));
     assertEquals(lastContainers.get(1).getFullName(),

@@ -79,13 +79,13 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Size(max = 100)
   private String taxonomy;
   /**
-   * User's experience.
+   * User's experiment.
    */
-  @Column(name = "experience")
+  @Column(name = "experiment")
   @Size(max = 100)
-  private String experience;
+  private String experiment;
   /**
-   * Experience's goal.
+   * Experiment's goal.
    */
   @Column(name = "goal")
   @Size(max = 150)
@@ -364,7 +364,7 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   @Override
   public String toString() {
-    return "Submission [id=" + id + ", service=" + service + ", experience=" + experience + "]";
+    return "Submission [id=" + id + ", service=" + service + ", experiment=" + experiment + "]";
   }
 
   @Override
@@ -409,12 +409,12 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.samples = samples;
   }
 
-  public String getExperience() {
-    return experience;
+  public String getExperiment() {
+    return experiment;
   }
 
-  public void setExperience(String experience) {
-    this.experience = experience;
+  public void setExperiment(String experiment) {
+    this.experiment = experiment;
   }
 
   public String getGoal() {

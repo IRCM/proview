@@ -39,9 +39,9 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTIO
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXAMPLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIMENT_GOAL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIMENT_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES;
@@ -277,8 +277,8 @@ public class SubmissionFormPresenterTest {
   private SampleContainerType sampleContainerType = SampleContainerType.TUBE;
   private String plateName = "my_plate";
   private Plate plate;
-  private String experience = "my_experience";
-  private String experienceGoal = "to succeed!";
+  private String experiment = "my_experiment";
+  private String experimentGoal = "to succeed!";
   private String taxonomy = "human";
   private String proteinName = "PORL2A";
   private double proteinWeight = 217076;
@@ -375,8 +375,8 @@ public class SubmissionFormPresenterTest {
     setValuesInSamplesTable();
     plate.well(0, 0).setSample(new SubmissionSample(null, sampleName1));
     plate.well(1, 0).setSample(new SubmissionSample(null, sampleName2));
-    design.experience.setValue(experience);
-    design.experienceGoal.setValue(experienceGoal);
+    design.experiment.setValue(experiment);
+    design.experimentGoal.setValue(experimentGoal);
     design.taxonomy.setValue(taxonomy);
     design.proteinName.setValue(proteinName);
     design.proteinWeight.setValue(String.valueOf(proteinWeight));
@@ -483,8 +483,8 @@ public class SubmissionFormPresenterTest {
     submission.setId(20L);
     submission.setService(LC_MS_MS);
     submission.setTaxonomy(taxonomy);
-    submission.setExperience(experience);
-    submission.setGoal(experienceGoal);
+    submission.setExperiment(experiment);
+    submission.setGoal(experimentGoal);
     submission.setMassDetectionInstrument(instrument);
     submission.setProteolyticDigestionMethod(digestion);
     submission.setUsedProteolyticDigestionMethod(usedDigestion);
@@ -758,8 +758,8 @@ public class SubmissionFormPresenterTest {
     TextField sampleProteinWeightTableField =
         (TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample);
     assertTrue(sampleProteinWeightTableField.isRequiredIndicatorVisible());
-    assertTrue(design.experience.isRequiredIndicatorVisible());
-    assertFalse(design.experienceGoal.isRequiredIndicatorVisible());
+    assertTrue(design.experiment.isRequiredIndicatorVisible());
+    assertFalse(design.experimentGoal.isRequiredIndicatorVisible());
     assertTrue(design.taxonomy.isRequiredIndicatorVisible());
     assertFalse(design.proteinName.isRequiredIndicatorVisible());
     assertFalse(design.proteinWeight.isRequiredIndicatorVisible());
@@ -1089,9 +1089,9 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.fillSamples.getStyleName().contains(FILL_SAMPLES));
     assertTrue(design.fillSamples.getStyleName().contains(BUTTON_SKIP_ROW));
     verify(view.plateComponent).addStyleName(SAMPLES_PLATE);
-    assertTrue(design.experiencePanel.getStyleName().contains(EXPERIENCE_PANEL));
-    assertTrue(design.experience.getStyleName().contains(EXPERIENCE));
-    assertTrue(design.experienceGoal.getStyleName().contains(EXPERIENCE_GOAL));
+    assertTrue(design.experimentPanel.getStyleName().contains(EXPERIMENT_PANEL));
+    assertTrue(design.experiment.getStyleName().contains(EXPERIMENT));
+    assertTrue(design.experimentGoal.getStyleName().contains(EXPERIMENT_GOAL));
     assertTrue(design.taxonomy.getStyleName().contains(TAXONOMY));
     assertTrue(design.proteinName.getStyleName().contains(PROTEIN_NAME));
     assertTrue(design.proteinWeight.getStyleName().contains(PROTEIN_WEIGHT));
@@ -1192,9 +1192,9 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(FILL_SAMPLES), design.fillSamples.getCaption());
     assertEquals(VaadinIcons.ARROW_DOWN, design.fillSamples.getIcon());
     assertEquals(null, view.plateComponent.getCaption());
-    assertEquals(resources.message(EXPERIENCE_PANEL), design.experiencePanel.getCaption());
-    assertEquals(resources.message(EXPERIENCE), design.experience.getCaption());
-    assertEquals(resources.message(EXPERIENCE_GOAL), design.experienceGoal.getCaption());
+    assertEquals(resources.message(EXPERIMENT_PANEL), design.experimentPanel.getCaption());
+    assertEquals(resources.message(EXPERIMENT), design.experiment.getCaption());
+    assertEquals(resources.message(EXPERIMENT_GOAL), design.experimentGoal.getCaption());
     assertEquals(resources.message(TAXONOMY), design.taxonomy.getCaption());
     assertEquals(resources.message(PROTEIN_NAME), design.proteinName.getCaption());
     assertEquals(resources.message(PROTEIN_WEIGHT), design.proteinWeight.getCaption());
@@ -1330,8 +1330,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(
         ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample))
             .isReadOnly());
-    assertTrue(design.experience.isReadOnly());
-    assertTrue(design.experienceGoal.isReadOnly());
+    assertTrue(design.experiment.isReadOnly());
+    assertTrue(design.experimentGoal.isReadOnly());
     assertTrue(design.taxonomy.isReadOnly());
     assertTrue(design.proteinName.isReadOnly());
     assertTrue(design.proteinWeight.isReadOnly());
@@ -1401,8 +1401,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(
         ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample))
             .isReadOnly());
-    assertFalse(design.experience.isReadOnly());
-    assertFalse(design.experienceGoal.isReadOnly());
+    assertFalse(design.experiment.isReadOnly());
+    assertFalse(design.experimentGoal.isReadOnly());
     assertFalse(design.taxonomy.isReadOnly());
     assertFalse(design.proteinName.isReadOnly());
     assertFalse(design.proteinWeight.isReadOnly());
@@ -1487,8 +1487,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -1552,8 +1552,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -1623,8 +1623,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -1688,8 +1688,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -1759,8 +1759,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -1824,8 +1824,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -1895,8 +1895,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -1960,8 +1960,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -2069,8 +2069,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -2134,8 +2134,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -2205,8 +2205,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -2270,8 +2270,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertTrue(design.proteinWeight.isVisible());
@@ -2341,8 +2341,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertFalse(design.experience.isVisible());
-    assertFalse(design.experienceGoal.isVisible());
+    assertFalse(design.experiment.isVisible());
+    assertFalse(design.experimentGoal.isVisible());
     assertFalse(design.taxonomy.isVisible());
     assertFalse(design.proteinName.isVisible());
     assertFalse(design.proteinWeight.isVisible());
@@ -2406,8 +2406,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertFalse(design.experience.isVisible());
-    assertFalse(design.experienceGoal.isVisible());
+    assertFalse(design.experiment.isVisible());
+    assertFalse(design.experimentGoal.isVisible());
     assertFalse(design.taxonomy.isVisible());
     assertFalse(design.proteinName.isVisible());
     assertFalse(design.proteinWeight.isVisible());
@@ -2488,8 +2488,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertFalse(design.experience.isVisible());
-    assertFalse(design.experienceGoal.isVisible());
+    assertFalse(design.experiment.isVisible());
+    assertFalse(design.experimentGoal.isVisible());
     assertFalse(design.taxonomy.isVisible());
     assertFalse(design.proteinName.isVisible());
     assertFalse(design.proteinWeight.isVisible());
@@ -2553,8 +2553,8 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertFalse(design.experience.isVisible());
-    assertFalse(design.experienceGoal.isVisible());
+    assertFalse(design.experiment.isVisible());
+    assertFalse(design.experimentGoal.isVisible());
     assertFalse(design.taxonomy.isVisible());
     assertFalse(design.proteinName.isVisible());
     assertFalse(design.proteinWeight.isVisible());
@@ -2624,8 +2624,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertFalse(design.proteinWeight.isVisible());
@@ -2689,8 +2689,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertFalse(design.proteinWeight.isVisible());
@@ -2760,8 +2760,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertFalse(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertFalse(design.proteinWeight.isVisible());
@@ -2825,8 +2825,8 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.samples.isVisible());
     assertTrue(design.fillSamples.isVisible());
     assertFalse(design.samplesPlateContainer.isVisible());
-    assertTrue(design.experience.isVisible());
-    assertTrue(design.experienceGoal.isVisible());
+    assertTrue(design.experiment.isVisible());
+    assertTrue(design.experimentGoal.isVisible());
     assertTrue(design.taxonomy.isVisible());
     assertTrue(design.proteinName.isVisible());
     assertFalse(design.proteinWeight.isVisible());
@@ -3893,12 +3893,12 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_MissingExperience() throws Throwable {
+  public void save_MissingExperiment() throws Throwable {
     presenter.init(view);
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(type);
     setFields();
-    design.experience.setValue("");
+    design.experiment.setValue("");
     uploadFiles();
 
     design.save.click();
@@ -3906,7 +3906,7 @@ public class SubmissionFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.experience.getErrorMessage().getFormattedHtmlMessage());
+        design.experiment.getErrorMessage().getFormattedHtmlMessage());
     verify(submissionService, never()).insert(any());
   }
 
@@ -4342,8 +4342,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
@@ -4452,7 +4452,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -4476,8 +4476,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
@@ -4598,7 +4598,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -4624,8 +4624,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
@@ -4734,7 +4734,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -4758,8 +4758,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
@@ -4868,7 +4868,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -4893,8 +4893,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
@@ -5015,7 +5015,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -5038,8 +5038,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
@@ -5108,7 +5108,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -5132,8 +5132,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
@@ -5214,7 +5214,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -5236,7 +5236,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(SMALL_MOLECULE, submission.getService());
     assertEquals(null, submission.getTaxonomy());
-    assertEquals(sampleName, submission.getExperience());
+    assertEquals(sampleName, submission.getExperiment());
     assertEquals(null, submission.getGoal());
     assertEquals(null, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
@@ -5340,7 +5340,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(SMALL_MOLECULE, submission.getService());
     assertEquals(null, submission.getTaxonomy());
-    assertEquals(sampleName, submission.getExperience());
+    assertEquals(sampleName, submission.getExperiment());
     assertEquals(null, submission.getGoal());
     assertEquals(null, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
@@ -5464,8 +5464,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(INTACT_PROTEIN, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(source, submission.getSource());
     assertEquals(null, submission.getProteolyticDigestionMethod());
@@ -5574,7 +5574,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -5598,8 +5598,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(null, submission.getId());
     assertEquals(INTACT_PROTEIN, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(source, submission.getSource());
     assertEquals(null, submission.getProteolyticDigestionMethod());
@@ -5708,7 +5708,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -5763,8 +5763,8 @@ public class SubmissionFormPresenterTest {
     assertEquals((Long) 36L, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
@@ -5876,7 +5876,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -5903,7 +5903,7 @@ public class SubmissionFormPresenterTest {
     assertEquals((Long) 36L, submission.getId());
     assertEquals(database.getService(), submission.getService());
     assertEquals(database.getTaxonomy(), submission.getTaxonomy());
-    assertEquals(database.getExperience(), submission.getExperience());
+    assertEquals(database.getExperiment(), submission.getExperiment());
     assertEquals(database.getGoal(), submission.getGoal());
     assertEquals(database.getMassDetectionInstrument(), submission.getMassDetectionInstrument());
     assertEquals(database.getSource(), submission.getSource());
@@ -5994,7 +5994,7 @@ public class SubmissionFormPresenterTest {
       assertEquals(dfile.getFilename(), file.getFilename());
       assertArrayEquals(dfile.getContent(), file.getContent());
     }
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", database.getExperience()));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", database.getExperiment()));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -6020,8 +6020,8 @@ public class SubmissionFormPresenterTest {
     assertEquals((Long) 147L, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
     assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
@@ -6136,7 +6136,7 @@ public class SubmissionFormPresenterTest {
     file = submission.getFiles().get(1);
     assertEquals(filesFilename2, file.getFilename());
     assertArrayEquals(filesContent2, file.getContent());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", experience));
+    verify(view).showTrayNotification(resources.message(SAVE + ".done", experiment));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -6156,7 +6156,7 @@ public class SubmissionFormPresenterTest {
     design.save.click();
 
     verify(view).showError(stringCaptor.capture());
-    assertEquals(resources.message(UPDATE_ERROR, experience), stringCaptor.getValue());
+    assertEquals(resources.message(UPDATE_ERROR, experiment), stringCaptor.getValue());
   }
 
   @Test
@@ -6211,8 +6211,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(sampleName2, sample.getName());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
-    assertEquals(experience, design.experience.getValue());
-    assertEquals(experienceGoal, design.experienceGoal.getValue());
+    assertEquals(experiment, design.experiment.getValue());
+    assertEquals(experimentGoal, design.experimentGoal.getValue());
     assertEquals(taxonomy, design.taxonomy.getValue());
     assertEquals(proteinName, design.proteinName.getValue());
     assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
@@ -6278,8 +6278,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
     assertEquals(plateName, design.plateName.getValue());
     verify(view.plateComponent).setValue(plate);
-    assertEquals(experience, design.experience.getValue());
-    assertEquals(experienceGoal, design.experienceGoal.getValue());
+    assertEquals(experiment, design.experiment.getValue());
+    assertEquals(experimentGoal, design.experimentGoal.getValue());
     assertEquals(taxonomy, design.taxonomy.getValue());
     assertEquals(proteinName, design.proteinName.getValue());
     assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
@@ -6340,8 +6340,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(sampleName2, sample.getName());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
-    assertEquals(experience, design.experience.getValue());
-    assertEquals(experienceGoal, design.experienceGoal.getValue());
+    assertEquals(experiment, design.experiment.getValue());
+    assertEquals(experimentGoal, design.experimentGoal.getValue());
     assertEquals(taxonomy, design.taxonomy.getValue());
     assertEquals(proteinName, design.proteinName.getValue());
     assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);
@@ -6402,8 +6402,8 @@ public class SubmissionFormPresenterTest {
     assertEquals(sampleName2, sample.getName());
     assertEquals((Integer) sampleNumberProtein2, sample.getNumberProtein());
     assertEquals(proteinWeight2, sample.getMolecularWeight(), 0.001);
-    assertEquals(experience, design.experience.getValue());
-    assertEquals(experienceGoal, design.experienceGoal.getValue());
+    assertEquals(experiment, design.experiment.getValue());
+    assertEquals(experimentGoal, design.experimentGoal.getValue());
     assertEquals(taxonomy, design.taxonomy.getValue());
     assertEquals(proteinName, design.proteinName.getValue());
     assertEquals(proteinWeight1, convert(doubleConverter, design.proteinWeight), 0.001);

@@ -26,9 +26,9 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMIN
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_GOAL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIENCE_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIMENT_GOAL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIMENT_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
@@ -251,32 +251,32 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return findElement(className(SAMPLES_PLATE));
   }
 
-  protected PanelElement experiencePanel() {
-    return wrap(PanelElement.class, findElement(className(EXPERIENCE_PANEL)));
+  protected PanelElement experimentPanel() {
+    return wrap(PanelElement.class, findElement(className(EXPERIMENT_PANEL)));
   }
 
-  protected TextFieldElement experienceField() {
-    return wrap(TextFieldElement.class, findElement(className(EXPERIENCE)));
+  protected TextFieldElement experimentField() {
+    return wrap(TextFieldElement.class, findElement(className(EXPERIMENT)));
   }
 
-  protected String getExperience() {
-    return experienceField().getValue();
+  protected String getExperiment() {
+    return experimentField().getValue();
   }
 
-  protected void setExperience(String experience) {
-    experienceField().setValue(experience);
+  protected void setExperiment(String experiment) {
+    experimentField().setValue(experiment);
   }
 
-  protected TextFieldElement experienceGoalField() {
-    return wrap(TextFieldElement.class, findElement(className(EXPERIENCE_GOAL)));
+  protected TextFieldElement experimentGoalField() {
+    return wrap(TextFieldElement.class, findElement(className(EXPERIMENT_GOAL)));
   }
 
-  protected String getExperienceGoal() {
-    return experienceGoalField().getValue();
+  protected String getExperimentGoal() {
+    return experimentGoalField().getValue();
   }
 
-  protected void setExperienceGoal(String goal) {
-    experienceGoalField().setValue(goal);
+  protected void setExperimentGoal(String goal) {
+    experimentGoalField().setValue(goal);
   }
 
   protected TextFieldElement taxonomyField() {

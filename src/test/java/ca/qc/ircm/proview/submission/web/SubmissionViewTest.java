@@ -86,8 +86,8 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
   private String sampleName1 = "sample_01";
   private String sampleName2 = "sample_02";
   private SampleContainerType sampleContainerType = TUBE;
-  private String experience = "my experience";
-  private String experienceGoal = "my experience goal";
+  private String experiment = "my experiment";
+  private String experimentGoal = "my experiment goal";
   private String taxonomy = "human";
   private String quantity = "20 ug";
   private double volume = 10.0;
@@ -105,10 +105,10 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     additionalFile1 = Paths.get(getClass().getResource("/submissionfile1.txt").toURI());
   }
 
-  private Submission getSubmission(String experience) {
+  private Submission getSubmission(String experiment) {
     JPAQuery<Submission> query = jpaQueryFactory.select(submission);
     query.from(submission);
-    query.where(submission.experience.eq(experience));
+    query.where(submission.experiment.eq(experiment));
     return query.fetchOne();
   }
 
@@ -119,8 +119,8 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setSampleCount(sampleCount);
     setSampleNameInGrid(0, sampleName1);
     setSampleNameInGrid(1, sampleName2);
-    setExperience(experience);
-    setExperienceGoal(experienceGoal);
+    setExperiment(experiment);
+    setExperimentGoal(experimentGoal);
     setTaxonomy(taxonomy);
     setQuantity(quantity);
     setVolume(volume);
@@ -187,9 +187,9 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setSampleContainerType(WELL);
     assertTrue(optional(() -> samplesPlate()).isPresent());
     setSampleContainerType(TUBE);
-    assertTrue(optional(() -> experiencePanel()).isPresent());
-    assertTrue(optional(() -> experienceField()).isPresent());
-    assertTrue(optional(() -> experienceGoalField()).isPresent());
+    assertTrue(optional(() -> experimentPanel()).isPresent());
+    assertTrue(optional(() -> experimentField()).isPresent());
+    assertTrue(optional(() -> experimentGoalField()).isPresent());
     assertTrue(optional(() -> taxonomyField()).isPresent());
     assertTrue(optional(() -> proteinNameField()).isPresent());
     assertTrue(optional(() -> proteinWeightField()).isPresent());
@@ -281,10 +281,10 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     clickSaveButton();
 
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
-    Submission submission = getSubmission(experience);
+    Submission submission = getSubmission(experiment);
     assertEquals(service, submission.getService());
-    assertEquals(experience, submission.getExperience());
-    assertEquals(experienceGoal, submission.getGoal());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(experimentGoal, submission.getGoal());
     assertEquals(taxonomy, submission.getTaxonomy());
     assertEquals(digestion, submission.getProteolyticDigestionMethod());
     assertEquals(proteinContent, submission.getProteinContent());

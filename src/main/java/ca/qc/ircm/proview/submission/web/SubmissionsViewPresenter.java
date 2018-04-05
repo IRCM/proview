@@ -109,11 +109,11 @@ public class SubmissionsViewPresenter {
   public static final String SAMPLE_COUNT = "sampleCount";
   public static final String SUBMISSION = submission.getMetadata().getName();
   public static final String SAMPLE = sample.getMetadata().getName();
-  public static final String EXPERIENCE =
-      property(SUBMISSION, submission.experience.getMetadata().getName());
+  public static final String EXPERIMENT =
+      property(SUBMISSION, submission.experiment.getMetadata().getName());
   public static final String USER = property(SUBMISSION, submission.user.getMetadata().getName());
   public static final String DIRECTOR = property(SUBMISSION, "director");
-  public static final String EXPERIENCE_GOAL =
+  public static final String EXPERIMENT_GOAL =
       property(SUBMISSION, submission.goal.getMetadata().getName());
   public static final String SAMPLE_NAME =
       property(SAMPLE, submissionSample.name.getMetadata().getName());
@@ -299,10 +299,10 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.addStyleName(COMPONENTS);
     design.submissionsGrid.setDataProvider(searchSubmissions());
     design.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
-        .setId(EXPERIENCE).setCaption(resources.message(EXPERIENCE))
-        .setComparator((s1, s2) -> collator.compare(Objects.toString(s1.getExperience(), ""),
-            Objects.toString(s2.getExperience(), "")));
-    columnProperties.put(EXPERIENCE, submission.experience);
+        .setId(EXPERIMENT).setCaption(resources.message(EXPERIMENT))
+        .setComparator((s1, s2) -> collator.compare(Objects.toString(s1.getExperiment(), ""),
+            Objects.toString(s2.getExperiment(), "")));
+    columnProperties.put(EXPERIMENT, submission.experiment);
     design.submissionsGrid.addColumn(submission -> submission.getUser().getName()).setId(USER)
         .setCaption(resources.message(USER))
         .setDescriptionGenerator(submission -> submission.getUser().getEmail());
@@ -320,9 +320,9 @@ public class SubmissionsViewPresenter {
         .setDescriptionGenerator(submission -> submission.getSamples().stream()
             .map(sample -> sample.getName()).sorted(collator).collect(Collectors.joining("\n")));
     columnProperties.put(SAMPLE_NAME, submission.samples.any().name);
-    design.submissionsGrid.addColumn(Submission::getGoal).setId(EXPERIENCE_GOAL)
-        .setCaption(resources.message(EXPERIENCE_GOAL));
-    columnProperties.put(EXPERIENCE_GOAL, submission.goal);
+    design.submissionsGrid.addColumn(Submission::getGoal).setId(EXPERIMENT_GOAL)
+        .setCaption(resources.message(EXPERIMENT_GOAL));
+    columnProperties.put(EXPERIMENT_GOAL, submission.goal);
     design.submissionsGrid.addColumn(submission -> statusesLabel(submission)).setId(SAMPLE_STATUSES)
         .setCaption(resources.message(SAMPLE_STATUSES))
         .setDescriptionGenerator(submission -> statusesDescription(submission));
@@ -364,9 +364,9 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getColumn(SAMPLE_NAME).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_NAME)
         .setHidden(userPreferenceService.get(this, SAMPLE_NAME, false));
-    design.submissionsGrid.getColumn(EXPERIENCE_GOAL).setHidable(true);
-    design.submissionsGrid.getColumn(EXPERIENCE_GOAL)
-        .setHidden(userPreferenceService.get(this, EXPERIENCE_GOAL, false));
+    design.submissionsGrid.getColumn(EXPERIMENT_GOAL).setHidable(true);
+    design.submissionsGrid.getColumn(EXPERIMENT_GOAL)
+        .setHidden(userPreferenceService.get(this, EXPERIMENT_GOAL, false));
     design.submissionsGrid.getColumn(SAMPLE_STATUSES).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_STATUSES)
         .setHidden(userPreferenceService.get(this, SAMPLE_STATUSES, false));
@@ -404,8 +404,8 @@ public class SubmissionsViewPresenter {
       design.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
     }
     HeaderRow filterRow = design.submissionsGrid.appendHeaderRow();
-    filterRow.getCell(EXPERIENCE).setComponent(textFilter(e -> {
-      filter.experienceContains = e.getValue();
+    filterRow.getCell(EXPERIMENT).setComponent(textFilter(e -> {
+      filter.experimentContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(USER).setComponent(textFilter(e -> {
@@ -420,7 +420,7 @@ public class SubmissionsViewPresenter {
       filter.anySampleNameContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
-    filterRow.getCell(EXPERIENCE_GOAL).setComponent(textFilter(e -> {
+    filterRow.getCell(EXPERIMENT_GOAL).setComponent(textFilter(e -> {
       filter.goalContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
@@ -442,12 +442,12 @@ public class SubmissionsViewPresenter {
 
   private Button viewButton(Submission submission) {
     Button button = new Button();
-    button.addStyleName(EXPERIENCE);
+    button.addStyleName(EXPERIMENT);
     if (submission.getService() == Service.SMALL_MOLECULE) {
       button.setCaption(
           submission.getSamples().stream().findFirst().map(sample -> sample.getName()).orElse(""));
     } else {
-      button.setCaption(submission.getExperience());
+      button.setCaption(submission.getExperiment());
     }
     button.addClickListener(e -> viewSubmission(submission));
     return button;

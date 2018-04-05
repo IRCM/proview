@@ -208,11 +208,11 @@
         <span class="submission-plate" th:text="${plate.name}">My plate</span>
       </div>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
-        <span class="label" th:text="#{submission.experience}">Experience:</span>
-        <span class="experience" th:text="${submission.experience}">My experience</span>
+        <span class="label" th:text="#{submission.experiment}">Experiment:</span>
+        <span class="experiment" th:text="${submission.experiment}">My experiment</span>
       </div>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE' && submission.goal != null}">
-        <span class="label" th:text="#{submission.goal}">Experience goal:</span>
+        <span class="label" th:text="#{submission.goal}">Experiment goal:</span>
         <span class="goal" th:text="${submission.goal}">My goal</span>
       </div>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">

@@ -69,8 +69,8 @@ public class SampleSelectionFormPresenter {
       property(ORIGINAL_CONTAINER, tube.name.getMetadata().getName());
   public static final String UPDATE = "update";
   public static final String SUBMISSION = submission.getMetadata().getName();
-  public static final String EXPERIENCE =
-      property(SUBMISSION, submission.experience.getMetadata().getName());
+  public static final String EXPERIMENT =
+      property(SUBMISSION, submission.experiment.getMetadata().getName());
   public static final String SELECT = "select";
   public static final String CLEAR = "clear";
   private SampleSelectionForm view;
@@ -112,8 +112,8 @@ public class SampleSelectionFormPresenter {
     design.samplesPanel.setCaption(resources.message(SAMPLES_PANEL));
     design.samplesGrid.addStyleName(SAMPLES);
     design.samplesGrid.addColumn(Sample::getName).setId(NAME).setCaption(resources.message(NAME));
-    design.samplesGrid.addColumn(sample -> sample.getSubmission().getExperience()).setId(EXPERIENCE)
-        .setCaption(resources.message(EXPERIENCE));
+    design.samplesGrid.addColumn(sample -> sample.getSubmission().getExperiment()).setId(EXPERIMENT)
+        .setCaption(resources.message(EXPERIMENT));
     design.samplesGrid.addColumn(sample -> sample.getStatus().getLabel(locale)).setId(STATUS)
         .setCaption(resources.message(STATUS));
     design.samplesGrid.addColumn(sample -> sampleContainerService.last(sample).getFullName())
@@ -121,7 +121,7 @@ public class SampleSelectionFormPresenter {
         .setStyleGenerator(sample -> sampleContainerService.last(sample).isBanned() ? BANNED : "");
     design.samplesGrid.setSelectionMode(SelectionMode.MULTI);
     design.samplesGrid.setFrozenColumnCount(1);
-    design.samplesGrid.setSortOrder(GridSortOrder.asc(design.samplesGrid.getColumn(EXPERIENCE))
+    design.samplesGrid.setSortOrder(GridSortOrder.asc(design.samplesGrid.getColumn(EXPERIMENT))
         .thenAsc(design.samplesGrid.getColumn(NAME)));
     design.controlsPanel.addStyleName(CONTROLS_PANEL);
     design.controlsPanel.setCaption(resources.message(CONTROLS_PANEL));

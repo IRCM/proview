@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.CANCEL;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.DOWN;
-import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.EXPERIENCE;
+import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.EXPERIMENT;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.HEADER;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.INVALID_SAMPLES;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.NAME;
@@ -162,7 +162,7 @@ public class SampleStatusViewPresenterTest {
 
     assertTrue(design.samplesGrid.getSelectionModel() instanceof NoSelectionModel);
     assertEquals(NAME, design.samplesGrid.getColumns().get(0).getId());
-    assertEquals(EXPERIENCE, design.samplesGrid.getColumns().get(1).getId());
+    assertEquals(EXPERIMENT, design.samplesGrid.getColumns().get(1).getId());
     assertEquals(STATUS, design.samplesGrid.getColumns().get(2).getId());
     assertEquals(NEW_STATUS, design.samplesGrid.getColumns().get(3).getId());
     assertEquals(DOWN, design.samplesGrid.getColumns().get(4).getId());
@@ -171,11 +171,11 @@ public class SampleStatusViewPresenterTest {
       assertEquals(sample.getName(),
           design.samplesGrid.getColumn(NAME).getValueProvider().apply(sample));
     }
-    assertEquals(resources.message(EXPERIENCE),
-        design.samplesGrid.getColumn(EXPERIENCE).getCaption());
+    assertEquals(resources.message(EXPERIMENT),
+        design.samplesGrid.getColumn(EXPERIMENT).getCaption());
     for (SubmissionSample sample : samples) {
-      assertEquals(sample.getSubmission().getExperience(),
-          design.samplesGrid.getColumn(EXPERIENCE).getValueProvider().apply(sample));
+      assertEquals(sample.getSubmission().getExperiment(),
+          design.samplesGrid.getColumn(EXPERIMENT).getValueProvider().apply(sample));
     }
     assertEquals(resources.message(STATUS), design.samplesGrid.getColumn(STATUS).getCaption());
     for (SubmissionSample sample : samples) {
@@ -258,10 +258,10 @@ public class SampleStatusViewPresenterTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void down_OrderedByExperienceAsc() {
+  public void down_OrderedByExperimentAsc() {
     presenter.init(view);
     presenter.enter("");
-    design.samplesGrid.sort(EXPERIENCE, SortDirection.ASCENDING);
+    design.samplesGrid.sort(EXPERIMENT, SortDirection.ASCENDING);
     List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samplesGrid).getItems());
     SubmissionSample sample1 = samples.get(0);
     SubmissionSample sample2 = samples.get(1);

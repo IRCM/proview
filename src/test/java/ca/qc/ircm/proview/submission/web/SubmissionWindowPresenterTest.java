@@ -92,7 +92,7 @@ public class SubmissionWindowPresenterTest {
     presenter.init(window);
     presenter.setValue(submission);
 
-    verify(window).setCaption(resources.message(TITLE, submission.getExperience()));
+    verify(window).setCaption(resources.message(TITLE, submission.getExperiment()));
     assertEquals(resources.message(UPDATE), design.update.getCaption());
   }
 
