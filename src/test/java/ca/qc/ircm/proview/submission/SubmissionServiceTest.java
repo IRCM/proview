@@ -1904,8 +1904,7 @@ public class SubmissionServiceTest {
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
-    assertTrue(find(samples, "unit_test_eluate_01").isPresent());
-    SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
+    SubmissionSample submissionSample = submission.getSamples().get(0);
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
@@ -1930,6 +1929,7 @@ public class SubmissionServiceTest {
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
     assertEquals(1, tube.getVersion());
+    assertEquals("unit_test_eluate_02", submission.getSamples().get(1).getName());
     files = submission.getFiles();
     assertEquals(1, files.size());
     file = files.get(0);
@@ -2054,8 +2054,7 @@ public class SubmissionServiceTest {
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
-    assertTrue(find(samples, "unit_test_eluate_01").isPresent());
-    SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
+    SubmissionSample submissionSample = submission.getSamples().get(0);
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
@@ -2091,6 +2090,7 @@ public class SubmissionServiceTest {
     assertEquals(0, well.getColumn());
     assertEquals(false, well.isBanned());
     assertEquals(1, well.getVersion());
+    assertEquals("unit_test_eluate_02", submission.getSamples().get(1).getName());
     files = submission.getFiles();
     assertEquals(1, files.size());
     file = files.get(0);

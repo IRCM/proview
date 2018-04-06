@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS sample (
   status int(5) DEFAULT NULL,
   numberProtein int(11) DEFAULT NULL,
   submissionId bigint(20) DEFAULT NULL,
+  listIndex int(10) DEFAULT NULL,
   molecularWeight double DEFAULT NULL,
   quantity varchar(100) DEFAULT NULL,
   volume varchar(100) DEFAULT NULL,
