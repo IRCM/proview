@@ -388,11 +388,9 @@ public class MsAnalysisViewPresenter implements BinderValidator {
       final MessageResource generalResources = view.getGeneralResources();
       MsAnalysis msAnalysis = binder.getBean();
       msAnalysis.setAcquisitions(acquisitions);
-      int listIndex = 0;
       for (Acquisition acquisition : acquisitions) {
         acquisition.setNumberOfAcquisition(
             Integer.valueOf(acquisitionCountFields.get(acquisition.getContainer()).getValue()));
-        acquisition.setListIndex(listIndex++);
       }
       if (msAnalysis.getId() != null) {
         try {

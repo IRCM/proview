@@ -77,7 +77,6 @@ public class SubmissionAnalysesFormPresenter {
   public static final String NAME =
       property(SAMPLE, acquisition.sample.name.getMetadata().getName());
   public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
-  public static final String ACQUISITION_INDEX = acquisition.listIndex.getMetadata().getName();
   public static final String DATA_ANALYSES_PANEL = "dataAnalysesPanel";
   public static final String DATA_ANALYSES = "dataAnalyses";
   public static final String PROTEIN = dataAnalysis.protein.getMetadata().getName();
@@ -243,9 +242,6 @@ public class SubmissionAnalysesFormPresenter {
         .setCaption(resources.message(NAME));
     grid.addColumn(acquisition -> acquisition.getAcquisitionFile()).setId(ACQUISITION_FILE)
         .setCaption(resources.message(ACQUISITION_FILE));
-    grid.addColumn(acquisition -> acquisition.getListIndex()).setId(ACQUISITION_INDEX)
-        .setHidden(true);
-    grid.sort(ACQUISITION_INDEX);
     layout.addComponent(grid);
   }
 

@@ -34,6 +34,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 /**
@@ -84,6 +85,7 @@ public class MsAnalysis implements Data, Serializable {
    */
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "msAnalysisId", nullable = false)
+  @OrderColumn(name = "listIndex")
   private List<Acquisition> acquisitions;
 
   public MsAnalysis() {

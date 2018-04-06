@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS acquisition (
   sampleListName varchar(255) DEFAULT NULL,
   acquisitionFile varchar(255) DEFAULT NULL,
   position int(11) NOT NULL,
-  listIndex int(11) NOT NULL,
+  listIndex int(11) DEFAULT NULL,
   comment varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE (sampleId,position),

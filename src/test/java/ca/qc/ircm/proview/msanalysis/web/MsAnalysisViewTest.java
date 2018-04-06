@@ -193,7 +193,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("acqui_01", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 0, acquisition.getListIndex());
     assertEquals((Integer) 1, acquisition.getPosition());
     opAcquisition = containerAcquisitions.stream()
         .filter(ac -> ac.getAcquisitionFile().equals("acqui_02")).findFirst();
@@ -205,7 +204,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("acqui_02", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 1, acquisition.getListIndex());
     assertEquals((Integer) 2, acquisition.getPosition());
     opAcquisition = find(savedMsAnalysis.getAcquisitions(), 560);
     assertTrue(opAcquisition.isPresent());
@@ -216,7 +214,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("acqui_03", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 2, acquisition.getListIndex());
     assertEquals((Integer) 1, acquisition.getPosition());
     opAcquisition = find(savedMsAnalysis.getAcquisitions(), 444);
     assertTrue(opAcquisition.isPresent());
@@ -227,7 +224,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("acqui_04", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 3, acquisition.getListIndex());
     assertEquals((Integer) 3, acquisition.getPosition());
   }
 
@@ -261,7 +257,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("acqui_01", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 0, acquisition.getListIndex());
     assertEquals((Integer) 1, acquisition.getPosition());
     opAcquisition = containerAcquisitions.stream()
         .filter(ac -> ac.getAcquisitionFile().equals("acqui_02")).findFirst();
@@ -273,7 +268,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("acqui_02", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 1, acquisition.getListIndex());
     assertEquals((Integer) 2, acquisition.getPosition());
     opAcquisition = find(savedMsAnalysis.getAcquisitions(), 560);
     assertTrue(opAcquisition.isPresent());
@@ -284,7 +278,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("acqui_03", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 2, acquisition.getListIndex());
     assertEquals((Integer) 1, acquisition.getPosition());
     opAcquisition = find(savedMsAnalysis.getAcquisitions(), 444);
     assertTrue(opAcquisition.isPresent());
@@ -295,7 +288,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("acqui_04", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 3, acquisition.getListIndex());
     assertEquals((Integer) 3, acquisition.getPosition());
   }
 
@@ -323,7 +315,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("XL_20111115_COU_01", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 0, acquisition.getListIndex());
     assertEquals((Integer) 2, acquisition.getPosition());
     opAcquisition = find(savedMsAnalysis.getAcquisitions(), 445);
     assertTrue(opAcquisition.isPresent());
@@ -334,7 +325,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals("XL_20111115_COU_02", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
-    assertEquals((Integer) 1, acquisition.getListIndex());
     assertEquals((Integer) 1, acquisition.getPosition());
   }
 }
