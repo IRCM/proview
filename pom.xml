@@ -27,7 +27,7 @@
   <groupId>ca.qc.ircm.proteomique</groupId>
   <artifactId>proview</artifactId>
   <name>ProView</name>
-  <version>2.11</version>
+  <version>2.12</version>
   <inceptionYear>2006</inceptionYear>
   <description>LIMS managing sample analysis by mass spectrometry (MS)</description>
   <url>http://bitbucket.org/ircm/proview-2</url>

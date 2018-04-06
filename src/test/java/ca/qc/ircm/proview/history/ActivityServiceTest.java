@@ -298,10 +298,14 @@ public class ActivityServiceTest {
     List<Activity> activities = activityService.all(submission);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(3, activities.size());
+    assertEquals(7, activities.size());
     assertTrue(find(activities, 5634).isPresent());
+    assertTrue(find(activities, 5635).isPresent());
+    assertTrue(find(activities, 5636).isPresent());
     assertTrue(find(activities, 5638).isPresent());
     assertTrue(find(activities, 5639).isPresent());
+    assertTrue(find(activities, 5640).isPresent());
+    assertTrue(find(activities, 5641).isPresent());
   }
 
   @Test

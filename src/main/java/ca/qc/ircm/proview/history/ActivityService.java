@@ -194,7 +194,8 @@ public class ActivityService {
     query.leftJoin(activity.updates, updateActivity).fetch();
     BooleanExpression condition =
         activity.recordId.eq(submission.getId()).and(activity.tableName.eq(Submission.TABLE_NAME));
-    condition.or(activity.recordId.in(sampleIds).and(activity.tableName.eq(Sample.TABLE_NAME)));
+    condition =
+        condition.or(activity.recordId.in(sampleIds).and(activity.tableName.eq(Sample.TABLE_NAME)));
     query.where(condition);
     activities.addAll(query.distinct().fetch());
     // Treatments.

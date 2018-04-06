@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITION_FILE;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITION_INDEX;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSES;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSES_PANEL;
@@ -226,8 +225,6 @@ public class SubmissionAnalysesFormPresenterTest {
       assertEquals(resources.message(NAME), columns.get(0).getCaption());
       assertEquals(ACQUISITION_FILE, columns.get(1).getId());
       assertEquals(resources.message(ACQUISITION_FILE), columns.get(1).getCaption());
-      assertEquals(ACQUISITION_INDEX, columns.get(2).getId());
-      assertEquals(true, columns.get(2).isHidden());
     }
   }
 

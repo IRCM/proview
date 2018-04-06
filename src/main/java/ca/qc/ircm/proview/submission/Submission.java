@@ -46,6 +46,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -347,6 +348,7 @@ public class Submission implements Data, LaboratoryData, Serializable {
    * Samples that are part of this submission.
    */
   @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OrderColumn(name = "listIndex")
   private List<SubmissionSample> samples;
   /**
    * Additional files related to submission.

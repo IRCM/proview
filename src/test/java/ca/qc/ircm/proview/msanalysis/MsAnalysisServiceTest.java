@@ -152,7 +152,6 @@ public class MsAnalysisServiceTest {
     acquisition.setNumberOfAcquisition(1);
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
-    acquisition.setListIndex(0);
     acquisition.setComment("unit_test_comment");
     List<Acquisition> acquisitions = new ArrayList<>();
     acquisitions.add(acquisition);
@@ -182,7 +181,6 @@ public class MsAnalysisServiceTest {
     assertEquals(new Integer(1), acquisition.getNumberOfAcquisition());
     assertEquals("unit_test_sample_list", acquisition.getSampleListName());
     assertEquals("XL_20100614_COU_09", acquisition.getAcquisitionFile());
-    assertEquals((Integer) 0, acquisition.getListIndex());
     assertEquals("unit_test_comment", acquisition.getComment());
     SubmissionSample sampleStatus = entityManager.find(SubmissionSample.class, sample.getId());
     assertEquals(SampleStatus.ANALYSED, sampleStatus.getStatus());
@@ -204,7 +202,6 @@ public class MsAnalysisServiceTest {
     acquisition.setNumberOfAcquisition(1);
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
-    acquisition.setListIndex(0);
     acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
     Tube tube2 = new Tube(8L);
@@ -215,7 +212,6 @@ public class MsAnalysisServiceTest {
     acquisition.setNumberOfAcquisition(1);
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
-    acquisition.setListIndex(0);
     acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
     msAnalysis.setAcquisitions(acquisitions);
@@ -248,7 +244,6 @@ public class MsAnalysisServiceTest {
     acquisition.setNumberOfAcquisition(1);
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
-    acquisition.setListIndex(0);
     acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
     acquisition = new Acquisition();
@@ -257,7 +252,6 @@ public class MsAnalysisServiceTest {
     acquisition.setNumberOfAcquisition(1);
     acquisition.setSampleListName("unit_test_sample_list");
     acquisition.setAcquisitionFile("XL_20100614_COU_09");
-    acquisition.setListIndex(0);
     acquisition.setComment("unit_test_comment");
     acquisitions.add(acquisition);
     msAnalysis.setAcquisitions(acquisitions);
@@ -289,7 +283,6 @@ public class MsAnalysisServiceTest {
     acquisition.setSample(new SubmissionSample(445L));
     acquisition.setContainer(new Tube(5L));
     acquisition.setNumberOfAcquisition(2);
-    acquisition.setListIndex(2);
     msAnalysis.getAcquisitions().add(acquisition);
     when(msAnalysisActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
@@ -309,10 +302,8 @@ public class MsAnalysisServiceTest {
     assertEquals("new_acquisition_file", msAnalysis.getAcquisitions().get(0).getAcquisitionFile());
     assertEquals("test update", msAnalysis.getAcquisitions().get(0).getComment());
     assertEquals(new Integer(1), msAnalysis.getAcquisitions().get(0).getNumberOfAcquisition());
-    assertEquals((Integer) 0, msAnalysis.getAcquisitions().get(0).getListIndex());
     assertEquals((Integer) 2, msAnalysis.getAcquisitions().get(0).getPosition());
     assertEquals(new Integer(2), msAnalysis.getAcquisitions().get(1).getNumberOfAcquisition());
-    assertEquals((Integer) 1, msAnalysis.getAcquisitions().get(1).getListIndex());
     assertEquals((Integer) 1, msAnalysis.getAcquisitions().get(1).getPosition());
     assertEquals((Long) 5L, msAnalysis.getAcquisitions().get(2).getContainer().getId());
     assertEquals((Long) 445L, msAnalysis.getAcquisitions().get(2).getSample().getId());
@@ -320,7 +311,6 @@ public class MsAnalysisServiceTest {
     assertEquals("XL_20111115_COU_03", msAnalysis.getAcquisitions().get(2).getAcquisitionFile());
     assertEquals("test update new", msAnalysis.getAcquisitions().get(2).getComment());
     assertEquals(new Integer(2), msAnalysis.getAcquisitions().get(2).getNumberOfAcquisition());
-    assertEquals((Integer) 2, msAnalysis.getAcquisitions().get(2).getListIndex());
     assertEquals((Integer) 2, msAnalysis.getAcquisitions().get(2).getPosition());
   }
 

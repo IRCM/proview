@@ -77,7 +77,7 @@ public abstract class Sample implements Data, Named, Serializable {
    * Sample's name.
    */
   @Column(name = "name")
-  @Size(min = 3, max = 150)
+  @Size(min = 2, max = 150)
   private String name;
   /**
    * Type of sample.

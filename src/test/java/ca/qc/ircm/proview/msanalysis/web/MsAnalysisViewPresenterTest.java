@@ -658,7 +658,6 @@ public class MsAnalysisViewPresenterTest {
       assertEquals(container.getSample(), acquisition.getSample());
       assertEquals(container, acquisition.getContainer());
       assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
-      assertEquals((Integer) i, acquisition.getListIndex());
       assertEquals(null, acquisition.getPosition());
       assertEquals(sampleListNames.get(i), acquisition.getSampleListName());
       assertEquals(acquisitionFiles.get(i), acquisition.getAcquisitionFile());
@@ -713,7 +712,6 @@ public class MsAnalysisViewPresenterTest {
       assertEquals(container.getSample(), acquisition.getSample());
       assertEquals(container, acquisition.getContainer());
       assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
-      assertEquals(i * 2, acquisition.getListIndex().intValue());
       assertEquals(null, acquisition.getPosition());
       assertEquals(sampleListNames.get(i * 2), acquisition.getSampleListName());
       assertEquals(acquisitionFiles.get(i * 2), acquisition.getAcquisitionFile());
@@ -722,7 +720,6 @@ public class MsAnalysisViewPresenterTest {
       assertEquals(container.getSample(), acquisition.getSample());
       assertEquals(container, acquisition.getContainer());
       assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
-      assertEquals(i * 2 + 1, acquisition.getListIndex().intValue());
       assertEquals(null, acquisition.getPosition());
       assertEquals(sampleListNames.get(i * 2 + 1), acquisition.getSampleListName());
       assertEquals(acquisitionFiles.get(i * 2 + 1), acquisition.getAcquisitionFile());
@@ -768,7 +765,6 @@ public class MsAnalysisViewPresenterTest {
       assertEquals(container.getSample(), acquisition.getSample());
       assertEquals(container, acquisition.getContainer());
       assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
-      assertEquals((Integer) i, acquisition.getListIndex());
       assertEquals(null, acquisition.getPosition());
       assertEquals(sampleListNames.get(i), acquisition.getSampleListName());
       assertEquals(acquisitionFiles.get(i), acquisition.getAcquisitionFile());
@@ -804,7 +800,6 @@ public class MsAnalysisViewPresenterTest {
       assertEquals(original.getSample(), acquisition.getSample());
       assertEquals(original.getContainer(), acquisition.getContainer());
       assertEquals(original.getNumberOfAcquisition(), acquisition.getNumberOfAcquisition());
-      assertEquals(original.getListIndex(), acquisition.getListIndex());
       assertEquals(original.getPosition(), acquisition.getPosition());
       assertEquals(sampleListNames.get(i), acquisition.getSampleListName());
       assertEquals(acquisitionFiles.get(i), acquisition.getAcquisitionFile());
@@ -860,8 +855,7 @@ public class MsAnalysisViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(msAnalysisService).undo(msAnalysisCaptor.capture(), eq("test explanation"),
-        eq(false));
+    verify(msAnalysisService).undo(msAnalysisCaptor.capture(), eq("test explanation"), eq(false));
     MsAnalysis savedMsAnalysis = msAnalysisCaptor.getValue();
     assertEquals((Long) 14L, savedMsAnalysis.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, msAnalysis.getAcquisitions()
@@ -882,8 +876,7 @@ public class MsAnalysisViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(msAnalysisService).undo(msAnalysisCaptor.capture(), eq("test explanation"),
-        eq(true));
+    verify(msAnalysisService).undo(msAnalysisCaptor.capture(), eq("test explanation"), eq(true));
     MsAnalysis savedMsAnalysis = msAnalysisCaptor.getValue();
     assertEquals((Long) 14L, savedMsAnalysis.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, msAnalysis.getAcquisitions()
@@ -1033,7 +1026,6 @@ public class MsAnalysisViewPresenterTest {
     newAcquisition.setSampleListName(msAnalysis.getAcquisitions().get(0).getSampleListName());
     newAcquisition.setAcquisitionFile(msAnalysis.getAcquisitions().get(0).getAcquisitionFile() + 1);
     newAcquisition.setComment(msAnalysis.getAcquisitions().get(0).getComment());
-    newAcquisition.setListIndex(msAnalysis.getAcquisitions().size() + 1);
     newAcquisition.setNumberOfAcquisition(2);
     newAcquisition.setPosition(2);
     msAnalysis.getAcquisitions().add(newAcquisition);

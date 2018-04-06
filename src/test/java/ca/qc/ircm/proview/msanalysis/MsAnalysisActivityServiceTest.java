@@ -78,7 +78,6 @@ public class MsAnalysisActivityServiceTest {
     msAnalysis.setSource(MassDetectionInstrumentSource.LDTD);
     Acquisition acquisition = new Acquisition();
     acquisition.setAcquisitionFile("unit_test_acquisition_file");
-    acquisition.setListIndex(1);
     acquisition.setNumberOfAcquisition(1);
     acquisition.setSample(sample);
     acquisition.setSampleListName("unit_test_sample_list_name");

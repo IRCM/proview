@@ -91,11 +91,6 @@ public class Acquisition implements Data, Named, Serializable {
   @Column(name = "position")
   private Integer position;
   /**
-   * Index of acquisition inside MS analysis.
-   */
-  @Column(name = "listIndex")
-  private Integer listIndex;
-  /**
    * Any comment on this acquisition.
    */
   @Column(name = "comment")
@@ -185,14 +180,6 @@ public class Acquisition implements Data, Named, Serializable {
 
   public void setComment(String comment) {
     this.comment = comment;
-  }
-
-  public Integer getListIndex() {
-    return listIndex;
-  }
-
-  public void setListIndex(Integer listIndex) {
-    this.listIndex = listIndex;
   }
 
   public SampleContainer getContainer() {
