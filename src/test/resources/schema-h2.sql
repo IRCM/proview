@@ -249,6 +249,7 @@ CREATE TABLE IF NOT EXISTS treatmentsample (
   treatmentType varchar(100) DEFAULT NULL,
   sampleId bigint(20) NOT NULL,
   containerId bigint(20) DEFAULT NULL,
+  listIndex int(10) DEFAULT NULL,
   destinationContainerId bigint(20) DEFAULT NULL,
   comment clob,
   sourceVolume double DEFAULT NULL,

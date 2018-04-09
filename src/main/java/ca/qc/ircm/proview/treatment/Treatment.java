@@ -36,6 +36,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 /**
@@ -96,6 +97,7 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
    */
   @OneToMany(cascade = CascadeType.ALL, targetEntity = TreatmentSample.class)
   @JoinColumn(name = "treatmentId", nullable = false)
+  @OrderColumn(name = "listIndex")
   private List<S> treatmentSamples;
 
   public Treatment() {
