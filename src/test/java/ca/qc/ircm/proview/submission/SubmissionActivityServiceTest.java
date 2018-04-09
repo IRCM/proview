@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -35,7 +34,6 @@ import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
-import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -85,15 +83,6 @@ public class SubmissionActivityServiceTest {
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(sampleActivityService.update(any(), any())).thenReturn(Optional.empty());
-  }
-
-  private SampleSolvent find(Collection<SampleSolvent> solvents, Solvent solvent) {
-    for (SampleSolvent ssolvent : solvents) {
-      if (ssolvent.getSolvent() == solvent) {
-        return ssolvent;
-      }
-    }
-    return null;
   }
 
   @Test
@@ -672,18 +661,16 @@ public class SubmissionActivityServiceTest {
     entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
-    SampleSolvent solvent = new SampleSolvent(203L, Solvent.OTHER);
+    Solvent solvent = Solvent.OTHER;
     submission.getSolvents().add(solvent);
     submission.setOtherSolvent("ch3oh");
     entityManager.flush();
-    Long solventId = solvent.getId();
 
     Optional<Activity> optionalActivity =
         submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
-    assertNotNull(solventId);
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals("submission", activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
@@ -699,9 +686,12 @@ public class SubmissionActivityServiceTest {
     otherSolventActivity.setNewValue("ch3oh");
     expectedUpdateActivities.add(otherSolventActivity);
     UpdateActivity addSolventActivity = new UpdateActivity();
-    addSolventActivity.setActionType(ActionType.INSERT);
-    addSolventActivity.setTableName("solvent");
-    addSolventActivity.setRecordId(solventId);
+    addSolventActivity.setActionType(ActionType.UPDATE);
+    addSolventActivity.setTableName("submission");
+    addSolventActivity.setRecordId(submission.getId());
+    addSolventActivity.setColumn("solvent");
+    addSolventActivity.setOldValue("METHANOL");
+    addSolventActivity.setNewValue("METHANOL,OTHER");
     expectedUpdateActivities.add(addSolventActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
@@ -712,10 +702,9 @@ public class SubmissionActivityServiceTest {
     entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
-    SampleSolvent solvent = find(submission.getSolvents(), Solvent.METHANOL);
+    Solvent solvent = Solvent.METHANOL;
     submission.getSolvents().remove(solvent);
     entityManager.flush();
-    final Long solventId = solvent.getId();
 
     Optional<Activity> optionalActivity =
         submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
@@ -729,9 +718,12 @@ public class SubmissionActivityServiceTest {
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeSolventActivity = new UpdateActivity();
-    removeSolventActivity.setActionType(ActionType.DELETE);
-    removeSolventActivity.setTableName("solvent");
-    removeSolventActivity.setRecordId(solventId);
+    removeSolventActivity.setActionType(ActionType.UPDATE);
+    removeSolventActivity.setTableName("submission");
+    removeSolventActivity.setRecordId(submission.getId());
+    removeSolventActivity.setColumn("solvent");
+    removeSolventActivity.setOldValue("METHANOL");
+    removeSolventActivity.setNewValue(null);
     expectedUpdateActivities.add(removeSolventActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }

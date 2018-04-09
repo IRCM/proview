@@ -145,7 +145,6 @@ import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
-import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
@@ -505,18 +504,18 @@ public class SubmissionFormPresenterTest {
     submission.setMonoisotopicMass(monoisotopicMass);
     submission.setAverageMass(averageMass);
     submission.setSolutionSolvent(solutionSolvent);
-    List<SampleSolvent> sampleSolvents = new ArrayList<>();
+    List<Solvent> sampleSolvents = new ArrayList<>();
     if (acetonitrileSolvents) {
-      sampleSolvents.add(new SampleSolvent(Solvent.ACETONITRILE));
+      sampleSolvents.add(Solvent.ACETONITRILE);
     }
     if (methanolSolvents) {
-      sampleSolvents.add(new SampleSolvent(Solvent.METHANOL));
+      sampleSolvents.add(Solvent.METHANOL);
     }
     if (chclSolvents) {
-      sampleSolvents.add(new SampleSolvent(Solvent.CHCL3));
+      sampleSolvents.add(Solvent.CHCL3);
     }
     if (otherSolvents) {
-      sampleSolvents.add(new SampleSolvent(Solvent.OTHER));
+      sampleSolvents.add(Solvent.OTHER);
     }
     submission.setSolvents(sampleSolvents);
     submission.setOtherSolvent(otherSolvent);
@@ -5269,22 +5268,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(averageMass, submission.getAverageMass(), 0.0001);
     assertEquals(solutionSolvent, submission.getSolutionSolvent());
     assertEquals(4, submission.getSolvents().size());
-    SampleSolvent sampleSolvent = submission.getSolvents().get(0);
-    assertEquals(null, sampleSolvent.getId());
-    assertEquals(Solvent.ACETONITRILE, sampleSolvent.getSolvent());
-    assertEquals(false, sampleSolvent.isDeleted());
-    sampleSolvent = submission.getSolvents().get(1);
-    assertEquals(null, sampleSolvent.getId());
-    assertEquals(Solvent.METHANOL, sampleSolvent.getSolvent());
-    assertEquals(false, sampleSolvent.isDeleted());
-    sampleSolvent = submission.getSolvents().get(2);
-    assertEquals(null, sampleSolvent.getId());
-    assertEquals(Solvent.CHCL3, sampleSolvent.getSolvent());
-    assertEquals(false, sampleSolvent.isDeleted());
-    sampleSolvent = submission.getSolvents().get(3);
-    assertEquals(null, sampleSolvent.getId());
-    assertEquals(Solvent.OTHER, sampleSolvent.getSolvent());
-    assertEquals(false, sampleSolvent.isDeleted());
+    Solvent solvent = submission.getSolvents().get(0);
+    assertEquals(Solvent.ACETONITRILE, solvent);
+    solvent = submission.getSolvents().get(1);
+    assertEquals(Solvent.METHANOL, solvent);
+    solvent = submission.getSolvents().get(2);
+    assertEquals(Solvent.CHCL3, solvent);
+    solvent = submission.getSolvents().get(3);
+    assertEquals(Solvent.OTHER, solvent);
     assertEquals(otherSolvent, submission.getOtherSolvent());
     assertEquals(toxicity, submission.getToxicity());
     assertEquals(lightSensitive, submission.isLightSensitive());
@@ -5373,22 +5364,14 @@ public class SubmissionFormPresenterTest {
     assertEquals(averageMass, submission.getAverageMass(), 0.0001);
     assertEquals(null, submission.getSolutionSolvent());
     assertEquals(4, submission.getSolvents().size());
-    SampleSolvent sampleSolvent = submission.getSolvents().get(0);
-    assertEquals(null, sampleSolvent.getId());
-    assertEquals(Solvent.ACETONITRILE, sampleSolvent.getSolvent());
-    assertEquals(false, sampleSolvent.isDeleted());
-    sampleSolvent = submission.getSolvents().get(1);
-    assertEquals(null, sampleSolvent.getId());
-    assertEquals(Solvent.METHANOL, sampleSolvent.getSolvent());
-    assertEquals(false, sampleSolvent.isDeleted());
-    sampleSolvent = submission.getSolvents().get(2);
-    assertEquals(null, sampleSolvent.getId());
-    assertEquals(Solvent.CHCL3, sampleSolvent.getSolvent());
-    assertEquals(false, sampleSolvent.isDeleted());
-    sampleSolvent = submission.getSolvents().get(3);
-    assertEquals(null, sampleSolvent.getId());
-    assertEquals(Solvent.OTHER, sampleSolvent.getSolvent());
-    assertEquals(false, sampleSolvent.isDeleted());
+    Solvent solvent = submission.getSolvents().get(0);
+    assertEquals(Solvent.ACETONITRILE, solvent);
+    solvent = submission.getSolvents().get(1);
+    assertEquals(Solvent.METHANOL, solvent);
+    solvent = submission.getSolvents().get(2);
+    assertEquals(Solvent.CHCL3, solvent);
+    solvent = submission.getSolvents().get(3);
+    assertEquals(Solvent.OTHER, solvent);
     assertEquals(otherSolvent, submission.getOtherSolvent());
     assertEquals(toxicity, submission.getToxicity());
     assertEquals(lightSensitive, submission.isLightSensitive());

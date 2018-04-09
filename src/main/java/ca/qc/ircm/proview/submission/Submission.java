@@ -26,8 +26,8 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
-import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryData;
 import ca.qc.ircm.proview.user.User;
@@ -38,8 +38,11 @@ import java.time.Instant;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -275,9 +278,11 @@ public class Submission implements Data, LaboratoryData, Serializable {
   /**
    * Solvents that our lab uses that can solubilise sample.
    */
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "submissionId")
-  private List<SampleSolvent> solvents;
+  @ElementCollection(targetClass = Solvent.class)
+  @CollectionTable(name = "solvent", joinColumns = @JoinColumn(name = "submissionId"))
+  @Column(name = "solvent", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private List<Solvent> solvents;
   /**
    * Other solvent value for Solvent.OTHER in solventList.
    */
@@ -731,11 +736,11 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.solutionSolvent = solutionSolvent;
   }
 
-  public List<SampleSolvent> getSolvents() {
+  public List<Solvent> getSolvents() {
     return solvents;
   }
 
-  public void setSolvents(List<SampleSolvent> solvents) {
+  public void setSolvents(List<Solvent> solvents) {
     this.solvents = solvents;
   }
 

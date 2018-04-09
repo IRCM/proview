@@ -42,7 +42,6 @@ import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -474,26 +473,6 @@ public class ActivityService {
               break;
             case DELETE:
               message.append(message(bundle, "Sample.Standard.DELETE", standard.getName()));
-              break;
-            default:
-          }
-        } else if (updateActivity.getTableName().equals("samplesolvent")) {
-          SampleSolvent sampleSolvent =
-              entityManager.find(SampleSolvent.class, updateActivity.getRecordId());
-          String solventName = sampleSolvent.getSolvent().getLabel(bundle.getLocale());
-          switch (updateActivity.getActionType()) {
-            case INSERT:
-              message.append(message(bundle, "Sample.SampleSolvent.INSERT", solventName,
-                  updateActivity.getColumn(), updateActivity.getOldValue(),
-                  updateActivity.getNewValue()));
-              break;
-            case UPDATE:
-              throw new AssertionError(
-                  "Unexpected ActionType UPDATE for update activity on SampleSovent table");
-            case DELETE:
-              message.append(message(bundle, "Sample.SampleSolvent.DELETE", solventName,
-                  updateActivity.getColumn(), updateActivity.getOldValue(),
-                  updateActivity.getNewValue()));
               break;
             default:
           }
