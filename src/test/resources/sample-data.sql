@@ -3911,5 +3911,5 @@ INSERT INTO contaminant (id,name,quantity,sampleId,comment,deleted)
 VALUES (2,'keratin1','1.5 μg',445,NULL,0);
 INSERT INTO contaminant (id,name,quantity,sampleId,comment,deleted)
 VALUES (3,'cap_contaminant','3 μg',447,'some_comment',0);
-INSERT INTO solvent (id,submissionId,solvent,deleted)
-VALUES (54,33,'METHANOL',0);
+INSERT INTO solvent (id,submissionId,solvent)
+VALUES (54,33,'METHANOL');

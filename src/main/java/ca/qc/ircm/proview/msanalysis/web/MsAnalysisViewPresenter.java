@@ -48,6 +48,7 @@ import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.components.grid.GridRowDragger;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +110,6 @@ public class MsAnalysisViewPresenter implements BinderValidator {
   private ListDataProvider<SampleContainer> containersDataProvider = DataProvider.ofItems();
   private Map<SampleContainer, Binder<ItemCount>> acquisitionCountBinders = new HashMap<>();
   private Map<SampleContainer, TextField> acquisitionCountFields = new HashMap<>();
-  private List<Acquisition> acquisitions = new ArrayList<>();
   private ListDataProvider<Acquisition> acquisitionsDataProvider = DataProvider.ofItems();
   private Map<Acquisition, Binder<Acquisition>> acquisitionBinders = new HashMap<>();
   private Map<Acquisition, TextField> acquisitionFileFields = new HashMap<>();
@@ -195,10 +195,11 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     design.acquisitions.addStyleName(COMPONENTS);
     design.acquisitions.setDataProvider(acquisitionsDataProvider);
     design.acquisitions.addColumn(acquisition -> acquisition.getSample().getName()).setId(SAMPLE)
-        .setCaption(resources.message(SAMPLE));
+        .setCaption(resources.message(SAMPLE)).setSortable(false);
     design.acquisitions.addColumn(acquisition -> acquisition.getContainer().getFullName())
         .setId(CONTAINER).setCaption(resources.message(CONTAINER))
-        .setStyleGenerator(acquisition -> acquisition.getContainer().isBanned() ? BANNED : "");
+        .setStyleGenerator(acquisition -> acquisition.getContainer().isBanned() ? BANNED : "")
+        .setSortable(false);
     design.acquisitions
         .addColumn(acquisition -> sampleListNameField(acquisition), new ComponentRenderer())
         .setId(SAMPLE_LIST_NAME).setCaption(resources.message(SAMPLE_LIST_NAME)).setSortable(false);
@@ -207,6 +208,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
         .setId(ACQUISITION_FILE).setCaption(resources.message(ACQUISITION_FILE)).setSortable(false);
     design.acquisitions.addColumn(acquisition -> commentField(acquisition), new ComponentRenderer())
         .setId(COMMENT).setCaption(resources.message(COMMENT)).setSortable(false);
+    new GridRowDragger<>(design.acquisitions);
     design.down.addStyleName(DOWN);
     design.down.addStyleName(BUTTON_SKIP_ROW);
     design.down.setCaption(resources.message(DOWN));
@@ -230,7 +232,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
   private Binder<ItemCount> binder(SampleContainer container) {
     final MessageResource generalResources = view.getGeneralResources();
     Binder<ItemCount> binder = new BeanValidationBinder<>(ItemCount.class);
-    binder.setBean(new ItemCount((int) acquisitions.stream()
+    binder.setBean(new ItemCount((int) acquisitionsDataProvider.getItems().stream()
         .filter(ac -> container.getId().equals(ac.getContainer().getId())).count()));
     acquisitionCountBinders.put(container, binder);
     binder.forField(acquisitionCountField(container)).asRequired(generalResources.message(REQUIRED))
@@ -317,30 +319,27 @@ public class MsAnalysisViewPresenter implements BinderValidator {
       // Ignore, user is typing.
       return;
     }
-    int currentCount = (int) acquisitions.stream()
+    int currentCount = (int) acquisitionsDataProvider.getItems().stream()
         .filter(ac -> container.getId().equals(ac.getContainer().getId())).count();
     if (count < currentCount) {
-      List<Acquisition> remove =
-          acquisitions.stream().filter(ac -> container.getId().equals(ac.getContainer().getId()))
-              .skip(count).collect(Collectors.toList());
-      remove.stream().forEach(ac -> acquisitions.remove(ac));
+      List<Acquisition> remove = acquisitionsDataProvider.getItems().stream()
+          .filter(ac -> container.getId().equals(ac.getContainer().getId())).skip(count)
+          .collect(Collectors.toList());
+      remove.stream().forEach(ac -> acquisitionsDataProvider.getItems().remove(ac));
     } else {
-      int index = IntStream.range(0, acquisitions.size())
-          .filter(i -> container.getId().equals(acquisitions.get(i).getContainer().getId())).max()
-          .orElse(-1);
       IntStream.range(currentCount, count).forEach(i -> {
         Acquisition acquisition = new Acquisition();
         acquisition.setSample(container.getSample());
         acquisition.setContainer(container);
-        acquisitions.add(index, acquisition);
+        acquisitionsDataProvider.getItems().add(acquisition);
         binder(acquisition);
       });
     }
-    design.acquisitions.setItems(acquisitions);
+    acquisitionsDataProvider.refreshAll();
   }
 
   private void down() {
-    if (!acquisitions.isEmpty()) {
+    if (!acquisitionsDataProvider.getItems().isEmpty()) {
       Acquisition first = gridItems(design.acquisitions).findFirst().orElse(null);
       String sampleListName = sampleListNameFields.get(first).getValue();
       String acquisitionFile = acquisitionFileFields.get(first).getValue();
@@ -358,7 +357,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
   private boolean validate() {
     logger.trace("Validate MS analysis");
     final MessageResource resources = view.getResources();
-    if (acquisitions.isEmpty()) {
+    if (acquisitionsDataProvider.getItems().isEmpty()) {
       String message = resources.message(NO_CONTAINERS);
       logger.debug("Validation error: {}", message);
       view.showError(message);
@@ -369,7 +368,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     for (Binder<ItemCount> binder : acquisitionCountBinders.values()) {
       valid &= validate(binder);
     }
-    for (Acquisition acquisition : acquisitions) {
+    for (Acquisition acquisition : acquisitionsDataProvider.getItems()) {
       Binder<Acquisition> binder = acquisitionBinders.get(acquisition);
       valid &= validate(binder);
     }
@@ -387,8 +386,8 @@ public class MsAnalysisViewPresenter implements BinderValidator {
       final MessageResource resources = view.getResources();
       final MessageResource generalResources = view.getGeneralResources();
       MsAnalysis msAnalysis = binder.getBean();
-      msAnalysis.setAcquisitions(acquisitions);
-      for (Acquisition acquisition : acquisitions) {
+      msAnalysis.setAcquisitions(gridItems(design.acquisitions).collect(Collectors.toList()));
+      for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
         acquisition.setNumberOfAcquisition(
             Integer.valueOf(acquisitionCountFields.get(acquisition.getContainer()).getValue()));
       }
@@ -407,8 +406,8 @@ public class MsAnalysisViewPresenter implements BinderValidator {
           return;
         }
       }
-      view.showTrayNotification(resources.message(SAVED,
-          acquisitions.stream().map(ts -> ts.getSample().getId()).distinct().count()));
+      view.showTrayNotification(resources.message(SAVED, msAnalysis.getAcquisitions().stream()
+          .map(ts -> ts.getSample().getId()).distinct().count()));
       view.navigateTo(MsAnalysisView.VIEW_NAME, String.valueOf(msAnalysis.getId()));
     }
   }
@@ -433,8 +432,8 @@ public class MsAnalysisViewPresenter implements BinderValidator {
       msAnalysisService.undo(msAnalysis, design.explanation.getValue(),
           design.banContainers.getValue());
       MessageResource resources = view.getResources();
-      view.showTrayNotification(resources.message(REMOVED,
-          acquisitions.stream().map(ts -> ts.getSample().getId()).distinct().count()));
+      view.showTrayNotification(resources.message(REMOVED, msAnalysis.getAcquisitions().stream()
+          .map(ts -> ts.getSample().getId()).distinct().count()));
       view.navigateTo(MsAnalysisView.VIEW_NAME, String.valueOf(msAnalysis.getId()));
     }
   }
@@ -468,6 +467,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
     List<SampleContainer> containers = new ArrayList<>();
+    List<Acquisition> acquisitions = new ArrayList<>();
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       containers = view.savedContainers();
@@ -483,7 +483,6 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     } else if (parameters.startsWith("containers/")) {
       parameters = parameters.substring("containers/".length());
       logger.trace("Parsing containers from parameters");
-      acquisitions = new ArrayList<>();
       if (validateContainersParameters(parameters)) {
         String[] rawIds = parameters.split(SPLIT_CONTAINER_PARAMETERS, -1);
         for (String rawId : rawIds) {
@@ -524,11 +523,12 @@ public class MsAnalysisViewPresenter implements BinderValidator {
 
     containersDataProvider.getItems().addAll(containers);
     containersDataProvider.refreshAll();
+    acquisitionsDataProvider.getItems().clear();
+    acquisitionsDataProvider.getItems().addAll(acquisitions);
+    acquisitionsDataProvider.refreshAll();
     containers.stream().forEach(sc -> {
       binder(sc);
     });
-    acquisitionsDataProvider.getItems().addAll(acquisitions);
-    acquisitionsDataProvider.refreshAll();
     acquisitions.stream().forEach(ac -> {
       binder(ac);
     });

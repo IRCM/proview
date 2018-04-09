@@ -24,7 +24,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Converts an object to a string value to save in database.
@@ -52,6 +55,13 @@ public class DatabaseConverter {
       DateTimeFormatter instantFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
       converterValue =
           instantFormatter.format(LocalDateTime.ofInstant((Instant) value, ZoneId.systemDefault()));
+    } else if (value instanceof Collection) {
+      Collection<?> collection = ((Collection<?>) value);
+      if (collection.isEmpty()) {
+        return null;
+      }
+      converterValue =
+          collection.stream().map(o -> Objects.toString(o, "")).collect(Collectors.joining(","));
     } else {
       converterValue = String.valueOf(value);
     }

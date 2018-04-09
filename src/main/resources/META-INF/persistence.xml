@@ -48,7 +48,6 @@
     <class>ca.qc.ircm.proview.sample.Control</class>
     <class>ca.qc.ircm.proview.sample.Sample</class>
     <class>ca.qc.ircm.proview.sample.SampleContainer</class>
-    <class>ca.qc.ircm.proview.sample.SampleSolvent</class>
     <class>ca.qc.ircm.proview.sample.Standard</class>
     <class>ca.qc.ircm.proview.sample.SubmissionSample</class>
     <class>ca.qc.ircm.proview.solubilisation.Solubilisation</class>

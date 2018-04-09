@@ -195,13 +195,13 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
     assertEquals((Integer) 1, acquisition.getPosition());
     opAcquisition = containerAcquisitions.stream()
-        .filter(ac -> ac.getAcquisitionFile().equals("acqui_02")).findFirst();
+        .filter(ac -> ac.getAcquisitionFile().equals("acqui_04")).findFirst();
     assertTrue(opAcquisition.isPresent());
     acquisition = opAcquisition.get();
     assertEquals((Long) 559L, acquisition.getSample().getId());
     assertEquals((Long) 11L, acquisition.getContainer().getId());
     assertEquals("sample_list", acquisition.getSampleListName());
-    assertEquals("acqui_02", acquisition.getAcquisitionFile());
+    assertEquals("acqui_04", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
     assertEquals((Integer) 2, acquisition.getPosition());
@@ -211,7 +211,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals((Long) 560L, acquisition.getSample().getId());
     assertEquals((Long) 12L, acquisition.getContainer().getId());
     assertEquals("sample_list", acquisition.getSampleListName());
-    assertEquals("acqui_03", acquisition.getAcquisitionFile());
+    assertEquals("acqui_02", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
     assertEquals((Integer) 1, acquisition.getPosition());
@@ -221,7 +221,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals((Long) 444L, acquisition.getSample().getId());
     assertEquals((Long) 4L, acquisition.getContainer().getId());
     assertEquals("sample_list", acquisition.getSampleListName());
-    assertEquals("acqui_04", acquisition.getAcquisitionFile());
+    assertEquals("acqui_03", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
     assertEquals((Integer) 3, acquisition.getPosition());
@@ -259,13 +259,13 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
     assertEquals((Integer) 1, acquisition.getPosition());
     opAcquisition = containerAcquisitions.stream()
-        .filter(ac -> ac.getAcquisitionFile().equals("acqui_02")).findFirst();
+        .filter(ac -> ac.getAcquisitionFile().equals("acqui_04")).findFirst();
     assertTrue(opAcquisition.isPresent());
     acquisition = opAcquisition.get();
     assertEquals((Long) 559L, acquisition.getSample().getId());
     assertEquals((Long) 224L, acquisition.getContainer().getId());
     assertEquals("sample_list", acquisition.getSampleListName());
-    assertEquals("acqui_02", acquisition.getAcquisitionFile());
+    assertEquals("acqui_04", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
     assertEquals((Integer) 2, acquisition.getPosition());
@@ -275,7 +275,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals((Long) 560L, acquisition.getSample().getId());
     assertEquals((Long) 236L, acquisition.getContainer().getId());
     assertEquals("sample_list", acquisition.getSampleListName());
-    assertEquals("acqui_03", acquisition.getAcquisitionFile());
+    assertEquals("acqui_02", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
     assertEquals((Integer) 1, acquisition.getPosition());
@@ -285,7 +285,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertEquals((Long) 444L, acquisition.getSample().getId());
     assertEquals((Long) 248L, acquisition.getContainer().getId());
     assertEquals("sample_list", acquisition.getSampleListName());
-    assertEquals("acqui_04", acquisition.getAcquisitionFile());
+    assertEquals("acqui_03", acquisition.getAcquisitionFile());
     assertEquals("test comment", acquisition.getComment());
     assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
     assertEquals((Integer) 3, acquisition.getPosition());

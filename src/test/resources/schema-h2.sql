@@ -218,7 +218,6 @@ CREATE TABLE IF NOT EXISTS solvent (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   submissionId bigint(20) DEFAULT NULL,
   solvent varchar(150) NOT NULL,
-  deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   CONSTRAINT solvent_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -249,6 +248,7 @@ CREATE TABLE IF NOT EXISTS treatmentsample (
   treatmentType varchar(100) DEFAULT NULL,
   sampleId bigint(20) NOT NULL,
   containerId bigint(20) DEFAULT NULL,
+  listIndex int(10) DEFAULT NULL,
   destinationContainerId bigint(20) DEFAULT NULL,
   comment clob,
   sourceVolume double DEFAULT NULL,

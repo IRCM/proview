@@ -21,8 +21,6 @@ import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
-import ca.qc.ircm.proview.sample.SampleSolvent;
-import ca.qc.ircm.proview.treatment.Solvent;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -39,11 +37,6 @@ public class SearchUtils {
   public static <C extends SampleContainer> Optional<C> findContainer(Collection<C> containers,
       SampleContainerType type, long id) {
     return containers.stream().filter(sc -> sc.getId() == id && sc.getType() == type).findFirst();
-  }
-
-  public static Optional<SampleSolvent> findSampleSolvent(Collection<SampleSolvent> solvents,
-      Solvent solvent) {
-    return solvents.stream().filter(so -> so.getSolvent() == solvent).findFirst();
   }
 
   public static <V> boolean containsInstanceOf(Collection<V> values, Class<? extends V> clazz) {

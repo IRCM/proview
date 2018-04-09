@@ -46,6 +46,7 @@ import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SAVE_ACQ
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SOURCE;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
@@ -66,6 +67,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,6 +81,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.utils.VaadinTestUtils;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -86,6 +89,12 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.components.grid.GridDragSource;
+import com.vaadin.ui.components.grid.GridDragStartEvent;
+import com.vaadin.ui.components.grid.GridDragStartListener;
+import com.vaadin.ui.components.grid.GridDropEvent;
+import com.vaadin.ui.components.grid.GridDropListener;
+import com.vaadin.ui.components.grid.GridDropTarget;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
@@ -101,6 +110,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -314,6 +324,7 @@ public class MsAnalysisViewPresenterTest {
     assertEquals(5, design.acquisitions.getColumns().size());
     assertEquals(SAMPLE, design.acquisitions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.acquisitions.getColumn(SAMPLE).getCaption());
+    assertFalse(design.acquisitions.getColumn(SAMPLE).isSortable());
     for (Acquisition acquisition : acquisitions.getItems()) {
       assertEquals(acquisition.getSample().getName(),
           design.acquisitions.getColumn(SAMPLE).getValueProvider().apply(acquisition));
@@ -321,6 +332,7 @@ public class MsAnalysisViewPresenterTest {
     assertEquals(CONTAINER, design.acquisitions.getColumns().get(1).getId());
     assertEquals(resources.message(CONTAINER),
         design.acquisitions.getColumn(CONTAINER).getCaption());
+    assertFalse(design.acquisitions.getColumn(CONTAINER).isSortable());
     for (Acquisition acquisition : acquisitions.getItems()) {
       assertEquals(acquisition.getContainer().getFullName(),
           design.acquisitions.getColumn(CONTAINER).getValueProvider().apply(acquisition));
@@ -366,6 +378,8 @@ public class MsAnalysisViewPresenterTest {
       assertTrue(acquisitions.getItems().stream()
           .filter(ts -> ts.getSample().equals(container.getSample())).findAny().isPresent());
     }
+    assertTrue(containsInstanceOf(design.acquisitions.getExtensions(), GridDragSource.class));
+    assertTrue(containsInstanceOf(design.acquisitions.getExtensions(), GridDropTarget.class));
   }
 
   @Test
@@ -382,9 +396,9 @@ public class MsAnalysisViewPresenterTest {
     List<Acquisition> acquisitions = new ArrayList<>(dataProvider(design.acquisitions).getItems());
     assertEquals(containers.size() + 1, acquisitions.size());
     assertEquals(firstContainer, acquisitions.get(0).getContainer());
-    assertEquals(firstContainer, acquisitions.get(1).getContainer());
+    assertEquals(firstContainer, acquisitions.get(acquisitions.size() - 1).getContainer());
     for (int i = 1; i < this.containers.size(); i++) {
-      assertEquals(this.containers.get(i), acquisitions.get(i + 1).getContainer());
+      assertEquals(this.containers.get(i), acquisitions.get(i).getContainer());
     }
 
     field.setValue("1");
@@ -411,9 +425,9 @@ public class MsAnalysisViewPresenterTest {
         new ArrayList<>(dataProvider(design.acquisitions).getItems());
     assertEquals(containers.size() + 1, acquisitions.size());
     assertEquals(firstContainer, acquisitions.get(0).getContainer());
-    assertEquals(firstContainer, acquisitions.get(1).getContainer());
+    assertEquals(firstContainer, acquisitions.get(acquisitions.size() - 1).getContainer());
     for (int i = 1; i < this.containers.size(); i++) {
-      assertEquals(this.containers.get(i), acquisitions.get(i + 1).getContainer());
+      assertEquals(this.containers.get(i), acquisitions.get(i).getContainer());
     }
   }
 
@@ -526,6 +540,35 @@ public class MsAnalysisViewPresenterTest {
       field =
           (TextField) design.acquisitions.getColumn(COMMENT).getValueProvider().apply(acquisition);
       assertEquals(comment, field.getValue());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void dragAndDropAcquisition() {
+    presenter.init(view);
+    presenter.enter("");
+    List<Acquisition> acquisitions = VaadinTestUtils.items(design.acquisitions);
+    Acquisition dragged = acquisitions.get(acquisitions.size() - 1);
+    GridDragStartEvent<Acquisition> dragEvent = mock(GridDragStartEvent.class);
+    when(dragEvent.getDraggedItems()).thenReturn(Arrays.asList(dragged));
+    GridDropEvent<Acquisition> dropEvent = mock(GridDropEvent.class);
+    when(dropEvent.getDropTargetRow()).thenReturn(Optional.of(acquisitions.get(0)));
+
+    GridDragSource<Acquisition> gridDragSource =
+        findInstanceOf(design.acquisitions.getExtensions(), GridDragSource.class).get();
+    ((GridDragStartListener<Acquisition>) gridDragSource.getListeners(GridDragStartEvent.class)
+        .iterator().next()).dragStart(dragEvent);
+    GridDropTarget<Acquisition> gridDragTarget =
+        findInstanceOf(design.acquisitions.getExtensions(), GridDropTarget.class).get();
+    ((GridDropListener<Acquisition>) gridDragTarget.getListeners(GridDropEvent.class).iterator()
+        .next()).drop(dropEvent);
+
+    List<Acquisition> acquisitionsAfter = VaadinTestUtils.items(design.acquisitions);
+    assertEquals(acquisitions.size(), acquisitionsAfter.size());
+    assertEquals(dragged, acquisitionsAfter.get(0));
+    for (int i = 0; i < acquisitions.size() - 1; i++) {
+      assertEquals(acquisitions.get(i), acquisitionsAfter.get(i + 1));
     }
   }
 
@@ -668,6 +711,67 @@ public class MsAnalysisViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void save_Dragged() {
+    presenter.init(view);
+    presenter.enter("");
+    setFields();
+    List<Acquisition> acquisitions = VaadinTestUtils.items(design.acquisitions);
+    Acquisition dragged = acquisitions.get(acquisitions.size() - 1);
+    GridDragStartEvent<Acquisition> dragEvent = mock(GridDragStartEvent.class);
+    when(dragEvent.getDraggedItems()).thenReturn(Arrays.asList(dragged));
+    GridDropEvent<Acquisition> dropEvent = mock(GridDropEvent.class);
+    when(dropEvent.getDropTargetRow()).thenReturn(Optional.of(acquisitions.get(0)));
+    GridDragSource<Acquisition> gridDragSource =
+        findInstanceOf(design.acquisitions.getExtensions(), GridDragSource.class).get();
+    ((GridDragStartListener<Acquisition>) gridDragSource.getListeners(GridDragStartEvent.class)
+        .iterator().next()).dragStart(dragEvent);
+    GridDropTarget<Acquisition> gridDragTarget =
+        findInstanceOf(design.acquisitions.getExtensions(), GridDropTarget.class).get();
+    ((GridDropListener<Acquisition>) gridDragTarget.getListeners(GridDropEvent.class).iterator()
+        .next()).drop(dropEvent);
+    doAnswer(i -> {
+      MsAnalysis msAnalysis = i.getArgumentAt(0, MsAnalysis.class);
+      assertNull(msAnalysis.getId());
+      msAnalysis.setId(4L);
+      return null;
+    }).when(msAnalysisService).insert(any());
+
+    design.save.click();
+
+    verify(view, never()).showError(any());
+    verify(msAnalysisService).insert(msAnalysisCaptor.capture());
+    MsAnalysis msAnalysis = msAnalysisCaptor.getValue();
+    assertEquals(MassDetectionInstrument.VELOS, msAnalysis.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrumentSource.ESI, msAnalysis.getSource());
+    assertEquals(containers.size(), msAnalysis.getAcquisitions().size());
+    {
+      SampleContainer container = containers.get(containers.size() - 1);
+      Acquisition acquisition = msAnalysis.getAcquisitions().get(0);
+      assertEquals(container.getSample(), acquisition.getSample());
+      assertEquals(container, acquisition.getContainer());
+      assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
+      assertEquals(null, acquisition.getPosition());
+      assertEquals(sampleListNames.get(containers.size() - 1), acquisition.getSampleListName());
+      assertEquals(acquisitionFiles.get(containers.size() - 1), acquisition.getAcquisitionFile());
+      assertEquals(comments.get(containers.size() - 1), acquisition.getComment());
+    }
+    for (int i = 0; i < containers.size() - 1; i++) {
+      SampleContainer container = containers.get(i);
+      Acquisition acquisition = msAnalysis.getAcquisitions().get(i + 1);
+      assertEquals(container.getSample(), acquisition.getSample());
+      assertEquals(container, acquisition.getContainer());
+      assertEquals((Integer) 1, acquisition.getNumberOfAcquisition());
+      assertEquals(null, acquisition.getPosition());
+      assertEquals(sampleListNames.get(i), acquisition.getSampleListName());
+      assertEquals(acquisitionFiles.get(i), acquisition.getAcquisitionFile());
+      assertEquals(comments.get(i), acquisition.getComment());
+    }
+    verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
+    verify(view).navigateTo(MsAnalysisView.VIEW_NAME, "4");
+  }
+
+  @Test
   public void save_IllegalArgumentException() {
     presenter.init(view);
     presenter.enter("");
@@ -708,22 +812,23 @@ public class MsAnalysisViewPresenterTest {
     assertEquals(containers.size() * 2, msAnalysis.getAcquisitions().size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      Acquisition acquisition = msAnalysis.getAcquisitions().get(i * 2);
+      Acquisition acquisition = msAnalysis.getAcquisitions().get(i);
       assertEquals(container.getSample(), acquisition.getSample());
       assertEquals(container, acquisition.getContainer());
       assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
       assertEquals(null, acquisition.getPosition());
-      assertEquals(sampleListNames.get(i * 2), acquisition.getSampleListName());
-      assertEquals(acquisitionFiles.get(i * 2), acquisition.getAcquisitionFile());
-      assertEquals(comments.get(i * 2), acquisition.getComment());
-      acquisition = msAnalysis.getAcquisitions().get(i * 2 + 1);
+      assertEquals(sampleListNames.get(i), acquisition.getSampleListName());
+      assertEquals(acquisitionFiles.get(i), acquisition.getAcquisitionFile());
+      assertEquals(comments.get(i), acquisition.getComment());
+      int secondIndex = containers.size() + i;
+      acquisition = msAnalysis.getAcquisitions().get(secondIndex);
       assertEquals(container.getSample(), acquisition.getSample());
       assertEquals(container, acquisition.getContainer());
       assertEquals((Integer) 2, acquisition.getNumberOfAcquisition());
       assertEquals(null, acquisition.getPosition());
-      assertEquals(sampleListNames.get(i * 2 + 1), acquisition.getSampleListName());
-      assertEquals(acquisitionFiles.get(i * 2 + 1), acquisition.getAcquisitionFile());
-      assertEquals(comments.get(i * 2 + 1), acquisition.getComment());
+      assertEquals(sampleListNames.get(secondIndex), acquisition.getSampleListName());
+      assertEquals(acquisitionFiles.get(secondIndex), acquisition.getAcquisitionFile());
+      assertEquals(comments.get(secondIndex), acquisition.getComment());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
     verify(view).navigateTo(MsAnalysisView.VIEW_NAME, "4");

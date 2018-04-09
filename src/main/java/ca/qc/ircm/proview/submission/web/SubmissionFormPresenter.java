@@ -63,7 +63,6 @@ import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
-import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
@@ -1297,16 +1296,16 @@ public class SubmissionFormPresenter implements BinderValidator {
         firstSample.setOriginalContainer(null);
         firstSample.setNumberProtein(null);
         if (design.acetonitrileSolvents.getValue()) {
-          submission.getSolvents().add(new SampleSolvent(ACETONITRILE));
+          submission.getSolvents().add(ACETONITRILE);
         }
         if (design.methanolSolvents.getValue()) {
-          submission.getSolvents().add(new SampleSolvent(METHANOL));
+          submission.getSolvents().add(METHANOL);
         }
         if (design.chclSolvents.getValue()) {
-          submission.getSolvents().add(new SampleSolvent(CHCL3));
+          submission.getSolvents().add(CHCL3);
         }
         if (design.otherSolvents.getValue()) {
-          submission.getSolvents().add(new SampleSolvent(Solvent.OTHER));
+          submission.getSolvents().add(Solvent.OTHER);
         }
       } else {
         submission.setStorageTemperature(null);
@@ -1501,12 +1500,9 @@ public class SubmissionFormPresenter implements BinderValidator {
       design.proteinIdentification.setItems(Stream
           .concat(ProteinIdentification.availables().stream(), Stream.of(proteinIdentification)));
     }
-    List<SampleSolvent> sampleSolvents = submission.getSolvents();
-    if (sampleSolvents == null) {
-      sampleSolvents = new ArrayList<>();
-    }
     Set<Solvent> solvents =
-        sampleSolvents.stream().map(ss -> ss.getSolvent()).collect(Collectors.toSet());
+        submission.getSolvents() != null ? new HashSet<>(submission.getSolvents())
+            : new HashSet<>();
     design.acetonitrileSolvents.setReadOnly(false);
     design.acetonitrileSolvents.setValue(solvents.contains(Solvent.ACETONITRILE));
     design.acetonitrileSolvents.setReadOnly(false);

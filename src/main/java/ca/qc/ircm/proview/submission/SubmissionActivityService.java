@@ -26,15 +26,16 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
-import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -134,12 +135,6 @@ public class SubmissionActivityService {
         tableName("submission");
         actionType(ActionType.UPDATE);
         recordId(newSubmission.getId());
-      }
-    }
-
-    class SolventUpdateActivityBuilder extends UpdateActivityBuilder {
-      {
-        tableName("solvent");
       }
     }
 
@@ -272,22 +267,12 @@ public class SubmissionActivityService {
       }
     }
     // Solvents.
-    List<SampleSolvent> oldSolvents =
-        oldSubmission.getSolvents() != null ? oldSubmission.getSolvents() : new ArrayList<>();
-    List<SampleSolvent> newSolvents =
-        newSubmission.getSolvents() != null ? newSubmission.getSolvents() : new ArrayList<>();
-    for (SampleSolvent solvent : oldSolvents) {
-      if (!newSolvents.contains(solvent)) {
-        updateBuilders.add(new SolventUpdateActivityBuilder().recordId(solvent.getId())
-            .actionType(ActionType.DELETE));
-      }
-    }
-    for (SampleSolvent solvent : newSolvents) {
-      if (!oldSolvents.contains(solvent)) {
-        updateBuilders.add(new SolventUpdateActivityBuilder().recordId(solvent.getId())
-            .actionType(ActionType.INSERT));
-      }
-    }
+    List<Solvent> oldSolvents = oldSubmission.getSolvents();
+    List<Solvent> newSolvents = newSubmission.getSolvents();
+    Collections.sort(oldSolvents);
+    Collections.sort(newSolvents);
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("solvent").oldValue(oldSolvents)
+        .newValue(newSolvents));
     // Files.
     List<String> oldFiles = oldSubmission.getFiles() != null ? oldSubmission.getFiles().stream()
         .map(file -> file.getFilename()).collect(Collectors.toList()) : new ArrayList<>();

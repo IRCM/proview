@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
-import static ca.qc.ircm.proview.test.utils.SearchUtils.findSampleSolvent;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -49,7 +48,6 @@ import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SampleSolvent;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
@@ -269,7 +267,7 @@ public class SubmissionServiceTest {
     assertEquals("MeOH/TFA 0.1%", submission.getSolutionSolvent());
     assertNotNull(submission.getSolvents());
     assertEquals(1, submission.getSolvents().size());
-    assertTrue(findSampleSolvent(submission.getSolvents(), Solvent.METHANOL).isPresent());
+    assertTrue(submission.getSolvents().contains(Solvent.METHANOL));
     assertEquals(null, submission.getOtherSolvent());
     assertEquals(null, submission.getToxicity());
     assertEquals(false, submission.isLightSensitive());
@@ -679,11 +677,7 @@ public class SubmissionServiceTest {
     submission.setQuantification(Quantification.LABEL_FREE);
     submission.setQuantificationComment("quantification comment\nsecond line");
     submission.setHighResolution(true);
-    SampleSolvent solvent1 = new SampleSolvent();
-    solvent1.setSolvent(Solvent.ACETONITRILE);
-    SampleSolvent solvent2 = new SampleSolvent();
-    solvent2.setSolvent(Solvent.CHCL3);
-    submission.setSolvents(new ArrayList<>(Arrays.asList(solvent1, solvent2)));
+    submission.setSolvents(new ArrayList<>(Arrays.asList(Solvent.ACETONITRILE, Solvent.CHCL3)));
     submission.setOtherSolvent("other solvent");
     submission.setComment("my comment\nsecond line");
     return submission;
@@ -1355,8 +1349,8 @@ public class SubmissionServiceTest {
     assertTrue(content.contains(resources.message("submission.highResolution.true")));
     assertTrue(content.contains("class=\"solvent\""));
     for (Solvent solvent : Solvent.values()) {
-      assertEquals(solvent.name(), submission.getSolvents().stream()
-          .filter(ss -> ss.getSolvent() == solvent).findAny().isPresent(),
+      assertEquals(solvent.name(),
+          submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
           content.contains(solvent.getLabel(locale)));
     }
     assertTrue(content.contains("class=\"comment\""));
@@ -1461,8 +1455,7 @@ public class SubmissionServiceTest {
   @Test
   public void print_SmallMolecule_OtherSolvent() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
-    SampleSolvent ssolvent = new SampleSolvent();
-    ssolvent.setSolvent(Solvent.OTHER);
+    Solvent ssolvent = Solvent.OTHER;
     submission.getSolvents().add(ssolvent);
     Locale locale = Locale.getDefault();
 
@@ -1471,8 +1464,7 @@ public class SubmissionServiceTest {
     assertFalse(content.contains(Solvent.OTHER.getLabel(locale)));
     for (Solvent solvent : Solvent.values()) {
       assertEquals(solvent.name(),
-          submission.getSolvents().stream().filter(ss -> ss.getSolvent() == solvent).findAny()
-              .isPresent(),
+          submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
           content.contains(
               solvent == Solvent.OTHER ? submission.getOtherSolvent() : solvent.getLabel(locale)));
     }
@@ -2133,9 +2125,7 @@ public class SubmissionServiceTest {
     submission.setToxicity("none");
     submission.setLightSensitive(true);
     submission.setStorageTemperature(StorageTemperature.LOW);
-    List<SampleSolvent> solvents = new ArrayList<>();
-    solvents.add(new SampleSolvent(Solvent.ACETONITRILE));
-    submission.setSolvents(solvents);
+    submission.setSolvents(Arrays.asList(Solvent.ACETONITRILE));
     submission.setOtherSolvent("chrisanol");
     submission.setComment("comment");
     submission.setSamples(samples);
@@ -2189,7 +2179,7 @@ public class SubmissionServiceTest {
     assertEquals(new Double(18.1), submission.getAverageMass());
     assertEquals("ch3oh", submission.getSolutionSolvent());
     assertEquals(1, submission.getSolvents().size());
-    assertTrue(findSampleSolvent(submission.getSolvents(), Solvent.ACETONITRILE).isPresent());
+    assertTrue(submission.getSolvents().contains(Solvent.ACETONITRILE));
     assertEquals("chrisanol", submission.getOtherSolvent());
     assertEquals("none", submission.getToxicity());
     assertEquals(true, submission.isLightSensitive());
