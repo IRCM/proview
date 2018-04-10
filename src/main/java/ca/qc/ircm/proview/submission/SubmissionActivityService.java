@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
-import ca.qc.ircm.proview.history.DatabaseLogUtil;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.Sample;
@@ -116,139 +115,140 @@ public class SubmissionActivityService {
   /**
    * Creates an activity about forced update of samples submission.
    *
-   * @param newSubmission
+   * @param submission
    *          submission containing new properties/values
    * @param explanation
    *          explanation for the changes
-   * @param oldSubmission
-   *          old submission
    * @return activity about update of samples submission
    */
   @CheckReturnValue
-  public Optional<Activity> forceUpdate(final Submission newSubmission, final String explanation,
-      Submission oldSubmission) {
+  public Optional<Activity> forceUpdate(final Submission submission, final String explanation) {
     User user = authorizationService.getCurrentUser();
+
+    final Submission oldSubmission = entityManager.find(Submission.class, submission.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     class SubmissionUpdateActivityBuilder extends UpdateActivityBuilder {
       {
         tableName("submission");
         actionType(ActionType.UPDATE);
-        recordId(newSubmission.getId());
+        recordId(submission.getId());
       }
     }
 
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("service")
-        .oldValue(oldSubmission.getService()).newValue(newSubmission.getService()));
+        .oldValue(oldSubmission.getService()).newValue(submission.getService()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("taxonomy")
-        .oldValue(oldSubmission.getTaxonomy()).newValue(newSubmission.getTaxonomy()));
+        .oldValue(oldSubmission.getTaxonomy()).newValue(submission.getTaxonomy()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("experiment")
-        .oldValue(oldSubmission.getExperiment()).newValue(newSubmission.getExperiment()));
+        .oldValue(oldSubmission.getExperiment()).newValue(submission.getExperiment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("goal")
-        .oldValue(oldSubmission.getGoal()).newValue(newSubmission.getGoal()));
+        .oldValue(oldSubmission.getGoal()).newValue(submission.getGoal()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("massDetectionInstrument")
         .oldValue(oldSubmission.getMassDetectionInstrument())
-        .newValue(newSubmission.getMassDetectionInstrument()));
+        .newValue(submission.getMassDetectionInstrument()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("source")
-        .oldValue(oldSubmission.getSource()).newValue(newSubmission.getSource()));
+        .oldValue(oldSubmission.getSource()).newValue(submission.getSource()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("injectionType")
-        .oldValue(oldSubmission.getInjectionType()).newValue(newSubmission.getInjectionType()));
+        .oldValue(oldSubmission.getInjectionType()).newValue(submission.getInjectionType()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteolyticDigestionMethod")
         .oldValue(oldSubmission.getProteolyticDigestionMethod())
-        .newValue(newSubmission.getProteolyticDigestionMethod()));
+        .newValue(submission.getProteolyticDigestionMethod()));
     updateBuilders
         .add(new SubmissionUpdateActivityBuilder().column("usedProteolyticDigestionMethod")
             .oldValue(oldSubmission.getUsedProteolyticDigestionMethod())
-            .newValue(newSubmission.getUsedProteolyticDigestionMethod()));
+            .newValue(submission.getUsedProteolyticDigestionMethod()));
     updateBuilders
         .add(new SubmissionUpdateActivityBuilder().column("otherProteolyticDigestionMethod")
             .oldValue(oldSubmission.getOtherProteolyticDigestionMethod())
-            .newValue(newSubmission.getOtherProteolyticDigestionMethod()));
+            .newValue(submission.getOtherProteolyticDigestionMethod()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteinIdentification")
         .oldValue(oldSubmission.getProteinIdentification())
-        .newValue(newSubmission.getProteinIdentification()));
+        .newValue(submission.getProteinIdentification()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteinIdentificationLink")
         .oldValue(oldSubmission.getProteinIdentificationLink())
-        .newValue(newSubmission.getProteinIdentificationLink()));
+        .newValue(submission.getProteinIdentificationLink()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("enrichmentType")
-        .oldValue(oldSubmission.getEnrichmentType()).newValue(newSubmission.getEnrichmentType()));
+        .oldValue(oldSubmission.getEnrichmentType()).newValue(submission.getEnrichmentType()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("otherEnrichmentType")
         .oldValue(oldSubmission.getOtherEnrichmentType())
-        .newValue(newSubmission.getOtherEnrichmentType()));
+        .newValue(submission.getOtherEnrichmentType()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("lowResolution")
-        .oldValue(oldSubmission.isLowResolution()).newValue(newSubmission.isLowResolution()));
+        .oldValue(oldSubmission.isLowResolution()).newValue(submission.isLowResolution()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("highResolution")
-        .oldValue(oldSubmission.isHighResolution()).newValue(newSubmission.isHighResolution()));
+        .oldValue(oldSubmission.isHighResolution()).newValue(submission.isHighResolution()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("msms")
-        .oldValue(oldSubmission.isMsms()).newValue(newSubmission.isMsms()));
+        .oldValue(oldSubmission.isMsms()).newValue(submission.isMsms()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("exactMsms")
-        .oldValue(oldSubmission.isExactMsms()).newValue(newSubmission.isExactMsms()));
+        .oldValue(oldSubmission.isExactMsms()).newValue(submission.isExactMsms()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("protein")
-        .oldValue(oldSubmission.getProtein()).newValue(newSubmission.getProtein()));
+        .oldValue(oldSubmission.getProtein()).newValue(submission.getProtein()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("postTranslationModification")
         .oldValue(oldSubmission.getPostTranslationModification())
-        .newValue(newSubmission.getPostTranslationModification()));
+        .newValue(submission.getPostTranslationModification()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("mudPitFraction")
-        .oldValue(oldSubmission.getMudPitFraction()).newValue(newSubmission.getMudPitFraction()));
+        .oldValue(oldSubmission.getMudPitFraction()).newValue(submission.getMudPitFraction()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteinContent")
-        .oldValue(oldSubmission.getProteinContent()).newValue(newSubmission.getProteinContent()));
+        .oldValue(oldSubmission.getProteinContent()).newValue(submission.getProteinContent()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("separation")
-        .oldValue(oldSubmission.getSeparation()).newValue(newSubmission.getSeparation()));
+        .oldValue(oldSubmission.getSeparation()).newValue(submission.getSeparation()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("thickness")
-        .oldValue(oldSubmission.getThickness()).newValue(newSubmission.getThickness()));
+        .oldValue(oldSubmission.getThickness()).newValue(submission.getThickness()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("coloration")
-        .oldValue(oldSubmission.getColoration()).newValue(newSubmission.getColoration()));
+        .oldValue(oldSubmission.getColoration()).newValue(submission.getColoration()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("otherColoration")
-        .oldValue(oldSubmission.getOtherColoration()).newValue(newSubmission.getOtherColoration()));
+        .oldValue(oldSubmission.getOtherColoration()).newValue(submission.getOtherColoration()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("developmentTime")
-        .oldValue(oldSubmission.getDevelopmentTime()).newValue(newSubmission.getDevelopmentTime()));
+        .oldValue(oldSubmission.getDevelopmentTime()).newValue(submission.getDevelopmentTime()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("decoloration")
-        .oldValue(oldSubmission.isDecoloration()).newValue(newSubmission.isDecoloration()));
+        .oldValue(oldSubmission.isDecoloration()).newValue(submission.isDecoloration()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("weightMarkerQuantity")
         .oldValue(oldSubmission.getWeightMarkerQuantity())
-        .newValue(newSubmission.getWeightMarkerQuantity()));
+        .newValue(submission.getWeightMarkerQuantity()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteinQuantity")
-        .oldValue(oldSubmission.getProteinQuantity()).newValue(newSubmission.getProteinQuantity()));
+        .oldValue(oldSubmission.getProteinQuantity()).newValue(submission.getProteinQuantity()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("formula")
-        .oldValue(oldSubmission.getFormula()).newValue(newSubmission.getFormula()));
+        .oldValue(oldSubmission.getFormula()).newValue(submission.getFormula()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("monoisotopicMass")
         .oldValue(oldSubmission.getMonoisotopicMass())
-        .newValue(newSubmission.getMonoisotopicMass()));
+        .newValue(submission.getMonoisotopicMass()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("averageMass")
-        .oldValue(oldSubmission.getAverageMass()).newValue(newSubmission.getAverageMass()));
+        .oldValue(oldSubmission.getAverageMass()).newValue(submission.getAverageMass()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("solutionSolvent")
-        .oldValue(oldSubmission.getSolutionSolvent()).newValue(newSubmission.getSolutionSolvent()));
+        .oldValue(oldSubmission.getSolutionSolvent()).newValue(submission.getSolutionSolvent()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("otherSolvent")
-        .oldValue(oldSubmission.getOtherSolvent()).newValue(newSubmission.getOtherSolvent()));
+        .oldValue(oldSubmission.getOtherSolvent()).newValue(submission.getOtherSolvent()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("toxicity")
-        .oldValue(oldSubmission.getToxicity()).newValue(newSubmission.getToxicity()));
+        .oldValue(oldSubmission.getToxicity()).newValue(submission.getToxicity()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("lightSensitive")
-        .oldValue(oldSubmission.isLightSensitive()).newValue(newSubmission.isLightSensitive()));
+        .oldValue(oldSubmission.isLightSensitive()).newValue(submission.isLightSensitive()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("storageTemperature")
         .oldValue(oldSubmission.getStorageTemperature())
-        .newValue(newSubmission.getStorageTemperature()));
+        .newValue(submission.getStorageTemperature()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantification")
-        .oldValue(oldSubmission.getQuantification()).newValue(newSubmission.getQuantification()));
+        .oldValue(oldSubmission.getQuantification()).newValue(submission.getQuantification()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantificationComment")
         .oldValue(oldSubmission.getQuantificationComment())
-        .newValue(newSubmission.getQuantificationComment()));
+        .newValue(submission.getQuantificationComment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("comment")
-        .oldValue(oldSubmission.getComment()).newValue(newSubmission.getComment()));
+        .oldValue(oldSubmission.getComment()).newValue(submission.getComment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("additionalPrice")
-        .oldValue(oldSubmission.getAdditionalPrice()).newValue(newSubmission.getAdditionalPrice()));
+        .oldValue(oldSubmission.getAdditionalPrice()).newValue(submission.getAdditionalPrice()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("userId")
-        .oldValue(oldSubmission.getUser().getId()).newValue(newSubmission.getUser().getId()));
+        .oldValue(oldSubmission.getUser().getId()).newValue(submission.getUser().getId()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("laboratoryId")
         .oldValue(oldSubmission.getLaboratory().getId())
-        .newValue(newSubmission.getLaboratory().getId()));
+        .newValue(submission.getLaboratory().getId()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionDate")
-        .oldValue(oldSubmission.getSubmissionDate()).newValue(newSubmission.getSubmissionDate()));
+        .oldValue(oldSubmission.getSubmissionDate()).newValue(submission.getSubmissionDate()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("hidden")
+        .oldValue(oldSubmission.isHidden()).newValue(submission.isHidden()));
     // Sample.
     Set<Long> oldSampleIds =
         oldSubmission.getSamples().stream().filter(sample -> sample.getId() != null)
             .map(sample -> sample.getId()).collect(Collectors.toSet());
     Set<Long> newSampleIds =
-        newSubmission.getSamples().stream().filter(sample -> sample.getId() != null)
+        submission.getSamples().stream().filter(sample -> sample.getId() != null)
             .map(sample -> sample.getId()).collect(Collectors.toSet());
     for (SubmissionSample sample : oldSubmission.getSamples()) {
       if (!newSampleIds.contains(sample.getId())) {
@@ -256,7 +256,7 @@ public class SubmissionActivityService {
             .tableName(Sample.TABLE_NAME).recordId(sample.getId()));
       }
     }
-    for (SubmissionSample sample : newSubmission.getSamples()) {
+    for (SubmissionSample sample : submission.getSamples()) {
       if (oldSampleIds.contains(sample.getId())) {
         Optional<Activity> optionalActivity = sampleActivityService.update(sample, explanation);
         optionalActivity.ifPresent(activity -> updateBuilders.addAll(activity.getUpdates().stream()
@@ -268,7 +268,7 @@ public class SubmissionActivityService {
     }
     // Solvents.
     List<Solvent> oldSolvents = oldSubmission.getSolvents();
-    List<Solvent> newSolvents = newSubmission.getSolvents();
+    List<Solvent> newSolvents = submission.getSolvents();
     Collections.sort(oldSolvents);
     Collections.sort(newSolvents);
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("solvent").oldValue(oldSolvents)
@@ -276,11 +276,10 @@ public class SubmissionActivityService {
     // Files.
     List<String> oldFiles = oldSubmission.getFiles() != null ? oldSubmission.getFiles().stream()
         .map(file -> file.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
-    List<String> newFiles = newSubmission.getFiles() != null ? newSubmission.getFiles().stream()
+    List<String> newFiles = submission.getFiles() != null ? submission.getFiles().stream()
         .map(file -> file.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionfiles")
-        .oldValue(DatabaseLogUtil.reduceLength(oldFiles.toString(), 255))
-        .newValue(DatabaseLogUtil.reduceLength(newFiles.toString(), 255)));
+        .oldValue(oldFiles).newValue(newFiles));
 
     // Keep updates that changed.
     final Collection<UpdateActivity> updates = new ArrayList<>();
@@ -293,7 +292,7 @@ public class SubmissionActivityService {
     if (!updates.isEmpty()) {
       Activity activity = new Activity();
       activity.setActionType(ActionType.UPDATE);
-      activity.setRecordId(newSubmission.getId());
+      activity.setRecordId(submission.getId());
       activity.setUser(user);
       activity.setTableName("submission");
       activity.setExplanation(explanation);

@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS submission (
   submissionDate datetime NOT NULL,
   laboratoryId bigint(20) NOT NULL,
   userId bigint(20) DEFAULT NULL,
+  hidden tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   CONSTRAINT submission_ibfk_1 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON UPDATE CASCADE,
   CONSTRAINT submission_ibfk_2 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE

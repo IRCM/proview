@@ -48,6 +48,7 @@ public class SubmissionFilter implements Predicate<Submission> {
   public SampleStatus anySampleStatus;
   public Range<LocalDate> dateRange;
   public Boolean results;
+  public Boolean hidden;
   public List<OrderSpecifier<?>> sortOrders;
   public Integer offset;
   public Integer limit;
@@ -146,6 +147,9 @@ public class SubmissionFilter implements Predicate<Submission> {
       } else {
         query.where(submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
       }
+    }
+    if (hidden != null) {
+      query.where(submission.hidden.eq(hidden));
     }
   }
 

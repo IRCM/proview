@@ -369,13 +369,13 @@ public class SubmissionServiceTest {
     List<Submission> submissions = submissionService.all();
 
     verify(authorizationService).checkUserRole();
-    assertEquals(18, submissions.size());
+    assertEquals(17, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
     assertFalse(find(submissions, 34).isPresent());
     assertTrue(find(submissions, 35).isPresent());
-    assertTrue(find(submissions, 36).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
   }
 
   @Test
@@ -443,9 +443,9 @@ public class SubmissionServiceTest {
 
     verify(authorizationService).checkUserRole();
     assertEquals(3, submissions.size());
-    assertTrue(find(submissions, 147).isPresent());
     assertTrue(find(submissions, 148).isPresent());
     assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
   }
 
   @Test
@@ -586,7 +586,7 @@ public class SubmissionServiceTest {
     int count = submissionService.count(filter);
 
     verify(authorizationService).checkUserRole();
-    assertEquals(15, count);
+    assertEquals(14, count);
   }
 
   @Test
@@ -2756,15 +2756,14 @@ public class SubmissionServiceTest {
     submission.setUser(user);
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
-    when(submissionActivityService.forceUpdate(any(Submission.class), any(String.class),
-        any(Submission.class))).thenReturn(optionalActivity);
+    when(submissionActivityService.forceUpdate(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
 
     submissionService.forceUpdate(submission, "unit_test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(submissionActivityService).forceUpdate(submissionCaptor.capture(), eq("unit_test"),
-        submissionCaptor.capture());
+    verify(submissionActivityService).forceUpdate(submissionCaptor.capture(), eq("unit_test"));
     verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     verify(activityService).insert(activity);
@@ -2804,16 +2803,11 @@ public class SubmissionServiceTest {
     assertArrayEquals(imageContent, file.getContent());
 
     // Validate log.
-    Submission submissionLogged = submissionCaptor.getAllValues().get(0);
+    Submission submissionLogged = submissionCaptor.getValue();
     assertEquals((Long) 1L, submissionLogged.getId());
     assertEquals(user, submissionLogged.getUser());
     assertEquals(user.getLaboratory().getId(), submissionLogged.getLaboratory().getId());
     assertEquals(newInstant, submissionLogged.getSubmissionDate());
-    Submission oldSubmissionLogged = submissionCaptor.getAllValues().get(1);
-    assertEquals((Long) 1L, oldSubmissionLogged.getId());
-    assertEquals((Long) 3L, oldSubmissionLogged.getUser().getId());
-    assertEquals((Long) 2L, oldSubmissionLogged.getLaboratory().getId());
-    assertEquals(LocalDate.of(2010, 10, 15), toLocalDate(oldSubmissionLogged.getSubmissionDate()));
   }
 
   @Test
@@ -2846,15 +2840,14 @@ public class SubmissionServiceTest {
       entityManager.detach(sa.getOriginalContainer());
     });
     submission.getSamples().add(sample);
-    when(submissionActivityService.forceUpdate(any(Submission.class), any(String.class),
-        any(Submission.class))).thenReturn(optionalActivity);
+    when(submissionActivityService.forceUpdate(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
 
     submissionService.forceUpdate(submission, "unit_test");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(submissionActivityService).forceUpdate(submissionCaptor.capture(), eq("unit_test"),
-        submissionCaptor.capture());
+    verify(submissionActivityService).forceUpdate(submissionCaptor.capture(), eq("unit_test"));
     verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
     assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     verify(activityService).insert(activity);
@@ -2894,10 +2887,6 @@ public class SubmissionServiceTest {
     assertEquals((Long) 559L, submissionLogged.getSamples().get(0).getId());
     assertEquals((Long) 560L, submissionLogged.getSamples().get(1).getId());
     assertNotNull(submissionLogged.getSamples().get(2).getId());
-    Submission oldSubmissionLogged = submissionCaptor.getAllValues().get(1);
-    assertEquals((Long) 147L, oldSubmissionLogged.getId());
-    assertEquals((Long) 559L, oldSubmissionLogged.getSamples().get(0).getId());
-    assertEquals((Long) 560L, oldSubmissionLogged.getSamples().get(1).getId());
   }
 
   @Test
@@ -2952,5 +2941,49 @@ public class SubmissionServiceTest {
     for (SubmissionSample sample : submission2.getSamples()) {
       assertEquals(SampleStatus.APPROVED, sample.getStatus());
     }
+  }
+
+  @Test
+  public void hide() throws Exception {
+    Submission submission1 = entityManager.find(Submission.class, 147L);
+    entityManager.detach(submission1);
+    Submission submission2 = entityManager.find(Submission.class, 148L);
+    entityManager.detach(submission2);
+    when(submissionActivityService.forceUpdate(any(), any())).thenReturn(optionalActivity);
+
+    submissionService.hide(Arrays.asList(submission1, submission2));
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(activityService, times(2)).insert(activity);
+    submission1 = entityManager.find(Submission.class, submission1.getId());
+    verify(submissionActivityService).forceUpdate(submission1, null);
+    assertTrue(submission1.isHidden());
+    submission2 = entityManager.find(Submission.class, submission2.getId());
+    verify(submissionActivityService).forceUpdate(submission2, null);
+    assertTrue(submission2.isHidden());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void show() throws Exception {
+    Submission submission1 = entityManager.find(Submission.class, 36L);
+    entityManager.detach(submission1);
+    Submission submission2 = entityManager.find(Submission.class, 148L);
+    entityManager.detach(submission2);
+    when(submissionActivityService.forceUpdate(any(), any())).thenReturn(optionalActivity,
+        Optional.empty());
+
+    submissionService.show(Arrays.asList(submission1, submission2));
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(activityService, times(1)).insert(activity);
+    submission1 = entityManager.find(Submission.class, submission1.getId());
+    verify(submissionActivityService).forceUpdate(submission1, null);
+    assertFalse(submission1.isHidden());
+    submission2 = entityManager.find(Submission.class, submission2.getId());
+    verify(submissionActivityService).forceUpdate(submission2, null);
+    assertFalse(submission2.isHidden());
   }
 }

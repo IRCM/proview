@@ -165,8 +165,6 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void forceUpdate() {
-    Submission oldSubmission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(oldSubmission);
     Submission newSubmission = entityManager.find(Submission.class, 1L);
     entityManager.detach(newSubmission);
     final User oldUser = new User(3L);
@@ -218,12 +216,13 @@ public class SubmissionActivityServiceTest {
     newSubmission.setUser(newUser);
     newSubmission.setSubmissionDate(Instant.now());
     newSubmission.setAdditionalPrice(new BigDecimal("21.50"));
+    newSubmission.setHidden(true);
     newSubmission.setFiles(new ArrayList<>());
     newSubmission.getFiles().add(new SubmissionFile("my_file.xlsx"));
     newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(newSubmission, "unit_test", oldSubmission);
+        submissionActivityService.forceUpdate(newSubmission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -254,7 +253,7 @@ public class SubmissionActivityServiceTest {
     experimentActivity.setTableName("submission");
     experimentActivity.setRecordId(newSubmission.getId());
     experimentActivity.setColumn("experiment");
-    experimentActivity.setOldValue(oldSubmission.getExperiment());
+    experimentActivity.setOldValue("G100429");
     experimentActivity.setNewValue(newSubmission.getExperiment());
     expectedUpdateActivities.add(experimentActivity);
     UpdateActivity goalActivity = new UpdateActivity();
@@ -262,7 +261,7 @@ public class SubmissionActivityServiceTest {
     goalActivity.setTableName("submission");
     goalActivity.setRecordId(newSubmission.getId());
     goalActivity.setColumn("goal");
-    goalActivity.setOldValue(oldSubmission.getGoal());
+    goalActivity.setOldValue(null);
     goalActivity.setNewValue(newSubmission.getGoal());
     expectedUpdateActivities.add(goalActivity);
     UpdateActivity massDetectionInstrumentActivity = new UpdateActivity();
@@ -558,7 +557,7 @@ public class SubmissionActivityServiceTest {
     commentActivity.setTableName("submission");
     commentActivity.setRecordId(newSubmission.getId());
     commentActivity.setColumn("comment");
-    commentActivity.setOldValue(oldSubmission.getComment());
+    commentActivity.setOldValue("Philippe");
     commentActivity.setNewValue(newSubmission.getComment());
     expectedUpdateActivities.add(commentActivity);
     UpdateActivity userActivity = new UpdateActivity();
@@ -583,11 +582,18 @@ public class SubmissionActivityServiceTest {
     submissionDateActivity.setRecordId(newSubmission.getId());
     submissionDateActivity.setColumn("submissionDate");
     DateTimeFormatter instantFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    submissionDateActivity.setOldValue(instantFormatter.format(
-        LocalDateTime.ofInstant(oldSubmission.getSubmissionDate(), ZoneId.systemDefault())));
+    submissionDateActivity.setOldValue("2010-10-15T00:00:00");
     submissionDateActivity.setNewValue(instantFormatter.format(
         LocalDateTime.ofInstant(newSubmission.getSubmissionDate(), ZoneId.systemDefault())));
     expectedUpdateActivities.add(submissionDateActivity);
+    UpdateActivity hiddenActivity = new UpdateActivity();
+    hiddenActivity.setActionType(ActionType.UPDATE);
+    hiddenActivity.setTableName("submission");
+    hiddenActivity.setRecordId(newSubmission.getId());
+    hiddenActivity.setColumn("hidden");
+    hiddenActivity.setOldValue("0");
+    hiddenActivity.setNewValue("1");
+    expectedUpdateActivities.add(hiddenActivity);
     UpdateActivity additionalPriceActivity = new UpdateActivity();
     additionalPriceActivity.setActionType(ActionType.UPDATE);
     additionalPriceActivity.setTableName("submission");
@@ -601,18 +607,15 @@ public class SubmissionActivityServiceTest {
     filesActivity.setTableName("submission");
     filesActivity.setRecordId(newSubmission.getId());
     filesActivity.setColumn("submissionfiles");
-    filesActivity.setOldValue(oldSubmission.getFiles().stream().map(file -> file.getFilename())
-        .collect(Collectors.toList()).toString());
+    filesActivity.setOldValue("protocol.txt,frag.jpg");
     filesActivity.setNewValue(newSubmission.getFiles().stream().map(file -> file.getFilename())
-        .collect(Collectors.toList()).toString());
+        .collect(Collectors.joining(",")));
     expectedUpdateActivities.add(filesActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 
   @Test
   public void forceUpdate_ChangeSamples() {
-    Submission oldSubmission = entityManager.find(Submission.class, 147L);
-    entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 147L);
     entityManager.detach(submission);
     submission.getSamples().remove(1);
@@ -630,7 +633,7 @@ public class SubmissionActivityServiceTest {
     when(sampleActivityService.update(any(), any())).thenReturn(Optional.of(sampleUpdate));
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
+        submissionActivityService.forceUpdate(submission, "unit_test");
 
     verify(sampleActivityService).update(eq(submission.getSamples().get(0)), any());
     assertEquals(true, optionalActivity.isPresent());
@@ -657,8 +660,6 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void forceUpdate_AddSolvent() throws Throwable {
-    Submission oldSubmission = entityManager.find(Submission.class, 33L);
-    entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
     Solvent solvent = Solvent.OTHER;
@@ -667,7 +668,7 @@ public class SubmissionActivityServiceTest {
     entityManager.flush();
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
+        submissionActivityService.forceUpdate(submission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -698,8 +699,6 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void forceUpdate_RemoveSolvent() throws Throwable {
-    Submission oldSubmission = entityManager.find(Submission.class, 33L);
-    entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
     Solvent solvent = Solvent.METHANOL;
@@ -707,7 +706,7 @@ public class SubmissionActivityServiceTest {
     entityManager.flush();
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
+        submissionActivityService.forceUpdate(submission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -730,13 +729,11 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void forceUpdate_NoChange() {
-    Submission oldSubmission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(oldSubmission);
     Submission submission = entityManager.find(Submission.class, 1L);
     entityManager.detach(submission);
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(submission, "unit_test", oldSubmission);
+        submissionActivityService.forceUpdate(submission, "unit_test");
 
     assertEquals(false, optionalActivity.isPresent());
   }

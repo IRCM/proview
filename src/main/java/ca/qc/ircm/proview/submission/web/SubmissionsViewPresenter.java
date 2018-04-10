@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import com.google.common.collect.Range;
@@ -123,6 +124,10 @@ public class SubmissionsViewPresenter {
       property(SUBMISSION, submission.submissionDate.getMetadata().getName());
   public static final String LINKED_TO_RESULTS = "results";
   public static final String TREATMENTS = "treatments";
+  public static final String HIDDEN =
+      property(SUBMISSION, submission.hidden.getMetadata().getName());
+  public static final String HIDDEN_STYLE =
+      styleName(SUBMISSION, submission.hidden.getMetadata().getName());
   public static final String HISTORY = "history";
   public static final String ALL = "all";
   public static final String ADD_SUBMISSION = "addSubmission";
@@ -131,10 +136,14 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_CONTAINERS = "selectContainers";
   public static final String SELECT_CONTAINERS_NO_SAMPLES = "selectContainers.noSamples";
   public static final String SELECT_CONTAINERS_LABEL = "selectContainersLabel";
+  public static final String SELECTION_EMPTY = "selection.empty";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final String APPROVE = "approve";
-  public static final String APPROVE_EMPTY = "approve.empty";
-  public static final String APPROVED = "approved";
+  public static final String APPROVE_DONE = "approve.done";
+  public static final String HIDE = "hide";
+  public static final String HIDE_DONE = "hide.done";
+  public static final String SHOW = "show";
+  public static final String SHOW_DONE = "show.done";
   public static final String TRANSFER = "transfer";
   public static final String DIGESTION = "digestion";
   public static final String ENRICHMENT = "enrichment";
@@ -259,6 +268,14 @@ public class SubmissionsViewPresenter {
     design.approve.setCaption(resources.message(APPROVE));
     design.approve.setVisible(authorizationService.hasApproverRole());
     design.approve.addClickListener(e -> approve());
+    design.hide.addStyleName(HIDE);
+    design.hide.setCaption(resources.message(HIDE));
+    design.hide.setVisible(authorizationService.hasAdminRole());
+    design.hide.addClickListener(e -> hide());
+    design.show.addStyleName(SHOW);
+    design.show.setCaption(resources.message(SHOW));
+    design.show.setVisible(authorizationService.hasAdminRole());
+    design.show.addClickListener(e -> show());
     design.treatmentButtons.setVisible(authorizationService.hasAdminRole());
     design.transfer.addStyleName(TRANSFER);
     design.transfer.setCaption(resources.message(TRANSFER));
@@ -340,6 +357,11 @@ public class SubmissionsViewPresenter {
         .addColumn(submission -> viewTreatmentsButton(submission), new ComponentRenderer())
         .setId(TREATMENTS).setCaption(resources.message(TREATMENTS)).setSortable(false);
     design.submissionsGrid
+        .addColumn(
+            submission -> submission.isHidden() ? resources.message(property(HIDDEN, true)) : "")
+        .setId(HIDDEN).setCaption(resources.message(HIDDEN));
+    columnProperties.put(HIDDEN, submission.hidden);
+    design.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
         .setId(HISTORY).setCaption(resources.message(HISTORY)).setSortable(false);
     if (authorizationService.hasAdminRole()) {
@@ -379,11 +401,15 @@ public class SubmissionsViewPresenter {
       design.submissionsGrid.getColumn(TREATMENTS).setHidable(true);
       design.submissionsGrid.getColumn(TREATMENTS)
           .setHidden(userPreferenceService.get(this, TREATMENTS, false));
+      design.submissionsGrid.getColumn(HIDDEN).setHidable(true);
+      design.submissionsGrid.getColumn(HIDDEN)
+          .setHidden(userPreferenceService.get(this, HIDDEN, false));
       design.submissionsGrid.getColumn(HISTORY).setHidable(true);
       design.submissionsGrid.getColumn(HISTORY)
           .setHidden(userPreferenceService.get(this, HISTORY, false));
     } else {
       design.submissionsGrid.getColumn(TREATMENTS).setHidden(true);
+      design.submissionsGrid.getColumn(HIDDEN).setHidden(true);
       design.submissionsGrid.getColumn(HISTORY).setHidden(true);
     }
     design.submissionsGrid.addColumnVisibilityChangeListener(e -> {
@@ -437,6 +463,12 @@ public class SubmissionsViewPresenter {
       design.submissionsGrid.getDataProvider().refreshAll();
     }, new Boolean[] { true, false },
         value -> resources.message(property(LINKED_TO_RESULTS, value))));
+    filterRow.getCell(HIDDEN).setComponent(comboBoxFilter(e -> {
+      filter.hidden = e.getValue();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }, new Boolean[] { true, false }, value -> resources.message(property(HIDDEN, value))));
+    design.submissionsGrid
+        .setStyleGenerator(submission -> submission.isHidden() ? HIDDEN_STYLE : null);
     design.submissionsGrid.sort(DATE, SortDirection.DESCENDING);
   }
 
@@ -671,10 +703,40 @@ public class SubmissionsViewPresenter {
       Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
       logger.debug("Approve submissions {}", submissions);
       submissionService.approve(submissions);
-      view.showTrayNotification(resources.message(APPROVED, submissions.size()));
+      view.showTrayNotification(resources.message(APPROVE_DONE, submissions.size()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     } else {
-      String error = resources.message(APPROVE_EMPTY);
+      String error = resources.message(SELECTION_EMPTY);
+      logger.debug("Validation error: {}", error);
+      view.showError(error);
+    }
+  }
+
+  private void hide() {
+    MessageResource resources = view.getResources();
+    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
+      Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
+      logger.debug("Hide submissions {}", submissions);
+      submissionService.hide(submissions);
+      view.showTrayNotification(resources.message(HIDE_DONE, submissions.size()));
+      view.navigateTo(SubmissionsView.VIEW_NAME);
+    } else {
+      String error = resources.message(SELECTION_EMPTY);
+      logger.debug("Validation error: {}", error);
+      view.showError(error);
+    }
+  }
+
+  private void show() {
+    MessageResource resources = view.getResources();
+    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
+      Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
+      logger.debug("Hide submissions {}", submissions);
+      submissionService.show(submissions);
+      view.showTrayNotification(resources.message(SHOW_DONE, submissions.size()));
+      view.navigateTo(SubmissionsView.VIEW_NAME);
+    } else {
+      String error = resources.message(SELECTION_EMPTY);
       logger.debug("Validation error: {}", error);
       view.showError(error);
     }

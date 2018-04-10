@@ -139,6 +139,10 @@ $warning-color: orange;
   .v-grid-cell.banned {
     color: red;
   }
+  // Hidden submissions.
+  .v-grid-row.submission-hidden {
+    color: lighten($v-font-color, 50%);
+  }
   
   // Plate.
   .v-spreadsheet-plate .top-right-pane .ch, .v-spreadsheet-plate .corner {
