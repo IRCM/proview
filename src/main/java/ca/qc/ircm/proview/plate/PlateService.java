@@ -47,6 +47,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -232,6 +233,21 @@ public class PlateService {
   private void initWellList(Plate plate) {
     plate.initWells();
     plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
+  }
+
+  /**
+   * Update plate.
+   *
+   * @param plate
+   *          plate
+   */
+  public void update(Plate plate) {
+    authorizationService.checkAdminRole();
+
+    entityManager.merge(plate);
+
+    Optional<Activity> optionalActivity = plateActivityService.update(plate);
+    optionalActivity.ifPresent(activity -> activityService.insert(activity));
   }
 
   /**

@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -83,6 +84,57 @@ public class PlateActivityService {
     return activity;
   }
 
+  /**
+   * Creates an activity about update of plate.
+   *
+   * @param plate
+   *          updated plate
+   * @return activity about update of plate
+   */
+  @CheckReturnValue
+  public Optional<Activity> update(final Plate plate) {
+    User user = authorizationService.getCurrentUser();
+
+    Plate oldPlate = entityManager.find(Plate.class, plate.getId());
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    updateBuilders.add(updateActivity(plate).column("name").oldValue(oldPlate.getName())
+        .newValue(plate.getName()));
+    updateBuilders.add(updateActivity(plate).column("columnCount")
+        .oldValue(oldPlate.getColumnCount()).newValue(plate.getColumnCount()));
+    updateBuilders.add(updateActivity(plate).column("rowCount").oldValue(oldPlate.getRowCount())
+        .newValue(plate.getRowCount()));
+    updateBuilders.add(updateActivity(plate).column("insertTime").oldValue(oldPlate.getInsertTime())
+        .newValue(plate.getInsertTime()));
+    updateBuilders.add(updateActivity(plate).column("submission").oldValue(oldPlate.isSubmission())
+        .newValue(plate.isSubmission()));
+
+    // Keep updates that changed.
+    final Collection<UpdateActivity> updates = new ArrayList<>();
+    for (UpdateActivityBuilder builder : updateBuilders) {
+      if (builder.isChanged()) {
+        updates.add(builder.build());
+      }
+    }
+
+    if (!updates.isEmpty()) {
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(plate.getId());
+      activity.setUser(user);
+      activity.setTableName(Plate.TABLE_NAME);
+      activity.setUpdates(new LinkedList<>(updates));
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  private UpdateActivityBuilder updateActivity(Plate plate) {
+    return new UpdateActivityBuilder().tableName(Plate.TABLE_NAME).actionType(ActionType.UPDATE)
+        .recordId(plate.getId());
+  }
+
   private void validateSamePlate(Collection<Well> wells) {
     if (!wells.isEmpty()) {
       long plateId = wells.iterator().next().getPlate().getId();
@@ -115,7 +167,7 @@ public class PlateActivityService {
       updateBuilders.add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 
-    // Keep updates that did not change.
+    // Keep updates that changed.
     final Collection<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {
@@ -155,7 +207,7 @@ public class PlateActivityService {
       updateBuilders.add(new ActivateSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 
-    // Keep updates that did not change.
+    // Keep updates that changed.
     final Collection<UpdateActivity> updates = new ArrayList<>();
     for (UpdateActivityBuilder builder : updateBuilders) {
       if (builder.isChanged()) {

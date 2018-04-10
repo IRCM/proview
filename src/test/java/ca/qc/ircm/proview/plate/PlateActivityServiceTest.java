@@ -18,6 +18,8 @@
 package ca.qc.ircm.proview.plate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +29,7 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
+import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +37,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -75,6 +81,81 @@ public class PlateActivityServiceTest {
     assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
+  }
+
+  @Test
+  public void update() {
+    Plate plate = entityManager.find(Plate.class, 26L);
+    entityManager.detach(plate);
+    plate.setName("unit_test");
+    plate.setColumnCount(13);
+    plate.setRowCount(9);
+    plate.setInsertTime(Instant.now());
+    plate.setSubmission(true);
+
+    Optional<Activity> optionalActivity = plateActivityService.update(plate);
+
+    assertTrue(optionalActivity.isPresent());
+    final DateTimeFormatter instantFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    Activity activity = optionalActivity.get();
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals(Plate.TABLE_NAME, activity.getTableName());
+    assertEquals(plate.getId(), activity.getRecordId());
+    assertEquals(null, activity.getExplanation());
+    assertEquals(user, activity.getUser());
+    Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
+    UpdateActivity nameUpdate = new UpdateActivity();
+    nameUpdate.setTableName(Plate.TABLE_NAME);
+    nameUpdate.setRecordId(plate.getId());
+    nameUpdate.setActionType(ActionType.UPDATE);
+    nameUpdate.setColumn("name");
+    nameUpdate.setOldValue("A_20111108");
+    nameUpdate.setNewValue("unit_test");
+    expectedUpdateActivities.add(nameUpdate);
+    UpdateActivity columnCountUpdate = new UpdateActivity();
+    columnCountUpdate.setTableName(Plate.TABLE_NAME);
+    columnCountUpdate.setRecordId(plate.getId());
+    columnCountUpdate.setActionType(ActionType.UPDATE);
+    columnCountUpdate.setColumn("columnCount");
+    columnCountUpdate.setOldValue("12");
+    columnCountUpdate.setNewValue("13");
+    expectedUpdateActivities.add(columnCountUpdate);
+    UpdateActivity rowCountUpdate = new UpdateActivity();
+    rowCountUpdate.setTableName(Plate.TABLE_NAME);
+    rowCountUpdate.setRecordId(plate.getId());
+    rowCountUpdate.setActionType(ActionType.UPDATE);
+    rowCountUpdate.setColumn("rowCount");
+    rowCountUpdate.setOldValue("8");
+    rowCountUpdate.setNewValue("9");
+    expectedUpdateActivities.add(rowCountUpdate);
+    UpdateActivity insertTimeUpdate = new UpdateActivity();
+    insertTimeUpdate.setTableName(Plate.TABLE_NAME);
+    insertTimeUpdate.setRecordId(plate.getId());
+    insertTimeUpdate.setActionType(ActionType.UPDATE);
+    insertTimeUpdate.setColumn("insertTime");
+    insertTimeUpdate.setOldValue("2011-11-08T13:33:21");
+    insertTimeUpdate
+        .setNewValue(instantFormatter.format(TimeConverter.toLocalDateTime(plate.getInsertTime())));
+    expectedUpdateActivities.add(insertTimeUpdate);
+    UpdateActivity submissionUpdate = new UpdateActivity();
+    submissionUpdate.setTableName(Plate.TABLE_NAME);
+    submissionUpdate.setRecordId(plate.getId());
+    submissionUpdate.setActionType(ActionType.UPDATE);
+    submissionUpdate.setColumn("submission");
+    submissionUpdate.setOldValue("0");
+    submissionUpdate.setNewValue("1");
+    expectedUpdateActivities.add(submissionUpdate);
+    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
+  }
+
+  @Test
+  public void update_NoChanges() {
+    Plate plate = entityManager.find(Plate.class, 26L);
+    entityManager.detach(plate);
+
+    Optional<Activity> optionalActivity = plateActivityService.update(plate);
+
+    assertFalse(optionalActivity.isPresent());
   }
 
   @Test

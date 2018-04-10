@@ -60,6 +60,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -85,6 +86,7 @@ public class PlateServiceTest {
   private JPAQueryFactory queryFactory;
   @Inject
   private ApplicationConfiguration applicationConfiguration;
+  private Optional<Activity> optionalActivity;
 
   /**
    * Before test.
@@ -93,6 +95,7 @@ public class PlateServiceTest {
   public void beforeTest() {
     plateService = new PlateService(entityManager, queryFactory, plateActivityService,
         activityService, authorizationService, applicationConfiguration);
+    optionalActivity = Optional.of(activity);
   }
 
   @Test
@@ -416,6 +419,23 @@ public class PlateServiceTest {
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).insert(plate);
+    verify(activityService).insert(activity);
+    assertNotNull(plate.getId());
+    plate = plateService.get(plate.getId());
+    assertEquals("test_plate_4896415", plate.getName());
+  }
+
+  @Test
+  public void update() throws Exception {
+    Plate plate = entityManager.find(Plate.class, 26L);
+    plate.setName("test_plate_4896415");
+    when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
+
+    plateService.update(plate);
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(plateActivityService).update(plate);
     verify(activityService).insert(activity);
     assertNotNull(plate.getId());
     plate = plateService.get(plate.getId());
