@@ -102,6 +102,7 @@
       .plate-information th, .plate-information td {
         border-style: solid;
         border-width: 0 1px 1px 0;
+        border-color: black;
       }
       .plate-information tbody tr th:first-child {
         border-width: 0 1px 1px 1px;
@@ -118,6 +119,10 @@
         margin: 0;
         padding: 0;
       }
+      .plate-information td.banned {
+        color: white;
+        background-color: red;
+      }
       .plate-information span {
         margin: 1px;
         display: inline-block;
@@ -128,14 +133,16 @@
       }
     </style>
     <style type="text/css" media="print">
+      body {
+        color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
       .section {
         width: 11in;
       }
       .plate-information {
         width: 13in;
-        transform: rotate(-90deg) translateX(-1.9in) translateY(-1in); 
-        -webkit-transform: rotate(-90deg) translateX(-1.9in) translateY(-1in);
-        -moz-transform: rotate(-90deg) translateX(-1.9in) translateY(-1in);
+        transform: rotate(90deg) translateX(2.1in); 
       }
       .plate-information td {
         width: 1.05in;
@@ -387,7 +394,6 @@
       </table>
     </div>
     <div class="plate-information section pagebreak" th:if="${plate != null}">
-      <h3 th:text="#{plate}">Plate information</h3>
       <h3 class="plate-name" th:text="${plate.name}">My plate</h3>
       <table>
         <tbody>
@@ -397,7 +403,7 @@
           </tr>
           <tr th:each="row : ${#numbers.sequence(0, plate.rowCount - 1)}">
             <th th:text="${plate.rowLabel(row)}">A</th>
-            <td th:each="column : ${#numbers.sequence(0, plate.columnCount - 1)}"><span class="well-sample-name" th:if="${plate.well(row, column).sample != null}" th:text="${plate.well(row, column).sample.name}">My sample</span></td>
+            <td class="well" th:classappend="${plate.well(row, column).banned} ? banned : active" th:each="column : ${#numbers.sequence(0, plate.columnCount - 1)}"><span class="well-sample-name" th:if="${plate.well(row, column).sample != null}" th:text="${plate.well(row, column).sample.name}">My sample</span></td>
           </tr>
         </tbody>
       </table>

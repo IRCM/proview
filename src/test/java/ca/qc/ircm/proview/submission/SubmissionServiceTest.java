@@ -1593,6 +1593,8 @@ public class SubmissionServiceTest {
       submission.getSamples().get(i).setOriginalContainer(plate.getWells().get(i));
       plate.getWells().get(i).setSample(submission.getSamples().get(i));
     });
+    plate.getWells().get(0).setBanned(true);
+    plate.getWells().get(36).setBanned(true);
     Locale locale = Locale.getDefault();
 
     String content = submissionService.print(submission, locale);
@@ -1603,6 +1605,8 @@ public class SubmissionServiceTest {
     assertTrue(content.contains("class=\"plate-information section"));
     assertTrue(content.contains("class=\"plate-name\""));
     assertTrue(content.contains(plate.getName()));
+    assertTrue(content.contains("class=\"well active\""));
+    assertTrue(content.contains("class=\"well banned\""));
     assertTrue(content.contains("class=\"well-sample-name\""));
     for (SubmissionSample sample : submission.getSamples()) {
       assertTrue(content.contains(sample.getName()));
