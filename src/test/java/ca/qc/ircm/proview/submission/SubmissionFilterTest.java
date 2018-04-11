@@ -237,6 +237,24 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addConditions_Hidden_True() throws Exception {
+    filter.hidden = true;
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.hidden.eq(true));
+  }
+
+  @Test
+  public void addConditions_Hidden_False() throws Exception {
+    filter.hidden = false;
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.hidden.eq(false));
+  }
+
+  @Test
   public void addConditions_AnySampleNameContainsAndAnySampleStatus() throws Exception {
     filter.anySampleNameContains = "test";
     filter.anySampleStatus = SampleStatus.RECEIVED;

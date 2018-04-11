@@ -323,10 +323,15 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Column(name = "comment")
   private String comment;
   /**
-   * Date of Submission submission.
+   * Date of submission.
    */
   @Column(name = "submissionDate")
   private Instant submissionDate;
+  /**
+   * True if submission is hidden.
+   */
+  @Column(name = "hidden")
+  private boolean hidden;
   /**
    * Price charged when sample was first submitted.
    */
@@ -774,5 +779,13 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setFiles(List<SubmissionFile> files) {
     this.files = files;
+  }
+
+  public boolean isHidden() {
+    return hidden;
+  }
+
+  public void setHidden(boolean hidden) {
+    this.hidden = hidden;
   }
 }

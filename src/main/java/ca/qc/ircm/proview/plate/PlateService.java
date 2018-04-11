@@ -41,12 +41,15 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -71,6 +74,8 @@ public class PlateService {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
+  private TemplateEngine emailTemplateEngine;
+  @Inject
   private ApplicationConfiguration applicationConfiguration;
 
   protected PlateService() {
@@ -78,13 +83,14 @@ public class PlateService {
 
   protected PlateService(EntityManager entityManager, JPAQueryFactory queryFactory,
       PlateActivityService plateActivityService, ActivityService activityService,
-      AuthorizationService authorizationService,
+      AuthorizationService authorizationService, TemplateEngine emailTemplateEngine,
       ApplicationConfiguration applicationConfiguration) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.plateActivityService = plateActivityService;
     this.activityService = activityService;
     this.authorizationService = authorizationService;
+    this.emailTemplateEngine = emailTemplateEngine;
     this.applicationConfiguration = applicationConfiguration;
   }
 
@@ -124,8 +130,8 @@ public class PlateService {
       query.from(plate.wells, well);
       query.where(well.sample.in(filter.containsAnySamples));
     }
-    if (filter.onlyProteomicPlates) {
-      query.where(plate.submission.eq(false));
+    if (filter.submission != null) {
+      query.where(plate.submission.eq(filter.submission));
     }
     return query.distinct().fetch();
   }
@@ -211,6 +217,30 @@ public class PlateService {
   }
 
   /**
+   * Returns printable version of plate in HTML.
+   *
+   * @param plate
+   *          plate
+   * @param locale
+   *          user's locale
+   * @return printable version of plate in HTML
+   */
+  public String print(Plate plate, Locale locale) {
+    if (plate == null || locale == null) {
+      return "";
+    }
+
+    Context context = new Context();
+    context.setLocale(locale);
+    context.setVariable("plate", plate);
+    context.setVariable("locale", locale);
+
+    String templateLocation = "/" + PlateService.class.getName().replace(".", "/") + "_Print.html";
+    String content = emailTemplateEngine.process(templateLocation, context);
+    return content;
+  }
+
+  /**
    * Insert plate and it's wells into database.
    *
    * @param plate
@@ -232,6 +262,21 @@ public class PlateService {
   private void initWellList(Plate plate) {
     plate.initWells();
     plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
+  }
+
+  /**
+   * Update plate.
+   *
+   * @param plate
+   *          plate
+   */
+  public void update(Plate plate) {
+    authorizationService.checkAdminRole();
+
+    entityManager.merge(plate);
+
+    Optional<Activity> optionalActivity = plateActivityService.update(plate);
+    optionalActivity.ifPresent(activity -> activityService.insert(activity));
   }
 
   /**

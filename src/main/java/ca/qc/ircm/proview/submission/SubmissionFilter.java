@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
@@ -28,7 +29,6 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -48,6 +48,7 @@ public class SubmissionFilter implements Predicate<Submission> {
   public SampleStatus anySampleStatus;
   public Range<LocalDate> dateRange;
   public Boolean results;
+  public Boolean hidden;
   public List<OrderSpecifier<?>> sortOrders;
   public Integer offset;
   public Integer limit;
@@ -91,8 +92,7 @@ public class SubmissionFilter implements Predicate<Submission> {
           .anyMatch(sample -> anySampleStatus.equals(sample.getStatus()));
     }
     if (dateRange != null) {
-      test &= dateRange
-          .contains(submission.getSubmissionDate().atZone(ZoneId.systemDefault()).toLocalDate());
+      test &= dateRange.contains(toLocalDate(submission.getSubmissionDate()));
     }
     if (results != null) {
       Set<SampleStatus> analysedStatuses =
@@ -146,6 +146,9 @@ public class SubmissionFilter implements Predicate<Submission> {
       } else {
         query.where(submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
       }
+    }
+    if (hidden != null) {
+      query.where(submission.hidden.eq(hidden));
     }
   }
 

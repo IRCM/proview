@@ -22,7 +22,7 @@ import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
-import ca.qc.ircm.proview.plate.web.PlateView;
+import ca.qc.ircm.proview.plate.web.PlatesView;
 import ca.qc.ircm.proview.sample.web.ControlView;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -170,7 +170,7 @@ public class MenuPresenter {
         view.menu.addItem(resources.message(CONTROL), item -> changeView(ControlView.VIEW_NAME));
     control.setStyleName(CONTROL);
     control.setVisible(false);
-    plate = view.menu.addItem(resources.message(PLATE), item -> changeView(PlateView.VIEW_NAME));
+    plate = view.menu.addItem(resources.message(PLATE), item -> changeView(PlatesView.VIEW_NAME));
     plate.setStyleName(PLATE);
     plate.setVisible(false);
     profile = view.menu.addItem(resources.message(PROFILE), item -> changeView(UserView.VIEW_NAME));

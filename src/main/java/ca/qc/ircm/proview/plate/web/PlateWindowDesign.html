@@ -6,14 +6,15 @@
   <meta name="vaadin-version" content="8.1.5">
  </head>
  <body>
-  <vaadin-vertical-layout value="Label fszfe feawzfeaf afewa fewafe awfewa">
-   <vaadin-label style-name="h1" plain-text _id="header">
-     Plate 
-   </vaadin-label>
-   <vaadin-panel _id="plateComponentPanel"></vaadin-panel>
-   <vaadin-button plain-text _id="print">
-     Download / Print 
-   </vaadin-button>
+  <vaadin-vertical-layout size-full>
+   <vaadin-panel size-full _id="panel" :expand>
+    <vaadin-vertical-layout>
+     <vaadin-panel _id="plateLayout" :expand></vaadin-panel>
+     <vaadin-button plain-text _id="print">
+       Print 
+     </vaadin-button>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
   </vaadin-vertical-layout>
  </body>
 </html>

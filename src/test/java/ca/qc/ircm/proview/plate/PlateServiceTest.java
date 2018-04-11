@@ -55,11 +55,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.thymeleaf.TemplateEngine;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -69,6 +71,8 @@ import javax.persistence.PersistenceContext;
 @ServiceTestAnnotations
 public class PlateServiceTest {
   private PlateService plateService;
+  @Inject
+  private TemplateEngine emailTemplateEngine;
   @Mock
   private PlateActivityService plateActivityService;
   @Mock
@@ -85,6 +89,7 @@ public class PlateServiceTest {
   private JPAQueryFactory queryFactory;
   @Inject
   private ApplicationConfiguration applicationConfiguration;
+  private Optional<Activity> optionalActivity;
 
   /**
    * Before test.
@@ -92,7 +97,8 @@ public class PlateServiceTest {
   @Before
   public void beforeTest() {
     plateService = new PlateService(entityManager, queryFactory, plateActivityService,
-        activityService, authorizationService, applicationConfiguration);
+        activityService, authorizationService, emailTemplateEngine, applicationConfiguration);
+    optionalActivity = Optional.of(activity);
   }
 
   @Test
@@ -152,15 +158,27 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void all_OnlyProteomicPlates() throws Exception {
+  public void all_SubmissionFalse() throws Exception {
     PlateFilter filter = new PlateFilter();
-    filter.onlyProteomicPlates();
+    filter.submission = false;
 
     List<Plate> plates = plateService.all(filter);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(17, plates.size());
     assertFalse(find(plates, 123L).isPresent());
+  }
+
+  @Test
+  public void all_SubmissionTrue() throws Exception {
+    PlateFilter filter = new PlateFilter();
+    filter.submission = true;
+
+    List<Plate> plates = plateService.all(filter);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(1, plates.size());
+    assertTrue(find(plates, 123L).isPresent());
   }
 
   @Test
@@ -405,6 +423,45 @@ public class PlateServiceTest {
     }
   }
 
+  private Plate plateForPrint() {
+    Plate plate = new Plate();
+    plate.setName("my plate");
+    plate.initWells();
+    plate.getWells().stream().limit(20).forEach(well -> {
+      SubmissionSample sample = new SubmissionSample();
+      sample.setName("s_" + well.getName());
+      well.setSample(sample);
+    });
+    plate.getWells().stream().skip(18).limit(2).forEach(well -> well.setBanned(true));
+    plate.getWells().stream().skip(20).limit(2).forEach(well -> {
+      Control control = new Control();
+      control.setName("c_" + well.getName());
+      well.setSample(control);
+    });
+    return plate;
+  }
+
+  @Test
+  public void print() throws Exception {
+    Plate plate = plateForPrint();
+    Locale locale = Locale.getDefault();
+
+    String content = plateService.print(plate, locale);
+
+    assertFalse(content.contains("??"));
+    assertTrue(content.contains("class=\"plate-information section"));
+    assertTrue(content.contains("class=\"plate-name\""));
+    assertTrue(content.contains(plate.getName()));
+    assertTrue(content.contains("class=\"well active\""));
+    assertTrue(content.contains("class=\"well banned\""));
+    assertTrue(content.contains("class=\"well-sample-name\""));
+    for (Well well : plate.getWells()) {
+      if (well.getSample() != null) {
+        assertTrue(content.contains(well.getSample().getName()));
+      }
+    }
+  }
+
   @Test
   public void insert() throws Exception {
     Plate plate = new Plate();
@@ -416,6 +473,23 @@ public class PlateServiceTest {
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(plateActivityService).insert(plate);
+    verify(activityService).insert(activity);
+    assertNotNull(plate.getId());
+    plate = plateService.get(plate.getId());
+    assertEquals("test_plate_4896415", plate.getName());
+  }
+
+  @Test
+  public void update() throws Exception {
+    Plate plate = entityManager.find(Plate.class, 26L);
+    plate.setName("test_plate_4896415");
+    when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
+
+    plateService.update(plate);
+
+    entityManager.flush();
+    verify(authorizationService).checkAdminRole();
+    verify(plateActivityService).update(plate);
     verify(activityService).insert(activity);
     assertNotNull(plate.getId());
     plate = plateService.get(plate.getId());

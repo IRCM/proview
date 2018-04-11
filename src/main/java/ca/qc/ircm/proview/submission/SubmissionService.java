@@ -176,6 +176,7 @@ public class SubmissionService {
 
     query.from(submission);
     if (!authorizationService.hasAdminRole()) {
+      query.where(submission.hidden.eq(false));
       if (authorizationService.hasLaboratoryManagerPermission(currentLaboratory)) {
         query.where(submission.laboratory.eq(currentLaboratory));
       } else {
@@ -184,6 +185,15 @@ public class SubmissionService {
     }
   }
 
+  /**
+   * Returns printable version of submission in HTML.
+   * 
+   * @param submission
+   *          submission
+   * @param locale
+   *          user's locale
+   * @return printable version of submission in HTML
+   */
   public String print(Submission submission, Locale locale) {
     if (submission == null || submission.getService() == null || submission.getSamples() == null
         || submission.getSamples().isEmpty() || submission.getSamples().get(0) == null
@@ -442,17 +452,13 @@ public class SubmissionService {
   public void forceUpdate(Submission submission, String explanation) {
     authorizationService.checkAdminRole();
 
-    final Submission old = entityManager.find(Submission.class, submission.getId());
-    entityManager.detach(old);
-
     submission.setLaboratory(submission.getUser().getLaboratory());
     submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
     updateNoSecurity(submission);
     entityManager.flush();
 
     // Log update to database.
-    Optional<Activity> activity =
-        submissionActivityService.forceUpdate(submission, explanation, old);
+    Optional<Activity> activity = submissionActivityService.forceUpdate(submission, explanation);
     if (activity.isPresent()) {
       activityService.insert(activity.get());
     }
@@ -473,6 +479,48 @@ public class SubmissionService {
           .forEach(sample -> sample.setStatus(SampleStatus.APPROVED));
       entityManager.merge(submission);
       Optional<Activity> activity = submissionActivityService.approve(submission);
+      if (activity.isPresent()) {
+        activityService.insert(activity.get());
+      }
+    }
+  }
+
+  /**
+   * Hide submissions.
+   *
+   * @param submissions
+   *          submissions
+   */
+  public void hide(Collection<Submission> submissions) {
+    authorizationService.checkAdminRole();
+
+    for (Submission submission : submissions) {
+      submission = entityManager.merge(submission);
+      entityManager.refresh(submission);
+      submission.setHidden(true);
+
+      Optional<Activity> activity = submissionActivityService.forceUpdate(submission, null);
+      if (activity.isPresent()) {
+        activityService.insert(activity.get());
+      }
+    }
+  }
+
+  /**
+   * Make submissions visible, if they are hidden.
+   *
+   * @param submissions
+   *          submissions
+   */
+  public void show(Collection<Submission> submissions) {
+    authorizationService.checkAdminRole();
+
+    for (Submission submission : submissions) {
+      submission = entityManager.merge(submission);
+      entityManager.refresh(submission);
+      submission.setHidden(false);
+
+      Optional<Activity> activity = submissionActivityService.forceUpdate(submission, null);
       if (activity.isPresent()) {
         activityService.insert(activity.get());
       }

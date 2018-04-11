@@ -487,7 +487,7 @@ public class TransferViewPresenterTest {
     verify(plateService).all(plateFilterCaptor.capture());
     PlateFilter plateFilter = plateFilterCaptor.getValue();
     assertNull(plateFilter.containsAnySamples);
-    assertTrue(plateFilter.onlyProteomicPlates);
+    assertFalse(plateFilter.submission);
     assertFalse(design.destinationPlatesField.isEmptySelectionAllowed());
     assertNotNull(design.destinationPlatesField.getNewItemHandler());
     assertTrue(design.destinationPlatesField.isRequiredIndicatorVisible());

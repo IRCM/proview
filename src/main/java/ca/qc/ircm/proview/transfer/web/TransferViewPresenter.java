@@ -223,8 +223,10 @@ public class TransferViewPresenter implements BinderValidator {
       design.destinationPlatesField.getDataProvider().refreshItem(plate);
       design.destinationPlatesField.setValue(plate);
     });
-    design.destinationPlatesField.setItems(plateService.all(new PlateFilter().onlyProteomicPlates())
-        .stream().sorted(new NamedComparator(view.getLocale())));
+    PlateFilter filter = new PlateFilter();
+    filter.submission = false;
+    design.destinationPlatesField
+        .setItems(plateService.all(filter).stream().sorted(new NamedComparator(view.getLocale())));
     design.destinationPlatesField.addValueChangeListener(e -> updateDestinationPlate());
     design.destinationPlatePanel.addStyleName(DESTINATION_PLATE_PANEL);
     design.destinationPlatePanel.setVisible(false);

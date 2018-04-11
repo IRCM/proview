@@ -17,15 +17,18 @@
 
 package ca.qc.ircm.proview.plate.web;
 
-import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.TITLE;
-import static org.junit.Assert.assertEquals;
+import static ca.qc.ircm.proview.plate.web.PlateWindowPresenter.PRINT;
+import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.testbench.elements.WindowElement;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +39,7 @@ import java.util.Locale;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithSubject(userId = 1)
-public class PlateViewTest extends PlateViewPageObject {
+public class PlatesViewTest extends PlatesViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -53,70 +56,57 @@ public class PlateViewTest extends PlateViewPageObject {
   }
 
   @Test
-  @WithSubject(userId = 10)
-  public void security_RegularUser() throws Throwable {
+  @WithSubject(userId = 10L)
+  public void security_User() throws Throwable {
     openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();
 
-    assertTrue(new MessageResource(PlateView.class, locale).message(TITLE, applicationName)
-        .contains(getDriver().getTitle()));
+    assertTrue(new MessageResource(AccessDeniedView.class, locale)
+        .message(AccessDeniedView.TITLE, applicationName).contains(getDriver().getTitle()));
   }
 
   @Test
-  @WithSubject(userId = 3)
+  @WithSubject(userId = 3L)
   public void security_Manager() throws Throwable {
     openView(ContactView.VIEW_NAME);
     Locale locale = currentLocale();
 
     open();
 
-    assertTrue(new MessageResource(PlateView.class, locale).message(TITLE, applicationName)
-        .contains(getDriver().getTitle()));
-  }
-
-  @Test
-  public void security_Admin() throws Throwable {
-    openView(ContactView.VIEW_NAME);
-    Locale locale = currentLocale();
-
-    open();
-
-    assertTrue(new MessageResource(PlateView.class, locale).message(TITLE, applicationName)
-        .contains(getDriver().getTitle()));
+    assertTrue(new MessageResource(AccessDeniedView.class, locale)
+        .message(AccessDeniedView.TITLE, applicationName).contains(getDriver().getTitle()));
   }
 
   @Test
   public void title() throws Throwable {
     open();
 
-    assertEquals(resources(PlateView.class).message(TITLE, applicationName),
-        getDriver().getTitle());
+    assertTrue(resources(PlatesView.class).message(TITLE, applicationName)
+        .contains(getDriver().getTitle()));
   }
 
   @Test
-  @WithSubject(userId = 10)
-  public void fieldsExistence_User() throws Throwable {
+  public void fieldExistence() throws Throwable {
     open();
 
     assertTrue(optional(() -> header()).isPresent());
-    assertTrue(optional(() -> platePanel()).isPresent());
+    assertTrue(optional(() -> plates()).isPresent());
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void viewPlate() throws Throwable {
     open();
 
-    assertTrue(optional(() -> header()).isPresent());
-    assertTrue(optional(() -> platePanel()).isPresent());
-  }
+    clickViewPlateByRow(1);
 
-  @Test
-  public void fieldsExistence_Plate() throws Throwable {
-    openWithPlate();
-
-    assertTrue(optional(() -> header()).isPresent());
-    assertTrue(optional(() -> platePanel()).isPresent());
+    assertNotNull(findElement(className(PlateWindowPresenter.WINDOW_STYLE)));
+    WindowElement plateWindow =
+        wrap(WindowElement.class, findElement(className(PlateWindowPresenter.WINDOW_STYLE)));
+    String name = nameByRow(1);
+    assertTrue(resources(PlateWindow.class).message(PlateWindowPresenter.TITLE, name)
+        .contains(plateWindow.getCaption()));
+    assertTrue(optional(() -> plateWindow.findElement(className(PRINT))).isPresent());
   }
 }

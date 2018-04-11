@@ -23,7 +23,9 @@ import com.vaadin.server.UserError;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.RadioButtonGroup;
+import com.vaadin.ui.components.grid.EditorImpl;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +62,18 @@ public class VaadinTestUtils {
 
   public static <V> List<V> items(RadioButtonGroup<V> radios) {
     return new ArrayList<>(dataProvider(radios).getItems());
+  }
+
+  public static <V> void gridStartEdit(Grid<V> grid, V value) {
+    grid.getEditor().getBinder().setBean(value);
+    try {
+      Field field = EditorImpl.class.getDeclaredField("edited");
+      field.setAccessible(true);
+      field.set(grid.getEditor(), value);
+    } catch (SecurityException | IllegalAccessException | IllegalArgumentException
+        | NoSuchFieldException e) {
+      throw new IllegalStateException("Could not call edited", e);
+    }
   }
 
   public static String errorMessage(String message) {

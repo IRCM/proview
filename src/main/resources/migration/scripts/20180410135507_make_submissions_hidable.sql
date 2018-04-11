@@ -15,15 +15,15 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
--- // allow null for listindex in acquisition
+-- // make submissions hidable
 -- Migration SQL that makes the change goes here.
 
-ALTER TABLE acquisition
-MODIFY listIndex int(11) DEFAULT NULL;
+ALTER TABLE submission
+ADD COLUMN hidden tinyint(1) NOT NULL DEFAULT '0';
 
 
 -- //@UNDO
 -- SQL to undo the change goes here.
 
-ALTER TABLE acquisition
-MODIFY listIndex int(11) NOT NULL;
+ALTER TABLE submission
+DROP COLUMN hidden;

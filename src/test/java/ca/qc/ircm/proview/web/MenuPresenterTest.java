@@ -53,7 +53,7 @@ import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
-import ca.qc.ircm.proview.plate.web.PlateView;
+import ca.qc.ircm.proview.plate.web.PlatesView;
 import ca.qc.ircm.proview.sample.web.ControlView;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -460,7 +460,7 @@ public class MenuPresenterTest {
 
     item(PLATE).getCommand().menuSelected(item(PLATE));
 
-    verify(view).navigateTo(PlateView.VIEW_NAME);
+    verify(view).navigateTo(PlatesView.VIEW_NAME);
   }
 
   @Test

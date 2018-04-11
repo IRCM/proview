@@ -6163,7 +6163,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(String.format(PRINT_FILENAME, submission.getId()), resource.getFilename());
     ByteArrayOutputStream actualOutput = new ByteArrayOutputStream();
     IOUtils.copy(resource.getStream().getStream(), actualOutput);
-    assertArrayEquals(content.getBytes(StandardCharsets.UTF_8), actualOutput.toByteArray());
+    assertEquals(content, new String(actualOutput.toByteArray(), StandardCharsets.UTF_8));
   }
 
   @Test
