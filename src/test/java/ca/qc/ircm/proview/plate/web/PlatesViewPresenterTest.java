@@ -25,14 +25,20 @@ import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.SUBMISSION;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.gridStartEdit;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,8 +50,10 @@ import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
+import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.BindingValidationStatus;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.ListDataProvider;
@@ -103,6 +111,8 @@ public class PlatesViewPresenterTest {
   private PlatesViewDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(PlatesView.class, locale);
+  private MessageResource generalResources =
+      new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private List<Plate> plates = new ArrayList<>();
 
   /**
@@ -116,10 +126,13 @@ public class PlatesViewPresenterTest {
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getGeneralResources()).thenReturn(generalResources);
     plates.add(entityManager.find(Plate.class, 26L));
     plates.add(entityManager.find(Plate.class, 107L));
     plates.add(entityManager.find(Plate.class, 123L));
     when(plateService.all(null)).thenReturn(plates);
+    when(plateService.get(any()))
+        .thenAnswer(i -> entityManager.find(Plate.class, i.getArgumentAt(0, Long.class)));
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
     when(plateWindowProvider.get()).thenReturn(plateWindow);
   }
@@ -279,5 +292,85 @@ public class PlatesViewPresenterTest {
     verify(plateWindowProvider).get();
     verify(plateWindow).setValue(plate);
     verify(view).addWindow(plateWindow);
+  }
+
+  @Test
+  public void editPlate_NoName() {
+    when(plateService.nameAvailable(any())).thenReturn(true);
+    presenter.init(view);
+    Plate plate = plates.get(0);
+    gridStartEdit(design.plates, plate);
+    TextField nameField = (TextField) design.plates.getColumn(NAME).getEditorBinding().getField();
+    nameField.setValue("");
+    design.plates.getEditor().save();
+
+    verify(plateService, never()).update(any());
+    BindingValidationStatus<?> validation =
+        design.plates.getColumn(NAME).getEditorBinding().validate();
+    assertTrue(validation.isError());
+    assertEquals(generalResources.message(REQUIRED), validation.getMessage().get());
+  }
+
+  @Test
+  public void editPlate_NameExists() {
+    when(plateService.nameAvailable(any())).thenReturn(false);
+    presenter.init(view);
+    Plate plate = plates.get(0);
+    gridStartEdit(design.plates, plate);
+    TextField nameField = (TextField) design.plates.getColumn(NAME).getEditorBinding().getField();
+    nameField.setValue("abc");
+    design.plates.getEditor().save();
+
+    verify(plateService, never()).update(any());
+    BindingValidationStatus<?> validation =
+        design.plates.getColumn(NAME).getEditorBinding().validate();
+    assertTrue(validation.isError());
+    assertEquals(generalResources.message(ALREADY_EXISTS), validation.getMessage().get());
+  }
+
+  @Test
+  public void editPlate_NameExistsPlateName() {
+    when(plateService.nameAvailable(any())).thenReturn(false);
+    presenter.init(view);
+    Plate plate = plates.get(0);
+    gridStartEdit(design.plates, plate);
+    TextField nameField = (TextField) design.plates.getColumn(NAME).getEditorBinding().getField();
+    nameField.setValue(plate.getName());
+    design.plates.getEditor().save();
+
+    verify(plateService).update(any());
+    BindingValidationStatus<?> validation =
+        design.plates.getColumn(NAME).getEditorBinding().validate();
+    assertFalse(validation.isError());
+  }
+
+  @Test
+  public void editPlate_Save() {
+    when(plateService.nameAvailable(any())).thenReturn(true);
+    presenter.init(view);
+    Plate plate = plates.get(0);
+    gridStartEdit(design.plates, plate);
+    TextField nameField = (TextField) design.plates.getColumn(NAME).getEditorBinding().getField();
+    nameField.setValue("unit_test");
+    design.plates.getEditor().save();
+
+    BindingValidationStatus<?> validation =
+        design.plates.getColumn(NAME).getEditorBinding().validate();
+    assertFalse(validation.isError());
+    verify(plateService).update(plate);
+    assertEquals("unit_test", plate.getName());
+  }
+
+  @Test
+  public void editPlate_Cancel() {
+    when(plateService.nameAvailable(any())).thenReturn(true);
+    presenter.init(view);
+    Plate plate = plates.get(0);
+    gridStartEdit(design.plates, plate);
+    TextField nameField = (TextField) design.plates.getColumn(NAME).getEditorBinding().getField();
+    nameField.setValue("unit_test");
+    design.plates.getEditor().cancel();
+
+    verify(plateService, never()).update(any());
   }
 }

@@ -33,6 +33,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.VIEW;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.gridStartEdit;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
@@ -68,7 +69,6 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.components.grid.EditorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +77,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.lang.reflect.Field;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -151,17 +150,6 @@ public class SubmissionAnalysesFormPresenterTest {
   private List<Grid<Acquisition>> viewGrids() {
     return viewPanels().stream().map(panel -> (VerticalLayout) panel.getContent())
         .map(layout -> (Grid<Acquisition>) layout.getComponent(1)).collect(Collectors.toList());
-  }
-
-  private void doEdit(DataAnalysis analysis) {
-    try {
-      Field field = EditorImpl.class.getDeclaredField("edited");
-      field.setAccessible(true);
-      field.set(design.dataAnalyses.getEditor(), analysis);
-    } catch (SecurityException | IllegalAccessException | IllegalArgumentException
-        | NoSuchFieldException e) {
-      throw new IllegalStateException("Could not call doEdit", e);
-    }
   }
 
   @Test
@@ -373,8 +361,7 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
     DataAnalysis dataAnalysis = dataAnalyses.get(0);
-    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
-    doEdit(dataAnalysis);
+    gridStartEdit(design.dataAnalyses, dataAnalysis);
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("");
@@ -400,8 +387,7 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
     DataAnalysis dataAnalysis = dataAnalyses.get(0);
-    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
-    doEdit(dataAnalysis);
+    gridStartEdit(design.dataAnalyses, dataAnalysis);
     TextField workTimeField =
         (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
     workTimeField.setValue("1.25");
@@ -420,8 +406,7 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
     DataAnalysis dataAnalysis = dataAnalyses.get(0);
-    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
-    doEdit(dataAnalysis);
+    gridStartEdit(design.dataAnalyses, dataAnalysis);
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("Test");
@@ -447,8 +432,7 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
     DataAnalysis dataAnalysis = dataAnalyses.get(0);
-    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
-    doEdit(dataAnalysis);
+    gridStartEdit(design.dataAnalyses, dataAnalysis);
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("Test");
@@ -467,8 +451,7 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
     DataAnalysis dataAnalysis = dataAnalyses.get(0);
-    design.dataAnalyses.getEditor().getBinder().setBean(dataAnalysis);
-    doEdit(dataAnalysis);
+    gridStartEdit(design.dataAnalyses, dataAnalysis);
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("Test");
@@ -493,7 +476,7 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
     DataAnalysis dataAnalysis = dataAnalyses.get(0);
-    doEdit(dataAnalysis);
+    gridStartEdit(design.dataAnalyses, dataAnalysis);
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("Test");

@@ -20,7 +20,9 @@ package ca.qc.ircm.proview.plate.web;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import com.google.common.collect.Range;
 
@@ -30,7 +32,11 @@ import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.data.BeanValidationBinder;
+import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue.ValueChangeListener;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.ValueContext;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Button;
@@ -111,6 +117,7 @@ public class PlatesViewPresenter {
 
   private void prepareComponents() {
     MessageResource resources = view.getResources();
+    MessageResource generalResources = view.getGeneralResources();
     final Locale locale = view.getLocale();
     final Collator collator = Collator.getInstance(locale);
     final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
@@ -147,6 +154,32 @@ public class PlatesViewPresenter {
       filter.submission = e.getValue();
       design.plates.getDataProvider().refreshAll();
     }, new Boolean[] { true, false }, value -> resources.message(property(SUBMISSION, value))));
+    design.plates.getEditor().setEnabled(true);
+    design.plates.getEditor().addOpenListener(e -> {
+      design.plates.getEditor().getBinder().setBean(e.getBean());
+    });
+    design.plates.getEditor().addSaveListener(e -> {
+      plateService.update(e.getBean());
+    });
+    Binder<Plate> binder = new BeanValidationBinder<>(Plate.class);
+    design.plates.getEditor().setBinder(binder);
+    TextField nameEditor = new TextField();
+    nameEditor.addStyleName(NAME);
+    design.plates.getColumn(NAME)
+        .setEditorBinding(binder.forField(nameEditor).asRequired(generalResources.message(REQUIRED))
+            .withNullRepresentation("")
+            .withValidator((value, context) -> validateName(value, context, binder.getBean()))
+            .bind(NAME));
+  }
+
+  private ValidationResult validateName(String value, ValueContext context, Plate plate) {
+    if (value != null && !plateService.nameAvailable(value)
+        && !value.equals(plateService.get(plate.getId()).getName())) {
+      MessageResource generalResources = view.getGeneralResources();
+      return ValidationResult.error(generalResources.message(ALREADY_EXISTS));
+    } else {
+      return ValidationResult.ok();
+    }
   }
 
   private Button nameButton(Plate plate) {
