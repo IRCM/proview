@@ -41,6 +41,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -72,6 +74,8 @@ public class PlateService {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
+  private TemplateEngine emailTemplateEngine;
+  @Inject
   private ApplicationConfiguration applicationConfiguration;
 
   protected PlateService() {
@@ -79,13 +83,14 @@ public class PlateService {
 
   protected PlateService(EntityManager entityManager, JPAQueryFactory queryFactory,
       PlateActivityService plateActivityService, ActivityService activityService,
-      AuthorizationService authorizationService,
+      AuthorizationService authorizationService, TemplateEngine emailTemplateEngine,
       ApplicationConfiguration applicationConfiguration) {
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.plateActivityService = plateActivityService;
     this.activityService = activityService;
     this.authorizationService = authorizationService;
+    this.emailTemplateEngine = emailTemplateEngine;
     this.applicationConfiguration = applicationConfiguration;
   }
 
@@ -209,6 +214,30 @@ public class PlateService {
       }
     }
     return workbook;
+  }
+
+  /**
+   * Returns printable version of plate in HTML.
+   *
+   * @param plate
+   *          plate
+   * @param locale
+   *          user's locale
+   * @return printable version of plate in HTML
+   */
+  public String print(Plate plate, Locale locale) {
+    if (plate == null || locale == null) {
+      return "";
+    }
+
+    Context context = new Context();
+    context.setLocale(locale);
+    context.setVariable("plate", plate);
+    context.setVariable("locale", locale);
+
+    String templateLocation = "/" + PlateService.class.getName().replace(".", "/") + "_Print.html";
+    String content = emailTemplateEngine.process(templateLocation, context);
+    return content;
   }
 
   /**

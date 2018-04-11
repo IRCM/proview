@@ -185,6 +185,15 @@ public class SubmissionService {
     }
   }
 
+  /**
+   * Returns printable version of submission in HTML.
+   * 
+   * @param submission
+   *          submission
+   * @param locale
+   *          user's locale
+   * @return printable version of submission in HTML
+   */
   public String print(Submission submission, Locale locale) {
     if (submission == null || submission.getService() == null || submission.getSamples() == null
         || submission.getSamples().isEmpty() || submission.getSamples().get(0) == null

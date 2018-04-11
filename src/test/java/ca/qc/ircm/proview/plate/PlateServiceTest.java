@@ -55,6 +55,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.thymeleaf.TemplateEngine;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -70,6 +71,8 @@ import javax.persistence.PersistenceContext;
 @ServiceTestAnnotations
 public class PlateServiceTest {
   private PlateService plateService;
+  @Inject
+  private TemplateEngine emailTemplateEngine;
   @Mock
   private PlateActivityService plateActivityService;
   @Mock
@@ -94,7 +97,7 @@ public class PlateServiceTest {
   @Before
   public void beforeTest() {
     plateService = new PlateService(entityManager, queryFactory, plateActivityService,
-        activityService, authorizationService, applicationConfiguration);
+        activityService, authorizationService, emailTemplateEngine, applicationConfiguration);
     optionalActivity = Optional.of(activity);
   }
 
@@ -404,6 +407,45 @@ public class PlateServiceTest {
         CellStyle style = cell.getCellStyle();
         assertEquals(HSSFColor.WHITE.index, style.getFillBackgroundColor());
         assertEquals(HSSFColor.BLACK.index, workbook.getFontAt(style.getFontIndex()).getColor());
+      }
+    }
+  }
+
+  private Plate plateForPrint() {
+    Plate plate = new Plate();
+    plate.setName("my plate");
+    plate.initWells();
+    plate.getWells().stream().limit(20).forEach(well -> {
+      SubmissionSample sample = new SubmissionSample();
+      sample.setName("s_" + well.getName());
+      well.setSample(sample);
+    });
+    plate.getWells().stream().skip(18).limit(2).forEach(well -> well.setBanned(true));
+    plate.getWells().stream().skip(20).limit(2).forEach(well -> {
+      Control control = new Control();
+      control.setName("c_" + well.getName());
+      well.setSample(control);
+    });
+    return plate;
+  }
+
+  @Test
+  public void print() throws Exception {
+    Plate plate = plateForPrint();
+    Locale locale = Locale.getDefault();
+
+    String content = plateService.print(plate, locale);
+
+    assertFalse(content.contains("??"));
+    assertTrue(content.contains("class=\"plate-information section"));
+    assertTrue(content.contains("class=\"plate-name\""));
+    assertTrue(content.contains(plate.getName()));
+    assertTrue(content.contains("class=\"well active\""));
+    assertTrue(content.contains("class=\"well banned\""));
+    assertTrue(content.contains("class=\"well-sample-name\""));
+    for (Well well : plate.getWells()) {
+      if (well.getSample() != null) {
+        assertTrue(content.contains(well.getSample().getName()));
       }
     }
   }
