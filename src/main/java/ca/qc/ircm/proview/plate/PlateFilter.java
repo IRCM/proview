@@ -17,19 +17,56 @@
 
 package ca.qc.ircm.proview.plate;
 
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
+
+import com.google.common.collect.Range;
+
 import ca.qc.ircm.proview.sample.Sample;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Filters plate search.
  */
-public class PlateFilter {
+public class PlateFilter implements Predicate<Plate> {
+  public String nameContains;
+  public Range<LocalDate> insertTimeRange;
+  public Boolean submission;
   public List<Sample> containsAnySamples;
-  public boolean onlyProteomicPlates;
+  private final Locale locale;
 
-  public PlateFilter onlyProteomicPlates() {
-    onlyProteomicPlates = true;
-    return this;
+  public PlateFilter() {
+    this(Locale.getDefault());
+  }
+
+  public PlateFilter(Locale locale) {
+    this.locale = locale;
+  }
+
+  @Override
+  public boolean test(Plate plate) {
+    boolean test = true;
+    if (nameContains != null) {
+      test &= plate.getName().toLowerCase(locale).contains(nameContains.toLowerCase(locale));
+    }
+    if (insertTimeRange != null) {
+      test &= insertTimeRange.contains(toLocalDate(plate.getInsertTime()));
+    }
+    if (submission != null) {
+      test &= submission == plate.isSubmission();
+    }
+    if (containsAnySamples != null) {
+      Set<Long> sampleIds =
+          containsAnySamples.stream().map(sample -> sample.getId()).collect(Collectors.toSet());
+      test &= plate.getWells().stream().filter(well -> well.getSample() != null)
+          .map(well -> well.getSample().getId()).filter(id -> sampleIds.contains(id)).findAny()
+          .isPresent();
+    }
+    return test;
   }
 }

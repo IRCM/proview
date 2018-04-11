@@ -158,15 +158,27 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void all_OnlyProteomicPlates() throws Exception {
+  public void all_SubmissionFalse() throws Exception {
     PlateFilter filter = new PlateFilter();
-    filter.onlyProteomicPlates();
+    filter.submission = false;
 
     List<Plate> plates = plateService.all(filter);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(17, plates.size());
     assertFalse(find(plates, 123L).isPresent());
+  }
+
+  @Test
+  public void all_SubmissionTrue() throws Exception {
+    PlateFilter filter = new PlateFilter();
+    filter.submission = true;
+
+    List<Plate> plates = plateService.all(filter);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(1, plates.size());
+    assertTrue(find(plates, 123L).isPresent());
   }
 
   @Test

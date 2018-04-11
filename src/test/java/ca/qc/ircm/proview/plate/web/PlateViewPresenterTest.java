@@ -18,16 +18,12 @@
 package ca.qc.ircm.proview.plate.web;
 
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.HEADER;
-import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PLATE;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PLATE_PANEL;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PRINT;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PRINT_MIME;
 import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
@@ -36,7 +32,6 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -71,8 +66,6 @@ public class PlateViewPresenterTest {
   @Mock
   private PlateService plateService;
   @Mock
-  private AuthorizationService authorizationService;
-  @Mock
   private PlateComponent plateComponent;
   @PersistenceContext
   private EntityManager entityManager;
@@ -93,7 +86,7 @@ public class PlateViewPresenterTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    presenter = new PlateViewPresenter(plateService, authorizationService, applicationName);
+    presenter = new PlateViewPresenter(plateService, applicationName);
     design = new PlateViewDesign();
     view.design = design;
     view.plateComponent = plateComponent;
@@ -118,7 +111,6 @@ public class PlateViewPresenterTest {
     assertTrue(design.header.getStyleName().contains(HEADER));
     assertTrue(design.header.getStyleName().contains(ValoTheme.LABEL_H1));
     assertTrue(design.plateComponentPanel.getStyleName().contains(PLATE_PANEL));
-    assertTrue(design.plate.getStyleName().contains(PLATE));
     assertTrue(design.print.getStyleName().contains(PRINT));
   }
 
@@ -142,39 +134,6 @@ public class PlateViewPresenterTest {
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
     assertEquals("", design.plateComponentPanel.getCaption());
-  }
-
-  @Test
-  public void plate() {
-    presenter.init(view);
-    presenter.enter("");
-
-    assertFalse(design.plate.isVisible());
-    assertFalse(design.plate.isEmptySelectionAllowed());
-    assertNull(design.plate.getNewItemHandler());
-    List<Plate> plates = items(design.plate);
-    assertTrue(plates.isEmpty());
-  }
-
-  @Test
-  public void plate_Admin() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-    presenter.enter("");
-
-    assertTrue(design.plate.isVisible());
-    assertFalse(design.plate.isEmptySelectionAllowed());
-    assertNull(design.plate.getNewItemHandler());
-    List<Plate> plates = items(design.plate);
-    assertEquals(this.plates.size(), plates.size());
-    for (Plate plate : this.plates) {
-      assertTrue(plates.contains(plate));
-      assertEquals(plate.getName(), design.plate.getItemCaptionGenerator().apply(plate));
-    }
-    Plate plate = plates.get(1);
-    design.plate.setValue(plate);
-    assertEquals(plate.getName(), design.plateComponentPanel.getCaption());
-    verify(plateComponent).setValue(plate);
   }
 
   @Test
@@ -220,11 +179,9 @@ public class PlateViewPresenterTest {
 
   @Test
   public void print_UpdatePlate() throws Throwable {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    Plate plate = entityManager.find(Plate.class, 26L);
     presenter.init(view);
-    presenter.enter("");
-    Plate plate = items(design.plate).get(0);
-    design.plate.setValue(plate);
+    presenter.enter("26");
 
     verify(plateService).print(plate, locale);
     assertEquals(1, design.print.getExtensions().size());
@@ -258,7 +215,6 @@ public class PlateViewPresenterTest {
 
     Plate plate = realPlateService.get(26L);
     verify(view).setTitle(resources.message(TITLE, applicationName));
-    assertEquals(plate, design.plate.getValue());
     assertEquals(plate.getName(), design.plateComponentPanel.getCaption());
     verify(plateComponent).setValue(plate);
   }

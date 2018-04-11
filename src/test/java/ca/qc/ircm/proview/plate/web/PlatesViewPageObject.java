@@ -17,28 +17,40 @@
 
 package ca.qc.ircm.proview.plate.web;
 
-import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.HEADER;
-import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.PLATE_PANEL;
+import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.HEADER;
+import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.NAME;
+import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.PLATES;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
-import com.vaadin.testbench.elements.PanelElement;
 
-public class PlateViewPageObject extends AbstractTestBenchTestCase {
+public class PlatesViewPageObject extends AbstractTestBenchTestCase {
+  private static final int NAME_COLUMN = 0;
+
   protected void open() {
-    openView(PlateView.VIEW_NAME);
-  }
-
-  protected void openWithPlate() {
-    openView(PlateView.VIEW_NAME, "26");
+    openView(PlatesView.VIEW_NAME);
   }
 
   protected LabelElement header() {
     return wrap(LabelElement.class, findElement(className(HEADER)));
   }
 
-  protected PanelElement platePanel() {
-    return wrap(PanelElement.class, findElement(className(PLATE_PANEL)));
+  protected GridElement plates() {
+    return wrap(GridElement.class, findElement(className(PLATES)));
+  }
+
+  protected String nameByRow(int row) {
+    GridElement platesGrid = plates();
+    ButtonElement button = wrap(ButtonElement.class,
+        platesGrid.getCell(row, NAME_COLUMN).findElement(className(NAME)));
+    return button.getCaption();
+  }
+
+  protected void clickViewPlateByRow(int row) {
+    GridElement platesGrid = plates();
+    platesGrid.getCell(row, NAME_COLUMN).findElement(className(NAME)).click();
   }
 }
