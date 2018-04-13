@@ -193,6 +193,9 @@ public class PlatesViewPresenterTest {
       assertEquals(plate.isSubmission() ? resources.message(property(SUBMISSION, true)) : "",
           design.plates.getColumn(SUBMISSION).getValueProvider().apply(plate));
     }
+    assertEquals(1, design.plates.getSortOrder().size());
+    assertEquals(INSERT_TIME, design.plates.getSortOrder().get(0).getSorted().getId());
+    assertEquals(SortDirection.DESCENDING, design.plates.getSortOrder().get(0).getDirection());
   }
 
   @Test

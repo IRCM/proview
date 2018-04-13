@@ -39,6 +39,7 @@ import com.vaadin.data.ValidationResult;
 import com.vaadin.data.ValueContext;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -170,6 +171,7 @@ public class PlatesViewPresenter {
             .withNullRepresentation("")
             .withValidator((value, context) -> validateName(value, context, binder.getBean()))
             .bind(NAME));
+    design.plates.sort(INSERT_TIME, SortDirection.DESCENDING);
   }
 
   private ValidationResult validateName(String value, ValueContext context, Plate plate) {
