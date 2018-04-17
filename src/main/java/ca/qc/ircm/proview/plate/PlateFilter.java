@@ -17,12 +17,17 @@
 
 package ca.qc.ircm.proview.plate;
 
+import static ca.qc.ircm.proview.plate.QPlate.plate;
+import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 
+import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.text.Strings;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -65,5 +70,42 @@ public class PlateFilter implements Predicate<Plate> {
           .isPresent();
     }
     return test;
+  }
+
+  private void addFilterConditions(JPAQuery<?> query) {
+    if (nameContains != null) {
+      query.where(plate.name.contains(nameContains));
+    }
+    if (insertTimeRange != null) {
+      if (insertTimeRange.hasLowerBound()) {
+        LocalDate date = insertTimeRange.lowerEndpoint();
+        if (insertTimeRange.lowerBoundType() == BoundType.OPEN) {
+          date = date.plusDays(1);
+        }
+        query.where(plate.insertTime.goe(toInstant(date)));
+      }
+      if (insertTimeRange.hasUpperBound()) {
+        LocalDate date = insertTimeRange.upperEndpoint();
+        if (insertTimeRange.upperBoundType() == BoundType.CLOSED) {
+          date = date.plusDays(1);
+        }
+        query.where(plate.insertTime.before(toInstant(date)));
+      }
+    }
+    if (submission != null) {
+      query.where(plate.submission.eq(submission));
+    }
+    if (minimumEmptyCount != null) {
+      QWell mecW = new QWell("mecW");
+      query.where(plate.columnCount.multiply(plate.rowCount).subtract(minimumEmptyCount)
+          .goe(JPAExpressions.select(mecW.sample.count()).from(plate.wells, mecW)));
+    }
+    if (containsAnySamples != null) {
+      query.where(plate.wells.any().sample.in(containsAnySamples));
+    }
+  }
+
+  public void addConditions(JPAQuery<?> query) {
+    addFilterConditions(query);
   }
 }

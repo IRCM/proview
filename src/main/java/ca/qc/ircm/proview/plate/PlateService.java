@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.plate.QPlate.plate;
-import static ca.qc.ircm.proview.plate.QWell.well;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
@@ -126,13 +125,7 @@ public class PlateService {
     }
     JPAQuery<Plate> query = queryFactory.select(plate);
     query.from(plate);
-    if (filter.containsAnySamples != null) {
-      query.from(plate.wells, well);
-      query.where(well.sample.in(filter.containsAnySamples));
-    }
-    if (filter.submission != null) {
-      query.where(plate.submission.eq(filter.submission));
-    }
+    filter.addConditions(query);
     return query.distinct().fetch();
   }
 

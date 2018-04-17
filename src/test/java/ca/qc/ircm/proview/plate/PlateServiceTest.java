@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -132,12 +133,13 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void all() throws Exception {
-    PlateFilter filter = new PlateFilter();
+  public void all_Filter() throws Throwable {
+    PlateFilter filter = mock(PlateFilter.class);
 
     List<Plate> plates = plateService.all(filter);
 
     verify(authorizationService).checkAdminRole();
+    verify(filter).addConditions(any());
     assertEquals(18, plates.size());
   }
 
@@ -179,6 +181,20 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     assertEquals(1, plates.size());
     assertTrue(find(plates, 123L).isPresent());
+  }
+
+  @Test
+  public void all_MinimumEmptyCount() throws Exception {
+    PlateFilter filter = new PlateFilter();
+    filter.minimumEmptyCount = 94;
+
+    List<Plate> plates = plateService.all(filter);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(3, plates.size());
+    assertTrue(find(plates, 26L).isPresent());
+    assertTrue(find(plates, 111L).isPresent());
+    assertTrue(find(plates, 122L).isPresent());
   }
 
   @Test

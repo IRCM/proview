@@ -17,10 +17,12 @@
 
 package ca.qc.ircm.proview.plate;
 
+import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
@@ -28,8 +30,11 @@ import com.google.common.collect.Range;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
@@ -42,6 +47,8 @@ import java.util.stream.IntStream;
 @NonTransactionalTestAnnotations
 public class PlateFilterTest {
   private PlateFilter filter = new PlateFilter();
+  @Mock
+  private JPAQuery<?> query;
 
   private Plate name(String name) {
     return new Plate(null, name);
@@ -309,5 +316,152 @@ public class PlateFilterTest {
     assertTrue(filter.test(nameAndEmptyCount("ABCTESTDEF", 96)));
     assertFalse(filter.test(nameAndEmptyCount("ABCTESTDEF", 39)));
     assertFalse(filter.test(nameAndEmptyCount("ABCTESTDEF", 0)));
+  }
+
+  @Test
+  public void addConditions_NameContains() throws Exception {
+    filter.nameContains = "test";
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.name.contains("test"));
+  }
+
+  @Test
+  public void addConditions_MinimumEmptyCount() throws Exception {
+    filter.minimumEmptyCount = 40;
+
+    filter.addConditions(query);
+
+    QWell mecW = new QWell("mecW");
+    verify(query).where(plate.columnCount.multiply(plate.rowCount).subtract(40)
+        .goe(JPAExpressions.select(mecW.sample.isNotNull().count()).from(plate.wells, mecW)));
+  }
+
+  @Test
+  public void addConditions_InsertTimeRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.insertTimeRange = Range.open(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.insertTime.goe(toInstant(start.plusDays(1))));
+    verify(query).where(plate.insertTime.before(toInstant(end)));
+  }
+
+  @Test
+  public void addConditions_InsertTimeRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.insertTimeRange = Range.closed(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.insertTime.goe(toInstant(start)));
+    verify(query).where(plate.insertTime.before(toInstant(end.plusDays(1))));
+  }
+
+  @Test
+  public void addConditions_InsertTimeRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.insertTimeRange = Range.openClosed(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.insertTime.goe(toInstant(start.plusDays(1))));
+    verify(query).where(plate.insertTime.before(toInstant(end.plusDays(1))));
+  }
+
+  @Test
+  public void addConditions_InsertTimeRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.insertTimeRange = Range.closedOpen(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.insertTime.goe(toInstant(start)));
+    verify(query).where(plate.insertTime.before(toInstant(end)));
+  }
+
+  @Test
+  public void addConditions_InsertTimeRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.insertTimeRange = Range.atLeast(start);
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.insertTime.goe(toInstant(start)));
+  }
+
+  @Test
+  public void addConditions_InsertTimeRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.insertTimeRange = Range.greaterThan(start);
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.insertTime.goe(toInstant(start.plusDays(1))));
+  }
+
+  @Test
+  public void addConditions_InsertTimeRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.insertTimeRange = Range.atMost(end);
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.insertTime.before(toInstant(end.plusDays(1))));
+  }
+
+  @Test
+  public void addConditions_InsertTimeRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.insertTimeRange = Range.lessThan(end);
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.insertTime.before(toInstant(end)));
+  }
+
+  @Test
+  public void addConditions_Submission_True() throws Exception {
+    filter.submission = true;
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.submission.eq(true));
+  }
+
+  @Test
+  public void addConditions_Submission_False() throws Exception {
+    filter.submission = false;
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.submission.eq(false));
+  }
+
+  @Test
+  public void addConditions_ContainsAnySample() throws Exception {
+    filter.containsAnySamples =
+        Arrays.asList(new SubmissionSample(5L), new SubmissionSample(8L), new Control(12L));
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.wells.any().sample.in(filter.containsAnySamples));
+  }
+
+  @Test
+  public void addConditions_NameContainsAndEmptyCount() {
+    filter.nameContains = "test";
+    filter.minimumEmptyCount = 40;
+
+    filter.addConditions(query);
+
+    verify(query).where(plate.name.contains("test"));
+    verify(query).where(plate.wells.any().sample.isNull().count().goe(40));
   }
 }
