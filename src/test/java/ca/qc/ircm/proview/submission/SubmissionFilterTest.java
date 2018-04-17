@@ -54,14 +54,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.stream.Stream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionFilterTest {
   private SubmissionFilter filter;
-  private Locale locale = Locale.FRENCH;
   @Mock
   private JPAQuery<?> query;
   @Captor
@@ -72,7 +70,7 @@ public class SubmissionFilterTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    filter = new SubmissionFilter(locale);
+    filter = new SubmissionFilter();
   }
 
   @Test
@@ -626,6 +624,17 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void test_experimentContains_French() {
+    filter.experimentContains = "pépin";
+
+    assertTrue(filter.test(experiment("My pépin")));
+    assertTrue(filter.test(experiment("My pepin")));
+    assertTrue(filter.test(experiment("Pépin")));
+    assertTrue(filter.test(experiment("Pepin")));
+    assertFalse(filter.test(experiment("My experiment")));
+  }
+
+  @Test
   public void test_experimentContains_Null() {
     filter.experimentContains = null;
 
@@ -642,6 +651,21 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(user("Test", "Name")));
     assertTrue(filter.test(user("My email", "My test")));
     assertTrue(filter.test(user("Email", "Test")));
+    assertFalse(filter.test(user("My experiment", "My name")));
+  }
+
+  @Test
+  public void test_userContains_French() {
+    filter.userContains = "pépin";
+
+    assertTrue(filter.test(user("My pépin", "My name")));
+    assertTrue(filter.test(user("My pepin", "My name")));
+    assertTrue(filter.test(user("Pépin", "Name")));
+    assertTrue(filter.test(user("Pepin", "Name")));
+    assertTrue(filter.test(user("My email", "My pépin")));
+    assertTrue(filter.test(user("My email", "My pepin")));
+    assertTrue(filter.test(user("Email", "Pépin")));
+    assertTrue(filter.test(user("Email", "Pepin")));
     assertFalse(filter.test(user("My experiment", "My name")));
   }
 
@@ -666,6 +690,17 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void test_directorContains_French() {
+    filter.directorContains = "pépin";
+
+    assertTrue(filter.test(director("My pépin")));
+    assertTrue(filter.test(director("My pepin")));
+    assertTrue(filter.test(director("Pépin")));
+    assertTrue(filter.test(director("Pepin")));
+    assertFalse(filter.test(director("My name")));
+  }
+
+  @Test
   public void test_directorContains_Null() {
     filter.directorContains = null;
 
@@ -684,6 +719,17 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void test_goalContains_French() {
+    filter.goalContains = "pépin";
+
+    assertTrue(filter.test(goal("My pépin")));
+    assertTrue(filter.test(goal("My pepin")));
+    assertTrue(filter.test(goal("Pépin")));
+    assertTrue(filter.test(goal("Pepin")));
+    assertFalse(filter.test(goal("My experiment")));
+  }
+
+  @Test
   public void test_goalContains_Null() {
     filter.goalContains = null;
 
@@ -698,6 +744,18 @@ public class SubmissionFilterTest {
 
     assertTrue(filter.test(sampleNames("abc", "sample_test")));
     assertTrue(filter.test(sampleNames("Test", "abc")));
+    assertFalse(filter.test(sampleNames("my_sample")));
+    assertFalse(filter.test(sampleNames("my_sample", "abc")));
+  }
+
+  @Test
+  public void test_anySampleNameContains_French() {
+    filter.anySampleNameContains = "pépin";
+
+    assertTrue(filter.test(sampleNames("abc", "sample_pépin")));
+    assertTrue(filter.test(sampleNames("abc", "sample_pepin")));
+    assertTrue(filter.test(sampleNames("Pépin", "abc")));
+    assertTrue(filter.test(sampleNames("Pepin", "abc")));
     assertFalse(filter.test(sampleNames("my_sample")));
     assertFalse(filter.test(sampleNames("my_sample", "abc")));
   }
