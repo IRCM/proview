@@ -46,7 +46,9 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ItemCaptionGenerator;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -81,6 +83,7 @@ public class PlatesViewPresenter {
   public static final String EMPTY_COUNT = "emptyCount";
   public static final String SAMPLE_COUNT = "sampleCount";
   public static final String LAST_TREATMENT = "lastTreatment";
+  public static final String FILTER = "filter";
   public static final String INSERT_TIME = plate.insertTime.getMetadata().getName();
   public static final String SUBMISSION = plate.submission.getMetadata().getName();
   private static final Logger logger = LoggerFactory.getLogger(PlatesViewPresenter.class);
@@ -159,7 +162,9 @@ public class PlatesViewPresenter {
       filter.nameContains = e.getValue();
       design.plates.getDataProvider().refreshAll();
     }));
-    filterRow.getCell(EMPTY_COUNT).setComponent(textFilter(event -> {
+    HorizontalLayout emptyCountLayout = new HorizontalLayout();
+    emptyCountLayout.addComponent(new Label(resources.message(property(EMPTY_COUNT, FILTER))));
+    emptyCountLayout.addComponent(textFilter(event -> {
       TextField field = (TextField) event.getComponent();
       field.setComponentError(null);
       Integer minimumEmptyCount;
@@ -182,6 +187,7 @@ public class PlatesViewPresenter {
       filter.minimumEmptyCount = minimumEmptyCount;
       design.plates.getDataProvider().refreshAll();
     }));
+    filterRow.getCell(EMPTY_COUNT).setComponent(emptyCountLayout);
     filterRow.getCell(INSERT_TIME).setComponent(instantFilter(e -> {
       filter.insertTimeRange = e.getSavedObject();
       design.plates.getDataProvider().refreshAll();

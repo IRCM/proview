@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.plate.web;
 
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.EMPTY_COUNT;
+import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.FILTER;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.HEADER;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.INSERT_TIME;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.LAST_TREATMENT;
@@ -64,8 +65,10 @@ import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
@@ -284,7 +287,9 @@ public class PlatesViewPresenterTest {
     design.plates.setDataProvider(platesDataProvider);
     HeaderRow filterRow = design.plates.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
-    TextField textField = (TextField) cell.getComponent();
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    Label label = (Label) layout.getComponent(0);
+    TextField textField = (TextField) layout.getComponent(1);
     Integer filterValue = 5;
     ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
         .getListeners(ValueChangeEvent.class).iterator().next();
@@ -294,6 +299,7 @@ public class PlatesViewPresenterTest {
 
     listener.valueChange(event);
 
+    assertEquals(resources.message(property(EMPTY_COUNT, FILTER)), label.getValue());
     verify(platesDataProvider).refreshAll();
     PlateFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.minimumEmptyCount);
@@ -306,7 +312,8 @@ public class PlatesViewPresenterTest {
     design.plates.setDataProvider(platesDataProvider);
     HeaderRow filterRow = design.plates.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
-    TextField textField = (TextField) cell.getComponent();
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    TextField textField = (TextField) layout.getComponent(1);
     ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
         .getListeners(ValueChangeEvent.class).iterator().next();
     ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
@@ -329,7 +336,8 @@ public class PlatesViewPresenterTest {
     design.plates.setDataProvider(platesDataProvider);
     HeaderRow filterRow = design.plates.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
-    TextField textField = (TextField) cell.getComponent();
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    TextField textField = (TextField) layout.getComponent(1);
     Integer filterValue = 5;
     ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
         .getListeners(ValueChangeEvent.class).iterator().next();
@@ -355,7 +363,8 @@ public class PlatesViewPresenterTest {
     design.plates.setDataProvider(platesDataProvider);
     HeaderRow filterRow = design.plates.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
-    TextField textField = (TextField) cell.getComponent();
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    TextField textField = (TextField) layout.getComponent(1);
     ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
         .getListeners(ValueChangeEvent.class).iterator().next();
     ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
@@ -378,7 +387,8 @@ public class PlatesViewPresenterTest {
     design.plates.setDataProvider(platesDataProvider);
     HeaderRow filterRow = design.plates.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
-    TextField textField = (TextField) cell.getComponent();
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    TextField textField = (TextField) layout.getComponent(1);
     ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
         .getListeners(ValueChangeEvent.class).iterator().next();
     ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
