@@ -22,10 +22,10 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import com.google.common.collect.Range;
 
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.text.Strings;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -35,30 +35,27 @@ import java.util.stream.Collectors;
  */
 public class PlateFilter implements Predicate<Plate> {
   public String nameContains;
+  public Integer minimumEmptyCount;
   public Range<LocalDate> insertTimeRange;
   public Boolean submission;
   public List<Sample> containsAnySamples;
-  private final Locale locale;
-
-  public PlateFilter() {
-    this(Locale.getDefault());
-  }
-
-  public PlateFilter(Locale locale) {
-    this.locale = locale;
-  }
 
   @Override
   public boolean test(Plate plate) {
     boolean test = true;
     if (nameContains != null) {
-      test &= plate.getName().toLowerCase(locale).contains(nameContains.toLowerCase(locale));
+      String nameContainsNormalized = Strings.normalize(nameContains).toLowerCase();
+      String name = Strings.normalize(plate.getName()).toLowerCase();
+      test &= name.contains(nameContainsNormalized);
     }
     if (insertTimeRange != null) {
       test &= insertTimeRange.contains(toLocalDate(plate.getInsertTime()));
     }
     if (submission != null) {
       test &= submission == plate.isSubmission();
+    }
+    if (minimumEmptyCount != null) {
+      test &= plate.getEmptyWellCount() >= minimumEmptyCount;
     }
     if (containsAnySamples != null) {
       Set<Long> sampleIds =

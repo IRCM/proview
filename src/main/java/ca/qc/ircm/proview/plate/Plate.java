@@ -48,6 +48,9 @@ import javax.validation.constraints.Min;
 @Table(name = Plate.TABLE_NAME)
 public class Plate implements Data, Serializable, Named {
   public static final String TABLE_NAME = "plate";
+  public static final int DEFAULT_COLUMN_COUNT = 12;
+  public static final int DEFAULT_ROW_COUNT = 8;
+  public static final int DEFAULT_PLATE_SIZE = DEFAULT_COLUMN_COUNT * DEFAULT_ROW_COUNT;
   private static final long serialVersionUID = 342820436770987756L;
 
   /**
@@ -67,13 +70,13 @@ public class Plate implements Data, Serializable, Named {
    */
   @Column(name = "columnCount", nullable = false)
   @Min(1)
-  private int columnCount = 12;
+  private int columnCount = DEFAULT_COLUMN_COUNT;
   /**
    * Number of rows.
    */
   @Column(name = "rowCount", nullable = false)
   @Min(1)
-  private int rowCount = 8;
+  private int rowCount = DEFAULT_ROW_COUNT;
   /**
    * True if plate was submitted by a user.
    */
