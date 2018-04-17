@@ -17,8 +17,12 @@
 
 package ca.qc.ircm.proview.plate;
 
+import static ca.qc.ircm.proview.fractionation.QFraction.fraction;
+import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
+import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.history.Activity;
@@ -45,6 +49,7 @@ import org.thymeleaf.context.Context;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -231,6 +236,44 @@ public class PlateService {
     String templateLocation = "/" + PlateService.class.getName().replace(".", "/") + "_Print.html";
     String content = emailTemplateEngine.process(templateLocation, context);
     return content;
+  }
+
+  /**
+   * Returns moment of last treatment or analysis made on any sample on plate, whichever is the most
+   * recent.
+   *
+   * @param plate
+   *          plate
+   * @return moment of last treatment or analysis made on any sample on plate, whichever is the most
+   *         recent
+   */
+  public Instant lastTreatmentOrAnalysisDate(Plate plate) {
+    if (plate == null) {
+      return null;
+    }
+
+    authorizationService.checkAdminRole();
+    Instant treatmentInstant = queryFactory.select(treatment.insertTime.max()).from(treatment)
+        .where(treatment.treatmentSamples.any().container.in(plate.getWells()))
+        .where(treatment.deleted.eq(false)).fetchFirst();
+    Instant transferDestinationInstant =
+        queryFactory.select(transferedSample.transfer.insertTime.max()).from(transferedSample)
+            .where(transferedSample.destinationContainer.in(plate.getWells()))
+            .where(transferedSample.transfer.deleted.eq(false)).fetchFirst();
+    Instant fractionationDestinationInstant =
+        queryFactory.select(fraction.fractionation.insertTime.max()).from(fraction)
+            .where(fraction.destinationContainer.in(plate.getWells()))
+            .where(fraction.fractionation.deleted.eq(false)).fetchFirst();
+    Instant analysisInstant = queryFactory.select(msAnalysis.insertTime.max()).from(msAnalysis)
+        .where(msAnalysis.acquisitions.any().container.in(plate.getWells()))
+        .where(msAnalysis.deleted.eq(false)).fetchFirst();
+    return max(treatmentInstant, transferDestinationInstant, fractionationDestinationInstant,
+        analysisInstant);
+  }
+
+  private Instant max(Instant... instants) {
+    return Arrays.asList(instants).stream().filter(instant -> instant != null)
+        .sorted((i1, i2) -> i2.compareTo(i1)).findFirst().orElse(null);
   }
 
   /**

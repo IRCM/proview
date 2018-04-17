@@ -59,6 +59,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.text.Collator;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -79,6 +80,7 @@ public class PlatesViewPresenter {
   public static final String NAME = plate.name.getMetadata().getName();
   public static final String EMPTY_COUNT = "emptyCount";
   public static final String SAMPLE_COUNT = "sampleCount";
+  public static final String LAST_TREATMENT = "lastTreatment";
   public static final String INSERT_TIME = plate.insertTime.getMetadata().getName();
   public static final String SUBMISSION = plate.submission.getMetadata().getName();
   private static final Logger logger = LoggerFactory.getLogger(PlatesViewPresenter.class);
@@ -142,6 +144,10 @@ public class PlatesViewPresenter {
         .setCaption(resources.message(EMPTY_COUNT));
     design.plates.addColumn(plate -> plate.getSampleCount()).setId(SAMPLE_COUNT)
         .setCaption(resources.message(SAMPLE_COUNT));
+    design.plates.addColumn(plate -> {
+      Instant date = plateService.lastTreatmentOrAnalysisDate(plate);
+      return date != null ? dateFormatter.format(toLocalDate(date)) : null;
+    }).setId(LAST_TREATMENT).setCaption(resources.message(LAST_TREATMENT)).setSortable(false);
     design.plates.addColumn(plate -> dateFormatter.format(toLocalDate(plate.getInsertTime())))
         .setId(INSERT_TIME).setCaption(resources.message(INSERT_TIME));
     design.plates

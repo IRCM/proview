@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.plate.web;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.EMPTY_COUNT;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.HEADER;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.INSERT_TIME;
+import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.LAST_TREATMENT;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.NAME;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.PLATES;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.SAMPLE_COUNT;
@@ -78,12 +79,16 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.inject.Provider;
 import javax.persistence.EntityManager;
@@ -119,6 +124,7 @@ public class PlatesViewPresenterTest {
   private MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private List<Plate> plates = new ArrayList<>();
+  private Map<Plate, Instant> lastTreatmentOrAnalysisDate = new HashMap<>();
 
   /**
    * Before test.
@@ -135,7 +141,11 @@ public class PlatesViewPresenterTest {
     plates.add(entityManager.find(Plate.class, 26L));
     plates.add(entityManager.find(Plate.class, 107L));
     plates.add(entityManager.find(Plate.class, 123L));
+    IntStream.range(0, plates.size() - 1).forEach(
+        i -> lastTreatmentOrAnalysisDate.put(plates.get(i), Instant.now().minusSeconds(i * 2)));
     when(plateService.all(null)).thenReturn(plates);
+    when(plateService.lastTreatmentOrAnalysisDate(any()))
+        .thenAnswer(i -> lastTreatmentOrAnalysisDate.get(i.getArgumentAt(0, Plate.class)));
     when(plateService.get(any()))
         .thenAnswer(i -> entityManager.find(Plate.class, i.getArgumentAt(0, Long.class)));
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
@@ -163,7 +173,7 @@ public class PlatesViewPresenterTest {
   public void platesGrid() {
     presenter.init(view);
 
-    assertEquals(5, design.plates.getColumns().size());
+    assertEquals(6, design.plates.getColumns().size());
     assertEquals(NAME, design.plates.getColumns().get(0).getId());
     assertEquals(resources.message(NAME), design.plates.getColumn(NAME).getCaption());
     assertTrue(
@@ -191,14 +201,26 @@ public class PlatesViewPresenterTest {
           design.plates.getColumn(SAMPLE_COUNT).getValueProvider().apply(plate));
     }
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    assertEquals(INSERT_TIME, design.plates.getColumns().get(3).getId());
+    assertEquals(LAST_TREATMENT, design.plates.getColumns().get(3).getId());
+    assertEquals(resources.message(LAST_TREATMENT),
+        design.plates.getColumn(LAST_TREATMENT).getCaption());
+    assertFalse(design.plates.getColumn(LAST_TREATMENT).isSortable());
+    for (Plate plate : plates) {
+      if (lastTreatmentOrAnalysisDate.get(plate) != null) {
+        assertEquals(dateFormatter.format(toLocalDate(lastTreatmentOrAnalysisDate.get(plate))),
+            design.plates.getColumn(LAST_TREATMENT).getValueProvider().apply(plate));
+      } else {
+        assertNull(design.plates.getColumn(LAST_TREATMENT).getValueProvider().apply(plate));
+      }
+    }
+    assertEquals(INSERT_TIME, design.plates.getColumns().get(4).getId());
     assertEquals(resources.message(INSERT_TIME), design.plates.getColumn(INSERT_TIME).getCaption());
     assertTrue(design.plates.getColumn(INSERT_TIME).isSortable());
     for (Plate plate : plates) {
       assertEquals(dateFormatter.format(toLocalDate(plate.getInsertTime())),
           design.plates.getColumn(INSERT_TIME).getValueProvider().apply(plate));
     }
-    assertEquals(SUBMISSION, design.plates.getColumns().get(4).getId());
+    assertEquals(SUBMISSION, design.plates.getColumns().get(5).getId());
     assertEquals(resources.message(SUBMISSION), design.plates.getColumn(SUBMISSION).getCaption());
     assertTrue(design.plates.getColumn(SUBMISSION).isSortable());
     for (Plate plate : plates) {
