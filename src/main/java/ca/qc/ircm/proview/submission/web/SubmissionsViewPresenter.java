@@ -113,7 +113,10 @@ public class SubmissionsViewPresenter {
   public static final String EXPERIMENT =
       property(SUBMISSION, submission.experiment.getMetadata().getName());
   public static final String USER = property(SUBMISSION, submission.user.getMetadata().getName());
-  public static final String DIRECTOR = property(SUBMISSION, "director");
+  public static final String DIRECTOR =
+      property(SUBMISSION, submission.laboratory.director.getMetadata().getName());
+  public static final String SERVICE =
+      property(SUBMISSION, submission.service.getMetadata().getName());
   public static final String SAMPLE_NAME =
       property(SAMPLE, submissionSample.name.getMetadata().getName());
   public static final String SAMPLE_STATUSES = "statuses";
@@ -325,6 +328,9 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.addColumn(submission -> submission.getLaboratory().getDirector())
         .setId(DIRECTOR).setCaption(resources.message(DIRECTOR));
     columnProperties.put(DIRECTOR, submission.laboratory.director);
+    design.submissionsGrid.addColumn(submission -> submission.getService().getLabel(locale))
+        .setId(SERVICE).setCaption(resources.message(SERVICE));
+    columnProperties.put(SERVICE, submission.service);
     design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
     columnProperties.put(SAMPLE_COUNT, submission.samples.size());
@@ -375,6 +381,9 @@ public class SubmissionsViewPresenter {
       design.submissionsGrid.getColumn(USER).setHidden(true);
       design.submissionsGrid.getColumn(DIRECTOR).setHidden(true);
     }
+    design.submissionsGrid.getColumn(SERVICE).setHidable(true);
+    design.submissionsGrid.getColumn(SERVICE)
+        .setHidden(userPreferenceService.get(this, SERVICE, false));
     design.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_COUNT)
         .setHidden(userPreferenceService.get(this, SAMPLE_COUNT, false));
@@ -434,6 +443,10 @@ public class SubmissionsViewPresenter {
       filter.directorContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
+    filterRow.getCell(SERVICE).setComponent(comboBoxFilter(e -> {
+      filter.service = e.getValue();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }, Service.values(), service -> service.getLabel(locale)));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
       filter.anySampleNameContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();

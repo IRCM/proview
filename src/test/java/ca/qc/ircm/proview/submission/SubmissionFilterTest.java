@@ -28,8 +28,10 @@ import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
@@ -99,6 +101,15 @@ public class SubmissionFilterTest {
     filter.addConditions(query);
 
     verify(query).where(submission.laboratory.director.contains("test"));
+  }
+
+  @Test
+  public void addConditions_Service() throws Exception {
+    filter.service = Service.LC_MS_MS;
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.service.eq(Service.LC_MS_MS));
   }
 
   @Test
@@ -339,6 +350,15 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addCountConditions_Service() throws Exception {
+    filter.service = Service.LC_MS_MS;
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.service.eq(Service.LC_MS_MS));
+  }
+
+  @Test
   public void addCountConditions_AnySampleNameContains() throws Exception {
     filter.anySampleNameContains = "test";
 
@@ -557,6 +577,12 @@ public class SubmissionFilterTest {
     return submission;
   }
 
+  private Submission service(Service service) {
+    Submission submission = mock(Submission.class);
+    when(submission.getService()).thenReturn(service);
+    return submission;
+  }
+
   private Submission sampleNames(String... names) {
     return sampleNames(new Submission(), names);
   }
@@ -682,6 +708,28 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(director("My test")));
     assertTrue(filter.test(director("Test")));
     assertTrue(filter.test(director("My name")));
+  }
+
+  @Test
+  public void test_service() {
+    filter.service = Service.LC_MS_MS;
+
+    assertTrue(filter.test(service(Service.LC_MS_MS)));
+    assertFalse(filter.test(service(Service.INTACT_PROTEIN)));
+    assertFalse(filter.test(service(Service.MALDI_MS)));
+    assertFalse(filter.test(service(Service.SMALL_MOLECULE)));
+    assertFalse(filter.test(service(Service.TWO_DIMENSION_LC_MS_MS)));
+  }
+
+  @Test
+  public void test_service_Null() {
+    filter.service = null;
+
+    assertTrue(filter.test(service(Service.LC_MS_MS)));
+    assertTrue(filter.test(service(Service.INTACT_PROTEIN)));
+    assertTrue(filter.test(service(Service.MALDI_MS)));
+    assertTrue(filter.test(service(Service.SMALL_MOLECULE)));
+    assertTrue(filter.test(service(Service.TWO_DIMENSION_LC_MS_MS)));
   }
 
   @Test

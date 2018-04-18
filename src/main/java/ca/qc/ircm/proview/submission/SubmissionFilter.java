@@ -43,6 +43,7 @@ public class SubmissionFilter implements Predicate<Submission> {
   public String experimentContains;
   public String userContains;
   public String directorContains;
+  public Service service;
   public String anySampleNameContains;
   public SampleStatus anySampleStatus;
   public Range<LocalDate> dateRange;
@@ -70,6 +71,9 @@ public class SubmissionFilter implements Predicate<Submission> {
       String directorContainsNormalized = normalize(directorContains).toLowerCase();
       String director = normalize(submission.getLaboratory().getDirector()).toLowerCase();
       test &= director.contains(directorContainsNormalized);
+    }
+    if (service != null) {
+      test &= submission.getService() == service;
     }
     if (anySampleNameContains != null) {
       String nameContainsNormalized = normalize(anySampleNameContains).toLowerCase();
@@ -103,6 +107,9 @@ public class SubmissionFilter implements Predicate<Submission> {
     }
     if (directorContains != null) {
       query.where(submission.laboratory.director.contains(directorContains));
+    }
+    if (service != null) {
+      query.where(submission.service.eq(service));
     }
     if (anySampleNameContains != null) {
       query.where(submission.samples.any().name.contains(anySampleNameContains));
