@@ -335,7 +335,7 @@ public class PlateFilterTest {
 
     QWell mecW = new QWell("mecW");
     verify(query).where(plate.columnCount.multiply(plate.rowCount).subtract(40)
-        .goe(JPAExpressions.select(mecW.sample.isNotNull().count()).from(plate.wells, mecW)));
+        .goe(JPAExpressions.select(mecW.sample.count()).from(plate.wells, mecW)));
   }
 
   @Test
@@ -455,13 +455,13 @@ public class PlateFilterTest {
   }
 
   @Test
-  public void addConditions_NameContainsAndEmptyCount() {
+  public void addConditions_NameContainsAndSubmission() {
     filter.nameContains = "test";
-    filter.minimumEmptyCount = 40;
+    filter.submission = true;
 
     filter.addConditions(query);
 
     verify(query).where(plate.name.contains("test"));
-    verify(query).where(plate.wells.any().sample.isNull().count().goe(40));
+    verify(query).where(plate.submission.eq(true));
   }
 }
