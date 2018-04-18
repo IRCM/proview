@@ -72,17 +72,17 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
-   * User who made the treatment.
-   */
-  @ManyToOne
-  @JoinColumn(name = "userId")
-  private User user;
-  /**
    * Protocol used for treatment, if any.
    */
   @ManyToOne
   @JoinColumn(name = "protocolId")
   private Protocol protocol;
+  /**
+   * User who made the treatment.
+   */
+  @ManyToOne
+  @JoinColumn(name = "userId")
+  private User user;
   /**
    * Time when treatment took plate.
    */
