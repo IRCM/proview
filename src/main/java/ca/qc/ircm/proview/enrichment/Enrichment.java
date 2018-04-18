@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.enrichment;
 
+import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 
@@ -36,7 +37,7 @@ public class Enrichment extends Treatment<EnrichedSample> {
    */
   @ManyToOne
   @JoinColumn(name = "protocolId", nullable = false)
-  private EnrichmentProtocol protocol;
+  private Protocol protocol;
 
   public Enrichment() {
     super();
@@ -56,11 +57,11 @@ public class Enrichment extends Treatment<EnrichedSample> {
     return TreatmentType.ENRICHMENT;
   }
 
-  public EnrichmentProtocol getProtocol() {
+  public Protocol getProtocol() {
     return protocol;
   }
 
-  public void setProtocol(EnrichmentProtocol protocol) {
+  public void setProtocol(Protocol protocol) {
     this.protocol = protocol;
   }
 }

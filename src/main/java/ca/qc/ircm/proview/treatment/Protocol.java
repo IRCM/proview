@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.treatment;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
@@ -26,11 +26,10 @@ import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -39,9 +38,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = Protocol.TABLE_NAME)
-@Inheritance(strategy = SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
-public abstract class Protocol implements Data, Serializable, Named {
+public class Protocol implements Data, Serializable, Named {
   /**
    * Protocol types.
    */
@@ -65,6 +62,12 @@ public abstract class Protocol implements Data, Serializable, Named {
   @Column(name = "name", unique = true, nullable = false)
   @Size(max = 100)
   private String name;
+  /**
+   * Protocol type.
+   */
+  @Column(name = "type", nullable = false)
+  @Enumerated(STRING)
+  private Type type;
 
   public Protocol() {
   }
@@ -77,13 +80,6 @@ public abstract class Protocol implements Data, Serializable, Named {
     this.id = id;
     this.name = name;
   }
-
-  /**
-   * Type of Protocol.
-   *
-   * @return type of protocol
-   */
-  public abstract Type getType();
 
   @Override
   public String toString() {
@@ -106,5 +102,13 @@ public abstract class Protocol implements Data, Serializable, Named {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public Type getType() {
+    return type;
+  }
+
+  public void setType(Type type) {
+    this.type = type;
   }
 }

@@ -61,13 +61,13 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.digestion.DigestedSample;
 import ca.qc.ircm.proview.digestion.Digestion;
-import ca.qc.ircm.proview.digestion.DigestionProtocol;
-import ca.qc.ircm.proview.digestion.DigestionProtocolService;
 import ca.qc.ircm.proview.digestion.DigestionService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -107,7 +107,7 @@ public class DigestionViewPresenterTest {
   @Mock
   private DigestionService digestionService;
   @Mock
-  private DigestionProtocolService digestionProtocolService;
+  private ProtocolService protocolService;
   @Mock
   private SampleContainerService sampleContainerService;
   @Captor
@@ -115,7 +115,7 @@ public class DigestionViewPresenterTest {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private DigestionProtocolService realDigestionProtocolService;
+  private ProtocolService realProtocolService;
   @Value("${spring.application.name}")
   private String applicationName;
   private DigestionViewDesign design = new DigestionViewDesign();
@@ -125,7 +125,7 @@ public class DigestionViewPresenterTest {
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private List<Sample> samples = new ArrayList<>();
   private List<SampleContainer> containers = new ArrayList<>();
-  private List<DigestionProtocol> protocols;
+  private List<Protocol> protocols;
   private List<String> comments = new ArrayList<>();
 
   /**
@@ -133,7 +133,7 @@ public class DigestionViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new DigestionViewPresenter(digestionService, digestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, protocolService,
         sampleContainerService, applicationName);
     design = new DigestionViewDesign();
     view.design = design;
@@ -150,10 +150,10 @@ public class DigestionViewPresenterTest {
       tube2.setSample(sample);
       return Arrays.asList(tube1, tube2).stream();
     }).collect(Collectors.toList());
-    protocols = realDigestionProtocolService.all();
+    protocols = realProtocolService.all(Protocol.Type.DIGESTION);
     comments = IntStream.range(0, containers.size()).mapToObj(i -> "comment" + i)
         .collect(Collectors.toList());
-    when(digestionProtocolService.all()).thenReturn(new ArrayList<>(protocols));
+    when(protocolService.all(any())).thenReturn(new ArrayList<>(protocols));
     when(view.savedContainers()).thenReturn(new ArrayList<>(containers));
   }
 
@@ -211,9 +211,9 @@ public class DigestionViewPresenterTest {
 
     assertFalse(design.protocol.isReadOnly());
     assertFalse(design.protocol.isEmptySelectionAllowed());
-    ListDataProvider<DigestionProtocol> protocols = dataProvider(design.protocol);
+    ListDataProvider<Protocol> protocols = dataProvider(design.protocol);
     assertEquals(this.protocols.size(), protocols.getItems().size());
-    for (DigestionProtocol protocol : this.protocols) {
+    for (Protocol protocol : this.protocols) {
       assertTrue(protocols.getItems().contains(protocol));
       assertEquals(protocol.getName(), design.protocol.getItemCaptionGenerator().apply(protocol));
     }
@@ -223,6 +223,8 @@ public class DigestionViewPresenterTest {
     assertEquals(this.protocols.size() + 1, protocols.getItems().size());
     assertTrue(protocols.getItems().stream()
         .filter(protocol -> protocol.getName().equals(newProtocolName)).findAny().isPresent());
+    assertEquals(Protocol.Type.DIGESTION, protocols.getItems().stream()
+        .filter(protocol -> protocol.getName().equals(newProtocolName)).findAny().get().getType());
   }
 
   @Test
@@ -382,7 +384,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void save_NoProtocol() {
-    when(digestionProtocolService.all()).thenReturn(new ArrayList<>());
+    when(protocolService.all(any())).thenReturn(new ArrayList<>());
     presenter.init(view);
     presenter.enter("");
 
@@ -440,13 +442,13 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void save_Update() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
-    design.protocol.setValue(entityManager.find(DigestionProtocol.class, 3L));
+    design.protocol.setValue(entityManager.find(Protocol.class, 3L));
     setFields();
     design.explanation.setValue("test explanation");
 
@@ -474,7 +476,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void remove_NoExplanation() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
@@ -491,13 +493,13 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void remove() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
-    design.protocol.setValue(entityManager.find(DigestionProtocol.class, 3L));
+    design.protocol.setValue(entityManager.find(Protocol.class, 3L));
     setFields();
     design.explanation.setValue("test explanation");
 
@@ -514,13 +516,13 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void remove_BanContainers() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
-    design.protocol.setValue(entityManager.find(DigestionProtocol.class, 3L));
+    design.protocol.setValue(entityManager.find(Protocol.class, 3L));
     setFields();
     design.explanation.setValue("test explanation");
     design.banContainers.setValue(true);
@@ -588,7 +590,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void enter_Digestion() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
@@ -616,7 +618,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void enter_DigestionDeleted() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     digestion.setDeleted(true);

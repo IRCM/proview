@@ -27,11 +27,11 @@ import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USE
 
 import ca.qc.ircm.proview.digestion.DigestedSample;
 import ca.qc.ircm.proview.digestion.Digestion;
-import ca.qc.ircm.proview.digestion.DigestionProtocol;
-import ca.qc.ircm.proview.digestion.DigestionProtocolService;
 import ca.qc.ircm.proview.digestion.DigestionService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -91,7 +91,7 @@ public class DigestionViewPresenter implements BinderValidator {
   private DigestionView view;
   private DigestionViewDesign design;
   private Binder<Digestion> binder = new BeanValidationBinder<>(Digestion.class);
-  private ListDataProvider<DigestionProtocol> protocolsProvider;
+  private ListDataProvider<Protocol> protocolsProvider;
   private List<DigestedSample> digestions = new ArrayList<>();
   private ListDataProvider<DigestedSample> digestionsDataProvider = DataProvider.ofItems();
   private Map<DigestedSample, Binder<DigestedSample>> digestionBinders = new HashMap<>();
@@ -100,7 +100,7 @@ public class DigestionViewPresenter implements BinderValidator {
   @Inject
   private DigestionService digestionService;
   @Inject
-  private DigestionProtocolService digestionProtocolService;
+  private ProtocolService protocolService;
   @Inject
   private SampleContainerService sampleContainerService;
   @Value("${spring.application.name}")
@@ -110,10 +110,10 @@ public class DigestionViewPresenter implements BinderValidator {
   }
 
   protected DigestionViewPresenter(DigestionService digestionService,
-      DigestionProtocolService digestionProtocolService,
-      SampleContainerService sampleContainerService, String applicationName) {
+      ProtocolService protocolService, SampleContainerService sampleContainerService,
+      String applicationName) {
     this.digestionService = digestionService;
-    this.digestionProtocolService = digestionProtocolService;
+    this.protocolService = protocolService;
     this.sampleContainerService = sampleContainerService;
     this.applicationName = applicationName;
   }
@@ -147,12 +147,13 @@ public class DigestionViewPresenter implements BinderValidator {
     design.protocol.setEmptySelectionAllowed(false);
     design.protocol.setItemCaptionGenerator(protocol -> protocol.getName());
     design.protocol.setNewItemHandler(name -> {
-      DigestionProtocol protocol = new DigestionProtocol(null, name);
+      Protocol protocol = new Protocol(null, name);
+      protocol.setType(Protocol.Type.DIGESTION);
       protocolsProvider.getItems().add(protocol);
       protocolsProvider.refreshItem(protocol);
       design.protocol.setValue(protocol);
     });
-    protocolsProvider = DataProvider.ofCollection(digestionProtocolService.all());
+    protocolsProvider = DataProvider.ofCollection(protocolService.all(Protocol.Type.DIGESTION));
     design.protocol.setDataProvider(protocolsProvider);
     if (!protocolsProvider.getItems().isEmpty()) {
       binder.getBean().setProtocol(protocolsProvider.getItems().iterator().next());

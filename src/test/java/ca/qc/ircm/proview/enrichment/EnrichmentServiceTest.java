@@ -42,6 +42,8 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -75,7 +77,7 @@ public class EnrichmentServiceTest {
   @Inject
   private JPAQueryFactory queryFactory;
   @Mock
-  private EnrichmentProtocolService enrichmentProtocolService;
+  private ProtocolService protocolService;
   @Mock
   private EnrichmentActivityService enrichmentActivityService;
   @Mock
@@ -93,9 +95,8 @@ public class EnrichmentServiceTest {
    */
   @Before
   public void beforeTest() {
-    enrichmentService =
-        new EnrichmentService(entityManager, queryFactory, enrichmentProtocolService,
-            enrichmentActivityService, activityService, authorizationService);
+    enrichmentService = new EnrichmentService(entityManager, queryFactory, protocolService,
+        enrichmentActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -135,7 +136,7 @@ public class EnrichmentServiceTest {
   @Test
   public void insert_Tube() {
     Enrichment enrichment = new Enrichment();
-    enrichment.setProtocol(new EnrichmentProtocol(2L));
+    enrichment.setProtocol(new Protocol(2L));
     final List<EnrichedSample> enrichedSamples = new ArrayList<>();
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
@@ -177,7 +178,7 @@ public class EnrichmentServiceTest {
   @Test
   public void insert_Well() {
     Enrichment enrichment = new Enrichment();
-    enrichment.setProtocol(new EnrichmentProtocol(2L));
+    enrichment.setProtocol(new Protocol(2L));
     final List<EnrichedSample> enrichedSamples = new ArrayList<>();
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
@@ -219,7 +220,7 @@ public class EnrichmentServiceTest {
   @Test
   public void insert_SamplesFromMultipleUser() {
     Enrichment enrichment = new Enrichment();
-    enrichment.setProtocol(new EnrichmentProtocol(2L));
+    enrichment.setProtocol(new Protocol(2L));
     Tube tube1 = entityManager.find(Tube.class, 3L);
     Tube tube2 = entityManager.find(Tube.class, 8L);
     entityManager.detach(tube1);
@@ -251,7 +252,7 @@ public class EnrichmentServiceTest {
   @Test
   public void insert_SamplesFromOneUserAndControl() {
     Enrichment enrichment = new Enrichment();
-    enrichment.setProtocol(new EnrichmentProtocol(2L));
+    enrichment.setProtocol(new Protocol(2L));
     Tube tube1 = entityManager.find(Tube.class, 3L);
     Tube tube2 = entityManager.find(Tube.class, 4L);
     entityManager.detach(tube1);
@@ -282,7 +283,8 @@ public class EnrichmentServiceTest {
   @Test
   public void insert_NewProtocol() {
     Enrichment enrichment = new Enrichment();
-    EnrichmentProtocol protocol = new EnrichmentProtocol(null, "test protocol");
+    Protocol protocol = new Protocol(null, "test protocol");
+    protocol.setType(Protocol.Type.ENRICHMENT);
     enrichment.setProtocol(protocol);
     final List<EnrichedSample> enrichedSamples = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
@@ -294,16 +296,16 @@ public class EnrichmentServiceTest {
     enrichedSamples.add(enrichedSample);
     enrichment.setTreatmentSamples(enrichedSamples);
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, EnrichmentProtocol.class));
+      entityManager.persist(i.getArgumentAt(0, Protocol.class));
       return null;
-    }).when(enrichmentProtocolService).insert(any());
+    }).when(protocolService).insert(any());
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
     enrichmentService.insert(enrichment);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(enrichmentProtocolService).insert(eq(protocol));
+    verify(protocolService).insert(eq(protocol));
     verify(enrichmentActivityService).insert(eq(enrichment));
     verify(activityService).insert(eq(activity));
     assertNotNull(enrichment.getId());
@@ -330,7 +332,7 @@ public class EnrichmentServiceTest {
     Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
     entityManager.detach(enrichment);
     enrichment.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
-    enrichment.setProtocol(entityManager.find(EnrichmentProtocol.class, 4L));
+    enrichment.setProtocol(entityManager.find(Protocol.class, 4L));
     enrichment.getTreatmentSamples().get(0).setComment("test update");
     enrichment.getTreatmentSamples().get(0).setContainer(new Well(248L));
     enrichment.getTreatmentSamples().get(0).setSample(new Control(444L));
@@ -354,19 +356,20 @@ public class EnrichmentServiceTest {
   public void update_NewProtocol() {
     Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
     entityManager.detach(enrichment);
-    EnrichmentProtocol protocol = new EnrichmentProtocol(null, "test protocol");
+    Protocol protocol = new Protocol(null, "test protocol");
+    protocol.setType(Protocol.Type.ENRICHMENT);
     enrichment.setProtocol(protocol);
     when(enrichmentActivityService.update(any(), any())).thenReturn(Optional.of(activity));
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, EnrichmentProtocol.class));
+      entityManager.persist(i.getArgumentAt(0, Protocol.class));
       return null;
-    }).when(enrichmentProtocolService).insert(any());
+    }).when(protocolService).insert(any());
 
     enrichmentService.update(enrichment, "test explanation");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(enrichmentProtocolService).insert(eq(protocol));
+    verify(protocolService).insert(eq(protocol));
     verify(enrichmentActivityService).update(eq(enrichment), eq("test explanation"));
     verify(activityService).insert(activity);
     enrichment = entityManager.find(Enrichment.class, 223L);

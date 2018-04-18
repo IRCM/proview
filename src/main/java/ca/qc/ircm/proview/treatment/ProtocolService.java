@@ -17,9 +17,17 @@
 
 package ca.qc.ircm.proview.treatment;
 
+import static ca.qc.ircm.proview.treatment.QProtocol.protocol;
+
+import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -34,14 +42,24 @@ public class ProtocolService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
+  private JPAQueryFactory queryFactory;
+  @Inject
+  private ProtocolActivityService protocolActivityService;
+  @Inject
+  private ActivityService activityService;
+  @Inject
   private AuthorizationService authorizationService;
 
   protected ProtocolService() {
   }
 
-  protected ProtocolService(EntityManager entityManager,
+  protected ProtocolService(EntityManager entityManager, JPAQueryFactory queryFactory,
+      ProtocolActivityService protocolActivityService, ActivityService activityService,
       AuthorizationService authorizationService) {
     this.entityManager = entityManager;
+    this.queryFactory = queryFactory;
+    this.protocolActivityService = protocolActivityService;
+    this.activityService = activityService;
     this.authorizationService = authorizationService;
   }
 
@@ -59,5 +77,38 @@ public class ProtocolService {
     authorizationService.checkAdminRole();
 
     return entityManager.find(Protocol.class, id);
+  }
+
+  /**
+   * Returns all protocols of specified type.
+   *
+   * @param type
+   *          protocol type
+   * @return all protocols of specified type
+   */
+  public List<Protocol> all(Protocol.Type type) {
+    authorizationService.checkAdminRole();
+
+    JPAQuery<Protocol> query = queryFactory.select(protocol);
+    query.from(protocol);
+    query.where(protocol.type.eq(type));
+    return query.fetch();
+  }
+
+  /**
+   * Inserts protocol into database.
+   *
+   * @param protocol
+   *          protocol
+   */
+  public void insert(Protocol protocol) {
+    authorizationService.checkAdminRole();
+
+    entityManager.persist(protocol);
+    entityManager.flush();
+
+    // Log insertion of protocol.
+    Activity activity = protocolActivityService.insert(protocol);
+    activityService.insert(activity);
   }
 }

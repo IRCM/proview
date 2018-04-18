@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
+import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
@@ -72,7 +73,7 @@ public class EnrichmentActivityServiceTest {
 
   @Test
   public void insert() {
-    final EnrichmentProtocol protocol = new EnrichmentProtocol(2L);
+    final Protocol protocol = new Protocol(2L);
     SubmissionSample sample = new SubmissionSample(1L);
     sample.setStatus(SampleStatus.ENRICHED);
     Tube sourceTube = new Tube(1L);
@@ -110,7 +111,7 @@ public class EnrichmentActivityServiceTest {
     Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
     entityManager.detach(enrichment);
     enrichment.getTreatmentSamples().forEach(ts -> entityManager.detach(ts));
-    enrichment.setProtocol(entityManager.find(EnrichmentProtocol.class, 4L));
+    enrichment.setProtocol(entityManager.find(Protocol.class, 4L));
     enrichment.getTreatmentSamples().get(0).setContainer(new Well(248L));
     enrichment.getTreatmentSamples().get(0).setSample(new Control(444L));
     enrichment.getTreatmentSamples().get(0).setComment("test");

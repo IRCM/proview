@@ -41,6 +41,8 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -74,7 +76,7 @@ public class DigestionServiceTest {
   @Inject
   private JPAQueryFactory queryFactory;
   @Mock
-  private DigestionProtocolService digestionProtocolService;
+  private ProtocolService protocolService;
   @Mock
   private DigestionActivityService digestionActivityService;
   @Mock
@@ -92,7 +94,7 @@ public class DigestionServiceTest {
    */
   @Before
   public void beforeTest() {
-    digestionService = new DigestionService(entityManager, queryFactory, digestionProtocolService,
+    digestionService = new DigestionService(entityManager, queryFactory, protocolService,
         digestionActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -132,7 +134,7 @@ public class DigestionServiceTest {
   @Test
   public void insert_Tube() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(new DigestionProtocol(1L));
+    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
     Tube tube = new Tube(1L);
@@ -174,7 +176,7 @@ public class DigestionServiceTest {
   @Test
   public void insert_Well() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(new DigestionProtocol(1L));
+    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
     Well well = new Well(128L);
@@ -216,7 +218,7 @@ public class DigestionServiceTest {
   @Test
   public void insert_SamplesFromMultipleUser() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(new DigestionProtocol(1L));
+    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
     Tube tube1 = entityManager.find(Tube.class, 3L);
     Tube tube2 = entityManager.find(Tube.class, 8L);
     entityManager.detach(tube1);
@@ -248,7 +250,7 @@ public class DigestionServiceTest {
   @Test
   public void insert_SamplesFromOneUserAndControl() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(new DigestionProtocol(1L));
+    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
     Tube tube1 = entityManager.find(Tube.class, 3L);
     Tube tube2 = entityManager.find(Tube.class, 4L);
     entityManager.detach(tube1);
@@ -279,7 +281,8 @@ public class DigestionServiceTest {
   @Test
   public void insert_NewProtocol() {
     Digestion digestion = new Digestion();
-    DigestionProtocol protocol = new DigestionProtocol(null, "test protocol");
+    Protocol protocol = new Protocol(null, "test protocol");
+    protocol.setType(Protocol.Type.DIGESTION);
     digestion.setProtocol(protocol);
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
@@ -292,16 +295,16 @@ public class DigestionServiceTest {
     digestedSamples.add(digestedSample);
     digestion.setTreatmentSamples(digestedSamples);
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, DigestionProtocol.class));
+      entityManager.persist(i.getArgumentAt(0, Protocol.class));
       return null;
-    }).when(digestionProtocolService).insert(any());
+    }).when(protocolService).insert(any());
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
     digestionService.insert(digestion);
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(digestionProtocolService).insert(eq(protocol));
+    verify(protocolService).insert(eq(protocol));
     verify(digestionActivityService).insert(eq(digestion));
     verify(activityService).insert(activity);
     assertNotNull(digestion.getId());
@@ -325,12 +328,60 @@ public class DigestionServiceTest {
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void insert_WrongProtocolType() {
+    Digestion digestion = new Digestion();
+    Protocol protocol = entityManager.find(Protocol.class, 4L);
+    digestion.setProtocol(protocol);
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    entityManager.detach(sample);
+    Tube tube = new Tube(1L);
+    final List<DigestedSample> digestedSamples = new ArrayList<>();
+    DigestedSample digestedSample = new DigestedSample();
+    digestedSample.setComment("unit test");
+    digestedSample.setSample(sample);
+    digestedSample.setContainer(tube);
+    digestedSamples.add(digestedSample);
+    digestion.setTreatmentSamples(digestedSamples);
+    doAnswer(i -> {
+      entityManager.persist(i.getArgumentAt(0, Protocol.class));
+      return null;
+    }).when(protocolService).insert(any());
+    when(digestionActivityService.insert(any())).thenReturn(activity);
+
+    digestionService.insert(digestion);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void insert_NullProtocolType() {
+    Digestion digestion = new Digestion();
+    Protocol protocol = new Protocol(null, "test protocol");
+    digestion.setProtocol(protocol);
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    entityManager.detach(sample);
+    Tube tube = new Tube(1L);
+    final List<DigestedSample> digestedSamples = new ArrayList<>();
+    DigestedSample digestedSample = new DigestedSample();
+    digestedSample.setComment("unit test");
+    digestedSample.setSample(sample);
+    digestedSample.setContainer(tube);
+    digestedSamples.add(digestedSample);
+    digestion.setTreatmentSamples(digestedSamples);
+    doAnswer(i -> {
+      entityManager.persist(i.getArgumentAt(0, Protocol.class));
+      return null;
+    }).when(protocolService).insert(any());
+    when(digestionActivityService.insert(any())).thenReturn(activity);
+
+    digestionService.insert(digestion);
+  }
+
   @Test
   public void update() {
     Digestion digestion = entityManager.find(Digestion.class, 195L);
     entityManager.detach(digestion);
     digestion.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));
-    digestion.setProtocol(entityManager.find(DigestionProtocol.class, 3L));
+    digestion.setProtocol(entityManager.find(Protocol.class, 3L));
     digestion.getTreatmentSamples().get(0).setComment("test update");
     digestion.getTreatmentSamples().get(0).setContainer(new Well(248L));
     digestion.getTreatmentSamples().get(0).setSample(new Control(444L));
@@ -354,19 +405,20 @@ public class DigestionServiceTest {
   public void update_NewProtocol() {
     Digestion digestion = entityManager.find(Digestion.class, 195L);
     entityManager.detach(digestion);
-    DigestionProtocol protocol = new DigestionProtocol(null, "test protocol");
+    Protocol protocol = new Protocol(null, "test protocol");
+    protocol.setType(Protocol.Type.DIGESTION);
     digestion.setProtocol(protocol);
     when(digestionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, DigestionProtocol.class));
+      entityManager.persist(i.getArgumentAt(0, Protocol.class));
       return null;
-    }).when(digestionProtocolService).insert(any());
+    }).when(protocolService).insert(any());
 
     digestionService.update(digestion, "test explanation");
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    verify(digestionProtocolService).insert(eq(protocol));
+    verify(protocolService).insert(eq(protocol));
     verify(digestionActivityService).update(eq(digestion), eq("test explanation"));
     verify(activityService).insert(activity);
     digestion = entityManager.find(Digestion.class, 195L);

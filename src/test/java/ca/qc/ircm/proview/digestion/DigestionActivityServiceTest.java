@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
+import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
@@ -72,7 +73,7 @@ public class DigestionActivityServiceTest {
 
   @Test
   public void insert() {
-    final DigestionProtocol protocol = new DigestionProtocol(1L);
+    final Protocol protocol = new Protocol(1L);
     SubmissionSample sample = new SubmissionSample(1L);
     sample.setStatus(SampleStatus.DIGESTED);
     Tube sourceTube = new Tube(352L);
@@ -110,7 +111,7 @@ public class DigestionActivityServiceTest {
     Digestion digestion = entityManager.find(Digestion.class, 195L);
     entityManager.detach(digestion);
     digestion.getTreatmentSamples().forEach(ts -> entityManager.detach(ts));
-    digestion.setProtocol(entityManager.find(DigestionProtocol.class, 3L));
+    digestion.setProtocol(entityManager.find(Protocol.class, 3L));
     digestion.getTreatmentSamples().get(0).setContainer(new Well(248L));
     digestion.getTreatmentSamples().get(0).setSample(new Control(444L));
     digestion.getTreatmentSamples().get(0).setComment("test");

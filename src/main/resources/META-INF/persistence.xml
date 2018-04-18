@@ -27,12 +27,10 @@
     <class>ca.qc.ircm.proview.dataanalysis.DataAnalysis</class>
     <class>ca.qc.ircm.proview.digestion.DigestedSample</class>
     <class>ca.qc.ircm.proview.digestion.Digestion</class>
-    <class>ca.qc.ircm.proview.digestion.DigestionProtocol</class>
     <class>ca.qc.ircm.proview.dilution.DilutedSample</class>
     <class>ca.qc.ircm.proview.dilution.Dilution</class>
     <class>ca.qc.ircm.proview.enrichment.EnrichedSample</class>
     <class>ca.qc.ircm.proview.enrichment.Enrichment</class>
-    <class>ca.qc.ircm.proview.enrichment.EnrichmentProtocol</class>
     <class>ca.qc.ircm.proview.fractionation.Fractionation</class>
     <class>ca.qc.ircm.proview.fractionation.Fraction</class>
     <class>ca.qc.ircm.proview.history.Activity</class>

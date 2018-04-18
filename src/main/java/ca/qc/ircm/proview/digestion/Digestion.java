@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.digestion;
 
+import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 
@@ -36,7 +37,7 @@ public class Digestion extends Treatment<DigestedSample> {
    */
   @ManyToOne
   @JoinColumn(name = "protocolId", nullable = false)
-  private DigestionProtocol protocol;
+  private Protocol protocol;
 
   public Digestion() {
   }
@@ -55,11 +56,11 @@ public class Digestion extends Treatment<DigestedSample> {
     return TreatmentType.DIGESTION;
   }
 
-  public DigestionProtocol getProtocol() {
+  public Protocol getProtocol() {
     return protocol;
   }
 
-  public void setProtocol(DigestionProtocol protocol) {
+  public void setProtocol(Protocol protocol) {
     this.protocol = protocol;
   }
 }
