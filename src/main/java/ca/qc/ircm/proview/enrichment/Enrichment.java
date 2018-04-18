@@ -17,14 +17,11 @@
 
 package ca.qc.ircm.proview.enrichment;
 
-import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 /**
  * Enrichment of some Samples.
@@ -32,13 +29,6 @@ import javax.persistence.ManyToOne;
 @Entity
 @DiscriminatorValue("ENRICHMENT")
 public class Enrichment extends Treatment<EnrichedSample> {
-  /**
-   * Protocol used for enrichment of sample.
-   */
-  @ManyToOne
-  @JoinColumn(name = "protocolId", nullable = false)
-  private Protocol protocol;
-
   public Enrichment() {
     super();
   }
@@ -55,13 +45,5 @@ public class Enrichment extends Treatment<EnrichedSample> {
   @Override
   public TreatmentType getType() {
     return TreatmentType.ENRICHMENT;
-  }
-
-  public Protocol getProtocol() {
-    return protocol;
-  }
-
-  public void setProtocol(Protocol protocol) {
-    this.protocol = protocol;
   }
 }
