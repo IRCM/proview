@@ -111,7 +111,6 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> digestionsPanel()).isPresent());
     assertTrue(optional(() -> digestions()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertFalse(optional(() -> explanationPanel()).isPresent());
     assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -129,7 +128,6 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> digestionsPanel()).isPresent());
     assertTrue(optional(() -> digestions()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> explanationPanel()).isPresent());
     assertTrue(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -152,7 +150,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
   public void add_Tubes() throws Throwable {
     openWithTubes();
     setComment(0, "test comment");
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -186,7 +184,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
   public void add_Wells() throws Throwable {
     openWithWells();
     setComment(0, "test comment");
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -221,7 +219,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
     openWithDigestion();
     setComment(0, "test comment");
     setProtocol("digestion_protocol_2");
-    clickDown();
+    clickDown(0);
 
     clickSave();
 

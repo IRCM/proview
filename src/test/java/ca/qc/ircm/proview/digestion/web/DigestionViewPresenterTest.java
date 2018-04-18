@@ -42,7 +42,6 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -75,6 +74,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -182,8 +182,6 @@ public class DigestionViewPresenterTest {
     assertTrue(design.digestions.getStyleName().contains(COMPONENTS));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
-    assertTrue(design.down.getStyleName().contains(DOWN));
-    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
     assertTrue(design.remove.getStyleName().contains(REMOVE));
@@ -201,8 +199,6 @@ public class DigestionViewPresenterTest {
     assertEquals(resources.message(PROTOCOL_PANEL), design.protocolPanel.getCaption());
     assertEquals(resources.message(DIGESTIONS_PANEL), design.digestionsPanel.getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
-    assertEquals(resources.message(DOWN), design.down.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(SAVE), design.save.getCaption());
     assertEquals(resources.message(REMOVE), design.remove.getCaption());
     assertEquals(resources.message(BAN_CONTAINERS), design.banContainers.getCaption());
@@ -236,7 +232,7 @@ public class DigestionViewPresenterTest {
     presenter.enter("");
 
     final ListDataProvider<DigestedSample> treatments = dataProvider(design.digestions);
-    assertEquals(3, design.digestions.getColumns().size());
+    assertEquals(4, design.digestions.getColumns().size());
     assertEquals(SAMPLE, design.digestions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.digestions.getColumn(SAMPLE).getCaption());
     for (DigestedSample ts : treatments.getItems()) {
@@ -261,6 +257,17 @@ public class DigestionViewPresenterTest {
           (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(COMMENT));
     }
+    assertEquals(DOWN, design.digestions.getColumns().get(3).getId());
+    assertEquals(resources.message(DOWN), design.digestions.getColumn(DOWN).getCaption());
+    assertTrue(containsInstanceOf(design.digestions.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.digestions.getColumn(DOWN).isSortable());
+    for (DigestedSample ts : treatments.getItems()) {
+      Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(ts);
+      assertTrue(button.getStyleName().contains(DOWN));
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(DOWN), button.getIconAlternateText());
+    }
     assertEquals(containers.size(), treatments.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(treatments.getItems().stream().filter(ts -> ts.getContainer().equals(container))
@@ -280,10 +287,38 @@ public class DigestionViewPresenterTest {
     TextField field =
         (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (DigestedSample ts : treatments.getItems()) {
+      field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
+    }
+  }
+
+  @Test
+  public void down_Second() {
+    presenter.init(view);
+    presenter.enter("");
+    final List<DigestedSample> treatments =
+        new ArrayList<>(dataProvider(design.digestions).getItems());
+    DigestedSample firstTs = treatments.get(1);
+    String comment = "test";
+    TextField field =
+        (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
+    field.setValue(comment);
+    Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(firstTs);
+
+    button.click();
+
+    {
+      DigestedSample ts = treatments.get(0);
+      field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+    }
+    for (int i = 1; i < treatments.size(); i++) {
+      DigestedSample ts = treatments.get(i);
       field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertEquals(comment, field.getValue());
     }
@@ -296,12 +331,14 @@ public class DigestionViewPresenterTest {
     design.digestions.sort(SAMPLE, SortDirection.DESCENDING);
     final List<DigestedSample> treatments =
         new ArrayList<>(dataProvider(design.digestions).getItems());
+    DigestedSample firstTs = treatments.get(4);
     String comment = "test";
-    TextField field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider()
-        .apply(treatments.get(4));
+    TextField field =
+        (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (DigestedSample ts : treatments) {
       field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
@@ -316,12 +353,14 @@ public class DigestionViewPresenterTest {
     design.digestions.sort(CONTAINER, SortDirection.DESCENDING);
     final List<DigestedSample> treatments =
         new ArrayList<>(dataProvider(design.digestions).getItems());
+    DigestedSample firstTs = treatments.get(5);
     String comment = "test";
-    TextField field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider()
-        .apply(treatments.get(5));
+    TextField field =
+        (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (DigestedSample ts : treatments) {
       field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
@@ -465,8 +504,7 @@ public class DigestionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"),
-        eq(false));
+    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"), eq(false));
     Digestion savedDigestion = digestionCaptor.getValue();
     assertEquals((Long) 6L, savedDigestion.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, digestion.getTreatmentSamples()
@@ -490,8 +528,7 @@ public class DigestionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"),
-        eq(true));
+    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"), eq(true));
     Digestion savedDigestion = digestionCaptor.getValue();
     assertEquals((Long) 6L, savedDigestion.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, digestion.getTreatmentSamples()

@@ -44,6 +44,7 @@ import com.vaadin.testbench.elements.TextFieldElement;
 
 public class DigestionViewPageObject extends AbstractTestBenchTestCase {
   private static final int COMMENT_COLUMN = 2;
+  private static final int DOWN_COLUMN = 3;
 
   protected void open() {
     openView(DigestionView.VIEW_NAME);
@@ -96,12 +97,10 @@ public class DigestionViewPageObject extends AbstractTestBenchTestCase {
     field.setValue(comment);
   }
 
-  protected ButtonElement down() {
-    return wrap(ButtonElement.class, findElement(className(DOWN)));
-  }
-
-  protected void clickDown() {
-    down().click();
+  protected void clickDown(int row) {
+    ButtonElement button = wrap(ButtonElement.class,
+        digestions().getRow(row).getCell(DOWN_COLUMN).findElement(className(DOWN)));
+    button.click();
   }
 
   protected PanelElement explanationPanel() {

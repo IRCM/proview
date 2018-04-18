@@ -19,9 +19,7 @@ package ca.qc.ircm.proview.digestion.web;
 
 import static ca.qc.ircm.proview.digestion.QDigestedSample.digestedSample;
 import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
-import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -34,6 +32,7 @@ import ca.qc.ircm.proview.digestion.DigestionProtocolService;
 import ca.qc.ircm.proview.digestion.DigestionService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -42,6 +41,7 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
@@ -96,6 +96,7 @@ public class DigestionViewPresenter implements BinderValidator {
   private ListDataProvider<DigestedSample> digestionsDataProvider = DataProvider.ofItems();
   private Map<DigestedSample, Binder<DigestedSample>> digestionBinders = new HashMap<>();
   private Map<DigestedSample, TextField> commentFields = new HashMap<>();
+  private Map<DigestedSample, Button> downButtons = new HashMap<>();
   @Inject
   private DigestionService digestionService;
   @Inject
@@ -169,11 +170,8 @@ public class DigestionViewPresenter implements BinderValidator {
         .setStyleGenerator(ts -> ts.getContainer().isBanned() ? BANNED : "");
     design.digestions.addColumn(ts -> commentField(ts), new ComponentRenderer()).setId(COMMENT)
         .setCaption(resources.message(COMMENT)).setSortable(false);
-    design.down.addStyleName(DOWN);
-    design.down.addStyleName(BUTTON_SKIP_ROW);
-    design.down.setCaption(resources.message(DOWN));
-    design.down.setIcon(VaadinIcons.ARROW_DOWN);
-    design.down.addClickListener(e -> down());
+    design.digestions.addColumn(ts -> downButton(ts), new ComponentRenderer()).setId(DOWN)
+        .setCaption(resources.message(DOWN)).setSortable(false);
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
     design.explanationPanel.setVisible(false);
@@ -201,6 +199,21 @@ public class DigestionViewPresenter implements BinderValidator {
     }
   }
 
+  private Button downButton(DigestedSample ts) {
+    if (downButtons.get(ts) != null) {
+      return downButtons.get(ts);
+    } else {
+      final MessageResource resources = view.getResources();
+      Button button = new Button();
+      button.addStyleName(DOWN);
+      button.setIcon(VaadinIcons.ARROW_DOWN);
+      button.setIconAlternateText(resources.message(DOWN));
+      button.addClickListener(e -> down(ts));
+      downButtons.put(ts, button);
+      return button;
+    }
+  }
+
   private Binder<DigestedSample> binder(DigestedSample ts) {
     Binder<DigestedSample> binder = new BeanValidationBinder<>(DigestedSample.class);
     binder.setBean(ts);
@@ -209,11 +222,17 @@ public class DigestionViewPresenter implements BinderValidator {
     return binder;
   }
 
-  private void down() {
-    if (!digestions.isEmpty()) {
-      String comment =
-          commentFields.get(gridItems(design.digestions).findFirst().orElse(null)).getValue();
-      commentFields.values().forEach(field -> field.setValue(comment));
+  private void down(DigestedSample ts) {
+    boolean copy = false;
+    String comment = commentFields.get(ts).getValue();
+    for (DigestedSample other : VaadinUtils.gridItems(design.digestions)
+        .collect(Collectors.toList())) {
+      if (ts.equals(other)) {
+        copy = true;
+      }
+      if (copy) {
+        commentFields.get(other).setValue(comment);
+      }
     }
   }
 
