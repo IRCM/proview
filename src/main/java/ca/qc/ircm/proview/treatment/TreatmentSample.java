@@ -62,6 +62,12 @@ public abstract class TreatmentSample implements Data {
   @JoinColumn(name = "containerId", nullable = false)
   private SampleContainer container;
   /**
+   * Sample's destination container, if any.
+   */
+  @ManyToOne
+  @JoinColumn(name = "destinationContainerId")
+  private SampleContainer destinationContainer;
+  /**
    * Comment about sample's treatment.
    */
   @Column(name = "comment")
@@ -98,5 +104,13 @@ public abstract class TreatmentSample implements Data {
 
   public void setContainer(SampleContainer container) {
     this.container = container;
+  }
+
+  public SampleContainer getDestinationContainer() {
+    return destinationContainer;
+  }
+
+  public void setDestinationContainer(SampleContainer destinationContainer) {
+    this.destinationContainer = destinationContainer;
   }
 }

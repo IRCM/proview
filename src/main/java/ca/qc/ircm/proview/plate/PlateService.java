@@ -17,11 +17,9 @@
 
 package ca.qc.ircm.proview.plate;
 
-import static ca.qc.ircm.proview.fractionation.QFraction.fraction;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
@@ -254,21 +252,13 @@ public class PlateService {
 
     authorizationService.checkAdminRole();
     Instant treatmentInstant = queryFactory.select(treatment.insertTime.max()).from(treatment)
-        .where(treatment.treatmentSamples.any().container.in(plate.getWells()))
+        .where(treatment.treatmentSamples.any().container.in(plate.getWells())
+            .or(treatment.treatmentSamples.any().destinationContainer.in(plate.getWells())))
         .where(treatment.deleted.eq(false)).fetchFirst();
-    Instant transferDestinationInstant =
-        queryFactory.select(transferedSample.transfer.insertTime.max()).from(transferedSample)
-            .where(transferedSample.destinationContainer.in(plate.getWells()))
-            .where(transferedSample.transfer.deleted.eq(false)).fetchFirst();
-    Instant fractionationDestinationInstant =
-        queryFactory.select(fraction.fractionation.insertTime.max()).from(fraction)
-            .where(fraction.destinationContainer.in(plate.getWells()))
-            .where(fraction.fractionation.deleted.eq(false)).fetchFirst();
     Instant analysisInstant = queryFactory.select(msAnalysis.insertTime.max()).from(msAnalysis)
         .where(msAnalysis.acquisitions.any().container.in(plate.getWells()))
         .where(msAnalysis.deleted.eq(false)).fetchFirst();
-    return max(treatmentInstant, transferDestinationInstant, fractionationDestinationInstant,
-        analysisInstant);
+    return max(treatmentInstant, analysisInstant);
   }
 
   private Instant max(Instant... instants) {

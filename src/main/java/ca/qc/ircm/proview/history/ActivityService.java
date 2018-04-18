@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.history;
 
 import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
-import static ca.qc.ircm.proview.fractionation.QFraction.fraction;
 import static ca.qc.ircm.proview.history.QActivity.activity;
 import static ca.qc.ircm.proview.history.QUpdateActivity.updateActivity;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
@@ -27,7 +26,6 @@ import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.plate.QWell.well;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.transfer.QTransferedSample.transferedSample;
 import static ca.qc.ircm.proview.treatment.QProtocol.protocol;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
@@ -301,33 +299,8 @@ public class ActivityService {
     query.join(treatmentSample);
     query.where(treatmentSample.in(treatment.treatmentSamples));
     query.from(well);
-    query.where(well.eq(treatmentSample.container));
-    query.where(activity.tableName.eq("treatment"));
-    query.where(well.plate.eq(plate));
-    activities.addAll(query.distinct().fetch());
-
-    query = queryFactory.select(activity);
-    query.from(activity);
-    query.leftJoin(activity.updates, updateActivity).fetch();
-    query.from(treatment);
-    query.where(activity.recordId.eq(treatment.id));
-    query.from(fraction);
-    query.where(fraction._super.in(treatment.treatmentSamples));
-    query.from(well);
-    query.where(well.eq(fraction.destinationContainer));
-    query.where(activity.tableName.eq("treatment"));
-    query.where(well.plate.eq(plate));
-    activities.addAll(query.distinct().fetch());
-
-    query = queryFactory.select(activity);
-    query.from(activity);
-    query.leftJoin(activity.updates, updateActivity).fetch();
-    query.from(treatment);
-    query.where(activity.recordId.eq(treatment.id));
-    query.from(transferedSample);
-    query.where(transferedSample._super.in(treatment.treatmentSamples));
-    query.from(well);
-    query.where(well.eq(transferedSample.destinationContainer));
+    query.where(
+        well.eq(treatmentSample.container).or(well.eq(treatmentSample.destinationContainer)));
     query.where(activity.tableName.eq("treatment"));
     query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());

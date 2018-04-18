@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.transfer;
 
 import ca.qc.ircm.proview.Data;
-import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
 
 import javax.persistence.DiscriminatorValue;
@@ -38,24 +37,10 @@ public class TransferedSample extends TreatmentSample implements Data {
   @ManyToOne
   @JoinColumn(name = "treatmentId", nullable = false)
   private Transfer transfer;
-  /**
-   * Sample's destination container.
-   */
-  @ManyToOne
-  @JoinColumn(name = "destinationContainerId", nullable = false)
-  private SampleContainer destinationContainer;
 
   @Override
   public String toString() {
     return "transferedSample [getId()=" + getId() + ", getSample()=" + getSample() + "]";
-  }
-
-  public SampleContainer getDestinationContainer() {
-    return destinationContainer;
-  }
-
-  public void setDestinationContainer(SampleContainer destinationContainer) {
-    this.destinationContainer = destinationContainer;
   }
 
   public Transfer getTransfer() {
