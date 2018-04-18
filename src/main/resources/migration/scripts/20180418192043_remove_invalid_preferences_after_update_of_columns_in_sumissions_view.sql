@@ -29,4 +29,4 @@ AND name = 'submission.goal';
 -- //@UNDO
 -- SQL to undo the change goes here.
 
-
+-- Cannot undo.
