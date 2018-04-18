@@ -111,15 +111,6 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_GoalContains() throws Exception {
-    filter.goalContains = "test";
-
-    filter.addConditions(query);
-
-    verify(query).where(submission.goal.contains("test"));
-  }
-
-  @Test
   public void addConditions_AnySampleStatus() throws Exception {
     filter.anySampleStatus = SampleStatus.RECEIVED;
 
@@ -357,15 +348,6 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_GoalContains() throws Exception {
-    filter.goalContains = "test";
-
-    filter.addCountConditions(query);
-
-    verify(query).where(submission.goal.contains("test"));
-  }
-
-  @Test
   public void addCountConditions_AnySampleStatus() throws Exception {
     filter.anySampleStatus = SampleStatus.RECEIVED;
 
@@ -575,13 +557,6 @@ public class SubmissionFilterTest {
     return submission;
   }
 
-  private Submission goal(String goal) {
-    Submission submission = new Submission();
-    submission.setGoal(goal);
-    submission.setSamples(Collections.emptyList());
-    return submission;
-  }
-
   private Submission sampleNames(String... names) {
     return sampleNames(new Submission(), names);
   }
@@ -707,35 +682,6 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(director("My test")));
     assertTrue(filter.test(director("Test")));
     assertTrue(filter.test(director("My name")));
-  }
-
-  @Test
-  public void test_goalContains() {
-    filter.goalContains = "test";
-
-    assertTrue(filter.test(goal("My test")));
-    assertTrue(filter.test(goal("Test")));
-    assertFalse(filter.test(goal("My experiment")));
-  }
-
-  @Test
-  public void test_goalContains_French() {
-    filter.goalContains = "pépin";
-
-    assertTrue(filter.test(goal("My pépin")));
-    assertTrue(filter.test(goal("My pepin")));
-    assertTrue(filter.test(goal("Pépin")));
-    assertTrue(filter.test(goal("Pepin")));
-    assertFalse(filter.test(goal("My experiment")));
-  }
-
-  @Test
-  public void test_goalContains_Null() {
-    filter.goalContains = null;
-
-    assertTrue(filter.test(goal("My test")));
-    assertTrue(filter.test(goal("Test")));
-    assertTrue(filter.test(goal("My experiment")));
   }
 
   @Test

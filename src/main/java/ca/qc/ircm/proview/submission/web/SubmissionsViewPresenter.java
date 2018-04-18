@@ -114,8 +114,6 @@ public class SubmissionsViewPresenter {
       property(SUBMISSION, submission.experiment.getMetadata().getName());
   public static final String USER = property(SUBMISSION, submission.user.getMetadata().getName());
   public static final String DIRECTOR = property(SUBMISSION, "director");
-  public static final String EXPERIMENT_GOAL =
-      property(SUBMISSION, submission.goal.getMetadata().getName());
   public static final String SAMPLE_NAME =
       property(SAMPLE, submissionSample.name.getMetadata().getName());
   public static final String SAMPLE_STATUSES = "statuses";
@@ -337,9 +335,6 @@ public class SubmissionsViewPresenter {
         .setDescriptionGenerator(submission -> submission.getSamples().stream()
             .map(sample -> sample.getName()).sorted(collator).collect(Collectors.joining("\n")));
     columnProperties.put(SAMPLE_NAME, submission.samples.any().name);
-    design.submissionsGrid.addColumn(Submission::getGoal).setId(EXPERIMENT_GOAL)
-        .setCaption(resources.message(EXPERIMENT_GOAL));
-    columnProperties.put(EXPERIMENT_GOAL, submission.goal);
     design.submissionsGrid.addColumn(submission -> statusesLabel(submission)).setId(SAMPLE_STATUSES)
         .setCaption(resources.message(SAMPLE_STATUSES))
         .setDescriptionGenerator(submission -> statusesDescription(submission));
@@ -386,9 +381,6 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getColumn(SAMPLE_NAME).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_NAME)
         .setHidden(userPreferenceService.get(this, SAMPLE_NAME, false));
-    design.submissionsGrid.getColumn(EXPERIMENT_GOAL).setHidable(true);
-    design.submissionsGrid.getColumn(EXPERIMENT_GOAL)
-        .setHidden(userPreferenceService.get(this, EXPERIMENT_GOAL, false));
     design.submissionsGrid.getColumn(SAMPLE_STATUSES).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_STATUSES)
         .setHidden(userPreferenceService.get(this, SAMPLE_STATUSES, false));
@@ -444,10 +436,6 @@ public class SubmissionsViewPresenter {
     }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
       filter.anySampleNameContains = e.getValue();
-      design.submissionsGrid.getDataProvider().refreshAll();
-    }));
-    filterRow.getCell(EXPERIMENT_GOAL).setComponent(textFilter(e -> {
-      filter.goalContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
     filterRow.getCell(SAMPLE_STATUSES).setComponent(comboBoxFilter(e -> {

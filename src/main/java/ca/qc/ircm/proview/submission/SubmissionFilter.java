@@ -44,7 +44,6 @@ public class SubmissionFilter implements Predicate<Submission> {
   public String userContains;
   public String directorContains;
   public String anySampleNameContains;
-  public String goalContains;
   public SampleStatus anySampleStatus;
   public Range<LocalDate> dateRange;
   public Boolean results;
@@ -77,11 +76,6 @@ public class SubmissionFilter implements Predicate<Submission> {
       test &= submission.getSamples().isEmpty() || submission.getSamples().stream().anyMatch(
           sample -> normalize(sample.getName()).toLowerCase().contains(nameContainsNormalized));
     }
-    if (goalContains != null) {
-      String goalContainsNormalized = normalize(goalContains).toLowerCase();
-      String goal = normalize(submission.getGoal()).toLowerCase();
-      test &= goal.contains(goalContainsNormalized);
-    }
     if (anySampleStatus != null) {
       test &= submission.getSamples().isEmpty() || submission.getSamples().stream()
           .anyMatch(sample -> anySampleStatus.equals(sample.getStatus()));
@@ -112,9 +106,6 @@ public class SubmissionFilter implements Predicate<Submission> {
     }
     if (anySampleNameContains != null) {
       query.where(submission.samples.any().name.contains(anySampleNameContains));
-    }
-    if (goalContains != null) {
-      query.where(submission.goal.contains(goalContains));
     }
     if (anySampleStatus != null) {
       query.where(submission.samples.any().status.eq(anySampleStatus));
