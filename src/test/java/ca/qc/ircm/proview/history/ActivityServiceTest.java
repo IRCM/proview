@@ -27,10 +27,8 @@ import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.digestion.Digestion;
-import ca.qc.ircm.proview.digestion.DigestionProtocol;
 import ca.qc.ircm.proview.dilution.Dilution;
 import ca.qc.ircm.proview.enrichment.Enrichment;
-import ca.qc.ircm.proview.enrichment.EnrichmentProtocol;
 import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
@@ -43,6 +41,7 @@ import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
+import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -129,27 +128,15 @@ public class ActivityServiceTest {
   }
 
   @Test
-  public void record_DigestionProtocol() throws Exception {
+  public void record_Protocol() throws Exception {
     Activity activity = entityManager.find(Activity.class, 5545L);
 
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof DigestionProtocol);
-    DigestionProtocol protocol = (DigestionProtocol) object;
+    assertTrue(object instanceof Protocol);
+    Protocol protocol = (Protocol) object;
     assertEquals((Long) 1L, protocol.getId());
-  }
-
-  @Test
-  public void record_EnrichmentProtocol() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5546L);
-
-    Object object = activityService.record(activity);
-
-    verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof EnrichmentProtocol);
-    EnrichmentProtocol protocol = (EnrichmentProtocol) object;
-    assertEquals((Long) 2L, protocol.getId());
   }
 
   @Test

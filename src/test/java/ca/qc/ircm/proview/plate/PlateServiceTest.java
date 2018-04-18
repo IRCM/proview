@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.plate.PlateService.PLATE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,6 +59,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.TemplateEngine;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -132,12 +135,13 @@ public class PlateServiceTest {
   }
 
   @Test
-  public void all() throws Exception {
-    PlateFilter filter = new PlateFilter();
+  public void all_Filter() throws Throwable {
+    PlateFilter filter = mock(PlateFilter.class);
 
     List<Plate> plates = plateService.all(filter);
 
     verify(authorizationService).checkAdminRole();
+    verify(filter).addConditions(any());
     assertEquals(18, plates.size());
   }
 
@@ -179,6 +183,20 @@ public class PlateServiceTest {
     verify(authorizationService).checkAdminRole();
     assertEquals(1, plates.size());
     assertTrue(find(plates, 123L).isPresent());
+  }
+
+  @Test
+  public void all_MinimumEmptyCount() throws Exception {
+    PlateFilter filter = new PlateFilter();
+    filter.minimumEmptyCount = 94;
+
+    List<Plate> plates = plateService.all(filter);
+
+    verify(authorizationService).checkAdminRole();
+    assertEquals(3, plates.size());
+    assertTrue(find(plates, 26L).isPresent());
+    assertTrue(find(plates, 111L).isPresent());
+    assertTrue(find(plates, 122L).isPresent());
   }
 
   @Test
@@ -460,6 +478,25 @@ public class PlateServiceTest {
         assertTrue(content.contains(well.getSample().getName()));
       }
     }
+  }
+
+  @Test
+  public void lastTreatmentOrAnalysisDate() {
+    assertEquals(toInstant(LocalDateTime.of(2011, 11, 16, 15, 7, 34)),
+        plateService.lastTreatmentOrAnalysisDate(entityManager.find(Plate.class, 26L)));
+    assertEquals(toInstant(LocalDateTime.of(2014, 10, 15, 15, 53, 34)),
+        plateService.lastTreatmentOrAnalysisDate(entityManager.find(Plate.class, 115L)));
+    assertEquals(toInstant(LocalDateTime.of(2014, 10, 17, 11, 54, 22)),
+        plateService.lastTreatmentOrAnalysisDate(entityManager.find(Plate.class, 118L)));
+    assertEquals(toInstant(LocalDateTime.of(2014, 10, 22, 9, 57, 18)),
+        plateService.lastTreatmentOrAnalysisDate(entityManager.find(Plate.class, 121L)));
+    assertNull(plateService.lastTreatmentOrAnalysisDate(entityManager.find(Plate.class, 122L)));
+    assertNull(plateService.lastTreatmentOrAnalysisDate(entityManager.find(Plate.class, 123L)));
+  }
+
+  @Test
+  public void lastTreatmentOrAnalysisDate_Null() {
+    assertNull(plateService.lastTreatmentOrAnalysisDate(null));
   }
 
   @Test

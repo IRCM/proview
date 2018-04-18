@@ -29,11 +29,11 @@ import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USE
 
 import ca.qc.ircm.proview.enrichment.EnrichedSample;
 import ca.qc.ircm.proview.enrichment.Enrichment;
-import ca.qc.ircm.proview.enrichment.EnrichmentProtocol;
-import ca.qc.ircm.proview.enrichment.EnrichmentProtocolService;
 import ca.qc.ircm.proview.enrichment.EnrichmentService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -91,7 +91,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
   private EnrichmentView view;
   private EnrichmentViewDesign design;
   private Binder<Enrichment> binder = new BeanValidationBinder<>(Enrichment.class);
-  private ListDataProvider<EnrichmentProtocol> protocolsProvider;
+  private ListDataProvider<Protocol> protocolsProvider;
   private List<EnrichedSample> enrichments = new ArrayList<>();
   private ListDataProvider<EnrichedSample> enrichmentsDataProvider = DataProvider.ofItems();
   private Map<EnrichedSample, Binder<EnrichedSample>> enrichmentBinders = new HashMap<>();
@@ -99,7 +99,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
   @Inject
   private EnrichmentService enrichmentService;
   @Inject
-  private EnrichmentProtocolService enrichmentProtocolService;
+  private ProtocolService protocolService;
   @Inject
   private SampleContainerService sampleContainerService;
   @Value("${spring.application.name}")
@@ -109,10 +109,10 @@ public class EnrichmentViewPresenter implements BinderValidator {
   }
 
   protected EnrichmentViewPresenter(EnrichmentService enrichmentService,
-      EnrichmentProtocolService enrichmentProtocolService,
-      SampleContainerService sampleContainerService, String applicationName) {
+      ProtocolService protocolService, SampleContainerService sampleContainerService,
+      String applicationName) {
     this.enrichmentService = enrichmentService;
-    this.enrichmentProtocolService = enrichmentProtocolService;
+    this.protocolService = protocolService;
     this.sampleContainerService = sampleContainerService;
     this.applicationName = applicationName;
   }
@@ -146,12 +146,13 @@ public class EnrichmentViewPresenter implements BinderValidator {
     design.protocol.setEmptySelectionAllowed(false);
     design.protocol.setItemCaptionGenerator(protocol -> protocol.getName());
     design.protocol.setNewItemHandler(name -> {
-      EnrichmentProtocol protocol = new EnrichmentProtocol(null, name);
+      Protocol protocol = new Protocol(null, name);
+      protocol.setType(Protocol.Type.ENRICHMENT);
       protocolsProvider.getItems().add(protocol);
       protocolsProvider.refreshItem(protocol);
       design.protocol.setValue(protocol);
     });
-    protocolsProvider = DataProvider.ofCollection(enrichmentProtocolService.all());
+    protocolsProvider = DataProvider.ofCollection(protocolService.all(Protocol.Type.ENRICHMENT));
     design.protocol.setDataProvider(protocolsProvider);
     if (!protocolsProvider.getItems().isEmpty()) {
       binder.getBean().setProtocol(protocolsProvider.getItems().iterator().next());

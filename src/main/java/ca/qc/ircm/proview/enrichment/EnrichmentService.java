@@ -24,6 +24,7 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
+import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,7 @@ public class EnrichmentService extends BaseTreatmentService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private EnrichmentProtocolService enrichmentProtocolService;
+  private ProtocolService protocolService;
   @Inject
   private EnrichmentActivityService enrichmentActivityService;
   @Inject
@@ -61,12 +62,11 @@ public class EnrichmentService extends BaseTreatmentService {
   }
 
   protected EnrichmentService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      EnrichmentProtocolService enrichmentProtocolService,
-      EnrichmentActivityService enrichmentActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
+      ProtocolService protocolService, EnrichmentActivityService enrichmentActivityService,
+      ActivityService activityService, AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
-    this.enrichmentProtocolService = enrichmentProtocolService;
+    this.protocolService = protocolService;
     this.enrichmentActivityService = enrichmentActivityService;
     this.activityService = activityService;
     this.authorizationService = authorizationService;
@@ -103,7 +103,7 @@ public class EnrichmentService extends BaseTreatmentService {
     enrichment.setUser(user);
 
     if (enrichment.getProtocol().getId() == null) {
-      enrichmentProtocolService.insert(enrichment.getProtocol());
+      protocolService.insert(enrichment.getProtocol());
     }
     entityManager.persist(enrichment);
     enrichment.getTreatmentSamples().stream().map(ts -> ts.getSample())
@@ -140,7 +140,7 @@ public class EnrichmentService extends BaseTreatmentService {
     }
 
     if (enrichment.getProtocol().getId() == null) {
-      enrichmentProtocolService.insert(enrichment.getProtocol());
+      protocolService.insert(enrichment.getProtocol());
     }
 
     Optional<Activity> activity = enrichmentActivityService.update(enrichment, explanation);

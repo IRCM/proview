@@ -20,8 +20,6 @@ package ca.qc.ircm.proview.treatment;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.digestion.DigestionProtocol;
-import ca.qc.ircm.proview.enrichment.EnrichmentProtocol;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -53,26 +51,11 @@ public class ProtocolActivityServiceTest {
   }
 
   @Test
-  public void insert_DigestionProtocol() {
-    DigestionProtocol protocol = new DigestionProtocol();
+  public void insert_Protocol() {
+    Protocol protocol = new Protocol();
     protocol.setId(123456L);
-    protocol.setName("unit_test_digestion_protocol");
-
-    Activity activity = protocolActivityService.insert(protocol);
-
-    assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("protocol", activity.getTableName());
-    assertEquals(protocol.getId(), activity.getRecordId());
-    assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
-    LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
-  }
-
-  @Test
-  public void insert_EnrichmentProtocol() {
-    EnrichmentProtocol protocol = new EnrichmentProtocol();
-    protocol.setId(123456L);
-    protocol.setName("unit_test_digestion_protocol");
+    protocol.setName("unit_test_protocol");
+    protocol.setType(Protocol.Type.DIGESTION);
 
     Activity activity = protocolActivityService.insert(protocol);
 

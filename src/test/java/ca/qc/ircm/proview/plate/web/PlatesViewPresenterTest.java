@@ -17,14 +17,18 @@
 
 package ca.qc.ircm.proview.plate.web;
 
+import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.EMPTY_COUNT;
+import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.FILTER;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.HEADER;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.INSERT_TIME;
+import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.LAST_TREATMENT;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.NAME;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.PLATES;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.SUBMISSION;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.gridStartEdit;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
@@ -32,9 +36,12 @@ import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
+import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -58,8 +65,10 @@ import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
@@ -73,12 +82,16 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.inject.Provider;
 import javax.persistence.EntityManager;
@@ -114,6 +127,7 @@ public class PlatesViewPresenterTest {
   private MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private List<Plate> plates = new ArrayList<>();
+  private Map<Plate, Instant> lastTreatmentOrAnalysisDate = new HashMap<>();
 
   /**
    * Before test.
@@ -130,7 +144,11 @@ public class PlatesViewPresenterTest {
     plates.add(entityManager.find(Plate.class, 26L));
     plates.add(entityManager.find(Plate.class, 107L));
     plates.add(entityManager.find(Plate.class, 123L));
+    IntStream.range(0, plates.size() - 1).forEach(
+        i -> lastTreatmentOrAnalysisDate.put(plates.get(i), Instant.now().minusSeconds(i * 2)));
     when(plateService.all(null)).thenReturn(plates);
+    when(plateService.lastTreatmentOrAnalysisDate(any()))
+        .thenAnswer(i -> lastTreatmentOrAnalysisDate.get(i.getArgumentAt(0, Plate.class)));
     when(plateService.get(any()))
         .thenAnswer(i -> entityManager.find(Plate.class, i.getArgumentAt(0, Long.class)));
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
@@ -158,7 +176,7 @@ public class PlatesViewPresenterTest {
   public void platesGrid() {
     presenter.init(view);
 
-    assertEquals(4, design.plates.getColumns().size());
+    assertEquals(6, design.plates.getColumns().size());
     assertEquals(NAME, design.plates.getColumns().get(0).getId());
     assertEquals(resources.message(NAME), design.plates.getColumn(NAME).getCaption());
     assertTrue(
@@ -170,7 +188,14 @@ public class PlatesViewPresenterTest {
       assertTrue(button.getStyleName().contains(NAME));
       assertEquals(plate.getName(), button.getCaption());
     }
-    assertEquals(SAMPLE_COUNT, design.plates.getColumns().get(1).getId());
+    assertEquals(EMPTY_COUNT, design.plates.getColumns().get(1).getId());
+    assertEquals(resources.message(EMPTY_COUNT), design.plates.getColumn(EMPTY_COUNT).getCaption());
+    assertTrue(design.plates.getColumn(EMPTY_COUNT).isSortable());
+    for (Plate plate : plates) {
+      assertEquals(plate.getEmptyWellCount(),
+          design.plates.getColumn(EMPTY_COUNT).getValueProvider().apply(plate));
+    }
+    assertEquals(SAMPLE_COUNT, design.plates.getColumns().get(2).getId());
     assertEquals(resources.message(SAMPLE_COUNT),
         design.plates.getColumn(SAMPLE_COUNT).getCaption());
     assertTrue(design.plates.getColumn(SAMPLE_COUNT).isSortable());
@@ -179,20 +204,35 @@ public class PlatesViewPresenterTest {
           design.plates.getColumn(SAMPLE_COUNT).getValueProvider().apply(plate));
     }
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    assertEquals(INSERT_TIME, design.plates.getColumns().get(2).getId());
+    assertEquals(LAST_TREATMENT, design.plates.getColumns().get(3).getId());
+    assertEquals(resources.message(LAST_TREATMENT),
+        design.plates.getColumn(LAST_TREATMENT).getCaption());
+    assertFalse(design.plates.getColumn(LAST_TREATMENT).isSortable());
+    for (Plate plate : plates) {
+      if (lastTreatmentOrAnalysisDate.get(plate) != null) {
+        assertEquals(dateFormatter.format(toLocalDate(lastTreatmentOrAnalysisDate.get(plate))),
+            design.plates.getColumn(LAST_TREATMENT).getValueProvider().apply(plate));
+      } else {
+        assertNull(design.plates.getColumn(LAST_TREATMENT).getValueProvider().apply(plate));
+      }
+    }
+    assertEquals(INSERT_TIME, design.plates.getColumns().get(4).getId());
     assertEquals(resources.message(INSERT_TIME), design.plates.getColumn(INSERT_TIME).getCaption());
     assertTrue(design.plates.getColumn(INSERT_TIME).isSortable());
     for (Plate plate : plates) {
       assertEquals(dateFormatter.format(toLocalDate(plate.getInsertTime())),
           design.plates.getColumn(INSERT_TIME).getValueProvider().apply(plate));
     }
-    assertEquals(SUBMISSION, design.plates.getColumns().get(3).getId());
+    assertEquals(SUBMISSION, design.plates.getColumns().get(5).getId());
     assertEquals(resources.message(SUBMISSION), design.plates.getColumn(SUBMISSION).getCaption());
     assertTrue(design.plates.getColumn(SUBMISSION).isSortable());
     for (Plate plate : plates) {
       assertEquals(plate.isSubmission() ? resources.message(property(SUBMISSION, true)) : "",
           design.plates.getColumn(SUBMISSION).getValueProvider().apply(plate));
     }
+    assertEquals(1, design.plates.getSortOrder().size());
+    assertEquals(INSERT_TIME, design.plates.getSortOrder().get(0).getSorted().getId());
+    assertEquals(SortDirection.DESCENDING, design.plates.getSortOrder().get(0).getDirection());
   }
 
   @Test
@@ -238,6 +278,130 @@ public class PlatesViewPresenterTest {
     verify(platesDataProvider).refreshAll();
     PlateFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.nameContains);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void emptyCountFilter() {
+    presenter.init(view);
+    design.plates.setDataProvider(platesDataProvider);
+    HeaderRow filterRow = design.plates.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    Label label = (Label) layout.getComponent(0);
+    TextField textField = (TextField) layout.getComponent(1);
+    Integer filterValue = 5;
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getComponent()).thenReturn(textField);
+    when(event.getValue()).thenReturn(filterValue.toString());
+
+    listener.valueChange(event);
+
+    assertEquals(resources.message(property(EMPTY_COUNT, FILTER)), label.getValue());
+    verify(platesDataProvider).refreshAll();
+    PlateFilter filter = presenter.getFilter();
+    assertEquals(filterValue, filter.minimumEmptyCount);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void emptyCountFilter_Invalid() {
+    presenter.init(view);
+    design.plates.setDataProvider(platesDataProvider);
+    HeaderRow filterRow = design.plates.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    TextField textField = (TextField) layout.getComponent(1);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getComponent()).thenReturn(textField);
+    when(event.getValue()).thenReturn("a");
+
+    listener.valueChange(event);
+
+    verify(platesDataProvider).refreshAll();
+    PlateFilter filter = presenter.getFilter();
+    assertEquals(null, filter.minimumEmptyCount);
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        textField.getErrorMessage().getFormattedHtmlMessage());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void emptyCountFilter_InvalidThenValid() {
+    presenter.init(view);
+    design.plates.setDataProvider(platesDataProvider);
+    HeaderRow filterRow = design.plates.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    TextField textField = (TextField) layout.getComponent(1);
+    Integer filterValue = 5;
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getComponent()).thenReturn(textField);
+    when(event.getValue()).thenReturn("a");
+    event = mock(ValueChangeEvent.class);
+    when(event.getComponent()).thenReturn(textField);
+    when(event.getValue()).thenReturn(filterValue.toString());
+
+    listener.valueChange(event);
+
+    verify(platesDataProvider).refreshAll();
+    PlateFilter filter = presenter.getFilter();
+    assertEquals(filterValue, filter.minimumEmptyCount);
+    assertNull(textField.getErrorMessage());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void emptyCountFilter_Double() {
+    presenter.init(view);
+    design.plates.setDataProvider(platesDataProvider);
+    HeaderRow filterRow = design.plates.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    TextField textField = (TextField) layout.getComponent(1);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getComponent()).thenReturn(textField);
+    when(event.getValue()).thenReturn("2.1");
+
+    listener.valueChange(event);
+
+    verify(platesDataProvider).refreshAll();
+    PlateFilter filter = presenter.getFilter();
+    assertEquals(null, filter.minimumEmptyCount);
+    assertEquals(errorMessage(generalResources.message(INVALID_INTEGER)),
+        textField.getErrorMessage().getFormattedHtmlMessage());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void emptyCountFilter_BelowZero() {
+    presenter.init(view);
+    design.plates.setDataProvider(platesDataProvider);
+    HeaderRow filterRow = design.plates.getHeaderRow(1);
+    HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
+    AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
+    TextField textField = (TextField) layout.getComponent(1);
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
+    ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
+    when(event.getComponent()).thenReturn(textField);
+    when(event.getValue()).thenReturn("-1");
+
+    listener.valueChange(event);
+
+    verify(platesDataProvider).refreshAll();
+    PlateFilter filter = presenter.getFilter();
+    assertEquals(null, filter.minimumEmptyCount);
+    assertEquals(errorMessage(generalResources.message(OUT_OF_RANGE, 0, Plate.DEFAULT_PLATE_SIZE)),
+        textField.getErrorMessage().getFormattedHtmlMessage());
   }
 
   @Test

@@ -78,6 +78,12 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
   @JoinColumn(name = "userId")
   private User user;
   /**
+   * Protocol used for treatment, if any.
+   */
+  @ManyToOne
+  @JoinColumn(name = "protocolId")
+  private Protocol protocol;
+  /**
    * Time when treatment took plate.
    */
   @Column(name = "insertTime", nullable = false)
@@ -156,5 +162,13 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
 
   public void setInsertTime(Instant insertTime) {
     this.insertTime = insertTime;
+  }
+
+  public Protocol getProtocol() {
+    return protocol;
+  }
+
+  public void setProtocol(Protocol protocol) {
+    this.protocol = protocol;
   }
 }

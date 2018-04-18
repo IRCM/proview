@@ -37,14 +37,12 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.digestion.DigestedSample;
 import ca.qc.ircm.proview.digestion.Digestion;
-import ca.qc.ircm.proview.digestion.DigestionProtocol;
 import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.DilutedSample;
 import ca.qc.ircm.proview.dilution.Dilution;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.EnrichedSample;
 import ca.qc.ircm.proview.enrichment.Enrichment;
-import ca.qc.ircm.proview.enrichment.EnrichmentProtocol;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.Fractionation;
@@ -68,6 +66,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.transfer.web.TransferView;
+import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.proview.tube.Tube;
@@ -208,7 +207,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateSolubilisedSample.getContainer()).getPlate().setName("plate_1");
     plateSolubilisation.setTreatmentSamples(Arrays.asList(plateSolubilisedSample));
     tubeDigestion = new Digestion(3L);
-    tubeDigestion.setProtocol(new DigestionProtocol());
+    tubeDigestion.setProtocol(new Protocol());
     tubeDigestion.getProtocol().setName("digestion_protocol_1");
     tubeDigestion.setInsertTime(Instant.now().minus(tubeDigestion.getId(), ChronoUnit.HOURS));
     tubeDigestedSample = new DigestedSample();
@@ -225,7 +224,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Tube) tubeDigestedSample2.getContainer()).setName("tube_2");
     tubeDigestion.setTreatmentSamples(Arrays.asList(tubeDigestedSample, tubeDigestedSample2));
     plateDigestion = new Digestion(4L);
-    plateDigestion.setProtocol(new DigestionProtocol());
+    plateDigestion.setProtocol(new Protocol());
     plateDigestion.getProtocol().setName("digestion_protocol_2");
     plateDigestion.setInsertTime(Instant.now().minus(plateDigestion.getId(), ChronoUnit.HOURS));
     plateDigestedSample = new DigestedSample();
@@ -262,7 +261,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateAddedStandard.getContainer()).getPlate().setName("plate_1");
     plateStandardAddition.setTreatmentSamples(Arrays.asList(plateAddedStandard));
     tubeEnrichment = new Enrichment(7L);
-    tubeEnrichment.setProtocol(new EnrichmentProtocol());
+    tubeEnrichment.setProtocol(new Protocol());
     tubeEnrichment.getProtocol().setName("enrichment_protocol_1");
     tubeEnrichment.setInsertTime(Instant.now().minus(tubeEnrichment.getId(), ChronoUnit.HOURS));
     tubeEnrichedSample = new EnrichedSample();
@@ -273,7 +272,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Tube) tubeEnrichedSample.getContainer()).setName("tube_1");
     tubeEnrichment.setTreatmentSamples(Arrays.asList(tubeEnrichedSample));
     plateEnrichment = new Enrichment(8L);
-    plateEnrichment.setProtocol(new EnrichmentProtocol());
+    plateEnrichment.setProtocol(new Protocol());
     plateEnrichment.getProtocol().setName("enrichment_protocol_2");
     plateEnrichment.setInsertTime(Instant.now().minus(plateEnrichment.getId(), ChronoUnit.HOURS));
     plateEnrichedSample = new EnrichedSample();

@@ -496,13 +496,13 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.samples.addStyleName(COMPONENTS);
     design.samples.setDataProvider(samplesDataProvider);
     design.samples.addColumn(sample -> sampleNameField(sample), new ComponentRenderer())
-        .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME)).setWidth(230)
+        .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME)).setWidth(350)
         .setSortable(false);
     design.samples.addColumn(sample -> sampleNumberProteinField(sample), new ComponentRenderer())
         .setId(SAMPLE_NUMBER_PROTEIN).setCaption(resources.message(SAMPLE_NUMBER_PROTEIN))
-        .setWidth(230).setSortable(false);
+        .setWidth(170).setSortable(false);
     design.samples.addColumn(sample -> proteinWeightField(sample), new ComponentRenderer())
-        .setId(PROTEIN_WEIGHT).setCaption(resources.message(PROTEIN_WEIGHT)).setWidth(230)
+        .setId(PROTEIN_WEIGHT).setCaption(resources.message(PROTEIN_WEIGHT)).setWidth(170)
         .setSortable(false);
     design.fillSamples.addStyleName(FILL_SAMPLES);
     design.fillSamples.addStyleName(BUTTON_SKIP_ROW);
@@ -525,6 +525,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
+      field.setWidth("100%");
       binder.forField(field).asRequired(generalResources.message(REQUIRED))
           .withNullRepresentation("").withValidator(validateSampleName(false)).bind(SAMPLE_NAME);
       sampleBinders.put(sample, binder);
@@ -546,6 +547,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
+      field.setWidth("100%");
       field.setRequiredIndicatorVisible(true);
       binder.forField(field)
           .withValidator(requiredTextIf(n -> design.service.getValue() == INTACT_PROTEIN))
@@ -571,6 +573,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly);
+      field.setWidth("100%");
       field.setRequiredIndicatorVisible(true);
       binder.forField(field)
           .withValidator(requiredTextIf(n -> design.service.getValue() == INTACT_PROTEIN))

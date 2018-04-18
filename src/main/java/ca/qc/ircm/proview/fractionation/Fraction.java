@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.fractionation;
 
 import ca.qc.ircm.proview.Named;
-import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 
@@ -41,12 +40,6 @@ public class Fraction extends TreatmentSample implements Named {
   @ManyToOne
   @JoinColumn(name = "treatmentId", nullable = false)
   private Fractionation fractionation;
-  /**
-   * Sample's destination container.
-   */
-  @ManyToOne
-  @JoinColumn(name = "destinationContainerId", nullable = false)
-  private SampleContainer destinationContainer;
   /**
    * Fraction index number that is appended when showing LIMS number of fraction.
    */
@@ -107,14 +100,6 @@ public class Fraction extends TreatmentSample implements Named {
 
   public void setPiInterval(String piInterval) {
     this.piInterval = piInterval;
-  }
-
-  public SampleContainer getDestinationContainer() {
-    return destinationContainer;
-  }
-
-  public void setDestinationContainer(SampleContainer destinationContainer) {
-    this.destinationContainer = destinationContainer;
   }
 
   public Fractionation getFractionation() {

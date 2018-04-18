@@ -62,13 +62,13 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.enrichment.EnrichedSample;
 import ca.qc.ircm.proview.enrichment.Enrichment;
-import ca.qc.ircm.proview.enrichment.EnrichmentProtocol;
-import ca.qc.ircm.proview.enrichment.EnrichmentProtocolService;
 import ca.qc.ircm.proview.enrichment.EnrichmentService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -107,7 +107,7 @@ public class EnrichmentViewPresenterTest {
   @Mock
   private EnrichmentService enrichmentService;
   @Mock
-  private EnrichmentProtocolService enrichmentProtocolService;
+  private ProtocolService protocolService;
   @Mock
   private SampleContainerService sampleContainerService;
   @Captor
@@ -115,7 +115,7 @@ public class EnrichmentViewPresenterTest {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private EnrichmentProtocolService realEnrichmentProtocolService;
+  private ProtocolService realProtocolService;
   @Value("${spring.application.name}")
   private String applicationName;
   private EnrichmentViewDesign design = new EnrichmentViewDesign();
@@ -125,7 +125,7 @@ public class EnrichmentViewPresenterTest {
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private List<Sample> samples = new ArrayList<>();
   private List<SampleContainer> containers = new ArrayList<>();
-  private List<EnrichmentProtocol> protocols;
+  private List<Protocol> protocols;
   private List<String> comments = new ArrayList<>();
 
   /**
@@ -133,7 +133,7 @@ public class EnrichmentViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new EnrichmentViewPresenter(enrichmentService, enrichmentProtocolService,
+    presenter = new EnrichmentViewPresenter(enrichmentService, protocolService,
         sampleContainerService, applicationName);
     design = new EnrichmentViewDesign();
     view.design = design;
@@ -150,10 +150,10 @@ public class EnrichmentViewPresenterTest {
       tube2.setSample(sample);
       return Arrays.asList(tube1, tube2).stream();
     }).collect(Collectors.toList());
-    protocols = realEnrichmentProtocolService.all();
+    protocols = realProtocolService.all(Protocol.Type.ENRICHMENT);
     comments = IntStream.range(0, containers.size()).mapToObj(i -> "comment" + i)
         .collect(Collectors.toList());
-    when(enrichmentProtocolService.all()).thenReturn(new ArrayList<>(protocols));
+    when(protocolService.all(any())).thenReturn(new ArrayList<>(protocols));
     when(view.savedContainers()).thenReturn(new ArrayList<>(containers));
   }
 
@@ -215,9 +215,9 @@ public class EnrichmentViewPresenterTest {
 
     assertFalse(design.protocol.isReadOnly());
     assertFalse(design.protocol.isEmptySelectionAllowed());
-    ListDataProvider<EnrichmentProtocol> protocols = dataProvider(design.protocol);
+    ListDataProvider<Protocol> protocols = dataProvider(design.protocol);
     assertEquals(this.protocols.size(), protocols.getItems().size());
-    for (EnrichmentProtocol protocol : this.protocols) {
+    for (Protocol protocol : this.protocols) {
       assertTrue(protocols.getItems().contains(protocol));
       assertEquals(protocol.getName(), design.protocol.getItemCaptionGenerator().apply(protocol));
     }
@@ -227,6 +227,8 @@ public class EnrichmentViewPresenterTest {
     assertEquals(this.protocols.size() + 1, protocols.getItems().size());
     assertTrue(protocols.getItems().stream()
         .filter(protocol -> protocol.getName().equals(newProtocolName)).findAny().isPresent());
+    assertEquals(Protocol.Type.ENRICHMENT, protocols.getItems().stream()
+        .filter(protocol -> protocol.getName().equals(newProtocolName)).findAny().get().getType());
   }
 
   @Test
@@ -344,7 +346,7 @@ public class EnrichmentViewPresenterTest {
 
   @Test
   public void save_NoProtocol() {
-    when(enrichmentProtocolService.all()).thenReturn(new ArrayList<>());
+    when(protocolService.all(any())).thenReturn(new ArrayList<>());
     presenter.init(view);
     presenter.enter("");
 
@@ -402,13 +404,13 @@ public class EnrichmentViewPresenterTest {
 
   @Test
   public void save_Update() {
-    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+    presenter = new EnrichmentViewPresenter(enrichmentService, realProtocolService,
         sampleContainerService, applicationName);
     Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
     when(enrichmentService.get(any())).thenReturn(enrichment);
     presenter.init(view);
     presenter.enter("7");
-    design.protocol.setValue(entityManager.find(EnrichmentProtocol.class, 4L));
+    design.protocol.setValue(entityManager.find(Protocol.class, 4L));
     setFields();
     design.explanation.setValue("test explanation");
 
@@ -436,7 +438,7 @@ public class EnrichmentViewPresenterTest {
 
   @Test
   public void remove_NoExplanation() {
-    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+    presenter = new EnrichmentViewPresenter(enrichmentService, realProtocolService,
         sampleContainerService, applicationName);
     Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
     when(enrichmentService.get(any())).thenReturn(enrichment);
@@ -453,21 +455,20 @@ public class EnrichmentViewPresenterTest {
 
   @Test
   public void remove() {
-    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+    presenter = new EnrichmentViewPresenter(enrichmentService, realProtocolService,
         sampleContainerService, applicationName);
     Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
     when(enrichmentService.get(any())).thenReturn(enrichment);
     presenter.init(view);
     presenter.enter("7");
-    design.protocol.setValue(entityManager.find(EnrichmentProtocol.class, 4L));
+    design.protocol.setValue(entityManager.find(Protocol.class, 4L));
     setFields();
     design.explanation.setValue("test explanation");
 
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(enrichmentService).undo(enrichmentCaptor.capture(), eq("test explanation"),
-        eq(false));
+    verify(enrichmentService).undo(enrichmentCaptor.capture(), eq("test explanation"), eq(false));
     Enrichment savedEnrichment = enrichmentCaptor.getValue();
     assertEquals((Long) 7L, savedEnrichment.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, enrichment.getTreatmentSamples()
@@ -477,13 +478,13 @@ public class EnrichmentViewPresenterTest {
 
   @Test
   public void remove_BanContainers() {
-    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+    presenter = new EnrichmentViewPresenter(enrichmentService, realProtocolService,
         sampleContainerService, applicationName);
     Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
     when(enrichmentService.get(any())).thenReturn(enrichment);
     presenter.init(view);
     presenter.enter("7");
-    design.protocol.setValue(entityManager.find(EnrichmentProtocol.class, 4L));
+    design.protocol.setValue(entityManager.find(Protocol.class, 4L));
     setFields();
     design.explanation.setValue("test explanation");
     design.banContainers.setValue(true);
@@ -491,8 +492,7 @@ public class EnrichmentViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(enrichmentService).undo(enrichmentCaptor.capture(), eq("test explanation"),
-        eq(true));
+    verify(enrichmentService).undo(enrichmentCaptor.capture(), eq("test explanation"), eq(true));
     Enrichment savedEnrichment = enrichmentCaptor.getValue();
     assertEquals((Long) 7L, savedEnrichment.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, enrichment.getTreatmentSamples()
@@ -554,7 +554,7 @@ public class EnrichmentViewPresenterTest {
 
   @Test
   public void enter_Enrichment() {
-    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+    presenter = new EnrichmentViewPresenter(enrichmentService, realProtocolService,
         sampleContainerService, applicationName);
     Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
     when(enrichmentService.get(any())).thenReturn(enrichment);
@@ -582,7 +582,7 @@ public class EnrichmentViewPresenterTest {
 
   @Test
   public void enter_EnrichmentDeleted() {
-    presenter = new EnrichmentViewPresenter(enrichmentService, realEnrichmentProtocolService,
+    presenter = new EnrichmentViewPresenter(enrichmentService, realProtocolService,
         sampleContainerService, applicationName);
     Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
     enrichment.setDeleted(true);

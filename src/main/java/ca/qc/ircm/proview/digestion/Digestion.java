@@ -22,8 +22,6 @@ import ca.qc.ircm.proview.treatment.TreatmentType;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 /**
  * Digestion of some samples.
@@ -31,13 +29,6 @@ import javax.persistence.ManyToOne;
 @Entity
 @DiscriminatorValue("DIGESTION")
 public class Digestion extends Treatment<DigestedSample> {
-  /**
-   * Protocol used for digestion of sample.
-   */
-  @ManyToOne
-  @JoinColumn(name = "protocolId", nullable = false)
-  private DigestionProtocol protocol;
-
   public Digestion() {
   }
 
@@ -53,13 +44,5 @@ public class Digestion extends Treatment<DigestedSample> {
   @Override
   public TreatmentType getType() {
     return TreatmentType.DIGESTION;
-  }
-
-  public DigestionProtocol getProtocol() {
-    return protocol;
-  }
-
-  public void setProtocol(DigestionProtocol protocol) {
-    this.protocol = protocol;
   }
 }

@@ -28,8 +28,10 @@ import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
@@ -54,14 +56,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.stream.Stream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionFilterTest {
   private SubmissionFilter filter;
-  private Locale locale = Locale.FRENCH;
   @Mock
   private JPAQuery<?> query;
   @Captor
@@ -72,7 +72,7 @@ public class SubmissionFilterTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    filter = new SubmissionFilter(locale);
+    filter = new SubmissionFilter();
   }
 
   @Test
@@ -104,21 +104,21 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addConditions_Service() throws Exception {
+    filter.service = Service.LC_MS_MS;
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.service.eq(Service.LC_MS_MS));
+  }
+
+  @Test
   public void addConditions_AnySampleNameContains() throws Exception {
     filter.anySampleNameContains = "test";
 
     filter.addConditions(query);
 
     verify(query).where(submission.samples.any().name.contains("test"));
-  }
-
-  @Test
-  public void addConditions_GoalContains() throws Exception {
-    filter.goalContains = "test";
-
-    filter.addConditions(query);
-
-    verify(query).where(submission.goal.contains("test"));
   }
 
   @Test
@@ -350,21 +350,21 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addCountConditions_Service() throws Exception {
+    filter.service = Service.LC_MS_MS;
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.service.eq(Service.LC_MS_MS));
+  }
+
+  @Test
   public void addCountConditions_AnySampleNameContains() throws Exception {
     filter.anySampleNameContains = "test";
 
     filter.addCountConditions(query);
 
     verify(query).where(submission.samples.any().name.contains("test"));
-  }
-
-  @Test
-  public void addCountConditions_GoalContains() throws Exception {
-    filter.goalContains = "test";
-
-    filter.addCountConditions(query);
-
-    verify(query).where(submission.goal.contains("test"));
   }
 
   @Test
@@ -577,10 +577,9 @@ public class SubmissionFilterTest {
     return submission;
   }
 
-  private Submission goal(String goal) {
-    Submission submission = new Submission();
-    submission.setGoal(goal);
-    submission.setSamples(Collections.emptyList());
+  private Submission service(Service service) {
+    Submission submission = mock(Submission.class);
+    when(submission.getService()).thenReturn(service);
     return submission;
   }
 
@@ -626,6 +625,17 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void test_experimentContains_French() {
+    filter.experimentContains = "pépin";
+
+    assertTrue(filter.test(experiment("My pépin")));
+    assertTrue(filter.test(experiment("My pepin")));
+    assertTrue(filter.test(experiment("Pépin")));
+    assertTrue(filter.test(experiment("Pepin")));
+    assertFalse(filter.test(experiment("My experiment")));
+  }
+
+  @Test
   public void test_experimentContains_Null() {
     filter.experimentContains = null;
 
@@ -642,6 +652,21 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(user("Test", "Name")));
     assertTrue(filter.test(user("My email", "My test")));
     assertTrue(filter.test(user("Email", "Test")));
+    assertFalse(filter.test(user("My experiment", "My name")));
+  }
+
+  @Test
+  public void test_userContains_French() {
+    filter.userContains = "pépin";
+
+    assertTrue(filter.test(user("My pépin", "My name")));
+    assertTrue(filter.test(user("My pepin", "My name")));
+    assertTrue(filter.test(user("Pépin", "Name")));
+    assertTrue(filter.test(user("Pepin", "Name")));
+    assertTrue(filter.test(user("My email", "My pépin")));
+    assertTrue(filter.test(user("My email", "My pepin")));
+    assertTrue(filter.test(user("Email", "Pépin")));
+    assertTrue(filter.test(user("Email", "Pepin")));
     assertFalse(filter.test(user("My experiment", "My name")));
   }
 
@@ -666,6 +691,17 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void test_directorContains_French() {
+    filter.directorContains = "pépin";
+
+    assertTrue(filter.test(director("My pépin")));
+    assertTrue(filter.test(director("My pepin")));
+    assertTrue(filter.test(director("Pépin")));
+    assertTrue(filter.test(director("Pepin")));
+    assertFalse(filter.test(director("My name")));
+  }
+
+  @Test
   public void test_directorContains_Null() {
     filter.directorContains = null;
 
@@ -675,21 +711,25 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void test_goalContains() {
-    filter.goalContains = "test";
+  public void test_service() {
+    filter.service = Service.LC_MS_MS;
 
-    assertTrue(filter.test(goal("My test")));
-    assertTrue(filter.test(goal("Test")));
-    assertFalse(filter.test(goal("My experiment")));
+    assertTrue(filter.test(service(Service.LC_MS_MS)));
+    assertFalse(filter.test(service(Service.INTACT_PROTEIN)));
+    assertFalse(filter.test(service(Service.MALDI_MS)));
+    assertFalse(filter.test(service(Service.SMALL_MOLECULE)));
+    assertFalse(filter.test(service(Service.TWO_DIMENSION_LC_MS_MS)));
   }
 
   @Test
-  public void test_goalContains_Null() {
-    filter.goalContains = null;
+  public void test_service_Null() {
+    filter.service = null;
 
-    assertTrue(filter.test(goal("My test")));
-    assertTrue(filter.test(goal("Test")));
-    assertTrue(filter.test(goal("My experiment")));
+    assertTrue(filter.test(service(Service.LC_MS_MS)));
+    assertTrue(filter.test(service(Service.INTACT_PROTEIN)));
+    assertTrue(filter.test(service(Service.MALDI_MS)));
+    assertTrue(filter.test(service(Service.SMALL_MOLECULE)));
+    assertTrue(filter.test(service(Service.TWO_DIMENSION_LC_MS_MS)));
   }
 
   @Test
@@ -698,6 +738,18 @@ public class SubmissionFilterTest {
 
     assertTrue(filter.test(sampleNames("abc", "sample_test")));
     assertTrue(filter.test(sampleNames("Test", "abc")));
+    assertFalse(filter.test(sampleNames("my_sample")));
+    assertFalse(filter.test(sampleNames("my_sample", "abc")));
+  }
+
+  @Test
+  public void test_anySampleNameContains_French() {
+    filter.anySampleNameContains = "pépin";
+
+    assertTrue(filter.test(sampleNames("abc", "sample_pépin")));
+    assertTrue(filter.test(sampleNames("abc", "sample_pepin")));
+    assertTrue(filter.test(sampleNames("Pépin", "abc")));
+    assertTrue(filter.test(sampleNames("Pepin", "abc")));
     assertFalse(filter.test(sampleNames("my_sample")));
     assertFalse(filter.test(sampleNames("my_sample", "abc")));
   }

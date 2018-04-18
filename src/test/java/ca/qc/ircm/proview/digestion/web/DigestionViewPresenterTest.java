@@ -42,7 +42,6 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -62,19 +61,20 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.digestion.DigestedSample;
 import ca.qc.ircm.proview.digestion.Digestion;
-import ca.qc.ircm.proview.digestion.DigestionProtocol;
-import ca.qc.ircm.proview.digestion.DigestionProtocolService;
 import ca.qc.ircm.proview.digestion.DigestionService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -107,7 +107,7 @@ public class DigestionViewPresenterTest {
   @Mock
   private DigestionService digestionService;
   @Mock
-  private DigestionProtocolService digestionProtocolService;
+  private ProtocolService protocolService;
   @Mock
   private SampleContainerService sampleContainerService;
   @Captor
@@ -115,7 +115,7 @@ public class DigestionViewPresenterTest {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private DigestionProtocolService realDigestionProtocolService;
+  private ProtocolService realProtocolService;
   @Value("${spring.application.name}")
   private String applicationName;
   private DigestionViewDesign design = new DigestionViewDesign();
@@ -125,7 +125,7 @@ public class DigestionViewPresenterTest {
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
   private List<Sample> samples = new ArrayList<>();
   private List<SampleContainer> containers = new ArrayList<>();
-  private List<DigestionProtocol> protocols;
+  private List<Protocol> protocols;
   private List<String> comments = new ArrayList<>();
 
   /**
@@ -133,7 +133,7 @@ public class DigestionViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new DigestionViewPresenter(digestionService, digestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, protocolService,
         sampleContainerService, applicationName);
     design = new DigestionViewDesign();
     view.design = design;
@@ -150,10 +150,10 @@ public class DigestionViewPresenterTest {
       tube2.setSample(sample);
       return Arrays.asList(tube1, tube2).stream();
     }).collect(Collectors.toList());
-    protocols = realDigestionProtocolService.all();
+    protocols = realProtocolService.all(Protocol.Type.DIGESTION);
     comments = IntStream.range(0, containers.size()).mapToObj(i -> "comment" + i)
         .collect(Collectors.toList());
-    when(digestionProtocolService.all()).thenReturn(new ArrayList<>(protocols));
+    when(protocolService.all(any())).thenReturn(new ArrayList<>(protocols));
     when(view.savedContainers()).thenReturn(new ArrayList<>(containers));
   }
 
@@ -182,8 +182,6 @@ public class DigestionViewPresenterTest {
     assertTrue(design.digestions.getStyleName().contains(COMPONENTS));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
-    assertTrue(design.down.getStyleName().contains(DOWN));
-    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
     assertTrue(design.remove.getStyleName().contains(REMOVE));
@@ -201,8 +199,6 @@ public class DigestionViewPresenterTest {
     assertEquals(resources.message(PROTOCOL_PANEL), design.protocolPanel.getCaption());
     assertEquals(resources.message(DIGESTIONS_PANEL), design.digestionsPanel.getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
-    assertEquals(resources.message(DOWN), design.down.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(SAVE), design.save.getCaption());
     assertEquals(resources.message(REMOVE), design.remove.getCaption());
     assertEquals(resources.message(BAN_CONTAINERS), design.banContainers.getCaption());
@@ -215,9 +211,9 @@ public class DigestionViewPresenterTest {
 
     assertFalse(design.protocol.isReadOnly());
     assertFalse(design.protocol.isEmptySelectionAllowed());
-    ListDataProvider<DigestionProtocol> protocols = dataProvider(design.protocol);
+    ListDataProvider<Protocol> protocols = dataProvider(design.protocol);
     assertEquals(this.protocols.size(), protocols.getItems().size());
-    for (DigestionProtocol protocol : this.protocols) {
+    for (Protocol protocol : this.protocols) {
       assertTrue(protocols.getItems().contains(protocol));
       assertEquals(protocol.getName(), design.protocol.getItemCaptionGenerator().apply(protocol));
     }
@@ -227,6 +223,8 @@ public class DigestionViewPresenterTest {
     assertEquals(this.protocols.size() + 1, protocols.getItems().size());
     assertTrue(protocols.getItems().stream()
         .filter(protocol -> protocol.getName().equals(newProtocolName)).findAny().isPresent());
+    assertEquals(Protocol.Type.DIGESTION, protocols.getItems().stream()
+        .filter(protocol -> protocol.getName().equals(newProtocolName)).findAny().get().getType());
   }
 
   @Test
@@ -236,7 +234,7 @@ public class DigestionViewPresenterTest {
     presenter.enter("");
 
     final ListDataProvider<DigestedSample> treatments = dataProvider(design.digestions);
-    assertEquals(3, design.digestions.getColumns().size());
+    assertEquals(4, design.digestions.getColumns().size());
     assertEquals(SAMPLE, design.digestions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.digestions.getColumn(SAMPLE).getCaption());
     for (DigestedSample ts : treatments.getItems()) {
@@ -261,6 +259,17 @@ public class DigestionViewPresenterTest {
           (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(COMMENT));
     }
+    assertEquals(DOWN, design.digestions.getColumns().get(3).getId());
+    assertEquals(resources.message(DOWN), design.digestions.getColumn(DOWN).getCaption());
+    assertTrue(containsInstanceOf(design.digestions.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.digestions.getColumn(DOWN).isSortable());
+    for (DigestedSample ts : treatments.getItems()) {
+      Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(ts);
+      assertTrue(button.getStyleName().contains(DOWN));
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(DOWN), button.getIconAlternateText());
+    }
     assertEquals(containers.size(), treatments.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(treatments.getItems().stream().filter(ts -> ts.getContainer().equals(container))
@@ -280,10 +289,38 @@ public class DigestionViewPresenterTest {
     TextField field =
         (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (DigestedSample ts : treatments.getItems()) {
+      field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
+    }
+  }
+
+  @Test
+  public void down_Second() {
+    presenter.init(view);
+    presenter.enter("");
+    final List<DigestedSample> treatments =
+        new ArrayList<>(dataProvider(design.digestions).getItems());
+    DigestedSample firstTs = treatments.get(1);
+    String comment = "test";
+    TextField field =
+        (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
+    field.setValue(comment);
+    Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(firstTs);
+
+    button.click();
+
+    {
+      DigestedSample ts = treatments.get(0);
+      field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+    }
+    for (int i = 1; i < treatments.size(); i++) {
+      DigestedSample ts = treatments.get(i);
       field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertEquals(comment, field.getValue());
     }
@@ -296,12 +333,14 @@ public class DigestionViewPresenterTest {
     design.digestions.sort(SAMPLE, SortDirection.DESCENDING);
     final List<DigestedSample> treatments =
         new ArrayList<>(dataProvider(design.digestions).getItems());
+    DigestedSample firstTs = treatments.get(4);
     String comment = "test";
-    TextField field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider()
-        .apply(treatments.get(4));
+    TextField field =
+        (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (DigestedSample ts : treatments) {
       field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
@@ -316,12 +355,14 @@ public class DigestionViewPresenterTest {
     design.digestions.sort(CONTAINER, SortDirection.DESCENDING);
     final List<DigestedSample> treatments =
         new ArrayList<>(dataProvider(design.digestions).getItems());
+    DigestedSample firstTs = treatments.get(5);
     String comment = "test";
-    TextField field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider()
-        .apply(treatments.get(5));
+    TextField field =
+        (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.digestions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (DigestedSample ts : treatments) {
       field = (TextField) design.digestions.getColumn(COMMENT).getValueProvider().apply(ts);
@@ -343,7 +384,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void save_NoProtocol() {
-    when(digestionProtocolService.all()).thenReturn(new ArrayList<>());
+    when(protocolService.all(any())).thenReturn(new ArrayList<>());
     presenter.init(view);
     presenter.enter("");
 
@@ -401,13 +442,13 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void save_Update() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
-    design.protocol.setValue(entityManager.find(DigestionProtocol.class, 3L));
+    design.protocol.setValue(entityManager.find(Protocol.class, 3L));
     setFields();
     design.explanation.setValue("test explanation");
 
@@ -435,7 +476,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void remove_NoExplanation() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
@@ -452,21 +493,20 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void remove() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
-    design.protocol.setValue(entityManager.find(DigestionProtocol.class, 3L));
+    design.protocol.setValue(entityManager.find(Protocol.class, 3L));
     setFields();
     design.explanation.setValue("test explanation");
 
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"),
-        eq(false));
+    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"), eq(false));
     Digestion savedDigestion = digestionCaptor.getValue();
     assertEquals((Long) 6L, savedDigestion.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, digestion.getTreatmentSamples()
@@ -476,13 +516,13 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void remove_BanContainers() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
-    design.protocol.setValue(entityManager.find(DigestionProtocol.class, 3L));
+    design.protocol.setValue(entityManager.find(Protocol.class, 3L));
     setFields();
     design.explanation.setValue("test explanation");
     design.banContainers.setValue(true);
@@ -490,8 +530,7 @@ public class DigestionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"),
-        eq(true));
+    verify(digestionService).undo(digestionCaptor.capture(), eq("test explanation"), eq(true));
     Digestion savedDigestion = digestionCaptor.getValue();
     assertEquals((Long) 6L, savedDigestion.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, digestion.getTreatmentSamples()
@@ -551,7 +590,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void enter_Digestion() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     when(digestionService.get(any())).thenReturn(digestion);
@@ -579,7 +618,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void enter_DigestionDeleted() {
-    presenter = new DigestionViewPresenter(digestionService, realDigestionProtocolService,
+    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
         sampleContainerService, applicationName);
     Digestion digestion = entityManager.find(Digestion.class, 6L);
     digestion.setDeleted(true);

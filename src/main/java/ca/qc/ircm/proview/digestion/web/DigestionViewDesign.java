@@ -28,10 +28,9 @@ public class DigestionViewDesign extends VerticalLayout {
   protected Label header;
   protected Label deleted;
   protected Panel protocolPanel;
-  protected ComboBox<ca.qc.ircm.proview.digestion.DigestionProtocol> protocol;
+  protected ComboBox<ca.qc.ircm.proview.treatment.Protocol> protocol;
   protected Panel digestionsPanel;
   protected Grid<ca.qc.ircm.proview.digestion.DigestedSample> digestions;
-  protected Button down;
   protected Panel explanationPanel;
   protected TextArea explanation;
   protected Button save;

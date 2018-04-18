@@ -22,6 +22,8 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
+import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
+import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import com.google.common.collect.Range;
@@ -39,10 +41,14 @@ import com.vaadin.data.ValidationResult;
 import com.vaadin.data.ValueContext;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.server.UserError;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ItemCaptionGenerator;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -55,6 +61,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.text.Collator;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -73,7 +80,10 @@ public class PlatesViewPresenter {
   public static final String PLATES = "plates";
   public static final String ALL = "all";
   public static final String NAME = plate.name.getMetadata().getName();
+  public static final String EMPTY_COUNT = "emptyCount";
   public static final String SAMPLE_COUNT = "sampleCount";
+  public static final String LAST_TREATMENT = "lastTreatment";
+  public static final String FILTER = "filter";
   public static final String INSERT_TIME = plate.insertTime.getMetadata().getName();
   public static final String SUBMISSION = plate.submission.getMetadata().getName();
   private static final Logger logger = LoggerFactory.getLogger(PlatesViewPresenter.class);
@@ -127,14 +137,20 @@ public class PlatesViewPresenter {
     design.plates.addStyleName(PLATES);
     design.plates.addStyleName(COMPONENTS);
     platesDataProvider.getItems().addAll(plateService.all(null));
-    filter = new PlateFilter(locale);
+    filter = new PlateFilter();
     platesDataProvider.setFilter(p -> filter.test(p));
     design.plates.setDataProvider(platesDataProvider);
     design.plates.addColumn(plate -> nameButton(plate), new ComponentRenderer()).setId(NAME)
         .setCaption(resources.message(NAME))
         .setComparator((p1, p2) -> collator.compare(p1.getName(), p2.getName()));
+    design.plates.addColumn(plate -> plate.getEmptyWellCount()).setId(EMPTY_COUNT)
+        .setCaption(resources.message(EMPTY_COUNT));
     design.plates.addColumn(plate -> plate.getSampleCount()).setId(SAMPLE_COUNT)
         .setCaption(resources.message(SAMPLE_COUNT));
+    design.plates.addColumn(plate -> {
+      Instant date = plateService.lastTreatmentOrAnalysisDate(plate);
+      return date != null ? dateFormatter.format(toLocalDate(date)) : null;
+    }).setId(LAST_TREATMENT).setCaption(resources.message(LAST_TREATMENT)).setSortable(false);
     design.plates.addColumn(plate -> dateFormatter.format(toLocalDate(plate.getInsertTime())))
         .setId(INSERT_TIME).setCaption(resources.message(INSERT_TIME));
     design.plates
@@ -146,6 +162,32 @@ public class PlatesViewPresenter {
       filter.nameContains = e.getValue();
       design.plates.getDataProvider().refreshAll();
     }));
+    HorizontalLayout emptyCountLayout = new HorizontalLayout();
+    emptyCountLayout.addComponent(new Label(resources.message(property(EMPTY_COUNT, FILTER))));
+    emptyCountLayout.addComponent(textFilter(event -> {
+      TextField field = (TextField) event.getComponent();
+      field.setComponentError(null);
+      Integer minimumEmptyCount;
+      if (!event.getValue().isEmpty()) {
+        try {
+          minimumEmptyCount = Integer.valueOf(event.getValue());
+          if (minimumEmptyCount < 0 || minimumEmptyCount > Plate.DEFAULT_PLATE_SIZE) {
+            minimumEmptyCount = null;
+            field.setComponentError(
+                new UserError(generalResources.message(OUT_OF_RANGE, 0, Plate.DEFAULT_PLATE_SIZE)));
+          } else {
+          }
+        } catch (NumberFormatException e) {
+          minimumEmptyCount = null;
+          field.setComponentError(new UserError(generalResources.message(INVALID_INTEGER)));
+        }
+      } else {
+        minimumEmptyCount = null;
+      }
+      filter.minimumEmptyCount = minimumEmptyCount;
+      design.plates.getDataProvider().refreshAll();
+    }));
+    filterRow.getCell(EMPTY_COUNT).setComponent(emptyCountLayout);
     filterRow.getCell(INSERT_TIME).setComponent(instantFilter(e -> {
       filter.insertTimeRange = e.getSavedObject();
       design.plates.getDataProvider().refreshAll();
@@ -170,6 +212,7 @@ public class PlatesViewPresenter {
             .withNullRepresentation("")
             .withValidator((value, context) -> validateName(value, context, binder.getBean()))
             .bind(NAME));
+    design.plates.sort(INSERT_TIME, SortDirection.DESCENDING);
   }
 
   private ValidationResult validateName(String value, ValueContext context, Plate plate) {

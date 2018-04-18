@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.text.Strings.normalize;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 
@@ -32,7 +33,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -43,8 +43,8 @@ public class SubmissionFilter implements Predicate<Submission> {
   public String experimentContains;
   public String userContains;
   public String directorContains;
+  public Service service;
   public String anySampleNameContains;
-  public String goalContains;
   public SampleStatus anySampleStatus;
   public Range<LocalDate> dateRange;
   public Boolean results;
@@ -52,40 +52,33 @@ public class SubmissionFilter implements Predicate<Submission> {
   public List<OrderSpecifier<?>> sortOrders;
   public Integer offset;
   public Integer limit;
-  private final Locale locale;
-
-  public SubmissionFilter() {
-    this(Locale.getDefault());
-  }
-
-  public SubmissionFilter(Locale locale) {
-    this.locale = locale;
-  }
 
   @Override
   public boolean test(Submission submission) {
     boolean test = true;
     if (experimentContains != null) {
-      test &= submission.getExperiment().toLowerCase(locale)
-          .contains(experimentContains.toLowerCase(locale));
+      String experimentContainsNormalized = normalize(experimentContains).toLowerCase();
+      String experiment = normalize(submission.getExperiment()).toLowerCase();
+      test &= experiment.contains(experimentContainsNormalized);
     }
     if (userContains != null) {
-      test &= submission.getUser().getEmail().toLowerCase(locale)
-          .contains(userContains.toLowerCase(locale))
-          || submission.getUser().getName().toLowerCase(locale)
-              .contains(userContains.toLowerCase(locale));
+      String userContainsNormalized = normalize(userContains).toLowerCase();
+      String email = normalize(submission.getUser().getEmail()).toLowerCase();
+      String name = normalize(submission.getUser().getName()).toLowerCase();
+      test &= email.contains(userContainsNormalized) || name.contains(userContainsNormalized);
     }
     if (directorContains != null) {
-      test &= submission.getLaboratory().getDirector().toLowerCase(locale)
-          .contains(directorContains.toLowerCase(locale));
+      String directorContainsNormalized = normalize(directorContains).toLowerCase();
+      String director = normalize(submission.getLaboratory().getDirector()).toLowerCase();
+      test &= director.contains(directorContainsNormalized);
+    }
+    if (service != null) {
+      test &= submission.getService() == service;
     }
     if (anySampleNameContains != null) {
-      test &= submission.getSamples().isEmpty()
-          || submission.getSamples().stream().anyMatch(sample -> sample.getName()
-              .toLowerCase(locale).contains(anySampleNameContains.toLowerCase(locale)));
-    }
-    if (goalContains != null) {
-      test &= submission.getGoal().toLowerCase(locale).contains(goalContains.toLowerCase(locale));
+      String nameContainsNormalized = normalize(anySampleNameContains).toLowerCase();
+      test &= submission.getSamples().isEmpty() || submission.getSamples().stream().anyMatch(
+          sample -> normalize(sample.getName()).toLowerCase().contains(nameContainsNormalized));
     }
     if (anySampleStatus != null) {
       test &= submission.getSamples().isEmpty() || submission.getSamples().stream()
@@ -115,11 +108,11 @@ public class SubmissionFilter implements Predicate<Submission> {
     if (directorContains != null) {
       query.where(submission.laboratory.director.contains(directorContains));
     }
+    if (service != null) {
+      query.where(submission.service.eq(service));
+    }
     if (anySampleNameContains != null) {
       query.where(submission.samples.any().name.contains(anySampleNameContains));
-    }
-    if (goalContains != null) {
-      query.where(submission.goal.contains(goalContains));
     }
     if (anySampleStatus != null) {
       query.where(submission.samples.any().status.eq(anySampleStatus));

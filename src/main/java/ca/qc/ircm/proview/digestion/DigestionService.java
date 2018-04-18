@@ -24,6 +24,8 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
+import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,7 @@ public class DigestionService extends BaseTreatmentService {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private DigestionProtocolService digestionProtocolService;
+  private ProtocolService protocolService;
   @Inject
   private DigestionActivityService digestionActivityService;
   @Inject
@@ -61,12 +63,11 @@ public class DigestionService extends BaseTreatmentService {
   }
 
   protected DigestionService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      DigestionProtocolService digestionProtocolService,
-      DigestionActivityService digestionActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
+      ProtocolService protocolService, DigestionActivityService digestionActivityService,
+      ActivityService activityService, AuthorizationService authorizationService) {
     super(entityManager, queryFactory);
     this.entityManager = entityManager;
-    this.digestionProtocolService = digestionProtocolService;
+    this.protocolService = protocolService;
     this.digestionActivityService = digestionActivityService;
     this.activityService = activityService;
     this.authorizationService = authorizationService;
@@ -95,6 +96,11 @@ public class DigestionService extends BaseTreatmentService {
    *          digestion to insert
    */
   public void insert(Digestion digestion) {
+    if (digestion.getProtocol().getType() != Protocol.Type.DIGESTION) {
+      throw new IllegalArgumentException(
+          "Protocol must be of type " + Protocol.Type.DIGESTION.name());
+    }
+
     authorizationService.checkAdminRole();
     chechSameUserForAllSamples(digestion);
     User user = authorizationService.getCurrentUser();
@@ -103,7 +109,7 @@ public class DigestionService extends BaseTreatmentService {
     digestion.setInsertTime(Instant.now());
 
     if (digestion.getProtocol().getId() == null) {
-      digestionProtocolService.insert(digestion.getProtocol());
+      protocolService.insert(digestion.getProtocol());
     }
     entityManager.persist(digestion);
     digestion.getTreatmentSamples().stream().map(ts -> ts.getSample())
@@ -140,7 +146,7 @@ public class DigestionService extends BaseTreatmentService {
     }
 
     if (digestion.getProtocol().getId() == null) {
-      digestionProtocolService.insert(digestion.getProtocol());
+      protocolService.insert(digestion.getProtocol());
     }
 
     Optional<Activity> activity = digestionActivityService.update(digestion, explanation);
