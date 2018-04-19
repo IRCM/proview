@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -116,11 +117,11 @@ public class DilutionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     Dilution old = entityManager.find(Dilution.class, dilution.getId());
-    Set<Long> dilutedSampleIds =
-        dilution.getTreatmentSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
-    if (old.getTreatmentSamples().stream().filter(ts -> !dilutedSampleIds.contains(ts.getId()))
+    Set<Long> treatedSampleIds =
+        dilution.getTreatedSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
+    if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
-      throw new IllegalArgumentException("Cannot remove " + DilutedSample.class.getSimpleName()
+      throw new IllegalArgumentException("Cannot remove " + TreatedSample.class.getSimpleName()
           + " from " + Dilution.class.getSimpleName() + " on update");
     }
 
@@ -151,8 +152,8 @@ public class DilutionService extends BaseTreatmentService {
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during dilution.
-      for (DilutedSample dilutedSample : dilution.getTreatmentSamples()) {
-        SampleContainer container = dilutedSample.getContainer();
+      for (TreatedSample treatedSample : dilution.getTreatedSamples()) {
+        SampleContainer container = treatedSample.getContainer();
         container.setBanned(true);
         bannedContainers.add(container);
 

@@ -63,10 +63,10 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
-import ca.qc.ircm.proview.standard.AddedStandard;
 import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.standard.StandardAdditionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -155,21 +155,21 @@ public class StandardAdditionViewPresenterTest {
   }
 
   private void setFields() {
-    final ListDataProvider<AddedStandard> treatments = dataProvider(design.standardAdditions);
+    final ListDataProvider<TreatedSample> treatments = dataProvider(design.standardAdditions);
     int count = 0;
-    for (AddedStandard ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
       field.setValue(Objects.toString(name.get(count++), ""));
     }
     count = 0;
-    for (AddedStandard ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(QUANTITY).getValueProvider().apply(ts);
       field.setValue(quantities.get(count++));
     }
     count = 0;
-    for (AddedStandard ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(COMMENT).getValueProvider().apply(ts);
       field.setValue(Objects.toString(comments.get(count++), ""));
@@ -221,19 +221,19 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    final ListDataProvider<AddedStandard> treatments = dataProvider(design.standardAdditions);
+    final ListDataProvider<TreatedSample> treatments = dataProvider(design.standardAdditions);
     assertEquals(5, design.standardAdditions.getColumns().size());
     assertEquals(SAMPLE, design.standardAdditions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE),
         design.standardAdditions.getColumn(SAMPLE).getCaption());
-    for (AddedStandard ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       assertEquals(ts.getSample().getName(),
           design.standardAdditions.getColumn(SAMPLE).getValueProvider().apply(ts));
     }
     assertEquals(CONTAINER, design.standardAdditions.getColumns().get(1).getId());
     assertEquals(resources.message(CONTAINER),
         design.standardAdditions.getColumn(CONTAINER).getCaption());
-    for (AddedStandard ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       assertEquals(ts.getContainer().getFullName(),
           design.standardAdditions.getColumn(CONTAINER).getValueProvider().apply(ts));
       assertEquals(ts.getContainer().isBanned() ? BANNED : "",
@@ -243,7 +243,7 @@ public class StandardAdditionViewPresenterTest {
     assertEquals(resources.message(NAME), design.standardAdditions.getColumn(NAME).getCaption());
     assertTrue(containsInstanceOf(design.standardAdditions.getColumn(NAME).getExtensions(),
         ComponentRenderer.class));
-    for (AddedStandard ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(NAME));
@@ -255,7 +255,7 @@ public class StandardAdditionViewPresenterTest {
     assertTrue(containsInstanceOf(design.standardAdditions.getColumn(QUANTITY).getExtensions(),
         ComponentRenderer.class));
     assertFalse(design.standardAdditions.getColumn(QUANTITY).isSortable());
-    for (AddedStandard ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(QUANTITY).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(QUANTITY));
@@ -266,7 +266,7 @@ public class StandardAdditionViewPresenterTest {
     assertTrue(containsInstanceOf(design.standardAdditions.getColumn(COMMENT).getExtensions(),
         ComponentRenderer.class));
     assertFalse(design.standardAdditions.getColumn(COMMENT).isSortable());
-    for (AddedStandard ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(COMMENT));
@@ -284,8 +284,8 @@ public class StandardAdditionViewPresenterTest {
   public void down() {
     presenter.init(view);
     presenter.enter("");
-    final ListDataProvider<AddedStandard> treatments = dataProvider(design.standardAdditions);
-    AddedStandard firstTs = treatments.getItems().iterator().next();
+    final ListDataProvider<TreatedSample> treatments = dataProvider(design.standardAdditions);
+    TreatedSample firstTs = treatments.getItems().iterator().next();
     String sourceVolume = "2.0";
     TextField field =
         (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(firstTs);
@@ -301,7 +301,7 @@ public class StandardAdditionViewPresenterTest {
 
     design.down.click();
 
-    for (AddedStandard ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
       assertEquals(sourceVolume, field.getValue());
       field = (TextField) design.standardAdditions.getColumn(QUANTITY).getValueProvider().apply(ts);
@@ -325,7 +325,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.standardAdditions.sort(SAMPLE, SortDirection.DESCENDING);
-    final List<AddedStandard> treatments =
+    final List<TreatedSample> treatments =
         new ArrayList<>(dataProvider(design.standardAdditions).getItems());
     String sourceVolume = "2.0";
     TextField field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider()
@@ -342,7 +342,7 @@ public class StandardAdditionViewPresenterTest {
 
     design.down.click();
 
-    for (AddedStandard ts : treatments) {
+    for (TreatedSample ts : treatments) {
       field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
       assertEquals(sourceVolume, field.getValue());
       field = (TextField) design.standardAdditions.getColumn(QUANTITY).getValueProvider().apply(ts);
@@ -357,7 +357,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.standardAdditions.sort(CONTAINER, SortDirection.DESCENDING);
-    final List<AddedStandard> treatments =
+    final List<TreatedSample> treatments =
         new ArrayList<>(dataProvider(design.standardAdditions).getItems());
     String sourceVolume = "2.0";
     TextField field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider()
@@ -374,7 +374,7 @@ public class StandardAdditionViewPresenterTest {
 
     design.down.click();
 
-    for (AddedStandard ts : treatments) {
+    for (TreatedSample ts : treatments) {
       field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
       assertEquals(sourceVolume, field.getValue());
       field = (TextField) design.standardAdditions.getColumn(QUANTITY).getValueProvider().apply(ts);
@@ -401,7 +401,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    AddedStandard ts = dataProvider(design.standardAdditions).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.standardAdditions).getItems().iterator().next();
     TextField field =
         (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
     field.setValue("");
@@ -419,7 +419,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    AddedStandard ts = dataProvider(design.standardAdditions).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.standardAdditions).getItems().iterator().next();
     TextField field =
         (TextField) design.standardAdditions.getColumn(QUANTITY).getValueProvider().apply(ts);
     field.setValue("");
@@ -449,11 +449,11 @@ public class StandardAdditionViewPresenterTest {
     verify(view, never()).showError(any());
     verify(standardAdditionService).insert(standardAdditionCaptor.capture());
     StandardAddition standardAddition = standardAdditionCaptor.getValue();
-    assertEquals(containers.size(), standardAddition.getTreatmentSamples().size());
+    assertEquals(containers.size(), standardAddition.getTreatedSamples().size());
     int count = 0;
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      AddedStandard diluted = standardAddition.getTreatmentSamples().get(i);
+      TreatedSample diluted = standardAddition.getTreatedSamples().get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
       assertEquals(name.get(count), diluted.getName());
@@ -497,11 +497,11 @@ public class StandardAdditionViewPresenterTest {
         eq("test explanation"));
     StandardAddition savedStandardAddition = standardAdditionCaptor.getValue();
     assertEquals((Long) 5L, savedStandardAddition.getId());
-    assertEquals(standardAddition.getTreatmentSamples().size(),
-        savedStandardAddition.getTreatmentSamples().size());
-    for (int i = 0; i < standardAddition.getTreatmentSamples().size(); i++) {
-      AddedStandard original = standardAddition.getTreatmentSamples().get(i);
-      AddedStandard diluted = savedStandardAddition.getTreatmentSamples().get(i);
+    assertEquals(standardAddition.getTreatedSamples().size(),
+        savedStandardAddition.getTreatedSamples().size());
+    for (int i = 0; i < standardAddition.getTreatedSamples().size(); i++) {
+      TreatedSample original = standardAddition.getTreatedSamples().get(i);
+      TreatedSample diluted = savedStandardAddition.getTreatedSamples().get(i);
       assertEquals(original.getId(), diluted.getId());
       assertEquals(original.getSample(), diluted.getSample());
       assertEquals(original.getContainer(), diluted.getContainer());
@@ -510,7 +510,7 @@ public class StandardAdditionViewPresenterTest {
       assertEquals(comments.get(i), diluted.getComment());
     }
     verify(view).showTrayNotification(resources.message(SAVED, standardAddition
-        .getTreatmentSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
+        .getTreatedSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(StandardAdditionView.VIEW_NAME, "5");
   }
 
@@ -545,12 +545,12 @@ public class StandardAdditionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(standardAdditionService).undo(standardAdditionCaptor.capture(),
-        eq("test explanation"), eq(false));
+    verify(standardAdditionService).undo(standardAdditionCaptor.capture(), eq("test explanation"),
+        eq(false));
     StandardAddition savedStandardAddition = standardAdditionCaptor.getValue();
     assertEquals((Long) 5L, savedStandardAddition.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, standardAddition
-        .getTreatmentSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
+        .getTreatedSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(StandardAdditionView.VIEW_NAME, "5");
   }
 
@@ -569,12 +569,12 @@ public class StandardAdditionViewPresenterTest {
     design.remove.click();
 
     verify(view, never()).showError(any());
-    verify(standardAdditionService).undo(standardAdditionCaptor.capture(),
-        eq("test explanation"), eq(true));
+    verify(standardAdditionService).undo(standardAdditionCaptor.capture(), eq("test explanation"),
+        eq(true));
     StandardAddition savedStandardAddition = standardAdditionCaptor.getValue();
     assertEquals((Long) 5L, savedStandardAddition.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, standardAddition
-        .getTreatmentSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
+        .getTreatedSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(StandardAdditionView.VIEW_NAME, "5");
   }
 
@@ -587,15 +587,15 @@ public class StandardAdditionViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<AddedStandard> tss = new ArrayList<>(dataProvider(design.standardAdditions).getItems());
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.standardAdditions).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      AddedStandard diluted = tss.get(i);
+      TreatedSample diluted = tss.get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
     }
-    for (AddedStandard ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -617,15 +617,15 @@ public class StandardAdditionViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<AddedStandard> tss = new ArrayList<>(dataProvider(design.standardAdditions).getItems());
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.standardAdditions).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      AddedStandard diluted = tss.get(i);
+      TreatedSample diluted = tss.get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
     }
-    for (AddedStandard ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -650,12 +650,12 @@ public class StandardAdditionViewPresenterTest {
     assertTrue(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertTrue(design.removeLayout.isVisible());
-    List<AddedStandard> tss = new ArrayList<>(dataProvider(design.standardAdditions).getItems());
-    assertEquals(standardAddition.getTreatmentSamples().size(), tss.size());
-    for (int i = 0; i < standardAddition.getTreatmentSamples().size(); i++) {
-      assertEquals(standardAddition.getTreatmentSamples().get(i), tss.get(i));
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.standardAdditions).getItems());
+    assertEquals(standardAddition.getTreatedSamples().size(), tss.size());
+    for (int i = 0; i < standardAddition.getTreatedSamples().size(); i++) {
+      assertEquals(standardAddition.getTreatedSamples().get(i), tss.get(i));
     }
-    for (AddedStandard ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -681,12 +681,12 @@ public class StandardAdditionViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<AddedStandard> tss = new ArrayList<>(dataProvider(design.standardAdditions).getItems());
-    assertEquals(standardAddition.getTreatmentSamples().size(), tss.size());
-    for (int i = 0; i < standardAddition.getTreatmentSamples().size(); i++) {
-      assertEquals(standardAddition.getTreatmentSamples().get(i), tss.get(i));
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.standardAdditions).getItems());
+    assertEquals(standardAddition.getTreatedSamples().size(), tss.size());
+    for (int i = 0; i < standardAddition.getTreatedSamples().size(); i++) {
+      assertEquals(standardAddition.getTreatedSamples().get(i), tss.get(i));
     }
-    for (AddedStandard ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
       assertTrue(field.isReadOnly());
@@ -702,7 +702,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("a");
 
-    ListDataProvider<AddedStandard> tss = dataProvider(design.standardAdditions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.standardAdditions);
     verify(view).showWarning(resources.message(INVALID_STANDARD_ADDITION));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -713,7 +713,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.enter("6");
 
     verify(standardAdditionService).get(6L);
-    ListDataProvider<AddedStandard> tss = dataProvider(design.standardAdditions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.standardAdditions);
     verify(view).showWarning(resources.message(INVALID_STANDARD_ADDITION));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -730,7 +730,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<AddedStandard> tss = dataProvider(design.standardAdditions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.standardAdditions);
     assertEquals(containers.size(), tss.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(tss.getItems().stream().filter(ts -> container == ts.getContainer()).findAny()
@@ -743,7 +743,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/");
 
-    ListDataProvider<AddedStandard> tss = dataProvider(design.standardAdditions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.standardAdditions);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -753,7 +753,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,a");
 
-    ListDataProvider<AddedStandard> tss = dataProvider(design.standardAdditions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.standardAdditions);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -764,7 +764,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<AddedStandard> tss = dataProvider(design.standardAdditions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.standardAdditions);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }

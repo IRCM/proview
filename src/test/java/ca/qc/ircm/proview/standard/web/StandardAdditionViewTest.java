@@ -25,10 +25,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
-import ca.qc.ircm.proview.standard.AddedStandard;
 import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -58,7 +58,7 @@ public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
-  private Optional<AddedStandard> find(Collection<AddedStandard> tss, long sampleId) {
+  private Optional<TreatedSample> find(Collection<TreatedSample> tss, long sampleId) {
     return tss.stream().filter(ts -> ts.getSample().getId() == sampleId).findFirst();
   }
 
@@ -167,16 +167,16 @@ public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
         .substring(viewUrl(StandardAdditionView.VIEW_NAME).length() + 1));
     StandardAddition savedStandardAddition = jpaQueryFactory.select(standardAddition)
         .from(standardAddition).where(standardAddition.id.eq(id)).fetchOne();
-    assertEquals(3, savedStandardAddition.getTreatmentSamples().size());
-    Optional<AddedStandard> opTs = find(savedStandardAddition.getTreatmentSamples(), 559);
+    assertEquals(3, savedStandardAddition.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedStandardAddition.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    AddedStandard ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals(name, ts.getName());
     assertEquals(quantity, ts.getQuantity());
     assertEquals(comment, ts.getComment());
-    opTs = find(savedStandardAddition.getTreatmentSamples(), 560);
+    opTs = find(savedStandardAddition.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
@@ -184,7 +184,7 @@ public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
     assertEquals(name, ts.getName());
     assertEquals(quantity, ts.getQuantity());
     assertEquals(comment, ts.getComment());
-    opTs = find(savedStandardAddition.getTreatmentSamples(), 444);
+    opTs = find(savedStandardAddition.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -212,16 +212,16 @@ public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
         .substring(viewUrl(StandardAdditionView.VIEW_NAME).length() + 1));
     StandardAddition savedStandardAddition = jpaQueryFactory.select(standardAddition)
         .from(standardAddition).where(standardAddition.id.eq(id)).fetchOne();
-    assertEquals(3, savedStandardAddition.getTreatmentSamples().size());
-    Optional<AddedStandard> opTs = find(savedStandardAddition.getTreatmentSamples(), 559);
+    assertEquals(3, savedStandardAddition.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedStandardAddition.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    AddedStandard ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals(name, ts.getName());
     assertEquals(quantity, ts.getQuantity());
     assertEquals(comment, ts.getComment());
-    opTs = find(savedStandardAddition.getTreatmentSamples(), 560);
+    opTs = find(savedStandardAddition.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
@@ -229,7 +229,7 @@ public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
     assertEquals(name, ts.getName());
     assertEquals(quantity, ts.getQuantity());
     assertEquals(comment, ts.getComment());
-    opTs = find(savedStandardAddition.getTreatmentSamples(), 444);
+    opTs = find(savedStandardAddition.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -254,16 +254,16 @@ public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
 
     assertEquals(viewUrl(StandardAdditionView.VIEW_NAME, "248"), getDriver().getCurrentUrl());
     StandardAddition savedStandardAddition = entityManager.find(StandardAddition.class, 248L);
-    assertEquals(2, savedStandardAddition.getTreatmentSamples().size());
-    Optional<AddedStandard> opTs = find(savedStandardAddition.getTreatmentSamples(), 599);
+    assertEquals(2, savedStandardAddition.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedStandardAddition.getTreatedSamples(), 599);
     assertTrue(opTs.isPresent());
-    AddedStandard ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 599L, ts.getSample().getId());
     assertEquals((Long) 997L, ts.getContainer().getId());
     assertEquals(name, ts.getName());
     assertEquals(quantity, ts.getQuantity());
     assertEquals(comment, ts.getComment());
-    opTs = find(savedStandardAddition.getTreatmentSamples(), 600);
+    opTs = find(savedStandardAddition.getTreatedSamples(), 600);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 600L, ts.getSample().getId());

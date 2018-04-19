@@ -29,7 +29,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("SOLUBILISATION")
-public class Solubilisation extends Treatment<SolubilisedSample> implements Data {
+public class Solubilisation extends Treatment implements Data {
   public Solubilisation() {
     super();
   }

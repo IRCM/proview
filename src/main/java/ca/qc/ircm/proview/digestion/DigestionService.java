@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -112,7 +113,7 @@ public class DigestionService extends BaseTreatmentService {
       protocolService.insert(digestion.getProtocol());
     }
     entityManager.persist(digestion);
-    digestion.getTreatmentSamples().stream().map(ts -> ts.getSample())
+    digestion.getTreatedSamples().stream().map(ts -> ts.getSample())
         .filter(sample -> sample instanceof SubmissionSample)
         .map(sample -> (SubmissionSample) sample).forEach(sample -> {
           sample.setStatus(SampleStatus.DIGESTED);
@@ -137,11 +138,11 @@ public class DigestionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     Digestion old = entityManager.find(Digestion.class, digestion.getId());
-    Set<Long> digestedSampleIds =
-        digestion.getTreatmentSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
-    if (old.getTreatmentSamples().stream().filter(ts -> !digestedSampleIds.contains(ts.getId()))
+    Set<Long> treatedSampleIds =
+        digestion.getTreatedSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
+    if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
-      throw new IllegalArgumentException("Cannot remove " + DigestedSample.class.getSimpleName()
+      throw new IllegalArgumentException("Cannot remove " + TreatedSample.class.getSimpleName()
           + " from " + Digestion.class.getSimpleName() + " on update");
     }
 
@@ -176,8 +177,8 @@ public class DigestionService extends BaseTreatmentService {
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during digestion.
-      for (DigestedSample digestedSample : digestion.getTreatmentSamples()) {
-        SampleContainer container = digestedSample.getContainer();
+      for (TreatedSample treatedSample : digestion.getTreatedSamples()) {
+        SampleContainer container = treatedSample.getContainer();
         container.setBanned(true);
         bannedContainers.add(container);
 

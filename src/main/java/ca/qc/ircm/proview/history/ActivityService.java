@@ -28,11 +28,9 @@ import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.treatment.QProtocol.protocol;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
-import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
+import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
-import ca.qc.ircm.proview.dilution.DilutedSample;
-import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
@@ -43,13 +41,10 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
-import ca.qc.ircm.proview.standard.AddedStandard;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -145,7 +140,7 @@ public class ActivityService {
         return query.fetchOne();
       }
       case Treatment.TABLE_NAME: {
-        JPAQuery<Treatment<?>> query = queryFactory.select(treatment);
+        JPAQuery<Treatment> query = queryFactory.select(treatment);
         query.from(treatment);
         query.where(treatment.id.eq(activity.getRecordId()));
         return query.fetchOne();
@@ -201,10 +196,10 @@ public class ActivityService {
     query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(treatment);
     query.where(activity.recordId.eq(treatment.id));
-    query.from(treatmentSample);
-    query.where(treatmentSample.in(treatment.treatmentSamples));
+    query.from(treatedSample);
+    query.where(treatedSample.in(treatment.treatedSamples));
     query.where(activity.tableName.eq(Treatment.TABLE_NAME));
-    query.where(treatmentSample.sample.in(samples));
+    query.where(treatedSample.sample.in(samples));
     activities.addAll(query.distinct().fetch());
     // MS Analyses.
     query = queryFactory.select(activity);
@@ -296,11 +291,11 @@ public class ActivityService {
     query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(treatment);
     query.where(activity.recordId.eq(treatment.id));
-    query.join(treatmentSample);
-    query.where(treatmentSample.in(treatment.treatmentSamples));
+    query.join(treatedSample);
+    query.where(treatedSample.in(treatment.treatedSamples));
     query.from(well);
     query.where(
-        well.eq(treatmentSample.container).or(well.eq(treatmentSample.destinationContainer)));
+        well.eq(treatedSample.container).or(well.eq(treatedSample.destinationContainer)));
     query.where(activity.tableName.eq("treatment"));
     query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());
@@ -541,16 +536,16 @@ public class ActivityService {
 
   private String treatmentDescription(ResourceBundle bundle, Activity activity,
       Submission submission) {
-    Treatment<?> treatment = entityManager.find(Treatment.class, activity.getRecordId());
-    Collection<TreatmentSample> treatmentSamples = new ArrayList<>();
+    Treatment treatment = entityManager.find(Treatment.class, activity.getRecordId());
+    Collection<TreatedSample> treatedSamples = new ArrayList<>();
     Set<Long> sampleIds =
         submission.getSamples().stream().map(sa -> sa.getId()).collect(Collectors.toSet());
-    for (TreatmentSample treatmentSample : treatment.getTreatmentSamples()) {
-      if (sampleIds.contains(treatmentSample.getSample().getId())) {
-        treatmentSamples.add(treatmentSample);
+    for (TreatedSample treatedSample : treatment.getTreatedSamples()) {
+      if (sampleIds.contains(treatedSample.getSample().getId())) {
+        treatedSamples.add(treatedSample);
       }
     }
-    return treatmentDescription(bundle, activity, treatment, treatmentSamples);
+    return treatmentDescription(bundle, activity, treatment, treatedSamples);
   }
 
   private String treatmentDescription(ResourceBundle bundle, Activity activity, Plate plate) {
@@ -558,83 +553,70 @@ public class ActivityService {
     for (Well well : plate.getWells()) {
       wellIds.add(well.getId());
     }
-    Treatment<?> treatment = entityManager.find(Treatment.class, activity.getRecordId());
-    Collection<TreatmentSample> treatmentSamples = new ArrayList<>();
-    for (TreatmentSample treatmentSample : treatment.getTreatmentSamples()) {
-      if (treatmentSample.getContainer() instanceof Well
-          && wellIds.contains(treatmentSample.getContainer().getId())) {
-        treatmentSamples.add(treatmentSample);
-      } else if (treatmentSample instanceof TransferedSample) {
-        TransferedSample transferedSample = (TransferedSample) treatmentSample;
-        if (transferedSample.getDestinationContainer() instanceof Well
-            && wellIds.contains(transferedSample.getDestinationContainer().getId())) {
-          treatmentSamples.add(treatmentSample);
-        }
-      } else if (treatmentSample instanceof Fraction) {
-        Fraction fraction = (Fraction) treatmentSample;
-        if (fraction.getDestinationContainer() instanceof Well
-            && wellIds.contains(fraction.getDestinationContainer().getId())) {
-          treatmentSamples.add(treatmentSample);
+    Treatment treatment = entityManager.find(Treatment.class, activity.getRecordId());
+    Collection<TreatedSample> treatedSamples = new ArrayList<>();
+    for (TreatedSample treatedSample : treatment.getTreatedSamples()) {
+      if (treatedSample.getContainer() instanceof Well
+          && wellIds.contains(treatedSample.getContainer().getId())) {
+        treatedSamples.add(treatedSample);
+      } else if (treatedSample.getDestinationContainer() != null) {
+        if (treatedSample.getDestinationContainer() instanceof Well
+            && wellIds.contains(treatedSample.getDestinationContainer().getId())) {
+          treatedSamples.add(treatedSample);
         }
       }
     }
-    return treatmentDescription(bundle, activity, treatment, treatmentSamples);
+    return treatmentDescription(bundle, activity, treatment, treatedSamples);
   }
 
-  private String treatmentDescription(ResourceBundle bundle, Activity activity,
-      Treatment<?> treatment, Collection<TreatmentSample> treatmentSamples) {
+  private String treatmentDescription(ResourceBundle bundle, Activity activity, Treatment treatment,
+      Collection<TreatedSample> treatedSamples) {
     StringBuilder message = new StringBuilder();
     String key = "Treatment." + treatment.getType();
     message.append(message(bundle, key + "." + activity.getActionType()));
-    for (TreatmentSample treatmentSample : treatmentSamples) {
-      String container = containerMessage(bundle, treatmentSample.getContainer());
+    for (TreatedSample treatedSample : treatedSamples) {
+      String container = containerMessage(bundle, treatedSample.getContainer());
       message.append("\n");
       switch (treatment.getType()) {
         case DIGESTION:
         case ENRICHMENT:
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
-              treatmentSample.getContainer().getType().ordinal(), container));
+          message.append(message(bundle, key + ".Sample", treatedSample.getSample().getName(),
+              treatedSample.getContainer().getType().ordinal(), container));
           break;
         case DILUTION: {
-          DilutedSample dilutedSample = (DilutedSample) treatmentSample;
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
-              treatmentSample.getContainer().getType().ordinal(), container,
-              dilutedSample.getSourceVolume(), dilutedSample.getSolvent(),
-              dilutedSample.getSolventVolume()));
+          message.append(message(bundle, key + ".Sample", treatedSample.getSample().getName(),
+              treatedSample.getContainer().getType().ordinal(), container,
+              treatedSample.getSourceVolume(), treatedSample.getSolvent(),
+              treatedSample.getSolventVolume()));
           break;
         }
         case FRACTIONATION: {
-          Fraction fraction = (Fraction) treatmentSample;
           String destinationContainer =
-              containerMessage(bundle, fraction.getDestinationContainer());
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
-              fraction.getContainer().getType().ordinal(), container,
-              fraction.getDestinationContainer().getType().ordinal(), destinationContainer,
-              fraction.getPosition()));
+              containerMessage(bundle, treatedSample.getDestinationContainer());
+          message.append(message(bundle, key + ".Sample", treatedSample.getSample().getName(),
+              treatedSample.getContainer().getType().ordinal(), container,
+              treatedSample.getDestinationContainer().getType().ordinal(), destinationContainer,
+              treatedSample.getPosition()));
           break;
         }
         case SOLUBILISATION: {
-          SolubilisedSample solubilisedSample = (SolubilisedSample) treatmentSample;
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
-              treatmentSample.getContainer().getType().ordinal(), container,
-              solubilisedSample.getSolvent(), solubilisedSample.getSolventVolume()));
+          message.append(message(bundle, key + ".Sample", treatedSample.getSample().getName(),
+              treatedSample.getContainer().getType().ordinal(), container,
+              treatedSample.getSolvent(), treatedSample.getSolventVolume()));
           break;
         }
         case STANDARD_ADDITION: {
-          AddedStandard addedStandard = (AddedStandard) treatmentSample;
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
-              treatmentSample.getContainer().getType().ordinal(), container,
-              addedStandard.getName(), addedStandard.getQuantity()));
+          message.append(message(bundle, key + ".Sample", treatedSample.getSample().getName(),
+              treatedSample.getContainer().getType().ordinal(), container,
+              treatedSample.getName(), treatedSample.getQuantity()));
           break;
         }
         case TRANSFER: {
-          TransferedSample transferedSample = (TransferedSample) treatmentSample;
           String destinationContainer =
-              containerMessage(bundle, transferedSample.getDestinationContainer());
-          message.append(message(bundle, key + ".Sample", treatmentSample.getSample().getName(),
-              transferedSample.getContainer().getType().ordinal(), container,
-              transferedSample.getDestinationContainer().getType().ordinal(),
-              destinationContainer));
+              containerMessage(bundle, treatedSample.getDestinationContainer());
+          message.append(message(bundle, key + ".Sample", treatedSample.getSample().getName(),
+              treatedSample.getContainer().getType().ordinal(), container,
+              treatedSample.getDestinationContainer().getType().ordinal(), destinationContainer));
           break;
         }
         default:

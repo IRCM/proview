@@ -39,6 +39,7 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -107,17 +108,17 @@ public class FractionationServiceTest {
         fractionation.getInsertTime());
     assertEquals(false, fractionation.isDeleted());
     assertEquals(null, fractionation.getDeletionExplanation());
-    Fraction fraction = fractionation.getTreatmentSamples().get(0);
-    assertEquals((Long) 2L, fraction.getId());
-    assertEquals(fractionation, fraction.getFractionation());
-    assertEquals(SampleContainerType.TUBE, fraction.getContainer().getType());
-    assertEquals((Long) 1L, fraction.getContainer().getId());
-    assertEquals(SampleContainerType.TUBE, fraction.getDestinationContainer().getType());
-    assertEquals((Long) 6L, fraction.getDestinationContainer().getId());
-    assertEquals(null, fraction.getComment());
-    assertEquals((Integer) 1, fraction.getPosition());
-    assertEquals((Integer) 1, fraction.getNumber());
-    assertEquals(null, fraction.getPiInterval());
+    TreatedSample treatedSample = fractionation.getTreatedSamples().get(0);
+    assertEquals((Long) 2L, treatedSample.getId());
+    assertEquals(fractionation, treatedSample.getTreatment());
+    assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
+    assertEquals((Long) 1L, treatedSample.getContainer().getId());
+    assertEquals(SampleContainerType.TUBE, treatedSample.getDestinationContainer().getType());
+    assertEquals((Long) 6L, treatedSample.getDestinationContainer().getId());
+    assertEquals(null, treatedSample.getComment());
+    assertEquals((Integer) 1, treatedSample.getPosition());
+    assertEquals((Integer) 1, treatedSample.getNumber());
+    assertEquals(null, treatedSample.getPiInterval());
   }
 
   @Test
@@ -133,12 +134,12 @@ public class FractionationServiceTest {
     Tube tube = new Tube(6L);
     tube.setSample(sample);
 
-    Fraction detail = fractionationService.search(tube);
+    TreatedSample detail = fractionationService.search(tube);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNotNull(detail);
     assertEquals((Long) 2L, detail.getId());
-    assertEquals("FAM119A_band_01.F1", detail.getName());
+    assertEquals("FAM119A_band_01.F1", detail.getFractionName());
   }
 
   @Test
@@ -147,7 +148,7 @@ public class FractionationServiceTest {
     Tube tube = new Tube(1L);
     tube.setSample(sample);
 
-    Fraction detail = fractionationService.search(tube);
+    TreatedSample detail = fractionationService.search(tube);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNull(detail);
@@ -155,7 +156,7 @@ public class FractionationServiceTest {
 
   @Test
   public void search_Null() {
-    Fraction detail = fractionationService.search(null);
+    TreatedSample detail = fractionationService.search(null);
 
     assertNull(detail);
   }
@@ -164,18 +165,18 @@ public class FractionationServiceTest {
   public void insert_Tube() {
     Fractionation fractionation = new Fractionation();
     fractionation.setFractionationType(FractionationType.MUDPIT);
-    final List<Fraction> fractions = new ArrayList<>();
+    final List<TreatedSample> fractions = new ArrayList<>();
     Sample sample = new SubmissionSample(1L, "FAM119A_band_01");
     final Tube sourceTube = new Tube(1L);
     Tube destinationTube = new Tube();
     destinationTube.setSample(sample);
     destinationTube.setName("unit_test_tube_" + sample.getName());
-    Fraction fraction = new Fraction();
-    fraction.setSample(sample);
-    fraction.setContainer(sourceTube);
-    fraction.setDestinationContainer(destinationTube);
-    fractions.add(fraction);
-    fractionation.setTreatmentSamples(fractions);
+    TreatedSample treatedSample = new TreatedSample();
+    treatedSample.setSample(sample);
+    treatedSample.setContainer(sourceTube);
+    treatedSample.setDestinationContainer(destinationTube);
+    fractions.add(treatedSample);
+    fractionation.setTreatedSamples(fractions);
 
     try {
       fractionationService.insert(fractionation);
@@ -187,7 +188,7 @@ public class FractionationServiceTest {
 
   @Test
   public void insert_Well() {
-    final List<Fraction> fractions = new ArrayList<>();
+    final List<TreatedSample> fractions = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     final Tube sourceTube = new Tube(1L);
     Well destinationWell1 = entityManager.find(Well.class, 134L);
@@ -196,20 +197,20 @@ public class FractionationServiceTest {
     entityManager.detach(destinationWell2);
     destinationWell1.setSample(sample);
     destinationWell2.setSample(sample);
-    Fraction fraction = new Fraction();
-    fraction.setSample(sample);
-    fraction.setContainer(sourceTube);
-    fraction.setDestinationContainer(destinationWell1);
-    fraction.setNumber(1);
-    fractions.add(fraction);
-    fraction = new Fraction();
-    fraction.setSample(sample);
-    fraction.setContainer(sourceTube);
-    fraction.setDestinationContainer(destinationWell2);
-    fraction.setNumber(2);
-    fractions.add(fraction);
+    TreatedSample treatedSample = new TreatedSample();
+    treatedSample.setSample(sample);
+    treatedSample.setContainer(sourceTube);
+    treatedSample.setDestinationContainer(destinationWell1);
+    treatedSample.setNumber(1);
+    fractions.add(treatedSample);
+    treatedSample = new TreatedSample();
+    treatedSample.setSample(sample);
+    treatedSample.setContainer(sourceTube);
+    treatedSample.setDestinationContainer(destinationWell2);
+    treatedSample.setNumber(2);
+    fractions.add(treatedSample);
     Fractionation fractionation = new Fractionation();
-    fractionation.setTreatmentSamples(fractions);
+    fractionation.setTreatedSamples(fractions);
     when(fractionationActivityService.insert(any(Fractionation.class))).thenReturn(activity);
 
     fractionationService.insert(fractionation);
@@ -227,51 +228,51 @@ public class FractionationServiceTest {
     assertTrue(before.isBefore(fractionation.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(fractionation.getInsertTime()));
-    assertEquals(2, fractionation.getTreatmentSamples().size());
-    fraction = fractionation.getTreatmentSamples().get(0);
-    assertEquals((Long) 1L, fraction.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, fraction.getContainer().getType());
-    assertEquals((Long) 1L, fraction.getContainer().getId());
-    assertEquals(SampleContainerType.WELL, fraction.getDestinationContainer().getType());
-    assertEquals((Long) 134L, fraction.getDestinationContainer().getId());
+    assertEquals(2, fractionation.getTreatedSamples().size());
+    treatedSample = fractionation.getTreatedSamples().get(0);
+    assertEquals((Long) 1L, treatedSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
+    assertEquals((Long) 1L, treatedSample.getContainer().getId());
+    assertEquals(SampleContainerType.WELL, treatedSample.getDestinationContainer().getType());
+    assertEquals((Long) 134L, treatedSample.getDestinationContainer().getId());
     destinationWell1 = entityManager.find(Well.class, 134L);
     assertEquals(2, destinationWell1.getVersion());
-    assertEquals((Integer) 1, fraction.getNumber());
-    assertEquals((Integer) 3, fraction.getPosition());
-    fraction = fractionation.getTreatmentSamples().get(1);
-    assertEquals((Long) 1L, fraction.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, fraction.getContainer().getType());
-    assertEquals((Long) 1L, fraction.getContainer().getId());
-    assertEquals(SampleContainerType.WELL, fraction.getDestinationContainer().getType());
-    assertEquals((Long) 135L, fraction.getDestinationContainer().getId());
+    assertEquals((Integer) 1, treatedSample.getNumber());
+    assertEquals((Integer) 3, treatedSample.getPosition());
+    treatedSample = fractionation.getTreatedSamples().get(1);
+    assertEquals((Long) 1L, treatedSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
+    assertEquals((Long) 1L, treatedSample.getContainer().getId());
+    assertEquals(SampleContainerType.WELL, treatedSample.getDestinationContainer().getType());
+    assertEquals((Long) 135L, treatedSample.getDestinationContainer().getId());
     destinationWell1 = entityManager.find(Well.class, 135L);
     assertEquals(2, destinationWell1.getVersion());
-    assertEquals((Integer) 2, fraction.getNumber());
-    assertEquals((Integer) 4, fraction.getPosition());
-    assertTrue(before.isBefore(fraction.getDestinationContainer().getTimestamp()));
-    assertTrue(after.isAfter(fraction.getDestinationContainer().getTimestamp()));
+    assertEquals((Integer) 2, treatedSample.getNumber());
+    assertEquals((Integer) 4, treatedSample.getPosition());
+    assertTrue(before.isBefore(treatedSample.getDestinationContainer().getTimestamp()));
+    assertTrue(after.isAfter(treatedSample.getDestinationContainer().getTimestamp()));
   }
 
   @Test
   public void insert_SamplesFromMultipleUser() {
     Fractionation fractionation = new Fractionation();
     fractionation.setFractionationType(FractionationType.MUDPIT);
-    final List<Fraction> fractions = new ArrayList<>();
+    final List<TreatedSample> fractions = new ArrayList<>();
     final Tube tube1 = entityManager.find(Tube.class, 3L);
     final Tube tube2 = entityManager.find(Tube.class, 8L);
     Well destinationWell1 = new Well(134L);
-    Fraction fraction1 = new Fraction();
+    TreatedSample fraction1 = new TreatedSample();
     fraction1.setSample(tube1.getSample());
     fraction1.setContainer(tube1);
     fraction1.setDestinationContainer(destinationWell1);
     fractions.add(fraction1);
     Well destinationWell2 = new Well(135L);
-    Fraction fraction2 = new Fraction();
+    TreatedSample fraction2 = new TreatedSample();
     fraction2.setSample(tube2.getSample());
     fraction2.setContainer(tube2);
     fraction2.setDestinationContainer(destinationWell2);
     fractions.add(fraction2);
-    fractionation.setTreatmentSamples(fractions);
+    fractionation.setTreatedSamples(fractions);
 
     try {
       fractionationService.insert(fractionation);
@@ -285,24 +286,24 @@ public class FractionationServiceTest {
   public void insert_SamplesFromOneUserAndControl() {
     Fractionation fractionation = new Fractionation();
     fractionation.setFractionationType(FractionationType.MUDPIT);
-    final List<Fraction> fractions = new ArrayList<>();
+    final List<TreatedSample> fractions = new ArrayList<>();
     final Tube tube1 = entityManager.find(Tube.class, 3L);
     final Tube tube2 = entityManager.find(Tube.class, 4L);
     Well destinationWell1 = entityManager.find(Well.class, 134L);
     entityManager.detach(destinationWell1);
-    Fraction fraction1 = new Fraction();
+    TreatedSample fraction1 = new TreatedSample();
     fraction1.setSample(tube1.getSample());
     fraction1.setContainer(tube1);
     fraction1.setDestinationContainer(destinationWell1);
     fractions.add(fraction1);
     Well destinationWell2 = entityManager.find(Well.class, 135L);
     entityManager.detach(destinationWell2);
-    Fraction fraction2 = new Fraction();
+    TreatedSample fraction2 = new TreatedSample();
     fraction2.setSample(tube2.getSample());
     fraction2.setContainer(tube2);
     fraction2.setDestinationContainer(destinationWell2);
     fractions.add(fraction2);
-    fractionation.setTreatmentSamples(fractions);
+    fractionation.setTreatedSamples(fractions);
 
     try {
       fractionationService.insert(fractionation);

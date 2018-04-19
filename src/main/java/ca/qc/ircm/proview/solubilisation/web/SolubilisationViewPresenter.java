@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.solubilisation.web;
 
-import static ca.qc.ircm.proview.solubilisation.QSolubilisedSample.solubilisedSample;
+import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.solubilisation.SolubilisationService;
-import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -69,12 +69,11 @@ public class SolubilisationViewPresenter implements BinderValidator {
   public static final String DELETED = "deleted";
   public static final String SOLUBILISATIONS_PANEL = "solubilisationsPanel";
   public static final String SOLUBILISATIONS = "solubilisations";
-  public static final String SAMPLE = solubilisedSample.sample.getMetadata().getName();
-  public static final String CONTAINER = solubilisedSample.container.getMetadata().getName();
-  public static final String SOLVENT = solubilisedSample.solvent.getMetadata().getName();
-  public static final String SOLVENT_VOLUME =
-      solubilisedSample.solventVolume.getMetadata().getName();
-  public static final String COMMENT = solubilisedSample.comment.getMetadata().getName();
+  public static final String SAMPLE = treatedSample.sample.getMetadata().getName();
+  public static final String CONTAINER = treatedSample.container.getMetadata().getName();
+  public static final String SOLVENT = treatedSample.solvent.getMetadata().getName();
+  public static final String SOLVENT_VOLUME = treatedSample.solventVolume.getMetadata().getName();
+  public static final String COMMENT = treatedSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
@@ -91,12 +90,12 @@ public class SolubilisationViewPresenter implements BinderValidator {
   private SolubilisationView view;
   private SolubilisationViewDesign design;
   private Binder<Solubilisation> binder = new BeanValidationBinder<>(Solubilisation.class);
-  private List<SolubilisedSample> solubilisations = new ArrayList<>();
-  private ListDataProvider<SolubilisedSample> solubilisationsDataProvider = DataProvider.ofItems();
-  private Map<SolubilisedSample, Binder<SolubilisedSample>> solubilisationBinders = new HashMap<>();
-  private Map<SolubilisedSample, TextField> solventFields = new HashMap<>();
-  private Map<SolubilisedSample, TextField> solventVolumeFields = new HashMap<>();
-  private Map<SolubilisedSample, TextField> commentFields = new HashMap<>();
+  private List<TreatedSample> solubilisations = new ArrayList<>();
+  private ListDataProvider<TreatedSample> solubilisationsDataProvider = DataProvider.ofItems();
+  private Map<TreatedSample, Binder<TreatedSample>> solubilisationBinders = new HashMap<>();
+  private Map<TreatedSample, TextField> solventFields = new HashMap<>();
+  private Map<TreatedSample, TextField> solventVolumeFields = new HashMap<>();
+  private Map<TreatedSample, TextField> commentFields = new HashMap<>();
   @Inject
   private SolubilisationService solubilisationService;
   @Inject
@@ -172,9 +171,9 @@ public class SolubilisationViewPresenter implements BinderValidator {
     design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
-  private Binder<SolubilisedSample> binder(SolubilisedSample ts) {
+  private Binder<TreatedSample> binder(TreatedSample ts) {
     final MessageResource generalResources = view.getGeneralResources();
-    Binder<SolubilisedSample> binder = new BeanValidationBinder<>(SolubilisedSample.class);
+    Binder<TreatedSample> binder = new BeanValidationBinder<>(TreatedSample.class);
     binder.setBean(ts);
     solubilisationBinders.put(ts, binder);
     binder.forField(solventField(ts)).asRequired(generalResources.message(REQUIRED))
@@ -187,7 +186,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     return binder;
   }
 
-  private TextField solventField(SolubilisedSample ts) {
+  private TextField solventField(TreatedSample ts) {
     if (solventFields.get(ts) != null) {
       return solventFields.get(ts);
     } else {
@@ -200,7 +199,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     }
   }
 
-  private TextField solventVolumeField(SolubilisedSample ts) {
+  private TextField solventVolumeField(TreatedSample ts) {
     if (solventVolumeFields.get(ts) != null) {
       return solventVolumeFields.get(ts);
     } else {
@@ -213,7 +212,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     }
   }
 
-  private TextField commentField(SolubilisedSample ts) {
+  private TextField commentField(TreatedSample ts) {
     if (commentFields.get(ts) != null) {
       return commentFields.get(ts);
     } else {
@@ -227,7 +226,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
 
   private void down() {
     if (!solubilisations.isEmpty()) {
-      SolubilisedSample first = gridItems(design.solubilisations).findFirst().orElse(null);
+      TreatedSample first = gridItems(design.solubilisations).findFirst().orElse(null);
       String solvent = solventFields.get(first).getValue();
       String solventVolume = solventVolumeFields.get(first).getValue();
       String comment = commentFields.get(first).getValue();
@@ -248,7 +247,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     }
     boolean valid = true;
     valid &= validate(binder);
-    for (Binder<SolubilisedSample> binder : solubilisationBinders.values()) {
+    for (Binder<TreatedSample> binder : solubilisationBinders.values()) {
       valid &= validate(binder);
     }
     if (!valid) {
@@ -265,7 +264,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
       final MessageResource resources = view.getResources();
       final MessageResource generalResources = view.getGeneralResources();
       Solubilisation solubilisation = binder.getBean();
-      solubilisation.setTreatmentSamples(solubilisations);
+      solubilisation.setTreatedSamples(solubilisations);
       if (solubilisation.getId() != null) {
         solubilisationService.update(solubilisation, design.explanation.getValue());
       } else {
@@ -339,7 +338,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       solubilisations = view.savedContainers().stream().map(container -> {
-        SolubilisedSample ts = new SolubilisedSample();
+        TreatedSample ts = new TreatedSample();
         ts.setSample(container.getSample());
         ts.setContainer(container);
         return ts;
@@ -356,7 +355,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
         for (String rawId : rawIds) {
           Long id = Long.valueOf(rawId);
           SampleContainer container = sampleContainerService.get(id);
-          SolubilisedSample ts = new SolubilisedSample();
+          TreatedSample ts = new TreatedSample();
           ts.setSample(container.getSample());
           ts.setContainer(container);
           solubilisations.add(ts);
@@ -371,7 +370,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
         Solubilisation solubilisation = solubilisationService.get(id);
         binder.setBean(solubilisation);
         if (solubilisation != null) {
-          solubilisations = solubilisation.getTreatmentSamples();
+          solubilisations = solubilisation.getTreatedSamples();
           design.deleted.setVisible(solubilisation.isDeleted());
           design.explanationPanel.setVisible(!solubilisation.isDeleted());
           design.save.setVisible(!solubilisation.isDeleted());

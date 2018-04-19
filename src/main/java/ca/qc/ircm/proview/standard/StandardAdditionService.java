@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -117,11 +118,11 @@ public class StandardAdditionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     StandardAddition old = entityManager.find(StandardAddition.class, standardAddition.getId());
-    Set<Long> addedStandardIds = standardAddition.getTreatmentSamples().stream()
+    Set<Long> treatedSampleIds = standardAddition.getTreatedSamples().stream()
         .map(ts -> ts.getId()).collect(Collectors.toSet());
-    if (old.getTreatmentSamples().stream().filter(ts -> !addedStandardIds.contains(ts.getId()))
+    if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
-      throw new IllegalArgumentException("Cannot remove " + AddedStandard.class.getSimpleName()
+      throw new IllegalArgumentException("Cannot remove " + TreatedSample.class.getSimpleName()
           + " from " + StandardAddition.class.getSimpleName() + " on update");
     }
 
@@ -145,8 +146,7 @@ public class StandardAdditionService extends BaseTreatmentService {
    *          true if containers used in standard addition should be banned, this will also ban any
    *          container were samples were transfered after standard addition
    */
-  public void undo(StandardAddition standardAddition, String explanation,
-      boolean banContainers) {
+  public void undo(StandardAddition standardAddition, String explanation, boolean banContainers) {
     authorizationService.checkAdminRole();
 
     standardAddition.setDeleted(true);
@@ -154,8 +154,8 @@ public class StandardAdditionService extends BaseTreatmentService {
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during standardAddition.
-      for (AddedStandard addedStandard : standardAddition.getTreatmentSamples()) {
-        SampleContainer container = addedStandard.getContainer();
+      for (TreatedSample treatedSample : standardAddition.getTreatedSamples()) {
+        SampleContainer container = treatedSample.getContainer();
         container.setBanned(true);
         bannedContainers.add(container);
 

@@ -27,7 +27,7 @@ public class DilutionViewDesign extends VerticalLayout {
   protected Label header;
   protected Label deleted;
   protected Panel dilutionsPanel;
-  protected Grid<ca.qc.ircm.proview.dilution.DilutedSample> dilutions;
+  protected Grid<ca.qc.ircm.proview.treatment.TreatedSample> dilutions;
   protected Button down;
   protected Panel explanationPanel;
   protected TextArea explanation;

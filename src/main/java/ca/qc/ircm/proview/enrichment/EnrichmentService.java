@@ -25,6 +25,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.ProtocolService;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -106,7 +107,7 @@ public class EnrichmentService extends BaseTreatmentService {
       protocolService.insert(enrichment.getProtocol());
     }
     entityManager.persist(enrichment);
-    enrichment.getTreatmentSamples().stream().map(ts -> ts.getSample())
+    enrichment.getTreatedSamples().stream().map(ts -> ts.getSample())
         .filter(sample -> sample instanceof SubmissionSample)
         .map(sample -> (SubmissionSample) sample).forEach(sample -> {
           sample.setStatus(SampleStatus.ENRICHED);
@@ -131,11 +132,11 @@ public class EnrichmentService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     Enrichment old = entityManager.find(Enrichment.class, enrichment.getId());
-    Set<Long> enrichedSampleIds =
-        enrichment.getTreatmentSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
-    if (old.getTreatmentSamples().stream().filter(ts -> !enrichedSampleIds.contains(ts.getId()))
+    Set<Long> treatedSampleIds =
+        enrichment.getTreatedSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
+    if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
-      throw new IllegalArgumentException("Cannot remove " + EnrichedSample.class.getSimpleName()
+      throw new IllegalArgumentException("Cannot remove " + TreatedSample.class.getSimpleName()
           + " from " + Enrichment.class.getSimpleName() + " on update");
     }
 
@@ -170,8 +171,8 @@ public class EnrichmentService extends BaseTreatmentService {
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during enrichment.
-      for (EnrichedSample enrichedSample : enrichment.getTreatmentSamples()) {
-        SampleContainer container = enrichedSample.getContainer();
+      for (TreatedSample treatedSample : enrichment.getTreatedSamples()) {
+        SampleContainer container = treatedSample.getContainer();
         container.setBanned(true);
         bannedContainers.add(container);
 

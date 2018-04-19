@@ -28,7 +28,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("DILUTION")
-public class Dilution extends Treatment<DilutedSample> {
+public class Dilution extends Treatment {
   public Dilution() {
   }
 

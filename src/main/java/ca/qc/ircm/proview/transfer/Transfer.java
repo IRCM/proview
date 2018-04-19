@@ -28,7 +28,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("TRANSFER")
-public class Transfer extends Treatment<TransferedSample> {
+public class Transfer extends Treatment {
   public Transfer() {
     super();
   }

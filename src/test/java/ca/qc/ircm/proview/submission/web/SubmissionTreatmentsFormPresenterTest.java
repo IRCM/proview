@@ -35,16 +35,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.digestion.DigestedSample;
 import ca.qc.ircm.proview.digestion.Digestion;
 import ca.qc.ircm.proview.digestion.web.DigestionView;
-import ca.qc.ircm.proview.dilution.DilutedSample;
 import ca.qc.ircm.proview.dilution.Dilution;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
-import ca.qc.ircm.proview.enrichment.EnrichedSample;
 import ca.qc.ircm.proview.enrichment.Enrichment;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
-import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.fractionation.web.FractionationView;
@@ -56,18 +52,16 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
-import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
 import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
-import ca.qc.ircm.proview.standard.AddedStandard;
 import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
-import ca.qc.ircm.proview.transfer.TransferedSample;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -114,35 +108,35 @@ public class SubmissionTreatmentsFormPresenterTest {
   private Tube tube1;
   private Tube tube2;
   private Solubilisation tubeSolubilisation;
-  private SolubilisedSample tubeSolubilisedSample;
+  private TreatedSample tubeSolubilisedSample;
   private Solubilisation plateSolubilisation;
-  private SolubilisedSample plateSolubilisedSample;
+  private TreatedSample plateSolubilisedSample;
   private Digestion tubeDigestion;
-  private DigestedSample tubeDigestedSample;
-  private DigestedSample tubeDigestedSample2;
+  private TreatedSample tubeDigestedSample;
+  private TreatedSample tubeDigestedSample2;
   private Digestion plateDigestion;
-  private DigestedSample plateDigestedSample;
+  private TreatedSample plateDigestedSample;
   private StandardAddition tubeStandardAddition;
-  private AddedStandard tubeAddedStandard;
+  private TreatedSample tubeAddedStandard;
   private StandardAddition plateStandardAddition;
-  private AddedStandard plateAddedStandard;
+  private TreatedSample plateAddedStandard;
   private Enrichment tubeEnrichment;
-  private EnrichedSample tubeEnrichedSample;
+  private TreatedSample tubeEnrichedSample;
   private Enrichment plateEnrichment;
-  private EnrichedSample plateEnrichedSample;
+  private TreatedSample plateEnrichedSample;
   private Dilution tubeDilution;
-  private DilutedSample tubeDilutedSample;
+  private TreatedSample tubeDilutedSample;
   private Dilution plateDilution;
-  private DilutedSample plateDilutedSample;
+  private TreatedSample plateDilutedSample;
   private Fractionation tubeFractionation;
-  private Fraction tubeFractionatedSample;
-  private Fraction tubeFractionatedSample2;
+  private TreatedSample tubeFractionatedSample;
+  private TreatedSample tubeFractionatedSample2;
   private Fractionation plateFractionation;
-  private Fraction plateFractionatedSample;
+  private TreatedSample plateFractionatedSample;
   private Transfer tubeTransfer;
-  private TransferedSample tubeTransferedSample;
+  private TreatedSample tubeTransferedSample;
   private Transfer plateTransfer;
-  private TransferedSample plateTransferedSample;
+  private TreatedSample plateTransferedSample;
 
   /**
    * Before test.
@@ -184,20 +178,20 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeSolubilisation = new Solubilisation(1L);
     tubeSolubilisation
         .setInsertTime(Instant.now().minus(tubeSolubilisation.getId(), ChronoUnit.HOURS));
-    tubeSolubilisedSample = new SolubilisedSample();
-    tubeSolubilisedSample.setSolubilisation(tubeSolubilisation);
+    tubeSolubilisedSample = new TreatedSample();
+    tubeSolubilisedSample.setTreatment(tubeSolubilisation);
     tubeSolubilisedSample.setSample(sample1);
     tubeSolubilisedSample.setSolvent("ch3oh");
     tubeSolubilisedSample.setSolventVolume(10.0);
     tubeSolubilisedSample.setComment("tube_digestion_comment_1");
     tubeSolubilisedSample.setContainer(new Tube());
     ((Tube) tubeSolubilisedSample.getContainer()).setName("tube_1");
-    tubeSolubilisation.setTreatmentSamples(Arrays.asList(tubeSolubilisedSample));
+    tubeSolubilisation.setTreatedSamples(Arrays.asList(tubeSolubilisedSample));
     plateSolubilisation = new Solubilisation(2L);
     plateSolubilisation
         .setInsertTime(Instant.now().minus(plateSolubilisation.getId(), ChronoUnit.HOURS));
-    plateSolubilisedSample = new SolubilisedSample();
-    plateSolubilisedSample.setSolubilisation(plateSolubilisation);
+    plateSolubilisedSample = new TreatedSample();
+    plateSolubilisedSample.setTreatment(plateSolubilisation);
     plateSolubilisedSample.setSample(sample2);
     plateSolubilisedSample.setSolvent("ch2oh2");
     plateSolubilisedSample.setSolventVolume(20.0);
@@ -205,53 +199,53 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateSolubilisedSample.setContainer(new Well(1, 2));
     ((Well) plateSolubilisedSample.getContainer()).setPlate(new Plate());
     ((Well) plateSolubilisedSample.getContainer()).getPlate().setName("plate_1");
-    plateSolubilisation.setTreatmentSamples(Arrays.asList(plateSolubilisedSample));
+    plateSolubilisation.setTreatedSamples(Arrays.asList(plateSolubilisedSample));
     tubeDigestion = new Digestion(3L);
     tubeDigestion.setProtocol(new Protocol());
     tubeDigestion.getProtocol().setName("digestion_protocol_1");
     tubeDigestion.setInsertTime(Instant.now().minus(tubeDigestion.getId(), ChronoUnit.HOURS));
-    tubeDigestedSample = new DigestedSample();
-    tubeDigestedSample.setDigestion(tubeDigestion);
+    tubeDigestedSample = new TreatedSample();
+    tubeDigestedSample.setTreatment(tubeDigestion);
     tubeDigestedSample.setSample(sample1);
     tubeDigestedSample.setComment("tube_digestion_comment_1");
     tubeDigestedSample.setContainer(new Tube());
     ((Tube) tubeDigestedSample.getContainer()).setName("tube_1");
-    tubeDigestedSample2 = new DigestedSample();
-    tubeDigestedSample2.setDigestion(tubeDigestion);
+    tubeDigestedSample2 = new TreatedSample();
+    tubeDigestedSample2.setTreatment(tubeDigestion);
     tubeDigestedSample2.setSample(sample2);
     tubeDigestedSample2.setComment("tube_digestion_comment_2");
     tubeDigestedSample2.setContainer(new Tube());
     ((Tube) tubeDigestedSample2.getContainer()).setName("tube_2");
-    tubeDigestion.setTreatmentSamples(Arrays.asList(tubeDigestedSample, tubeDigestedSample2));
+    tubeDigestion.setTreatedSamples(Arrays.asList(tubeDigestedSample, tubeDigestedSample2));
     plateDigestion = new Digestion(4L);
     plateDigestion.setProtocol(new Protocol());
     plateDigestion.getProtocol().setName("digestion_protocol_2");
     plateDigestion.setInsertTime(Instant.now().minus(plateDigestion.getId(), ChronoUnit.HOURS));
-    plateDigestedSample = new DigestedSample();
-    plateDigestedSample.setDigestion(plateDigestion);
+    plateDigestedSample = new TreatedSample();
+    plateDigestedSample.setTreatment(plateDigestion);
     plateDigestedSample.setSample(sample2);
     plateDigestedSample.setComment("plate_digestion_comment_1");
     plateDigestedSample.setContainer(new Well(1, 2));
     ((Well) plateDigestedSample.getContainer()).setPlate(new Plate());
     ((Well) plateDigestedSample.getContainer()).getPlate().setName("plate_1");
-    plateDigestion.setTreatmentSamples(Arrays.asList(plateDigestedSample));
+    plateDigestion.setTreatedSamples(Arrays.asList(plateDigestedSample));
     tubeStandardAddition = new StandardAddition(5L);
     tubeStandardAddition
         .setInsertTime(Instant.now().minus(tubeStandardAddition.getId(), ChronoUnit.HOURS));
-    tubeAddedStandard = new AddedStandard();
-    tubeAddedStandard.setStandardAddition(tubeStandardAddition);
+    tubeAddedStandard = new TreatedSample();
+    tubeAddedStandard.setTreatment(tubeStandardAddition);
     tubeAddedStandard.setSample(sample1);
     tubeAddedStandard.setName("std1");
     tubeAddedStandard.setQuantity("1 ug");
     tubeAddedStandard.setComment("tube_digestion_comment_1");
     tubeAddedStandard.setContainer(new Tube());
     ((Tube) tubeAddedStandard.getContainer()).setName("tube_1");
-    tubeStandardAddition.setTreatmentSamples(Arrays.asList(tubeAddedStandard));
+    tubeStandardAddition.setTreatedSamples(Arrays.asList(tubeAddedStandard));
     plateStandardAddition = new StandardAddition(6L);
     plateStandardAddition
         .setInsertTime(Instant.now().minus(plateStandardAddition.getId(), ChronoUnit.HOURS));
-    plateAddedStandard = new AddedStandard();
-    plateAddedStandard.setStandardAddition(plateStandardAddition);
+    plateAddedStandard = new TreatedSample();
+    plateAddedStandard.setTreatment(plateStandardAddition);
     plateAddedStandard.setSample(sample2);
     plateAddedStandard.setName("std2");
     plateAddedStandard.setQuantity("2 ug");
@@ -259,34 +253,34 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateAddedStandard.setContainer(new Well(1, 2));
     ((Well) plateAddedStandard.getContainer()).setPlate(new Plate());
     ((Well) plateAddedStandard.getContainer()).getPlate().setName("plate_1");
-    plateStandardAddition.setTreatmentSamples(Arrays.asList(plateAddedStandard));
+    plateStandardAddition.setTreatedSamples(Arrays.asList(plateAddedStandard));
     tubeEnrichment = new Enrichment(7L);
     tubeEnrichment.setProtocol(new Protocol());
     tubeEnrichment.getProtocol().setName("enrichment_protocol_1");
     tubeEnrichment.setInsertTime(Instant.now().minus(tubeEnrichment.getId(), ChronoUnit.HOURS));
-    tubeEnrichedSample = new EnrichedSample();
-    tubeEnrichedSample.setEnrichment(tubeEnrichment);
+    tubeEnrichedSample = new TreatedSample();
+    tubeEnrichedSample.setTreatment(tubeEnrichment);
     tubeEnrichedSample.setSample(sample1);
     tubeEnrichedSample.setComment("tube_enrichment_comment_1");
     tubeEnrichedSample.setContainer(new Tube());
     ((Tube) tubeEnrichedSample.getContainer()).setName("tube_1");
-    tubeEnrichment.setTreatmentSamples(Arrays.asList(tubeEnrichedSample));
+    tubeEnrichment.setTreatedSamples(Arrays.asList(tubeEnrichedSample));
     plateEnrichment = new Enrichment(8L);
     plateEnrichment.setProtocol(new Protocol());
     plateEnrichment.getProtocol().setName("enrichment_protocol_2");
     plateEnrichment.setInsertTime(Instant.now().minus(plateEnrichment.getId(), ChronoUnit.HOURS));
-    plateEnrichedSample = new EnrichedSample();
-    plateEnrichedSample.setEnrichment(plateEnrichment);
+    plateEnrichedSample = new TreatedSample();
+    plateEnrichedSample.setTreatment(plateEnrichment);
     plateEnrichedSample.setSample(sample2);
     plateEnrichedSample.setComment("plate_enrichment_comment_1");
     plateEnrichedSample.setContainer(new Well(1, 2));
     ((Well) plateEnrichedSample.getContainer()).setPlate(new Plate());
     ((Well) plateEnrichedSample.getContainer()).getPlate().setName("plate_1");
-    plateEnrichment.setTreatmentSamples(Arrays.asList(plateEnrichedSample));
+    plateEnrichment.setTreatedSamples(Arrays.asList(plateEnrichedSample));
     tubeDilution = new Dilution(9L);
     tubeDilution.setInsertTime(Instant.now().minus(tubeDilution.getId(), ChronoUnit.HOURS));
-    tubeDilutedSample = new DilutedSample();
-    tubeDilutedSample.setDilution(tubeDilution);
+    tubeDilutedSample = new TreatedSample();
+    tubeDilutedSample.setTreatment(tubeDilution);
     tubeDilutedSample.setSample(sample1);
     tubeDilutedSample.setSolventVolume(2.0);
     tubeDilutedSample.setSolvent("CH3OH");
@@ -294,11 +288,11 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeDilutedSample.setComment("tube_dilution_comment_1");
     tubeDilutedSample.setContainer(new Tube());
     ((Tube) tubeDilutedSample.getContainer()).setName("tube_1");
-    tubeDilution.setTreatmentSamples(Arrays.asList(tubeDilutedSample));
+    tubeDilution.setTreatedSamples(Arrays.asList(tubeDilutedSample));
     plateDilution = new Dilution(10L);
     plateDilution.setInsertTime(Instant.now().minus(plateDilution.getId(), ChronoUnit.HOURS));
-    plateDilutedSample = new DilutedSample();
-    plateDilutedSample.setDilution(plateDilution);
+    plateDilutedSample = new TreatedSample();
+    plateDilutedSample.setTreatment(plateDilution);
     plateDilutedSample.setSolventVolume(1.0);
     plateDilutedSample.setSolvent("H2O");
     plateDilutedSample.setSolventVolume(19.0);
@@ -307,13 +301,13 @@ public class SubmissionTreatmentsFormPresenterTest {
     plateDilutedSample.setContainer(new Well(1, 2));
     ((Well) plateDilutedSample.getContainer()).setPlate(new Plate());
     ((Well) plateDilutedSample.getContainer()).getPlate().setName("plate_1");
-    plateDilution.setTreatmentSamples(Arrays.asList(plateDilutedSample));
+    plateDilution.setTreatedSamples(Arrays.asList(plateDilutedSample));
     tubeFractionation = new Fractionation(11L);
     tubeFractionation.setFractionationType(FractionationType.MUDPIT);
     tubeFractionation
         .setInsertTime(Instant.now().minus(tubeFractionation.getId(), ChronoUnit.HOURS));
-    tubeFractionatedSample = new Fraction();
-    tubeFractionatedSample.setFractionation(tubeFractionation);
+    tubeFractionatedSample = new TreatedSample();
+    tubeFractionatedSample.setTreatment(tubeFractionation);
     tubeFractionatedSample.setSample(sample1);
     tubeFractionatedSample.setPosition(1);
     tubeFractionatedSample.setNumber(1);
@@ -322,8 +316,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeFractionatedSample.setDestinationContainer(new Tube());
     ((Tube) tubeFractionatedSample.getContainer()).setName("tube_1");
     ((Tube) tubeFractionatedSample.getDestinationContainer()).setName("destination_tube_1");
-    tubeFractionatedSample2 = new Fraction();
-    tubeFractionatedSample2.setFractionation(tubeFractionation);
+    tubeFractionatedSample2 = new TreatedSample();
+    tubeFractionatedSample2.setTreatment(tubeFractionation);
     tubeFractionatedSample2.setSample(sample1);
     tubeFractionatedSample2.setPosition(2);
     tubeFractionatedSample2.setNumber(2);
@@ -333,13 +327,13 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Tube) tubeFractionatedSample2.getContainer()).setName("tube_1");
     ((Tube) tubeFractionatedSample2.getDestinationContainer()).setName("destination_tube_1");
     tubeFractionation
-        .setTreatmentSamples(Arrays.asList(tubeFractionatedSample, tubeFractionatedSample2));
+        .setTreatedSamples(Arrays.asList(tubeFractionatedSample, tubeFractionatedSample2));
     plateFractionation = new Fractionation(12L);
     plateFractionation.setFractionationType(FractionationType.PI);
     plateFractionation
         .setInsertTime(Instant.now().minus(plateFractionation.getId(), ChronoUnit.HOURS));
-    plateFractionatedSample = new Fraction();
-    plateFractionatedSample.setFractionation(plateFractionation);
+    plateFractionatedSample = new TreatedSample();
+    plateFractionatedSample.setTreatment(plateFractionation);
     plateFractionatedSample.setPosition(0);
     plateFractionatedSample.setPiInterval("2-3");
     plateFractionatedSample.setSample(sample2);
@@ -350,22 +344,22 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateFractionatedSample.getContainer()).getPlate().setName("plate_1");
     ((Well) plateFractionatedSample.getDestinationContainer()).setPlate(new Plate());
     ((Well) plateFractionatedSample.getDestinationContainer()).getPlate().setName("plate_2");
-    plateFractionation.setTreatmentSamples(Arrays.asList(plateFractionatedSample));
+    plateFractionation.setTreatedSamples(Arrays.asList(plateFractionatedSample));
     tubeTransfer = new Transfer(13L);
     tubeTransfer.setInsertTime(Instant.now().minus(tubeTransfer.getId(), ChronoUnit.HOURS));
-    tubeTransferedSample = new TransferedSample();
-    tubeTransferedSample.setTransfer(tubeTransfer);
+    tubeTransferedSample = new TreatedSample();
+    tubeTransferedSample.setTreatment(tubeTransfer);
     tubeTransferedSample.setSample(sample1);
     tubeTransferedSample.setComment("tube_transfer_comment_1");
     tubeTransferedSample.setContainer(new Tube());
     tubeTransferedSample.setDestinationContainer(new Tube());
     ((Tube) tubeTransferedSample.getContainer()).setName("tube_1");
     ((Tube) tubeTransferedSample.getDestinationContainer()).setName("destination_tube_1");
-    tubeTransfer.setTreatmentSamples(Arrays.asList(tubeTransferedSample));
+    tubeTransfer.setTreatedSamples(Arrays.asList(tubeTransferedSample));
     plateTransfer = new Transfer(14L);
     plateTransfer.setInsertTime(Instant.now().minus(plateTransfer.getId(), ChronoUnit.HOURS));
-    plateTransferedSample = new TransferedSample();
-    plateTransferedSample.setTransfer(plateTransfer);
+    plateTransferedSample = new TreatedSample();
+    plateTransferedSample.setTreatment(plateTransfer);
     plateTransferedSample.setSample(sample2);
     plateTransferedSample.setComment("plate_transfer_comment_2");
     plateTransferedSample.setContainer(new Well(1, 2));
@@ -374,7 +368,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateTransferedSample.getContainer()).getPlate().setName("plate_1");
     ((Well) plateTransferedSample.getDestinationContainer()).setPlate(new Plate());
     ((Well) plateTransferedSample.getDestinationContainer()).getPlate().setName("plate_2");
-    plateTransfer.setTreatmentSamples(Arrays.asList(plateTransferedSample));
+    plateTransfer.setTreatedSamples(Arrays.asList(plateTransferedSample));
     when(treatmentService.all(any(Submission.class))).thenReturn(Arrays.asList(tubeSolubilisation,
         plateSolubilisation, tubeDigestion, plateDigestion, tubeStandardAddition,
         plateStandardAddition, tubeEnrichment, plateEnrichment, tubeDilution, plateDilution,
@@ -452,7 +446,7 @@ public class SubmissionTreatmentsFormPresenterTest {
     assertEquals(TREATMENT_SAMPLES, design.treatments.getColumns().get(2).getId());
     assertEquals(resources.message(TREATMENT_TYPE),
         design.treatments.getColumn(TREATMENT_TYPE).getCaption());
-    for (Treatment<?> treatment : treatments) {
+    for (Treatment treatment : treatments) {
       Button button =
           (Button) design.treatments.getColumn(TREATMENT_TYPE).getValueProvider().apply(treatment);
       assertTrue(button.getStyleName().contains(TREATMENT_TYPE));
@@ -462,7 +456,7 @@ public class SubmissionTreatmentsFormPresenterTest {
         design.treatments.getColumn(TREATMENT_TIME).getCaption());
     DateTimeFormatter dateFormatter =
         DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault());
-    for (Treatment<?> treatment : treatments) {
+    for (Treatment treatment : treatments) {
       assertEquals(dateFormatter.format(treatment.getInsertTime()),
           design.treatments.getColumn(TREATMENT_TIME).getValueProvider().apply(treatment));
     }
@@ -472,14 +466,14 @@ public class SubmissionTreatmentsFormPresenterTest {
         design.treatments.getColumn(TREATMENT_SAMPLES).getValueProvider().apply(tubeDigestion));
     assertEquals(sample1.getName() + "\n" + sample2.getName(), design.treatments
         .getColumn(TREATMENT_SAMPLES).getDescriptionGenerator().apply(tubeDigestion));
-    for (Treatment<?> treatment : Arrays.asList(tubeSolubilisation, tubeStandardAddition,
+    for (Treatment treatment : Arrays.asList(tubeSolubilisation, tubeStandardAddition,
         tubeEnrichment, tubeDilution, tubeFractionation, tubeTransfer)) {
       assertEquals(1L,
           design.treatments.getColumn(TREATMENT_SAMPLES).getValueProvider().apply(treatment));
       assertEquals(sample1.getName(), design.treatments.getColumn(TREATMENT_SAMPLES)
           .getDescriptionGenerator().apply(treatment));
     }
-    for (Treatment<?> treatment : Arrays.asList(plateSolubilisation, plateDigestion,
+    for (Treatment treatment : Arrays.asList(plateSolubilisation, plateDigestion,
         plateStandardAddition, plateEnrichment, plateDilution, plateFractionation, plateTransfer)) {
       assertEquals(1L,
           design.treatments.getColumn(TREATMENT_SAMPLES).getValueProvider().apply(treatment));

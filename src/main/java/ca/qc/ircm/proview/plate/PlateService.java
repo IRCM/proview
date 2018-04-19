@@ -252,8 +252,8 @@ public class PlateService {
 
     authorizationService.checkAdminRole();
     Instant treatmentInstant = queryFactory.select(treatment.insertTime.max()).from(treatment)
-        .where(treatment.treatmentSamples.any().container.in(plate.getWells())
-            .or(treatment.treatmentSamples.any().destinationContainer.in(plate.getWells())))
+        .where(treatment.treatedSamples.any().container.in(plate.getWells())
+            .or(treatment.treatedSamples.any().destinationContainer.in(plate.getWells())))
         .where(treatment.deleted.eq(false)).fetchFirst();
     Instant analysisInstant = queryFactory.select(msAnalysis.insertTime.max()).from(msAnalysis)
         .where(msAnalysis.acquisitions.any().container.in(plate.getWells()))

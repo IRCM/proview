@@ -29,7 +29,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("STANDARD_ADDITION")
-public class StandardAddition extends Treatment<AddedStandard> implements Data {
+public class StandardAddition extends Treatment implements Data {
   public StandardAddition() {
     super();
   }
