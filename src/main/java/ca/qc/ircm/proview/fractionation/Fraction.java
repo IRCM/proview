@@ -19,14 +19,11 @@ package ca.qc.ircm.proview.fractionation;
 
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.treatment.TreatmentSample;
-import ca.qc.ircm.proview.treatment.TreatmentType;
 
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Size;
 
 /**
  * A sample that was fractionated.
@@ -40,35 +37,6 @@ public class Fraction extends TreatmentSample implements Named {
   @ManyToOne
   @JoinColumn(name = "treatmentId", nullable = false)
   private Fractionation fractionation;
-  /**
-   * Fraction index number that is appended when showing LIMS number of fraction.
-   */
-  @Column(name = "position", nullable = false)
-  private Integer position;
-  /**
-   * Fraction number. Used with {@link TreatmentType#MUDPIT}.
-   */
-  @Column(name = "number")
-  private Integer number;
-  /**
-   * PI interval. Used with {@link TreatmentType#PI}
-   */
-  @Column(name = "piInterval")
-  @Size(max = 255)
-  private String piInterval;
-
-  @Override
-  public String getName() {
-    if (getSample() != null && getSample().getName() != null) {
-      StringBuilder builder = new StringBuilder();
-      builder.append(getSample().getName());
-      builder.append(".F");
-      builder.append(position);
-      return builder.toString();
-    } else {
-      return null;
-    }
-  }
 
   @Override
   public String toString() {
@@ -76,30 +44,6 @@ public class Fraction extends TreatmentSample implements Named {
     buff.append(getId());
     buff.append(")");
     return buff.toString();
-  }
-
-  public Integer getPosition() {
-    return position;
-  }
-
-  public void setPosition(Integer position) {
-    this.position = position;
-  }
-
-  public Integer getNumber() {
-    return number;
-  }
-
-  public void setNumber(Integer number) {
-    this.number = number;
-  }
-
-  public String getPiInterval() {
-    return piInterval;
-  }
-
-  public void setPiInterval(String piInterval) {
-    this.piInterval = piInterval;
   }
 
   public Fractionation getFractionation() {

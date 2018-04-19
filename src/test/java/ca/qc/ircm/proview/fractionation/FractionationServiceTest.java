@@ -138,7 +138,7 @@ public class FractionationServiceTest {
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNotNull(detail);
     assertEquals((Long) 2L, detail.getId());
-    assertEquals("FAM119A_band_01.F1", detail.getName());
+    assertEquals("FAM119A_band_01.F1", detail.getFractionName());
   }
 
   @Test

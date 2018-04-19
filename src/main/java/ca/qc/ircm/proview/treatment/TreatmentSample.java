@@ -33,6 +33,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 /**
  * Treatment information that is specific to a sample.
@@ -41,7 +43,7 @@ import javax.persistence.Table;
 @Table(name = "treatmentsample")
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "treatmentType")
-public abstract class TreatmentSample implements Data {
+public class TreatmentSample implements Data {
   /**
    * Database identifier.
    */
@@ -68,10 +70,72 @@ public abstract class TreatmentSample implements Data {
   @JoinColumn(name = "destinationContainerId")
   private SampleContainer destinationContainer;
   /**
+   * Volume of source transfered.
+   */
+  @Column(name = "sourceVolume", nullable = false)
+  @Min(0)
+  private Double sourceVolume;
+  /**
+   * Solvent used for dilution.
+   */
+  @Column(name = "solvent", nullable = false)
+  private String solvent;
+  /**
+   * Volume of solvent used.
+   */
+  @Column(name = "solventVolume", nullable = false)
+  @Min(0)
+  private Double solventVolume;
+  /**
+   * Name of standard added.
+   */
+  @Column(name = "name", nullable = false)
+  @Size(max = 100)
+  private String name;
+  /**
+   * Quantity of standard added.
+   */
+  @Column(name = "quantity", nullable = false)
+  @Size(max = 100)
+  private String quantity;
+  /**
+   * Fraction index number that is appended when showing LIMS number of fraction.
+   */
+  @Column(name = "position", nullable = false)
+  private Integer position;
+  /**
+   * Fraction number. Used with {@link TreatmentType#MUDPIT}.
+   */
+  @Column(name = "number")
+  private Integer number;
+  /**
+   * PI interval. Used with {@link TreatmentType#PI}
+   */
+  @Column(name = "piInterval")
+  @Size(max = 255)
+  private String piInterval;
+  /**
    * Comment about sample's treatment.
    */
   @Column(name = "comment")
   private String comment;
+
+  public String getFractionName() {
+    if (getSample() != null && getSample().getName() != null) {
+      StringBuilder builder = new StringBuilder();
+      builder.append(getSample().getName());
+      builder.append(".F");
+      builder.append(position);
+      return builder.toString();
+    } else {
+      return null;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "TreatmentSample [id=" + id + "]";
+  }
 
   public Sample getSample() {
     return sample;
@@ -112,5 +176,69 @@ public abstract class TreatmentSample implements Data {
 
   public void setDestinationContainer(SampleContainer destinationContainer) {
     this.destinationContainer = destinationContainer;
+  }
+
+  public Double getSourceVolume() {
+    return sourceVolume;
+  }
+
+  public void setSourceVolume(Double sourceVolume) {
+    this.sourceVolume = sourceVolume;
+  }
+
+  public String getSolvent() {
+    return solvent;
+  }
+
+  public void setSolvent(String solvent) {
+    this.solvent = solvent;
+  }
+
+  public Double getSolventVolume() {
+    return solventVolume;
+  }
+
+  public void setSolventVolume(Double solventVolume) {
+    this.solventVolume = solventVolume;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(String quantity) {
+    this.quantity = quantity;
+  }
+
+  public Integer getPosition() {
+    return position;
+  }
+
+  public void setPosition(Integer position) {
+    this.position = position;
+  }
+
+  public Integer getNumber() {
+    return number;
+  }
+
+  public void setNumber(Integer number) {
+    this.number = number;
+  }
+
+  public String getPiInterval() {
+    return piInterval;
+  }
+
+  public void setPiInterval(String piInterval) {
+    this.piInterval = piInterval;
   }
 }
