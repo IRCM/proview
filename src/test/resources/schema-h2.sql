@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS treatment (
   CONSTRAINT treatment_ibfk_1 FOREIGN KEY (protocolId) REFERENCES protocol (id) ON UPDATE CASCADE,
   CONSTRAINT treatment_ibfk_2 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
-CREATE TABLE IF NOT EXISTS treatmentsample (
+CREATE TABLE IF NOT EXISTS treatedsample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   treatmentId bigint(20) DEFAULT NULL,
   sampleId bigint(20) NOT NULL,
@@ -260,10 +260,10 @@ CREATE TABLE IF NOT EXISTS treatmentsample (
   number int(11) DEFAULT NULL,
   piInterval varchar(50) DEFAULT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT treatmentsample_ibfk_1 FOREIGN KEY (treatmentId) REFERENCES treatment (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT treatmentsample_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
-  CONSTRAINT treatmentsample_ibfk_3 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE,
-  CONSTRAINT treatmentsample_ibfk_4 FOREIGN KEY (destinationContainerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
+  CONSTRAINT treatedsample_ibfk_1 FOREIGN KEY (treatmentId) REFERENCES treatment (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT treatedsample_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
+  CONSTRAINT treatedsample_ibfk_3 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE,
+  CONSTRAINT treatedsample_ibfk_4 FOREIGN KEY (destinationContainerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS msanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),

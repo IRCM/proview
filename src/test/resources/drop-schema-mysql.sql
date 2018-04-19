@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS activity;
 DROP TABLE IF EXISTS dataanalysis;
 DROP TABLE IF EXISTS acquisition;
 DROP TABLE IF EXISTS msanalysis;
-DROP TABLE IF EXISTS treatmentsample;
+DROP TABLE IF EXISTS treatedsample;
 DROP TABLE IF EXISTS treatment;
 DROP TABLE IF EXISTS protocol;
 DROP TABLE IF EXISTS solvent;

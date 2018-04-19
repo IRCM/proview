@@ -143,7 +143,7 @@ public class DilutionActivityService {
   }
 
   private UpdateActivityBuilder treatedSampleAction(TreatedSample ts, ActionType actionType) {
-    return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
+    return new UpdateActivityBuilder().tableName("treatedsample").recordId(ts.getId())
         .actionType(actionType);
   }
 

@@ -101,8 +101,7 @@ public abstract class Treatment implements Data {
   /**
    * List of all treatments done on samples.
    */
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "treatmentId", nullable = false)
+  @OneToMany(mappedBy = "treatment", cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderColumn(name = "listIndex")
   private List<TreatedSample> treatedSamples;
 

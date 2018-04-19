@@ -37,7 +37,7 @@ import javax.validation.constraints.Size;
  * Treatment information that is specific to a sample.
  */
 @Entity
-@Table(name = "treatmentsample")
+@Table(name = "treatedsample")
 public class TreatedSample implements Data {
   /**
    * Database identifier.

@@ -143,12 +143,12 @@ public class DigestionActivityServiceTest {
     expecteds.add(protocolActivity);
     UpdateActivity newTreatedSampleActivity = new UpdateActivity();
     newTreatedSampleActivity.setActionType(ActionType.INSERT);
-    newTreatedSampleActivity.setTableName("treatmentsample");
+    newTreatedSampleActivity.setTableName("treatedsample");
     newTreatedSampleActivity.setRecordId(400L);
     expecteds.add(newTreatedSampleActivity);
     UpdateActivity updateTreatedSampleSampleActivity = new UpdateActivity();
     updateTreatedSampleSampleActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleSampleActivity.setTableName("treatmentsample");
+    updateTreatedSampleSampleActivity.setTableName("treatedsample");
     updateTreatedSampleSampleActivity.setRecordId(196L);
     updateTreatedSampleSampleActivity.setColumn("sampleId");
     updateTreatedSampleSampleActivity.setOldValue("559");
@@ -156,7 +156,7 @@ public class DigestionActivityServiceTest {
     expecteds.add(updateTreatedSampleSampleActivity);
     UpdateActivity updateTreatedSampleContainerActivity = new UpdateActivity();
     updateTreatedSampleContainerActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleContainerActivity.setTableName("treatmentsample");
+    updateTreatedSampleContainerActivity.setTableName("treatedsample");
     updateTreatedSampleContainerActivity.setRecordId(196L);
     updateTreatedSampleContainerActivity.setColumn("containerId");
     updateTreatedSampleContainerActivity.setOldValue("224");
@@ -164,7 +164,7 @@ public class DigestionActivityServiceTest {
     expecteds.add(updateTreatedSampleContainerActivity);
     UpdateActivity updateTreatedSampleCommentActivity = new UpdateActivity();
     updateTreatedSampleCommentActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleCommentActivity.setTableName("treatmentsample");
+    updateTreatedSampleCommentActivity.setTableName("treatedsample");
     updateTreatedSampleCommentActivity.setRecordId(196L);
     updateTreatedSampleCommentActivity.setColumn("comment");
     updateTreatedSampleCommentActivity.setOldValue(null);

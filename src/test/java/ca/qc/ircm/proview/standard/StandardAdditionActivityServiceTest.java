@@ -126,12 +126,12 @@ public class StandardAdditionActivityServiceTest {
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity newTreatedSampleActivity = new UpdateActivity();
     newTreatedSampleActivity.setActionType(ActionType.INSERT);
-    newTreatedSampleActivity.setTableName("treatmentsample");
+    newTreatedSampleActivity.setTableName("treatedsample");
     newTreatedSampleActivity.setRecordId(400L);
     expecteds.add(newTreatedSampleActivity);
     UpdateActivity updateTreatedSampleSampleActivity = new UpdateActivity();
     updateTreatedSampleSampleActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleSampleActivity.setTableName("treatmentsample");
+    updateTreatedSampleSampleActivity.setTableName("treatedsample");
     updateTreatedSampleSampleActivity.setRecordId(344L);
     updateTreatedSampleSampleActivity.setColumn("sampleId");
     updateTreatedSampleSampleActivity.setOldValue("599");
@@ -139,7 +139,7 @@ public class StandardAdditionActivityServiceTest {
     expecteds.add(updateTreatedSampleSampleActivity);
     UpdateActivity updateTreatedSampleContainerActivity = new UpdateActivity();
     updateTreatedSampleContainerActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleContainerActivity.setTableName("treatmentsample");
+    updateTreatedSampleContainerActivity.setTableName("treatedsample");
     updateTreatedSampleContainerActivity.setRecordId(344L);
     updateTreatedSampleContainerActivity.setColumn("containerId");
     updateTreatedSampleContainerActivity.setOldValue("997");
@@ -147,7 +147,7 @@ public class StandardAdditionActivityServiceTest {
     expecteds.add(updateTreatedSampleContainerActivity);
     UpdateActivity updateTreatedSampleNameActivity = new UpdateActivity();
     updateTreatedSampleNameActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleNameActivity.setTableName("treatmentsample");
+    updateTreatedSampleNameActivity.setTableName("treatedsample");
     updateTreatedSampleNameActivity.setRecordId(344L);
     updateTreatedSampleNameActivity.setColumn("name");
     updateTreatedSampleNameActivity.setOldValue("adh");
@@ -155,7 +155,7 @@ public class StandardAdditionActivityServiceTest {
     expecteds.add(updateTreatedSampleNameActivity);
     UpdateActivity updateTreatedSampleQuantityActivity = new UpdateActivity();
     updateTreatedSampleQuantityActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleQuantityActivity.setTableName("treatmentsample");
+    updateTreatedSampleQuantityActivity.setTableName("treatedsample");
     updateTreatedSampleQuantityActivity.setRecordId(344L);
     updateTreatedSampleQuantityActivity.setColumn("quantity");
     updateTreatedSampleQuantityActivity.setOldValue("2 μg");
@@ -163,7 +163,7 @@ public class StandardAdditionActivityServiceTest {
     expecteds.add(updateTreatedSampleQuantityActivity);
     UpdateActivity updateTreatedSampleCommentActivity = new UpdateActivity();
     updateTreatedSampleCommentActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleCommentActivity.setTableName("treatmentsample");
+    updateTreatedSampleCommentActivity.setTableName("treatedsample");
     updateTreatedSampleCommentActivity.setRecordId(344L);
     updateTreatedSampleCommentActivity.setColumn("comment");
     updateTreatedSampleCommentActivity.setOldValue(null);

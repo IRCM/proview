@@ -127,12 +127,12 @@ public class DilutionActivityServiceTest {
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity newTreatedSampleActivity = new UpdateActivity();
     newTreatedSampleActivity.setActionType(ActionType.INSERT);
-    newTreatedSampleActivity.setTableName("treatmentsample");
+    newTreatedSampleActivity.setTableName("treatedsample");
     newTreatedSampleActivity.setRecordId(400L);
     expecteds.add(newTreatedSampleActivity);
     UpdateActivity updateTreatedSampleSampleActivity = new UpdateActivity();
     updateTreatedSampleSampleActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleSampleActivity.setTableName("treatmentsample");
+    updateTreatedSampleSampleActivity.setTableName("treatedsample");
     updateTreatedSampleSampleActivity.setRecordId(236L);
     updateTreatedSampleSampleActivity.setColumn("sampleId");
     updateTreatedSampleSampleActivity.setOldValue("569");
@@ -140,7 +140,7 @@ public class DilutionActivityServiceTest {
     expecteds.add(updateTreatedSampleSampleActivity);
     UpdateActivity updateTreatedSampleContainerActivity = new UpdateActivity();
     updateTreatedSampleContainerActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleContainerActivity.setTableName("treatmentsample");
+    updateTreatedSampleContainerActivity.setTableName("treatedsample");
     updateTreatedSampleContainerActivity.setRecordId(236L);
     updateTreatedSampleContainerActivity.setColumn("containerId");
     updateTreatedSampleContainerActivity.setOldValue("608");
@@ -148,7 +148,7 @@ public class DilutionActivityServiceTest {
     expecteds.add(updateTreatedSampleContainerActivity);
     UpdateActivity updateTreatedSampleSourceVolumeActivity = new UpdateActivity();
     updateTreatedSampleSourceVolumeActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleSourceVolumeActivity.setTableName("treatmentsample");
+    updateTreatedSampleSourceVolumeActivity.setTableName("treatedsample");
     updateTreatedSampleSourceVolumeActivity.setRecordId(236L);
     updateTreatedSampleSourceVolumeActivity.setColumn("sourceVolume");
     updateTreatedSampleSourceVolumeActivity.setOldValue("2.0");
@@ -156,7 +156,7 @@ public class DilutionActivityServiceTest {
     expecteds.add(updateTreatedSampleSourceVolumeActivity);
     UpdateActivity updateTreatedSampleSolventActivity = new UpdateActivity();
     updateTreatedSampleSolventActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleSolventActivity.setTableName("treatmentsample");
+    updateTreatedSampleSolventActivity.setTableName("treatedsample");
     updateTreatedSampleSolventActivity.setRecordId(236L);
     updateTreatedSampleSolventActivity.setColumn("solvent");
     updateTreatedSampleSolventActivity.setOldValue("Methanol");
@@ -164,7 +164,7 @@ public class DilutionActivityServiceTest {
     expecteds.add(updateTreatedSampleSolventActivity);
     UpdateActivity updateTreatedSampleSolventVolumeActivity = new UpdateActivity();
     updateTreatedSampleSolventVolumeActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleSolventVolumeActivity.setTableName("treatmentsample");
+    updateTreatedSampleSolventVolumeActivity.setTableName("treatedsample");
     updateTreatedSampleSolventVolumeActivity.setRecordId(236L);
     updateTreatedSampleSolventVolumeActivity.setColumn("solventVolume");
     updateTreatedSampleSolventVolumeActivity.setOldValue("5.0");
@@ -172,7 +172,7 @@ public class DilutionActivityServiceTest {
     expecteds.add(updateTreatedSampleSolventVolumeActivity);
     UpdateActivity updateTreatedSampleCommentActivity = new UpdateActivity();
     updateTreatedSampleCommentActivity.setActionType(ActionType.UPDATE);
-    updateTreatedSampleCommentActivity.setTableName("treatmentsample");
+    updateTreatedSampleCommentActivity.setTableName("treatedsample");
     updateTreatedSampleCommentActivity.setRecordId(236L);
     updateTreatedSampleCommentActivity.setColumn("comment");
     updateTreatedSampleCommentActivity.setOldValue(null);
