@@ -94,6 +94,7 @@ public class StandardAdditionService extends BaseTreatmentService {
     chechSameUserForAllSamples(standardAddition);
     User user = authorizationService.getCurrentUser();
 
+    standardAddition.getTreatedSamples().forEach(ts -> ts.setTreatment(standardAddition));
     standardAddition.setInsertTime(Instant.now());
     standardAddition.setUser(user);
 
@@ -118,8 +119,8 @@ public class StandardAdditionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     StandardAddition old = entityManager.find(StandardAddition.class, standardAddition.getId());
-    Set<Long> treatedSampleIds = standardAddition.getTreatedSamples().stream()
-        .map(ts -> ts.getId()).collect(Collectors.toSet());
+    Set<Long> treatedSampleIds = standardAddition.getTreatedSamples().stream().map(ts -> ts.getId())
+        .collect(Collectors.toSet());
     if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
       throw new IllegalArgumentException("Cannot remove " + TreatedSample.class.getSimpleName()

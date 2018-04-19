@@ -106,6 +106,7 @@ public class DigestionService extends BaseTreatmentService {
     chechSameUserForAllSamples(digestion);
     User user = authorizationService.getCurrentUser();
 
+    digestion.getTreatedSamples().forEach(ts -> ts.setTreatment(digestion));
     digestion.setUser(user);
     digestion.setInsertTime(Instant.now());
 

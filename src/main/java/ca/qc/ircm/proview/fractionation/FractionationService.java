@@ -154,6 +154,7 @@ public class FractionationService extends BaseTreatmentService {
     User user = authorizationService.getCurrentUser();
     validateWellDestination(fractionation);
 
+    fractionation.getTreatedSamples().forEach(ts -> ts.setTreatment(fractionation));
     fractionation.setInsertTime(Instant.now());
     fractionation.setUser(user);
 

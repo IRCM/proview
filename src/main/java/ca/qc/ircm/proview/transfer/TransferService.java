@@ -105,6 +105,7 @@ public class TransferService extends BaseTreatmentService {
     final User user = authorizationService.getCurrentUser();
     Instant now = Instant.now();
 
+    transfer.getTreatedSamples().forEach(ts -> ts.setTreatment(transfer));
     // Link container to sample.
     for (TreatedSample treatedSample : transfer.getTreatedSamples()) {
       treatedSample.getDestinationContainer().setSample(treatedSample.getSample());

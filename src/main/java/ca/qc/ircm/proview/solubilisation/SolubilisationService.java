@@ -94,6 +94,7 @@ public class SolubilisationService extends BaseTreatmentService {
     chechSameUserForAllSamples(solubilisation);
     User user = authorizationService.getCurrentUser();
 
+    solubilisation.getTreatedSamples().forEach(ts -> ts.setTreatment(solubilisation));
     solubilisation.setInsertTime(Instant.now());
     solubilisation.setUser(user);
 
@@ -117,8 +118,8 @@ public class SolubilisationService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     Solubilisation old = entityManager.find(Solubilisation.class, solubilisation.getId());
-    Set<Long> treatedSampleIds = solubilisation.getTreatedSamples().stream()
-        .map(ts -> ts.getId()).collect(Collectors.toSet());
+    Set<Long> treatedSampleIds = solubilisation.getTreatedSamples().stream().map(ts -> ts.getId())
+        .collect(Collectors.toSet());
     if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
       throw new IllegalArgumentException("Cannot remove " + TreatedSample.class.getSimpleName()

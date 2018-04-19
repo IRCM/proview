@@ -94,6 +94,7 @@ public class DilutionService extends BaseTreatmentService {
     chechSameUserForAllSamples(dilution);
     User user = authorizationService.getCurrentUser();
 
+    dilution.getTreatedSamples().forEach(ts -> ts.setTreatment(dilution));
     dilution.setInsertTime(Instant.now());
     dilution.setUser(user);
 

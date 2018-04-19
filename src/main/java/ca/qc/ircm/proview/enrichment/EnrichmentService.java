@@ -100,6 +100,7 @@ public class EnrichmentService extends BaseTreatmentService {
     chechSameUserForAllSamples(enrichment);
     User user = authorizationService.getCurrentUser();
 
+    enrichment.getTreatedSamples().forEach(ts -> ts.setTreatment(enrichment));
     enrichment.setInsertTime(Instant.now());
     enrichment.setUser(user);
 
