@@ -27,7 +27,7 @@ import ca.qc.ircm.proview.digestion.Digestion;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.NotificationElement;
@@ -53,7 +53,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
-  private Optional<TreatmentSample> find(Collection<TreatmentSample> tss, long sampleId) {
+  private Optional<TreatedSample> find(Collection<TreatedSample> tss, long sampleId) {
     return tss.stream().filter(ts -> ts.getSample().getId() == sampleId).findFirst();
   }
 
@@ -159,20 +159,20 @@ public class DigestionViewTest extends DigestionViewPageObject {
         getDriver().getCurrentUrl().substring(viewUrl(DigestionView.VIEW_NAME).length() + 1));
     Digestion savedDigestion = entityManager.find(Digestion.class, id);
     assertEquals((Long) 1L, savedDigestion.getProtocol().getId());
-    assertEquals(3, savedDigestion.getTreatmentSamples().size());
-    Optional<TreatmentSample> opTs = find(savedDigestion.getTreatmentSamples(), 559);
+    assertEquals(3, savedDigestion.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedDigestion.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    TreatmentSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
-    opTs = find(savedDigestion.getTreatmentSamples(), 560);
+    opTs = find(savedDigestion.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 12L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
-    opTs = find(savedDigestion.getTreatmentSamples(), 444);
+    opTs = find(savedDigestion.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -193,20 +193,20 @@ public class DigestionViewTest extends DigestionViewPageObject {
         getDriver().getCurrentUrl().substring(viewUrl(DigestionView.VIEW_NAME).length() + 1));
     Digestion savedDigestion = entityManager.find(Digestion.class, id);
     assertEquals((Long) 1L, savedDigestion.getProtocol().getId());
-    assertEquals(3, savedDigestion.getTreatmentSamples().size());
-    Optional<TreatmentSample> opTs = find(savedDigestion.getTreatmentSamples(), 559);
+    assertEquals(3, savedDigestion.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedDigestion.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    TreatmentSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
-    opTs = find(savedDigestion.getTreatmentSamples(), 560);
+    opTs = find(savedDigestion.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 236L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
-    opTs = find(savedDigestion.getTreatmentSamples(), 444);
+    opTs = find(savedDigestion.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -226,14 +226,14 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertEquals(viewUrl(DigestionView.VIEW_NAME, "195"), getDriver().getCurrentUrl());
     Digestion savedDigestion = entityManager.find(Digestion.class, 195L);
     assertEquals((Long) 3L, savedDigestion.getProtocol().getId());
-    assertEquals(2, savedDigestion.getTreatmentSamples().size());
-    Optional<TreatmentSample> opTs = find(savedDigestion.getTreatmentSamples(), 559);
+    assertEquals(2, savedDigestion.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedDigestion.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    TreatmentSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
-    opTs = find(savedDigestion.getTreatmentSamples(), 560);
+    opTs = find(savedDigestion.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());

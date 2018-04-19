@@ -124,24 +124,24 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
         .setId(TREATMENT_TYPE).setCaption(resources.message(TREATMENT_TYPE));
     design.treatments.addColumn(treatment -> dateFormatter.format(treatment.getInsertTime()))
         .setId(TREATMENT_TIME).setCaption(resources.message(TREATMENT_TIME));
-    design.treatments.addColumn(treatment -> treatmentSampleCount(treatment))
+    design.treatments.addColumn(treatment -> treatedSampleCount(treatment))
         .setId(TREATMENT_SAMPLES).setCaption(resources.message(TREATMENT_SAMPLES))
-        .setDescriptionGenerator(treatment -> treatmentSampleDescription(treatment));
+        .setDescriptionGenerator(treatment -> treatedSampleDescription(treatment));
     design.treatments.sort(TREATMENT_TIME);
     updateSubmission();
   }
 
-  private long treatmentSampleCount(Treatment treatment) {
+  private long treatedSampleCount(Treatment treatment) {
     Set<Long> sampleIds =
         submission.getSamples().stream().map(sa -> sa.getId()).collect(Collectors.toSet());
-    return treatment.getTreatmentSamples().stream().map(ts -> ts.getSample().getId())
+    return treatment.getTreatedSamples().stream().map(ts -> ts.getSample().getId())
         .filter(id -> sampleIds.contains(id)).distinct().count();
   }
 
-  private String treatmentSampleDescription(Treatment treatment) {
+  private String treatedSampleDescription(Treatment treatment) {
     Map<Long, SubmissionSample> sampleIds =
         submission.getSamples().stream().collect(Collectors.toMap(sa -> sa.getId(), sa -> sa));
-    return treatment.getTreatmentSamples().stream().map(ts -> ts.getSample().getId())
+    return treatment.getTreatedSamples().stream().map(ts -> ts.getSample().getId())
         .filter(id -> sampleIds.containsKey(id)).distinct().map(id -> sampleIds.get(id).getName())
         .collect(Collectors.joining("\n"));
   }

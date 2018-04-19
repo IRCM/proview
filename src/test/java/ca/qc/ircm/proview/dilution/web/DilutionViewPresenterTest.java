@@ -69,7 +69,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -160,27 +160,27 @@ public class DilutionViewPresenterTest {
   }
 
   private void setFields() {
-    final ListDataProvider<TreatmentSample> treatments = dataProvider(design.dilutions);
+    final ListDataProvider<TreatedSample> treatments = dataProvider(design.dilutions);
     int count = 0;
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
       field.setValue(Objects.toString(sourceVolumes.get(count++), ""));
     }
     count = 0;
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
       field.setValue(solvents.get(count++));
     }
     count = 0;
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
       field.setValue(Objects.toString(solventVolumes.get(count++), ""));
     }
     count = 0;
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(ts);
       field.setValue(Objects.toString(comments.get(count++), ""));
@@ -231,17 +231,17 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    final ListDataProvider<TreatmentSample> treatments = dataProvider(design.dilutions);
+    final ListDataProvider<TreatedSample> treatments = dataProvider(design.dilutions);
     assertEquals(6, design.dilutions.getColumns().size());
     assertEquals(SAMPLE, design.dilutions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.dilutions.getColumn(SAMPLE).getCaption());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       assertEquals(ts.getSample().getName(),
           design.dilutions.getColumn(SAMPLE).getValueProvider().apply(ts));
     }
     assertEquals(CONTAINER, design.dilutions.getColumns().get(1).getId());
     assertEquals(resources.message(CONTAINER), design.dilutions.getColumn(CONTAINER).getCaption());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       assertEquals(ts.getContainer().getFullName(),
           design.dilutions.getColumn(CONTAINER).getValueProvider().apply(ts));
       assertEquals(ts.getContainer().isBanned() ? BANNED : "",
@@ -252,7 +252,7 @@ public class DilutionViewPresenterTest {
         design.dilutions.getColumn(SOURCE_VOLUME).getCaption());
     assertTrue(containsInstanceOf(design.dilutions.getColumn(SOURCE_VOLUME).getExtensions(),
         ComponentRenderer.class));
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(SOURCE_VOLUME));
@@ -263,7 +263,7 @@ public class DilutionViewPresenterTest {
     assertTrue(containsInstanceOf(design.dilutions.getColumn(SOLVENT).getExtensions(),
         ComponentRenderer.class));
     assertFalse(design.dilutions.getColumn(SOLVENT).isSortable());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(SOLVENT));
@@ -274,7 +274,7 @@ public class DilutionViewPresenterTest {
     assertTrue(containsInstanceOf(design.dilutions.getColumn(SOLVENT_VOLUME).getExtensions(),
         ComponentRenderer.class));
     assertFalse(design.dilutions.getColumn(SOLVENT_VOLUME).isSortable());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(SOLVENT_VOLUME));
@@ -284,7 +284,7 @@ public class DilutionViewPresenterTest {
     assertTrue(containsInstanceOf(design.dilutions.getColumn(COMMENT).getExtensions(),
         ComponentRenderer.class));
     assertFalse(design.dilutions.getColumn(COMMENT).isSortable());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(COMMENT));
@@ -302,8 +302,8 @@ public class DilutionViewPresenterTest {
   public void down() {
     presenter.init(view);
     presenter.enter("");
-    final ListDataProvider<TreatmentSample> treatments = dataProvider(design.dilutions);
-    TreatmentSample firstTs = treatments.getItems().iterator().next();
+    final ListDataProvider<TreatedSample> treatments = dataProvider(design.dilutions);
+    TreatedSample firstTs = treatments.getItems().iterator().next();
     String sourceVolume = "2.0";
     TextField field =
         (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(firstTs);
@@ -321,7 +321,7 @@ public class DilutionViewPresenterTest {
 
     design.down.click();
 
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
       assertEquals(sourceVolume, field.getValue());
       field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
@@ -347,7 +347,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.dilutions.sort(SAMPLE, SortDirection.DESCENDING);
-    final List<TreatmentSample> treatments =
+    final List<TreatedSample> treatments =
         new ArrayList<>(dataProvider(design.dilutions).getItems());
     String sourceVolume = "2.0";
     TextField field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider()
@@ -368,7 +368,7 @@ public class DilutionViewPresenterTest {
 
     design.down.click();
 
-    for (TreatmentSample ts : treatments) {
+    for (TreatedSample ts : treatments) {
       field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
       assertEquals(sourceVolume, field.getValue());
       field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
@@ -385,7 +385,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.dilutions.sort(CONTAINER, SortDirection.DESCENDING);
-    final List<TreatmentSample> treatments =
+    final List<TreatedSample> treatments =
         new ArrayList<>(dataProvider(design.dilutions).getItems());
     String sourceVolume = "2.0";
     TextField field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider()
@@ -406,7 +406,7 @@ public class DilutionViewPresenterTest {
 
     design.down.click();
 
-    for (TreatmentSample ts : treatments) {
+    for (TreatedSample ts : treatments) {
       field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
       assertEquals(sourceVolume, field.getValue());
       field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
@@ -435,7 +435,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.dilutions).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.dilutions).getItems().iterator().next();
     TextField field =
         (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
     field.setValue("");
@@ -453,7 +453,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.dilutions).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.dilutions).getItems().iterator().next();
     TextField field =
         (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
     field.setValue("a");
@@ -471,7 +471,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.dilutions).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.dilutions).getItems().iterator().next();
     TextField field =
         (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
     field.setValue("-1");
@@ -488,7 +488,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.dilutions).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.dilutions).getItems().iterator().next();
     TextField field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
     field.setValue("");
 
@@ -505,7 +505,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.dilutions).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.dilutions).getItems().iterator().next();
     TextField field =
         (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
     field.setValue("");
@@ -523,7 +523,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.dilutions).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.dilutions).getItems().iterator().next();
     TextField field =
         (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
     field.setValue("a");
@@ -541,7 +541,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.dilutions).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.dilutions).getItems().iterator().next();
     TextField field =
         (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
     field.setValue("-1");
@@ -570,11 +570,11 @@ public class DilutionViewPresenterTest {
     verify(view, never()).showError(any());
     verify(dilutionService).insert(dilutionCaptor.capture());
     Dilution dilution = dilutionCaptor.getValue();
-    assertEquals(containers.size(), dilution.getTreatmentSamples().size());
+    assertEquals(containers.size(), dilution.getTreatedSamples().size());
     int count = 0;
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      TreatmentSample diluted = dilution.getTreatmentSamples().get(i);
+      TreatedSample diluted = dilution.getTreatedSamples().get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
       assertEquals(sourceVolumes.get(count), diluted.getSourceVolume(), 0.0001);
@@ -617,10 +617,10 @@ public class DilutionViewPresenterTest {
     verify(dilutionService).update(dilutionCaptor.capture(), eq("test explanation"));
     Dilution savedDilution = dilutionCaptor.getValue();
     assertEquals((Long) 4L, savedDilution.getId());
-    assertEquals(dilution.getTreatmentSamples().size(), savedDilution.getTreatmentSamples().size());
-    for (int i = 0; i < dilution.getTreatmentSamples().size(); i++) {
-      TreatmentSample original = dilution.getTreatmentSamples().get(i);
-      TreatmentSample diluted = savedDilution.getTreatmentSamples().get(i);
+    assertEquals(dilution.getTreatedSamples().size(), savedDilution.getTreatedSamples().size());
+    for (int i = 0; i < dilution.getTreatedSamples().size(); i++) {
+      TreatedSample original = dilution.getTreatedSamples().get(i);
+      TreatedSample diluted = savedDilution.getTreatedSamples().get(i);
       assertEquals(original.getId(), diluted.getId());
       assertEquals(original.getSample(), diluted.getSample());
       assertEquals(original.getContainer(), diluted.getContainer());
@@ -629,7 +629,7 @@ public class DilutionViewPresenterTest {
       assertEquals(solventVolumes.get(i), diluted.getSolventVolume(), 0.0001);
       assertEquals(comments.get(i), diluted.getComment());
     }
-    verify(view).showTrayNotification(resources.message(SAVED, dilution.getTreatmentSamples()
+    verify(view).showTrayNotification(resources.message(SAVED, dilution.getTreatedSamples()
         .stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(DilutionView.VIEW_NAME, "4");
   }
@@ -666,7 +666,7 @@ public class DilutionViewPresenterTest {
     verify(dilutionService).undo(dilutionCaptor.capture(), eq("test explanation"), eq(false));
     Dilution savedDilution = dilutionCaptor.getValue();
     assertEquals((Long) 4L, savedDilution.getId());
-    verify(view).showTrayNotification(resources.message(REMOVED, dilution.getTreatmentSamples()
+    verify(view).showTrayNotification(resources.message(REMOVED, dilution.getTreatedSamples()
         .stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(DilutionView.VIEW_NAME, "4");
   }
@@ -688,7 +688,7 @@ public class DilutionViewPresenterTest {
     verify(dilutionService).undo(dilutionCaptor.capture(), eq("test explanation"), eq(true));
     Dilution savedDilution = dilutionCaptor.getValue();
     assertEquals((Long) 4L, savedDilution.getId());
-    verify(view).showTrayNotification(resources.message(REMOVED, dilution.getTreatmentSamples()
+    verify(view).showTrayNotification(resources.message(REMOVED, dilution.getTreatedSamples()
         .stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(DilutionView.VIEW_NAME, "4");
   }
@@ -702,15 +702,15 @@ public class DilutionViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      TreatmentSample diluted = tss.get(i);
+      TreatedSample diluted = tss.get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
     }
-    for (TreatmentSample ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -734,15 +734,15 @@ public class DilutionViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      TreatmentSample diluted = tss.get(i);
+      TreatedSample diluted = tss.get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
     }
-    for (TreatmentSample ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -768,12 +768,12 @@ public class DilutionViewPresenterTest {
     assertTrue(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertTrue(design.removeLayout.isVisible());
-    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
-    assertEquals(dilution.getTreatmentSamples().size(), tss.size());
-    for (int i = 0; i < dilution.getTreatmentSamples().size(); i++) {
-      assertEquals(dilution.getTreatmentSamples().get(i), tss.get(i));
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
+    assertEquals(dilution.getTreatedSamples().size(), tss.size());
+    for (int i = 0; i < dilution.getTreatedSamples().size(); i++) {
+      assertEquals(dilution.getTreatedSamples().get(i), tss.get(i));
     }
-    for (TreatmentSample ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -800,12 +800,12 @@ public class DilutionViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
-    assertEquals(dilution.getTreatmentSamples().size(), tss.size());
-    for (int i = 0; i < dilution.getTreatmentSamples().size(); i++) {
-      assertEquals(dilution.getTreatmentSamples().get(i), tss.get(i));
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.dilutions).getItems());
+    assertEquals(dilution.getTreatedSamples().size(), tss.size());
+    for (int i = 0; i < dilution.getTreatedSamples().size(); i++) {
+      assertEquals(dilution.getTreatedSamples().get(i), tss.get(i));
     }
-    for (TreatmentSample ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
       assertTrue(field.isReadOnly());
@@ -823,7 +823,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("a");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.dilutions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.dilutions);
     verify(view).showWarning(resources.message(INVALID_DILUTION));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -834,7 +834,7 @@ public class DilutionViewPresenterTest {
     presenter.enter("6");
 
     verify(dilutionService).get(6L);
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.dilutions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.dilutions);
     verify(view).showWarning(resources.message(INVALID_DILUTION));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -851,7 +851,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.dilutions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.dilutions);
     assertEquals(containers.size(), tss.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(tss.getItems().stream().filter(ts -> container == ts.getContainer()).findAny()
@@ -864,7 +864,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.dilutions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.dilutions);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -874,7 +874,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,a");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.dilutions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.dilutions);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -885,7 +885,7 @@ public class DilutionViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.dilutions);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.dilutions);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }

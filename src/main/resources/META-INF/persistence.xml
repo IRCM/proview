@@ -50,7 +50,7 @@
     <class>ca.qc.ircm.proview.submission.SubmissionFile</class>
     <class>ca.qc.ircm.proview.treatment.Protocol</class>
     <class>ca.qc.ircm.proview.treatment.Treatment</class>
-    <class>ca.qc.ircm.proview.treatment.TreatmentSample</class>
+    <class>ca.qc.ircm.proview.treatment.TreatedSample</class>
     <class>ca.qc.ircm.proview.transfer.Transfer</class>
     <class>ca.qc.ircm.proview.tube.Tube</class>
     <class>ca.qc.ircm.proview.user.ForgotPassword</class>

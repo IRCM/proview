@@ -26,7 +26,7 @@ import java.util.Locale;
  */
 public enum FractionationType {
   /**
-   * MudPit treatmentSample.
+   * MudPit treatedSample.
    */
   MUDPIT,
   /**

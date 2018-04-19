@@ -27,7 +27,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -77,7 +77,7 @@ public class EnrichmentActivityService {
     final User user = authorizationService.getCurrentUser();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (TreatmentSample ts : enrichment.getTreatmentSamples()) {
+    for (TreatedSample ts : enrichment.getTreatedSamples()) {
       Sample newSample = ts.getSample();
       Sample oldSample = entityManager.find(Sample.class, ts.getSample().getId());
       if (newSample instanceof SubmissionSample) {
@@ -123,21 +123,21 @@ public class EnrichmentActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     updateBuilders.add(enrichmentUpdate(enrichment).column("protocol")
         .oldValue(oldEnrichment.getProtocol().getId()).newValue(enrichment.getProtocol().getId()));
-    Map<Long, TreatmentSample> oldTreatmentSampleIds = oldEnrichment.getTreatmentSamples().stream()
+    Map<Long, TreatedSample> oldTreatedSampleIds = oldEnrichment.getTreatedSamples().stream()
         .collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
-    enrichment.getTreatmentSamples().stream()
-        .filter(ts -> !oldTreatmentSampleIds.containsKey(ts.getId()))
-        .forEach(ts -> updateBuilders.add(treatmentSampleAction(ts, ActionType.INSERT)));
-    enrichment.getTreatmentSamples().stream()
-        .filter(ts -> oldTreatmentSampleIds.containsKey(ts.getId())).forEach(ts -> {
-          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("sampleId")
-              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getSample().getId())
+    enrichment.getTreatedSamples().stream()
+        .filter(ts -> !oldTreatedSampleIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(treatedSampleAction(ts, ActionType.INSERT)));
+    enrichment.getTreatedSamples().stream()
+        .filter(ts -> oldTreatedSampleIds.containsKey(ts.getId())).forEach(ts -> {
+          updateBuilders.add(treatedSampleAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldTreatedSampleIds.get(ts.getId()).getSample().getId())
               .newValue(ts.getSample().getId()));
-          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("containerId")
-              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getContainer().getId())
+          updateBuilders.add(treatedSampleAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldTreatedSampleIds.get(ts.getId()).getContainer().getId())
               .newValue(ts.getContainer().getId()));
-          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("comment")
-              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getComment())
+          updateBuilders.add(treatedSampleAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldTreatedSampleIds.get(ts.getId()).getComment())
               .newValue(ts.getComment()));
         });
 
@@ -163,7 +163,7 @@ public class EnrichmentActivityService {
         .actionType(ActionType.UPDATE);
   }
 
-  private UpdateActivityBuilder treatmentSampleAction(TreatmentSample ts, ActionType actionType) {
+  private UpdateActivityBuilder treatedSampleAction(TreatedSample ts, ActionType actionType) {
     return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
         .actionType(actionType);
   }

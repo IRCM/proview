@@ -22,7 +22,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -118,11 +118,11 @@ public class StandardAdditionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     StandardAddition old = entityManager.find(StandardAddition.class, standardAddition.getId());
-    Set<Long> treatmentSampleIds = standardAddition.getTreatmentSamples().stream()
+    Set<Long> treatedSampleIds = standardAddition.getTreatedSamples().stream()
         .map(ts -> ts.getId()).collect(Collectors.toSet());
-    if (old.getTreatmentSamples().stream().filter(ts -> !treatmentSampleIds.contains(ts.getId()))
+    if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
-      throw new IllegalArgumentException("Cannot remove " + TreatmentSample.class.getSimpleName()
+      throw new IllegalArgumentException("Cannot remove " + TreatedSample.class.getSimpleName()
           + " from " + StandardAddition.class.getSimpleName() + " on update");
     }
 
@@ -154,8 +154,8 @@ public class StandardAdditionService extends BaseTreatmentService {
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during standardAddition.
-      for (TreatmentSample treatmentSample : standardAddition.getTreatmentSamples()) {
-        SampleContainer container = treatmentSample.getContainer();
+      for (TreatedSample treatedSample : standardAddition.getTreatedSamples()) {
+        SampleContainer container = treatedSample.getContainer();
         container.setBanned(true);
         bannedContainers.add(container);
 

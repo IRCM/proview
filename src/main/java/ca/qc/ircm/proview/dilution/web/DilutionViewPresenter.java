@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.dilution.web;
 
-import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
+import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.dilution.Dilution;
 import ca.qc.ircm.proview.dilution.DilutionService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -69,12 +69,12 @@ public class DilutionViewPresenter implements BinderValidator {
   public static final String DELETED = "deleted";
   public static final String DILUTIONS_PANEL = "dilutionsPanel";
   public static final String DILUTIONS = "dilutions";
-  public static final String SAMPLE = treatmentSample.sample.getMetadata().getName();
-  public static final String CONTAINER = treatmentSample.container.getMetadata().getName();
-  public static final String SOURCE_VOLUME = treatmentSample.sourceVolume.getMetadata().getName();
-  public static final String SOLVENT = treatmentSample.solvent.getMetadata().getName();
-  public static final String SOLVENT_VOLUME = treatmentSample.solventVolume.getMetadata().getName();
-  public static final String COMMENT = treatmentSample.comment.getMetadata().getName();
+  public static final String SAMPLE = treatedSample.sample.getMetadata().getName();
+  public static final String CONTAINER = treatedSample.container.getMetadata().getName();
+  public static final String SOURCE_VOLUME = treatedSample.sourceVolume.getMetadata().getName();
+  public static final String SOLVENT = treatedSample.solvent.getMetadata().getName();
+  public static final String SOLVENT_VOLUME = treatedSample.solventVolume.getMetadata().getName();
+  public static final String COMMENT = treatedSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
@@ -91,13 +91,13 @@ public class DilutionViewPresenter implements BinderValidator {
   private DilutionView view;
   private DilutionViewDesign design;
   private Binder<Dilution> binder = new BeanValidationBinder<>(Dilution.class);
-  private List<TreatmentSample> dilutions = new ArrayList<>();
-  private ListDataProvider<TreatmentSample> dilutionsDataProvider = DataProvider.ofItems();
-  private Map<TreatmentSample, Binder<TreatmentSample>> dilutionBinders = new HashMap<>();
-  private Map<TreatmentSample, TextField> sourceVolumeFields = new HashMap<>();
-  private Map<TreatmentSample, TextField> solventFields = new HashMap<>();
-  private Map<TreatmentSample, TextField> solventVolumeFields = new HashMap<>();
-  private Map<TreatmentSample, TextField> commentFields = new HashMap<>();
+  private List<TreatedSample> dilutions = new ArrayList<>();
+  private ListDataProvider<TreatedSample> dilutionsDataProvider = DataProvider.ofItems();
+  private Map<TreatedSample, Binder<TreatedSample>> dilutionBinders = new HashMap<>();
+  private Map<TreatedSample, TextField> sourceVolumeFields = new HashMap<>();
+  private Map<TreatedSample, TextField> solventFields = new HashMap<>();
+  private Map<TreatedSample, TextField> solventVolumeFields = new HashMap<>();
+  private Map<TreatedSample, TextField> commentFields = new HashMap<>();
   @Inject
   private DilutionService dilutionService;
   @Inject
@@ -175,9 +175,9 @@ public class DilutionViewPresenter implements BinderValidator {
     design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
-  private Binder<TreatmentSample> binder(TreatmentSample ts) {
+  private Binder<TreatedSample> binder(TreatedSample ts) {
     final MessageResource generalResources = view.getGeneralResources();
-    Binder<TreatmentSample> binder = new BeanValidationBinder<>(TreatmentSample.class);
+    Binder<TreatedSample> binder = new BeanValidationBinder<>(TreatedSample.class);
     binder.setBean(ts);
     dilutionBinders.put(ts, binder);
     binder.forField(sourceVolumeField(ts)).asRequired(generalResources.message(REQUIRED))
@@ -194,7 +194,7 @@ public class DilutionViewPresenter implements BinderValidator {
     return binder;
   }
 
-  private TextField sourceVolumeField(TreatmentSample ts) {
+  private TextField sourceVolumeField(TreatedSample ts) {
     if (sourceVolumeFields.get(ts) != null) {
       return sourceVolumeFields.get(ts);
     } else {
@@ -207,7 +207,7 @@ public class DilutionViewPresenter implements BinderValidator {
     }
   }
 
-  private TextField solventField(TreatmentSample ts) {
+  private TextField solventField(TreatedSample ts) {
     if (solventFields.get(ts) != null) {
       return solventFields.get(ts);
     } else {
@@ -220,7 +220,7 @@ public class DilutionViewPresenter implements BinderValidator {
     }
   }
 
-  private TextField solventVolumeField(TreatmentSample ts) {
+  private TextField solventVolumeField(TreatedSample ts) {
     if (solventVolumeFields.get(ts) != null) {
       return solventVolumeFields.get(ts);
     } else {
@@ -233,7 +233,7 @@ public class DilutionViewPresenter implements BinderValidator {
     }
   }
 
-  private TextField commentField(TreatmentSample ts) {
+  private TextField commentField(TreatedSample ts) {
     if (commentFields.get(ts) != null) {
       return commentFields.get(ts);
     } else {
@@ -247,7 +247,7 @@ public class DilutionViewPresenter implements BinderValidator {
 
   private void down() {
     if (!dilutions.isEmpty()) {
-      TreatmentSample first = gridItems(design.dilutions).findFirst().orElse(null);
+      TreatedSample first = gridItems(design.dilutions).findFirst().orElse(null);
       String sourceVolume = sourceVolumeFields.get(first).getValue();
       String solvent = solventFields.get(first).getValue();
       String solventVolume = solventVolumeFields.get(first).getValue();
@@ -270,7 +270,7 @@ public class DilutionViewPresenter implements BinderValidator {
     }
     boolean valid = true;
     valid &= validate(binder);
-    for (Binder<TreatmentSample> binder : dilutionBinders.values()) {
+    for (Binder<TreatedSample> binder : dilutionBinders.values()) {
       valid &= validate(binder);
     }
     if (!valid) {
@@ -287,7 +287,7 @@ public class DilutionViewPresenter implements BinderValidator {
       final MessageResource resources = view.getResources();
       final MessageResource generalResources = view.getGeneralResources();
       Dilution dilution = binder.getBean();
-      dilution.setTreatmentSamples(dilutions);
+      dilution.setTreatedSamples(dilutions);
       if (dilution.getId() != null) {
         dilutionService.update(dilution, design.explanation.getValue());
       } else {
@@ -361,7 +361,7 @@ public class DilutionViewPresenter implements BinderValidator {
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       dilutions = view.savedContainers().stream().map(container -> {
-        TreatmentSample ts = new TreatmentSample();
+        TreatedSample ts = new TreatedSample();
         ts.setSample(container.getSample());
         ts.setContainer(container);
         return ts;
@@ -378,7 +378,7 @@ public class DilutionViewPresenter implements BinderValidator {
         for (String rawId : rawIds) {
           Long id = Long.valueOf(rawId);
           SampleContainer container = sampleContainerService.get(id);
-          TreatmentSample ts = new TreatmentSample();
+          TreatedSample ts = new TreatedSample();
           ts.setSample(container.getSample());
           ts.setContainer(container);
           dilutions.add(ts);
@@ -393,7 +393,7 @@ public class DilutionViewPresenter implements BinderValidator {
         Dilution dilution = dilutionService.get(id);
         binder.setBean(dilution);
         if (dilution != null) {
-          dilutions = dilution.getTreatmentSamples();
+          dilutions = dilution.getTreatedSamples();
           design.deleted.setVisible(dilution.isDeleted());
           design.explanationPanel.setVisible(!dilution.isDeleted());
           design.save.setVisible(!dilution.isDeleted());

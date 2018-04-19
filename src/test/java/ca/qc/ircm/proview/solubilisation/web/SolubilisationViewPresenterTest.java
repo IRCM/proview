@@ -68,7 +68,7 @@ import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.solubilisation.SolubilisationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -157,21 +157,21 @@ public class SolubilisationViewPresenterTest {
   }
 
   private void setFields() {
-    final ListDataProvider<TreatmentSample> treatments = dataProvider(design.solubilisations);
+    final ListDataProvider<TreatedSample> treatments = dataProvider(design.solubilisations);
     int count = 0;
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
       field.setValue(solvents.get(count++));
     }
     count = 0;
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.solubilisations.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
       field.setValue(Objects.toString(solventVolumes.get(count++), ""));
     }
     count = 0;
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.solubilisations.getColumn(COMMENT).getValueProvider().apply(ts);
       field.setValue(Objects.toString(comments.get(count++), ""));
@@ -223,18 +223,18 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    final ListDataProvider<TreatmentSample> treatments = dataProvider(design.solubilisations);
+    final ListDataProvider<TreatedSample> treatments = dataProvider(design.solubilisations);
     assertEquals(5, design.solubilisations.getColumns().size());
     assertEquals(SAMPLE, design.solubilisations.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.solubilisations.getColumn(SAMPLE).getCaption());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       assertEquals(ts.getSample().getName(),
           design.solubilisations.getColumn(SAMPLE).getValueProvider().apply(ts));
     }
     assertEquals(CONTAINER, design.solubilisations.getColumns().get(1).getId());
     assertEquals(resources.message(CONTAINER),
         design.solubilisations.getColumn(CONTAINER).getCaption());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       assertEquals(ts.getContainer().getFullName(),
           design.solubilisations.getColumn(CONTAINER).getValueProvider().apply(ts));
       assertEquals(ts.getContainer().isBanned() ? BANNED : "",
@@ -246,7 +246,7 @@ public class SolubilisationViewPresenterTest {
     assertTrue(containsInstanceOf(design.solubilisations.getColumn(SOLVENT).getExtensions(),
         ComponentRenderer.class));
     assertFalse(design.solubilisations.getColumn(SOLVENT).isSortable());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(SOLVENT));
@@ -257,7 +257,7 @@ public class SolubilisationViewPresenterTest {
     assertTrue(containsInstanceOf(design.solubilisations.getColumn(SOLVENT_VOLUME).getExtensions(),
         ComponentRenderer.class));
     assertFalse(design.solubilisations.getColumn(SOLVENT_VOLUME).isSortable());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.solubilisations.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(SOLVENT_VOLUME));
@@ -268,7 +268,7 @@ public class SolubilisationViewPresenterTest {
     assertTrue(containsInstanceOf(design.solubilisations.getColumn(COMMENT).getExtensions(),
         ComponentRenderer.class));
     assertFalse(design.solubilisations.getColumn(COMMENT).isSortable());
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.solubilisations.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(COMMENT));
@@ -286,8 +286,8 @@ public class SolubilisationViewPresenterTest {
   public void down() {
     presenter.init(view);
     presenter.enter("");
-    final ListDataProvider<TreatmentSample> treatments = dataProvider(design.solubilisations);
-    TreatmentSample firstTs = treatments.getItems().iterator().next();
+    final ListDataProvider<TreatedSample> treatments = dataProvider(design.solubilisations);
+    TreatedSample firstTs = treatments.getItems().iterator().next();
     String solvent = "test solvent";
     TextField field =
         (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(firstTs);
@@ -302,7 +302,7 @@ public class SolubilisationViewPresenterTest {
 
     design.down.click();
 
-    for (TreatmentSample ts : treatments.getItems()) {
+    for (TreatedSample ts : treatments.getItems()) {
       field = (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertEquals(solvent, field.getValue());
       field =
@@ -327,7 +327,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.solubilisations.sort(SAMPLE, SortDirection.DESCENDING);
-    final List<TreatmentSample> treatments =
+    final List<TreatedSample> treatments =
         new ArrayList<>(dataProvider(design.solubilisations).getItems());
     String solvent = "test solvent";
     TextField field = (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider()
@@ -344,7 +344,7 @@ public class SolubilisationViewPresenterTest {
 
     design.down.click();
 
-    for (TreatmentSample ts : treatments) {
+    for (TreatedSample ts : treatments) {
       field = (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertEquals(solvent, field.getValue());
       field =
@@ -360,7 +360,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.solubilisations.sort(CONTAINER, SortDirection.DESCENDING);
-    final List<TreatmentSample> treatments =
+    final List<TreatedSample> treatments =
         new ArrayList<>(dataProvider(design.solubilisations).getItems());
     String solvent = "test solvent";
     TextField field = (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider()
@@ -377,7 +377,7 @@ public class SolubilisationViewPresenterTest {
 
     design.down.click();
 
-    for (TreatmentSample ts : treatments) {
+    for (TreatedSample ts : treatments) {
       field = (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertEquals(solvent, field.getValue());
       field =
@@ -405,7 +405,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.solubilisations).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.solubilisations).getItems().iterator().next();
     TextField field =
         (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
     field.setValue("");
@@ -423,7 +423,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.solubilisations).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.solubilisations).getItems().iterator().next();
     TextField field =
         (TextField) design.solubilisations.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
     field.setValue("");
@@ -441,7 +441,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.solubilisations).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.solubilisations).getItems().iterator().next();
     TextField field =
         (TextField) design.solubilisations.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
     field.setValue("a");
@@ -459,7 +459,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     setFields();
-    TreatmentSample ts = dataProvider(design.solubilisations).getItems().iterator().next();
+    TreatedSample ts = dataProvider(design.solubilisations).getItems().iterator().next();
     TextField field =
         (TextField) design.solubilisations.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
     field.setValue("-1");
@@ -488,11 +488,11 @@ public class SolubilisationViewPresenterTest {
     verify(view, never()).showError(any());
     verify(solubilisationService).insert(solubilisationCaptor.capture());
     Solubilisation solubilisation = solubilisationCaptor.getValue();
-    assertEquals(containers.size(), solubilisation.getTreatmentSamples().size());
+    assertEquals(containers.size(), solubilisation.getTreatedSamples().size());
     int count = 0;
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      TreatmentSample diluted = solubilisation.getTreatmentSamples().get(i);
+      TreatedSample diluted = solubilisation.getTreatedSamples().get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
       assertEquals(solvents.get(count), diluted.getSolvent());
@@ -535,11 +535,11 @@ public class SolubilisationViewPresenterTest {
     verify(solubilisationService).update(solubilisationCaptor.capture(), eq("test explanation"));
     Solubilisation savedSolubilisation = solubilisationCaptor.getValue();
     assertEquals((Long) 1L, savedSolubilisation.getId());
-    assertEquals(solubilisation.getTreatmentSamples().size(),
-        savedSolubilisation.getTreatmentSamples().size());
-    for (int i = 0; i < solubilisation.getTreatmentSamples().size(); i++) {
-      TreatmentSample original = solubilisation.getTreatmentSamples().get(i);
-      TreatmentSample diluted = savedSolubilisation.getTreatmentSamples().get(i);
+    assertEquals(solubilisation.getTreatedSamples().size(),
+        savedSolubilisation.getTreatedSamples().size());
+    for (int i = 0; i < solubilisation.getTreatedSamples().size(); i++) {
+      TreatedSample original = solubilisation.getTreatedSamples().get(i);
+      TreatedSample diluted = savedSolubilisation.getTreatedSamples().get(i);
       assertEquals(original.getId(), diluted.getId());
       assertEquals(original.getSample(), diluted.getSample());
       assertEquals(original.getContainer(), diluted.getContainer());
@@ -547,7 +547,7 @@ public class SolubilisationViewPresenterTest {
       assertEquals(solventVolumes.get(i), diluted.getSolventVolume(), 0.0001);
       assertEquals(comments.get(i), diluted.getComment());
     }
-    verify(view).showTrayNotification(resources.message(SAVED, solubilisation.getTreatmentSamples()
+    verify(view).showTrayNotification(resources.message(SAVED, solubilisation.getTreatedSamples()
         .stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(SolubilisationView.VIEW_NAME, "1");
   }
@@ -588,7 +588,7 @@ public class SolubilisationViewPresenterTest {
     Solubilisation savedSolubilisation = solubilisationCaptor.getValue();
     assertEquals((Long) 1L, savedSolubilisation.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, solubilisation
-        .getTreatmentSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
+        .getTreatedSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(SolubilisationView.VIEW_NAME, "1");
   }
 
@@ -612,7 +612,7 @@ public class SolubilisationViewPresenterTest {
     Solubilisation savedSolubilisation = solubilisationCaptor.getValue();
     assertEquals((Long) 1L, savedSolubilisation.getId());
     verify(view).showTrayNotification(resources.message(REMOVED, solubilisation
-        .getTreatmentSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
+        .getTreatedSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(SolubilisationView.VIEW_NAME, "1");
   }
 
@@ -625,15 +625,15 @@ public class SolubilisationViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.solubilisations).getItems());
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.solubilisations).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      TreatmentSample diluted = tss.get(i);
+      TreatedSample diluted = tss.get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
     }
-    for (TreatmentSample ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -656,15 +656,15 @@ public class SolubilisationViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.solubilisations).getItems());
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.solubilisations).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      TreatmentSample diluted = tss.get(i);
+      TreatedSample diluted = tss.get(i);
       assertEquals(container.getSample(), diluted.getSample());
       assertEquals(container, diluted.getContainer());
     }
-    for (TreatmentSample ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -690,12 +690,12 @@ public class SolubilisationViewPresenterTest {
     assertTrue(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertTrue(design.removeLayout.isVisible());
-    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.solubilisations).getItems());
-    assertEquals(solubilisation.getTreatmentSamples().size(), tss.size());
-    for (int i = 0; i < solubilisation.getTreatmentSamples().size(); i++) {
-      assertEquals(solubilisation.getTreatmentSamples().get(i), tss.get(i));
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.solubilisations).getItems());
+    assertEquals(solubilisation.getTreatedSamples().size(), tss.size());
+    for (int i = 0; i < solubilisation.getTreatedSamples().size(); i++) {
+      assertEquals(solubilisation.getTreatedSamples().get(i), tss.get(i));
     }
-    for (TreatmentSample ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -722,12 +722,12 @@ public class SolubilisationViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.solubilisations).getItems());
-    assertEquals(solubilisation.getTreatmentSamples().size(), tss.size());
-    for (int i = 0; i < solubilisation.getTreatmentSamples().size(); i++) {
-      assertEquals(solubilisation.getTreatmentSamples().get(i), tss.get(i));
+    List<TreatedSample> tss = new ArrayList<>(dataProvider(design.solubilisations).getItems());
+    assertEquals(solubilisation.getTreatedSamples().size(), tss.size());
+    for (int i = 0; i < solubilisation.getTreatedSamples().size(); i++) {
+      assertEquals(solubilisation.getTreatedSamples().get(i), tss.get(i));
     }
-    for (TreatmentSample ts : tss) {
+    for (TreatedSample ts : tss) {
       TextField field =
           (TextField) design.solubilisations.getColumn(SOLVENT).getValueProvider().apply(ts);
       assertTrue(field.isReadOnly());
@@ -744,7 +744,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("a");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.solubilisations);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.solubilisations);
     verify(view).showWarning(resources.message(INVALID_SOLUBILISATION));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -755,7 +755,7 @@ public class SolubilisationViewPresenterTest {
     presenter.enter("6");
 
     verify(solubilisationService).get(6L);
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.solubilisations);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.solubilisations);
     verify(view).showWarning(resources.message(INVALID_SOLUBILISATION));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -772,7 +772,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.solubilisations);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.solubilisations);
     assertEquals(containers.size(), tss.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(tss.getItems().stream().filter(ts -> container == ts.getContainer()).findAny()
@@ -785,7 +785,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.solubilisations);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.solubilisations);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -795,7 +795,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,a");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.solubilisations);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.solubilisations);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -806,7 +806,7 @@ public class SolubilisationViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<TreatmentSample> tss = dataProvider(design.solubilisations);
+    ListDataProvider<TreatedSample> tss = dataProvider(design.solubilisations);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }

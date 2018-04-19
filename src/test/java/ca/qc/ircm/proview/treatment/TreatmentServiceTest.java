@@ -76,15 +76,15 @@ public class TreatmentServiceTest {
     assertEquals(null, treatment.getDeletionExplanation());
     assertEquals(true, treatment instanceof Solubilisation);
     Solubilisation solubilisation = (Solubilisation) treatment;
-    List<TreatmentSample> treatmentSamples = solubilisation.getTreatmentSamples();
-    assertEquals(1, treatmentSamples.size());
-    TreatmentSample treatmentSample = treatmentSamples.get(0);
-    assertEquals((Long) 1L, treatmentSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
-    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
-    assertEquals(null, treatmentSample.getComment());
-    assertEquals("Methanol", treatmentSample.getSolvent());
-    assertEquals(20.0, treatmentSample.getSolventVolume(), 0.01);
+    List<TreatedSample> treatedSamples = solubilisation.getTreatedSamples();
+    assertEquals(1, treatedSamples.size());
+    TreatedSample treatedSample = treatedSamples.get(0);
+    assertEquals((Long) 1L, treatedSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
+    assertEquals((Long) 1L, treatedSample.getContainer().getId());
+    assertEquals(null, treatedSample.getComment());
+    assertEquals("Methanol", treatedSample.getSolvent());
+    assertEquals(20.0, treatedSample.getSolventVolume(), 0.01);
   }
 
   @Test
@@ -103,16 +103,16 @@ public class TreatmentServiceTest {
     assertEquals(true, treatment instanceof Fractionation);
     Fractionation fractionation = (Fractionation) treatment;
     assertEquals(FractionationType.MUDPIT, fractionation.getFractionationType());
-    TreatmentSample treatmentSample = fractionation.getTreatmentSamples().get(0);
-    assertEquals((Long) 2L, treatmentSample.getId());
-    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
-    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
-    assertEquals(SampleContainerType.TUBE, treatmentSample.getDestinationContainer().getType());
-    assertEquals((Long) 6L, treatmentSample.getDestinationContainer().getId());
-    assertEquals(null, treatmentSample.getComment());
-    assertEquals((Integer) 1, treatmentSample.getPosition());
-    assertEquals((Integer) 1, treatmentSample.getNumber());
-    assertEquals(null, treatmentSample.getPiInterval());
+    TreatedSample treatedSample = fractionation.getTreatedSamples().get(0);
+    assertEquals((Long) 2L, treatedSample.getId());
+    assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
+    assertEquals((Long) 1L, treatedSample.getContainer().getId());
+    assertEquals(SampleContainerType.TUBE, treatedSample.getDestinationContainer().getType());
+    assertEquals((Long) 6L, treatedSample.getDestinationContainer().getId());
+    assertEquals(null, treatedSample.getComment());
+    assertEquals((Integer) 1, treatedSample.getPosition());
+    assertEquals((Integer) 1, treatedSample.getNumber());
+    assertEquals(null, treatedSample.getPiInterval());
   }
 
   @Test

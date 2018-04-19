@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.enrichment.web;
 
 import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
-import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
+import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
@@ -33,7 +33,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -72,9 +72,9 @@ public class EnrichmentViewPresenter implements BinderValidator {
   public static final String PROTOCOL = enrichment.protocol.getMetadata().getName();
   public static final String ENRICHMENTS_PANEL = "enrichmentsPanel";
   public static final String ENRICHMENTS = "enrichments";
-  public static final String SAMPLE = treatmentSample.sample.getMetadata().getName();
-  public static final String CONTAINER = treatmentSample.container.getMetadata().getName();
-  public static final String COMMENT = treatmentSample.comment.getMetadata().getName();
+  public static final String SAMPLE = treatedSample.sample.getMetadata().getName();
+  public static final String CONTAINER = treatedSample.container.getMetadata().getName();
+  public static final String COMMENT = treatedSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
@@ -92,10 +92,10 @@ public class EnrichmentViewPresenter implements BinderValidator {
   private EnrichmentViewDesign design;
   private Binder<Enrichment> binder = new BeanValidationBinder<>(Enrichment.class);
   private ListDataProvider<Protocol> protocolsProvider;
-  private List<TreatmentSample> enrichments = new ArrayList<>();
-  private ListDataProvider<TreatmentSample> enrichmentsDataProvider = DataProvider.ofItems();
-  private Map<TreatmentSample, Binder<TreatmentSample>> enrichmentBinders = new HashMap<>();
-  private Map<TreatmentSample, TextField> commentFields = new HashMap<>();
+  private List<TreatedSample> enrichments = new ArrayList<>();
+  private ListDataProvider<TreatedSample> enrichmentsDataProvider = DataProvider.ofItems();
+  private Map<TreatedSample, Binder<TreatedSample>> enrichmentBinders = new HashMap<>();
+  private Map<TreatedSample, TextField> commentFields = new HashMap<>();
   @Inject
   private EnrichmentService enrichmentService;
   @Inject
@@ -190,7 +190,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
     design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
-  private TextField commentField(TreatmentSample ts) {
+  private TextField commentField(TreatedSample ts) {
     if (commentFields.get(ts) != null) {
       return commentFields.get(ts);
     } else {
@@ -202,8 +202,8 @@ public class EnrichmentViewPresenter implements BinderValidator {
     }
   }
 
-  private Binder<TreatmentSample> binder(TreatmentSample ts) {
-    Binder<TreatmentSample> binder = new BeanValidationBinder<>(TreatmentSample.class);
+  private Binder<TreatedSample> binder(TreatedSample ts) {
+    Binder<TreatedSample> binder = new BeanValidationBinder<>(TreatedSample.class);
     binder.setBean(ts);
     enrichmentBinders.put(ts, binder);
     binder.forField(commentField(ts)).withNullRepresentation("").bind(COMMENT);
@@ -243,7 +243,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
       final MessageResource resources = view.getResources();
       final MessageResource generalResources = view.getGeneralResources();
       Enrichment enrichment = binder.getBean();
-      enrichment.setTreatmentSamples(enrichments);
+      enrichment.setTreatedSamples(enrichments);
       if (enrichment.getId() != null) {
         enrichmentService.update(enrichment, design.explanation.getValue());
       } else {
@@ -317,7 +317,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       enrichments = view.savedContainers().stream().map(container -> {
-        TreatmentSample ts = new TreatmentSample();
+        TreatedSample ts = new TreatedSample();
         ts.setSample(container.getSample());
         ts.setContainer(container);
         return ts;
@@ -334,7 +334,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
         for (String rawId : rawIds) {
           Long id = Long.valueOf(rawId);
           SampleContainer container = sampleContainerService.get(id);
-          TreatmentSample ts = new TreatmentSample();
+          TreatedSample ts = new TreatedSample();
           ts.setSample(container.getSample());
           ts.setContainer(container);
           enrichments.add(ts);
@@ -349,7 +349,7 @@ public class EnrichmentViewPresenter implements BinderValidator {
         Enrichment enrichment = enrichmentService.get(id);
         binder.setBean(enrichment);
         if (enrichment != null) {
-          enrichments = enrichment.getTreatmentSamples();
+          enrichments = enrichment.getTreatedSamples();
           design.protocol.setReadOnly(enrichment.isDeleted());
           design.deleted.setVisible(enrichment.isDeleted());
           design.explanationPanel.setVisible(!enrichment.isDeleted());

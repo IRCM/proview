@@ -22,7 +22,7 @@ import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.transfer.QTransfer.transfer;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
-import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
+import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -56,7 +56,7 @@ public abstract class BaseTreatmentService {
 
   protected void chechSameUserForAllSamples(Treatment treatment) throws IllegalArgumentException {
     User expectedUser = null;
-    for (TreatmentSample ts : treatment.getTreatmentSamples()) {
+    for (TreatedSample ts : treatment.getTreatedSamples()) {
       if (ts.getSample() instanceof SubmissionSample) {
         SubmissionSample sample = (SubmissionSample) ts.getSample();
         if (expectedUser == null) {
@@ -75,9 +75,9 @@ public abstract class BaseTreatmentService {
 
   private boolean containerUsedByTreatment(SampleContainer source) {
     JPAQuery<Long> query = queryFactory.select(treatment.id);
-    query.from(treatment, treatmentSample);
-    query.where(treatmentSample.in(treatment.treatmentSamples));
-    query.where(treatmentSample.container.eq(source));
+    query.from(treatment, treatedSample);
+    query.where(treatedSample.in(treatment.treatedSamples));
+    query.where(treatedSample.container.eq(source));
     query.where(treatment.deleted.eq(false));
     return query.fetchCount() > 0;
   }
@@ -94,9 +94,9 @@ public abstract class BaseTreatmentService {
   protected void banDestinations(SampleContainer source,
       Collection<SampleContainer> bannedContainers) {
     // Ban destination for transfers.
-    List<TreatmentSample> treatmentSamples = selectTransfersBySource(source);
-    for (TreatmentSample treatmentSample : treatmentSamples) {
-      SampleContainer destination = treatmentSample.getDestinationContainer();
+    List<TreatedSample> treatedSamples = selectTransfersBySource(source);
+    for (TreatedSample treatedSample : treatedSamples) {
+      SampleContainer destination = treatedSample.getDestinationContainer();
       if (destination.getSample() != null
           && source.getSample().getId().equals(destination.getSample().getId())) {
         // Failsafe: skip if destination is already in containers.
@@ -109,9 +109,9 @@ public abstract class BaseTreatmentService {
     }
 
     // Ban destinations for fractionation
-    List<TreatmentSample> fractions = selectFractionationsBySource(source);
-    for (TreatmentSample treatmentSample : fractions) {
-      SampleContainer destination = treatmentSample.getDestinationContainer();
+    List<TreatedSample> fractions = selectFractionationsBySource(source);
+    for (TreatedSample treatedSample : fractions) {
+      SampleContainer destination = treatedSample.getDestinationContainer();
       if (destination.getSample() != null
           && source.getSample().getId().equals(destination.getSample().getId())) {
         // Failsafe: skip if destination is already in containers.
@@ -124,19 +124,19 @@ public abstract class BaseTreatmentService {
     }
   }
 
-  private List<TreatmentSample> selectTransfersBySource(SampleContainer source) {
-    JPAQuery<TreatmentSample> query = queryFactory.select(treatmentSample);
-    query.from(transfer, treatmentSample);
-    query.where(treatmentSample.in(transfer.treatmentSamples));
-    query.where(treatmentSample.container.eq(source));
+  private List<TreatedSample> selectTransfersBySource(SampleContainer source) {
+    JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
+    query.from(transfer, treatedSample);
+    query.where(treatedSample.in(transfer.treatedSamples));
+    query.where(treatedSample.container.eq(source));
     return query.fetch();
   }
 
-  private List<TreatmentSample> selectFractionationsBySource(SampleContainer source) {
-    JPAQuery<TreatmentSample> query = queryFactory.select(treatmentSample);
-    query.from(fractionation, treatmentSample);
-    query.where(treatmentSample.in(fractionation.treatmentSamples));
-    query.where(treatmentSample.container.eq(source));
+  private List<TreatedSample> selectFractionationsBySource(SampleContainer source) {
+    JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
+    query.from(fractionation, treatedSample);
+    query.where(treatedSample.in(fractionation.treatedSamples));
+    query.where(treatedSample.container.eq(source));
     return query.fetch();
   }
 }

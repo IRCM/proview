@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.treatment;
 
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
-import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
+import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -87,9 +87,9 @@ public class TreatmentService {
     authorizationService.checkAdminRole();
 
     JPAQuery<Treatment> query = queryFactory.select(treatment);
-    query.from(treatment, treatmentSample);
-    query.where(treatmentSample.in(treatment.treatmentSamples));
-    query.where(treatmentSample.sample.in(submission.getSamples()));
+    query.from(treatment, treatedSample);
+    query.where(treatedSample.in(treatment.treatedSamples));
+    query.where(treatedSample.sample.in(submission.getSamples()));
     query.where(treatment.deleted.eq(false));
     return query.distinct().fetch();
   }

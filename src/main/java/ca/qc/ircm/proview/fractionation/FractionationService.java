@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.fractionation;
 
-import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
+import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -26,7 +26,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -100,7 +100,7 @@ public class FractionationService extends BaseTreatmentService {
    *          sample's container
    * @return fractionated sample corresponding to specified container
    */
-  public TreatmentSample search(SampleContainer container) {
+  public TreatedSample search(SampleContainer container) {
     if (container == null) {
       return null;
     }
@@ -109,23 +109,23 @@ public class FractionationService extends BaseTreatmentService {
     return searchFration(container);
   }
 
-  private TreatmentSample searchFration(SampleContainer container) {
-    TreatmentSample fd = null;
+  private TreatedSample searchFration(SampleContainer container) {
+    TreatedSample fd = null;
     {
-      JPAQuery<TreatmentSample> query = queryFactory.select(treatmentSample);
-      query.from(treatmentSample);
-      query.where(treatmentSample.destinationContainer.eq(container));
-      query.where(treatmentSample.treatment.instanceOf(Fractionation.class));
+      JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
+      query.from(treatedSample);
+      query.where(treatedSample.destinationContainer.eq(container));
+      query.where(treatedSample.treatment.instanceOf(Fractionation.class));
       fd = query.fetchOne();
     }
     if (fd != null) {
       return fd;
     } else {
-      JPAQuery<TreatmentSample> query = queryFactory.select(treatmentSample);
-      query.from(treatmentSample);
-      query.where(treatmentSample.destinationContainer.eq(container));
-      query.where(treatmentSample.treatment.instanceOf(Transfer.class));
-      TreatmentSample st = query.fetchOne();
+      JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
+      query.from(treatedSample);
+      query.where(treatedSample.destinationContainer.eq(container));
+      query.where(treatedSample.treatment.instanceOf(Transfer.class));
+      TreatedSample st = query.fetchOne();
       if (st != null) {
         return searchFration(st.getContainer());
       } else {
@@ -135,7 +135,7 @@ public class FractionationService extends BaseTreatmentService {
   }
 
   private void validateWellDestination(Fractionation fractionation) {
-    for (TreatmentSample detail : fractionation.getTreatmentSamples()) {
+    for (TreatedSample detail : fractionation.getTreatedSamples()) {
       if (detail.getDestinationContainer() instanceof Tube) {
         throw new IllegalArgumentException("Fractions cannot be placed in tubes");
       }
@@ -158,12 +158,12 @@ public class FractionationService extends BaseTreatmentService {
     fractionation.setUser(user);
 
     // Reassign samples inside wells.
-    for (TreatmentSample detail : fractionation.getTreatmentSamples()) {
+    for (TreatedSample detail : fractionation.getTreatedSamples()) {
       detail.getDestinationContainer().setSample(detail.getSample());
     }
 
     // Insert destination tubes.
-    for (TreatmentSample detail : fractionation.getTreatmentSamples()) {
+    for (TreatedSample detail : fractionation.getTreatedSamples()) {
       if (detail.getDestinationContainer() instanceof Tube) {
         detail.getDestinationContainer().setTimestamp(Instant.now());
         entityManager.persist(detail.getDestinationContainer());
@@ -172,7 +172,7 @@ public class FractionationService extends BaseTreatmentService {
 
     // Insert fractionation.
     Map<Sample, Integer> positions = new HashMap<>();
-    for (TreatmentSample detail : fractionation.getTreatmentSamples()) {
+    for (TreatedSample detail : fractionation.getTreatedSamples()) {
       Sample sample = detail.getSample();
       Integer lastPosition = lastPosition(sample);
       if (lastPosition == null) {
@@ -180,7 +180,7 @@ public class FractionationService extends BaseTreatmentService {
       }
       positions.put(sample, lastPosition + 1);
     }
-    for (TreatmentSample detail : fractionation.getTreatmentSamples()) {
+    for (TreatedSample detail : fractionation.getTreatedSamples()) {
       Sample sample = detail.getSample();
       Integer position = positions.get(sample);
       detail.setPosition(position);
@@ -188,7 +188,7 @@ public class FractionationService extends BaseTreatmentService {
     }
     entityManager.persist(fractionation);
     // Link container to sample and treatment sample.
-    for (TreatmentSample detail : fractionation.getTreatmentSamples()) {
+    for (TreatedSample detail : fractionation.getTreatedSamples()) {
       detail.getDestinationContainer().setTimestamp(Instant.now());
     }
 
@@ -197,15 +197,15 @@ public class FractionationService extends BaseTreatmentService {
     Activity activity = fractionationActivityService.insert(fractionation);
     activityService.insert(activity);
 
-    for (TreatmentSample detail : fractionation.getTreatmentSamples()) {
+    for (TreatedSample detail : fractionation.getTreatedSamples()) {
       entityManager.merge(detail.getDestinationContainer());
     }
   }
 
   private Integer lastPosition(Sample sample) {
-    JPAQuery<Integer> query = queryFactory.select(treatmentSample.position.max());
-    query.from(treatmentSample);
-    query.where(treatmentSample.sample.eq(sample));
+    JPAQuery<Integer> query = queryFactory.select(treatedSample.position.max());
+    query.from(treatedSample);
+    query.where(treatedSample.sample.eq(sample));
     return query.fetchOne();
   }
 
@@ -237,8 +237,8 @@ public class FractionationService extends BaseTreatmentService {
     Collection<SampleContainer> samplesRemoved = new LinkedHashSet<>();
     if (removeSamplesFromDestinations) {
       Collection<SampleContainer> removeFailed = new LinkedHashSet<>();
-      for (TreatmentSample treatmentSample : fractionation.getTreatmentSamples()) {
-        SampleContainer destination = treatmentSample.getDestinationContainer();
+      for (TreatedSample treatedSample : fractionation.getTreatedSamples()) {
+        SampleContainer destination = treatedSample.getDestinationContainer();
         if (containerUsedByTreatmentOrAnalysis(destination)) {
           removeFailed.add(destination);
         }
@@ -246,8 +246,8 @@ public class FractionationService extends BaseTreatmentService {
       if (!removeFailed.isEmpty()) {
         throw new IllegalArgumentException("Cannot remove sample from all destinations");
       }
-      for (TreatmentSample treatmentSample : fractionation.getTreatmentSamples()) {
-        SampleContainer destination = treatmentSample.getDestinationContainer();
+      for (TreatedSample treatedSample : fractionation.getTreatedSamples()) {
+        SampleContainer destination = treatedSample.getDestinationContainer();
         destination.setSample(null);
         samplesRemoved.add(destination);
       }
@@ -256,8 +256,8 @@ public class FractionationService extends BaseTreatmentService {
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during transfer.
-      for (TreatmentSample treatmentSample : fractionation.getTreatmentSamples()) {
-        SampleContainer destination = treatmentSample.getDestinationContainer();
+      for (TreatedSample treatedSample : fractionation.getTreatedSamples()) {
+        SampleContainer destination = treatedSample.getDestinationContainer();
         destination.setBanned(true);
         bannedContainers.add(destination);
 

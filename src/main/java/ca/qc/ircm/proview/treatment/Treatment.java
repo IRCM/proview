@@ -104,7 +104,7 @@ public abstract class Treatment implements Data {
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "treatmentId", nullable = false)
   @OrderColumn(name = "listIndex")
-  private List<TreatmentSample> treatmentSamples;
+  private List<TreatedSample> treatedSamples;
 
   public Treatment() {
   }
@@ -148,12 +148,12 @@ public abstract class Treatment implements Data {
     this.user = user;
   }
 
-  public List<TreatmentSample> getTreatmentSamples() {
-    return treatmentSamples;
+  public List<TreatedSample> getTreatedSamples() {
+    return treatedSamples;
   }
 
-  public void setTreatmentSamples(List<TreatmentSample> treatmentSamples) {
-    this.treatmentSamples = treatmentSamples;
+  public void setTreatedSamples(List<TreatedSample> treatedSamples) {
+    this.treatedSamples = treatedSamples;
   }
 
   public Instant getInsertTime() {

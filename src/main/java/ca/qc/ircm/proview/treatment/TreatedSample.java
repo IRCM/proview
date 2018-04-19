@@ -38,7 +38,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "treatmentsample")
-public class TreatmentSample implements Data {
+public class TreatedSample implements Data {
   /**
    * Database identifier.
    */
@@ -100,7 +100,7 @@ public class TreatmentSample implements Data {
   @Size(max = 100)
   private String quantity;
   /**
-   * Fraction index number that is appended when showing LIMS number of treatmentSample.
+   * Fraction index number that is appended when showing LIMS number of treatedSample.
    */
   @Column(name = "position", nullable = false)
   private Integer position;
@@ -135,7 +135,7 @@ public class TreatmentSample implements Data {
 
   @Override
   public String toString() {
-    return "TreatmentSample [id=" + id + "]";
+    return "TreatedSample [id=" + id + "]";
   }
 
   public Sample getSample() {

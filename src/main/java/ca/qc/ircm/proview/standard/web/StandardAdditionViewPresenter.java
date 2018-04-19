@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.standard.web;
 
-import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
+import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
@@ -30,7 +30,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.standard.StandardAdditionService;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -67,11 +67,11 @@ public class StandardAdditionViewPresenter implements BinderValidator {
   public static final String DELETED = "deleted";
   public static final String STANDARD_ADDITIONS_PANEL = "standardAdditionsPanel";
   public static final String STANDARD_ADDITIONS = "standardAdditions";
-  public static final String SAMPLE = treatmentSample.sample.getMetadata().getName();
-  public static final String CONTAINER = treatmentSample.container.getMetadata().getName();
-  public static final String NAME = treatmentSample.name.getMetadata().getName();
-  public static final String QUANTITY = treatmentSample.quantity.getMetadata().getName();
-  public static final String COMMENT = treatmentSample.comment.getMetadata().getName();
+  public static final String SAMPLE = treatedSample.sample.getMetadata().getName();
+  public static final String CONTAINER = treatedSample.container.getMetadata().getName();
+  public static final String NAME = treatedSample.name.getMetadata().getName();
+  public static final String QUANTITY = treatedSample.quantity.getMetadata().getName();
+  public static final String COMMENT = treatedSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
@@ -88,12 +88,12 @@ public class StandardAdditionViewPresenter implements BinderValidator {
   private StandardAdditionView view;
   private StandardAdditionViewDesign design;
   private Binder<StandardAddition> binder = new BeanValidationBinder<>(StandardAddition.class);
-  private List<TreatmentSample> standardAdditions = new ArrayList<>();
-  private ListDataProvider<TreatmentSample> standardAdditionsDataProvider = DataProvider.ofItems();
-  private Map<TreatmentSample, Binder<TreatmentSample>> standardAdditionBinders = new HashMap<>();
-  private Map<TreatmentSample, TextField> nameFields = new HashMap<>();
-  private Map<TreatmentSample, TextField> quantityFields = new HashMap<>();
-  private Map<TreatmentSample, TextField> commentFields = new HashMap<>();
+  private List<TreatedSample> standardAdditions = new ArrayList<>();
+  private ListDataProvider<TreatedSample> standardAdditionsDataProvider = DataProvider.ofItems();
+  private Map<TreatedSample, Binder<TreatedSample>> standardAdditionBinders = new HashMap<>();
+  private Map<TreatedSample, TextField> nameFields = new HashMap<>();
+  private Map<TreatedSample, TextField> quantityFields = new HashMap<>();
+  private Map<TreatedSample, TextField> commentFields = new HashMap<>();
   @Inject
   private StandardAdditionService standardAdditionService;
   @Inject
@@ -169,9 +169,9 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
-  private Binder<TreatmentSample> binder(TreatmentSample ts) {
+  private Binder<TreatedSample> binder(TreatedSample ts) {
     final MessageResource generalResources = view.getGeneralResources();
-    Binder<TreatmentSample> binder = new BeanValidationBinder<>(TreatmentSample.class);
+    Binder<TreatedSample> binder = new BeanValidationBinder<>(TreatedSample.class);
     binder.setBean(ts);
     standardAdditionBinders.put(ts, binder);
     binder.forField(nameField(ts)).asRequired(generalResources.message(REQUIRED))
@@ -182,7 +182,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     return binder;
   }
 
-  private TextField nameField(TreatmentSample ts) {
+  private TextField nameField(TreatedSample ts) {
     if (nameFields.get(ts) != null) {
       return nameFields.get(ts);
     } else {
@@ -195,7 +195,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     }
   }
 
-  private TextField quantityField(TreatmentSample ts) {
+  private TextField quantityField(TreatedSample ts) {
     if (quantityFields.get(ts) != null) {
       return quantityFields.get(ts);
     } else {
@@ -208,7 +208,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     }
   }
 
-  private TextField commentField(TreatmentSample ts) {
+  private TextField commentField(TreatedSample ts) {
     if (commentFields.get(ts) != null) {
       return commentFields.get(ts);
     } else {
@@ -222,7 +222,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
 
   private void down() {
     if (!standardAdditions.isEmpty()) {
-      TreatmentSample first = gridItems(design.standardAdditions).findFirst().orElse(null);
+      TreatedSample first = gridItems(design.standardAdditions).findFirst().orElse(null);
       String name = nameFields.get(first).getValue();
       String quantity = quantityFields.get(first).getValue();
       String comment = commentFields.get(first).getValue();
@@ -243,7 +243,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     }
     boolean valid = true;
     valid &= validate(binder);
-    for (Binder<TreatmentSample> binder : standardAdditionBinders.values()) {
+    for (Binder<TreatedSample> binder : standardAdditionBinders.values()) {
       valid &= validate(binder);
     }
     if (!valid) {
@@ -260,7 +260,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
       final MessageResource resources = view.getResources();
       final MessageResource generalResources = view.getGeneralResources();
       StandardAddition standardAddition = binder.getBean();
-      standardAddition.setTreatmentSamples(standardAdditions);
+      standardAddition.setTreatedSamples(standardAdditions);
       if (standardAddition.getId() != null) {
         standardAdditionService.update(standardAddition, design.explanation.getValue());
       } else {
@@ -334,7 +334,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       standardAdditions = view.savedContainers().stream().map(container -> {
-        TreatmentSample ts = new TreatmentSample();
+        TreatedSample ts = new TreatedSample();
         ts.setSample(container.getSample());
         ts.setContainer(container);
         return ts;
@@ -351,7 +351,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
         for (String rawId : rawIds) {
           Long id = Long.valueOf(rawId);
           SampleContainer container = sampleContainerService.get(id);
-          TreatmentSample ts = new TreatmentSample();
+          TreatedSample ts = new TreatedSample();
           ts.setSample(container.getSample());
           ts.setContainer(container);
           standardAdditions.add(ts);
@@ -366,7 +366,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
         StandardAddition standardAddition = standardAdditionService.get(id);
         binder.setBean(standardAddition);
         if (standardAddition != null) {
-          standardAdditions = standardAddition.getTreatmentSamples();
+          standardAdditions = standardAddition.getTreatedSamples();
           design.deleted.setVisible(standardAddition.isDeleted());
           design.explanationPanel.setVisible(!standardAddition.isDeleted());
           design.save.setVisible(!standardAddition.isDeleted());

@@ -30,7 +30,7 @@ public class EnrichmentViewDesign extends VerticalLayout {
   protected Panel protocolPanel;
   protected ComboBox<ca.qc.ircm.proview.treatment.Protocol> protocol;
   protected Panel enrichmentsPanel;
-  protected Grid<ca.qc.ircm.proview.treatment.TreatmentSample> enrichments;
+  protected Grid<ca.qc.ircm.proview.treatment.TreatedSample> enrichments;
   protected Button down;
   protected Panel explanationPanel;
   protected TextArea explanation;

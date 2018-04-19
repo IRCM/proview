@@ -30,7 +30,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
@@ -76,17 +76,17 @@ public class FractionationActivityServiceTest {
     destinationTube.setId(56456748L);
     destinationTube.setName(sample.getName() + "_2");
     destinationTube.setSample(sample);
-    TreatmentSample detail = new TreatmentSample();
+    TreatedSample detail = new TreatedSample();
     detail.setSample(sample);
     detail.setContainer(sourceTube);
     detail.setDestinationContainer(destinationTube);
     detail.setNumber(1);
-    List<TreatmentSample> details = new ArrayList<>();
+    List<TreatedSample> details = new ArrayList<>();
     details.add(detail);
     Fractionation fractionation = new Fractionation();
     fractionation.setId(123456L);
     fractionation.setFractionationType(FractionationType.MUDPIT);
-    fractionation.setTreatmentSamples(details);
+    fractionation.setTreatedSamples(details);
 
     Activity activity = fractionationActivityService.insert(fractionation);
 
@@ -110,17 +110,17 @@ public class FractionationActivityServiceTest {
     Tube sourceTube = new Tube(1L);
     Well destinationWell = new Well(130L);
     destinationWell.setSample(sample);
-    TreatmentSample detail = new TreatmentSample();
+    TreatedSample detail = new TreatedSample();
     detail.setSample(sample);
     detail.setContainer(sourceTube);
     detail.setDestinationContainer(destinationWell);
     detail.setNumber(1);
-    List<TreatmentSample> details = new ArrayList<>();
+    List<TreatedSample> details = new ArrayList<>();
     details.add(detail);
     Fractionation fractionation = new Fractionation();
     fractionation.setId(123456L);
     fractionation.setFractionationType(FractionationType.MUDPIT);
-    fractionation.setTreatmentSamples(details);
+    fractionation.setTreatedSamples(details);
 
     Activity activity = fractionationActivityService.insert(fractionation);
 

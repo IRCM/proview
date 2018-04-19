@@ -28,7 +28,7 @@ import ca.qc.ircm.proview.enrichment.Enrichment;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.treatment.TreatmentSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -58,7 +58,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
-  private Optional<TreatmentSample> find(Collection<TreatmentSample> tss, long sampleId) {
+  private Optional<TreatedSample> find(Collection<TreatedSample> tss, long sampleId) {
     return tss.stream().filter(ts -> ts.getSample().getId() == sampleId).findFirst();
   }
 
@@ -167,20 +167,20 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     Enrichment savedEnrichment =
         jpaQueryFactory.select(enrichment).from(enrichment).where(enrichment.id.eq(id)).fetchOne();
     assertEquals((Long) 2L, savedEnrichment.getProtocol().getId());
-    assertEquals(3, savedEnrichment.getTreatmentSamples().size());
-    Optional<TreatmentSample> opTs = find(savedEnrichment.getTreatmentSamples(), 559);
+    assertEquals(3, savedEnrichment.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedEnrichment.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    TreatmentSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
-    opTs = find(savedEnrichment.getTreatmentSamples(), 560);
+    opTs = find(savedEnrichment.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 12L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
-    opTs = find(savedEnrichment.getTreatmentSamples(), 444);
+    opTs = find(savedEnrichment.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -202,19 +202,19 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     Enrichment savedEnrichment =
         jpaQueryFactory.select(enrichment).from(enrichment).where(enrichment.id.eq(id)).fetchOne();
     assertEquals((Long) 2L, savedEnrichment.getProtocol().getId());
-    assertEquals(3, savedEnrichment.getTreatmentSamples().size());
-    Optional<TreatmentSample> opTs = find(savedEnrichment.getTreatmentSamples(), 559);
+    assertEquals(3, savedEnrichment.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedEnrichment.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    TreatmentSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
-    opTs = find(savedEnrichment.getTreatmentSamples(), 560);
+    opTs = find(savedEnrichment.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
     assertEquals((Long) 236L, ts.getContainer().getId());
-    opTs = find(savedEnrichment.getTreatmentSamples(), 444);
+    opTs = find(savedEnrichment.getTreatedSamples(), 444);
     assertEquals("test comment", ts.getComment());
     assertTrue(opTs.isPresent());
     ts = opTs.get();
@@ -235,14 +235,14 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     assertEquals(viewUrl(EnrichmentView.VIEW_NAME, "223"), getDriver().getCurrentUrl());
     Enrichment savedEnrichment = entityManager.find(Enrichment.class, 223L);
     assertEquals((Long) 4L, savedEnrichment.getProtocol().getId());
-    assertEquals(2, savedEnrichment.getTreatmentSamples().size());
-    Optional<TreatmentSample> opTs = find(savedEnrichment.getTreatmentSamples(), 579);
+    assertEquals(2, savedEnrichment.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedEnrichment.getTreatedSamples(), 579);
     assertTrue(opTs.isPresent());
-    TreatmentSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 579L, ts.getSample().getId());
     assertEquals((Long) 800L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
-    opTs = find(savedEnrichment.getTreatmentSamples(), 580);
+    opTs = find(savedEnrichment.getTreatedSamples(), 580);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 580L, ts.getSample().getId());
