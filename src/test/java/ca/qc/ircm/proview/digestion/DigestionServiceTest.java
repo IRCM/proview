@@ -43,6 +43,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -114,14 +115,14 @@ public class DigestionServiceTest {
         digestion.getInsertTime());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionExplanation());
-    List<DigestedSample> digestedSamples = digestion.getTreatmentSamples();
-    assertEquals(1, digestedSamples.size());
-    DigestedSample digestedSample = digestedSamples.get(0);
-    assertEquals(digestion, digestedSample.getDigestion());
-    assertEquals((Long) 444L, digestedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
-    assertEquals((Long) 4L, digestedSample.getContainer().getId());
-    assertEquals(null, digestedSample.getComment());
+    List<TreatmentSample> treatmentSamples = digestion.getTreatmentSamples();
+    assertEquals(1, treatmentSamples.size());
+    TreatmentSample treatmentSample = treatmentSamples.get(0);
+    assertEquals(digestion, treatmentSample.getTreatment());
+    assertEquals((Long) 444L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 4L, treatmentSample.getContainer().getId());
+    assertEquals(null, treatmentSample.getComment());
   }
 
   @Test
@@ -138,13 +139,13 @@ public class DigestionServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
     Tube tube = new Tube(1L);
-    final List<DigestedSample> digestedSamples = new ArrayList<>();
-    DigestedSample digestedSample = new DigestedSample();
-    digestedSample.setComment("unit test");
-    digestedSample.setSample(sample);
-    digestedSample.setContainer(tube);
-    digestedSamples.add(digestedSample);
-    digestion.setTreatmentSamples(digestedSamples);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(tube);
+    treatmentSamples.add(treatmentSample);
+    digestion.setTreatmentSamples(treatmentSamples);
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
     digestionService.insert(digestion);
@@ -164,11 +165,11 @@ public class DigestionServiceTest {
     assertTrue(after.isAfter(digestion.getInsertTime()));
     assertEquals((Long) 1L, digestion.getProtocol().getId());
     assertEquals(1, digestion.getTreatmentSamples().size());
-    digestedSample = digestion.getTreatmentSamples().get(0);
-    assertEquals("unit test", digestedSample.getComment());
-    assertEquals((Long) 1L, digestedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
-    assertEquals((Long) 1L, digestedSample.getContainer().getId());
+    treatmentSample = digestion.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
   }
@@ -180,13 +181,13 @@ public class DigestionServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
     Well well = new Well(128L);
-    final List<DigestedSample> digestedSamples = new ArrayList<>();
-    DigestedSample digestedSample = new DigestedSample();
-    digestedSample.setComment("unit test");
-    digestedSample.setSample(sample);
-    digestedSample.setContainer(well);
-    digestedSamples.add(digestedSample);
-    digestion.setTreatmentSamples(digestedSamples);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(well);
+    treatmentSamples.add(treatmentSample);
+    digestion.setTreatmentSamples(treatmentSamples);
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
     digestionService.insert(digestion);
@@ -206,11 +207,11 @@ public class DigestionServiceTest {
     assertTrue(after.isAfter(digestion.getInsertTime()));
     assertEquals((Long) 1L, digestion.getProtocol().getId());
     assertEquals(1, digestion.getTreatmentSamples().size());
-    digestedSample = digestion.getTreatmentSamples().get(0);
-    assertEquals("unit test", digestedSample.getComment());
-    assertEquals((Long) 1L, digestedSample.getSample().getId());
-    assertEquals(SampleContainerType.WELL, digestedSample.getContainer().getType());
-    assertEquals((Long) 128L, digestedSample.getContainer().getId());
+    treatmentSample = digestion.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.WELL, treatmentSample.getContainer().getType());
+    assertEquals((Long) 128L, treatmentSample.getContainer().getId());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
   }
@@ -225,18 +226,18 @@ public class DigestionServiceTest {
     entityManager.detach(tube1.getSample());
     entityManager.detach(tube2);
     entityManager.detach(tube2.getSample());
-    final List<DigestedSample> digestedSamples = new ArrayList<>();
-    DigestedSample digestedSample1 = new DigestedSample();
-    digestedSample1.setComment("unit test");
-    digestedSample1.setSample(tube1.getSample());
-    digestedSample1.setContainer(tube1);
-    digestedSamples.add(digestedSample1);
-    DigestedSample digestedSample2 = new DigestedSample();
-    digestedSample2.setComment("unit test");
-    digestedSample2.setSample(tube2.getSample());
-    digestedSample2.setContainer(tube2);
-    digestedSamples.add(digestedSample2);
-    digestion.setTreatmentSamples(digestedSamples);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSamples.add(treatmentSample2);
+    digestion.setTreatmentSamples(treatmentSamples);
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
     try {
@@ -257,18 +258,18 @@ public class DigestionServiceTest {
     entityManager.detach(tube1.getSample());
     entityManager.detach(tube2);
     entityManager.detach(tube2.getSample());
-    final List<DigestedSample> digestedSamples = new ArrayList<>();
-    DigestedSample digestedSample1 = new DigestedSample();
-    digestedSample1.setComment("unit test");
-    digestedSample1.setSample(tube1.getSample());
-    digestedSample1.setContainer(tube1);
-    digestedSamples.add(digestedSample1);
-    DigestedSample digestedSample2 = new DigestedSample();
-    digestedSample2.setComment("unit test");
-    digestedSample2.setSample(tube2.getSample());
-    digestedSample2.setContainer(tube2);
-    digestedSamples.add(digestedSample2);
-    digestion.setTreatmentSamples(digestedSamples);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSamples.add(treatmentSample2);
+    digestion.setTreatmentSamples(treatmentSamples);
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
     try {
@@ -287,13 +288,13 @@ public class DigestionServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
     Tube tube = new Tube(1L);
-    final List<DigestedSample> digestedSamples = new ArrayList<>();
-    DigestedSample digestedSample = new DigestedSample();
-    digestedSample.setComment("unit test");
-    digestedSample.setSample(sample);
-    digestedSample.setContainer(tube);
-    digestedSamples.add(digestedSample);
-    digestion.setTreatmentSamples(digestedSamples);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(tube);
+    treatmentSamples.add(treatmentSample);
+    digestion.setTreatmentSamples(treatmentSamples);
     doAnswer(i -> {
       entityManager.persist(i.getArgumentAt(0, Protocol.class));
       return null;
@@ -319,11 +320,11 @@ public class DigestionServiceTest {
     assertNotNull(digestion.getProtocol().getId());
     assertEquals(protocol.getName(), digestion.getProtocol().getName());
     assertEquals(1, digestion.getTreatmentSamples().size());
-    digestedSample = digestion.getTreatmentSamples().get(0);
-    assertEquals("unit test", digestedSample.getComment());
-    assertEquals((Long) 1L, digestedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, digestedSample.getContainer().getType());
-    assertEquals((Long) 1L, digestedSample.getContainer().getId());
+    treatmentSample = digestion.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
   }
@@ -336,13 +337,13 @@ public class DigestionServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
     Tube tube = new Tube(1L);
-    final List<DigestedSample> digestedSamples = new ArrayList<>();
-    DigestedSample digestedSample = new DigestedSample();
-    digestedSample.setComment("unit test");
-    digestedSample.setSample(sample);
-    digestedSample.setContainer(tube);
-    digestedSamples.add(digestedSample);
-    digestion.setTreatmentSamples(digestedSamples);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(tube);
+    treatmentSamples.add(treatmentSample);
+    digestion.setTreatmentSamples(treatmentSamples);
     doAnswer(i -> {
       entityManager.persist(i.getArgumentAt(0, Protocol.class));
       return null;
@@ -360,13 +361,13 @@ public class DigestionServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
     Tube tube = new Tube(1L);
-    final List<DigestedSample> digestedSamples = new ArrayList<>();
-    DigestedSample digestedSample = new DigestedSample();
-    digestedSample.setComment("unit test");
-    digestedSample.setSample(sample);
-    digestedSample.setContainer(tube);
-    digestedSamples.add(digestedSample);
-    digestion.setTreatmentSamples(digestedSamples);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(tube);
+    treatmentSamples.add(treatmentSample);
+    digestion.setTreatmentSamples(treatmentSamples);
     doAnswer(i -> {
       entityManager.persist(i.getArgumentAt(0, Protocol.class));
       return null;
@@ -427,7 +428,7 @@ public class DigestionServiceTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void update_RemoveDigestedSample() {
+  public void update_RemoveTreatmentSample() {
     Digestion digestion = entityManager.find(Digestion.class, 195L);
     entityManager.detach(digestion);
     digestion.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));

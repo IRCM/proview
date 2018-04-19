@@ -39,6 +39,7 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -108,16 +109,16 @@ public class StandardAdditionServiceTest {
         standardAddition.getInsertTime());
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionExplanation());
-    List<AddedStandard> addedStandards = standardAddition.getTreatmentSamples();
-    assertEquals(1, addedStandards.size());
-    AddedStandard addedStandard = addedStandards.get(0);
-    assertEquals(standardAddition, addedStandard.getStandardAddition());
-    assertEquals((Long) 444L, addedStandard.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, addedStandard.getContainer().getType());
-    assertEquals((Long) 4L, addedStandard.getContainer().getId());
-    assertEquals(null, addedStandard.getComment());
-    assertEquals("unit_test_added_standard", addedStandard.getName());
-    assertEquals("20.0 μg", addedStandard.getQuantity());
+    List<TreatmentSample> treatmentSamples = standardAddition.getTreatmentSamples();
+    assertEquals(1, treatmentSamples.size());
+    TreatmentSample treatmentSample = treatmentSamples.get(0);
+    assertEquals(standardAddition, treatmentSample.getTreatment());
+    assertEquals((Long) 444L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 4L, treatmentSample.getContainer().getId());
+    assertEquals(null, treatmentSample.getComment());
+    assertEquals("unit_test_added_standard", treatmentSample.getName());
+    assertEquals("20.0 μg", treatmentSample.getQuantity());
   }
 
   @Test
@@ -129,18 +130,18 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void insert_Tube() {
-    final List<AddedStandard> addedStandards = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
-    AddedStandard addedStandard = new AddedStandard();
-    addedStandard.setComment("unit test");
-    addedStandard.setSample(sample);
-    addedStandard.setContainer(tube);
-    addedStandard.setName("unit_test_added_standard");
-    addedStandard.setQuantity("20.0 μg");
-    addedStandards.add(addedStandard);
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(tube);
+    treatmentSample.setName("unit_test_added_standard");
+    treatmentSample.setQuantity("20.0 μg");
+    treatmentSamples.add(treatmentSample);
     StandardAddition standardAddition = new StandardAddition();
-    standardAddition.setTreatmentSamples(addedStandards);
+    standardAddition.setTreatmentSamples(treatmentSamples);
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
     standardAdditionService.insert(standardAddition);
@@ -159,29 +160,29 @@ public class StandardAdditionServiceTest {
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(standardAddition.getInsertTime()));
     assertEquals(1, standardAddition.getTreatmentSamples().size());
-    addedStandard = standardAddition.getTreatmentSamples().get(0);
-    assertEquals("unit test", addedStandard.getComment());
-    assertEquals((Long) 1L, addedStandard.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, addedStandard.getContainer().getType());
-    assertEquals((Long) 1L, addedStandard.getContainer().getId());
-    assertEquals("unit_test_added_standard", addedStandard.getName());
-    assertEquals("20.0 μg", addedStandard.getQuantity());
+    treatmentSample = standardAddition.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
+    assertEquals("unit_test_added_standard", treatmentSample.getName());
+    assertEquals("20.0 μg", treatmentSample.getQuantity());
   }
 
   @Test
   public void insert_Well() {
-    final List<AddedStandard> addedStandards = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     SubmissionSample sample = new SubmissionSample(1L);
     Well well = new Well(128L);
-    AddedStandard addedStandard = new AddedStandard();
-    addedStandard.setComment("unit test");
-    addedStandard.setSample(sample);
-    addedStandard.setContainer(well);
-    addedStandard.setName("unit_test_added_standard");
-    addedStandard.setQuantity("20.0 μg");
-    addedStandards.add(addedStandard);
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(well);
+    treatmentSample.setName("unit_test_added_standard");
+    treatmentSample.setQuantity("20.0 μg");
+    treatmentSamples.add(treatmentSample);
     StandardAddition standardAddition = new StandardAddition();
-    standardAddition.setTreatmentSamples(addedStandards);
+    standardAddition.setTreatmentSamples(treatmentSamples);
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
     standardAdditionService.insert(standardAddition);
@@ -200,36 +201,36 @@ public class StandardAdditionServiceTest {
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(standardAddition.getInsertTime()));
     assertEquals(1, standardAddition.getTreatmentSamples().size());
-    addedStandard = standardAddition.getTreatmentSamples().get(0);
-    assertEquals("unit test", addedStandard.getComment());
-    assertEquals((Long) 1L, addedStandard.getSample().getId());
-    assertEquals(SampleContainerType.WELL, addedStandard.getContainer().getType());
-    assertEquals((Long) 128L, addedStandard.getContainer().getId());
-    assertEquals("unit_test_added_standard", addedStandard.getName());
-    assertEquals("20.0 μg", addedStandard.getQuantity());
+    treatmentSample = standardAddition.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.WELL, treatmentSample.getContainer().getType());
+    assertEquals((Long) 128L, treatmentSample.getContainer().getId());
+    assertEquals("unit_test_added_standard", treatmentSample.getName());
+    assertEquals("20.0 μg", treatmentSample.getQuantity());
   }
 
   @Test
   public void insert_SamplesFromMultipleUser() {
-    final List<AddedStandard> addedStandards = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     final Tube tube1 = entityManager.find(Tube.class, 3L);
     final Tube tube2 = entityManager.find(Tube.class, 8L);
-    AddedStandard addedStandard1 = new AddedStandard();
-    addedStandard1.setComment("unit test");
-    addedStandard1.setSample(tube1.getSample());
-    addedStandard1.setContainer(tube1);
-    addedStandard1.setName("unit_test_added_standard");
-    addedStandard1.setQuantity("20.0 μg");
-    addedStandards.add(addedStandard1);
-    AddedStandard addedStandard2 = new AddedStandard();
-    addedStandard2.setComment("unit test");
-    addedStandard2.setSample(tube2.getSample());
-    addedStandard2.setContainer(tube2);
-    addedStandard2.setName("unit_test_added_standard");
-    addedStandard2.setQuantity("20.0 μg");
-    addedStandards.add(addedStandard2);
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSample1.setName("unit_test_added_standard");
+    treatmentSample1.setQuantity("20.0 μg");
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSample2.setName("unit_test_added_standard");
+    treatmentSample2.setQuantity("20.0 μg");
+    treatmentSamples.add(treatmentSample2);
     StandardAddition standardAddition = new StandardAddition();
-    standardAddition.setTreatmentSamples(addedStandards);
+    standardAddition.setTreatmentSamples(treatmentSamples);
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
     try {
@@ -242,25 +243,25 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void insert_SamplesFromOneUserAndControl() {
-    final List<AddedStandard> addedStandards = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     final Tube tube1 = entityManager.find(Tube.class, 3L);
     final Tube tube2 = entityManager.find(Tube.class, 4L);
-    AddedStandard addedStandard1 = new AddedStandard();
-    addedStandard1.setComment("unit test");
-    addedStandard1.setSample(tube1.getSample());
-    addedStandard1.setContainer(tube1);
-    addedStandard1.setName("unit_test_added_standard");
-    addedStandard1.setQuantity("20.0 μg");
-    addedStandards.add(addedStandard1);
-    AddedStandard addedStandard2 = new AddedStandard();
-    addedStandard2.setComment("unit test");
-    addedStandard2.setSample(tube2.getSample());
-    addedStandard2.setContainer(tube2);
-    addedStandard2.setName("unit_test_added_standard");
-    addedStandard2.setQuantity("20.0 μg");
-    addedStandards.add(addedStandard2);
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSample1.setName("unit_test_added_standard");
+    treatmentSample1.setQuantity("20.0 μg");
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSample2.setName("unit_test_added_standard");
+    treatmentSample2.setQuantity("20.0 μg");
+    treatmentSamples.add(treatmentSample2);
     StandardAddition standardAddition = new StandardAddition();
-    standardAddition.setTreatmentSamples(addedStandards);
+    standardAddition.setTreatmentSamples(treatmentSamples);
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
     try {
@@ -298,7 +299,7 @@ public class StandardAdditionServiceTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void update_RemoveAddedStandard() {
+  public void update_RemoveTreatmentSample() {
     StandardAddition standardAddition = entityManager.find(StandardAddition.class, 248L);
     entityManager.detach(standardAddition);
     standardAddition.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));

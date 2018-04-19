@@ -60,7 +60,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.enrichment.EnrichedSample;
 import ca.qc.ircm.proview.enrichment.Enrichment;
 import ca.qc.ircm.proview.enrichment.EnrichmentService;
 import ca.qc.ircm.proview.sample.Sample;
@@ -69,6 +68,7 @@ import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -158,9 +158,9 @@ public class EnrichmentViewPresenterTest {
   }
 
   private void setFields() {
-    final ListDataProvider<EnrichedSample> treatments = dataProvider(design.enrichments);
+    final ListDataProvider<TreatmentSample> treatments = dataProvider(design.enrichments);
     int count = 0;
-    for (EnrichedSample ts : treatments.getItems()) {
+    for (TreatmentSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       field.setValue(comments.get(count++));
@@ -237,18 +237,18 @@ public class EnrichmentViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    final ListDataProvider<EnrichedSample> treatments = dataProvider(design.enrichments);
+    final ListDataProvider<TreatmentSample> treatments = dataProvider(design.enrichments);
     assertEquals(3, design.enrichments.getColumns().size());
     assertEquals(SAMPLE, design.enrichments.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.enrichments.getColumn(SAMPLE).getCaption());
-    for (EnrichedSample ts : treatments.getItems()) {
+    for (TreatmentSample ts : treatments.getItems()) {
       assertEquals(ts.getSample().getName(),
           design.enrichments.getColumn(SAMPLE).getValueProvider().apply(ts));
     }
     assertEquals(CONTAINER, design.enrichments.getColumns().get(1).getId());
     assertEquals(resources.message(CONTAINER),
         design.enrichments.getColumn(CONTAINER).getCaption());
-    for (EnrichedSample ts : treatments.getItems()) {
+    for (TreatmentSample ts : treatments.getItems()) {
       assertEquals(ts.getContainer().getFullName(),
           design.enrichments.getColumn(CONTAINER).getValueProvider().apply(ts));
       assertEquals(ts.getContainer().isBanned() ? BANNED : "",
@@ -259,7 +259,7 @@ public class EnrichmentViewPresenterTest {
     assertTrue(containsInstanceOf(design.enrichments.getColumn(COMMENT).getExtensions(),
         ComponentRenderer.class));
     assertFalse(design.enrichments.getColumn(COMMENT).isSortable());
-    for (EnrichedSample ts : treatments.getItems()) {
+    for (TreatmentSample ts : treatments.getItems()) {
       TextField field =
           (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(COMMENT));
@@ -277,8 +277,8 @@ public class EnrichmentViewPresenterTest {
   public void down() {
     presenter.init(view);
     presenter.enter("");
-    final ListDataProvider<EnrichedSample> treatments = dataProvider(design.enrichments);
-    EnrichedSample firstTs = treatments.getItems().iterator().next();
+    final ListDataProvider<TreatmentSample> treatments = dataProvider(design.enrichments);
+    TreatmentSample firstTs = treatments.getItems().iterator().next();
     String comment = "test";
     TextField field =
         (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(firstTs);
@@ -286,7 +286,7 @@ public class EnrichmentViewPresenterTest {
 
     design.down.click();
 
-    for (EnrichedSample ts : treatments.getItems()) {
+    for (TreatmentSample ts : treatments.getItems()) {
       field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertEquals(comment, field.getValue());
     }
@@ -297,7 +297,7 @@ public class EnrichmentViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.enrichments.sort(SAMPLE, SortDirection.DESCENDING);
-    final List<EnrichedSample> treatments =
+    final List<TreatmentSample> treatments =
         new ArrayList<>(dataProvider(design.enrichments).getItems());
     String comment = "test";
     TextField field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider()
@@ -306,7 +306,7 @@ public class EnrichmentViewPresenterTest {
 
     design.down.click();
 
-    for (EnrichedSample ts : treatments) {
+    for (TreatmentSample ts : treatments) {
       field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertEquals(comment, field.getValue());
     }
@@ -317,7 +317,7 @@ public class EnrichmentViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.enrichments.sort(CONTAINER, SortDirection.DESCENDING);
-    final List<EnrichedSample> treatments =
+    final List<TreatmentSample> treatments =
         new ArrayList<>(dataProvider(design.enrichments).getItems());
     String comment = "test";
     TextField field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider()
@@ -326,7 +326,7 @@ public class EnrichmentViewPresenterTest {
 
     design.down.click();
 
-    for (EnrichedSample ts : treatments) {
+    for (TreatmentSample ts : treatments) {
       field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertEquals(comment, field.getValue());
     }
@@ -379,7 +379,7 @@ public class EnrichmentViewPresenterTest {
     assertEquals(containers.size(), enrichment.getTreatmentSamples().size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      EnrichedSample enriched = enrichment.getTreatmentSamples().get(i);
+      TreatmentSample enriched = enrichment.getTreatmentSamples().get(i);
       assertEquals(container.getSample(), enriched.getSample());
       assertEquals(container, enriched.getContainer());
       assertEquals(comments.get(i), enriched.getComment());
@@ -424,8 +424,8 @@ public class EnrichmentViewPresenterTest {
     assertEquals(enrichment.getTreatmentSamples().size(),
         savedEnrichment.getTreatmentSamples().size());
     for (int i = 0; i < enrichment.getTreatmentSamples().size(); i++) {
-      EnrichedSample original = enrichment.getTreatmentSamples().get(i);
-      EnrichedSample enriched = savedEnrichment.getTreatmentSamples().get(i);
+      TreatmentSample original = enrichment.getTreatmentSamples().get(i);
+      TreatmentSample enriched = savedEnrichment.getTreatmentSamples().get(i);
       assertEquals(original.getId(), enriched.getId());
       assertEquals(original.getSample(), enriched.getSample());
       assertEquals(original.getContainer(), enriched.getContainer());
@@ -510,15 +510,15 @@ public class EnrichmentViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<EnrichedSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
+    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      EnrichedSample enriched = tss.get(i);
+      TreatmentSample enriched = tss.get(i);
       assertEquals(container.getSample(), enriched.getSample());
       assertEquals(container, enriched.getContainer());
     }
-    for (EnrichedSample ts : tss) {
+    for (TreatmentSample ts : tss) {
       TextField field =
           (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -537,15 +537,15 @@ public class EnrichmentViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<EnrichedSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
+    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
     assertEquals(containers.size(), tss.size());
     for (int i = 0; i < containers.size(); i++) {
       SampleContainer container = containers.get(i);
-      EnrichedSample enriched = tss.get(i);
+      TreatmentSample enriched = tss.get(i);
       assertEquals(container.getSample(), enriched.getSample());
       assertEquals(container, enriched.getContainer());
     }
-    for (EnrichedSample ts : tss) {
+    for (TreatmentSample ts : tss) {
       TextField field =
           (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -568,12 +568,12 @@ public class EnrichmentViewPresenterTest {
     assertTrue(design.save.isVisible());
     assertTrue(design.removeLayout.isVisible());
     assertEquals(enrichment.getProtocol(), design.protocol.getValue());
-    List<EnrichedSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
+    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
     assertEquals(enrichment.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < enrichment.getTreatmentSamples().size(); i++) {
       assertEquals(enrichment.getTreatmentSamples().get(i), tss.get(i));
     }
-    for (EnrichedSample ts : tss) {
+    for (TreatmentSample ts : tss) {
       TextField field =
           (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertFalse(field.isReadOnly());
@@ -596,12 +596,12 @@ public class EnrichmentViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<EnrichedSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
+    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.enrichments).getItems());
     assertEquals(enrichment.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < enrichment.getTreatmentSamples().size(); i++) {
       assertEquals(enrichment.getTreatmentSamples().get(i), tss.get(i));
     }
-    for (EnrichedSample ts : tss) {
+    for (TreatmentSample ts : tss) {
       TextField field =
           (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.isReadOnly());
@@ -613,7 +613,7 @@ public class EnrichmentViewPresenterTest {
     presenter.init(view);
     presenter.enter("a");
 
-    ListDataProvider<EnrichedSample> tss = dataProvider(design.enrichments);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.enrichments);
     verify(view).showWarning(resources.message(INVALID_ENRICHMENT));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -624,7 +624,7 @@ public class EnrichmentViewPresenterTest {
     presenter.enter("6");
 
     verify(enrichmentService).get(6L);
-    ListDataProvider<EnrichedSample> tss = dataProvider(design.enrichments);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.enrichments);
     verify(view).showWarning(resources.message(INVALID_ENRICHMENT));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -641,7 +641,7 @@ public class EnrichmentViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<EnrichedSample> tss = dataProvider(design.enrichments);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.enrichments);
     assertEquals(containers.size(), tss.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(tss.getItems().stream().filter(ts -> container == ts.getContainer()).findAny()
@@ -654,7 +654,7 @@ public class EnrichmentViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/");
 
-    ListDataProvider<EnrichedSample> tss = dataProvider(design.enrichments);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.enrichments);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -664,7 +664,7 @@ public class EnrichmentViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,a");
 
-    ListDataProvider<EnrichedSample> tss = dataProvider(design.enrichments);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.enrichments);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -675,7 +675,7 @@ public class EnrichmentViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<EnrichedSample> tss = dataProvider(design.enrichments);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.enrichments);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }

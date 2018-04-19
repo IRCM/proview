@@ -18,18 +18,15 @@
 package ca.qc.ircm.proview.treatment;
 
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -41,8 +38,6 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "treatmentsample")
-@Inheritance(strategy = SINGLE_TABLE)
-@DiscriminatorColumn(name = "treatmentType")
 public class TreatmentSample implements Data {
   /**
    * Database identifier.
@@ -51,6 +46,12 @@ public class TreatmentSample implements Data {
   @Column(name = "id", unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
+  /**
+   * Treatment.
+   */
+  @ManyToOne
+  @JoinColumn(name = "treatmentId", nullable = false)
+  private Treatment treatment;
   /**
    * Sample that received treatment.
    */
@@ -99,7 +100,7 @@ public class TreatmentSample implements Data {
   @Size(max = 100)
   private String quantity;
   /**
-   * Fraction index number that is appended when showing LIMS number of fraction.
+   * Fraction index number that is appended when showing LIMS number of treatmentSample.
    */
   @Column(name = "position", nullable = false)
   private Integer position;
@@ -240,5 +241,13 @@ public class TreatmentSample implements Data {
 
   public void setPiInterval(String piInterval) {
     this.piInterval = piInterval;
+  }
+
+  public Treatment getTreatment() {
+    return treatment;
+  }
+
+  public void setTreatment(Treatment treatment) {
+    this.treatment = treatment;
   }
 }

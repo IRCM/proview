@@ -25,6 +25,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.ProtocolService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -131,11 +132,11 @@ public class EnrichmentService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     Enrichment old = entityManager.find(Enrichment.class, enrichment.getId());
-    Set<Long> enrichedSampleIds =
+    Set<Long> treatmentSampleIds =
         enrichment.getTreatmentSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
-    if (old.getTreatmentSamples().stream().filter(ts -> !enrichedSampleIds.contains(ts.getId()))
+    if (old.getTreatmentSamples().stream().filter(ts -> !treatmentSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
-      throw new IllegalArgumentException("Cannot remove " + EnrichedSample.class.getSimpleName()
+      throw new IllegalArgumentException("Cannot remove " + TreatmentSample.class.getSimpleName()
           + " from " + Enrichment.class.getSimpleName() + " on update");
     }
 
@@ -170,8 +171,8 @@ public class EnrichmentService extends BaseTreatmentService {
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during enrichment.
-      for (EnrichedSample enrichedSample : enrichment.getTreatmentSamples()) {
-        SampleContainer container = enrichedSample.getContainer();
+      for (TreatmentSample treatmentSample : enrichment.getTreatmentSamples()) {
+        SampleContainer container = treatmentSample.getContainer();
         container.setBanned(true);
         bannedContainers.add(container);
 

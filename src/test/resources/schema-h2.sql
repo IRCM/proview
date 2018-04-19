@@ -246,7 +246,6 @@ CREATE TABLE IF NOT EXISTS treatment (
 CREATE TABLE IF NOT EXISTS treatmentsample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   treatmentId bigint(20) DEFAULT NULL,
-  treatmentType varchar(100) DEFAULT NULL,
   sampleId bigint(20) NOT NULL,
   containerId bigint(20) DEFAULT NULL,
   listIndex int(10) DEFAULT NULL,

@@ -27,7 +27,7 @@ public class SolubilisationViewDesign extends VerticalLayout {
   protected Label header;
   protected Label deleted;
   protected Panel solubilisationsPanel;
-  protected Grid<ca.qc.ircm.proview.solubilisation.SolubilisedSample> solubilisations;
+  protected Grid<ca.qc.ircm.proview.treatment.TreatmentSample> solubilisations;
   protected Button down;
   protected Panel explanationPanel;
   protected TextArea explanation;

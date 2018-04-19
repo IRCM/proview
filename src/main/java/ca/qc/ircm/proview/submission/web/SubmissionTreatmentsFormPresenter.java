@@ -131,14 +131,14 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
     updateSubmission();
   }
 
-  private long treatmentSampleCount(Treatment<?> treatment) {
+  private long treatmentSampleCount(Treatment treatment) {
     Set<Long> sampleIds =
         submission.getSamples().stream().map(sa -> sa.getId()).collect(Collectors.toSet());
     return treatment.getTreatmentSamples().stream().map(ts -> ts.getSample().getId())
         .filter(id -> sampleIds.contains(id)).distinct().count();
   }
 
-  private String treatmentSampleDescription(Treatment<?> treatment) {
+  private String treatmentSampleDescription(Treatment treatment) {
     Map<Long, SubmissionSample> sampleIds =
         submission.getSamples().stream().collect(Collectors.toMap(sa -> sa.getId(), sa -> sa));
     return treatment.getTreatmentSamples().stream().map(ts -> ts.getSample().getId())
@@ -146,7 +146,7 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
         .collect(Collectors.joining("\n"));
   }
 
-  private Button viewTreatmentButton(Treatment<?> treatment) {
+  private Button viewTreatmentButton(Treatment treatment) {
     Locale locale = view.getLocale();
     Button view = new Button();
     view.addStyleName(TREATMENT_TYPE);
@@ -155,7 +155,7 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
     return view;
   }
 
-  private void viewTreatment(Treatment<?> treatment) {
+  private void viewTreatment(Treatment treatment) {
     switch (treatment.getType()) {
       case DIGESTION:
         view.navigateTo(DigestionView.VIEW_NAME, String.valueOf(treatment.getId()));

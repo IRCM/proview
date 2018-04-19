@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -72,9 +73,9 @@ public class TransferActivityService {
     final User user = authorizationService.getCurrentUser();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (TransferedSample transferedSample : transfer.getTreatmentSamples()) {
+    for (TreatmentSample treatmentSample : transfer.getTreatmentSamples()) {
       updateBuilders.add(new AddSampleToSampleContainerUpdateActivityBuilder()
-          .newContainer(transferedSample.getDestinationContainer()));
+          .newContainer(treatmentSample.getDestinationContainer()));
     }
 
     // Keep updates that changed.

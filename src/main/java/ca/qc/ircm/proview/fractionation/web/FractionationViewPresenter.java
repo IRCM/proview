@@ -17,14 +17,14 @@
 
 package ca.qc.ircm.proview.fractionation.web;
 
-import static ca.qc.ircm.proview.fractionation.QFraction.fraction;
+import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
-import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.fractionation.FractionationType;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.themes.ValoTheme;
@@ -54,17 +54,18 @@ public class FractionationViewPresenter implements BinderValidator {
   public static final String TYPE = "type";
   public static final String FRACTIONS_PANEL = "fractionsPanel";
   public static final String FRACTIONS = "fractions";
-  public static final String SAMPLE = fraction.sample.getMetadata().getName();
-  public static final String CONTAINER = fraction.container.getMetadata().getName();
-  public static final String DESTINATION = fraction.destinationContainer.getMetadata().getName();
-  public static final String NUMBER = fraction.number.getMetadata().getName();
-  public static final String PI_INTERVAL = fraction.piInterval.getMetadata().getName();
-  public static final String COMMENT = fraction.comment.getMetadata().getName();
+  public static final String SAMPLE = treatmentSample.sample.getMetadata().getName();
+  public static final String CONTAINER = treatmentSample.container.getMetadata().getName();
+  public static final String DESTINATION =
+      treatmentSample.destinationContainer.getMetadata().getName();
+  public static final String NUMBER = treatmentSample.number.getMetadata().getName();
+  public static final String PI_INTERVAL = treatmentSample.piInterval.getMetadata().getName();
+  public static final String COMMENT = treatmentSample.comment.getMetadata().getName();
   public static final String INVALID_FRACTIONATION = "fractionation.invalid";
   private static final Logger logger = LoggerFactory.getLogger(FractionationViewPresenter.class);
   private FractionationView view;
   private FractionationViewDesign design;
-  private List<Fraction> fractions = new ArrayList<>();
+  private List<TreatmentSample> fractions = new ArrayList<>();
   @Inject
   private FractionationService fractionationService;
   @Value("${spring.application.name}")

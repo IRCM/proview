@@ -39,6 +39,7 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -108,16 +109,16 @@ public class SolubilisationServiceTest {
         solubilisation.getInsertTime());
     assertEquals(false, solubilisation.isDeleted());
     assertEquals(null, solubilisation.getDeletionExplanation());
-    List<SolubilisedSample> solubilisedSamples = solubilisation.getTreatmentSamples();
-    assertEquals(1, solubilisedSamples.size());
-    SolubilisedSample solubilisedSample = solubilisedSamples.get(0);
-    assertEquals(solubilisation, solubilisedSample.getSolubilisation());
-    assertEquals((Long) 1L, solubilisedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, solubilisedSample.getContainer().getType());
-    assertEquals((Long) 1L, solubilisedSample.getContainer().getId());
-    assertEquals(null, solubilisedSample.getComment());
-    assertEquals("Methanol", solubilisedSample.getSolvent());
-    assertEquals(20.0, solubilisedSample.getSolventVolume(), 0.01);
+    List<TreatmentSample> treatmentSamples = solubilisation.getTreatmentSamples();
+    assertEquals(1, treatmentSamples.size());
+    TreatmentSample treatmentSample = treatmentSamples.get(0);
+    assertEquals(solubilisation, treatmentSample.getTreatment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
+    assertEquals(null, treatmentSample.getComment());
+    assertEquals("Methanol", treatmentSample.getSolvent());
+    assertEquals(20.0, treatmentSample.getSolventVolume(), 0.01);
   }
 
   @Test
@@ -129,18 +130,18 @@ public class SolubilisationServiceTest {
 
   @Test
   public void insert_Tube() {
-    final List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
-    SolubilisedSample solubilisedSample = new SolubilisedSample();
-    solubilisedSample.setComment("unit test");
-    solubilisedSample.setSample(sample);
-    solubilisedSample.setContainer(tube);
-    solubilisedSample.setSolvent("Methanol");
-    solubilisedSample.setSolventVolume(20.0);
-    solubilisedSamples.add(solubilisedSample);
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(tube);
+    treatmentSample.setSolvent("Methanol");
+    treatmentSample.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample);
     Solubilisation solubilisation = new Solubilisation();
-    solubilisation.setTreatmentSamples(solubilisedSamples);
+    solubilisation.setTreatmentSamples(treatmentSamples);
     when(solubilisationActivityService.insert(any(Solubilisation.class))).thenReturn(activity);
 
     solubilisationService.insert(solubilisation);
@@ -159,29 +160,29 @@ public class SolubilisationServiceTest {
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(solubilisation.getInsertTime()));
     assertEquals(1, solubilisation.getTreatmentSamples().size());
-    solubilisedSample = solubilisation.getTreatmentSamples().get(0);
-    assertEquals("unit test", solubilisedSample.getComment());
-    assertEquals((Long) 1L, solubilisedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, solubilisedSample.getContainer().getType());
-    assertEquals((Long) 1L, solubilisedSample.getContainer().getId());
-    assertEquals("Methanol", solubilisedSample.getSolvent());
-    assertEquals((Double) 20.0, solubilisedSample.getSolventVolume());
+    treatmentSample = solubilisation.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
+    assertEquals("Methanol", treatmentSample.getSolvent());
+    assertEquals((Double) 20.0, treatmentSample.getSolventVolume());
   }
 
   @Test
   public void insert_Well() {
-    final List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     SubmissionSample sample = new SubmissionSample(1L);
     Well well = new Well(128L);
-    SolubilisedSample solubilisedSample = new SolubilisedSample();
-    solubilisedSample.setComment("unit test");
-    solubilisedSample.setSample(sample);
-    solubilisedSample.setContainer(well);
-    solubilisedSample.setSolvent("Methanol");
-    solubilisedSample.setSolventVolume(20.0);
-    solubilisedSamples.add(solubilisedSample);
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(well);
+    treatmentSample.setSolvent("Methanol");
+    treatmentSample.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample);
     Solubilisation solubilisation = new Solubilisation();
-    solubilisation.setTreatmentSamples(solubilisedSamples);
+    solubilisation.setTreatmentSamples(treatmentSamples);
     when(solubilisationActivityService.insert(any(Solubilisation.class))).thenReturn(activity);
 
     solubilisationService.insert(solubilisation);
@@ -200,36 +201,36 @@ public class SolubilisationServiceTest {
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(solubilisation.getInsertTime()));
     assertEquals(1, solubilisation.getTreatmentSamples().size());
-    solubilisedSample = solubilisation.getTreatmentSamples().get(0);
-    assertEquals("unit test", solubilisedSample.getComment());
-    assertEquals((Long) 1L, solubilisedSample.getSample().getId());
-    assertEquals(SampleContainerType.WELL, solubilisedSample.getContainer().getType());
-    assertEquals((Long) 128L, solubilisedSample.getContainer().getId());
-    assertEquals("Methanol", solubilisedSample.getSolvent());
-    assertEquals((Double) 20.0, solubilisedSample.getSolventVolume());
+    treatmentSample = solubilisation.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.WELL, treatmentSample.getContainer().getType());
+    assertEquals((Long) 128L, treatmentSample.getContainer().getId());
+    assertEquals("Methanol", treatmentSample.getSolvent());
+    assertEquals((Double) 20.0, treatmentSample.getSolventVolume());
   }
 
   @Test
   public void insert_SamplesFromMultipleUser() {
-    final List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     final Tube tube1 = entityManager.find(Tube.class, 3L);
     final Tube tube2 = entityManager.find(Tube.class, 8L);
-    SolubilisedSample solubilisedSample1 = new SolubilisedSample();
-    solubilisedSample1.setComment("unit test");
-    solubilisedSample1.setSample(tube1.getSample());
-    solubilisedSample1.setContainer(tube1);
-    solubilisedSample1.setSolvent("Methanol");
-    solubilisedSample1.setSolventVolume(20.0);
-    solubilisedSamples.add(solubilisedSample1);
-    SolubilisedSample solubilisedSample2 = new SolubilisedSample();
-    solubilisedSample2.setComment("unit test");
-    solubilisedSample2.setSample(tube2.getSample());
-    solubilisedSample2.setContainer(tube2);
-    solubilisedSample2.setSolvent("Methanol");
-    solubilisedSample2.setSolventVolume(20.0);
-    solubilisedSamples.add(solubilisedSample2);
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSample1.setSolvent("Methanol");
+    treatmentSample1.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSample2.setSolvent("Methanol");
+    treatmentSample2.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample2);
     Solubilisation solubilisation = new Solubilisation();
-    solubilisation.setTreatmentSamples(solubilisedSamples);
+    solubilisation.setTreatmentSamples(treatmentSamples);
     when(solubilisationActivityService.insert(any(Solubilisation.class))).thenReturn(activity);
 
     try {
@@ -242,25 +243,25 @@ public class SolubilisationServiceTest {
 
   @Test
   public void insert_SamplesFromOneUserAndControl() {
-    final List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     final Tube tube1 = entityManager.find(Tube.class, 3L);
     final Tube tube2 = entityManager.find(Tube.class, 4L);
-    SolubilisedSample solubilisedSample1 = new SolubilisedSample();
-    solubilisedSample1.setComment("unit test");
-    solubilisedSample1.setSample(tube1.getSample());
-    solubilisedSample1.setContainer(tube1);
-    solubilisedSample1.setSolvent("Methanol");
-    solubilisedSample1.setSolventVolume(20.0);
-    solubilisedSamples.add(solubilisedSample1);
-    SolubilisedSample solubilisedSample2 = new SolubilisedSample();
-    solubilisedSample2.setComment("unit test");
-    solubilisedSample2.setSample(tube2.getSample());
-    solubilisedSample2.setContainer(tube2);
-    solubilisedSample2.setSolvent("Methanol");
-    solubilisedSample2.setSolventVolume(20.0);
-    solubilisedSamples.add(solubilisedSample2);
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSample1.setSolvent("Methanol");
+    treatmentSample1.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSample2.setSolvent("Methanol");
+    treatmentSample2.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample2);
     Solubilisation solubilisation = new Solubilisation();
-    solubilisation.setTreatmentSamples(solubilisedSamples);
+    solubilisation.setTreatmentSamples(treatmentSamples);
     when(solubilisationActivityService.insert(any(Solubilisation.class))).thenReturn(activity);
 
     try {
@@ -298,7 +299,7 @@ public class SolubilisationServiceTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void update_RemoveSolubilisedSample() {
+  public void update_RemoveTreatmentSample() {
     Solubilisation solubilisation = entityManager.find(Solubilisation.class, 236L);
     entityManager.detach(solubilisation);
     solubilisation.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));

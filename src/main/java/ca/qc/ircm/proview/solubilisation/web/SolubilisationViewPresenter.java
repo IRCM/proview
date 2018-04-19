@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.solubilisation.web;
 
-import static ca.qc.ircm.proview.solubilisation.QSolubilisedSample.solubilisedSample;
+import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.solubilisation.SolubilisationService;
-import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -69,12 +69,11 @@ public class SolubilisationViewPresenter implements BinderValidator {
   public static final String DELETED = "deleted";
   public static final String SOLUBILISATIONS_PANEL = "solubilisationsPanel";
   public static final String SOLUBILISATIONS = "solubilisations";
-  public static final String SAMPLE = solubilisedSample.sample.getMetadata().getName();
-  public static final String CONTAINER = solubilisedSample.container.getMetadata().getName();
-  public static final String SOLVENT = solubilisedSample.solvent.getMetadata().getName();
-  public static final String SOLVENT_VOLUME =
-      solubilisedSample.solventVolume.getMetadata().getName();
-  public static final String COMMENT = solubilisedSample.comment.getMetadata().getName();
+  public static final String SAMPLE = treatmentSample.sample.getMetadata().getName();
+  public static final String CONTAINER = treatmentSample.container.getMetadata().getName();
+  public static final String SOLVENT = treatmentSample.solvent.getMetadata().getName();
+  public static final String SOLVENT_VOLUME = treatmentSample.solventVolume.getMetadata().getName();
+  public static final String COMMENT = treatmentSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
@@ -91,12 +90,12 @@ public class SolubilisationViewPresenter implements BinderValidator {
   private SolubilisationView view;
   private SolubilisationViewDesign design;
   private Binder<Solubilisation> binder = new BeanValidationBinder<>(Solubilisation.class);
-  private List<SolubilisedSample> solubilisations = new ArrayList<>();
-  private ListDataProvider<SolubilisedSample> solubilisationsDataProvider = DataProvider.ofItems();
-  private Map<SolubilisedSample, Binder<SolubilisedSample>> solubilisationBinders = new HashMap<>();
-  private Map<SolubilisedSample, TextField> solventFields = new HashMap<>();
-  private Map<SolubilisedSample, TextField> solventVolumeFields = new HashMap<>();
-  private Map<SolubilisedSample, TextField> commentFields = new HashMap<>();
+  private List<TreatmentSample> solubilisations = new ArrayList<>();
+  private ListDataProvider<TreatmentSample> solubilisationsDataProvider = DataProvider.ofItems();
+  private Map<TreatmentSample, Binder<TreatmentSample>> solubilisationBinders = new HashMap<>();
+  private Map<TreatmentSample, TextField> solventFields = new HashMap<>();
+  private Map<TreatmentSample, TextField> solventVolumeFields = new HashMap<>();
+  private Map<TreatmentSample, TextField> commentFields = new HashMap<>();
   @Inject
   private SolubilisationService solubilisationService;
   @Inject
@@ -172,9 +171,9 @@ public class SolubilisationViewPresenter implements BinderValidator {
     design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
-  private Binder<SolubilisedSample> binder(SolubilisedSample ts) {
+  private Binder<TreatmentSample> binder(TreatmentSample ts) {
     final MessageResource generalResources = view.getGeneralResources();
-    Binder<SolubilisedSample> binder = new BeanValidationBinder<>(SolubilisedSample.class);
+    Binder<TreatmentSample> binder = new BeanValidationBinder<>(TreatmentSample.class);
     binder.setBean(ts);
     solubilisationBinders.put(ts, binder);
     binder.forField(solventField(ts)).asRequired(generalResources.message(REQUIRED))
@@ -187,7 +186,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     return binder;
   }
 
-  private TextField solventField(SolubilisedSample ts) {
+  private TextField solventField(TreatmentSample ts) {
     if (solventFields.get(ts) != null) {
       return solventFields.get(ts);
     } else {
@@ -200,7 +199,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     }
   }
 
-  private TextField solventVolumeField(SolubilisedSample ts) {
+  private TextField solventVolumeField(TreatmentSample ts) {
     if (solventVolumeFields.get(ts) != null) {
       return solventVolumeFields.get(ts);
     } else {
@@ -213,7 +212,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     }
   }
 
-  private TextField commentField(SolubilisedSample ts) {
+  private TextField commentField(TreatmentSample ts) {
     if (commentFields.get(ts) != null) {
       return commentFields.get(ts);
     } else {
@@ -227,7 +226,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
 
   private void down() {
     if (!solubilisations.isEmpty()) {
-      SolubilisedSample first = gridItems(design.solubilisations).findFirst().orElse(null);
+      TreatmentSample first = gridItems(design.solubilisations).findFirst().orElse(null);
       String solvent = solventFields.get(first).getValue();
       String solventVolume = solventVolumeFields.get(first).getValue();
       String comment = commentFields.get(first).getValue();
@@ -248,7 +247,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     }
     boolean valid = true;
     valid &= validate(binder);
-    for (Binder<SolubilisedSample> binder : solubilisationBinders.values()) {
+    for (Binder<TreatmentSample> binder : solubilisationBinders.values()) {
       valid &= validate(binder);
     }
     if (!valid) {
@@ -339,7 +338,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       solubilisations = view.savedContainers().stream().map(container -> {
-        SolubilisedSample ts = new SolubilisedSample();
+        TreatmentSample ts = new TreatmentSample();
         ts.setSample(container.getSample());
         ts.setContainer(container);
         return ts;
@@ -356,7 +355,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
         for (String rawId : rawIds) {
           Long id = Long.valueOf(rawId);
           SampleContainer container = sampleContainerService.get(id);
-          SolubilisedSample ts = new SolubilisedSample();
+          TreatmentSample ts = new TreatmentSample();
           ts.setSample(container.getSample());
           ts.setContainer(container);
           solubilisations.add(ts);

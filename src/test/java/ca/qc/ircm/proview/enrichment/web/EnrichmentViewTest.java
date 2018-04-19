@@ -24,11 +24,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.enrichment.EnrichedSample;
 import ca.qc.ircm.proview.enrichment.Enrichment;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -58,7 +58,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
-  private Optional<EnrichedSample> find(Collection<EnrichedSample> tss, long sampleId) {
+  private Optional<TreatmentSample> find(Collection<TreatmentSample> tss, long sampleId) {
     return tss.stream().filter(ts -> ts.getSample().getId() == sampleId).findFirst();
   }
 
@@ -168,9 +168,9 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
         jpaQueryFactory.select(enrichment).from(enrichment).where(enrichment.id.eq(id)).fetchOne();
     assertEquals((Long) 2L, savedEnrichment.getProtocol().getId());
     assertEquals(3, savedEnrichment.getTreatmentSamples().size());
-    Optional<EnrichedSample> opTs = find(savedEnrichment.getTreatmentSamples(), 559);
+    Optional<TreatmentSample> opTs = find(savedEnrichment.getTreatmentSamples(), 559);
     assertTrue(opTs.isPresent());
-    EnrichedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
@@ -203,9 +203,9 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
         jpaQueryFactory.select(enrichment).from(enrichment).where(enrichment.id.eq(id)).fetchOne();
     assertEquals((Long) 2L, savedEnrichment.getProtocol().getId());
     assertEquals(3, savedEnrichment.getTreatmentSamples().size());
-    Optional<EnrichedSample> opTs = find(savedEnrichment.getTreatmentSamples(), 559);
+    Optional<TreatmentSample> opTs = find(savedEnrichment.getTreatmentSamples(), 559);
     assertTrue(opTs.isPresent());
-    EnrichedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());
@@ -236,9 +236,9 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     Enrichment savedEnrichment = entityManager.find(Enrichment.class, 223L);
     assertEquals((Long) 4L, savedEnrichment.getProtocol().getId());
     assertEquals(2, savedEnrichment.getTreatmentSamples().size());
-    Optional<EnrichedSample> opTs = find(savedEnrichment.getTreatmentSamples(), 579);
+    Optional<TreatmentSample> opTs = find(savedEnrichment.getTreatmentSamples(), 579);
     assertTrue(opTs.isPresent());
-    EnrichedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 579L, ts.getSample().getId());
     assertEquals((Long) 800L, ts.getContainer().getId());
     assertEquals("test comment", ts.getComment());

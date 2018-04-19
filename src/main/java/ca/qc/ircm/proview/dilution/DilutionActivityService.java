@@ -24,6 +24,7 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -97,30 +98,30 @@ public class DilutionActivityService {
     final Dilution oldDilution = entityManager.find(Dilution.class, dilution.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    Map<Long, DilutedSample> oldDilutedSampleIds = oldDilution.getTreatmentSamples().stream()
+    Map<Long, TreatmentSample> oldTreatmentSampleIds = oldDilution.getTreatmentSamples().stream()
         .collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
     dilution.getTreatmentSamples().stream()
-        .filter(ts -> !oldDilutedSampleIds.containsKey(ts.getId()))
-        .forEach(ts -> updateBuilders.add(dilutedSampleAction(ts, ActionType.INSERT)));
+        .filter(ts -> !oldTreatmentSampleIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(treatmentSampleAction(ts, ActionType.INSERT)));
     dilution.getTreatmentSamples().stream()
-        .filter(ts -> oldDilutedSampleIds.containsKey(ts.getId())).forEach(ts -> {
-          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("sampleId")
-              .oldValue(oldDilutedSampleIds.get(ts.getId()).getSample().getId())
+        .filter(ts -> oldTreatmentSampleIds.containsKey(ts.getId())).forEach(ts -> {
+          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getSample().getId())
               .newValue(ts.getSample().getId()));
-          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("containerId")
-              .oldValue(oldDilutedSampleIds.get(ts.getId()).getContainer().getId())
+          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getContainer().getId())
               .newValue(ts.getContainer().getId()));
-          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("sourceVolume")
-              .oldValue(oldDilutedSampleIds.get(ts.getId()).getSourceVolume())
+          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("sourceVolume")
+              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getSourceVolume())
               .newValue(ts.getSourceVolume()));
-          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("solvent")
-              .oldValue(oldDilutedSampleIds.get(ts.getId()).getSolvent())
+          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("solvent")
+              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getSolvent())
               .newValue(ts.getSolvent()));
-          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("solventVolume")
-              .oldValue(oldDilutedSampleIds.get(ts.getId()).getSolventVolume())
+          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("solventVolume")
+              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getSolventVolume())
               .newValue(ts.getSolventVolume()));
-          updateBuilders.add(dilutedSampleAction(ts, ActionType.UPDATE).column("comment")
-              .oldValue(oldDilutedSampleIds.get(ts.getId()).getComment())
+          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getComment())
               .newValue(ts.getComment()));
         });
 
@@ -141,7 +142,7 @@ public class DilutionActivityService {
     }
   }
 
-  private UpdateActivityBuilder dilutedSampleAction(DilutedSample ts, ActionType actionType) {
+  private UpdateActivityBuilder treatmentSampleAction(TreatmentSample ts, ActionType actionType) {
     return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
         .actionType(actionType);
   }

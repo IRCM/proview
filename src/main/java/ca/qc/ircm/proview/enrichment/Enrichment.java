@@ -28,7 +28,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("ENRICHMENT")
-public class Enrichment extends Treatment<EnrichedSample> {
+public class Enrichment extends Treatment {
   public Enrichment() {
     super();
   }

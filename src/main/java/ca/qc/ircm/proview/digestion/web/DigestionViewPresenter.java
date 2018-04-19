@@ -17,21 +17,21 @@
 
 package ca.qc.ircm.proview.digestion.web;
 
-import static ca.qc.ircm.proview.digestion.QDigestedSample.digestedSample;
 import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
+import static ca.qc.ircm.proview.treatment.QTreatmentSample.treatmentSample;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static ca.qc.ircm.proview.web.WebConstants.SAVED_SAMPLE_FROM_MULTIPLE_USERS;
 
-import ca.qc.ircm.proview.digestion.DigestedSample;
 import ca.qc.ircm.proview.digestion.Digestion;
 import ca.qc.ircm.proview.digestion.DigestionService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -72,9 +72,9 @@ public class DigestionViewPresenter implements BinderValidator {
   public static final String PROTOCOL = digestion.protocol.getMetadata().getName();
   public static final String DIGESTIONS_PANEL = "digestionsPanel";
   public static final String DIGESTIONS = "digestions";
-  public static final String SAMPLE = digestedSample.sample.getMetadata().getName();
-  public static final String CONTAINER = digestedSample.container.getMetadata().getName();
-  public static final String COMMENT = digestedSample.comment.getMetadata().getName();
+  public static final String SAMPLE = treatmentSample.sample.getMetadata().getName();
+  public static final String CONTAINER = treatmentSample.container.getMetadata().getName();
+  public static final String COMMENT = treatmentSample.comment.getMetadata().getName();
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
   public static final String DOWN = "down";
@@ -92,11 +92,11 @@ public class DigestionViewPresenter implements BinderValidator {
   private DigestionViewDesign design;
   private Binder<Digestion> binder = new BeanValidationBinder<>(Digestion.class);
   private ListDataProvider<Protocol> protocolsProvider;
-  private List<DigestedSample> digestions = new ArrayList<>();
-  private ListDataProvider<DigestedSample> digestionsDataProvider = DataProvider.ofItems();
-  private Map<DigestedSample, Binder<DigestedSample>> digestionBinders = new HashMap<>();
-  private Map<DigestedSample, TextField> commentFields = new HashMap<>();
-  private Map<DigestedSample, Button> downButtons = new HashMap<>();
+  private List<TreatmentSample> digestions = new ArrayList<>();
+  private ListDataProvider<TreatmentSample> digestionsDataProvider = DataProvider.ofItems();
+  private Map<TreatmentSample, Binder<TreatmentSample>> digestionBinders = new HashMap<>();
+  private Map<TreatmentSample, TextField> commentFields = new HashMap<>();
+  private Map<TreatmentSample, Button> downButtons = new HashMap<>();
   @Inject
   private DigestionService digestionService;
   @Inject
@@ -188,7 +188,7 @@ public class DigestionViewPresenter implements BinderValidator {
     design.banContainers.setCaption(resources.message(BAN_CONTAINERS));
   }
 
-  private TextField commentField(DigestedSample ts) {
+  private TextField commentField(TreatmentSample ts) {
     if (commentFields.get(ts) != null) {
       return commentFields.get(ts);
     } else {
@@ -200,7 +200,7 @@ public class DigestionViewPresenter implements BinderValidator {
     }
   }
 
-  private Button downButton(DigestedSample ts) {
+  private Button downButton(TreatmentSample ts) {
     if (downButtons.get(ts) != null) {
       return downButtons.get(ts);
     } else {
@@ -215,18 +215,18 @@ public class DigestionViewPresenter implements BinderValidator {
     }
   }
 
-  private Binder<DigestedSample> binder(DigestedSample ts) {
-    Binder<DigestedSample> binder = new BeanValidationBinder<>(DigestedSample.class);
+  private Binder<TreatmentSample> binder(TreatmentSample ts) {
+    Binder<TreatmentSample> binder = new BeanValidationBinder<>(TreatmentSample.class);
     binder.setBean(ts);
     digestionBinders.put(ts, binder);
     binder.forField(commentField(ts)).withNullRepresentation("").bind(COMMENT);
     return binder;
   }
 
-  private void down(DigestedSample ts) {
+  private void down(TreatmentSample ts) {
     boolean copy = false;
     String comment = commentFields.get(ts).getValue();
-    for (DigestedSample other : VaadinUtils.gridItems(design.digestions)
+    for (TreatmentSample other : VaadinUtils.gridItems(design.digestions)
         .collect(Collectors.toList())) {
       if (ts.equals(other)) {
         copy = true;
@@ -336,7 +336,7 @@ public class DigestionViewPresenter implements BinderValidator {
     if (parameters == null || parameters.isEmpty()) {
       logger.trace("Recovering containers from session");
       digestions = view.savedContainers().stream().map(container -> {
-        DigestedSample ts = new DigestedSample();
+        TreatmentSample ts = new TreatmentSample();
         ts.setSample(container.getSample());
         ts.setContainer(container);
         return ts;
@@ -353,7 +353,7 @@ public class DigestionViewPresenter implements BinderValidator {
         for (String rawId : rawIds) {
           Long id = Long.valueOf(rawId);
           SampleContainer container = sampleContainerService.get(id);
-          DigestedSample ts = new DigestedSample();
+          TreatmentSample ts = new TreatmentSample();
           ts.setSample(container.getSample());
           ts.setContainer(container);
           digestions.add(ts);

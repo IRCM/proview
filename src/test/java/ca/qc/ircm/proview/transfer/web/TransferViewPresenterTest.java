@@ -92,7 +92,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.transfer.TransferService;
-import ca.qc.ircm.proview.transfer.TransferedSample;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeService;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
@@ -209,7 +209,7 @@ public class TransferViewPresenterTest {
     when(view.savedContainers()).thenReturn(new ArrayList<>(sourceTubes));
   }
 
-  private List<TransferedSample> all(Collection<TransferedSample> datas, Sample sample) {
+  private List<TreatmentSample> all(Collection<TreatmentSample> datas, Sample sample) {
     return datas.stream().filter(d -> sample.equals(d.getSample())).collect(Collectors.toList());
   }
 
@@ -351,19 +351,19 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
 
-    List<TransferedSample> transfers = items(design.transfers);
+    List<TreatmentSample> transfers = items(design.transfers);
     assertEquals(7, design.transfers.getColumns().size());
     assertEquals(SAMPLE, design.transfers.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.transfers.getColumn(SAMPLE).getCaption());
     assertFalse(design.transfers.getColumn(SAMPLE).isHidden());
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       assertEquals(ts.getSample().getName(),
           design.transfers.getColumn(SAMPLE).getValueProvider().apply(ts));
     }
     assertEquals(CONTAINER, design.transfers.getColumns().get(1).getId());
     assertEquals(resources.message(CONTAINER), design.transfers.getColumn(CONTAINER).getCaption());
     assertFalse(design.transfers.getColumn(CONTAINER).isHidden());
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       assertEquals(ts.getContainer().getFullName(),
           design.transfers.getColumn(CONTAINER).getValueProvider().apply(ts));
       assertEquals(ts.getContainer().isBanned() ? BANNED : "",
@@ -373,7 +373,7 @@ public class TransferViewPresenterTest {
     assertEquals(resources.message(DESTINATION),
         design.transfers.getColumn(DESTINATION).getCaption());
     assertTrue(design.transfers.getColumn(DESTINATION).isHidden());
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       assertEquals("", design.transfers.getColumn(DESTINATION).getValueProvider().apply(ts));
     }
     assertEquals(DESTINATION_COUNT, design.transfers.getColumns().get(3).getId());
@@ -383,14 +383,14 @@ public class TransferViewPresenterTest {
         design.transfers.getColumn(DESTINATION_COUNT).getCaption());
     assertFalse(design.transfers.getColumn(DESTINATION_COUNT).isHidden());
     assertFalse(design.transfers.getColumn(DESTINATION_COUNT).isSortable());
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       TextField field =
           (TextField) design.transfers.getColumn(DESTINATION_COUNT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(DESTINATION_COUNT));
       assertEquals("1", field.getValue());
     }
     {
-      TransferedSample ts = new TransferedSample();
+      TreatmentSample ts = new TreatmentSample();
       ts.setSample(transfers.get(0).getSample());
       ts.setContainer(transfers.get(0).getContainer());
       assertNull(design.transfers.getColumn(DESTINATION_COUNT).getValueProvider().apply(ts));
@@ -402,7 +402,7 @@ public class TransferViewPresenterTest {
         design.transfers.getColumn(DESTINATION_TUBE).getCaption());
     assertTrue(design.transfers.getColumn(DESTINATION_TUBE).isHidden());
     assertFalse(design.transfers.getColumn(DESTINATION_TUBE).isSortable());
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(DESTINATION_TUBE));
@@ -425,7 +425,7 @@ public class TransferViewPresenterTest {
         design.transfers.getColumn(DESTINATION_WELL).getCaption());
     assertFalse(design.transfers.getColumn(DESTINATION_WELL).isHidden());
     assertFalse(design.transfers.getColumn(DESTINATION_WELL).isSortable());
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(DESTINATION_WELL));
@@ -441,7 +441,7 @@ public class TransferViewPresenterTest {
     assertEquals(resources.message(DOWN), design.transfers.getColumn(DOWN).getCaption());
     assertFalse(design.transfers.getColumn(DOWN).isHidden());
     assertFalse(design.transfers.getColumn(DOWN).isSortable());
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       Button down = (Button) design.transfers.getColumn(DOWN).getValueProvider().apply(ts);
       assertTrue(down.getStyleName().contains(DOWN));
       assertEquals(VaadinIcons.ARROW_DOWN, down.getIcon());
@@ -450,7 +450,7 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate();
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       ListDataProvider<Well> dataProvider = dataProvider(field);
@@ -467,13 +467,13 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("3");
 
-    List<TransferedSample> transfers = items(design.transfers);
+    List<TreatmentSample> transfers = items(design.transfers);
     assertFalse(design.transfers.getColumn(SAMPLE).isHidden());
     assertEquals(DESTINATION, design.transfers.getColumns().get(2).getId());
     assertEquals(resources.message(DESTINATION),
         design.transfers.getColumn(DESTINATION).getCaption());
     assertFalse(design.transfers.getColumn(DESTINATION).isHidden());
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       assertEquals(ts.getDestinationContainer().getFullName(),
           design.transfers.getColumn(DESTINATION).getValueProvider().apply(ts));
     }
@@ -514,8 +514,8 @@ public class TransferViewPresenterTest {
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
     when(plateService.get(any(Long.class))).thenReturn(null);
-    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
-    for (TransferedSample ts : transfers) {
+    List<TreatmentSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    for (TreatmentSample ts : transfers) {
       design.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
     }
 
@@ -525,7 +525,7 @@ public class TransferViewPresenterTest {
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 0), field.getValue());
@@ -537,7 +537,7 @@ public class TransferViewPresenterTest {
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     count = 2;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 3), field.getValue());
@@ -549,7 +549,7 @@ public class TransferViewPresenterTest {
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     count = 4;
-    for (TransferedSample ts : transfers.subList(1, transfers.size())) {
+    for (TreatmentSample ts : transfers.subList(1, transfers.size())) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 4), field.getValue());
@@ -566,15 +566,15 @@ public class TransferViewPresenterTest {
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
     when(plateService.get(any(Long.class))).thenReturn(null);
-    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
-    for (TransferedSample ts : transfers) {
+    List<TreatmentSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    for (TreatmentSample ts : transfers) {
       design.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
     }
 
     ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(transfers.get(0))).click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(null, field.getValue());
@@ -592,21 +592,21 @@ public class TransferViewPresenterTest {
     design.destinationPlatesField.setValue(plate);
     when(plateService.get(any(Long.class))).thenReturn(null);
     design.transfers.sort(SAMPLE, SortDirection.DESCENDING);
-    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
-    for (TransferedSample ts : transfers) {
+    List<TreatmentSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    for (TreatmentSample ts : transfers) {
       design.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
     }
 
     ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
         .apply(transfers.get(2))).setValue(plate.well(0, 0));
-    List<TransferedSample> orderedTransfers =
+    List<TreatmentSample> orderedTransfers =
         VaadinUtils.gridItems(design.transfers).collect(Collectors.toList());
     ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(orderedTransfers.get(0)))
         .click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     int count = 0;
-    for (TransferedSample ts : orderedTransfers) {
+    for (TreatmentSample ts : orderedTransfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 0), field.getValue());
@@ -619,7 +619,7 @@ public class TransferViewPresenterTest {
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     count = 4;
-    for (TransferedSample ts : orderedTransfers.subList(1, orderedTransfers.size())) {
+    for (TreatmentSample ts : orderedTransfers.subList(1, orderedTransfers.size())) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 4), field.getValue());
@@ -636,22 +636,22 @@ public class TransferViewPresenterTest {
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
     when(plateService.get(any(Long.class))).thenReturn(null);
-    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
-    for (TransferedSample ts : transfers) {
+    List<TreatmentSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    for (TreatmentSample ts : transfers) {
       design.transfers.getColumn(DESTINATION_WELL).getValueProvider().apply(ts);
     }
     design.transfers.sort(CONTAINER, SortDirection.DESCENDING);
 
     ((ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL).getValueProvider()
         .apply(transfers.get(2))).setValue(plate.well(0, 0));
-    List<TransferedSample> orderedTransfers =
+    List<TreatmentSample> orderedTransfers =
         VaadinUtils.gridItems(design.transfers).collect(Collectors.toList());
     ((Button) design.transfers.getColumn(DOWN).getValueProvider().apply(orderedTransfers.get(0)))
         .click();
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     int count = 0;
-    for (TransferedSample ts : orderedTransfers) {
+    for (TreatmentSample ts : orderedTransfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 0), field.getValue());
@@ -664,7 +664,7 @@ public class TransferViewPresenterTest {
     verify(view, never()).showError(any());
     verify(transferService, never()).insert(any());
     count = 4;
-    for (TransferedSample ts : orderedTransfers.subList(1, orderedTransfers.size())) {
+    for (TreatmentSample ts : orderedTransfers.subList(1, orderedTransfers.size())) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       assertEquals(plate.well(count++, 4), field.getValue());
@@ -683,8 +683,8 @@ public class TransferViewPresenterTest {
     when(plateService.get(any(Long.class))).thenReturn(null);
 
     int count = 0;
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 0));
@@ -701,7 +701,7 @@ public class TransferViewPresenterTest {
     }
 
     count = 2;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 3));
@@ -727,8 +727,8 @@ public class TransferViewPresenterTest {
     sourceTubes();
     presenter.init(view);
     presenter.enter("");
-    List<TransferedSample> transfers = items(design.transfers);
-    for (TransferedSample ts : transfers) {
+    List<TreatmentSample> transfers = items(design.transfers);
+    for (TreatmentSample ts : transfers) {
       TextField field =
           (TextField) design.transfers.getColumn(DESTINATION_COUNT).getValueProvider().apply(ts);
       field.setValue("2");
@@ -740,7 +740,7 @@ public class TransferViewPresenterTest {
 
     int count = 0;
     transfers = items(design.transfers);
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 0));
@@ -760,7 +760,7 @@ public class TransferViewPresenterTest {
     }
 
     count = 2;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 3));
@@ -801,8 +801,8 @@ public class TransferViewPresenterTest {
     when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
     int count = 0;
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 2));
@@ -822,7 +822,7 @@ public class TransferViewPresenterTest {
     }
 
     count = 2;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 3));
@@ -853,8 +853,8 @@ public class TransferViewPresenterTest {
     when(plateService.get(any(Long.class))).thenReturn(null);
 
     int count = 0;
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 0));
@@ -871,7 +871,7 @@ public class TransferViewPresenterTest {
     }
 
     count = 2;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 3));
@@ -908,8 +908,8 @@ public class TransferViewPresenterTest {
     when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
     int count = 0;
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 2));
@@ -929,7 +929,7 @@ public class TransferViewPresenterTest {
     }
 
     count = 2;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 3));
@@ -970,8 +970,8 @@ public class TransferViewPresenterTest {
     when(plateService.get(any(Long.class))).thenReturn(null);
 
     int count = 0;
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 0));
@@ -991,7 +991,7 @@ public class TransferViewPresenterTest {
     }
 
     count = 2;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 3));
@@ -1041,8 +1041,8 @@ public class TransferViewPresenterTest {
     when(plateService.get(any(Long.class))).thenReturn(plateCopy);
 
     int count = 0;
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 2));
@@ -1065,7 +1065,7 @@ public class TransferViewPresenterTest {
     }
 
     count = 2;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 3));
@@ -1107,8 +1107,8 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.type.setValue(TUBE);
-    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
-    for (TransferedSample ts : transfers.subList(1, transfers.size())) {
+    List<TreatmentSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    for (TreatmentSample ts : transfers.subList(1, transfers.size())) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
       field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
@@ -1131,8 +1131,8 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.type.setValue(TUBE);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
       field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
@@ -1158,8 +1158,8 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.type.setValue(TUBE);
-    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
-    for (TransferedSample ts : transfers) {
+    List<TreatmentSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    for (TreatmentSample ts : transfers) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
       field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
@@ -1189,9 +1189,9 @@ public class TransferViewPresenterTest {
     Plate destination = new Plate();
     destination.initWells();
     design.destinationPlatesField.setValue(destination);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(destination.well(count++, 0));
@@ -1222,7 +1222,7 @@ public class TransferViewPresenterTest {
     Plate destination = new Plate();
     destination.initWells();
     design.destinationPlatesField.setValue(destination);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
         .getValueProvider().apply(transfers.iterator().next());
 
@@ -1243,9 +1243,9 @@ public class TransferViewPresenterTest {
     Plate destination = new Plate();
     destination.initWells();
     design.destinationPlatesField.setValue(destination);
-    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    List<TreatmentSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(destination.well(count++, 0));
@@ -1272,9 +1272,9 @@ public class TransferViewPresenterTest {
     Plate destination = new Plate();
     destination.initWells();
     design.destinationPlatesField.setValue(destination);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(destination.well(count++, 0));
@@ -1304,7 +1304,7 @@ public class TransferViewPresenterTest {
     Plate destination = new Plate();
     destination.initWells();
     design.destinationPlatesField.setValue(destination);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
         .getValueProvider().apply(transfers.iterator().next());
 
@@ -1324,9 +1324,9 @@ public class TransferViewPresenterTest {
     Plate destination = new Plate();
     destination.initWells();
     design.destinationPlatesField.setValue(destination);
-    List<TransferedSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
+    List<TreatmentSample> transfers = new ArrayList<>(dataProvider(design.transfers).getItems());
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(destination.well(count++, 0));
@@ -1352,8 +1352,8 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.type.setValue(TUBE);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
       field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
@@ -1373,14 +1373,14 @@ public class TransferViewPresenterTest {
     assertEquals(samples.size(), transfer.getTreatmentSamples().size());
     for (int i = 0; i < samples.size(); i++) {
       Sample sample = samples.get(i);
-      List<TransferedSample> transferedSamples = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(1, transferedSamples.size());
-      TransferedSample transferedSample = transferedSamples.get(0);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourceTubes.get(i), transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Tube);
+      List<TreatmentSample> treatmentSamples = all(transfer.getTreatmentSamples(), sample);
+      assertEquals(1, treatmentSamples.size());
+      TreatmentSample treatmentSample = treatmentSamples.get(0);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(sourceTubes.get(i), treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Tube);
       assertEquals(sample.getName() + "_destination",
-          transferedSample.getDestinationContainer().getName());
+          treatmentSample.getDestinationContainer().getName());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
     verify(view).saveContainers(transfer.getTreatmentSamples().stream()
@@ -1397,9 +1397,9 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 0));
@@ -1419,13 +1419,13 @@ public class TransferViewPresenterTest {
     assertEquals(samples.size(), transfer.getTreatmentSamples().size());
     for (int i = 0; i < samples.size(); i++) {
       Sample sample = samples.get(i);
-      List<TransferedSample> transferedSamples = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(1, transferedSamples.size());
-      TransferedSample transferedSample = transferedSamples.get(0);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourceTubes.get(i), transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Well);
-      Well destinationWell = (Well) transferedSample.getDestinationContainer();
+      List<TreatmentSample> treatmentSamples = all(transfer.getTreatmentSamples(), sample);
+      assertEquals(1, treatmentSamples.size());
+      TreatmentSample treatmentSample = treatmentSamples.get(0);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(sourceTubes.get(i), treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Well);
+      Well destinationWell = (Well) treatmentSample.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(i, destinationWell.getRow());
       assertEquals(0, destinationWell.getColumn());
@@ -1442,8 +1442,8 @@ public class TransferViewPresenterTest {
     sourceTubes();
     presenter.init(view);
     presenter.enter("");
-    List<TransferedSample> transfers = items(design.transfers);
-    for (TransferedSample ts : transfers) {
+    List<TreatmentSample> transfers = items(design.transfers);
+    for (TreatmentSample ts : transfers) {
       TextField field =
           (TextField) design.transfers.getColumn(DESTINATION_COUNT).getValueProvider().apply(ts);
       field.setValue("2");
@@ -1453,7 +1453,7 @@ public class TransferViewPresenterTest {
     design.destinationPlatesField.setValue(plate);
     transfers = items(design.transfers);
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 0));
@@ -1473,21 +1473,21 @@ public class TransferViewPresenterTest {
     assertEquals(samples.size() * 2, transfer.getTreatmentSamples().size());
     for (int i = 0; i < samples.size(); i++) {
       Sample sample = samples.get(i);
-      List<TransferedSample> transferedSamples = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(2, transferedSamples.size());
-      TransferedSample transferedSample = transferedSamples.get(0);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourceTubes.get(i), transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Well);
-      Well destinationWell = (Well) transferedSample.getDestinationContainer();
+      List<TreatmentSample> treatmentSamples = all(transfer.getTreatmentSamples(), sample);
+      assertEquals(2, treatmentSamples.size());
+      TreatmentSample treatmentSample = treatmentSamples.get(0);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(sourceTubes.get(i), treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Well);
+      Well destinationWell = (Well) treatmentSample.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(i, destinationWell.getRow());
       assertEquals(0, destinationWell.getColumn());
-      transferedSample = transferedSamples.get(1);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourceTubes.get(i), transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Well);
-      destinationWell = (Well) transferedSample.getDestinationContainer();
+      treatmentSample = treatmentSamples.get(1);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(sourceTubes.get(i), treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Well);
+      destinationWell = (Well) treatmentSample.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(i + samples.size(), destinationWell.getRow());
       assertEquals(0, destinationWell.getColumn());
@@ -1506,9 +1506,9 @@ public class TransferViewPresenterTest {
     presenter.enter("");
     Plate plate = destinationPlates.get(0);
     design.destinationPlatesField.setValue(plate);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 4));
@@ -1523,13 +1523,13 @@ public class TransferViewPresenterTest {
     assertEquals(samples.size(), transfer.getTreatmentSamples().size());
     for (int i = 0; i < samples.size(); i++) {
       Sample sample = samples.get(i);
-      List<TransferedSample> transferedSamples = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(1, transferedSamples.size());
-      TransferedSample transferedSample = transferedSamples.get(0);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourceTubes.get(i), transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Well);
-      Well destinationWell = (Well) transferedSample.getDestinationContainer();
+      List<TreatmentSample> treatmentSamples = all(transfer.getTreatmentSamples(), sample);
+      assertEquals(1, treatmentSamples.size());
+      TreatmentSample treatmentSample = treatmentSamples.get(0);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(sourceTubes.get(i), treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Well);
+      Well destinationWell = (Well) treatmentSample.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(i, destinationWell.getRow());
       assertEquals(4, destinationWell.getColumn());
@@ -1546,8 +1546,8 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.type.setValue(TUBE);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
       field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
@@ -1567,14 +1567,14 @@ public class TransferViewPresenterTest {
     assertEquals(samples.size(), transfer.getTreatmentSamples().size());
     for (int i = 0; i < samples.size(); i++) {
       Sample sample = samples.get(i);
-      List<TransferedSample> transferedSamples = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(1, transferedSamples.size());
-      TransferedSample transferedSample = transferedSamples.get(0);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourceWells.get(i), transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Tube);
+      List<TreatmentSample> treatmentSamples = all(transfer.getTreatmentSamples(), sample);
+      assertEquals(1, treatmentSamples.size());
+      TreatmentSample treatmentSample = treatmentSamples.get(0);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(sourceWells.get(i), treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Tube);
       assertEquals(sample.getName() + "_destination",
-          transferedSample.getDestinationContainer().getName());
+          treatmentSample.getDestinationContainer().getName());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
     verify(view).saveContainers(transfer.getTreatmentSamples().stream()
@@ -1590,9 +1590,9 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 0));
@@ -1612,13 +1612,13 @@ public class TransferViewPresenterTest {
     assertEquals(samples.size(), transfer.getTreatmentSamples().size());
     for (int i = 0; i < samples.size(); i++) {
       Sample sample = samples.get(i);
-      List<TransferedSample> transferedSamples = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(1, transferedSamples.size());
-      TransferedSample transferedSample = transferedSamples.get(0);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourceWells.get(i), transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Well);
-      Well destinationWell = (Well) transferedSample.getDestinationContainer();
+      List<TreatmentSample> treatmentSamples = all(transfer.getTreatmentSamples(), sample);
+      assertEquals(1, treatmentSamples.size());
+      TreatmentSample treatmentSample = treatmentSamples.get(0);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(sourceWells.get(i), treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Well);
+      Well destinationWell = (Well) treatmentSample.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(i, destinationWell.getRow());
       assertEquals(0, destinationWell.getColumn());
@@ -1636,9 +1636,9 @@ public class TransferViewPresenterTest {
     presenter.enter("");
     Plate plate = destinationPlates.get(0);
     design.destinationPlatesField.setValue(plate);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 4));
@@ -1658,13 +1658,13 @@ public class TransferViewPresenterTest {
     assertEquals(samples.size(), transfer.getTreatmentSamples().size());
     for (int i = 0; i < samples.size(); i++) {
       Sample sample = samples.get(i);
-      List<TransferedSample> transferedSamples = all(transfer.getTreatmentSamples(), sample);
-      assertEquals(1, transferedSamples.size());
-      TransferedSample transferedSample = transferedSamples.get(0);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(sourceWells.get(i), transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Well);
-      Well destinationWell = (Well) transferedSample.getDestinationContainer();
+      List<TreatmentSample> treatmentSamples = all(transfer.getTreatmentSamples(), sample);
+      assertEquals(1, treatmentSamples.size());
+      TreatmentSample treatmentSample = treatmentSamples.get(0);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(sourceWells.get(i), treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Well);
+      Well destinationWell = (Well) treatmentSample.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(i, destinationWell.getRow());
       assertEquals(4, destinationWell.getColumn());
@@ -1691,9 +1691,9 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.type.setValue(TUBE);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
       field.setValue(new Tube(null, ts.getSample().getName() + "_destination_" + count++));
@@ -1715,12 +1715,12 @@ public class TransferViewPresenterTest {
     for (int i = 0; i < sourceWells.size(); i++) {
       Well source = sourceWells.get(i);
       Sample sample = source.getSample();
-      TransferedSample transferedSample = transfer.getTreatmentSamples().get(i);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(source, transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Tube);
+      TreatmentSample treatmentSample = transfer.getTreatmentSamples().get(i);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(source, treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Tube);
       assertEquals(sample.getName() + "_destination_" + count++,
-          transferedSample.getDestinationContainer().getName());
+          treatmentSample.getDestinationContainer().getName());
     }
     verify(view).showTrayNotification(resources.message(SAVED, samples.size()));
     verify(view).saveContainers(transfer.getTreatmentSamples().stream()
@@ -1746,9 +1746,9 @@ public class TransferViewPresenterTest {
     Plate plate = new Plate(null, "test");
     plate.initWells();
     design.destinationPlatesField.setValue(plate);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 0));
@@ -1771,11 +1771,11 @@ public class TransferViewPresenterTest {
     for (int i = 0; i < sourceWells.size(); i++) {
       Well source = sourceWells.get(i);
       Sample sample = source.getSample();
-      TransferedSample transferedSample = transfer.getTreatmentSamples().get(i);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(source, transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Well);
-      Well destinationWell = (Well) transferedSample.getDestinationContainer();
+      TreatmentSample treatmentSample = transfer.getTreatmentSamples().get(i);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(source, treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Well);
+      Well destinationWell = (Well) treatmentSample.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(count++, destinationWell.getRow());
       assertEquals(0, destinationWell.getColumn());
@@ -1803,9 +1803,9 @@ public class TransferViewPresenterTest {
     presenter.enter("");
     Plate plate = destinationPlates.get(0);
     design.destinationPlatesField.setValue(plate);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
     int count = 0;
-    for (TransferedSample ts : transfers) {
+    for (TreatmentSample ts : transfers) {
       ComboBox<Well> field = (ComboBox<Well>) design.transfers.getColumn(DESTINATION_WELL)
           .getValueProvider().apply(ts);
       field.setValue(plate.well(count++, 4));
@@ -1828,11 +1828,11 @@ public class TransferViewPresenterTest {
     for (int i = 0; i < sourceWells.size(); i++) {
       Well source = sourceWells.get(i);
       Sample sample = source.getSample();
-      TransferedSample transferedSample = transfer.getTreatmentSamples().get(i);
-      assertEquals(sample, transferedSample.getSample());
-      assertEquals(source, transferedSample.getContainer());
-      assertTrue(transferedSample.getDestinationContainer() instanceof Well);
-      Well destinationWell = (Well) transferedSample.getDestinationContainer();
+      TreatmentSample treatmentSample = transfer.getTreatmentSamples().get(i);
+      assertEquals(sample, treatmentSample.getSample());
+      assertEquals(source, treatmentSample.getContainer());
+      assertTrue(treatmentSample.getDestinationContainer() instanceof Well);
+      Well destinationWell = (Well) treatmentSample.getDestinationContainer();
       assertEquals(plate, destinationWell.getPlate());
       assertEquals(count++, destinationWell.getRow());
       assertEquals(4, destinationWell.getColumn());
@@ -1850,8 +1850,8 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("");
     design.type.setValue(TUBE);
-    Collection<TransferedSample> transfers = dataProvider(design.transfers).getItems();
-    for (TransferedSample ts : transfers) {
+    Collection<TreatmentSample> transfers = dataProvider(design.transfers).getItems();
+    for (TreatmentSample ts : transfers) {
       ComboBox<Tube> field = (ComboBox<Tube>) design.transfers.getColumn(DESTINATION_TUBE)
           .getValueProvider().apply(ts);
       field.setValue(new Tube(null, ts.getSample().getName() + "_destination"));
@@ -1975,7 +1975,7 @@ public class TransferViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.transfers);
     assertEquals(samples.size(), tss.getItems().size());
     for (Sample sample : samples) {
       assertTrue(tss.getItems().stream().filter(ts -> sample.equals(ts.getSample())).findAny()
@@ -1990,7 +1990,7 @@ public class TransferViewPresenterTest {
     presenter.enter("");
 
     verify(view).showWarning(generalResources.message(SAVED_SAMPLE_FROM_MULTIPLE_USERS));
-    ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.transfers);
     assertEquals(samples.size(), tss.getItems().size());
     for (Sample sample : samples) {
       assertTrue(tss.getItems().stream().filter(ts -> sample.equals(ts.getSample())).findAny()
@@ -2015,7 +2015,7 @@ public class TransferViewPresenterTest {
     assertTrue(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
     assertTrue(design.removeLayout.isVisible());
-    List<TransferedSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
+    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
     assertEquals(transfer.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < transfer.getTreatmentSamples().size(); i++) {
       assertEquals(transfer.getTreatmentSamples().get(i), tss.get(i));
@@ -2041,7 +2041,7 @@ public class TransferViewPresenterTest {
     assertTrue(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
     assertTrue(design.removeLayout.isVisible());
-    List<TransferedSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
+    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
     assertEquals(transfer.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < transfer.getTreatmentSamples().size(); i++) {
       assertEquals(transfer.getTreatmentSamples().get(i), tss.get(i));
@@ -2066,7 +2066,7 @@ public class TransferViewPresenterTest {
     assertFalse(design.explanationPanel.isVisible());
     assertFalse(design.save.isVisible());
     assertFalse(design.removeLayout.isVisible());
-    List<TransferedSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
+    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.transfers).getItems());
     assertEquals(transfer.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < transfer.getTreatmentSamples().size(); i++) {
       assertEquals(transfer.getTreatmentSamples().get(i), tss.get(i));
@@ -2078,7 +2078,7 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("a");
 
-    ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.transfers);
     verify(view).showWarning(resources.message(INVALID_TRANSFER));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -2089,7 +2089,7 @@ public class TransferViewPresenterTest {
     presenter.enter("3");
 
     verify(transferService).get(3L);
-    ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.transfers);
     verify(view).showWarning(resources.message(INVALID_TRANSFER));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -2106,7 +2106,7 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.transfers);
     assertEquals(containers.size(), tss.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(tss.getItems().stream().filter(ts -> container == ts.getContainer()).findAny()
@@ -2119,7 +2119,7 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/");
 
-    ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.transfers);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -2129,7 +2129,7 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,a");
 
-    ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.transfers);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }
@@ -2140,7 +2140,7 @@ public class TransferViewPresenterTest {
     presenter.init(view);
     presenter.enter("containers/11,12");
 
-    ListDataProvider<TransferedSample> tss = dataProvider(design.transfers);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.transfers);
     verify(view).showWarning(resources.message(INVALID_CONTAINERS));
     assertTrue(tss.getItems().isEmpty());
   }

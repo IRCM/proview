@@ -38,6 +38,7 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -107,14 +108,14 @@ public class DilutionServiceTest {
         dilution.getInsertTime());
     assertEquals(false, dilution.isDeleted());
     assertEquals(null, dilution.getDeletionExplanation());
-    List<DilutedSample> dilutedSamples = dilution.getTreatmentSamples();
-    assertEquals(1, dilutedSamples.size());
-    DilutedSample dilutedSample = dilutedSamples.get(0);
-    assertEquals(dilution, dilutedSample.getDilution());
-    assertEquals((Long) 442L, dilutedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, dilutedSample.getContainer().getType());
-    assertEquals((Long) 2L, dilutedSample.getContainer().getId());
-    assertEquals(null, dilutedSample.getComment());
+    List<TreatmentSample> treatmentSamples = dilution.getTreatmentSamples();
+    assertEquals(1, treatmentSamples.size());
+    TreatmentSample treatmentSample = treatmentSamples.get(0);
+    assertEquals(dilution, treatmentSample.getTreatment());
+    assertEquals((Long) 442L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 2L, treatmentSample.getContainer().getId());
+    assertEquals(null, treatmentSample.getComment());
   }
 
   @Test
@@ -128,17 +129,17 @@ public class DilutionServiceTest {
   public void insert_Tube() {
     SubmissionSample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
-    final List<DilutedSample> dilutedSamples = new ArrayList<>();
-    DilutedSample dilutedSample = new DilutedSample();
-    dilutedSample.setComment("unit test");
-    dilutedSample.setSample(sample);
-    dilutedSample.setContainer(tube);
-    dilutedSample.setSourceVolume(10.0);
-    dilutedSample.setSolvent("Methanol");
-    dilutedSample.setSolventVolume(20.0);
-    dilutedSamples.add(dilutedSample);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(tube);
+    treatmentSample.setSourceVolume(10.0);
+    treatmentSample.setSolvent("Methanol");
+    treatmentSample.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample);
     Dilution dilution = new Dilution();
-    dilution.setTreatmentSamples(dilutedSamples);
+    dilution.setTreatmentSamples(treatmentSamples);
     when(dilutionActivityService.insert(any(Dilution.class))).thenReturn(activity);
 
     dilutionService.insert(dilution);
@@ -157,31 +158,31 @@ public class DilutionServiceTest {
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(dilution.getInsertTime()));
     assertEquals(1, dilution.getTreatmentSamples().size());
-    dilutedSample = dilution.getTreatmentSamples().get(0);
-    assertEquals("unit test", dilutedSample.getComment());
-    assertEquals((Long) 1L, dilutedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, dilutedSample.getContainer().getType());
-    assertEquals((Long) 1L, dilutedSample.getContainer().getId());
-    assertEquals((Double) 10.0, dilutedSample.getSourceVolume());
-    assertEquals("Methanol", dilutedSample.getSolvent());
-    assertEquals((Double) 20.0, dilutedSample.getSolventVolume());
+    treatmentSample = dilution.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
+    assertEquals((Double) 10.0, treatmentSample.getSourceVolume());
+    assertEquals("Methanol", treatmentSample.getSolvent());
+    assertEquals((Double) 20.0, treatmentSample.getSolventVolume());
   }
 
   @Test
   public void insert_Well() {
     SubmissionSample sample = new SubmissionSample(1L);
     Well well = new Well(128L);
-    final List<DilutedSample> dilutedSamples = new ArrayList<>();
-    DilutedSample dilutedSample = new DilutedSample();
-    dilutedSample.setComment("unit test");
-    dilutedSample.setSample(sample);
-    dilutedSample.setContainer(well);
-    dilutedSample.setSourceVolume(10.0);
-    dilutedSample.setSolvent("Methanol");
-    dilutedSample.setSolventVolume(20.0);
-    dilutedSamples.add(dilutedSample);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(well);
+    treatmentSample.setSourceVolume(10.0);
+    treatmentSample.setSolvent("Methanol");
+    treatmentSample.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample);
     Dilution dilution = new Dilution();
-    dilution.setTreatmentSamples(dilutedSamples);
+    dilution.setTreatmentSamples(treatmentSamples);
     when(dilutionActivityService.insert(any(Dilution.class))).thenReturn(activity);
 
     dilutionService.insert(dilution);
@@ -200,39 +201,39 @@ public class DilutionServiceTest {
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(dilution.getInsertTime()));
     assertEquals(1, dilution.getTreatmentSamples().size());
-    dilutedSample = dilution.getTreatmentSamples().get(0);
-    assertEquals("unit test", dilutedSample.getComment());
-    assertEquals((Long) 1L, dilutedSample.getSample().getId());
-    assertEquals(SampleContainerType.WELL, dilutedSample.getContainer().getType());
-    assertEquals((Long) 128L, dilutedSample.getContainer().getId());
-    assertEquals((Double) 10.0, dilutedSample.getSourceVolume());
-    assertEquals("Methanol", dilutedSample.getSolvent());
-    assertEquals((Double) 20.0, dilutedSample.getSolventVolume());
+    treatmentSample = dilution.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.WELL, treatmentSample.getContainer().getType());
+    assertEquals((Long) 128L, treatmentSample.getContainer().getId());
+    assertEquals((Double) 10.0, treatmentSample.getSourceVolume());
+    assertEquals("Methanol", treatmentSample.getSolvent());
+    assertEquals((Double) 20.0, treatmentSample.getSolventVolume());
   }
 
   @Test
   public void insert_SamplesFromMultipleUser() {
     final Tube tube1 = entityManager.find(Tube.class, 3L);
     final Tube tube2 = entityManager.find(Tube.class, 8L);
-    final List<DilutedSample> dilutedSamples = new ArrayList<>();
-    DilutedSample dilutedSample1 = new DilutedSample();
-    dilutedSample1.setComment("unit test");
-    dilutedSample1.setSample(tube1.getSample());
-    dilutedSample1.setContainer(tube1);
-    dilutedSample1.setSourceVolume(10.0);
-    dilutedSample1.setSolvent("Methanol");
-    dilutedSample1.setSolventVolume(20.0);
-    dilutedSamples.add(dilutedSample1);
-    DilutedSample dilutedSample2 = new DilutedSample();
-    dilutedSample2.setComment("unit test");
-    dilutedSample2.setSample(tube2.getSample());
-    dilutedSample2.setContainer(tube2);
-    dilutedSample2.setSourceVolume(10.0);
-    dilutedSample2.setSolvent("Methanol");
-    dilutedSample2.setSolventVolume(20.0);
-    dilutedSamples.add(dilutedSample2);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSample1.setSourceVolume(10.0);
+    treatmentSample1.setSolvent("Methanol");
+    treatmentSample1.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSample2.setSourceVolume(10.0);
+    treatmentSample2.setSolvent("Methanol");
+    treatmentSample2.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample2);
     Dilution dilution = new Dilution();
-    dilution.setTreatmentSamples(dilutedSamples);
+    dilution.setTreatmentSamples(treatmentSamples);
     when(dilutionActivityService.insert(any(Dilution.class))).thenReturn(activity);
 
     try {
@@ -247,25 +248,25 @@ public class DilutionServiceTest {
   public void insert_SamplesFromOneUserAndControl() {
     final Tube tube1 = entityManager.find(Tube.class, 3L);
     final Tube tube2 = entityManager.find(Tube.class, 4L);
-    final List<DilutedSample> dilutedSamples = new ArrayList<>();
-    DilutedSample dilutedSample1 = new DilutedSample();
-    dilutedSample1.setComment("unit test");
-    dilutedSample1.setSample(tube1.getSample());
-    dilutedSample1.setContainer(tube1);
-    dilutedSample1.setSourceVolume(10.0);
-    dilutedSample1.setSolvent("Methanol");
-    dilutedSample1.setSolventVolume(20.0);
-    dilutedSamples.add(dilutedSample1);
-    DilutedSample dilutedSample2 = new DilutedSample();
-    dilutedSample2.setComment("unit test");
-    dilutedSample2.setSample(tube2.getSample());
-    dilutedSample2.setContainer(tube2);
-    dilutedSample2.setSourceVolume(10.0);
-    dilutedSample2.setSolvent("Methanol");
-    dilutedSample2.setSolventVolume(20.0);
-    dilutedSamples.add(dilutedSample2);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSample1.setSourceVolume(10.0);
+    treatmentSample1.setSolvent("Methanol");
+    treatmentSample1.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSample2.setSourceVolume(10.0);
+    treatmentSample2.setSolvent("Methanol");
+    treatmentSample2.setSolventVolume(20.0);
+    treatmentSamples.add(treatmentSample2);
     Dilution dilution = new Dilution();
-    dilution.setTreatmentSamples(dilutedSamples);
+    dilution.setTreatmentSamples(treatmentSamples);
     when(dilutionActivityService.insert(any(Dilution.class))).thenReturn(activity);
 
     try {
@@ -305,7 +306,7 @@ public class DilutionServiceTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void update_RemoveDilutedSample() {
+  public void update_RemoveTreatmentSample() {
     Dilution dilution = entityManager.find(Dilution.class, 210L);
     entityManager.detach(dilution);
     dilution.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));

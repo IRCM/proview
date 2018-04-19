@@ -46,7 +46,7 @@ import javax.persistence.Table;
 @Table(name = Treatment.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
-public abstract class Treatment<S extends TreatmentSample> implements Data {
+public abstract class Treatment implements Data {
   /**
    * Type of errors that forces Digestion to be deleted.
    */
@@ -101,10 +101,10 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
   /**
    * List of all treatments done on samples.
    */
-  @OneToMany(cascade = CascadeType.ALL, targetEntity = TreatmentSample.class)
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "treatmentId", nullable = false)
   @OrderColumn(name = "listIndex")
-  private List<S> treatmentSamples;
+  private List<TreatmentSample> treatmentSamples;
 
   public Treatment() {
   }
@@ -148,11 +148,11 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
     this.user = user;
   }
 
-  public List<S> getTreatmentSamples() {
+  public List<TreatmentSample> getTreatmentSamples() {
     return treatmentSamples;
   }
 
-  public void setTreatmentSamples(List<S> treatmentSamples) {
+  public void setTreatmentSamples(List<TreatmentSample> treatmentSamples) {
     this.treatmentSamples = treatmentSamples;
   }
 

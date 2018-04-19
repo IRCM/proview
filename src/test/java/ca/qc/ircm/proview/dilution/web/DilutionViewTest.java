@@ -24,11 +24,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.dilution.DilutedSample;
 import ca.qc.ircm.proview.dilution.Dilution;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -58,7 +58,7 @@ public class DilutionViewTest extends DilutionViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
-  private Optional<DilutedSample> find(Collection<DilutedSample> tss, long sampleId) {
+  private Optional<TreatmentSample> find(Collection<TreatmentSample> tss, long sampleId) {
     return tss.stream().filter(ts -> ts.getSample().getId() == sampleId).findFirst();
   }
 
@@ -170,9 +170,9 @@ public class DilutionViewTest extends DilutionViewPageObject {
     Dilution savedDilution =
         jpaQueryFactory.select(dilution).from(dilution).where(dilution.id.eq(id)).fetchOne();
     assertEquals(3, savedDilution.getTreatmentSamples().size());
-    Optional<DilutedSample> opTs = find(savedDilution.getTreatmentSamples(), 559);
+    Optional<TreatmentSample> opTs = find(savedDilution.getTreatmentSamples(), 559);
     assertTrue(opTs.isPresent());
-    DilutedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
@@ -220,9 +220,9 @@ public class DilutionViewTest extends DilutionViewPageObject {
     Dilution savedDilution =
         jpaQueryFactory.select(dilution).from(dilution).where(dilution.id.eq(id)).fetchOne();
     assertEquals(3, savedDilution.getTreatmentSamples().size());
-    Optional<DilutedSample> opTs = find(savedDilution.getTreatmentSamples(), 559);
+    Optional<TreatmentSample> opTs = find(savedDilution.getTreatmentSamples(), 559);
     assertTrue(opTs.isPresent());
-    DilutedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);
@@ -267,9 +267,9 @@ public class DilutionViewTest extends DilutionViewPageObject {
     assertEquals(viewUrl(DilutionView.VIEW_NAME, "210"), getDriver().getCurrentUrl());
     Dilution savedDilution = entityManager.find(Dilution.class, 210L);
     assertEquals(2, savedDilution.getTreatmentSamples().size());
-    Optional<DilutedSample> opTs = find(savedDilution.getTreatmentSamples(), 569);
+    Optional<TreatmentSample> opTs = find(savedDilution.getTreatmentSamples(), 569);
     assertTrue(opTs.isPresent());
-    DilutedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 569L, ts.getSample().getId());
     assertEquals((Long) 608L, ts.getContainer().getId());
     assertEquals(sourceVolume, ts.getSourceVolume(), 0.001);

@@ -44,6 +44,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -116,14 +117,14 @@ public class EnrichmentServiceTest {
         enrichment.getInsertTime());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionExplanation());
-    List<EnrichedSample> enrichedSamples = enrichment.getTreatmentSamples();
-    assertEquals(1, enrichedSamples.size());
-    EnrichedSample enrichedSample = enrichedSamples.get(0);
-    assertEquals(enrichment, enrichedSample.getEnrichment());
-    assertEquals((Long) 444L, enrichedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
-    assertEquals((Long) 4L, enrichedSample.getContainer().getId());
-    assertEquals(null, enrichedSample.getComment());
+    List<TreatmentSample> treatmentSamples = enrichment.getTreatmentSamples();
+    assertEquals(1, treatmentSamples.size());
+    TreatmentSample treatmentSample = treatmentSamples.get(0);
+    assertEquals(enrichment, treatmentSample.getTreatment());
+    assertEquals((Long) 444L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 4L, treatmentSample.getContainer().getId());
+    assertEquals(null, treatmentSample.getComment());
   }
 
   @Test
@@ -137,16 +138,16 @@ public class EnrichmentServiceTest {
   public void insert_Tube() {
     Enrichment enrichment = new Enrichment();
     enrichment.setProtocol(new Protocol(2L));
-    final List<EnrichedSample> enrichedSamples = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
     Tube tube = new Tube(1L);
-    EnrichedSample enrichedSample = new EnrichedSample();
-    enrichedSample.setComment("unit test");
-    enrichedSample.setSample(sample);
-    enrichedSample.setContainer(tube);
-    enrichedSamples.add(enrichedSample);
-    enrichment.setTreatmentSamples(enrichedSamples);
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(tube);
+    treatmentSamples.add(treatmentSample);
+    enrichment.setTreatmentSamples(treatmentSamples);
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
     enrichmentService.insert(enrichment);
@@ -166,11 +167,11 @@ public class EnrichmentServiceTest {
     assertTrue(after.isAfter(enrichment.getInsertTime()));
     assertEquals((Long) 2L, enrichment.getProtocol().getId());
     assertEquals(1, enrichment.getTreatmentSamples().size());
-    enrichedSample = enrichment.getTreatmentSamples().get(0);
-    assertEquals("unit test", enrichedSample.getComment());
-    assertEquals((Long) 1L, enrichedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
-    assertEquals((Long) 1L, enrichedSample.getContainer().getId());
+    treatmentSample = enrichment.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.ENRICHED, sample.getStatus());
   }
@@ -179,16 +180,16 @@ public class EnrichmentServiceTest {
   public void insert_Well() {
     Enrichment enrichment = new Enrichment();
     enrichment.setProtocol(new Protocol(2L));
-    final List<EnrichedSample> enrichedSamples = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
     entityManager.detach(sample);
     Well well = new Well(128L);
-    EnrichedSample enrichedSample = new EnrichedSample();
-    enrichedSample.setComment("unit test");
-    enrichedSample.setSample(sample);
-    enrichedSample.setContainer(well);
-    enrichedSamples.add(enrichedSample);
-    enrichment.setTreatmentSamples(enrichedSamples);
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(well);
+    treatmentSamples.add(treatmentSample);
+    enrichment.setTreatmentSamples(treatmentSamples);
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
     enrichmentService.insert(enrichment);
@@ -208,11 +209,11 @@ public class EnrichmentServiceTest {
     assertTrue(after.isAfter(enrichment.getInsertTime()));
     assertEquals((Long) 2L, enrichment.getProtocol().getId());
     assertEquals(1, enrichment.getTreatmentSamples().size());
-    enrichedSample = enrichment.getTreatmentSamples().get(0);
-    assertEquals("unit test", enrichedSample.getComment());
-    assertEquals((Long) 1L, enrichedSample.getSample().getId());
-    assertEquals(SampleContainerType.WELL, enrichedSample.getContainer().getType());
-    assertEquals((Long) 128L, enrichedSample.getContainer().getId());
+    treatmentSample = enrichment.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.WELL, treatmentSample.getContainer().getType());
+    assertEquals((Long) 128L, treatmentSample.getContainer().getId());
     sample = entityManager.find(SubmissionSample.class, 1L);
     assertEquals(SampleStatus.ENRICHED, sample.getStatus());
   }
@@ -227,18 +228,18 @@ public class EnrichmentServiceTest {
     entityManager.detach(tube1.getSample());
     entityManager.detach(tube2);
     entityManager.detach(tube2.getSample());
-    final List<EnrichedSample> enrichedSamples = new ArrayList<>();
-    EnrichedSample enrichedSample1 = new EnrichedSample();
-    enrichedSample1.setComment("unit test");
-    enrichedSample1.setSample(tube1.getSample());
-    enrichedSample1.setContainer(tube1);
-    enrichedSamples.add(enrichedSample1);
-    EnrichedSample enrichedSample2 = new EnrichedSample();
-    enrichedSample2.setComment("unit test");
-    enrichedSample2.setSample(tube2.getSample());
-    enrichedSample2.setContainer(tube2);
-    enrichedSamples.add(enrichedSample2);
-    enrichment.setTreatmentSamples(enrichedSamples);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSamples.add(treatmentSample2);
+    enrichment.setTreatmentSamples(treatmentSamples);
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
     try {
@@ -259,18 +260,18 @@ public class EnrichmentServiceTest {
     entityManager.detach(tube1.getSample());
     entityManager.detach(tube2);
     entityManager.detach(tube2.getSample());
-    final List<EnrichedSample> enrichedSamples = new ArrayList<>();
-    EnrichedSample enrichedSample1 = new EnrichedSample();
-    enrichedSample1.setComment("unit test");
-    enrichedSample1.setSample(tube1.getSample());
-    enrichedSample1.setContainer(tube1);
-    enrichedSamples.add(enrichedSample1);
-    EnrichedSample enrichedSample2 = new EnrichedSample();
-    enrichedSample2.setComment("unit test");
-    enrichedSample2.setSample(tube2.getSample());
-    enrichedSample2.setContainer(tube2);
-    enrichedSamples.add(enrichedSample2);
-    enrichment.setTreatmentSamples(enrichedSamples);
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    TreatmentSample treatmentSample1 = new TreatmentSample();
+    treatmentSample1.setComment("unit test");
+    treatmentSample1.setSample(tube1.getSample());
+    treatmentSample1.setContainer(tube1);
+    treatmentSamples.add(treatmentSample1);
+    TreatmentSample treatmentSample2 = new TreatmentSample();
+    treatmentSample2.setComment("unit test");
+    treatmentSample2.setSample(tube2.getSample());
+    treatmentSample2.setContainer(tube2);
+    treatmentSamples.add(treatmentSample2);
+    enrichment.setTreatmentSamples(treatmentSamples);
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
     try {
@@ -286,15 +287,15 @@ public class EnrichmentServiceTest {
     Protocol protocol = new Protocol(null, "test protocol");
     protocol.setType(Protocol.Type.ENRICHMENT);
     enrichment.setProtocol(protocol);
-    final List<EnrichedSample> enrichedSamples = new ArrayList<>();
+    final List<TreatmentSample> treatmentSamples = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube tube = new Tube(1L);
-    EnrichedSample enrichedSample = new EnrichedSample();
-    enrichedSample.setComment("unit test");
-    enrichedSample.setSample(sample);
-    enrichedSample.setContainer(tube);
-    enrichedSamples.add(enrichedSample);
-    enrichment.setTreatmentSamples(enrichedSamples);
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setComment("unit test");
+    treatmentSample.setSample(sample);
+    treatmentSample.setContainer(tube);
+    treatmentSamples.add(treatmentSample);
+    enrichment.setTreatmentSamples(treatmentSamples);
     doAnswer(i -> {
       entityManager.persist(i.getArgumentAt(0, Protocol.class));
       return null;
@@ -320,11 +321,11 @@ public class EnrichmentServiceTest {
     assertNotNull(enrichment.getProtocol().getId());
     assertEquals(protocol.getName(), enrichment.getProtocol().getName());
     assertEquals(1, enrichment.getTreatmentSamples().size());
-    enrichedSample = enrichment.getTreatmentSamples().get(0);
-    assertEquals("unit test", enrichedSample.getComment());
-    assertEquals((Long) 1L, enrichedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, enrichedSample.getContainer().getType());
-    assertEquals((Long) 1L, enrichedSample.getContainer().getId());
+    treatmentSample = enrichment.getTreatmentSamples().get(0);
+    assertEquals("unit test", treatmentSample.getComment());
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
   }
 
   @Test
@@ -378,7 +379,7 @@ public class EnrichmentServiceTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void update_RemoveEnrichedSample() {
+  public void update_RemoveTreatmentSample() {
     Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
     entityManager.detach(enrichment);
     enrichment.getTreatmentSamples().stream().forEach(ts -> entityManager.detach(ts));

@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
@@ -75,16 +76,16 @@ public class SolubilisationActivityServiceTest {
   public void insert() {
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
-    SolubilisedSample solubilisedSample = new SolubilisedSample();
-    solubilisedSample.setSample(sample);
-    solubilisedSample.setSolvent("Methanol");
-    solubilisedSample.setSolventVolume(20.0);
-    solubilisedSample.setContainer(sourceTube);
-    List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
-    solubilisedSamples.add(solubilisedSample);
+    TreatmentSample treatmentSample = new TreatmentSample();
+    treatmentSample.setSample(sample);
+    treatmentSample.setSolvent("Methanol");
+    treatmentSample.setSolventVolume(20.0);
+    treatmentSample.setContainer(sourceTube);
+    List<TreatmentSample> treatmentSamples = new ArrayList<>();
+    treatmentSamples.add(treatmentSample);
     Solubilisation solubilisation = new Solubilisation();
     solubilisation.setId(123456L);
-    solubilisation.setTreatmentSamples(solubilisedSamples);
+    solubilisation.setTreatmentSamples(treatmentSamples);
 
     Activity activity = solubilisationActivityService.insert(solubilisation);
 
@@ -106,7 +107,7 @@ public class SolubilisationActivityServiceTest {
     solubilisation.getTreatmentSamples().get(0).setSolvent("ch3oh");
     solubilisation.getTreatmentSamples().get(0).setSolventVolume(7.0);
     solubilisation.getTreatmentSamples().get(0).setComment("test");
-    SolubilisedSample newSolubilisedSample = new SolubilisedSample();
+    TreatmentSample newSolubilisedSample = new TreatmentSample();
     newSolubilisedSample.setId(400L);
     newSolubilisedSample.setContainer(new Tube(14L));
     newSolubilisedSample.setSample(new SubmissionSample(562L));

@@ -32,7 +32,7 @@ import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.transfer.Transfer;
-import ca.qc.ircm.proview.transfer.TransferedSample;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
@@ -60,7 +60,7 @@ public class TransferViewTest extends TransferViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
-  private Optional<TransferedSample> find(Collection<TransferedSample> tss, long sampleId) {
+  private Optional<TreatmentSample> find(Collection<TreatmentSample> tss, long sampleId) {
     return tss.stream().filter(ts -> ts.getSample().getId() == sampleId).findFirst();
   }
 
@@ -193,9 +193,9 @@ public class TransferViewTest extends TransferViewPageObject {
     Transfer savedTransfer =
         jpaQueryFactory.select(transfer).from(transfer).where(transfer.id.eq(id)).fetchOne();
     assertEquals(3, savedTransfer.getTreatmentSamples().size());
-    Optional<TransferedSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
+    Optional<TreatmentSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
     assertTrue(opTs.isPresent());
-    TransferedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals(SampleContainerType.WELL, ts.getDestinationContainer().getType());
@@ -244,9 +244,9 @@ public class TransferViewTest extends TransferViewPageObject {
     Transfer savedTransfer =
         jpaQueryFactory.select(transfer).from(transfer).where(transfer.id.eq(id)).fetchOne();
     assertEquals(3, savedTransfer.getTreatmentSamples().size());
-    Optional<TransferedSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
+    Optional<TreatmentSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
     assertTrue(opTs.isPresent());
-    TransferedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, ts.getDestinationContainer().getType());
@@ -291,9 +291,9 @@ public class TransferViewTest extends TransferViewPageObject {
     Transfer savedTransfer =
         jpaQueryFactory.select(transfer).from(transfer).where(transfer.id.eq(id)).fetchOne();
     assertEquals(3, savedTransfer.getTreatmentSamples().size());
-    Optional<TransferedSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
+    Optional<TreatmentSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
     assertTrue(opTs.isPresent());
-    TransferedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals(SampleContainerType.WELL, ts.getDestinationContainer().getType());
@@ -339,9 +339,9 @@ public class TransferViewTest extends TransferViewPageObject {
     Transfer savedTransfer =
         jpaQueryFactory.select(transfer).from(transfer).where(transfer.id.eq(id)).fetchOne();
     assertEquals(3, savedTransfer.getTreatmentSamples().size());
-    Optional<TransferedSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
+    Optional<TreatmentSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
     assertTrue(opTs.isPresent());
-    TransferedSample ts = opTs.get();
+    TreatmentSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, ts.getDestinationContainer().getType());

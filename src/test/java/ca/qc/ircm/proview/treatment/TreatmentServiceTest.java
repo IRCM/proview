@@ -23,13 +23,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
-import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -65,7 +63,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void get_Solubilisation() throws Throwable {
-    Treatment<?> treatment = treatmentService.get(1L);
+    Treatment treatment = treatmentService.get(1L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 1L, treatment.getId());
@@ -78,20 +76,20 @@ public class TreatmentServiceTest {
     assertEquals(null, treatment.getDeletionExplanation());
     assertEquals(true, treatment instanceof Solubilisation);
     Solubilisation solubilisation = (Solubilisation) treatment;
-    List<SolubilisedSample> solubilisedSamples = solubilisation.getTreatmentSamples();
-    assertEquals(1, solubilisedSamples.size());
-    SolubilisedSample solubilisedSample = solubilisedSamples.get(0);
-    assertEquals((Long) 1L, solubilisedSample.getSample().getId());
-    assertEquals(SampleContainerType.TUBE, solubilisedSample.getContainer().getType());
-    assertEquals((Long) 1L, solubilisedSample.getContainer().getId());
-    assertEquals(null, solubilisedSample.getComment());
-    assertEquals("Methanol", solubilisedSample.getSolvent());
-    assertEquals(20.0, solubilisedSample.getSolventVolume(), 0.01);
+    List<TreatmentSample> treatmentSamples = solubilisation.getTreatmentSamples();
+    assertEquals(1, treatmentSamples.size());
+    TreatmentSample treatmentSample = treatmentSamples.get(0);
+    assertEquals((Long) 1L, treatmentSample.getSample().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
+    assertEquals(null, treatmentSample.getComment());
+    assertEquals("Methanol", treatmentSample.getSolvent());
+    assertEquals(20.0, treatmentSample.getSolventVolume(), 0.01);
   }
 
   @Test
   public void get_EnrichmentProtocol() throws Throwable {
-    Treatment<?> treatment = treatmentService.get(2L);
+    Treatment treatment = treatmentService.get(2L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, treatment.getId());
@@ -105,21 +103,21 @@ public class TreatmentServiceTest {
     assertEquals(true, treatment instanceof Fractionation);
     Fractionation fractionation = (Fractionation) treatment;
     assertEquals(FractionationType.MUDPIT, fractionation.getFractionationType());
-    Fraction fraction = fractionation.getTreatmentSamples().get(0);
-    assertEquals((Long) 2L, fraction.getId());
-    assertEquals(SampleContainerType.TUBE, fraction.getContainer().getType());
-    assertEquals((Long) 1L, fraction.getContainer().getId());
-    assertEquals(SampleContainerType.TUBE, fraction.getDestinationContainer().getType());
-    assertEquals((Long) 6L, fraction.getDestinationContainer().getId());
-    assertEquals(null, fraction.getComment());
-    assertEquals((Integer) 1, fraction.getPosition());
-    assertEquals((Integer) 1, fraction.getNumber());
-    assertEquals(null, fraction.getPiInterval());
+    TreatmentSample treatmentSample = fractionation.getTreatmentSamples().get(0);
+    assertEquals((Long) 2L, treatmentSample.getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getContainer().getType());
+    assertEquals((Long) 1L, treatmentSample.getContainer().getId());
+    assertEquals(SampleContainerType.TUBE, treatmentSample.getDestinationContainer().getType());
+    assertEquals((Long) 6L, treatmentSample.getDestinationContainer().getId());
+    assertEquals(null, treatmentSample.getComment());
+    assertEquals((Integer) 1, treatmentSample.getPosition());
+    assertEquals((Integer) 1, treatmentSample.getNumber());
+    assertEquals(null, treatmentSample.getPiInterval());
   }
 
   @Test
   public void get_Null() throws Throwable {
-    Treatment<?> protocol = treatmentService.get(null);
+    Treatment protocol = treatmentService.get(null);
 
     assertNull(protocol);
   }
@@ -128,7 +126,7 @@ public class TreatmentServiceTest {
   public void all_147() {
     Submission submission = entityManager.find(Submission.class, 147L);
 
-    List<Treatment<?>> treatments = treatmentService.all(submission);
+    List<Treatment> treatments = treatmentService.all(submission);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, treatments.size());
@@ -140,7 +138,7 @@ public class TreatmentServiceTest {
   public void all_149() {
     Submission submission = entityManager.find(Submission.class, 149L);
 
-    List<Treatment<?>> treatments = treatmentService.all(submission);
+    List<Treatment> treatments = treatmentService.all(submission);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(12, treatments.size());
@@ -154,7 +152,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void all_Null() {
-    List<Treatment<?>> treatments = treatmentService.all(null);
+    List<Treatment> treatments = treatmentService.all(null);
 
     assertTrue(treatments.isEmpty());
   }

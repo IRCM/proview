@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Service;
@@ -137,11 +138,11 @@ public class DigestionService extends BaseTreatmentService {
     authorizationService.checkAdminRole();
 
     Digestion old = entityManager.find(Digestion.class, digestion.getId());
-    Set<Long> digestedSampleIds =
+    Set<Long> treatmentSampleIds =
         digestion.getTreatmentSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
-    if (old.getTreatmentSamples().stream().filter(ts -> !digestedSampleIds.contains(ts.getId()))
+    if (old.getTreatmentSamples().stream().filter(ts -> !treatmentSampleIds.contains(ts.getId()))
         .findAny().isPresent()) {
-      throw new IllegalArgumentException("Cannot remove " + DigestedSample.class.getSimpleName()
+      throw new IllegalArgumentException("Cannot remove " + TreatmentSample.class.getSimpleName()
           + " from " + Digestion.class.getSimpleName() + " on update");
     }
 
@@ -176,8 +177,8 @@ public class DigestionService extends BaseTreatmentService {
     Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
     if (banContainers) {
       // Ban containers used during digestion.
-      for (DigestedSample digestedSample : digestion.getTreatmentSamples()) {
-        SampleContainer container = digestedSample.getContainer();
+      for (TreatmentSample treatmentSample : digestion.getTreatmentSamples()) {
+        SampleContainer container = treatmentSample.getContainer();
         container.setBanned(true);
         bannedContainers.add(container);
 

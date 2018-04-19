@@ -39,11 +39,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.fractionation.Fraction;
 import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
@@ -131,41 +131,41 @@ public class FractionationViewPresenterTest {
     assertEquals(6, design.fractions.getColumns().size());
     assertEquals(SAMPLE, design.fractions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.fractions.getColumn(SAMPLE).getCaption());
-    Collection<Fraction> fractions = dataProvider(design.fractions).getItems();
-    for (Fraction ts : fractions) {
+    Collection<TreatmentSample> fractions = dataProvider(design.fractions).getItems();
+    for (TreatmentSample ts : fractions) {
       assertEquals(ts.getSample().getName(),
           design.fractions.getColumn(SAMPLE).getValueProvider().apply(ts));
     }
     assertEquals(CONTAINER, design.fractions.getColumns().get(1).getId());
     assertEquals(resources.message(CONTAINER), design.fractions.getColumn(CONTAINER).getCaption());
-    for (Fraction ts : fractions) {
+    for (TreatmentSample ts : fractions) {
       assertEquals(ts.getContainer().getFullName(),
           design.fractions.getColumn(CONTAINER).getValueProvider().apply(ts));
     }
     assertEquals(DESTINATION, design.fractions.getColumns().get(2).getId());
     assertEquals(resources.message(DESTINATION),
         design.fractions.getColumn(DESTINATION).getCaption());
-    for (Fraction ts : fractions) {
+    for (TreatmentSample ts : fractions) {
       assertEquals(ts.getDestinationContainer().getFullName(),
           design.fractions.getColumn(DESTINATION).getValueProvider().apply(ts));
     }
     assertEquals(NUMBER, design.fractions.getColumns().get(3).getId());
     assertEquals(resources.message(NUMBER), design.fractions.getColumn(NUMBER).getCaption());
     assertFalse(design.fractions.getColumn(NUMBER).isHidden());
-    for (Fraction ts : fractions) {
+    for (TreatmentSample ts : fractions) {
       assertEquals(ts.getNumber(), design.fractions.getColumn(NUMBER).getValueProvider().apply(ts));
     }
     assertEquals(PI_INTERVAL, design.fractions.getColumns().get(4).getId());
     assertEquals(resources.message(PI_INTERVAL),
         design.fractions.getColumn(PI_INTERVAL).getCaption());
     assertTrue(design.fractions.getColumn(PI_INTERVAL).isHidden());
-    for (Fraction ts : fractions) {
+    for (TreatmentSample ts : fractions) {
       assertEquals(ts.getPiInterval(),
           design.fractions.getColumn(PI_INTERVAL).getValueProvider().apply(ts));
     }
     assertEquals(COMMENT, design.fractions.getColumns().get(5).getId());
     assertEquals(resources.message(COMMENT), design.fractions.getColumn(COMMENT).getCaption());
-    for (Fraction ts : fractions) {
+    for (TreatmentSample ts : fractions) {
       assertEquals(ts.getComment(),
           design.fractions.getColumn(COMMENT).getValueProvider().apply(ts));
     }
@@ -190,7 +190,7 @@ public class FractionationViewPresenterTest {
 
     assertFalse(design.deleted.isVisible());
     verify(view).showWarning(resources.message(INVALID_FRACTIONATION));
-    ListDataProvider<Fraction> tss = dataProvider(design.fractions);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.fractions);
     assertTrue(tss.getItems().isEmpty());
   }
 
@@ -203,7 +203,7 @@ public class FractionationViewPresenterTest {
 
     verify(fractionationService).get(203L);
     assertFalse(design.deleted.isVisible());
-    List<Fraction> tss = new ArrayList<>(dataProvider(design.fractions).getItems());
+    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.fractions).getItems());
     assertEquals(fractionation.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < fractionation.getTreatmentSamples().size(); i++) {
       assertEquals(fractionation.getTreatmentSamples().get(i), tss.get(i));
@@ -220,7 +220,7 @@ public class FractionationViewPresenterTest {
 
     verify(fractionationService).get(203L);
     assertTrue(design.deleted.isVisible());
-    List<Fraction> tss = new ArrayList<>(dataProvider(design.fractions).getItems());
+    List<TreatmentSample> tss = new ArrayList<>(dataProvider(design.fractions).getItems());
     assertEquals(fractionation.getTreatmentSamples().size(), tss.size());
     for (int i = 0; i < fractionation.getTreatmentSamples().size(); i++) {
       assertEquals(fractionation.getTreatmentSamples().get(i), tss.get(i));
@@ -233,7 +233,7 @@ public class FractionationViewPresenterTest {
     presenter.enter("a");
 
     verify(view).showWarning(resources.message(INVALID_FRACTIONATION));
-    ListDataProvider<Fraction> tss = dataProvider(design.fractions);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.fractions);
     assertTrue(tss.getItems().isEmpty());
   }
 
@@ -244,7 +244,7 @@ public class FractionationViewPresenterTest {
 
     verify(fractionationService).get(2L);
     verify(view).showWarning(resources.message(INVALID_FRACTIONATION));
-    ListDataProvider<Fraction> tss = dataProvider(design.fractions);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.fractions);
     assertTrue(tss.getItems().isEmpty());
   }
 
@@ -254,7 +254,7 @@ public class FractionationViewPresenterTest {
     presenter.enter("containers/11,12");
 
     verify(view).showWarning(resources.message(INVALID_FRACTIONATION));
-    ListDataProvider<Fraction> tss = dataProvider(design.fractions);
+    ListDataProvider<TreatmentSample> tss = dataProvider(design.fractions);
     assertTrue(tss.getItems().isEmpty());
   }
 }

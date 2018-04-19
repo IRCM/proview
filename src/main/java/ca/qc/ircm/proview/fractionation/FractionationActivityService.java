@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -73,7 +74,7 @@ public class FractionationActivityService {
 
     // Update of well's sample.
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (Fraction detail : fractionation.getTreatmentSamples()) {
+    for (TreatmentSample detail : fractionation.getTreatmentSamples()) {
       updateBuilders.add(new AddSampleToSampleContainerUpdateActivityBuilder()
           .newContainer(detail.getDestinationContainer()));
     }

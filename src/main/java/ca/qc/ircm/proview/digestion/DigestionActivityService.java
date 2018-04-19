@@ -27,6 +27,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.treatment.TreatmentSample;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -76,7 +77,7 @@ public class DigestionActivityService {
     final User user = authorizationService.getCurrentUser();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    for (DigestedSample ts : digestion.getTreatmentSamples()) {
+    for (TreatmentSample ts : digestion.getTreatmentSamples()) {
       Sample newSample = ts.getSample();
       Sample oldSample = entityManager.find(Sample.class, ts.getSample().getId());
       if (newSample instanceof SubmissionSample) {
@@ -122,21 +123,21 @@ public class DigestionActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     updateBuilders.add(digestionUpdate(digestion).column("protocol")
         .oldValue(oldDigestion.getProtocol().getId()).newValue(digestion.getProtocol().getId()));
-    Map<Long, DigestedSample> oldDigestedSampleIds = oldDigestion.getTreatmentSamples().stream()
+    Map<Long, TreatmentSample> oldTreatmentSampleIds = oldDigestion.getTreatmentSamples().stream()
         .collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
     digestion.getTreatmentSamples().stream()
-        .filter(ts -> !oldDigestedSampleIds.containsKey(ts.getId()))
-        .forEach(ts -> updateBuilders.add(digestedSampleAction(ts, ActionType.INSERT)));
+        .filter(ts -> !oldTreatmentSampleIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(treatmentSampleAction(ts, ActionType.INSERT)));
     digestion.getTreatmentSamples().stream()
-        .filter(ts -> oldDigestedSampleIds.containsKey(ts.getId())).forEach(ts -> {
-          updateBuilders.add(digestedSampleAction(ts, ActionType.UPDATE).column("sampleId")
-              .oldValue(oldDigestedSampleIds.get(ts.getId()).getSample().getId())
+        .filter(ts -> oldTreatmentSampleIds.containsKey(ts.getId())).forEach(ts -> {
+          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getSample().getId())
               .newValue(ts.getSample().getId()));
-          updateBuilders.add(digestedSampleAction(ts, ActionType.UPDATE).column("containerId")
-              .oldValue(oldDigestedSampleIds.get(ts.getId()).getContainer().getId())
+          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getContainer().getId())
               .newValue(ts.getContainer().getId()));
-          updateBuilders.add(digestedSampleAction(ts, ActionType.UPDATE).column("comment")
-              .oldValue(oldDigestedSampleIds.get(ts.getId()).getComment())
+          updateBuilders.add(treatmentSampleAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldTreatmentSampleIds.get(ts.getId()).getComment())
               .newValue(ts.getComment()));
         });
 
@@ -162,7 +163,7 @@ public class DigestionActivityService {
         .actionType(ActionType.UPDATE);
   }
 
-  private UpdateActivityBuilder digestedSampleAction(DigestedSample ts, ActionType actionType) {
+  private UpdateActivityBuilder treatmentSampleAction(TreatmentSample ts, ActionType actionType) {
     return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
         .actionType(actionType);
   }

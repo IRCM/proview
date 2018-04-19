@@ -23,7 +23,7 @@ import java.util.Comparator;
 /**
  * Comparator for treated samples by their LIMS.
  */
-public class TreatmentComparator implements Comparator<Treatment<?>>, Serializable {
+public class TreatmentComparator implements Comparator<Treatment>, Serializable {
   public static enum TreatmentCompareType {
     TIMESTAMP;
   }
@@ -45,7 +45,7 @@ public class TreatmentComparator implements Comparator<Treatment<?>>, Serializab
   }
 
   @Override
-  public int compare(Treatment<?> o1, Treatment<?> o2) {
+  public int compare(Treatment o1, Treatment o2) {
     switch (compare) {
       case TIMESTAMP:
         return o1.getInsertTime().compareTo(o2.getInsertTime());

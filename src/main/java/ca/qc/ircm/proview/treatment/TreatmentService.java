@@ -64,7 +64,7 @@ public class TreatmentService {
    *          database identifier of treatment
    * @return treatment
    */
-  public Treatment<?> get(Long id) {
+  public Treatment get(Long id) {
     if (id == null) {
       return null;
     }
@@ -80,13 +80,13 @@ public class TreatmentService {
    *          submission
    * @return all treatments where one of the submission's samples was treated
    */
-  public List<Treatment<?>> all(Submission submission) {
+  public List<Treatment> all(Submission submission) {
     if (submission == null) {
       return new ArrayList<>();
     }
     authorizationService.checkAdminRole();
 
-    JPAQuery<Treatment<?>> query = queryFactory.select(treatment);
+    JPAQuery<Treatment> query = queryFactory.select(treatment);
     query.from(treatment, treatmentSample);
     query.where(treatmentSample.in(treatment.treatmentSamples));
     query.where(treatmentSample.sample.in(submission.getSamples()));
