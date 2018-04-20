@@ -64,12 +64,15 @@ import com.vaadin.data.BindingValidationStatus;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -117,6 +120,12 @@ public class PlatesViewPresenterTest {
   private ListDataProvider<Plate> platesDataProvider;
   @Mock
   private LocalDateFilterComponent localDateFilterComponent;
+  @Mock
+  private UI ui;
+  @Mock
+  private ConnectorTracker connectorTracker;
+  @Mock
+  private VaadinSession vaadinSession;
   @Captor
   private ArgumentCaptor<SaveListener<Range<LocalDate>>> localDateRangeSaveListenerCaptor;
   @Value("${spring.application.name}")
@@ -153,6 +162,12 @@ public class PlatesViewPresenterTest {
         .thenAnswer(i -> entityManager.find(Plate.class, i.getArgumentAt(0, Long.class)));
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
     when(plateWindowProvider.get()).thenReturn(plateWindow);
+    when(view.getUI()).thenReturn(ui);
+    when(view.getParent()).thenReturn(ui);
+    when(ui.getConnectorTracker()).thenReturn(connectorTracker);
+    design.setParent(view);
+    when(ui.getSession()).thenReturn(vaadinSession);
+    when(vaadinSession.hasLock()).thenReturn(true);
   }
 
   @Test
@@ -530,11 +545,13 @@ public class PlatesViewPresenterTest {
     when(plateService.nameAvailable(any())).thenReturn(true);
     presenter.init(view);
     Plate plate = plates.get(0);
+    String name = plate.getName();
     gridStartEdit(design.plates, plate);
     TextField nameField = (TextField) design.plates.getColumn(NAME).getEditorBinding().getField();
     nameField.setValue("unit_test");
     design.plates.getEditor().cancel();
 
     verify(plateService, never()).update(any());
+    assertEquals(name, plate.getName());
   }
 }

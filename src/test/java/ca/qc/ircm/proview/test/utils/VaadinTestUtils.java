@@ -25,7 +25,8 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.components.grid.EditorImpl;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,14 +66,13 @@ public class VaadinTestUtils {
   }
 
   public static <V> void gridStartEdit(Grid<V> grid, V value) {
-    grid.getEditor().getBinder().setBean(value);
     try {
-      Field field = EditorImpl.class.getDeclaredField("edited");
-      field.setAccessible(true);
-      field.set(grid.getEditor(), value);
+      Method method = EditorImpl.class.getDeclaredMethod("doEdit", Object.class);
+      method.setAccessible(true);
+      method.invoke(grid.getEditor(), value);
     } catch (SecurityException | IllegalAccessException | IllegalArgumentException
-        | NoSuchFieldException e) {
-      throw new IllegalStateException("Could not call edited", e);
+        | InvocationTargetException | NoSuchMethodException e) {
+      throw new IllegalStateException("Could not call doEdit", e);
     }
   }
 

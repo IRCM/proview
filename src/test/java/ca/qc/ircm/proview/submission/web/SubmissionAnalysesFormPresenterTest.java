@@ -61,13 +61,16 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BindingValidationStatus;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,7 +89,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -102,8 +104,14 @@ public class SubmissionAnalysesFormPresenterTest {
   private MsAnalysisService msAnalysisService;
   @Mock
   private DataAnalysisService dataAnalysisService;
-  @Inject
+  @Mock
   private AuthorizationService authorizationService;
+  @Mock
+  private UI ui;
+  @Mock
+  private ConnectorTracker connectorTracker;
+  @Mock
+  private VaadinSession vaadinSession;
   @Captor
   private ArgumentCaptor<Panel> panelCaptor;
   private SubmissionAnalysesFormDesign design;
@@ -134,6 +142,12 @@ public class SubmissionAnalysesFormPresenterTest {
     dataAnalyses.add(entityManager.find(DataAnalysis.class, 3L));
     dataAnalyses.add(entityManager.find(DataAnalysis.class, 4L));
     when(dataAnalysisService.all(any(Submission.class))).thenReturn(dataAnalyses);
+    when(view.getUI()).thenReturn(ui);
+    when(view.getParent()).thenReturn(ui);
+    when(ui.getConnectorTracker()).thenReturn(connectorTracker);
+    design.setParent(view);
+    when(ui.getSession()).thenReturn(vaadinSession);
+    when(vaadinSession.hasLock()).thenReturn(true);
   }
 
   private List<Panel> viewPanels() {
@@ -347,7 +361,7 @@ public class SubmissionAnalysesFormPresenterTest {
 
     TextField field =
         (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    field.setValue("-1.0");
+    field.setValue("-1,0");
     BindingValidationStatus<?> validation =
         design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().validate();
     assertTrue(validation.isError());
@@ -367,7 +381,7 @@ public class SubmissionAnalysesFormPresenterTest {
     scoreField.setValue("");
     TextField workTimeField =
         (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    workTimeField.setValue("1.25");
+    workTimeField.setValue("1,25");
     ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
         .getColumn(STATUS).getEditorBinding().getField();
     statusField.setValue(DataAnalysisStatus.ANALYSED);
@@ -388,9 +402,12 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.setValue(submission);
     DataAnalysis dataAnalysis = dataAnalyses.get(0);
     gridStartEdit(design.dataAnalyses, dataAnalysis);
+    TextArea scoreField =
+        (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
+    scoreField.setValue("");
     TextField workTimeField =
         (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    workTimeField.setValue("1.25");
+    workTimeField.setValue("1,25");
     ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
         .getColumn(STATUS).getEditorBinding().getField();
     statusField.setValue(DataAnalysisStatus.CANCELLED);
@@ -436,6 +453,9 @@ public class SubmissionAnalysesFormPresenterTest {
     TextArea scoreField =
         (TextArea) design.dataAnalyses.getColumn(SCORE).getEditorBinding().getField();
     scoreField.setValue("Test");
+    TextField workTimeField =
+        (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
+    workTimeField.setValue("");
     ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
         .getColumn(STATUS).getEditorBinding().getField();
     statusField.setValue(DataAnalysisStatus.CANCELLED);
@@ -457,7 +477,7 @@ public class SubmissionAnalysesFormPresenterTest {
     scoreField.setValue("Test");
     TextField workTimeField =
         (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    workTimeField.setValue("1.25");
+    workTimeField.setValue("1,25");
     ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
         .getColumn(STATUS).getEditorBinding().getField();
     statusField.setValue(DataAnalysisStatus.ANALYSED);
@@ -482,7 +502,7 @@ public class SubmissionAnalysesFormPresenterTest {
     scoreField.setValue("Test");
     TextField workTimeField =
         (TextField) design.dataAnalyses.getColumn(WORK_TIME).getEditorBinding().getField();
-    workTimeField.setValue("1.25");
+    workTimeField.setValue("1,25");
     ComboBox<DataAnalysisStatus> statusField = (ComboBox<DataAnalysisStatus>) design.dataAnalyses
         .getColumn(STATUS).getEditorBinding().getField();
     statusField.setValue(DataAnalysisStatus.ANALYSED);
