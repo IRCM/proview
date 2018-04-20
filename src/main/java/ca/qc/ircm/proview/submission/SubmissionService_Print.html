@@ -246,7 +246,7 @@
         <span class="label" th:text="#{sample.quantity}">Quantity:</span>
         <span class="sample-quantity" th:text="${sample.quantity}">20 μg</span>
       </div>
-      <div th:if="${submission.service.name() != 'SMALL_MOLECULE' && sample.type.name() == 'SOLUTION' && sample.volume != null}">
+      <div th:if="${submission.service.name() != 'SMALL_MOLECULE' && sample.type.solution && sample.volume != null}">
         <span class="label" th:text="#{sample.volume}">Volume:</span>
         <span class="sample-volume" th:text="${sample.volume}">10 μl</span>
       </div>

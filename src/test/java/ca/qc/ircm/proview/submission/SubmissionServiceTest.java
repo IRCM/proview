@@ -902,6 +902,16 @@ public class SubmissionServiceTest {
   }
 
   @Test
+  public void print_LcmsmsBeads() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.getSamples().forEach(sample -> sample.setType(SampleType.BIOID_BEADS));
+    Locale locale = Locale.getDefault();
+
+    String content = submissionService.print(submission, locale);
+    assertTrue(content.contains("class=\"sample-volume\""));
+  }
+
+  @Test
   public void print_LcmsmsSolution_NoDigestion() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProteolyticDigestionMethod(null);
