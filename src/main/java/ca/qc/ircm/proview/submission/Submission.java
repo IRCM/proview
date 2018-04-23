@@ -35,6 +35,7 @@ import ca.qc.ircm.proview.user.User;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -327,6 +328,26 @@ public class Submission implements Data, LaboratoryData, Serializable {
    */
   @Column(name = "submissionDate")
   private Instant submissionDate;
+  /**
+   * Digestion date.
+   */
+  @Column(name = "digestionDate")
+  private LocalDate digestionDate;
+  /**
+   * True if digestion date is an expected date, false if digestion date is an actual date.
+   */
+  @Column(name = "digestionDateExpected")
+  private boolean digestionDateExpected;
+  /**
+   * Analysis date.
+   */
+  @Column(name = "analysisDate")
+  private LocalDate analysisDate;
+  /**
+   * True if analysis date is an expected date, false if analysis date is an actual date.
+   */
+  @Column(name = "analysisDateExpected")
+  private boolean analysisDateExpected;
   /**
    * True if submission is hidden.
    */
@@ -787,5 +808,37 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setHidden(boolean hidden) {
     this.hidden = hidden;
+  }
+
+  public LocalDate getDigestionDate() {
+    return digestionDate;
+  }
+
+  public void setDigestionDate(LocalDate digestionDate) {
+    this.digestionDate = digestionDate;
+  }
+
+  public boolean isDigestionDateExpected() {
+    return digestionDateExpected;
+  }
+
+  public void setDigestionDateExpected(boolean digestionDateExpected) {
+    this.digestionDateExpected = digestionDateExpected;
+  }
+
+  public LocalDate getAnalysisDate() {
+    return analysisDate;
+  }
+
+  public void setAnalysisDate(LocalDate analysisDate) {
+    this.analysisDate = analysisDate;
+  }
+
+  public boolean isAnalysisDateExpected() {
+    return analysisDateExpected;
+  }
+
+  public void setAnalysisDateExpected(boolean analysisDateExpected) {
+    this.analysisDateExpected = analysisDateExpected;
   }
 }

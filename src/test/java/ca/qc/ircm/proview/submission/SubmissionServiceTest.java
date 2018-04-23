@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -190,9 +191,12 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationComment());
     assertEquals("Philippe", submission.getComment());
-    assertEquals(
-        LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+    assertEquals(toInstant(LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0)),
         submission.getSubmissionDate());
+    assertEquals(LocalDate.of(2010, 12, 11), submission.getDigestionDate());
+    assertTrue(submission.isDigestionDateExpected());
+    assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
+    assertFalse(submission.isAnalysisDateExpected());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
@@ -275,9 +279,12 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationComment());
     assertEquals(null, submission.getComment());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+    assertEquals(toInstant(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0)),
         submission.getSubmissionDate());
+    assertNull(submission.getAnalysisDate());
+    assertFalse(submission.isDigestionDateExpected());
+    assertNull(submission.getAnalysisDate());
+    assertFalse(submission.isAnalysisDateExpected());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
