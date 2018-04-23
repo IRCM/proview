@@ -152,26 +152,11 @@ public class SubmissionAnalysesFormPresenter {
     if (authorizationService.hasAdminRole()) {
       design.dataAnalyses.setSelectionMode(SelectionMode.NONE);
       design.dataAnalyses.getEditor().setEnabled(true);
-      design.dataAnalyses.getEditor().addOpenListener(e -> {
-        design.dataAnalyses.getEditor().getBinder().setBean(e.getBean());
-      });
       design.dataAnalyses.getEditor().addSaveListener(e -> {
         dataAnalysisService.update(e.getBean(), null);
       });
       Binder<DataAnalysis> binder = new BeanValidationBinder<>(DataAnalysis.class);
       design.dataAnalyses.getEditor().setBinder(binder);
-      TextArea scoreEditor = new TextArea();
-      scoreEditor.addStyleName(SCORE);
-      scoreEditor.setRows(3);
-      design.dataAnalyses.getColumn(SCORE)
-          .setEditorBinding(binder.forField(scoreEditor).withNullRepresentation("")
-              .withValidator((value, context) -> validateScore(value, context)).bind(SCORE));
-      TextField workTimeEditor = new TextField();
-      workTimeEditor.addStyleName(WORK_TIME);
-      design.dataAnalyses.getColumn(WORK_TIME)
-          .setEditorBinding(binder.forField(workTimeEditor).withNullRepresentation("")
-              .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
-              .withValidator((value, context) -> validateWorkTime(value, context)).bind(WORK_TIME));
       ComboBox<DataAnalysisStatus> statusEditor = new ComboBox<>();
       statusEditor.addStyleName(STATUS);
       statusEditor.setEmptySelectionAllowed(false);
@@ -179,6 +164,22 @@ public class SubmissionAnalysesFormPresenter {
       statusEditor.setItemCaptionGenerator(type -> type.getLabel(view.getLocale()));
       design.dataAnalyses.getColumn(STATUS).setEditorBinding(binder.forField(statusEditor)
           .asRequired(generalResources.message(REQUIRED)).bind(STATUS));
+      TextArea scoreEditor = new TextArea();
+      scoreEditor.addStyleName(SCORE);
+      scoreEditor.setRows(3);
+      design.dataAnalyses.getColumn(SCORE)
+          .setEditorBinding(binder.forField(scoreEditor).withNullRepresentation("")
+              .withValidator(
+                  (value, context) -> validateScore(value, context, statusEditor.getValue()))
+              .bind(SCORE));
+      TextField workTimeEditor = new TextField();
+      workTimeEditor.addStyleName(WORK_TIME);
+      design.dataAnalyses.getColumn(WORK_TIME)
+          .setEditorBinding(binder.forField(workTimeEditor).withNullRepresentation("")
+              .withConverter(new StringToDoubleConverter(generalResources.message(INVALID_NUMBER)))
+              .withValidator(
+                  (value, context) -> validateWorkTime(value, context, statusEditor.getValue()))
+              .bind(WORK_TIME));
     }
   }
 
@@ -194,9 +195,10 @@ public class SubmissionAnalysesFormPresenter {
         Objects.toString(dataAnalysis.getWorkTime(), "0"), dataAnalysis.getMaxWorkTime());
   }
 
-  private ValidationResult validateScore(String value, ValueContext context) {
-    DataAnalysis dataAnalysis = design.dataAnalyses.getEditor().getBinder().getBean();
-    if (value == null && dataAnalysis.getStatus() == DataAnalysisStatus.ANALYSED) {
+  private ValidationResult validateScore(String value, ValueContext context,
+      DataAnalysisStatus status) {
+    logger.debug("validateScore, value={}, status={}", value, status);
+    if (value == null && status == DataAnalysisStatus.ANALYSED) {
       MessageResource generalResources = view.getGeneralResources();
       return ValidationResult.error(generalResources.message(REQUIRED));
     } else {
@@ -204,9 +206,10 @@ public class SubmissionAnalysesFormPresenter {
     }
   }
 
-  private ValidationResult validateWorkTime(Double value, ValueContext context) {
-    DataAnalysis dataAnalysis = design.dataAnalyses.getEditor().getBinder().getBean();
-    if (value == null && dataAnalysis.getStatus() == DataAnalysisStatus.ANALYSED) {
+  private ValidationResult validateWorkTime(Double value, ValueContext context,
+      DataAnalysisStatus status) {
+    logger.debug("validateWorkTime, value={}, status={}", value, status);
+    if (value == null && status == DataAnalysisStatus.ANALYSED) {
       MessageResource generalResources = view.getGeneralResources();
       return ValidationResult.error(generalResources.message(REQUIRED));
     } else {

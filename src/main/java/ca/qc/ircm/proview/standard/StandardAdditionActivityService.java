@@ -24,6 +24,7 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -98,26 +99,26 @@ public class StandardAdditionActivityService {
         entityManager.find(StandardAddition.class, standardAddition.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    Map<Long, AddedStandard> oldAddedStandardIds = oldStandardAddition.getTreatmentSamples()
+    Map<Long, TreatedSample> oldTreatedSampleIds = oldStandardAddition.getTreatedSamples()
         .stream().collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
-    standardAddition.getTreatmentSamples().stream()
-        .filter(ts -> !oldAddedStandardIds.containsKey(ts.getId()))
-        .forEach(ts -> updateBuilders.add(addedStandardAction(ts, ActionType.INSERT)));
-    standardAddition.getTreatmentSamples().stream()
-        .filter(ts -> oldAddedStandardIds.containsKey(ts.getId())).forEach(ts -> {
-          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("sampleId")
-              .oldValue(oldAddedStandardIds.get(ts.getId()).getSample().getId())
+    standardAddition.getTreatedSamples().stream()
+        .filter(ts -> !oldTreatedSampleIds.containsKey(ts.getId()))
+        .forEach(ts -> updateBuilders.add(treatedSampleAction(ts, ActionType.INSERT)));
+    standardAddition.getTreatedSamples().stream()
+        .filter(ts -> oldTreatedSampleIds.containsKey(ts.getId())).forEach(ts -> {
+          updateBuilders.add(treatedSampleAction(ts, ActionType.UPDATE).column("sampleId")
+              .oldValue(oldTreatedSampleIds.get(ts.getId()).getSample().getId())
               .newValue(ts.getSample().getId()));
-          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("containerId")
-              .oldValue(oldAddedStandardIds.get(ts.getId()).getContainer().getId())
+          updateBuilders.add(treatedSampleAction(ts, ActionType.UPDATE).column("containerId")
+              .oldValue(oldTreatedSampleIds.get(ts.getId()).getContainer().getId())
               .newValue(ts.getContainer().getId()));
-          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("name")
-              .oldValue(oldAddedStandardIds.get(ts.getId()).getName()).newValue(ts.getName()));
-          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("quantity")
-              .oldValue(oldAddedStandardIds.get(ts.getId()).getQuantity())
+          updateBuilders.add(treatedSampleAction(ts, ActionType.UPDATE).column("name")
+              .oldValue(oldTreatedSampleIds.get(ts.getId()).getName()).newValue(ts.getName()));
+          updateBuilders.add(treatedSampleAction(ts, ActionType.UPDATE).column("quantity")
+              .oldValue(oldTreatedSampleIds.get(ts.getId()).getQuantity())
               .newValue(ts.getQuantity()));
-          updateBuilders.add(addedStandardAction(ts, ActionType.UPDATE).column("comment")
-              .oldValue(oldAddedStandardIds.get(ts.getId()).getComment())
+          updateBuilders.add(treatedSampleAction(ts, ActionType.UPDATE).column("comment")
+              .oldValue(oldTreatedSampleIds.get(ts.getId()).getComment())
               .newValue(ts.getComment()));
         });
 
@@ -138,8 +139,8 @@ public class StandardAdditionActivityService {
     }
   }
 
-  private UpdateActivityBuilder addedStandardAction(AddedStandard ts, ActionType actionType) {
-    return new UpdateActivityBuilder().tableName("treatmentsample").recordId(ts.getId())
+  private UpdateActivityBuilder treatedSampleAction(TreatedSample ts, ActionType actionType) {
+    return new UpdateActivityBuilder().tableName("treatedsample").recordId(ts.getId())
         .actionType(actionType);
   }
 

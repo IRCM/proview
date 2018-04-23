@@ -46,7 +46,7 @@ import javax.persistence.Table;
 @Table(name = Treatment.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
-public abstract class Treatment<S extends TreatmentSample> implements Data {
+public abstract class Treatment implements Data {
   /**
    * Type of errors that forces Digestion to be deleted.
    */
@@ -72,17 +72,17 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
-   * User who made the treatment.
-   */
-  @ManyToOne
-  @JoinColumn(name = "userId")
-  private User user;
-  /**
    * Protocol used for treatment, if any.
    */
   @ManyToOne
   @JoinColumn(name = "protocolId")
   private Protocol protocol;
+  /**
+   * User who made the treatment.
+   */
+  @ManyToOne
+  @JoinColumn(name = "userId")
+  private User user;
   /**
    * Time when treatment took plate.
    */
@@ -101,10 +101,9 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
   /**
    * List of all treatments done on samples.
    */
-  @OneToMany(cascade = CascadeType.ALL, targetEntity = TreatmentSample.class)
-  @JoinColumn(name = "treatmentId", nullable = false)
+  @OneToMany(mappedBy = "treatment", cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderColumn(name = "listIndex")
-  private List<S> treatmentSamples;
+  private List<TreatedSample> treatedSamples;
 
   public Treatment() {
   }
@@ -148,12 +147,12 @@ public abstract class Treatment<S extends TreatmentSample> implements Data {
     this.user = user;
   }
 
-  public List<S> getTreatmentSamples() {
-    return treatmentSamples;
+  public List<TreatedSample> getTreatedSamples() {
+    return treatedSamples;
   }
 
-  public void setTreatmentSamples(List<S> treatmentSamples) {
-    this.treatmentSamples = treatmentSamples;
+  public void setTreatedSamples(List<TreatedSample> treatedSamples) {
+    this.treatedSamples = treatedSamples;
   }
 
   public Instant getInsertTime() {

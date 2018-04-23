@@ -25,7 +25,7 @@ public class FractionationViewDesign extends VerticalLayout {
   protected Panel typePanel;
   protected Label type;
   protected Panel fractionsPanel;
-  protected Grid<ca.qc.ircm.proview.fractionation.Fraction> fractions;
+  protected Grid<ca.qc.ircm.proview.treatment.TreatedSample> fractions;
 
   public FractionationViewDesign() {
     Design.read(this);

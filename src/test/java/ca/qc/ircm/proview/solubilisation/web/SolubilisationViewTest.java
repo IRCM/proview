@@ -26,9 +26,9 @@ import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
-import ca.qc.ircm.proview.solubilisation.SolubilisedSample;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -58,7 +58,7 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
-  private Optional<SolubilisedSample> find(Collection<SolubilisedSample> tss, long sampleId) {
+  private Optional<TreatedSample> find(Collection<TreatedSample> tss, long sampleId) {
     return tss.stream().filter(ts -> ts.getSample().getId() == sampleId).findFirst();
   }
 
@@ -167,16 +167,16 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
         getDriver().getCurrentUrl().substring(viewUrl(SolubilisationView.VIEW_NAME).length() + 1));
     Solubilisation savedSolubilisation = jpaQueryFactory.select(solubilisation).from(solubilisation)
         .where(solubilisation.id.eq(id)).fetchOne();
-    assertEquals(3, savedSolubilisation.getTreatmentSamples().size());
-    Optional<SolubilisedSample> opTs = find(savedSolubilisation.getTreatmentSamples(), 559);
+    assertEquals(3, savedSolubilisation.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedSolubilisation.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    SolubilisedSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
     assertEquals(comment, ts.getComment());
-    opTs = find(savedSolubilisation.getTreatmentSamples(), 560);
+    opTs = find(savedSolubilisation.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
@@ -184,7 +184,7 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
     assertEquals(comment, ts.getComment());
-    opTs = find(savedSolubilisation.getTreatmentSamples(), 444);
+    opTs = find(savedSolubilisation.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -212,16 +212,16 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
         getDriver().getCurrentUrl().substring(viewUrl(SolubilisationView.VIEW_NAME).length() + 1));
     Solubilisation savedSolubilisation = jpaQueryFactory.select(solubilisation).from(solubilisation)
         .where(solubilisation.id.eq(id)).fetchOne();
-    assertEquals(3, savedSolubilisation.getTreatmentSamples().size());
-    Optional<SolubilisedSample> opTs = find(savedSolubilisation.getTreatmentSamples(), 559);
+    assertEquals(3, savedSolubilisation.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedSolubilisation.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    SolubilisedSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
     assertEquals(comment, ts.getComment());
-    opTs = find(savedSolubilisation.getTreatmentSamples(), 560);
+    opTs = find(savedSolubilisation.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
@@ -229,7 +229,7 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
     assertEquals(comment, ts.getComment());
-    opTs = find(savedSolubilisation.getTreatmentSamples(), 444);
+    opTs = find(savedSolubilisation.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -254,16 +254,16 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
 
     assertEquals(viewUrl(SolubilisationView.VIEW_NAME, "236"), getDriver().getCurrentUrl());
     Solubilisation savedSolubilisation = entityManager.find(Solubilisation.class, 236L);
-    assertEquals(2, savedSolubilisation.getTreatmentSamples().size());
-    Optional<SolubilisedSample> opTs = find(savedSolubilisation.getTreatmentSamples(), 589);
+    assertEquals(2, savedSolubilisation.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedSolubilisation.getTreatedSamples(), 589);
     assertTrue(opTs.isPresent());
-    SolubilisedSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 589L, ts.getSample().getId());
     assertEquals((Long) 992L, ts.getContainer().getId());
     assertEquals(solvent, ts.getSolvent());
     assertEquals(solventVolume, ts.getSolventVolume(), 0.001);
     assertEquals(comment, ts.getComment());
-    opTs = find(savedSolubilisation.getTreatmentSamples(), 590);
+    opTs = find(savedSolubilisation.getTreatedSamples(), 590);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 590L, ts.getSample().getId());

@@ -30,6 +30,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
@@ -74,15 +75,15 @@ public class TransferActivityServiceTest {
     destinationTube.setId(56456748L);
     destinationTube.setName(sample.getName() + "_2");
     destinationTube.setSample(sample);
-    TransferedSample transferedSample = new TransferedSample();
-    transferedSample.setSample(sample);
-    transferedSample.setContainer(sourceTube);
-    transferedSample.setDestinationContainer(destinationTube);
-    List<TransferedSample> transferedSamples = new ArrayList<>();
-    transferedSamples.add(transferedSample);
+    TreatedSample treatedSample = new TreatedSample();
+    treatedSample.setSample(sample);
+    treatedSample.setContainer(sourceTube);
+    treatedSample.setDestinationContainer(destinationTube);
+    List<TreatedSample> treatedSamples = new ArrayList<>();
+    treatedSamples.add(treatedSample);
     Transfer transfer = new Transfer();
     transfer.setId(123456L);
-    transfer.setTreatmentSamples(transferedSamples);
+    transfer.setTreatedSamples(treatedSamples);
 
     Activity activity = transferActivityService.insert(transfer);
 
@@ -106,15 +107,15 @@ public class TransferActivityServiceTest {
     Tube sourceTube = new Tube(1L);
     Well destinationWell = new Well(130L);
     destinationWell.setSample(sample);
-    TransferedSample transferedSample = new TransferedSample();
-    transferedSample.setSample(sample);
-    transferedSample.setContainer(sourceTube);
-    transferedSample.setDestinationContainer(destinationWell);
-    List<TransferedSample> transferedSamples = new ArrayList<>();
-    transferedSamples.add(transferedSample);
+    TreatedSample treatedSample = new TreatedSample();
+    treatedSample.setSample(sample);
+    treatedSample.setContainer(sourceTube);
+    treatedSample.setDestinationContainer(destinationWell);
+    List<TreatedSample> treatedSamples = new ArrayList<>();
+    treatedSamples.add(treatedSample);
     Transfer transfer = new Transfer();
     transfer.setId(123456L);
-    transfer.setTreatmentSamples(transferedSamples);
+    transfer.setTreatedSamples(treatedSamples);
 
     Activity activity = transferActivityService.insert(transfer);
 

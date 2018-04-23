@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
@@ -75,16 +76,16 @@ public class SolubilisationActivityServiceTest {
   public void insert() {
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
-    SolubilisedSample solubilisedSample = new SolubilisedSample();
-    solubilisedSample.setSample(sample);
-    solubilisedSample.setSolvent("Methanol");
-    solubilisedSample.setSolventVolume(20.0);
-    solubilisedSample.setContainer(sourceTube);
-    List<SolubilisedSample> solubilisedSamples = new ArrayList<>();
-    solubilisedSamples.add(solubilisedSample);
+    TreatedSample treatedSample = new TreatedSample();
+    treatedSample.setSample(sample);
+    treatedSample.setSolvent("Methanol");
+    treatedSample.setSolventVolume(20.0);
+    treatedSample.setContainer(sourceTube);
+    List<TreatedSample> treatedSamples = new ArrayList<>();
+    treatedSamples.add(treatedSample);
     Solubilisation solubilisation = new Solubilisation();
     solubilisation.setId(123456L);
-    solubilisation.setTreatmentSamples(solubilisedSamples);
+    solubilisation.setTreatedSamples(treatedSamples);
 
     Activity activity = solubilisationActivityService.insert(solubilisation);
 
@@ -100,17 +101,17 @@ public class SolubilisationActivityServiceTest {
   public void update() {
     Solubilisation solubilisation = entityManager.find(Solubilisation.class, 236L);
     entityManager.detach(solubilisation);
-    solubilisation.getTreatmentSamples().forEach(ts -> entityManager.detach(ts));
-    solubilisation.getTreatmentSamples().get(0).setContainer(new Well(248L));
-    solubilisation.getTreatmentSamples().get(0).setSample(new Control(444L));
-    solubilisation.getTreatmentSamples().get(0).setSolvent("ch3oh");
-    solubilisation.getTreatmentSamples().get(0).setSolventVolume(7.0);
-    solubilisation.getTreatmentSamples().get(0).setComment("test");
-    SolubilisedSample newSolubilisedSample = new SolubilisedSample();
+    solubilisation.getTreatedSamples().forEach(ts -> entityManager.detach(ts));
+    solubilisation.getTreatedSamples().get(0).setContainer(new Well(248L));
+    solubilisation.getTreatedSamples().get(0).setSample(new Control(444L));
+    solubilisation.getTreatedSamples().get(0).setSolvent("ch3oh");
+    solubilisation.getTreatedSamples().get(0).setSolventVolume(7.0);
+    solubilisation.getTreatedSamples().get(0).setComment("test");
+    TreatedSample newSolubilisedSample = new TreatedSample();
     newSolubilisedSample.setId(400L);
     newSolubilisedSample.setContainer(new Tube(14L));
     newSolubilisedSample.setSample(new SubmissionSample(562L));
-    solubilisation.getTreatmentSamples().add(newSolubilisedSample);
+    solubilisation.getTreatedSamples().add(newSolubilisedSample);
 
     Optional<Activity> optionalActivity =
         solubilisationActivityService.update(solubilisation, "test explanation");
@@ -125,12 +126,12 @@ public class SolubilisationActivityServiceTest {
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity newSolubilisedSampleActivity = new UpdateActivity();
     newSolubilisedSampleActivity.setActionType(ActionType.INSERT);
-    newSolubilisedSampleActivity.setTableName("treatmentsample");
+    newSolubilisedSampleActivity.setTableName("treatedsample");
     newSolubilisedSampleActivity.setRecordId(400L);
     expecteds.add(newSolubilisedSampleActivity);
     UpdateActivity updateSolubilisedSampleSampleActivity = new UpdateActivity();
     updateSolubilisedSampleSampleActivity.setActionType(ActionType.UPDATE);
-    updateSolubilisedSampleSampleActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleSampleActivity.setTableName("treatedsample");
     updateSolubilisedSampleSampleActivity.setRecordId(312L);
     updateSolubilisedSampleSampleActivity.setColumn("sampleId");
     updateSolubilisedSampleSampleActivity.setOldValue("589");
@@ -138,7 +139,7 @@ public class SolubilisationActivityServiceTest {
     expecteds.add(updateSolubilisedSampleSampleActivity);
     UpdateActivity updateSolubilisedSampleContainerActivity = new UpdateActivity();
     updateSolubilisedSampleContainerActivity.setActionType(ActionType.UPDATE);
-    updateSolubilisedSampleContainerActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleContainerActivity.setTableName("treatedsample");
     updateSolubilisedSampleContainerActivity.setRecordId(312L);
     updateSolubilisedSampleContainerActivity.setColumn("containerId");
     updateSolubilisedSampleContainerActivity.setOldValue("992");
@@ -146,7 +147,7 @@ public class SolubilisationActivityServiceTest {
     expecteds.add(updateSolubilisedSampleContainerActivity);
     UpdateActivity updateSolubilisedSampleSolventActivity = new UpdateActivity();
     updateSolubilisedSampleSolventActivity.setActionType(ActionType.UPDATE);
-    updateSolubilisedSampleSolventActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleSolventActivity.setTableName("treatedsample");
     updateSolubilisedSampleSolventActivity.setRecordId(312L);
     updateSolubilisedSampleSolventActivity.setColumn("solvent");
     updateSolubilisedSampleSolventActivity.setOldValue("Methanol");
@@ -154,7 +155,7 @@ public class SolubilisationActivityServiceTest {
     expecteds.add(updateSolubilisedSampleSolventActivity);
     UpdateActivity updateSolubilisedSampleSolventVolumeActivity = new UpdateActivity();
     updateSolubilisedSampleSolventVolumeActivity.setActionType(ActionType.UPDATE);
-    updateSolubilisedSampleSolventVolumeActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleSolventVolumeActivity.setTableName("treatedsample");
     updateSolubilisedSampleSolventVolumeActivity.setRecordId(312L);
     updateSolubilisedSampleSolventVolumeActivity.setColumn("solventVolume");
     updateSolubilisedSampleSolventVolumeActivity.setOldValue("20.0");
@@ -162,7 +163,7 @@ public class SolubilisationActivityServiceTest {
     expecteds.add(updateSolubilisedSampleSolventVolumeActivity);
     UpdateActivity updateSolubilisedSampleCommentActivity = new UpdateActivity();
     updateSolubilisedSampleCommentActivity.setActionType(ActionType.UPDATE);
-    updateSolubilisedSampleCommentActivity.setTableName("treatmentsample");
+    updateSolubilisedSampleCommentActivity.setTableName("treatedsample");
     updateSolubilisedSampleCommentActivity.setRecordId(312L);
     updateSolubilisedSampleCommentActivity.setColumn("comment");
     updateSolubilisedSampleCommentActivity.setOldValue(null);

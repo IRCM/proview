@@ -32,7 +32,7 @@ import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.transfer.Transfer;
-import ca.qc.ircm.proview.transfer.TransferedSample;
+import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
@@ -60,7 +60,7 @@ public class TransferViewTest extends TransferViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
-  private Optional<TransferedSample> find(Collection<TransferedSample> tss, long sampleId) {
+  private Optional<TreatedSample> find(Collection<TreatedSample> tss, long sampleId) {
     return tss.stream().filter(ts -> ts.getSample().getId() == sampleId).findFirst();
   }
 
@@ -192,10 +192,10 @@ public class TransferViewTest extends TransferViewPageObject {
         getDriver().getCurrentUrl().substring(viewUrl(TransferView.VIEW_NAME).length() + 1));
     Transfer savedTransfer =
         jpaQueryFactory.select(transfer).from(transfer).where(transfer.id.eq(id)).fetchOne();
-    assertEquals(3, savedTransfer.getTreatmentSamples().size());
-    Optional<TransferedSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
+    assertEquals(3, savedTransfer.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedTransfer.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    TransferedSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals(SampleContainerType.WELL, ts.getDestinationContainer().getType());
@@ -204,7 +204,7 @@ public class TransferViewTest extends TransferViewPageObject {
     assertEquals(0, well.getRow());
     assertEquals(0, well.getColumn());
     assertEquals((Long) 559L, well.getSample().getId());
-    opTs = find(savedTransfer.getTreatmentSamples(), 560);
+    opTs = find(savedTransfer.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
@@ -215,7 +215,7 @@ public class TransferViewTest extends TransferViewPageObject {
     assertEquals(1, well.getRow());
     assertEquals(0, well.getColumn());
     assertEquals((Long) 560L, well.getSample().getId());
-    opTs = find(savedTransfer.getTreatmentSamples(), 444);
+    opTs = find(savedTransfer.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -243,17 +243,17 @@ public class TransferViewTest extends TransferViewPageObject {
         getDriver().getCurrentUrl().substring(viewUrl(TransferView.VIEW_NAME).length() + 1));
     Transfer savedTransfer =
         jpaQueryFactory.select(transfer).from(transfer).where(transfer.id.eq(id)).fetchOne();
-    assertEquals(3, savedTransfer.getTreatmentSamples().size());
-    Optional<TransferedSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
+    assertEquals(3, savedTransfer.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedTransfer.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    TransferedSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 224L, ts.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, ts.getDestinationContainer().getType());
     Tube tube = (Tube) ts.getDestinationContainer();
     assertEquals("test_tube_1", tube.getName());
     assertEquals((Long) 559L, tube.getSample().getId());
-    opTs = find(savedTransfer.getTreatmentSamples(), 560);
+    opTs = find(savedTransfer.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
@@ -262,7 +262,7 @@ public class TransferViewTest extends TransferViewPageObject {
     tube = (Tube) ts.getDestinationContainer();
     assertEquals("test_tube_2", tube.getName());
     assertEquals((Long) 560L, tube.getSample().getId());
-    opTs = find(savedTransfer.getTreatmentSamples(), 444);
+    opTs = find(savedTransfer.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -290,10 +290,10 @@ public class TransferViewTest extends TransferViewPageObject {
         getDriver().getCurrentUrl().substring(viewUrl(TransferView.VIEW_NAME).length() + 1));
     Transfer savedTransfer =
         jpaQueryFactory.select(transfer).from(transfer).where(transfer.id.eq(id)).fetchOne();
-    assertEquals(3, savedTransfer.getTreatmentSamples().size());
-    Optional<TransferedSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
+    assertEquals(3, savedTransfer.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedTransfer.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    TransferedSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals(SampleContainerType.WELL, ts.getDestinationContainer().getType());
@@ -301,7 +301,7 @@ public class TransferViewTest extends TransferViewPageObject {
     assertEquals(plateName, well.getPlate().getName());
     assertEquals(0, well.getRow());
     assertEquals(0, well.getColumn());
-    opTs = find(savedTransfer.getTreatmentSamples(), 560);
+    opTs = find(savedTransfer.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
@@ -311,7 +311,7 @@ public class TransferViewTest extends TransferViewPageObject {
     assertEquals(plateName, well.getPlate().getName());
     assertEquals(1, well.getRow());
     assertEquals(0, well.getColumn());
-    opTs = find(savedTransfer.getTreatmentSamples(), 444);
+    opTs = find(savedTransfer.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());
@@ -338,17 +338,17 @@ public class TransferViewTest extends TransferViewPageObject {
         getDriver().getCurrentUrl().substring(viewUrl(TransferView.VIEW_NAME).length() + 1));
     Transfer savedTransfer =
         jpaQueryFactory.select(transfer).from(transfer).where(transfer.id.eq(id)).fetchOne();
-    assertEquals(3, savedTransfer.getTreatmentSamples().size());
-    Optional<TransferedSample> opTs = find(savedTransfer.getTreatmentSamples(), 559);
+    assertEquals(3, savedTransfer.getTreatedSamples().size());
+    Optional<TreatedSample> opTs = find(savedTransfer.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
-    TransferedSample ts = opTs.get();
+    TreatedSample ts = opTs.get();
     assertEquals((Long) 559L, ts.getSample().getId());
     assertEquals((Long) 11L, ts.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, ts.getDestinationContainer().getType());
     Tube tube = (Tube) ts.getDestinationContainer();
     assertEquals("test_tube_1", tube.getName());
     assertEquals((Long) 559L, tube.getSample().getId());
-    opTs = find(savedTransfer.getTreatmentSamples(), 560);
+    opTs = find(savedTransfer.getTreatedSamples(), 560);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 560L, ts.getSample().getId());
@@ -357,7 +357,7 @@ public class TransferViewTest extends TransferViewPageObject {
     tube = (Tube) ts.getDestinationContainer();
     assertEquals("test_tube_2", tube.getName());
     assertEquals((Long) 560L, tube.getSample().getId());
-    opTs = find(savedTransfer.getTreatmentSamples(), 444);
+    opTs = find(savedTransfer.getTreatedSamples(), 444);
     assertTrue(opTs.isPresent());
     ts = opTs.get();
     assertEquals((Long) 444L, ts.getSample().getId());

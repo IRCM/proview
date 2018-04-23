@@ -28,7 +28,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("DIGESTION")
-public class Digestion extends Treatment<DigestedSample> {
+public class Digestion extends Treatment {
   public Digestion() {
   }
 

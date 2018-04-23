@@ -91,6 +91,7 @@ public class PlatesViewPresenter {
   private PlatesViewDesign design;
   private ListDataProvider<Plate> platesDataProvider = DataProvider.ofItems();
   private PlateFilter filter;
+  private Plate updating;
   @Inject
   private PlateService plateService;
   @Inject
@@ -197,11 +198,11 @@ public class PlatesViewPresenter {
       design.plates.getDataProvider().refreshAll();
     }, new Boolean[] { true, false }, value -> resources.message(property(SUBMISSION, value))));
     design.plates.getEditor().setEnabled(true);
-    design.plates.getEditor().addOpenListener(e -> {
-      design.plates.getEditor().getBinder().setBean(e.getBean());
+    design.plates.getEditor().addOpenListener(event -> {
+      updating = event.getBean();
     });
-    design.plates.getEditor().addSaveListener(e -> {
-      plateService.update(e.getBean());
+    design.plates.getEditor().addSaveListener(event -> {
+      plateService.update(event.getBean());
     });
     Binder<Plate> binder = new BeanValidationBinder<>(Plate.class);
     design.plates.getEditor().setBinder(binder);
@@ -210,14 +211,12 @@ public class PlatesViewPresenter {
     design.plates.getColumn(NAME)
         .setEditorBinding(binder.forField(nameEditor).asRequired(generalResources.message(REQUIRED))
             .withNullRepresentation("")
-            .withValidator((value, context) -> validateName(value, context, binder.getBean()))
-            .bind(NAME));
+            .withValidator((value, context) -> validateName(value, context)).bind(NAME));
     design.plates.sort(INSERT_TIME, SortDirection.DESCENDING);
   }
 
-  private ValidationResult validateName(String value, ValueContext context, Plate plate) {
-    if (value != null && !plateService.nameAvailable(value)
-        && !value.equals(plateService.get(plate.getId()).getName())) {
+  private ValidationResult validateName(String value, ValueContext context) {
+    if (value != null && !plateService.nameAvailable(value) && !value.equals(updating.getName())) {
       MessageResource generalResources = view.getGeneralResources();
       return ValidationResult.error(generalResources.message(ALREADY_EXISTS));
     } else {
