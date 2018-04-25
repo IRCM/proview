@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.msanalysis;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -136,7 +137,8 @@ public class MsAnalysisService extends BaseTreatmentService {
     chechSameUserForAllSamples(msAnalysis);
 
     // Add MS analysis to database.
-    msAnalysis.setInsertTime(Instant.now());
+    Instant insertTime = Instant.now();
+    msAnalysis.setInsertTime(insertTime);
     setPositions(msAnalysis.getAcquisitions());
     entityManager.persist(msAnalysis);
 
@@ -145,6 +147,12 @@ public class MsAnalysisService extends BaseTreatmentService {
       if (acquisition.getSample() instanceof SubmissionSample) {
         SubmissionSample submissionSample = (SubmissionSample) acquisition.getSample();
         submissionSample.setStatus(SampleStatus.ANALYSED);
+        Submission submission = submissionSample.getSubmission();
+        if (submission.isAnalysisDateExpected() || submission.getAnalysisDate() == null) {
+          submission.setAnalysisDate(toLocalDate(insertTime));
+          submission.setAnalysisDateExpected(false);
+          entityManager.merge(submission);
+        }
       }
     }
 

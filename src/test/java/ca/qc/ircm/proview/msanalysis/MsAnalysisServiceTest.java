@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.LDTD;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -55,6 +56,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -261,6 +263,95 @@ public class MsAnalysisServiceTest {
     } catch (IllegalArgumentException e) {
       fail("IllegalArgumentException not expected");
     }
+  }
+
+  @Test
+  public void insert_SubmissionAnalysisDate_NotUpdated() {
+    Tube tube = entityManager.find(Tube.class, 1L);
+    entityManager.detach(tube);
+    SubmissionSample sample = (SubmissionSample) tube.getSample();
+    entityManager.detach(sample);
+    MsAnalysis msAnalysis = new MsAnalysis();
+    msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
+    msAnalysis.setSource(LDTD);
+    Acquisition acquisition = new Acquisition();
+    acquisition.setContainer(tube);
+    acquisition.setSample(tube.getSample());
+    acquisition.setNumberOfAcquisition(1);
+    acquisition.setSampleListName("unit_test_sample_list");
+    acquisition.setAcquisitionFile("XL_20100614_COU_09");
+    acquisition.setComment("unit_test_comment");
+    List<Acquisition> acquisitions = new ArrayList<>();
+    acquisitions.add(acquisition);
+    msAnalysis.setAcquisitions(acquisitions);
+    when(msAnalysisActivityService.insert(any())).thenReturn(activity);
+
+    msAnalysisService.insert(msAnalysis);
+
+    entityManager.flush();
+    Submission submission = entityManager.find(Submission.class, 1L);
+    assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
+    assertFalse(submission.isAnalysisDateExpected());
+  }
+
+  @Test
+  public void insert_SubmissionAnalysisDate_UpdatedExpected() {
+    Well well = entityManager.find(Well.class, 1760L);
+    entityManager.detach(well);
+    SubmissionSample sample = (SubmissionSample) well.getSample();
+    entityManager.detach(sample);
+    MsAnalysis msAnalysis = new MsAnalysis();
+    msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
+    msAnalysis.setSource(LDTD);
+    Acquisition acquisition = new Acquisition();
+    acquisition.setContainer(well);
+    acquisition.setSample(well.getSample());
+    acquisition.setNumberOfAcquisition(1);
+    acquisition.setSampleListName("unit_test_sample_list");
+    acquisition.setAcquisitionFile("XL_20100614_COU_09");
+    acquisition.setComment("unit_test_comment");
+    List<Acquisition> acquisitions = new ArrayList<>();
+    acquisitions.add(acquisition);
+    msAnalysis.setAcquisitions(acquisitions);
+    when(msAnalysisActivityService.insert(any())).thenReturn(activity);
+
+    msAnalysisService.insert(msAnalysis);
+
+    entityManager.flush();
+    Submission submission = entityManager.find(Submission.class, 163L);
+    assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getAnalysisDate()));
+    assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getAnalysisDate()));
+    assertFalse(submission.isAnalysisDateExpected());
+  }
+
+  @Test
+  public void insert_SubmissionAnalysisDate_UpdatedNull() {
+    Tube tube = entityManager.find(Tube.class, 3L);
+    entityManager.detach(tube);
+    SubmissionSample sample = (SubmissionSample) tube.getSample();
+    entityManager.detach(sample);
+    MsAnalysis msAnalysis = new MsAnalysis();
+    msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
+    msAnalysis.setSource(LDTD);
+    Acquisition acquisition = new Acquisition();
+    acquisition.setContainer(tube);
+    acquisition.setSample(tube.getSample());
+    acquisition.setNumberOfAcquisition(1);
+    acquisition.setSampleListName("unit_test_sample_list");
+    acquisition.setAcquisitionFile("XL_20100614_COU_09");
+    acquisition.setComment("unit_test_comment");
+    List<Acquisition> acquisitions = new ArrayList<>();
+    acquisitions.add(acquisition);
+    msAnalysis.setAcquisitions(acquisitions);
+    when(msAnalysisActivityService.insert(any())).thenReturn(activity);
+
+    msAnalysisService.insert(msAnalysis);
+
+    entityManager.flush();
+    Submission submission = entityManager.find(Submission.class, 33L);
+    assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getAnalysisDate()));
+    assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getAnalysisDate()));
+    assertFalse(submission.isAnalysisDateExpected());
   }
 
   @Test
