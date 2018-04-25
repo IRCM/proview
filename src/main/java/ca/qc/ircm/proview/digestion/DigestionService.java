@@ -17,12 +17,15 @@
 
 package ca.qc.ircm.proview.digestion;
 
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
+
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
@@ -106,9 +109,10 @@ public class DigestionService extends BaseTreatmentService {
     chechSameUserForAllSamples(digestion);
     User user = authorizationService.getCurrentUser();
 
+    Instant insertTime = Instant.now();
     digestion.getTreatedSamples().forEach(ts -> ts.setTreatment(digestion));
     digestion.setUser(user);
-    digestion.setInsertTime(Instant.now());
+    digestion.setInsertTime(insertTime);
 
     if (digestion.getProtocol().getId() == null) {
       protocolService.insert(digestion.getProtocol());
@@ -119,6 +123,12 @@ public class DigestionService extends BaseTreatmentService {
         .map(sample -> (SubmissionSample) sample).forEach(sample -> {
           sample.setStatus(SampleStatus.DIGESTED);
           entityManager.merge(sample);
+          Submission submission = sample.getSubmission();
+          if (submission.isDigestionDateExpected() || submission.getDigestionDate() == null) {
+            submission.setDigestionDate(toLocalDate(insertTime));
+            submission.setDigestionDateExpected(false);
+            entityManager.merge(submission);
+          }
         });
 
     // Log insertion of digestion.

@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.digestion;
 
+import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,14 +28,19 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
+import ca.qc.ircm.proview.sample.QSubmissionSample;
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.QSubmission;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.TreatedSample;
+import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import org.junit.Before;
@@ -43,6 +49,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -55,6 +63,8 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DigestionActivityServiceTest {
+  private static final QSubmission qsubmission = QSubmission.submission;
+  private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
   private DigestionActivityService digestionActivityService;
   @PersistenceContext
   private EntityManager entityManager;
@@ -77,6 +87,11 @@ public class DigestionActivityServiceTest {
     final Protocol protocol = new Protocol(1L);
     SubmissionSample sample = new SubmissionSample(1L);
     sample.setStatus(SampleStatus.DIGESTED);
+    Submission submission = new Submission(1L);
+    LocalDate date = LocalDate.now();
+    submission.setDigestionDate(date);
+    submission.setDigestionDateExpected(false);
+    sample.setSubmission(submission);
     Tube sourceTube = new Tube(352L);
     TreatedSample treatedSample = new TreatedSample();
     treatedSample.setSample(sample);
@@ -91,19 +106,36 @@ public class DigestionActivityServiceTest {
     Activity activity = digestionActivityService.insert(digestion);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("treatment", activity.getTableName());
+    assertEquals(Treatment.TABLE_NAME, activity.getTableName());
     assertEquals(digestion.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity sampleStatusActivity = new UpdateActivity();
     sampleStatusActivity.setActionType(ActionType.UPDATE);
-    sampleStatusActivity.setTableName("sample");
+    sampleStatusActivity.setTableName(Sample.TABLE_NAME);
     sampleStatusActivity.setRecordId(sample.getId());
-    sampleStatusActivity.setColumn("status");
+    sampleStatusActivity.setColumn(qname(qsubmissionSample.status));
     sampleStatusActivity.setOldValue(SampleStatus.ANALYSED.name());
     sampleStatusActivity.setNewValue(SampleStatus.DIGESTED.name());
     expectedUpdateActivities.add(sampleStatusActivity);
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
+    UpdateActivity submissionDigestionDateActivity = new UpdateActivity();
+    submissionDigestionDateActivity.setActionType(ActionType.UPDATE);
+    submissionDigestionDateActivity.setTableName(Submission.TABLE_NAME);
+    submissionDigestionDateActivity.setRecordId(submission.getId());
+    submissionDigestionDateActivity.setColumn(qname(qsubmission.digestionDate));
+    submissionDigestionDateActivity.setOldValue("2010-12-11");
+    submissionDigestionDateActivity.setNewValue(dateFormatter.format(date));
+    expectedUpdateActivities.add(submissionDigestionDateActivity);
+    UpdateActivity submissionDigestionDateExpectedActivity = new UpdateActivity();
+    submissionDigestionDateExpectedActivity.setActionType(ActionType.UPDATE);
+    submissionDigestionDateExpectedActivity.setTableName(Submission.TABLE_NAME);
+    submissionDigestionDateExpectedActivity.setRecordId(submission.getId());
+    submissionDigestionDateExpectedActivity.setColumn(qname(qsubmission.digestionDateExpected));
+    submissionDigestionDateExpectedActivity.setOldValue("1");
+    submissionDigestionDateExpectedActivity.setNewValue("0");
+    expectedUpdateActivities.add(submissionDigestionDateExpectedActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

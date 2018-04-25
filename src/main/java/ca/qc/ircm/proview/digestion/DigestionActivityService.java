@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.digestion;
 
+import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
+
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.BanSampleContainerUpdateActivityBuilder;
@@ -27,7 +29,10 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.QSubmission;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.TreatedSample;
+import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -35,9 +40,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
@@ -51,6 +58,7 @@ import javax.persistence.PersistenceContext;
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DigestionActivityService {
+  private static final QSubmission qsubmission = QSubmission.submission;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -77,14 +85,26 @@ public class DigestionActivityService {
     final User user = authorizationService.getCurrentUser();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    Set<Long> submissionIds = new HashSet<>();
     for (TreatedSample ts : digestion.getTreatedSamples()) {
       Sample newSample = ts.getSample();
-      Sample oldSample = entityManager.find(Sample.class, ts.getSample().getId());
       if (newSample instanceof SubmissionSample) {
+        Sample oldSample = entityManager.find(Sample.class, ts.getSample().getId());
         SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
         SubmissionSample oldSubmissionSample = (SubmissionSample) oldSample;
         updateBuilders.add(new SampleStatusUpdateActivityBuilder().oldSample(oldSubmissionSample)
             .newSample(newSubmissionSample));
+        Submission newSubmission = newSubmissionSample.getSubmission();
+        Submission oldSubmission = oldSubmissionSample.getSubmission();
+        if (submissionIds.add(newSubmission.getId())) {
+          updateBuilders.add(submissionUpdate(newSubmission)
+              .column(qname(qsubmission.digestionDate)).oldValue(oldSubmission.getDigestionDate())
+              .newValue(newSubmission.getDigestionDate()));
+          updateBuilders
+              .add(submissionUpdate(newSubmission).column(qname(qsubmission.digestionDateExpected))
+                  .oldValue(oldSubmission.isDigestionDateExpected())
+                  .newValue(newSubmission.isDigestionDateExpected()));
+        }
       }
     }
 
@@ -100,10 +120,15 @@ public class DigestionActivityService {
     activity.setActionType(ActionType.INSERT);
     activity.setRecordId(digestion.getId());
     activity.setUser(user);
-    activity.setTableName("treatment");
+    activity.setTableName(Treatment.TABLE_NAME);
     activity.setExplanation(null);
     activity.setUpdates(updates);
     return activity;
+  }
+
+  private UpdateActivityBuilder submissionUpdate(Submission submission) {
+    return new UpdateActivityBuilder().tableName(Submission.TABLE_NAME)
+        .actionType(ActionType.UPDATE).recordId(submission.getId());
   }
 
   /**
@@ -128,8 +153,8 @@ public class DigestionActivityService {
     digestion.getTreatedSamples().stream()
         .filter(ts -> !oldTreatedSampleIds.containsKey(ts.getId()))
         .forEach(ts -> updateBuilders.add(treatedSampleAction(ts, ActionType.INSERT)));
-    digestion.getTreatedSamples().stream()
-        .filter(ts -> oldTreatedSampleIds.containsKey(ts.getId())).forEach(ts -> {
+    digestion.getTreatedSamples().stream().filter(ts -> oldTreatedSampleIds.containsKey(ts.getId()))
+        .forEach(ts -> {
           updateBuilders.add(treatedSampleAction(ts, ActionType.UPDATE).column("sampleId")
               .oldValue(oldTreatedSampleIds.get(ts.getId()).getSample().getId())
               .newValue(ts.getSample().getId()));

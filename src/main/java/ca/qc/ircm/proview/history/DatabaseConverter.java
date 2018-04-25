@@ -21,6 +21,7 @@ import ca.qc.ircm.proview.history.DatabaseLogUtil.DatabaseBoolean;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -55,6 +56,9 @@ public class DatabaseConverter {
       DateTimeFormatter instantFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
       converterValue =
           instantFormatter.format(LocalDateTime.ofInstant((Instant) value, ZoneId.systemDefault()));
+    } else if (value instanceof LocalDate) {
+      DateTimeFormatter localDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+      converterValue = localDateFormatter.format((LocalDate) value);
     } else if (value instanceof Collection) {
       Collection<?> collection = ((Collection<?>) value);
       if (collection.isEmpty()) {
