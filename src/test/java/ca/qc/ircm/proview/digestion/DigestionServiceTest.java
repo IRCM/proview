@@ -402,7 +402,7 @@ public class DigestionServiceTest {
     entityManager.flush();
     Submission submission = entityManager.find(Submission.class, 147L);
     assertEquals(LocalDate.of(2014, 10, 8), submission.getDigestionDate());
-    assertFalse(submission.isDigestionDateExpected());
+    assertFalse(submission.isDigestionDatePredicted());
   }
 
   @Test
@@ -428,7 +428,7 @@ public class DigestionServiceTest {
     Submission submission = entityManager.find(Submission.class, 1L);
     assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getDigestionDate()));
     assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getDigestionDate()));
-    assertFalse(submission.isDigestionDateExpected());
+    assertFalse(submission.isDigestionDatePredicted());
   }
 
   @Test
@@ -454,7 +454,7 @@ public class DigestionServiceTest {
     Submission submission = entityManager.find(Submission.class, 32L);
     assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getDigestionDate()));
     assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getDigestionDate()));
-    assertFalse(submission.isDigestionDateExpected());
+    assertFalse(submission.isDigestionDatePredicted());
   }
 
   @Test

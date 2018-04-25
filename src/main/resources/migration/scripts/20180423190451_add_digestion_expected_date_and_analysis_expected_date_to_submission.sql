@@ -19,9 +19,9 @@
 
 ALTER TABLE submission
 ADD COLUMN digestionDate date DEFAULT NULL AFTER submissionDate,
-ADD COLUMN digestionDateExpected tinyint(1) NOT NULL DEFAULT '0' AFTER digestionDate,
-ADD COLUMN analysisDate date DEFAULT NULL AFTER digestionDateExpected,
-ADD COLUMN analysisDateExpected tinyint(1) NOT NULL DEFAULT '0' AFTER analysisDate;
+ADD COLUMN digestionDatePredicted tinyint(1) NOT NULL DEFAULT '0' AFTER digestionDate,
+ADD COLUMN analysisDate date DEFAULT NULL AFTER digestionDatePredicted,
+ADD COLUMN analysisDatePredicted tinyint(1) NOT NULL DEFAULT '0' AFTER analysisDate;
 UPDATE submission
 JOIN sample ON sample.submissionid = submission.id
 JOIN treatedsample ON treatedsample.sampleId = sample.id
@@ -40,6 +40,6 @@ SET submission.analysisDate = msanalysis.insertTime;
 
 ALTER TABLE submission
 DROP COLUMN digestionDate,
-DROP COLUMN digestionDateExpected,
+DROP COLUMN digestionDatePredicted,
 DROP COLUMN analysisDate,
-DROP COLUMN analysisDateExpected;
+DROP COLUMN analysisDatePredicted;

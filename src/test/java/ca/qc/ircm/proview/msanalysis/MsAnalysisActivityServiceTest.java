@@ -98,7 +98,7 @@ public class MsAnalysisActivityServiceTest {
     LocalDate date = LocalDate.now();
     Submission submission = new Submission(33L);
     submission.setAnalysisDate(date);
-    submission.setAnalysisDateExpected(true);
+    submission.setAnalysisDatePredicted(true);
     sample.setSubmission(submission);
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
@@ -129,14 +129,14 @@ public class MsAnalysisActivityServiceTest {
     submissionAnalysisDateActivity.setOldValue(null);
     submissionAnalysisDateActivity.setNewValue(dateFormatter.format(date));
     expectedUpdateActivities.add(submissionAnalysisDateActivity);
-    UpdateActivity submissionAnalysisDateExpectedActivity = new UpdateActivity();
-    submissionAnalysisDateExpectedActivity.setActionType(ActionType.UPDATE);
-    submissionAnalysisDateExpectedActivity.setTableName(Submission.TABLE_NAME);
-    submissionAnalysisDateExpectedActivity.setRecordId(submission.getId());
-    submissionAnalysisDateExpectedActivity.setColumn(qname(qsubmission.analysisDateExpected));
-    submissionAnalysisDateExpectedActivity.setOldValue("0");
-    submissionAnalysisDateExpectedActivity.setNewValue("1");
-    expectedUpdateActivities.add(submissionAnalysisDateExpectedActivity);
+    UpdateActivity submissionAnalysisDatePredictedActivity = new UpdateActivity();
+    submissionAnalysisDatePredictedActivity.setActionType(ActionType.UPDATE);
+    submissionAnalysisDatePredictedActivity.setTableName(Submission.TABLE_NAME);
+    submissionAnalysisDatePredictedActivity.setRecordId(submission.getId());
+    submissionAnalysisDatePredictedActivity.setColumn(qname(qsubmission.analysisDatePredicted));
+    submissionAnalysisDatePredictedActivity.setOldValue("0");
+    submissionAnalysisDatePredictedActivity.setNewValue("1");
+    expectedUpdateActivities.add(submissionAnalysisDatePredictedActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

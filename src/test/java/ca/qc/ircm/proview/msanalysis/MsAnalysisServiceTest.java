@@ -291,7 +291,7 @@ public class MsAnalysisServiceTest {
     entityManager.flush();
     Submission submission = entityManager.find(Submission.class, 1L);
     assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
-    assertFalse(submission.isAnalysisDateExpected());
+    assertFalse(submission.isAnalysisDatePredicted());
   }
 
   @Test
@@ -321,7 +321,7 @@ public class MsAnalysisServiceTest {
     Submission submission = entityManager.find(Submission.class, 163L);
     assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getAnalysisDate()));
     assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getAnalysisDate()));
-    assertFalse(submission.isAnalysisDateExpected());
+    assertFalse(submission.isAnalysisDatePredicted());
   }
 
   @Test
@@ -351,7 +351,7 @@ public class MsAnalysisServiceTest {
     Submission submission = entityManager.find(Submission.class, 33L);
     assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getAnalysisDate()));
     assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getAnalysisDate()));
-    assertFalse(submission.isAnalysisDateExpected());
+    assertFalse(submission.isAnalysisDatePredicted());
   }
 
   @Test

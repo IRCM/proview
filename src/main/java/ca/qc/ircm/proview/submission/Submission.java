@@ -334,20 +334,20 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Column(name = "digestionDate")
   private LocalDate digestionDate;
   /**
-   * True if digestion date is an expected date, false if digestion date is an actual date.
+   * True if digestion date is a predicted date, false if digestion date is an actual date.
    */
-  @Column(name = "digestionDateExpected")
-  private boolean digestionDateExpected;
+  @Column(name = "digestionDatePredicted")
+  private boolean digestionDatePredicted;
   /**
    * Analysis date.
    */
   @Column(name = "analysisDate")
   private LocalDate analysisDate;
   /**
-   * True if analysis date is an expected date, false if analysis date is an actual date.
+   * True if analysis date is an predicted date, false if analysis date is an actual date.
    */
-  @Column(name = "analysisDateExpected")
-  private boolean analysisDateExpected;
+  @Column(name = "analysisDatePredicted")
+  private boolean analysisDatePredicted;
   /**
    * True if submission is hidden.
    */
@@ -818,12 +818,12 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.digestionDate = digestionDate;
   }
 
-  public boolean isDigestionDateExpected() {
-    return digestionDateExpected;
+  public boolean isDigestionDatePredicted() {
+    return digestionDatePredicted;
   }
 
-  public void setDigestionDateExpected(boolean digestionDateExpected) {
-    this.digestionDateExpected = digestionDateExpected;
+  public void setDigestionDatePredicted(boolean digestionDatePredicted) {
+    this.digestionDatePredicted = digestionDatePredicted;
   }
 
   public LocalDate getAnalysisDate() {
@@ -834,11 +834,11 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.analysisDate = analysisDate;
   }
 
-  public boolean isAnalysisDateExpected() {
-    return analysisDateExpected;
+  public boolean isAnalysisDatePredicted() {
+    return analysisDatePredicted;
   }
 
-  public void setAnalysisDateExpected(boolean analysisDateExpected) {
-    this.analysisDateExpected = analysisDateExpected;
+  public void setAnalysisDatePredicted(boolean analysisDatePredicted) {
+    this.analysisDatePredicted = analysisDatePredicted;
   }
 }

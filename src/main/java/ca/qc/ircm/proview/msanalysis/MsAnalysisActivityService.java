@@ -98,9 +98,9 @@ public class MsAnalysisActivityService {
           updateBuilders.add(submissionUpdate(newSubmission).column(qname(qsubmission.analysisDate))
               .oldValue(oldSubmission.getAnalysisDate()).newValue(newSubmission.getAnalysisDate()));
           updateBuilders
-              .add(submissionUpdate(newSubmission).column(qname(qsubmission.analysisDateExpected))
-                  .oldValue(oldSubmission.isAnalysisDateExpected())
-                  .newValue(newSubmission.isAnalysisDateExpected()));
+              .add(submissionUpdate(newSubmission).column(qname(qsubmission.analysisDatePredicted))
+                  .oldValue(oldSubmission.isAnalysisDatePredicted())
+                  .newValue(newSubmission.isAnalysisDatePredicted()));
         }
       }
     }

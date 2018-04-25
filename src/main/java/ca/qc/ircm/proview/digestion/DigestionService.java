@@ -124,9 +124,9 @@ public class DigestionService extends BaseTreatmentService {
           sample.setStatus(SampleStatus.DIGESTED);
           entityManager.merge(sample);
           Submission submission = sample.getSubmission();
-          if (submission.isDigestionDateExpected() || submission.getDigestionDate() == null) {
+          if (submission.isDigestionDatePredicted() || submission.getDigestionDate() == null) {
             submission.setDigestionDate(toLocalDate(insertTime));
-            submission.setDigestionDateExpected(false);
+            submission.setDigestionDatePredicted(false);
             entityManager.merge(submission);
           }
         });

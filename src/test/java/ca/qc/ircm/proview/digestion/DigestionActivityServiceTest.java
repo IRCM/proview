@@ -90,7 +90,7 @@ public class DigestionActivityServiceTest {
     Submission submission = new Submission(1L);
     LocalDate date = LocalDate.now();
     submission.setDigestionDate(date);
-    submission.setDigestionDateExpected(false);
+    submission.setDigestionDatePredicted(false);
     sample.setSubmission(submission);
     Tube sourceTube = new Tube(352L);
     TreatedSample treatedSample = new TreatedSample();
@@ -128,14 +128,14 @@ public class DigestionActivityServiceTest {
     submissionDigestionDateActivity.setOldValue("2010-12-11");
     submissionDigestionDateActivity.setNewValue(dateFormatter.format(date));
     expectedUpdateActivities.add(submissionDigestionDateActivity);
-    UpdateActivity submissionDigestionDateExpectedActivity = new UpdateActivity();
-    submissionDigestionDateExpectedActivity.setActionType(ActionType.UPDATE);
-    submissionDigestionDateExpectedActivity.setTableName(Submission.TABLE_NAME);
-    submissionDigestionDateExpectedActivity.setRecordId(submission.getId());
-    submissionDigestionDateExpectedActivity.setColumn(qname(qsubmission.digestionDateExpected));
-    submissionDigestionDateExpectedActivity.setOldValue("1");
-    submissionDigestionDateExpectedActivity.setNewValue("0");
-    expectedUpdateActivities.add(submissionDigestionDateExpectedActivity);
+    UpdateActivity submissionDigestionDatePredictedActivity = new UpdateActivity();
+    submissionDigestionDatePredictedActivity.setActionType(ActionType.UPDATE);
+    submissionDigestionDatePredictedActivity.setTableName(Submission.TABLE_NAME);
+    submissionDigestionDatePredictedActivity.setRecordId(submission.getId());
+    submissionDigestionDatePredictedActivity.setColumn(qname(qsubmission.digestionDatePredicted));
+    submissionDigestionDatePredictedActivity.setOldValue("1");
+    submissionDigestionDatePredictedActivity.setNewValue("0");
+    expectedUpdateActivities.add(submissionDigestionDatePredictedActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

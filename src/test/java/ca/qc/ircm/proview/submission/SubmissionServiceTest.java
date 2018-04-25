@@ -194,9 +194,9 @@ public class SubmissionServiceTest {
     assertEquals(toInstant(LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0)),
         submission.getSubmissionDate());
     assertEquals(LocalDate.of(2010, 12, 11), submission.getDigestionDate());
-    assertTrue(submission.isDigestionDateExpected());
+    assertTrue(submission.isDigestionDatePredicted());
     assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
-    assertFalse(submission.isAnalysisDateExpected());
+    assertFalse(submission.isAnalysisDatePredicted());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
@@ -282,9 +282,9 @@ public class SubmissionServiceTest {
     assertEquals(toInstant(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0)),
         submission.getSubmissionDate());
     assertNull(submission.getAnalysisDate());
-    assertFalse(submission.isDigestionDateExpected());
+    assertFalse(submission.isDigestionDatePredicted());
     assertNull(submission.getAnalysisDate());
-    assertFalse(submission.isAnalysisDateExpected());
+    assertFalse(submission.isAnalysisDatePredicted());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
