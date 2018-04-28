@@ -50,9 +50,9 @@ import com.vaadin.testbench.elements.LabelElement;
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
   private static final int EXPERIMENT_COLUMN = 1;
   private static final int USER_COLUMN = 2;
-  private static final int LINKED_TO_RESULTS_COLUMN = 9;
-  private static final int TREATMENTS_COLUMN = 10;
-  private static final int HISTORY_COLUMN = 11;
+  private static final int LINKED_TO_RESULTS_COLUMN = 10;
+  private static final int TREATMENTS_COLUMN = 11;
+  private static final int HISTORY_COLUMN = 12;
 
   protected void open() {
     openView(SubmissionsView.VIEW_NAME);
