@@ -14,7 +14,7 @@
 --    limitations under the License.
 --
 
--- // add digestion expected date and analysis expected date to submission
+-- // add digestion predicted date and analysis predicted date to submission
 -- Migration SQL that makes the change goes here.
 
 ALTER TABLE submission
