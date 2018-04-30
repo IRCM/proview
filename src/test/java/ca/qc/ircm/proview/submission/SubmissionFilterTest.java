@@ -307,6 +307,94 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addConditions_AnalysisDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.open(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start.plusDays(1)));
+    verify(query).where(submission.analysisDate.before(end));
+  }
+
+  @Test
+  public void addConditions_AnalysisDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.closed(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start));
+    verify(query).where(submission.analysisDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_AnalysisDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.openClosed(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start.plusDays(1)));
+    verify(query).where(submission.analysisDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_AnalysisDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.closedOpen(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start));
+    verify(query).where(submission.analysisDate.before(end));
+  }
+
+  @Test
+  public void addConditions_AnalysisDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.analysisDateRange = Range.atLeast(start);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start));
+  }
+
+  @Test
+  public void addConditions_AnalysisDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.analysisDateRange = Range.greaterThan(start);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_AnalysisDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.atMost(end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.analysisDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_AnalysisDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.lessThan(end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.analysisDate.before(end));
+  }
+
+  @Test
   public void addConditions_Results_True() throws Exception {
     filter.results = true;
 
@@ -641,6 +729,94 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addCountConditions_AnalysisDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.open(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start.plusDays(1)));
+    verify(query).where(submission.analysisDate.before(end));
+  }
+
+  @Test
+  public void addCountConditions_AnalysisDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.closed(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start));
+    verify(query).where(submission.analysisDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_AnalysisDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.openClosed(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start.plusDays(1)));
+    verify(query).where(submission.analysisDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_AnalysisDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.closedOpen(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start));
+    verify(query).where(submission.analysisDate.before(end));
+  }
+
+  @Test
+  public void addCountConditions_AnalysisDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.analysisDateRange = Range.atLeast(start);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start));
+  }
+
+  @Test
+  public void addCountConditions_AnalysisDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.analysisDateRange = Range.greaterThan(start);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.analysisDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_AnalysisDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.atMost(end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.analysisDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_AnalysisDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.lessThan(end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.analysisDate.before(end));
+  }
+
+  @Test
   public void addCountConditions_Results_True() throws Exception {
     filter.results = true;
 
@@ -794,6 +970,12 @@ public class SubmissionFilterTest {
   private Submission digestionDate(LocalDate date) {
     Submission submission = mock(Submission.class);
     when(submission.getDigestionDate()).thenReturn(date);
+    return submission;
+  }
+
+  private Submission analysisDate(LocalDate date) {
+    Submission submission = mock(Submission.class);
+    when(submission.getAnalysisDate()).thenReturn(date);
     return submission;
   }
 
@@ -1016,6 +1198,32 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(digestionDate(LocalDate.of(2011, 10, 9))));
     assertTrue(filter.test(digestionDate(LocalDate.of(2011, 12, 1))));
     assertTrue(filter.test(digestionDate(LocalDate.of(2011, 1, 1))));
+  }
+
+  @Test
+  public void test_AnalysisDateRange() {
+    LocalDate from = LocalDate.of(2011, 1, 2);
+    LocalDate to = LocalDate.of(2011, 10, 9);
+    filter.analysisDateRange = Range.closed(from, to);
+
+    assertFalse(filter.test(analysisDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(analysisDate(LocalDate.of(2011, 1, 2))));
+    assertTrue(filter.test(analysisDate(LocalDate.of(2011, 10, 8))));
+    assertTrue(filter.test(analysisDate(LocalDate.of(2011, 10, 9))));
+    assertFalse(filter.test(analysisDate(LocalDate.of(2011, 12, 1))));
+    assertFalse(filter.test(analysisDate(LocalDate.of(2011, 1, 1))));
+  }
+
+  @Test
+  public void test_AnalysisDateRange_Null() {
+    filter.analysisDateRange = null;
+
+    assertTrue(filter.test(analysisDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(analysisDate(LocalDate.of(2011, 1, 2))));
+    assertTrue(filter.test(analysisDate(LocalDate.of(2011, 10, 8))));
+    assertTrue(filter.test(analysisDate(LocalDate.of(2011, 10, 9))));
+    assertTrue(filter.test(analysisDate(LocalDate.of(2011, 12, 1))));
+    assertTrue(filter.test(analysisDate(LocalDate.of(2011, 1, 1))));
   }
 
   @Test

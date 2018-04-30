@@ -48,6 +48,7 @@ public class SubmissionFilter implements Predicate<Submission> {
   public SampleStatus anySampleStatus;
   public Range<LocalDate> dateRange;
   public Range<LocalDate> digestionDateRange;
+  public Range<LocalDate> analysisDateRange;
   public Boolean results;
   public Boolean hidden;
   public List<OrderSpecifier<?>> sortOrders;
@@ -90,6 +91,9 @@ public class SubmissionFilter implements Predicate<Submission> {
     }
     if (digestionDateRange != null) {
       test &= digestionDateRange.contains(submission.getDigestionDate());
+    }
+    if (analysisDateRange != null) {
+      test &= analysisDateRange.contains(submission.getAnalysisDate());
     }
     if (results != null) {
       Set<SampleStatus> analysedStatuses =
@@ -151,6 +155,22 @@ public class SubmissionFilter implements Predicate<Submission> {
           date = date.plusDays(1);
         }
         query.where(submission.digestionDate.before(date));
+      }
+    }
+    if (analysisDateRange != null) {
+      if (analysisDateRange.hasLowerBound()) {
+        LocalDate date = analysisDateRange.lowerEndpoint();
+        if (analysisDateRange.lowerBoundType() == BoundType.OPEN) {
+          date = date.plusDays(1);
+        }
+        query.where(submission.analysisDate.goe(date));
+      }
+      if (analysisDateRange.hasUpperBound()) {
+        LocalDate date = analysisDateRange.upperEndpoint();
+        if (analysisDateRange.upperBoundType() == BoundType.CLOSED) {
+          date = date.plusDays(1);
+        }
+        query.where(submission.analysisDate.before(date));
       }
     }
     if (results != null) {

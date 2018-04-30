@@ -349,6 +349,10 @@ public class SubmissionsViewPresenter {
         .addColumn(submission -> digestionDateLabel(submission), new ComponentRenderer())
         .setId(DIGESTION_DATE).setCaption(resources.message(DIGESTION_DATE)).setWidth(200);
     columnProperties.put(DIGESTION_DATE, submission.digestionDate);
+    design.submissionsGrid
+        .addColumn(submission -> analysisDateLabel(submission), new ComponentRenderer())
+        .setId(ANALYSIS_DATE).setCaption(resources.message(ANALYSIS_DATE)).setWidth(200);
+    columnProperties.put(ANALYSIS_DATE, submission.analysisDate);
     design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
     columnProperties.put(SAMPLE_COUNT, submission.samples.size());
@@ -405,6 +409,9 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getColumn(DIGESTION_DATE).setHidable(true);
     design.submissionsGrid.getColumn(DIGESTION_DATE)
         .setHidden(userPreferenceService.get(this, DIGESTION_DATE, false));
+    design.submissionsGrid.getColumn(ANALYSIS_DATE).setHidable(true);
+    design.submissionsGrid.getColumn(ANALYSIS_DATE)
+        .setHidden(userPreferenceService.get(this, ANALYSIS_DATE, false));
     design.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_COUNT)
         .setHidden(userPreferenceService.get(this, SAMPLE_COUNT, false));
@@ -472,6 +479,10 @@ public class SubmissionsViewPresenter {
       filter.digestionDateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
+    filterRow.getCell(ANALYSIS_DATE).setComponent(dateFilter(e -> {
+      filter.analysisDateRange = e.getSavedObject();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
       filter.anySampleNameContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
@@ -497,19 +508,24 @@ public class SubmissionsViewPresenter {
       design.submissionsGrid.getEditor().setEnabled(true);
       design.submissionsGrid.getEditor().addSaveListener(e -> {
         Submission su = e.getBean();
-        logger.info("Updated digestion date to {} {}", su.getDigestionDate(),
-            su.isDigestionDatePredicted());
+        logger.info("Updated submission {}", su, su);
         submissionService.update(su, null);
       });
       Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
       design.submissionsGrid.getEditor().setBinder(binder);
-      PredictedDateComponent field = predictedDateComponentProvider.get();
       design.submissionsGrid.getColumn(DIGESTION_DATE)
-          .setEditorBinding(binder.forField(field).bind(
+          .setEditorBinding(binder.forField(predictedDateComponentProvider.get()).bind(
               su -> predictedDate(su.getDigestionDate(), su.isDigestionDatePredicted()),
               (su, value) -> {
                 su.setDigestionDate(value.date);
                 su.setDigestionDatePredicted(value.date != null ? value.expected : false);
+              }));
+      design.submissionsGrid.getColumn(ANALYSIS_DATE)
+          .setEditorBinding(binder.forField(predictedDateComponentProvider.get()).bind(
+              su -> predictedDate(su.getAnalysisDate(), su.isAnalysisDatePredicted()),
+              (su, value) -> {
+                su.setAnalysisDate(value.date);
+                su.setAnalysisDatePredicted(value.date != null ? value.expected : false);
               }));
     }
     design.submissionsGrid
@@ -538,6 +554,13 @@ public class SubmissionsViewPresenter {
     Label label =
         predictedDateLabel(submission.getDigestionDate(), submission.isDigestionDatePredicted());
     label.addStyleName(DIGESTION_DATE);
+    return label;
+  }
+
+  private Label analysisDateLabel(Submission submission) {
+    Label label =
+        predictedDateLabel(submission.getAnalysisDate(), submission.isAnalysisDatePredicted());
+    label.addStyleName(ANALYSIS_DATE);
     return label;
   }
 
