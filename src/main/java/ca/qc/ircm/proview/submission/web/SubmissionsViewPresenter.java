@@ -45,6 +45,8 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.time.PredictedDate;
+import ca.qc.ircm.proview.time.web.PredictedDateComponent;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.HelpWindow;
@@ -53,6 +55,8 @@ import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
+import com.vaadin.data.BeanValidationBinder;
+import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.data.provider.CallbackDataProvider.CountCallback;
@@ -68,6 +72,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.ItemCaptionGenerator;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -117,6 +122,11 @@ public class SubmissionsViewPresenter {
       property(SUBMISSION, submission.laboratory.director.getMetadata().getName());
   public static final String SERVICE =
       property(SUBMISSION, submission.service.getMetadata().getName());
+  public static final String DIGESTION_DATE =
+      property(SUBMISSION, submission.digestionDate.getMetadata().getName());
+  public static final String ANALYSIS_DATE =
+      property(SUBMISSION, submission.analysisDate.getMetadata().getName());
+  public static final String EXPECTED_DATE = "predictedDate";
   public static final String SAMPLE_NAME =
       property(SAMPLE, submissionSample.name.getMetadata().getName());
   public static final String SAMPLE_STATUSES = "statuses";
@@ -172,6 +182,8 @@ public class SubmissionsViewPresenter {
   @Inject
   private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
   @Inject
+  private Provider<PredictedDateComponent> predictedDateComponentProvider;
+  @Inject
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Inject
   private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
@@ -194,6 +206,7 @@ public class SubmissionsViewPresenter {
   protected SubmissionsViewPresenter(SubmissionService submissionService,
       AuthorizationService authorizationService, UserPreferenceService userPreferenceService,
       Provider<LocalDateFilterComponent> localDateFilterComponentProvider,
+      Provider<PredictedDateComponent> predictedDateComponentProvider,
       Provider<SubmissionWindow> submissionWindowProvider,
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
       Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider,
@@ -205,6 +218,7 @@ public class SubmissionsViewPresenter {
     this.authorizationService = authorizationService;
     this.userPreferenceService = userPreferenceService;
     this.localDateFilterComponentProvider = localDateFilterComponentProvider;
+    this.predictedDateComponentProvider = predictedDateComponentProvider;
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
     this.submissionTreatmentsWindowProvider = submissionTreatmentsWindowProvider;
@@ -331,6 +345,14 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.addColumn(submission -> submission.getService().getLabel(locale))
         .setId(SERVICE).setCaption(resources.message(SERVICE));
     columnProperties.put(SERVICE, submission.service);
+    design.submissionsGrid
+        .addColumn(submission -> digestionDateLabel(submission), new ComponentRenderer())
+        .setId(DIGESTION_DATE).setCaption(resources.message(DIGESTION_DATE)).setWidth(200);
+    columnProperties.put(DIGESTION_DATE, submission.digestionDate);
+    design.submissionsGrid
+        .addColumn(submission -> analysisDateLabel(submission), new ComponentRenderer())
+        .setId(ANALYSIS_DATE).setCaption(resources.message(ANALYSIS_DATE)).setWidth(200);
+    columnProperties.put(ANALYSIS_DATE, submission.analysisDate);
     design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
     columnProperties.put(SAMPLE_COUNT, submission.samples.size());
@@ -384,6 +406,12 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getColumn(SERVICE).setHidable(true);
     design.submissionsGrid.getColumn(SERVICE)
         .setHidden(userPreferenceService.get(this, SERVICE, false));
+    design.submissionsGrid.getColumn(DIGESTION_DATE).setHidable(true);
+    design.submissionsGrid.getColumn(DIGESTION_DATE)
+        .setHidden(userPreferenceService.get(this, DIGESTION_DATE, false));
+    design.submissionsGrid.getColumn(ANALYSIS_DATE).setHidable(true);
+    design.submissionsGrid.getColumn(ANALYSIS_DATE)
+        .setHidden(userPreferenceService.get(this, ANALYSIS_DATE, false));
     design.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_COUNT)
         .setHidden(userPreferenceService.get(this, SAMPLE_COUNT, false));
@@ -447,6 +475,14 @@ public class SubmissionsViewPresenter {
       filter.service = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }, Service.values(), service -> service.getLabel(locale)));
+    filterRow.getCell(DIGESTION_DATE).setComponent(dateFilter(e -> {
+      filter.digestionDateRange = e.getSavedObject();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }));
+    filterRow.getCell(ANALYSIS_DATE).setComponent(dateFilter(e -> {
+      filter.analysisDateRange = e.getSavedObject();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
       filter.anySampleNameContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
@@ -455,7 +491,7 @@ public class SubmissionsViewPresenter {
       filter.anySampleStatus = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }, SampleStatus.values(), status -> status.getLabel(locale)));
-    filterRow.getCell(DATE).setComponent(instantFilter(e -> {
+    filterRow.getCell(DATE).setComponent(dateFilter(e -> {
       filter.dateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
@@ -468,6 +504,30 @@ public class SubmissionsViewPresenter {
       filter.hidden = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }, new Boolean[] { true, false }, value -> resources.message(property(HIDDEN, value))));
+    if (authorizationService.hasAdminRole()) {
+      design.submissionsGrid.getEditor().setEnabled(true);
+      design.submissionsGrid.getEditor().addSaveListener(e -> {
+        Submission su = e.getBean();
+        logger.info("Updated submission {}", su, su);
+        submissionService.update(su, null);
+      });
+      Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+      design.submissionsGrid.getEditor().setBinder(binder);
+      design.submissionsGrid.getColumn(DIGESTION_DATE)
+          .setEditorBinding(binder.forField(predictedDateComponentProvider.get()).bind(
+              su -> predictedDate(su.getDigestionDate(), su.isDigestionDatePredicted()),
+              (su, value) -> {
+                su.setDigestionDate(value.date);
+                su.setDigestionDatePredicted(value.date != null ? value.expected : false);
+              }));
+      design.submissionsGrid.getColumn(ANALYSIS_DATE)
+          .setEditorBinding(binder.forField(predictedDateComponentProvider.get()).bind(
+              su -> predictedDate(su.getAnalysisDate(), su.isAnalysisDatePredicted()),
+              (su, value) -> {
+                su.setAnalysisDate(value.date);
+                su.setAnalysisDatePredicted(value.date != null ? value.expected : false);
+              }));
+    }
     design.submissionsGrid
         .setStyleGenerator(submission -> submission.isHidden() ? HIDDEN_STYLE : null);
     design.submissionsGrid.sort(DATE, SortDirection.DESCENDING);
@@ -484,6 +544,37 @@ public class SubmissionsViewPresenter {
     }
     button.addClickListener(e -> viewSubmission(submission));
     return button;
+  }
+
+  private PredictedDate predictedDate(LocalDate date, boolean expected) {
+    return new PredictedDate(date, date != null ? expected : true);
+  }
+
+  private Label digestionDateLabel(Submission submission) {
+    Label label =
+        predictedDateLabel(submission.getDigestionDate(), submission.isDigestionDatePredicted());
+    label.addStyleName(DIGESTION_DATE);
+    return label;
+  }
+
+  private Label analysisDateLabel(Submission submission) {
+    Label label =
+        predictedDateLabel(submission.getAnalysisDate(), submission.isAnalysisDatePredicted());
+    label.addStyleName(ANALYSIS_DATE);
+    return label;
+  }
+
+  private Label predictedDateLabel(LocalDate date, boolean expected) {
+    Label label = new Label();
+    if (date != null) {
+      MessageResource resources = view.getResources();
+      DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+      label.setContentMode(ContentMode.HTML);
+      label.setValue(resources.message(EXPECTED_DATE,
+          expected ? VaadinIcons.CLOCK.getHtml() : VaadinIcons.CHECK.getHtml(),
+          formatter.format(date)));
+    }
+    return label;
   }
 
   private String statusesLabel(Submission submission) {
@@ -569,7 +660,7 @@ public class SubmissionsViewPresenter {
     return filter;
   }
 
-  private Component instantFilter(SaveListener<Range<LocalDate>> listener) {
+  private Component dateFilter(SaveListener<Range<LocalDate>> listener) {
     LocalDateFilterComponent filter = localDateFilterComponentProvider.get();
     filter.addStyleName(ValoTheme.BUTTON_TINY);
     filter.addSaveListener(listener);

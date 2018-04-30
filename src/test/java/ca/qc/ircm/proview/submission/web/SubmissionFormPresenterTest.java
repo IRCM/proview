@@ -3445,7 +3445,7 @@ public class SubmissionFormPresenterTest {
     verify(plateService, atLeastOnce()).nameAvailable(plate.getName());
     verify(plateService, atLeastOnce()).get(plate.getId());
     verify(view, never()).showError(any());
-    verify(submissionService).update(submission);
+    verify(submissionService).update(submission, null);
   }
 
   @Test
@@ -4321,7 +4321,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         design.explanation.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).forceUpdate(any(), any());
+    verify(submissionService, never()).update(any(), any());
   }
 
   @Test
@@ -5743,7 +5743,7 @@ public class SubmissionFormPresenterTest {
     verify(view, never()).showWarning(any());
     verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
     verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
-    verify(submissionService).update(submissionCaptor.capture());
+    verify(submissionService).update(submissionCaptor.capture(), eq(null));
     submission = submissionCaptor.getValue();
     assertEquals((Long) 36L, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
@@ -5883,7 +5883,7 @@ public class SubmissionFormPresenterTest {
 
     verify(view, never()).showError(any());
     verify(view, never()).showWarning(any());
-    verify(submissionService).update(submissionCaptor.capture());
+    verify(submissionService).update(submissionCaptor.capture(), eq(null));
     Submission submission = submissionCaptor.getValue();
     assertEquals((Long) 36L, submission.getId());
     assertEquals(database.getService(), submission.getService());
@@ -5984,7 +5984,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_ForceUpdate() throws Throwable {
+  public void save_AdminUpdate() throws Throwable {
     Submission submission = entityManager.find(Submission.class, 147L);
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
@@ -6000,7 +6000,7 @@ public class SubmissionFormPresenterTest {
     verify(view, never()).showWarning(any());
     verify(submissionSampleService, atLeastOnce()).exists(sampleName1);
     verify(submissionSampleService, atLeastOnce()).exists(sampleName2);
-    verify(submissionService).forceUpdate(submissionCaptor.capture(), eq(explanation));
+    verify(submissionService).update(submissionCaptor.capture(), eq(explanation));
     submission = submissionCaptor.getValue();
     assertEquals((Long) 147L, submission.getId());
     assertEquals(LC_MS_MS, submission.getService());
@@ -6126,7 +6126,7 @@ public class SubmissionFormPresenterTest {
   }
 
   @Test
-  public void save_ForceUpdateError() throws Throwable {
+  public void save_AdminUpdateError() throws Throwable {
     Submission submission = entityManager.find(Submission.class, 147L);
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
@@ -6136,7 +6136,7 @@ public class SubmissionFormPresenterTest {
     setFields();
     uploadFiles();
     doThrow(new PersistenceException("Could not update submission")).when(submissionService)
-        .forceUpdate(any(), any());
+        .update(any(), any());
 
     design.save.click();
 

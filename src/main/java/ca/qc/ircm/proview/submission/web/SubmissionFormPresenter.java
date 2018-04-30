@@ -1328,9 +1328,9 @@ public class SubmissionFormPresenter implements BinderValidator {
       if (submission.getId() != null) {
         try {
           if (design.explanationPanel.isVisible()) {
-            submissionService.forceUpdate(submission, design.explanation.getValue());
+            submissionService.update(submission, design.explanation.getValue());
           } else {
-            submissionService.update(submission);
+            submissionService.update(submission, null);
           }
         } catch (PersistenceException e) {
           view.showError(resources.message(UPDATE_ERROR, submission.getExperiment()));

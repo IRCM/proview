@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -190,9 +191,12 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationComment());
     assertEquals("Philippe", submission.getComment());
-    assertEquals(
-        LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+    assertEquals(toInstant(LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0)),
         submission.getSubmissionDate());
+    assertEquals(LocalDate.of(2010, 12, 11), submission.getDigestionDate());
+    assertTrue(submission.isDigestionDatePredicted());
+    assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
+    assertFalse(submission.isAnalysisDatePredicted());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
@@ -275,9 +279,12 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationComment());
     assertEquals(null, submission.getComment());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+    assertEquals(toInstant(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0)),
         submission.getSubmissionDate());
+    assertNull(submission.getAnalysisDate());
+    assertFalse(submission.isDigestionDatePredicted());
+    assertNull(submission.getAnalysisDate());
+    assertFalse(submission.isAnalysisDatePredicted());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
@@ -1774,8 +1781,6 @@ public class SubmissionServiceTest {
     assertNotNull(submission.getSubmissionDate());
     assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
     assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -1906,8 +1911,6 @@ public class SubmissionServiceTest {
     assertNotNull(submission.getSubmissionDate());
     assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
     assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = submission.getSamples().get(0);
@@ -2056,8 +2059,6 @@ public class SubmissionServiceTest {
     assertNotNull(submission.getSubmissionDate());
     assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
     assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = submission.getSamples().get(0);
@@ -2176,8 +2177,6 @@ public class SubmissionServiceTest {
     assertNotNull(submission.getSubmissionDate());
     assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
     assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
@@ -2319,16 +2318,17 @@ public class SubmissionServiceTest {
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+    Instant newInstant = Instant.now();
+    submission.setSubmissionDate(newInstant);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
 
-    submissionService.update(submission);
+    submissionService.update(submission, null);
 
     entityManager.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
-    verify(submissionActivityService).update(submissionCaptor.capture());
+    verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
     assertEquals((Long) 10L, submission.getUser().getId());
@@ -2352,7 +2352,7 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getMudPitFraction());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
     assertEquals(null, submission.getComment());
-    assertEquals(LocalDate.of(2011, 11, 16), toLocalDate(submission.getSubmissionDate()));
+    assertEquals(newInstant, submission.getSubmissionDate());
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -2402,16 +2402,15 @@ public class SubmissionServiceTest {
     submission.getSamples().get(0).setName("unit_test_01");
     submission.getSamples().get(0).setVolume("20.0 μl");
     submission.getSamples().get(0).setQuantity("2.0 μg");
-    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
 
-    submissionService.update(submission);
+    submissionService.update(submission, null);
 
     entityManager.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
-    verify(submissionActivityService).update(submissionCaptor.capture());
+    verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
     List<SubmissionSample> samples = submission.getSamples();
@@ -2483,7 +2482,8 @@ public class SubmissionServiceTest {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2492,13 +2492,11 @@ public class SubmissionServiceTest {
     });
     submission.setSamples(samples);
 
-    submissionService.update(submission);
+    submissionService.update(submission, null);
 
     entityManager.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
-    verify(submissionActivityService).update(submissionCaptor.capture());
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
+    verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
@@ -2577,7 +2575,8 @@ public class SubmissionServiceTest {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2586,13 +2585,11 @@ public class SubmissionServiceTest {
     });
     submission.setSamples(samples);
 
-    submissionService.update(submission);
+    submissionService.update(submission, null);
 
     entityManager.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
-    verify(submissionActivityService).update(submissionCaptor.capture());
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
+    verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
@@ -2637,7 +2634,7 @@ public class SubmissionServiceTest {
     assertEquals(submission.getId(), submissionLogged.getId());
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void update_UpdateUser() throws Exception {
     Submission submission = entityManager.find(Submission.class, 36L);
     entityManager.detach(submission);
@@ -2647,34 +2644,10 @@ public class SubmissionServiceTest {
     });
     User user = entityManager.find(User.class, 4L);
     submission.setUser(user);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
 
-    submissionService.update(submission);
-
-    entityManager.flush();
-    verify(authorizationService).checkSubmissionWritePermission(submission);
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
-    assertEquals((Long) 10L, submission.getUser().getId());
-    assertEquals((Long) 2L, submission.getLaboratory().getId());
-  }
-
-  @Test
-  public void update_UpdateDate() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 36L);
-    entityManager.detach(submission);
-    submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
-    });
-    submission.setSubmissionDate(Instant.now());
-
-    submissionService.update(submission);
-
-    entityManager.flush();
-    verify(authorizationService).checkSubmissionWritePermission(submission);
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
-    assertEquals(LocalDate.of(2011, 11, 16), toLocalDate(submission.getSubmissionDate()));
+    submissionService.update(submission, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -2686,7 +2659,7 @@ public class SubmissionServiceTest {
       entityManager.detach(sa.getOriginalContainer());
     });
 
-    submissionService.update(submission);
+    submissionService.update(submission, null);
   }
 
   @Test
@@ -2699,9 +2672,10 @@ public class SubmissionServiceTest {
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    when(submissionActivityService.update(any(Submission.class))).thenReturn(activity);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
 
-    submissionService.update(submission);
+    submissionService.update(submission, null);
 
     entityManager.flush();
     // Validate email that is sent to proteomic users.
@@ -2722,7 +2696,7 @@ public class SubmissionServiceTest {
   }
 
   @Test
-  public void forceUpdate() throws Exception {
+  public void update_Admin() throws Exception {
     Submission submission = entityManager.find(Submission.class, 1L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2770,16 +2744,15 @@ public class SubmissionServiceTest {
     submission.setUser(user);
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
-    when(submissionActivityService.forceUpdate(any(Submission.class), any(String.class)))
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionService.forceUpdate(submission, "unit_test");
+    submissionService.update(submission, "unit_test");
 
     entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(submissionActivityService).forceUpdate(submissionCaptor.capture(), eq("unit_test"));
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
     submission = entityManager.find(Submission.class, 1L);
     entityManager.refresh(submission);
@@ -2825,7 +2798,7 @@ public class SubmissionServiceTest {
   }
 
   @Test
-  public void forceUpdate_NewSample() throws Exception {
+  public void update_NewSample_Admin() throws Exception {
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
     sample.setType(SampleType.SOLUTION);
@@ -2854,16 +2827,15 @@ public class SubmissionServiceTest {
       entityManager.detach(sa.getOriginalContainer());
     });
     submission.getSamples().add(sample);
-    when(submissionActivityService.forceUpdate(any(Submission.class), any(String.class)))
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionService.forceUpdate(submission, "unit_test");
+    submissionService.update(submission, "unit_test");
 
     entityManager.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(submissionActivityService).forceUpdate(submissionCaptor.capture(), eq("unit_test"));
-    verify(pricingEvaluator).computePrice(eq(submission), instantCaptor.capture());
-    assertEquals(submission.getSubmissionDate(), instantCaptor.getValue());
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
     submission = entityManager.find(Submission.class, submission.getId());
     entityManager.refresh(submission);
@@ -2963,7 +2935,7 @@ public class SubmissionServiceTest {
     entityManager.detach(submission1);
     Submission submission2 = entityManager.find(Submission.class, 148L);
     entityManager.detach(submission2);
-    when(submissionActivityService.forceUpdate(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
     submissionService.hide(Arrays.asList(submission1, submission2));
 
@@ -2971,10 +2943,10 @@ public class SubmissionServiceTest {
     verify(authorizationService).checkAdminRole();
     verify(activityService, times(2)).insert(activity);
     submission1 = entityManager.find(Submission.class, submission1.getId());
-    verify(submissionActivityService).forceUpdate(submission1, null);
+    verify(submissionActivityService).update(submission1, null);
     assertTrue(submission1.isHidden());
     submission2 = entityManager.find(Submission.class, submission2.getId());
-    verify(submissionActivityService).forceUpdate(submission2, null);
+    verify(submissionActivityService).update(submission2, null);
     assertTrue(submission2.isHidden());
   }
 
@@ -2985,7 +2957,7 @@ public class SubmissionServiceTest {
     entityManager.detach(submission1);
     Submission submission2 = entityManager.find(Submission.class, 148L);
     entityManager.detach(submission2);
-    when(submissionActivityService.forceUpdate(any(), any())).thenReturn(optionalActivity,
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
 
     submissionService.show(Arrays.asList(submission1, submission2));
@@ -2994,10 +2966,10 @@ public class SubmissionServiceTest {
     verify(authorizationService).checkAdminRole();
     verify(activityService, times(1)).insert(activity);
     submission1 = entityManager.find(Submission.class, submission1.getId());
-    verify(submissionActivityService).forceUpdate(submission1, null);
+    verify(submissionActivityService).update(submission1, null);
     assertFalse(submission1.isHidden());
     submission2 = entityManager.find(Submission.class, submission2.getId());
-    verify(submissionActivityService).forceUpdate(submission2, null);
+    verify(submissionActivityService).update(submission2, null);
     assertFalse(submission2.isHidden());
   }
 }

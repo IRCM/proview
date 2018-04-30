@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.msanalysis;
 
+import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
+
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.BanSampleContainerUpdateActivityBuilder;
@@ -27,6 +29,8 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.QSubmission;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -34,9 +38,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
@@ -50,6 +56,7 @@ import javax.persistence.PersistenceContext;
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class MsAnalysisActivityService {
+  private static final QSubmission qsubmission = QSubmission.submission;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -76,6 +83,7 @@ public class MsAnalysisActivityService {
     final User user = authorizationService.getCurrentUser();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    Set<Long> submissionIds = new HashSet<>();
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
       Sample newSample = acquisition.getSample();
       Sample oldSample = entityManager.find(Sample.class, acquisition.getSample().getId());
@@ -84,6 +92,16 @@ public class MsAnalysisActivityService {
         SubmissionSample oldSubmissionSample = (SubmissionSample) oldSample;
         updateBuilders.add(new SampleStatusUpdateActivityBuilder().oldSample(oldSubmissionSample)
             .newSample(newSubmissionSample));
+        Submission newSubmission = newSubmissionSample.getSubmission();
+        Submission oldSubmission = oldSubmissionSample.getSubmission();
+        if (submissionIds.add(newSubmission.getId())) {
+          updateBuilders.add(submissionUpdate(newSubmission).column(qname(qsubmission.analysisDate))
+              .oldValue(oldSubmission.getAnalysisDate()).newValue(newSubmission.getAnalysisDate()));
+          updateBuilders
+              .add(submissionUpdate(newSubmission).column(qname(qsubmission.analysisDatePredicted))
+                  .oldValue(oldSubmission.isAnalysisDatePredicted())
+                  .newValue(newSubmission.isAnalysisDatePredicted()));
+        }
       }
     }
 
@@ -99,10 +117,15 @@ public class MsAnalysisActivityService {
     activity.setActionType(ActionType.INSERT);
     activity.setRecordId(msAnalysis.getId());
     activity.setUser(user);
-    activity.setTableName("msanalysis");
+    activity.setTableName(MsAnalysis.TABLE_NAME);
     activity.setExplanation(null);
     activity.setUpdates(updates);
     return activity;
+  }
+
+  private UpdateActivityBuilder submissionUpdate(Submission submission) {
+    return new UpdateActivityBuilder().tableName(Submission.TABLE_NAME)
+        .actionType(ActionType.UPDATE).recordId(submission.getId());
   }
 
   /**

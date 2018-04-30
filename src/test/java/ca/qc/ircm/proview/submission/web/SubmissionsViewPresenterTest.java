@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.APPROVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.APPROVE_DONE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
@@ -27,9 +28,11 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_AN
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS_DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIRECTOR;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPECTED_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
@@ -65,17 +68,21 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.USER;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.gridStartEdit;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -100,7 +107,10 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.time.PredictedDate;
+import ca.qc.ircm.proview.time.web.PredictedDateComponent;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.UserPreferenceService;
@@ -114,17 +124,20 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.SelectionModel;
+import com.vaadin.data.Validator;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.provider.Query;
 import com.vaadin.data.provider.QuerySortOrder;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.Registration;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
@@ -160,7 +173,7 @@ import javax.persistence.PersistenceContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionsViewPresenterTest {
+public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   private SubmissionsViewPresenter presenter;
   @PersistenceContext
   private EntityManager entityManager;
@@ -174,6 +187,8 @@ public class SubmissionsViewPresenterTest {
   private UserPreferenceService userPreferenceService;
   @Mock
   private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
+  @Mock
+  private Provider<PredictedDateComponent> predictedDateComponentProvider;
   @Mock
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Mock
@@ -208,6 +223,12 @@ public class SubmissionsViewPresenterTest {
   private ListDataProvider<Submission> submissionsDataProvider;
   @Mock
   private LocalDateFilterComponent localDateFilterComponent;
+  @Mock
+  private PredictedDateComponent predictedDateComponent;
+  @Mock
+  private Registration registration;
+  @Mock
+  private ValueChangeEvent<PredictedDate> predictedDateValueChangeEvent;
   @Captor
   private ArgumentCaptor<Collection<Sample>> samplesCaptor;
   @Captor
@@ -222,6 +243,8 @@ public class SubmissionsViewPresenterTest {
   private ArgumentCaptor<SaveListener<List<SampleContainer>>> containersSaveListenerCaptor;
   @Captor
   private ArgumentCaptor<SaveListener<Range<LocalDate>>> localDateRangeSaveListenerCaptor;
+  @Captor
+  private ArgumentCaptor<ValueChangeListener<PredictedDate>> predictedDateValueChangeListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private SubmissionsViewDesign design;
@@ -235,11 +258,13 @@ public class SubmissionsViewPresenterTest {
   @Before
   public void beforeTest() {
     presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
-        userPreferenceService, localDateFilterComponentProvider, submissionWindowProvider,
-        submissionAnalysesWindowProvider, submissionTreatmentsWindowProvider,
-        submissionHistoryWindowProvider, sampleSelectionWindowProvider,
-        containerSelectionWindowProvider, helpWindowProvider, applicationName);
+        userPreferenceService, localDateFilterComponentProvider, predictedDateComponentProvider,
+        submissionWindowProvider, submissionAnalysesWindowProvider,
+        submissionTreatmentsWindowProvider, submissionHistoryWindowProvider,
+        sampleSelectionWindowProvider, containerSelectionWindowProvider, helpWindowProvider,
+        applicationName);
     design = new SubmissionsViewDesign();
+    design.setParent(ui);
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -248,6 +273,8 @@ public class SubmissionsViewPresenterTest {
     when(submissionService.count(any())).thenReturn(submissions.size());
     when(userPreferenceService.get(any(), any(), any())).thenAnswer(i -> i.getArguments()[2]);
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
+    when(predictedDateComponentProvider.get()).thenReturn(predictedDateComponent);
+    when(predictedDateComponent.getDefaultValidator()).thenReturn(Validator.alwaysPass());
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
     when(submissionTreatmentsWindowProvider.get()).thenReturn(submissionTreatmentsWindow);
@@ -415,7 +442,40 @@ public class SubmissionsViewPresenterTest {
     }
     assertTrue(design.submissionsGrid.getColumn(SERVICE).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SERVICE).isSortable());
-    assertEquals(SAMPLE_COUNT, columns.get(4).getId());
+    assertEquals(DIGESTION_DATE, columns.get(4).getId());
+    assertEquals(resources.message(DIGESTION_DATE),
+        design.submissionsGrid.getColumn(DIGESTION_DATE).getCaption());
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+    for (Submission submission : submissions) {
+      Label label = (Label) design.submissionsGrid.getColumn(DIGESTION_DATE).getValueProvider()
+          .apply(submission);
+      assertTrue(label.getStyleName().contains(DIGESTION_DATE));
+      if (submission.getDigestionDate() != null) {
+        assertEquals(resources.message(EXPECTED_DATE,
+            submission.isDigestionDatePredicted() ? VaadinIcons.CLOCK.getHtml()
+                : VaadinIcons.CHECK.getHtml(),
+            dateFormatter.format(submission.getDigestionDate())), label.getValue());
+      }
+    }
+    assertTrue(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidable());
+    assertTrue(design.submissionsGrid.getColumn(DIGESTION_DATE).isSortable());
+    assertEquals(ANALYSIS_DATE, columns.get(5).getId());
+    assertEquals(resources.message(ANALYSIS_DATE),
+        design.submissionsGrid.getColumn(ANALYSIS_DATE).getCaption());
+    for (Submission submission : submissions) {
+      Label label = (Label) design.submissionsGrid.getColumn(ANALYSIS_DATE).getValueProvider()
+          .apply(submission);
+      assertTrue(label.getStyleName().contains(ANALYSIS_DATE));
+      if (submission.getAnalysisDate() != null) {
+        assertEquals(resources.message(EXPECTED_DATE,
+            submission.isAnalysisDatePredicted() ? VaadinIcons.CLOCK.getHtml()
+                : VaadinIcons.CHECK.getHtml(),
+            dateFormatter.format(submission.getAnalysisDate())), label.getValue());
+      }
+    }
+    assertTrue(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidable());
+    assertTrue(design.submissionsGrid.getColumn(DIGESTION_DATE).isSortable());
+    assertEquals(SAMPLE_COUNT, columns.get(6).getId());
     assertEquals(resources.message(SAMPLE_COUNT),
         design.submissionsGrid.getColumn(SAMPLE_COUNT).getCaption());
     for (Submission submission : submissions) {
@@ -424,7 +484,7 @@ public class SubmissionsViewPresenterTest {
     }
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isSortable());
-    assertEquals(SAMPLE_NAME, columns.get(5).getId());
+    assertEquals(SAMPLE_NAME, columns.get(7).getId());
     assertEquals(resources.message(SAMPLE_NAME),
         design.submissionsGrid.getColumn(SAMPLE_NAME).getCaption());
     for (Submission submission : submissions) {
@@ -440,7 +500,7 @@ public class SubmissionsViewPresenterTest {
     }
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isSortable());
-    assertEquals(SAMPLE_STATUSES, columns.get(6).getId());
+    assertEquals(SAMPLE_STATUSES, columns.get(8).getId());
     assertEquals(resources.message(SAMPLE_STATUSES),
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getCaption());
     for (Submission submission : submissions) {
@@ -457,17 +517,17 @@ public class SubmissionsViewPresenterTest {
     }
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isSortable());
-    assertEquals(DATE, columns.get(7).getId());
+    assertEquals(DATE, columns.get(9).getId());
     assertEquals(resources.message(DATE), design.submissionsGrid.getColumn(DATE).getCaption());
-    final DateTimeFormatter dateFormatter =
+    final DateTimeFormatter instantFormatter =
         DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
     for (Submission submission : submissions) {
-      assertEquals(dateFormatter.format(submission.getSubmissionDate()),
+      assertEquals(instantFormatter.format(submission.getSubmissionDate()),
           design.submissionsGrid.getColumn(DATE).getValueProvider().apply(submission));
     }
     assertTrue(design.submissionsGrid.getColumn(DATE).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DATE).isSortable());
-    assertEquals(LINKED_TO_RESULTS, columns.get(8).getId());
+    assertEquals(LINKED_TO_RESULTS, columns.get(10).getId());
     assertTrue(
         containsInstanceOf(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getExtensions(),
             ComponentRenderer.class));
@@ -493,7 +553,7 @@ public class SubmissionsViewPresenterTest {
         design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getComparator(SortDirection.ASCENDING)
             .compare(entityManager.find(Submission.class, 156L),
                 entityManager.find(Submission.class, 161L)));
-    assertEquals(TREATMENTS, columns.get(9).getId());
+    assertEquals(TREATMENTS, columns.get(11).getId());
     assertTrue(containsInstanceOf(design.submissionsGrid.getColumn(TREATMENTS).getExtensions(),
         ComponentRenderer.class));
     assertEquals(resources.message(TREATMENTS),
@@ -507,7 +567,7 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.submissionsGrid.getColumn(TREATMENTS).isHidable());
     assertTrue(design.submissionsGrid.getColumn(TREATMENTS).isHidden());
     assertFalse(design.submissionsGrid.getColumn(TREATMENTS).isSortable());
-    assertEquals(HIDDEN, columns.get(10).getId());
+    assertEquals(HIDDEN, columns.get(12).getId());
     assertEquals(resources.message(HIDDEN), design.submissionsGrid.getColumn(HIDDEN).getCaption());
     for (Submission submission : submissions) {
       assertEquals(submission.isHidden() ? resources.message(property(HIDDEN, true)) : "",
@@ -516,7 +576,7 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.submissionsGrid.getColumn(HIDDEN).isHidable());
     assertTrue(design.submissionsGrid.getColumn(HIDDEN).isHidden());
     assertTrue(design.submissionsGrid.getColumn(HIDDEN).isSortable());
-    assertEquals(HISTORY, columns.get(11).getId());
+    assertEquals(HISTORY, columns.get(13).getId());
     assertTrue(containsInstanceOf(design.submissionsGrid.getColumn(HISTORY).getExtensions(),
         ComponentRenderer.class));
     assertEquals(resources.message(HISTORY),
@@ -550,6 +610,12 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidden());
     assertTrue(design.submissionsGrid.getColumn(USER).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DIRECTOR).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(SERVICE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(SERVICE).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(ANALYSIS_DATE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(ANALYSIS_DATE).isHidden());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
@@ -573,6 +639,12 @@ public class SubmissionsViewPresenterTest {
     assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidden());
     assertTrue(design.submissionsGrid.getColumn(USER).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DIRECTOR).isHidable());
+    assertTrue(design.submissionsGrid.getColumn(SERVICE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(SERVICE).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(ANALYSIS_DATE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(ANALYSIS_DATE).isHidden());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
@@ -598,6 +670,12 @@ public class SubmissionsViewPresenterTest {
     assertTrue(design.submissionsGrid.getColumn(USER).isHidden());
     assertFalse(design.submissionsGrid.getColumn(DIRECTOR).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DIRECTOR).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(SERVICE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(SERVICE).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(ANALYSIS_DATE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(ANALYSIS_DATE).isHidden());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidden());
     verify(userPreferenceService).get(presenter, SAMPLE_COUNT, false);
@@ -635,6 +713,12 @@ public class SubmissionsViewPresenterTest {
     verify(userPreferenceService).get(presenter, USER, false);
     assertFalse(design.submissionsGrid.getColumn(DIRECTOR).isHidden());
     verify(userPreferenceService).get(presenter, DIRECTOR, false);
+    assertTrue(design.submissionsGrid.getColumn(SERVICE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(SERVICE).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(DIGESTION_DATE).isHidden());
+    assertTrue(design.submissionsGrid.getColumn(ANALYSIS_DATE).isHidable());
+    assertFalse(design.submissionsGrid.getColumn(ANALYSIS_DATE).isHidden());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_COUNT).isHidden());
     verify(userPreferenceService).get(presenter, SAMPLE_COUNT, false);
@@ -671,8 +755,9 @@ public class SubmissionsViewPresenterTest {
 
   @Test
   public void submissionsGrid_ColumnOrder() {
-    String[] columnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, SAMPLE_NAME,
-        SAMPLE_COUNT, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HIDDEN, HISTORY };
+    String[] columnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, DIGESTION_DATE,
+        ANALYSIS_DATE, SAMPLE_NAME, SAMPLE_COUNT, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS,
+        TREATMENTS, HIDDEN, HISTORY };
     when(userPreferenceService.get(any(), eq(COLUMN_ORDER), any())).thenReturn(columnOrder);
     presenter.init(view);
 
@@ -680,23 +765,27 @@ public class SubmissionsViewPresenterTest {
     assertEquals(USER, design.submissionsGrid.getColumns().get(1).getId());
     assertEquals(DIRECTOR, design.submissionsGrid.getColumns().get(2).getId());
     assertEquals(SERVICE, design.submissionsGrid.getColumns().get(3).getId());
-    assertEquals(SAMPLE_NAME, design.submissionsGrid.getColumns().get(4).getId());
-    assertEquals(SAMPLE_COUNT, design.submissionsGrid.getColumns().get(5).getId());
-    assertEquals(SAMPLE_STATUSES, design.submissionsGrid.getColumns().get(6).getId());
-    assertEquals(DATE, design.submissionsGrid.getColumns().get(7).getId());
-    assertEquals(LINKED_TO_RESULTS, design.submissionsGrid.getColumns().get(8).getId());
-    assertEquals(TREATMENTS, design.submissionsGrid.getColumns().get(9).getId());
-    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(10).getId());
-    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(11).getId());
-    String[] defaultColumnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, SAMPLE_COUNT,
-        SAMPLE_NAME, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HIDDEN, HISTORY };
+    assertEquals(DIGESTION_DATE, design.submissionsGrid.getColumns().get(4).getId());
+    assertEquals(ANALYSIS_DATE, design.submissionsGrid.getColumns().get(5).getId());
+    assertEquals(SAMPLE_NAME, design.submissionsGrid.getColumns().get(6).getId());
+    assertEquals(SAMPLE_COUNT, design.submissionsGrid.getColumns().get(7).getId());
+    assertEquals(SAMPLE_STATUSES, design.submissionsGrid.getColumns().get(8).getId());
+    assertEquals(DATE, design.submissionsGrid.getColumns().get(9).getId());
+    assertEquals(LINKED_TO_RESULTS, design.submissionsGrid.getColumns().get(10).getId());
+    assertEquals(TREATMENTS, design.submissionsGrid.getColumns().get(11).getId());
+    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(12).getId());
+    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(13).getId());
+    String[] defaultColumnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE,
+        DIGESTION_DATE, ANALYSIS_DATE, SAMPLE_COUNT, SAMPLE_NAME, SAMPLE_STATUSES, DATE,
+        LINKED_TO_RESULTS, TREATMENTS, HIDDEN, HISTORY };
     verify(userPreferenceService).get(presenter, COLUMN_ORDER, defaultColumnOrder);
   }
 
   @Test
   public void submissionsGrid_ColumnOrder_MissingHidden() {
-    String[] columnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, SAMPLE_NAME,
-        SAMPLE_COUNT, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HISTORY };
+    String[] columnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, DIGESTION_DATE,
+        ANALYSIS_DATE, SAMPLE_NAME, SAMPLE_COUNT, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS,
+        TREATMENTS, HISTORY };
     when(userPreferenceService.get(any(), eq(COLUMN_ORDER), any())).thenReturn(columnOrder);
     presenter.init(view);
 
@@ -704,24 +793,28 @@ public class SubmissionsViewPresenterTest {
     assertEquals(USER, design.submissionsGrid.getColumns().get(1).getId());
     assertEquals(DIRECTOR, design.submissionsGrid.getColumns().get(2).getId());
     assertEquals(SERVICE, design.submissionsGrid.getColumns().get(3).getId());
-    assertEquals(SAMPLE_NAME, design.submissionsGrid.getColumns().get(4).getId());
-    assertEquals(SAMPLE_COUNT, design.submissionsGrid.getColumns().get(5).getId());
-    assertEquals(SAMPLE_STATUSES, design.submissionsGrid.getColumns().get(6).getId());
-    assertEquals(DATE, design.submissionsGrid.getColumns().get(7).getId());
-    assertEquals(LINKED_TO_RESULTS, design.submissionsGrid.getColumns().get(8).getId());
-    assertEquals(TREATMENTS, design.submissionsGrid.getColumns().get(9).getId());
-    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(10).getId());
-    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(11).getId());
-    String[] defaultColumnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, SAMPLE_COUNT,
-        SAMPLE_NAME, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HIDDEN, HISTORY };
+    assertEquals(DIGESTION_DATE, design.submissionsGrid.getColumns().get(4).getId());
+    assertEquals(ANALYSIS_DATE, design.submissionsGrid.getColumns().get(5).getId());
+    assertEquals(SAMPLE_NAME, design.submissionsGrid.getColumns().get(6).getId());
+    assertEquals(SAMPLE_COUNT, design.submissionsGrid.getColumns().get(7).getId());
+    assertEquals(SAMPLE_STATUSES, design.submissionsGrid.getColumns().get(8).getId());
+    assertEquals(DATE, design.submissionsGrid.getColumns().get(9).getId());
+    assertEquals(LINKED_TO_RESULTS, design.submissionsGrid.getColumns().get(10).getId());
+    assertEquals(TREATMENTS, design.submissionsGrid.getColumns().get(11).getId());
+    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(12).getId());
+    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(13).getId());
+    String[] defaultColumnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE,
+        DIGESTION_DATE, ANALYSIS_DATE, SAMPLE_COUNT, SAMPLE_NAME, SAMPLE_STATUSES, DATE,
+        LINKED_TO_RESULTS, TREATMENTS, HIDDEN, HISTORY };
     verify(userPreferenceService).get(presenter, COLUMN_ORDER, defaultColumnOrder);
   }
 
   @Test
   public void submissionsGrid_ChangeColumnOrder() {
     presenter.init(view);
-    design.submissionsGrid.setColumnOrder(EXPERIMENT, USER, DIRECTOR, SERVICE, SAMPLE_NAME,
-        SAMPLE_COUNT, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, TREATMENTS, HIDDEN, HISTORY);
+    design.submissionsGrid.setColumnOrder(EXPERIMENT, USER, DIRECTOR, SERVICE, DIGESTION_DATE,
+        ANALYSIS_DATE, SAMPLE_NAME, SAMPLE_COUNT, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS,
+        TREATMENTS, HIDDEN, HISTORY);
 
     String[] columnOrder =
         design.submissionsGrid.getColumns().stream().map(col -> col.getId()).toArray(String[]::new);
@@ -862,6 +955,74 @@ public class SubmissionsViewPresenterTest {
     assertEquals(1, submissionFilter.sortOrders.size());
     OrderSpecifier<?> orderSpecifier = submissionFilter.sortOrders.get(0);
     assertEquals(submission.service.desc(), orderSpecifier);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void sort_DigestionDateAsc() {
+    presenter.init(view);
+    DataProvider<Submission, Void> dataProvider =
+        (DataProvider<Submission, Void>) design.submissionsGrid.getDataProvider();
+    Query<Submission, Void> query = new Query<>(0, Integer.MAX_VALUE,
+        Arrays.asList(new QuerySortOrder(DIGESTION_DATE, SortDirection.ASCENDING)), null, null);
+    dataProvider.fetch(query);
+
+    verify(submissionService, atLeastOnce()).all(submissionFilterCaptor.capture());
+    SubmissionFilter submissionFilter = submissionFilterCaptor.getValue();
+    assertEquals(1, submissionFilter.sortOrders.size());
+    OrderSpecifier<?> orderSpecifier = submissionFilter.sortOrders.get(0);
+    assertEquals(submission.digestionDate.asc(), orderSpecifier);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void sort_DigestionDateDesc() {
+    presenter.init(view);
+    DataProvider<Submission, Void> dataProvider =
+        (DataProvider<Submission, Void>) design.submissionsGrid.getDataProvider();
+    Query<Submission, Void> query = new Query<>(0, Integer.MAX_VALUE,
+        Arrays.asList(new QuerySortOrder(DIGESTION_DATE, SortDirection.DESCENDING)), null, null);
+    dataProvider.fetch(query);
+
+    verify(submissionService, atLeastOnce()).all(submissionFilterCaptor.capture());
+    SubmissionFilter submissionFilter = submissionFilterCaptor.getValue();
+    assertEquals(1, submissionFilter.sortOrders.size());
+    OrderSpecifier<?> orderSpecifier = submissionFilter.sortOrders.get(0);
+    assertEquals(submission.digestionDate.desc(), orderSpecifier);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void sort_AnalysisDateAsc() {
+    presenter.init(view);
+    DataProvider<Submission, Void> dataProvider =
+        (DataProvider<Submission, Void>) design.submissionsGrid.getDataProvider();
+    Query<Submission, Void> query = new Query<>(0, Integer.MAX_VALUE,
+        Arrays.asList(new QuerySortOrder(ANALYSIS_DATE, SortDirection.ASCENDING)), null, null);
+    dataProvider.fetch(query);
+
+    verify(submissionService, atLeastOnce()).all(submissionFilterCaptor.capture());
+    SubmissionFilter submissionFilter = submissionFilterCaptor.getValue();
+    assertEquals(1, submissionFilter.sortOrders.size());
+    OrderSpecifier<?> orderSpecifier = submissionFilter.sortOrders.get(0);
+    assertEquals(submission.analysisDate.asc(), orderSpecifier);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void sort_AnalysisDateDesc() {
+    presenter.init(view);
+    DataProvider<Submission, Void> dataProvider =
+        (DataProvider<Submission, Void>) design.submissionsGrid.getDataProvider();
+    Query<Submission, Void> query = new Query<>(0, Integer.MAX_VALUE,
+        Arrays.asList(new QuerySortOrder(ANALYSIS_DATE, SortDirection.DESCENDING)), null, null);
+    dataProvider.fetch(query);
+
+    verify(submissionService, atLeastOnce()).all(submissionFilterCaptor.capture());
+    SubmissionFilter submissionFilter = submissionFilterCaptor.getValue();
+    assertEquals(1, submissionFilter.sortOrders.size());
+    OrderSpecifier<?> orderSpecifier = submissionFilter.sortOrders.get(0);
+    assertEquals(submission.analysisDate.desc(), orderSpecifier);
   }
 
   @Test
@@ -1119,6 +1280,50 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
+  public void digestionDateFilter() {
+    presenter.init(view);
+    design.submissionsGrid.setDataProvider(submissionsDataProvider);
+    HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
+
+    verify(localDateFilterComponentProvider, atLeastOnce()).get();
+    verify(localDateFilterComponent, atLeastOnce())
+        .addSaveListener(localDateRangeSaveListenerCaptor.capture());
+    HeaderCell cell = filterRow.getCell(DIGESTION_DATE);
+    assertTrue(cell.getComponent() instanceof LocalDateFilterComponent);
+
+    Range<LocalDate> range = Range.open(LocalDate.now().minusDays(2), LocalDate.now());
+    SaveListener<Range<LocalDate>> listener =
+        localDateRangeSaveListenerCaptor.getAllValues().get(0);
+    listener.saved(new SaveEvent<>(cell.getComponent(), range));
+
+    verify(submissionsDataProvider).refreshAll();
+    SubmissionFilter filter = presenter.getFilter();
+    assertEquals(range, filter.digestionDateRange);
+  }
+
+  @Test
+  public void analysisDateFilter() {
+    presenter.init(view);
+    design.submissionsGrid.setDataProvider(submissionsDataProvider);
+    HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
+
+    verify(localDateFilterComponentProvider, atLeast(2)).get();
+    verify(localDateFilterComponent, atLeast(2))
+        .addSaveListener(localDateRangeSaveListenerCaptor.capture());
+    HeaderCell cell = filterRow.getCell(ANALYSIS_DATE);
+    assertTrue(cell.getComponent() instanceof LocalDateFilterComponent);
+
+    Range<LocalDate> range = Range.open(LocalDate.now().minusDays(2), LocalDate.now());
+    SaveListener<Range<LocalDate>> listener =
+        localDateRangeSaveListenerCaptor.getAllValues().get(1);
+    listener.saved(new SaveEvent<>(cell.getComponent(), range));
+
+    verify(submissionsDataProvider).refreshAll();
+    SubmissionFilter filter = presenter.getFilter();
+    assertEquals(range, filter.analysisDateRange);
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void sampleNameFilter() {
     presenter.init(view);
@@ -1166,8 +1371,9 @@ public class SubmissionsViewPresenterTest {
     design.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
 
-    verify(localDateFilterComponentProvider).get();
-    verify(localDateFilterComponent).addSaveListener(localDateRangeSaveListenerCaptor.capture());
+    verify(localDateFilterComponentProvider, atLeastOnce()).get();
+    verify(localDateFilterComponent, atLeastOnce())
+        .addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DATE);
     assertTrue(cell.getComponent() instanceof LocalDateFilterComponent);
 
@@ -1338,6 +1544,141 @@ public class SubmissionsViewPresenterTest {
     assertEquals(resources.message(LINKED_TO_RESULTS + "." + false), button.getCaption());
     assertTrue(button.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
     assertTrue(button.getStyleName().contains(CONDITION_FALSE));
+  }
+
+  @Test
+  public void udpateDigestionDate() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
+    presenter.init(view);
+    Submission submission = submissions.get(0);
+    LocalDate date = LocalDate.now().minusDays(1);
+    PredictedDate predictedDate = new PredictedDate(date, true);
+    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
+    gridStartEdit(design.submissionsGrid, submission);
+    design.submissionsGrid.getEditor().save();
+
+    verify(submissionService).update(submission, null);
+    verify(predictedDateComponentProvider, times(2)).get();
+    assertEquals(date, submission.getDigestionDate());
+    assertEquals(true, submission.isDigestionDatePredicted());
+  }
+
+  @Test
+  public void udpateDigestionDate_Clear() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
+    presenter.init(view);
+    Submission submission = submissions.get(0);
+    PredictedDate predictedDate = new PredictedDate(null, true);
+    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
+    gridStartEdit(design.submissionsGrid, submission);
+    design.submissionsGrid.getEditor().save();
+
+    verify(submissionService).update(submission, null);
+    verify(predictedDateComponentProvider, times(2)).get();
+    assertNull(submission.getDigestionDate());
+    assertEquals(false, submission.isDigestionDatePredicted());
+  }
+
+  @Test
+  public void udpateDigestionDate_Cancel() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
+    presenter.init(view);
+    Submission submission = submissions.get(0);
+    LocalDate date = submission.getDigestionDate();
+    boolean predicted = submission.isDigestionDatePredicted();
+    PredictedDate predictedDate = new PredictedDate(LocalDate.now().minusDays(1), true);
+    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
+    gridStartEdit(design.submissionsGrid, submission);
+    design.submissionsGrid.getEditor().cancel();
+
+    verify(submissionService, never()).update(any(), any());
+    verify(predictedDateComponentProvider, times(2)).get();
+    assertEquals(date, submission.getDigestionDate());
+    assertEquals(predicted, submission.isDigestionDatePredicted());
+  }
+
+  @Test
+  public void udpateAnalysisDate() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
+    presenter.init(view);
+    Submission submission = submissions.get(0);
+    LocalDate date = LocalDate.now().minusDays(1);
+    PredictedDate predictedDate = new PredictedDate(date, true);
+    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
+    gridStartEdit(design.submissionsGrid, submission);
+    design.submissionsGrid.getEditor().save();
+
+    verify(submissionService).update(submission, null);
+    verify(predictedDateComponentProvider, times(2)).get();
+    assertEquals(date, submission.getAnalysisDate());
+    assertEquals(true, submission.isAnalysisDatePredicted());
+  }
+
+  @Test
+  public void udpateAnalysisDate_Clear() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
+    presenter.init(view);
+    Submission submission = submissions.get(0);
+    PredictedDate predictedDate = new PredictedDate(null, true);
+    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
+    gridStartEdit(design.submissionsGrid, submission);
+    design.submissionsGrid.getEditor().save();
+
+    verify(submissionService).update(submission, null);
+    verify(predictedDateComponentProvider, times(2)).get();
+    assertNull(submission.getAnalysisDate());
+    assertEquals(false, submission.isAnalysisDatePredicted());
+  }
+
+  @Test
+  public void udpateAnalysisDate_Cancel() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
+    presenter.init(view);
+    Submission submission = submissions.get(0);
+    LocalDate date = submission.getAnalysisDate();
+    boolean predicted = submission.isAnalysisDatePredicted();
+    PredictedDate predictedDate = new PredictedDate(LocalDate.now().minusDays(1), true);
+    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
+    gridStartEdit(design.submissionsGrid, submission);
+    design.submissionsGrid.getEditor().cancel();
+
+    verify(submissionService, never()).update(any(), any());
+    verify(predictedDateComponentProvider, times(2)).get();
+    assertEquals(date, submission.getAnalysisDate());
+    assertEquals(predicted, submission.isAnalysisDatePredicted());
+  }
+
+  @Test
+  public void udpateDigestionAndAnalysisDate() {
+    when(authorizationService.hasAdminRole()).thenReturn(true);
+    PredictedDateComponent analysisPredictedDateComponent = mock(PredictedDateComponent.class);
+    when(predictedDateComponentProvider.get()).thenReturn(predictedDateComponent,
+        analysisPredictedDateComponent);
+    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
+    when(analysisPredictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
+    when(analysisPredictedDateComponent.getDefaultValidator()).thenReturn(Validator.alwaysPass());
+    presenter.init(view);
+    Submission submission = submissions.get(0);
+    LocalDate date = LocalDate.now().minusDays(1);
+    PredictedDate digestionPredictedDate = new PredictedDate(date, false);
+    PredictedDate analysisPredictedDate = new PredictedDate(date.plusDays(1), true);
+    when(predictedDateComponent.getValue()).thenReturn(digestionPredictedDate);
+    when(analysisPredictedDateComponent.getValue()).thenReturn(analysisPredictedDate);
+    gridStartEdit(design.submissionsGrid, submission);
+    design.submissionsGrid.getEditor().save();
+
+    verify(submissionService).update(submission, null);
+    verify(predictedDateComponentProvider, times(2)).get();
+    assertEquals(date, submission.getDigestionDate());
+    assertEquals(false, submission.isDigestionDatePredicted());
+    assertEquals(date.plusDays(1), submission.getAnalysisDate());
+    assertEquals(true, submission.isAnalysisDatePredicted());
   }
 
   @Test
