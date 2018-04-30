@@ -187,7 +187,7 @@ public class SubmissionService {
 
   /**
    * Returns printable version of submission in HTML.
-   * 
+   *
    * @param submission
    *          submission
    * @param locale
@@ -354,39 +354,53 @@ public class SubmissionService {
    *
    * @param submission
    *          submission with new information
+   * @param explanation
+   *          explanation for changes made to submission
    * @throws IllegalArgumentException
    *           samples don't all have {@link SampleStatus#TO_APPROVE} status
    */
-  public void update(Submission submission) throws IllegalArgumentException {
-    if (submission.getSamples().stream()
-        .filter(
-            sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.TO_APPROVE)
-        .findAny().isPresent()) {
-      throw new IllegalArgumentException("Cannot update submission if samples don't have "
-          + SampleStatus.TO_APPROVE.name() + " status");
-    }
+  public void update(Submission submission, String explanation) throws IllegalArgumentException {
+    validateUpdateSubmission(submission);
     authorizationService.checkSubmissionWritePermission(submission);
 
-    Submission old = entityManager.find(Submission.class, submission.getId());
-    submission.setUser(old.getUser());
-    submission.setLaboratory(old.getLaboratory());
-    submission.setSubmissionDate(old.getSubmissionDate());
-    submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
-    updateNoSecurity(submission);
+    prepareUpdate(submission);
 
-    Activity activity = submissionActivityService.update(submission);
-    activityService.insert(activity);
+    Optional<Activity> activity = submissionActivityService.update(submission, explanation);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
 
-    // Send email to admin users to inform them of the changes in submission.
-    try {
-      this.sendSubmissionToAdmins(submission, ActionType.UPDATE);
-    } catch (MessagingException e) {
-      logger.error("Could not send email containing new submitted samples", e);
+      if (!authorizationService.hasAdminRole()) {
+        // Send email to admin users to inform them of the changes in submission.
+        try {
+          this.sendSubmissionToAdmins(submission, ActionType.UPDATE);
+        } catch (MessagingException e) {
+          logger.error("Could not send email containing new submitted samples", e);
+        }
+      }
     }
   }
 
-  private void updateNoSecurity(Submission submission) throws IllegalArgumentException {
+  private void validateUpdateSubmission(Submission submission) {
+    if (!authorizationService.hasAdminRole()) {
+      Submission old = entityManager.find(Submission.class, submission.getId());
+      if (!old.getUser().getId().equals(submission.getUser().getId())) {
+        throw new IllegalArgumentException("Cannot update submission's owner");
+      }
+
+      if (submission.getSamples().stream()
+          .filter(
+              sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.TO_APPROVE)
+          .findAny().isPresent()) {
+        throw new IllegalArgumentException("Cannot update submission if samples don't have "
+            + SampleStatus.TO_APPROVE.name() + " status");
+      }
+    }
+  }
+
+  private void prepareUpdate(Submission submission) throws IllegalArgumentException {
     Submission old = entityManager.find(Submission.class, submission.getId());
+    submission.setLaboratory(submission.getUser().getLaboratory());
+
     removeUnusedContainers(submission, old);
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
@@ -442,29 +456,6 @@ public class SubmissionService {
   }
 
   /**
-   * Forces submission update.
-   *
-   * @param submission
-   *          submission with new information
-   * @param explanation
-   *          explanation for changes made to submission
-   */
-  public void forceUpdate(Submission submission, String explanation) {
-    authorizationService.checkAdminRole();
-
-    submission.setLaboratory(submission.getUser().getLaboratory());
-    submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
-    updateNoSecurity(submission);
-    entityManager.flush();
-
-    // Log update to database.
-    Optional<Activity> activity = submissionActivityService.forceUpdate(submission, explanation);
-    if (activity.isPresent()) {
-      activityService.insert(activity.get());
-    }
-  }
-
-  /**
    * Approve analysis of all samples in submissions.
    *
    * @param submissions
@@ -499,7 +490,7 @@ public class SubmissionService {
       entityManager.refresh(submission);
       submission.setHidden(true);
 
-      Optional<Activity> activity = submissionActivityService.forceUpdate(submission, null);
+      Optional<Activity> activity = submissionActivityService.update(submission, null);
       if (activity.isPresent()) {
         activityService.insert(activity.get());
       }
@@ -520,7 +511,7 @@ public class SubmissionService {
       entityManager.refresh(submission);
       submission.setHidden(false);
 
-      Optional<Activity> activity = submissionActivityService.forceUpdate(submission, null);
+      Optional<Activity> activity = submissionActivityService.update(submission, null);
       if (activity.isPresent()) {
         activityService.insert(activity.get());
       }

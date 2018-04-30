@@ -35,6 +35,7 @@
     <class>ca.qc.ircm.proview.msanalysis.Acquisition</class>
     <class>ca.qc.ircm.proview.msanalysis.MsAnalysis</class>
     <class>ca.qc.ircm.proview.persistence.InstantConverter</class>
+    <class>ca.qc.ircm.proview.persistence.LocalDateConverter</class>
     <class>ca.qc.ircm.proview.persistence.LocaleConverter</class>
     <class>ca.qc.ircm.proview.plate.Plate</class>
     <class>ca.qc.ircm.proview.plate.Well</class>

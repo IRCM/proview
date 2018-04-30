@@ -103,68 +103,6 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void update() {
-    Submission oldSubmission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(oldSubmission);
-    Submission newSubmission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(newSubmission);
-    newSubmission.setService(Service.MALDI_MS);
-    newSubmission.setTaxonomy("mouse");
-    newSubmission.setExperiment("new_experiment");
-    newSubmission.setGoal("new_goal");
-    newSubmission.setMassDetectionInstrument(MassDetectionInstrument.TOF);
-    newSubmission.setSource(MassDetectionInstrumentSource.LDTD);
-    newSubmission.setInjectionType(InjectionType.LC_MS);
-    newSubmission.setProteolyticDigestionMethod(ProteolyticDigestion.DIGESTED);
-    newSubmission.setUsedProteolyticDigestionMethod("Trypsine");
-    newSubmission.setOtherProteolyticDigestionMethod("None");
-    newSubmission.setProteinIdentification(ProteinIdentification.OTHER);
-    newSubmission.setProteinIdentificationLink("http://cou24/my_database");
-    newSubmission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
-    newSubmission.setOtherEnrichmentType("Phosphopeptides");
-    newSubmission.setLowResolution(true);
-    newSubmission.setHighResolution(true);
-    newSubmission.setMsms(true);
-    newSubmission.setExactMsms(true);
-    newSubmission.setMudPitFraction(MudPitFraction.TWELVE);
-    newSubmission.setProteinContent(ProteinContent.LARGE);
-    newSubmission.setProtein("my_protein");
-    newSubmission.setPostTranslationModification("my_modification");
-    newSubmission.setSeparation(GelSeparation.TWO_DIMENSION);
-    newSubmission.setThickness(GelThickness.ONE_HALF);
-    newSubmission.setColoration(GelColoration.OTHER);
-    newSubmission.setOtherColoration("my_coloration");
-    newSubmission.setDevelopmentTime("2.0 min");
-    newSubmission.setDecoloration(true);
-    newSubmission.setWeightMarkerQuantity(2.5);
-    newSubmission.setProteinQuantity("12.0 pmol");
-    newSubmission.setFormula("h2o");
-    newSubmission.setMonoisotopicMass(18.0);
-    newSubmission.setAverageMass(18.0);
-    newSubmission.setSolutionSolvent("ethanol");
-    newSubmission.setOtherSolvent("ch3oh");
-    newSubmission.setToxicity("die");
-    newSubmission.setLightSensitive(true);
-    newSubmission.setStorageTemperature(StorageTemperature.LOW);
-    newSubmission.setQuantification(Quantification.LABEL_FREE);
-    newSubmission.setQuantificationComment("Heavy:Lys8,Arg10\nMedium:Lys4,Arg6\nLight:None");
-    newSubmission.setComment("new_comment");
-    newSubmission.setSubmissionDate(Instant.now());
-    newSubmission.setAdditionalPrice(new BigDecimal("21.50"));
-    newSubmission.setFiles(new ArrayList<>());
-    newSubmission.getFiles().add(new SubmissionFile("my_file.xlsx"));
-    newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
-
-    Activity activity = submissionActivityService.update(newSubmission);
-
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("submission", activity.getTableName());
-    assertEquals(newSubmission.getId(), activity.getRecordId());
-    assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
-  }
-
-  @Test
-  public void forceUpdate() {
     Submission newSubmission = entityManager.find(Submission.class, 1L);
     entityManager.detach(newSubmission);
     final User oldUser = new User(3L);
@@ -222,7 +160,7 @@ public class SubmissionActivityServiceTest {
     newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
 
     Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(newSubmission, "unit_test");
+        submissionActivityService.update(newSubmission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -615,7 +553,7 @@ public class SubmissionActivityServiceTest {
   }
 
   @Test
-  public void forceUpdate_ChangeSamples() {
+  public void update_ChangeSamples() {
     Submission submission = entityManager.find(Submission.class, 147L);
     entityManager.detach(submission);
     submission.getSamples().remove(1);
@@ -632,8 +570,7 @@ public class SubmissionActivityServiceTest {
     sampleUpdate.getUpdates().add(updateSampleNameActivity);
     when(sampleActivityService.update(any(), any())).thenReturn(Optional.of(sampleUpdate));
 
-    Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(submission, "unit_test");
+    Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
     verify(sampleActivityService).update(eq(submission.getSamples().get(0)), any());
     assertEquals(true, optionalActivity.isPresent());
@@ -659,7 +596,7 @@ public class SubmissionActivityServiceTest {
   }
 
   @Test
-  public void forceUpdate_AddSolvent() throws Throwable {
+  public void update_AddSolvent() throws Throwable {
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
     Solvent solvent = Solvent.OTHER;
@@ -667,8 +604,7 @@ public class SubmissionActivityServiceTest {
     submission.setOtherSolvent("ch3oh");
     entityManager.flush();
 
-    Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(submission, "unit_test");
+    Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -698,15 +634,14 @@ public class SubmissionActivityServiceTest {
   }
 
   @Test
-  public void forceUpdate_RemoveSolvent() throws Throwable {
+  public void update_RemoveSolvent() throws Throwable {
     Submission submission = entityManager.find(Submission.class, 33L);
     entityManager.detach(submission);
     Solvent solvent = Solvent.METHANOL;
     submission.getSolvents().remove(solvent);
     entityManager.flush();
 
-    Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(submission, "unit_test");
+    Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -728,12 +663,11 @@ public class SubmissionActivityServiceTest {
   }
 
   @Test
-  public void forceUpdate_NoChange() {
+  public void update_NoChange() {
     Submission submission = entityManager.find(Submission.class, 1L);
     entityManager.detach(submission);
 
-    Optional<Activity> optionalActivity =
-        submissionActivityService.forceUpdate(submission, "unit_test");
+    Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
     assertEquals(false, optionalActivity.isPresent());
   }

@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.digestion;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.findContainer;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -40,6 +41,7 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
@@ -57,6 +59,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -375,6 +378,83 @@ public class DigestionServiceTest {
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
     digestionService.insert(digestion);
+  }
+
+  @Test
+  public void insert_SubmissionDigestionDate_NotUpdated() {
+    Digestion digestion = new Digestion();
+    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 559L);
+    entityManager.detach(sample);
+    entityManager.detach(sample.getSubmission());
+    Tube tube = new Tube(11L);
+    final List<TreatedSample> treatedSamples = new ArrayList<>();
+    TreatedSample treatedSample = new TreatedSample();
+    treatedSample.setComment("unit test");
+    treatedSample.setSample(sample);
+    treatedSample.setContainer(tube);
+    treatedSamples.add(treatedSample);
+    digestion.setTreatedSamples(treatedSamples);
+    when(digestionActivityService.insert(any())).thenReturn(activity);
+
+    digestionService.insert(digestion);
+
+    entityManager.flush();
+    Submission submission = entityManager.find(Submission.class, 147L);
+    assertEquals(LocalDate.of(2014, 10, 8), submission.getDigestionDate());
+    assertFalse(submission.isDigestionDatePredicted());
+  }
+
+  @Test
+  public void insert_SubmissionDigestionDate_UpdatedExpected() {
+    Digestion digestion = new Digestion();
+    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    entityManager.detach(sample);
+    entityManager.detach(sample.getSubmission());
+    Tube tube = new Tube(1L);
+    final List<TreatedSample> treatedSamples = new ArrayList<>();
+    TreatedSample treatedSample = new TreatedSample();
+    treatedSample.setComment("unit test");
+    treatedSample.setSample(sample);
+    treatedSample.setContainer(tube);
+    treatedSamples.add(treatedSample);
+    digestion.setTreatedSamples(treatedSamples);
+    when(digestionActivityService.insert(any())).thenReturn(activity);
+
+    digestionService.insert(digestion);
+
+    entityManager.flush();
+    Submission submission = entityManager.find(Submission.class, 1L);
+    assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getDigestionDate()));
+    assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getDigestionDate()));
+    assertFalse(submission.isDigestionDatePredicted());
+  }
+
+  @Test
+  public void insert_SubmissionDigestionDate_UpdatedNull() {
+    Digestion digestion = new Digestion();
+    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
+    entityManager.detach(sample);
+    entityManager.detach(sample.getSubmission());
+    Tube tube = new Tube(2L);
+    final List<TreatedSample> treatedSamples = new ArrayList<>();
+    TreatedSample treatedSample = new TreatedSample();
+    treatedSample.setComment("unit test");
+    treatedSample.setSample(sample);
+    treatedSample.setContainer(tube);
+    treatedSamples.add(treatedSample);
+    digestion.setTreatedSamples(treatedSamples);
+    when(digestionActivityService.insert(any())).thenReturn(activity);
+
+    digestionService.insert(digestion);
+
+    entityManager.flush();
+    Submission submission = entityManager.find(Submission.class, 32L);
+    assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getDigestionDate()));
+    assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getDigestionDate()));
+    assertFalse(submission.isDigestionDatePredicted());
   }
 
   @Test

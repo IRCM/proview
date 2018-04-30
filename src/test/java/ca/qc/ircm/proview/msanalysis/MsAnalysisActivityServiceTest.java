@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.msanalysis;
 
+import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -28,10 +29,14 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.sample.QSubmissionSample;
+import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.QSubmission;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.tube.Tube;
@@ -42,6 +47,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -54,6 +61,8 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class MsAnalysisActivityServiceTest {
+  private static final QSubmission qsubmission = QSubmission.submission;
+  private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
   private MsAnalysisActivityService msAnalysisActivityService;
   @PersistenceContext
   private EntityManager entityManager;
@@ -86,6 +95,11 @@ public class MsAnalysisActivityServiceTest {
     acquisitions.add(acquisition);
     msAnalysis.setAcquisitions(acquisitions);
     sample.setStatus(SampleStatus.ANALYSED);
+    LocalDate date = LocalDate.now();
+    Submission submission = new Submission(33L);
+    submission.setAnalysisDate(date);
+    submission.setAnalysisDatePredicted(true);
+    sample.setSubmission(submission);
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
@@ -93,19 +107,36 @@ public class MsAnalysisActivityServiceTest {
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("msanalysis", activity.getTableName());
+    assertEquals(MsAnalysis.TABLE_NAME, activity.getTableName());
     assertEquals(msAnalysis.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
     assertEquals((Long) 1L, activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity sampleStatusActivity = new UpdateActivity();
     sampleStatusActivity.setActionType(ActionType.UPDATE);
-    sampleStatusActivity.setTableName("sample");
+    sampleStatusActivity.setTableName(Sample.TABLE_NAME);
     sampleStatusActivity.setRecordId(sample.getId());
-    sampleStatusActivity.setColumn("status");
+    sampleStatusActivity.setColumn(qname(qsubmissionSample.status));
     sampleStatusActivity.setOldValue(SampleStatus.TO_APPROVE.name());
     sampleStatusActivity.setNewValue(SampleStatus.ANALYSED.name());
     expectedUpdateActivities.add(sampleStatusActivity);
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
+    UpdateActivity submissionAnalysisDateActivity = new UpdateActivity();
+    submissionAnalysisDateActivity.setActionType(ActionType.UPDATE);
+    submissionAnalysisDateActivity.setTableName(Submission.TABLE_NAME);
+    submissionAnalysisDateActivity.setRecordId(submission.getId());
+    submissionAnalysisDateActivity.setColumn(qname(qsubmission.analysisDate));
+    submissionAnalysisDateActivity.setOldValue(null);
+    submissionAnalysisDateActivity.setNewValue(dateFormatter.format(date));
+    expectedUpdateActivities.add(submissionAnalysisDateActivity);
+    UpdateActivity submissionAnalysisDatePredictedActivity = new UpdateActivity();
+    submissionAnalysisDatePredictedActivity.setActionType(ActionType.UPDATE);
+    submissionAnalysisDatePredictedActivity.setTableName(Submission.TABLE_NAME);
+    submissionAnalysisDatePredictedActivity.setRecordId(submission.getId());
+    submissionAnalysisDatePredictedActivity.setColumn(qname(qsubmission.analysisDatePredicted));
+    submissionAnalysisDatePredictedActivity.setOldValue("0");
+    submissionAnalysisDatePredictedActivity.setNewValue("1");
+    expectedUpdateActivities.add(submissionAnalysisDatePredictedActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

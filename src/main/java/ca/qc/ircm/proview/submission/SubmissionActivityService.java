@@ -92,27 +92,6 @@ public class SubmissionActivityService {
   }
 
   /**
-   * Creates an activity about update of samples submission.
-   *
-   * @param newSubmission
-   *          submission containing new properties/values
-   * @return activity about update of samples submission
-   */
-  @CheckReturnValue
-  public Activity update(final Submission newSubmission) {
-    User user = authorizationService.getCurrentUser();
-
-    Activity activity = new Activity();
-    activity.setActionType(ActionType.UPDATE);
-    activity.setRecordId(newSubmission.getId());
-    activity.setUser(user);
-    activity.setTableName("submission");
-    activity.setExplanation(null);
-    activity.setUpdates(null);
-    return activity;
-  }
-
-  /**
    * Creates an activity about forced update of samples submission.
    *
    * @param submission
@@ -122,7 +101,7 @@ public class SubmissionActivityService {
    * @return activity about update of samples submission
    */
   @CheckReturnValue
-  public Optional<Activity> forceUpdate(final Submission submission, final String explanation) {
+  public Optional<Activity> update(final Submission submission, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
     final Submission oldSubmission = entityManager.find(Submission.class, submission.getId());
@@ -210,8 +189,7 @@ public class SubmissionActivityService {
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("formula")
         .oldValue(oldSubmission.getFormula()).newValue(submission.getFormula()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("monoisotopicMass")
-        .oldValue(oldSubmission.getMonoisotopicMass())
-        .newValue(submission.getMonoisotopicMass()));
+        .oldValue(oldSubmission.getMonoisotopicMass()).newValue(submission.getMonoisotopicMass()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("averageMass")
         .oldValue(oldSubmission.getAverageMass()).newValue(submission.getAverageMass()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("solutionSolvent")
