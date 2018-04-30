@@ -447,8 +447,12 @@ public class SubmissionsViewPresenter {
     });
     String[] defaultColumnOrder =
         design.submissionsGrid.getColumns().stream().map(col -> col.getId()).toArray(String[]::new);
-    design.submissionsGrid
-        .setColumnOrder(userPreferenceService.get(this, COLUMN_ORDER, defaultColumnOrder));
+    try {
+      design.submissionsGrid
+          .setColumnOrder(userPreferenceService.get(this, COLUMN_ORDER, defaultColumnOrder));
+    } catch (IllegalStateException e) {
+      design.submissionsGrid.setColumnOrder(defaultColumnOrder);
+    }
     design.submissionsGrid.setColumnReorderingAllowed(true);
     design.submissionsGrid.addColumnReorderListener(e -> {
       userPreferenceService.save(SubmissionsViewPresenter.this, COLUMN_ORDER, design.submissionsGrid

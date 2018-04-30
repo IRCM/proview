@@ -810,6 +810,34 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
+  public void submissionsGrid_ColumnOrder_InvalidColumn() {
+    String[] columnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, "invalid_column",
+        ANALYSIS_DATE, SAMPLE_NAME, SAMPLE_COUNT, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS,
+        TREATMENTS, HIDDEN, HISTORY };
+    when(userPreferenceService.get(any(), eq(COLUMN_ORDER), any())).thenReturn(columnOrder);
+    presenter.init(view);
+
+    assertEquals(EXPERIMENT, design.submissionsGrid.getColumns().get(0).getId());
+    assertEquals(USER, design.submissionsGrid.getColumns().get(1).getId());
+    assertEquals(DIRECTOR, design.submissionsGrid.getColumns().get(2).getId());
+    assertEquals(SERVICE, design.submissionsGrid.getColumns().get(3).getId());
+    assertEquals(DIGESTION_DATE, design.submissionsGrid.getColumns().get(4).getId());
+    assertEquals(ANALYSIS_DATE, design.submissionsGrid.getColumns().get(5).getId());
+    assertEquals(SAMPLE_COUNT, design.submissionsGrid.getColumns().get(6).getId());
+    assertEquals(SAMPLE_NAME, design.submissionsGrid.getColumns().get(7).getId());
+    assertEquals(SAMPLE_STATUSES, design.submissionsGrid.getColumns().get(8).getId());
+    assertEquals(DATE, design.submissionsGrid.getColumns().get(9).getId());
+    assertEquals(LINKED_TO_RESULTS, design.submissionsGrid.getColumns().get(10).getId());
+    assertEquals(TREATMENTS, design.submissionsGrid.getColumns().get(11).getId());
+    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(12).getId());
+    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(13).getId());
+    String[] defaultColumnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE,
+        DIGESTION_DATE, ANALYSIS_DATE, SAMPLE_COUNT, SAMPLE_NAME, SAMPLE_STATUSES, DATE,
+        LINKED_TO_RESULTS, TREATMENTS, HIDDEN, HISTORY };
+    verify(userPreferenceService).get(presenter, COLUMN_ORDER, defaultColumnOrder);
+  }
+
+  @Test
   public void submissionsGrid_ChangeColumnOrder() {
     presenter.init(view);
     design.submissionsGrid.setColumnOrder(EXPERIMENT, USER, DIRECTOR, SERVICE, DIGESTION_DATE,
