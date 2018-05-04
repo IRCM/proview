@@ -169,12 +169,12 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void viewSubmission() throws Throwable {
     open();
 
-    clickViewSubmissionByRow(1);
+    clickViewSubmissionByRow(2);
 
     assertNotNull(findElement(className(SubmissionWindowPresenter.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionWindowPresenter.WINDOW_STYLE)));
-    String experiment = experimentByRow(1);
+    String experiment = experimentByRow(2);
     assertTrue(
         resources(SubmissionWindow.class).message(SubmissionWindowPresenter.TITLE, experiment)
             .contains(submissionWindow.getCaption()));
@@ -185,12 +185,12 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void viewSubmissionResults() throws Throwable {
     open();
 
-    clickViewSubmissionResultsByRow(3);
+    clickViewSubmissionResultsByRow(4);
 
     assertNotNull(findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
-    String experiment = experimentByRow(3);
+    String experiment = experimentByRow(4);
     assertTrue(resources(SubmissionAnalysesWindow.class)
         .message(SubmissionAnalysesWindow.TITLE, experiment)
         .contains(submissionWindow.getCaption()));
@@ -203,12 +203,12 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     admin = true;
     open();
 
-    clickViewSubmissionTreatmentsByRow(3);
+    clickViewSubmissionTreatmentsByRow(4);
 
     assertNotNull(findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
-    String experiment = experimentByRow(3);
+    String experiment = experimentByRow(4);
     assertTrue(resources(SubmissionTreatmentsWindow.class)
         .message(SubmissionTreatmentsWindow.TITLE, experiment)
         .contains(submissionWindow.getCaption()));
@@ -221,12 +221,12 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     admin = true;
     open();
 
-    clickViewSubmissionHistoryByRow(3);
+    clickViewSubmissionHistoryByRow(4);
 
     assertNotNull(findElement(className(SubmissionHistoryWindow.WINDOW_STYLE)));
     WindowElement submissionWindow =
         wrap(WindowElement.class, findElement(className(SubmissionHistoryWindow.WINDOW_STYLE)));
-    String experiment = experimentByRow(3);
+    String experiment = experimentByRow(4);
     assertTrue(
         resources(SubmissionHistoryWindow.class).message(SubmissionHistoryWindow.TITLE, experiment)
             .contains(submissionWindow.getCaption()));
@@ -265,8 +265,8 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void selectContainers() throws Throwable {
     admin = true;
     open();
-    selectSubmission(2);
-    selectSubmission(4);
+    selectSubmission(3);
+    selectSubmission(5);
 
     clickSelectContainersButton();
 
@@ -285,8 +285,8 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void updateStatus() throws Throwable {
     admin = true;
     open();
-    selectSubmission(2);
-    selectSubmission(4);
+    selectSubmission(3);
+    selectSubmission(5);
 
     clickUpdateStatusButton();
 
@@ -298,7 +298,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void approve() throws Throwable {
     admin = true;
     open();
-    selectSubmission(0);
+    selectSubmission(1);
 
     clickApproveButton();
 
@@ -314,7 +314,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void transfer() throws Throwable {
     admin = true;
     open();
-    selectSubmission(4);
+    selectSubmission(5);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -330,7 +330,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void digestion() throws Throwable {
     admin = true;
     open();
-    selectSubmission(4);
+    selectSubmission(5);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -346,7 +346,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void enrichment() throws Throwable {
     admin = true;
     open();
-    selectSubmission(4);
+    selectSubmission(5);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -362,7 +362,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void solubilisation() throws Throwable {
     admin = true;
     open();
-    selectSubmission(4);
+    selectSubmission(5);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -378,7 +378,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void dilution() throws Throwable {
     admin = true;
     open();
-    selectSubmission(4);
+    selectSubmission(5);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -394,7 +394,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void standardAddition() throws Throwable {
     admin = true;
     open();
-    selectSubmission(4);
+    selectSubmission(5);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -410,7 +410,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void msAnalysis() throws Throwable {
     admin = true;
     open();
-    selectSubmission(4);
+    selectSubmission(5);
     clickSelectContainersButton();
     WindowElement containerSelectionWindow =
         wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
@@ -424,7 +424,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   @Test
   public void dataAnalysis() throws Throwable {
     open();
-    selectSubmission(4);
+    selectSubmission(5);
 
     clickDataAnalysisButton();
 

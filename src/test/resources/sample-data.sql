@@ -53,6 +53,8 @@ INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrum
 VALUES (162,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'LABEL_FREE',NULL,'2015-05-26','2015-05-27',NULL,NULL,NULL,NULL,2,10,0);
 INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
 VALUES (163,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'REFSEQ',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'LABEL_FREE',NULL,'2017-11-08',NULL,'2017-11-25',NULL,NULL,NULL,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
+VALUES (164,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'REFSEQ',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2018-05-03',NULL,NULL,NULL,NULL,NULL,2,10,0);
 INSERT INTO submissionfiles (id,submissionId,filename,content)
 VALUES (1,1,'protocol.txt',FILE_READ('${project.build.testOutputDirectory}/submissionfile1.txt'));
 INSERT INTO submissionfiles (id,submissionId,filename,content)
@@ -3731,6 +3733,8 @@ INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sam
 VALUES (2278,'TUBE','POLR2B_20150527_01',NULL,NULL,NULL,638,1,'2015-05-27 13:33:23',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,version,time,banned)
 VALUES (2279,'TUBE','POLR2B_20150527_02',NULL,NULL,NULL,639,1,'2015-05-27 13:33:31',0);
+INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,version,time,banned)
+VALUES (2280,'TUBE','POLR2B_20180503_01',NULL,NULL,NULL,643,1,'2018-05-03 14:29:15',0);
 INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
 VALUES (1,'FAM119A_band_01',NULL,'GEL',1,7,1,0,NULL,NULL,'SUBMISSION',NULL,NULL);
 INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
@@ -3901,6 +3905,8 @@ INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,lis
 VALUES (641,'POLR2B_20171108_02',NULL,'DRY',1761,0,163,1,'15 μg',NULL,'SUBMISSION',NULL,NULL);
 INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
 VALUES (642,'POLR2B_20171108_03',NULL,'DRY',1762,0,163,2,'15 μg',NULL,'SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
+VALUES (643,'POLR2B_201810503_01',NULL,'SOLUTION',2280,1,164,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
 INSERT INTO standard (id,name,quantity,sampleId,comment,deleted)
 VALUES (4,'std1','2 μg',445,NULL,0);
 INSERT INTO standard (id,name,quantity,sampleId,comment,deleted)
