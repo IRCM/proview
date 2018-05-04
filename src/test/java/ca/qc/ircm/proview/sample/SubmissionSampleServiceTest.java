@@ -42,6 +42,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
@@ -211,5 +213,97 @@ public class SubmissionSampleServiceTest {
     assertEquals(SampleStatus.DIGESTED, newTestSample1.getStatus());
     SubmissionSample newTestSample2 = (SubmissionSample) sampleCaptor.getAllValues().get(1);
     assertEquals(SampleStatus.RECEIVED, newTestSample2.getStatus());
+  }
+
+  @Test
+  public void updateStatus_Digested_SubmissionDigestionDate_UpdatedNull() throws Throwable {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.DIGESTED);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleService.updateStatus(Arrays.asList(sample));
+
+    entityManager.flush();
+    sample = entityManager.find(SubmissionSample.class, 443L);
+    assertTrue(LocalDate.now().minusDays(2).isBefore(sample.getSubmission().getDigestionDate()));
+    assertTrue(LocalDate.now().plusDays(2).isAfter(sample.getSubmission().getDigestionDate()));
+  }
+
+  @Test
+  public void updateStatus_Digested_SubmissionDigestionDate_NotUpdated() throws Throwable {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 559L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.DIGESTED);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleService.updateStatus(Arrays.asList(sample));
+
+    entityManager.flush();
+    sample = entityManager.find(SubmissionSample.class, 559L);
+    assertEquals(LocalDate.of(2014, 10, 8), sample.getSubmission().getDigestionDate());
+  }
+
+  @Test
+  public void updateStatus_Analysed_SubmissionDigestionDate_NotUpdated() throws Throwable {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.ANALYSED);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleService.updateStatus(Arrays.asList(sample));
+
+    entityManager.flush();
+    sample = entityManager.find(SubmissionSample.class, 443L);
+    assertNull(sample.getSubmission().getDigestionDate());
+  }
+
+  @Test
+  public void updateStatus_Analysed_SubmissionAnalysisDate_UpdatedNull() throws Throwable {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.ANALYSED);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleService.updateStatus(Arrays.asList(sample));
+
+    entityManager.flush();
+    sample = entityManager.find(SubmissionSample.class, 443L);
+    assertTrue(LocalDate.now().minusDays(2).isBefore(sample.getSubmission().getAnalysisDate()));
+    assertTrue(LocalDate.now().plusDays(2).isAfter(sample.getSubmission().getAnalysisDate()));
+  }
+
+  @Test
+  public void updateStatus_Analysed_SubmissionAnalysisDate_NotUpdated() throws Throwable {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 621L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.ANALYSED);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleService.updateStatus(Arrays.asList(sample));
+
+    entityManager.flush();
+    sample = entityManager.find(SubmissionSample.class, 621L);
+    assertEquals(LocalDate.of(2014, 10, 17), sample.getSubmission().getAnalysisDate());
+  }
+
+  @Test
+  public void updateStatus_DataAnalysiss_SubmissionAnalysisDate_NotUpdated() throws Throwable {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.DATA_ANALYSIS);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleService.updateStatus(Arrays.asList(sample));
+
+    entityManager.flush();
+    sample = entityManager.find(SubmissionSample.class, 443L);
+    assertNull(sample.getSubmission().getAnalysisDate());
   }
 }

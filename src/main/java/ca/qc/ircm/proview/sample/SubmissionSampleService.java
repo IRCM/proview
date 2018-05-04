@@ -22,11 +22,13 @@ import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -121,6 +123,18 @@ public class SubmissionSampleService {
       }
 
       entityManager.merge(sample);
+      if (SampleStatus.DIGESTED.equals(sample.getStatus())
+          && sample.getSubmission().getDigestionDate() == null) {
+        Submission submission = sample.getSubmission();
+        submission.setDigestionDate(LocalDate.now());
+        entityManager.merge(submission);
+      }
+      if (SampleStatus.ANALYSED.equals(sample.getStatus())
+          && sample.getSubmission().getAnalysisDate() == null) {
+        Submission submission = sample.getSubmission();
+        submission.setAnalysisDate(LocalDate.now());
+        entityManager.merge(submission);
+      }
     }
   }
 }

@@ -334,20 +334,10 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Column(name = "digestionDate")
   private LocalDate digestionDate;
   /**
-   * True if digestion date is a predicted date, false if digestion date is an actual date.
-   */
-  @Column(name = "digestionDatePredicted")
-  private boolean digestionDatePredicted;
-  /**
    * Analysis date.
    */
   @Column(name = "analysisDate")
   private LocalDate analysisDate;
-  /**
-   * True if analysis date is an predicted date, false if analysis date is an actual date.
-   */
-  @Column(name = "analysisDatePredicted")
-  private boolean analysisDatePredicted;
   /**
    * True if submission is hidden.
    */
@@ -818,27 +808,11 @@ public class Submission implements Data, LaboratoryData, Serializable {
     this.digestionDate = digestionDate;
   }
 
-  public boolean isDigestionDatePredicted() {
-    return digestionDatePredicted;
-  }
-
-  public void setDigestionDatePredicted(boolean digestionDatePredicted) {
-    this.digestionDatePredicted = digestionDatePredicted;
-  }
-
   public LocalDate getAnalysisDate() {
     return analysisDate;
   }
 
   public void setAnalysisDate(LocalDate analysisDate) {
     this.analysisDate = analysisDate;
-  }
-
-  public boolean isAnalysisDatePredicted() {
-    return analysisDatePredicted;
-  }
-
-  public void setAnalysisDatePredicted(boolean analysisDatePredicted) {
-    this.analysisDatePredicted = analysisDatePredicted;
   }
 }

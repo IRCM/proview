@@ -148,9 +148,8 @@ public class MsAnalysisService extends BaseTreatmentService {
         SubmissionSample submissionSample = (SubmissionSample) acquisition.getSample();
         submissionSample.setStatus(SampleStatus.ANALYSED);
         Submission submission = submissionSample.getSubmission();
-        if (submission.isAnalysisDatePredicted() || submission.getAnalysisDate() == null) {
+        if (submission.getAnalysisDate() == null) {
           submission.setAnalysisDate(toLocalDate(insertTime));
-          submission.setAnalysisDatePredicted(false);
           entityManager.merge(submission);
         }
       }

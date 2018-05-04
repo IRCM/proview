@@ -97,10 +97,6 @@ public class MsAnalysisActivityService {
         if (submissionIds.add(newSubmission.getId())) {
           updateBuilders.add(submissionUpdate(newSubmission).column(qname(qsubmission.analysisDate))
               .oldValue(oldSubmission.getAnalysisDate()).newValue(newSubmission.getAnalysisDate()));
-          updateBuilders
-              .add(submissionUpdate(newSubmission).column(qname(qsubmission.analysisDatePredicted))
-                  .oldValue(oldSubmission.isAnalysisDatePredicted())
-                  .newValue(newSubmission.isAnalysisDatePredicted()));
         }
       }
     }

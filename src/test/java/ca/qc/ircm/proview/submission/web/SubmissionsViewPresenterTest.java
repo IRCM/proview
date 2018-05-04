@@ -82,7 +82,6 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -109,8 +108,6 @@ import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.time.PredictedDate;
-import ca.qc.ircm.proview.time.web.PredictedDateComponent;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.UserPreferenceService;
@@ -124,7 +121,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.SelectionModel;
-import com.vaadin.data.Validator;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
@@ -136,6 +132,7 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -188,8 +185,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @Mock
   private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
   @Mock
-  private Provider<PredictedDateComponent> predictedDateComponentProvider;
-  @Mock
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Mock
   private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
@@ -224,11 +219,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @Mock
   private LocalDateFilterComponent localDateFilterComponent;
   @Mock
-  private PredictedDateComponent predictedDateComponent;
-  @Mock
   private Registration registration;
-  @Mock
-  private ValueChangeEvent<PredictedDate> predictedDateValueChangeEvent;
   @Captor
   private ArgumentCaptor<Collection<Sample>> samplesCaptor;
   @Captor
@@ -243,8 +234,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   private ArgumentCaptor<SaveListener<List<SampleContainer>>> containersSaveListenerCaptor;
   @Captor
   private ArgumentCaptor<SaveListener<Range<LocalDate>>> localDateRangeSaveListenerCaptor;
-  @Captor
-  private ArgumentCaptor<ValueChangeListener<PredictedDate>> predictedDateValueChangeListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private SubmissionsViewDesign design;
@@ -258,11 +247,10 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @Before
   public void beforeTest() {
     presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
-        userPreferenceService, localDateFilterComponentProvider, predictedDateComponentProvider,
-        submissionWindowProvider, submissionAnalysesWindowProvider,
-        submissionTreatmentsWindowProvider, submissionHistoryWindowProvider,
-        sampleSelectionWindowProvider, containerSelectionWindowProvider, helpWindowProvider,
-        applicationName);
+        userPreferenceService, localDateFilterComponentProvider, submissionWindowProvider,
+        submissionAnalysesWindowProvider, submissionTreatmentsWindowProvider,
+        submissionHistoryWindowProvider, sampleSelectionWindowProvider,
+        containerSelectionWindowProvider, helpWindowProvider, applicationName);
     design = new SubmissionsViewDesign();
     design.setParent(ui);
     view.design = design;
@@ -273,8 +261,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     when(submissionService.count(any())).thenReturn(submissions.size());
     when(userPreferenceService.get(any(), any(), any())).thenAnswer(i -> i.getArguments()[2]);
     when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
-    when(predictedDateComponentProvider.get()).thenReturn(predictedDateComponent);
-    when(predictedDateComponent.getDefaultValidator()).thenReturn(Validator.alwaysPass());
     when(submissionWindowProvider.get()).thenReturn(submissionWindow);
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
     when(submissionTreatmentsWindowProvider.get()).thenReturn(submissionTreatmentsWindow);
@@ -288,6 +274,11 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     return submission.getSamples().stream().map(s -> s.getStatus()).distinct().sorted()
         .map(s -> s.getLabel(locale))
         .collect(Collectors.joining(resources.message(SAMPLE_STATUSES_SEPARATOR)));
+  }
+
+  private boolean predictedStatus(Submission submission, SampleStatus status) {
+    return !submission.getSamples().stream()
+        .filter(sample -> sample.getStatus().compareTo(status) >= 0).findAny().isPresent();
   }
 
   @Test
@@ -452,7 +443,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
       assertTrue(label.getStyleName().contains(DIGESTION_DATE));
       if (submission.getDigestionDate() != null) {
         assertEquals(resources.message(EXPECTED_DATE,
-            submission.isDigestionDatePredicted() ? VaadinIcons.CLOCK.getHtml()
+            predictedStatus(submission, SampleStatus.DIGESTED) ? VaadinIcons.CLOCK.getHtml()
                 : VaadinIcons.CHECK.getHtml(),
             dateFormatter.format(submission.getDigestionDate())), label.getValue());
       }
@@ -468,7 +459,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
       assertTrue(label.getStyleName().contains(ANALYSIS_DATE));
       if (submission.getAnalysisDate() != null) {
         assertEquals(resources.message(EXPECTED_DATE,
-            submission.isAnalysisDatePredicted() ? VaadinIcons.CLOCK.getHtml()
+            predictedStatus(submission, SampleStatus.CANCELLED) ? VaadinIcons.CLOCK.getHtml()
                 : VaadinIcons.CHECK.getHtml(),
             dateFormatter.format(submission.getAnalysisDate())), label.getValue());
       }
@@ -1577,136 +1568,116 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @Test
   public void udpateDigestionDate() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = LocalDate.now().minusDays(1);
-    PredictedDate predictedDate = new PredictedDate(date, true);
-    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
     gridStartEdit(design.submissionsGrid, submission);
+    DateField field =
+        (DateField) design.submissionsGrid.getColumn(DIGESTION_DATE).getEditorBinding().getField();
+    field.setValue(date);
     design.submissionsGrid.getEditor().save();
 
     verify(submissionService).update(submission, null);
-    verify(predictedDateComponentProvider, times(2)).get();
     assertEquals(date, submission.getDigestionDate());
-    assertEquals(true, submission.isDigestionDatePredicted());
   }
 
   @Test
   public void udpateDigestionDate_Clear() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
     presenter.init(view);
     Submission submission = submissions.get(0);
-    PredictedDate predictedDate = new PredictedDate(null, true);
-    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
     gridStartEdit(design.submissionsGrid, submission);
+    DateField field =
+        (DateField) design.submissionsGrid.getColumn(DIGESTION_DATE).getEditorBinding().getField();
+    field.setValue(null);
     design.submissionsGrid.getEditor().save();
 
     verify(submissionService).update(submission, null);
-    verify(predictedDateComponentProvider, times(2)).get();
     assertNull(submission.getDigestionDate());
-    assertEquals(false, submission.isDigestionDatePredicted());
   }
 
   @Test
   public void udpateDigestionDate_Cancel() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = submission.getDigestionDate();
-    boolean predicted = submission.isDigestionDatePredicted();
-    PredictedDate predictedDate = new PredictedDate(LocalDate.now().minusDays(1), true);
-    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
     gridStartEdit(design.submissionsGrid, submission);
+    DateField field =
+        (DateField) design.submissionsGrid.getColumn(DIGESTION_DATE).getEditorBinding().getField();
+    field.setValue(date.minusDays(1));
     design.submissionsGrid.getEditor().cancel();
 
     verify(submissionService, never()).update(any(), any());
-    verify(predictedDateComponentProvider, times(2)).get();
     assertEquals(date, submission.getDigestionDate());
-    assertEquals(predicted, submission.isDigestionDatePredicted());
   }
 
   @Test
   public void udpateAnalysisDate() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = LocalDate.now().minusDays(1);
-    PredictedDate predictedDate = new PredictedDate(date, true);
-    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
     gridStartEdit(design.submissionsGrid, submission);
+    DateField field =
+        (DateField) design.submissionsGrid.getColumn(ANALYSIS_DATE).getEditorBinding().getField();
+    field.setValue(date);
     design.submissionsGrid.getEditor().save();
 
     verify(submissionService).update(submission, null);
-    verify(predictedDateComponentProvider, times(2)).get();
     assertEquals(date, submission.getAnalysisDate());
-    assertEquals(true, submission.isAnalysisDatePredicted());
   }
 
   @Test
   public void udpateAnalysisDate_Clear() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
     presenter.init(view);
     Submission submission = submissions.get(0);
-    PredictedDate predictedDate = new PredictedDate(null, true);
-    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
     gridStartEdit(design.submissionsGrid, submission);
+    DateField field =
+        (DateField) design.submissionsGrid.getColumn(ANALYSIS_DATE).getEditorBinding().getField();
+    field.setValue(null);
     design.submissionsGrid.getEditor().save();
 
     verify(submissionService).update(submission, null);
-    verify(predictedDateComponentProvider, times(2)).get();
     assertNull(submission.getAnalysisDate());
-    assertEquals(false, submission.isAnalysisDatePredicted());
   }
 
   @Test
   public void udpateAnalysisDate_Cancel() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = submission.getAnalysisDate();
-    boolean predicted = submission.isAnalysisDatePredicted();
-    PredictedDate predictedDate = new PredictedDate(LocalDate.now().minusDays(1), true);
-    when(predictedDateComponent.getValue()).thenReturn(predictedDate);
     gridStartEdit(design.submissionsGrid, submission);
+    DateField field =
+        (DateField) design.submissionsGrid.getColumn(ANALYSIS_DATE).getEditorBinding().getField();
+    field.setValue(date.minusDays(1));
     design.submissionsGrid.getEditor().cancel();
 
     verify(submissionService, never()).update(any(), any());
-    verify(predictedDateComponentProvider, times(2)).get();
     assertEquals(date, submission.getAnalysisDate());
-    assertEquals(predicted, submission.isAnalysisDatePredicted());
   }
 
   @Test
   public void udpateDigestionAndAnalysisDate() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    PredictedDateComponent analysisPredictedDateComponent = mock(PredictedDateComponent.class);
-    when(predictedDateComponentProvider.get()).thenReturn(predictedDateComponent,
-        analysisPredictedDateComponent);
-    when(predictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
-    when(analysisPredictedDateComponent.addValueChangeListener(any())).thenReturn(registration);
-    when(analysisPredictedDateComponent.getDefaultValidator()).thenReturn(Validator.alwaysPass());
     presenter.init(view);
     Submission submission = submissions.get(0);
-    LocalDate date = LocalDate.now().minusDays(1);
-    PredictedDate digestionPredictedDate = new PredictedDate(date, false);
-    PredictedDate analysisPredictedDate = new PredictedDate(date.plusDays(1), true);
-    when(predictedDateComponent.getValue()).thenReturn(digestionPredictedDate);
-    when(analysisPredictedDateComponent.getValue()).thenReturn(analysisPredictedDate);
+    LocalDate digestionDate = LocalDate.now().minusDays(1);
+    LocalDate analysisDate = LocalDate.now().plusDays(1);
     gridStartEdit(design.submissionsGrid, submission);
+    DateField digestionDateField =
+        (DateField) design.submissionsGrid.getColumn(DIGESTION_DATE).getEditorBinding().getField();
+    digestionDateField.setValue(digestionDate);
+    DateField analysisDateField =
+        (DateField) design.submissionsGrid.getColumn(ANALYSIS_DATE).getEditorBinding().getField();
+    analysisDateField.setValue(analysisDate);
     design.submissionsGrid.getEditor().save();
 
     verify(submissionService).update(submission, null);
-    verify(predictedDateComponentProvider, times(2)).get();
-    assertEquals(date, submission.getDigestionDate());
-    assertEquals(false, submission.isDigestionDatePredicted());
-    assertEquals(date.plusDays(1), submission.getAnalysisDate());
-    assertEquals(true, submission.isAnalysisDatePredicted());
+    assertEquals(digestionDate, submission.getDigestionDate());
+    assertEquals(analysisDate, submission.getAnalysisDate());
   }
 
   @Test

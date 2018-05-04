@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
@@ -45,8 +46,6 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.time.PredictedDate;
-import ca.qc.ircm.proview.time.web.PredictedDateComponent;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.HelpWindow;
@@ -70,6 +69,7 @@ import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.ItemCaptionGenerator;
 import com.vaadin.ui.Label;
@@ -122,10 +122,8 @@ public class SubmissionsViewPresenter {
       property(SUBMISSION, submission.laboratory.director.getMetadata().getName());
   public static final String SERVICE =
       property(SUBMISSION, submission.service.getMetadata().getName());
-  public static final String DIGESTION_DATE =
-      property(SUBMISSION, submission.digestionDate.getMetadata().getName());
-  public static final String ANALYSIS_DATE =
-      property(SUBMISSION, submission.analysisDate.getMetadata().getName());
+  public static final String DIGESTION_DATE = qname(submission.digestionDate);
+  public static final String ANALYSIS_DATE = qname(submission.analysisDate);
   public static final String EXPECTED_DATE = "predictedDate";
   public static final String SAMPLE_NAME =
       property(SAMPLE, submissionSample.name.getMetadata().getName());
@@ -182,8 +180,6 @@ public class SubmissionsViewPresenter {
   @Inject
   private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
   @Inject
-  private Provider<PredictedDateComponent> predictedDateComponentProvider;
-  @Inject
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Inject
   private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
@@ -206,7 +202,6 @@ public class SubmissionsViewPresenter {
   protected SubmissionsViewPresenter(SubmissionService submissionService,
       AuthorizationService authorizationService, UserPreferenceService userPreferenceService,
       Provider<LocalDateFilterComponent> localDateFilterComponentProvider,
-      Provider<PredictedDateComponent> predictedDateComponentProvider,
       Provider<SubmissionWindow> submissionWindowProvider,
       Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
       Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider,
@@ -218,7 +213,6 @@ public class SubmissionsViewPresenter {
     this.authorizationService = authorizationService;
     this.userPreferenceService = userPreferenceService;
     this.localDateFilterComponentProvider = localDateFilterComponentProvider;
-    this.predictedDateComponentProvider = predictedDateComponentProvider;
     this.submissionWindowProvider = submissionWindowProvider;
     this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
     this.submissionTreatmentsWindowProvider = submissionTreatmentsWindowProvider;
@@ -518,19 +512,9 @@ public class SubmissionsViewPresenter {
       Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
       design.submissionsGrid.getEditor().setBinder(binder);
       design.submissionsGrid.getColumn(DIGESTION_DATE)
-          .setEditorBinding(binder.forField(predictedDateComponentProvider.get()).bind(
-              su -> predictedDate(su.getDigestionDate(), su.isDigestionDatePredicted()),
-              (su, value) -> {
-                su.setDigestionDate(value.date);
-                su.setDigestionDatePredicted(value.date != null ? value.expected : false);
-              }));
+          .setEditorBinding(binder.forField(new DateField()).bind(DIGESTION_DATE));
       design.submissionsGrid.getColumn(ANALYSIS_DATE)
-          .setEditorBinding(binder.forField(predictedDateComponentProvider.get()).bind(
-              su -> predictedDate(su.getAnalysisDate(), su.isAnalysisDatePredicted()),
-              (su, value) -> {
-                su.setAnalysisDate(value.date);
-                su.setAnalysisDatePredicted(value.date != null ? value.expected : false);
-              }));
+          .setEditorBinding(binder.forField(new DateField()).bind(ANALYSIS_DATE));
     }
     design.submissionsGrid
         .setStyleGenerator(submission -> submission.isHidden() ? HIDDEN_STYLE : null);
@@ -550,32 +534,33 @@ public class SubmissionsViewPresenter {
     return button;
   }
 
-  private PredictedDate predictedDate(LocalDate date, boolean expected) {
-    return new PredictedDate(date, date != null ? expected : true);
+  private boolean anySampleGteStatus(Submission submission, SampleStatus status) {
+    return submission.getSamples().stream()
+        .filter(sample -> sample.getStatus().compareTo(status) >= 0).findAny().isPresent();
   }
 
   private Label digestionDateLabel(Submission submission) {
-    Label label =
-        predictedDateLabel(submission.getDigestionDate(), submission.isDigestionDatePredicted());
+    Label label = predictedDateLabel(submission.getDigestionDate(),
+        !anySampleGteStatus(submission, SampleStatus.DIGESTED));
     label.addStyleName(DIGESTION_DATE);
     return label;
   }
 
   private Label analysisDateLabel(Submission submission) {
-    Label label =
-        predictedDateLabel(submission.getAnalysisDate(), submission.isAnalysisDatePredicted());
+    Label label = predictedDateLabel(submission.getAnalysisDate(),
+        !anySampleGteStatus(submission, SampleStatus.CANCELLED));
     label.addStyleName(ANALYSIS_DATE);
     return label;
   }
 
-  private Label predictedDateLabel(LocalDate date, boolean expected) {
+  private Label predictedDateLabel(LocalDate date, boolean predicted) {
     Label label = new Label();
     if (date != null) {
       MessageResource resources = view.getResources();
       DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
       label.setContentMode(ContentMode.HTML);
       label.setValue(resources.message(EXPECTED_DATE,
-          expected ? VaadinIcons.CLOCK.getHtml() : VaadinIcons.CHECK.getHtml(),
+          predicted ? VaadinIcons.CLOCK.getHtml() : VaadinIcons.CHECK.getHtml(),
           formatter.format(date)));
     }
     return label;

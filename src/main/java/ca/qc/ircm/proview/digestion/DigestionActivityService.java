@@ -100,10 +100,6 @@ public class DigestionActivityService {
           updateBuilders.add(submissionUpdate(newSubmission)
               .column(qname(qsubmission.digestionDate)).oldValue(oldSubmission.getDigestionDate())
               .newValue(newSubmission.getDigestionDate()));
-          updateBuilders
-              .add(submissionUpdate(newSubmission).column(qname(qsubmission.digestionDatePredicted))
-                  .oldValue(oldSubmission.isDigestionDatePredicted())
-                  .newValue(newSubmission.isDigestionDatePredicted()));
         }
       }
     }

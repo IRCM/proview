@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +25,8 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.QSubmission;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.user.User;
@@ -33,6 +36,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -43,6 +48,8 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SampleActivityServiceTest {
+  private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
+  private static final QSubmission qsubmission = QSubmission.submission;
   private SampleActivityService sampleActivityService;
   @PersistenceContext
   private EntityManager entityManager;
@@ -73,7 +80,7 @@ public class SampleActivityServiceTest {
     Activity activity = sampleActivityService.insertControl(control);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(control.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -97,14 +104,14 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameActivity = new UpdateActivity();
     nameActivity.setActionType(ActionType.UPDATE);
-    nameActivity.setTableName("sample");
+    nameActivity.setTableName(Sample.TABLE_NAME);
     nameActivity.setRecordId(submissionSample.getId());
     nameActivity.setColumn("name");
     nameActivity.setOldValue("CAP_20111013_01");
@@ -112,7 +119,7 @@ public class SampleActivityServiceTest {
     expectedUpdateActivities.add(nameActivity);
     UpdateActivity supportActivity = new UpdateActivity();
     supportActivity.setActionType(ActionType.UPDATE);
-    supportActivity.setTableName("sample");
+    supportActivity.setTableName(Sample.TABLE_NAME);
     supportActivity.setRecordId(submissionSample.getId());
     supportActivity.setColumn("support");
     supportActivity.setOldValue(SampleType.SOLUTION.name());
@@ -120,7 +127,7 @@ public class SampleActivityServiceTest {
     expectedUpdateActivities.add(supportActivity);
     UpdateActivity quantityActivity = new UpdateActivity();
     quantityActivity.setActionType(ActionType.UPDATE);
-    quantityActivity.setTableName("sample");
+    quantityActivity.setTableName(Sample.TABLE_NAME);
     quantityActivity.setRecordId(submissionSample.getId());
     quantityActivity.setColumn("quantity");
     quantityActivity.setOldValue("1.5 μg");
@@ -128,7 +135,7 @@ public class SampleActivityServiceTest {
     expectedUpdateActivities.add(quantityActivity);
     UpdateActivity volumeActivity = new UpdateActivity();
     volumeActivity.setActionType(ActionType.UPDATE);
-    volumeActivity.setTableName("sample");
+    volumeActivity.setTableName(Sample.TABLE_NAME);
     volumeActivity.setRecordId(submissionSample.getId());
     volumeActivity.setColumn("volume");
     volumeActivity.setOldValue("50 μl");
@@ -136,7 +143,7 @@ public class SampleActivityServiceTest {
     expectedUpdateActivities.add(volumeActivity);
     UpdateActivity sampleNumberProteinActivity = new UpdateActivity();
     sampleNumberProteinActivity.setActionType(ActionType.UPDATE);
-    sampleNumberProteinActivity.setTableName("sample");
+    sampleNumberProteinActivity.setTableName(Sample.TABLE_NAME);
     sampleNumberProteinActivity.setRecordId(submissionSample.getId());
     sampleNumberProteinActivity.setColumn("numberProtein");
     sampleNumberProteinActivity.setOldValue(null);
@@ -144,7 +151,7 @@ public class SampleActivityServiceTest {
     expectedUpdateActivities.add(sampleNumberProteinActivity);
     UpdateActivity molecularWeightActivity = new UpdateActivity();
     molecularWeightActivity.setActionType(ActionType.UPDATE);
-    molecularWeightActivity.setTableName("sample");
+    molecularWeightActivity.setTableName(Sample.TABLE_NAME);
     molecularWeightActivity.setRecordId(submissionSample.getId());
     molecularWeightActivity.setColumn("molecularWeight");
     molecularWeightActivity.setOldValue(null);
@@ -170,7 +177,7 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -201,7 +208,7 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -246,7 +253,7 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -276,7 +283,7 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -307,7 +314,7 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -352,7 +359,7 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(submissionSample.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -380,14 +387,14 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(control.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameActivity = new UpdateActivity();
     nameActivity.setActionType(ActionType.UPDATE);
-    nameActivity.setTableName("sample");
+    nameActivity.setTableName(Sample.TABLE_NAME);
     nameActivity.setRecordId(control.getId());
     nameActivity.setColumn("name");
     nameActivity.setOldValue("control_01");
@@ -395,7 +402,7 @@ public class SampleActivityServiceTest {
     expectedUpdateActivities.add(nameActivity);
     UpdateActivity controlTypeActivity = new UpdateActivity();
     controlTypeActivity.setActionType(ActionType.UPDATE);
-    controlTypeActivity.setTableName("sample");
+    controlTypeActivity.setTableName(Sample.TABLE_NAME);
     controlTypeActivity.setRecordId(control.getId());
     controlTypeActivity.setColumn("controlType");
     controlTypeActivity.setOldValue("NEGATIVE_CONTROL");
@@ -403,7 +410,7 @@ public class SampleActivityServiceTest {
     expectedUpdateActivities.add(controlTypeActivity);
     UpdateActivity supportActivity = new UpdateActivity();
     supportActivity.setActionType(ActionType.UPDATE);
-    supportActivity.setTableName("sample");
+    supportActivity.setTableName(Sample.TABLE_NAME);
     supportActivity.setRecordId(control.getId());
     supportActivity.setColumn("support");
     supportActivity.setOldValue(SampleType.GEL.name());
@@ -411,7 +418,7 @@ public class SampleActivityServiceTest {
     expectedUpdateActivities.add(supportActivity);
     UpdateActivity volumeActivity = new UpdateActivity();
     volumeActivity.setActionType(ActionType.UPDATE);
-    volumeActivity.setTableName("sample");
+    volumeActivity.setTableName(Sample.TABLE_NAME);
     volumeActivity.setRecordId(control.getId());
     volumeActivity.setColumn("volume");
     volumeActivity.setOldValue(null);
@@ -419,7 +426,7 @@ public class SampleActivityServiceTest {
     expectedUpdateActivities.add(volumeActivity);
     UpdateActivity quantityActivity = new UpdateActivity();
     quantityActivity.setActionType(ActionType.UPDATE);
-    quantityActivity.setTableName("sample");
+    quantityActivity.setTableName(Sample.TABLE_NAME);
     quantityActivity.setRecordId(control.getId());
     quantityActivity.setColumn("quantity");
     quantityActivity.setOldValue(null);
@@ -444,7 +451,7 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(control.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -474,7 +481,7 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(control.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -518,7 +525,7 @@ public class SampleActivityServiceTest {
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals("sample", activity.getTableName());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(control.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals(user, activity.getUser());
@@ -528,6 +535,56 @@ public class SampleActivityServiceTest {
     removeActivity.setTableName("standard");
     removeActivity.setRecordId(standard.getId());
     expectedUpdateActivities.add(removeActivity);
+    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
+  }
+
+  @Test
+  public void update_Submission_DigestionDateAndAnalysisDate() {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 584L);
+    Submission submission = sample.getSubmission();
+    entityManager.detach(sample);
+    entityManager.detach(submission);
+    sample.setStatus(SampleStatus.ANALYSED);
+    LocalDate digestionDate = LocalDate.now();
+    LocalDate analysisDate = digestionDate.plusDays(1);
+    submission.setDigestionDate(digestionDate);
+    submission.setAnalysisDate(analysisDate);
+    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+
+    Optional<Activity> optionalActivity = sampleActivityService.update(sample, null);
+
+    assertEquals(true, optionalActivity.isPresent());
+    Activity activity = optionalActivity.get();
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
+    assertEquals(sample.getId(), activity.getRecordId());
+    assertEquals(null, activity.getExplanation());
+    assertEquals(user, activity.getUser());
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
+    UpdateActivity statusActivity = new UpdateActivity();
+    statusActivity.setActionType(ActionType.UPDATE);
+    statusActivity.setTableName(Sample.TABLE_NAME);
+    statusActivity.setRecordId(sample.getId());
+    statusActivity.setColumn(qname(qsubmissionSample.status));
+    statusActivity.setOldValue(SampleStatus.ENRICHED.name());
+    statusActivity.setNewValue(SampleStatus.ANALYSED.name());
+    expectedUpdateActivities.add(statusActivity);
+    UpdateActivity digestionDateActivity = new UpdateActivity();
+    digestionDateActivity.setActionType(ActionType.UPDATE);
+    digestionDateActivity.setTableName(Submission.TABLE_NAME);
+    digestionDateActivity.setRecordId(submission.getId());
+    digestionDateActivity.setColumn(qname(qsubmission.digestionDate));
+    digestionDateActivity.setOldValue(null);
+    digestionDateActivity.setNewValue(formatter.format(digestionDate));
+    expectedUpdateActivities.add(digestionDateActivity);
+    UpdateActivity analysisDateActivity = new UpdateActivity();
+    analysisDateActivity.setActionType(ActionType.UPDATE);
+    analysisDateActivity.setTableName(Submission.TABLE_NAME);
+    analysisDateActivity.setRecordId(submission.getId());
+    analysisDateActivity.setColumn(qname(qsubmission.analysisDate));
+    analysisDateActivity.setOldValue(null);
+    analysisDateActivity.setNewValue(formatter.format(analysisDate));
+    expectedUpdateActivities.add(analysisDateActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 
