@@ -108,7 +108,6 @@ import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.time.PredictedDate;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.UserPreferenceService;
@@ -235,8 +234,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   private ArgumentCaptor<SaveListener<List<SampleContainer>>> containersSaveListenerCaptor;
   @Captor
   private ArgumentCaptor<SaveListener<Range<LocalDate>>> localDateRangeSaveListenerCaptor;
-  @Captor
-  private ArgumentCaptor<ValueChangeListener<PredictedDate>> predictedDateValueChangeListenerCaptor;
   @Value("${spring.application.name}")
   private String applicationName;
   private SubmissionsViewDesign design;
