@@ -123,6 +123,12 @@ public class SubmissionSampleService {
       }
 
       entityManager.merge(sample);
+      if (SampleStatus.RECEIVED.equals(sample.getStatus())
+          && sample.getSubmission().getSampleDeliveryDate() == null) {
+        Submission submission = sample.getSubmission();
+        submission.setSampleDeliveryDate(LocalDate.now());
+        entityManager.merge(submission);
+      }
       if (SampleStatus.DIGESTED.equals(sample.getStatus())
           && sample.getSubmission().getDigestionDate() == null) {
         Submission submission = sample.getSubmission();

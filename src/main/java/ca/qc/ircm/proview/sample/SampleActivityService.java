@@ -252,6 +252,10 @@ public class SampleActivityService {
       }
       Submission oldSubmission = oldSubmissionSample.getSubmission();
       Submission newSubmission = newSubmissionSample.getSubmission();
+      updateBuilders
+          .add(submissionUpdateActivity(newSubmission).column(qname(qsubmission.sampleDeliveryDate))
+              .oldValue(oldSubmission.getSampleDeliveryDate())
+              .newValue(newSubmission.getSampleDeliveryDate()));
       updateBuilders.add(submissionUpdateActivity(newSubmission)
           .column(qname(qsubmission.digestionDate)).oldValue(oldSubmission.getDigestionDate())
           .newValue(newSubmission.getDigestionDate()));

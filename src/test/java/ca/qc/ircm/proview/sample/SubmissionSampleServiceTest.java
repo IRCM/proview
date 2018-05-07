@@ -216,6 +216,53 @@ public class SubmissionSampleServiceTest {
   }
 
   @Test
+  public void updateStatus_Received_SampleDeliveryDate_UpdatedNull() throws Throwable {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.RECEIVED);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleService.updateStatus(Arrays.asList(sample));
+
+    entityManager.flush();
+    sample = entityManager.find(SubmissionSample.class, 443L);
+    assertTrue(
+        LocalDate.now().minusDays(2).isBefore(sample.getSubmission().getSampleDeliveryDate()));
+    assertTrue(LocalDate.now().plusDays(2).isAfter(sample.getSubmission().getSampleDeliveryDate()));
+  }
+
+  @Test
+  public void updateStatus_Received_SampleDeliveryDate_NotUpdated() throws Throwable {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 559L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.RECEIVED);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleService.updateStatus(Arrays.asList(sample));
+
+    entityManager.flush();
+    sample = entityManager.find(SubmissionSample.class, 559L);
+    assertEquals(LocalDate.of(2014, 10, 8), sample.getSubmission().getSampleDeliveryDate());
+  }
+
+  @Test
+  public void updateStatus_Digested_SampleDeliveryDate_NotUpdated() throws Throwable {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.DIGESTED);
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionSampleService.updateStatus(Arrays.asList(sample));
+
+    entityManager.flush();
+    sample = entityManager.find(SubmissionSample.class, 443L);
+    assertNull(sample.getSubmission().getSampleDeliveryDate());
+  }
+
+  @Test
   public void updateStatus_Digested_SubmissionDigestionDate_UpdatedNull() throws Throwable {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
     entityManager.detach(sample);
