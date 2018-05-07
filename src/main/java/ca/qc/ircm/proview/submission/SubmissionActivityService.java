@@ -247,6 +247,10 @@ public class SubmissionActivityService {
         .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.submissionDate))
             .oldValue(oldSubmission.getSubmissionDate()).newValue(submission.getSubmissionDate()));
     updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.sampleDeliveryDate))
+            .oldValue(oldSubmission.getSampleDeliveryDate())
+            .newValue(submission.getSampleDeliveryDate()));
+    updateBuilders
         .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.digestionDate))
             .oldValue(oldSubmission.getDigestionDate()).newValue(submission.getDigestionDate()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.analysisDate))

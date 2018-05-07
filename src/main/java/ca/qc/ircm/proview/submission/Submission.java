@@ -329,6 +329,11 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Column(name = "submissionDate")
   private Instant submissionDate;
   /**
+   * Sample delivery date.
+   */
+  @Column(name = "sampleDeliveryDate")
+  private LocalDate sampleDeliveryDate;
+  /**
    * Digestion date.
    */
   @Column(name = "digestionDate")
@@ -827,5 +832,13 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setDataAvailableDate(LocalDate dataAvailableDate) {
     this.dataAvailableDate = dataAvailableDate;
+  }
+
+  public LocalDate getSampleDeliveryDate() {
+    return sampleDeliveryDate;
+  }
+
+  public void setSampleDeliveryDate(LocalDate sampleDeliveryDate) {
+    this.sampleDeliveryDate = sampleDeliveryDate;
   }
 }
