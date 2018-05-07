@@ -339,6 +339,11 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Column(name = "analysisDate")
   private LocalDate analysisDate;
   /**
+   * Data available date.
+   */
+  @Column(name = "dataAvailableDate")
+  private LocalDate dataAvailableDate;
+  /**
    * True if submission is hidden.
    */
   @Column(name = "hidden")
@@ -814,5 +819,13 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setAnalysisDate(LocalDate analysisDate) {
     this.analysisDate = analysisDate;
+  }
+
+  public LocalDate getDataAvailableDate() {
+    return dataAvailableDate;
+  }
+
+  public void setDataAvailableDate(LocalDate dataAvailableDate) {
+    this.dataAvailableDate = dataAvailableDate;
   }
 }

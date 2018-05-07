@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 
 import ca.qc.ircm.proview.history.ActionType;
@@ -53,6 +54,7 @@ import javax.persistence.PersistenceContext;
 @org.springframework.stereotype.Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SubmissionActivityService {
+  private static final QSubmission qsubmission = QSubmission.submission;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -85,7 +87,7 @@ public class SubmissionActivityService {
     activity.setActionType(ActionType.INSERT);
     activity.setRecordId(submission.getId());
     activity.setUser(user);
-    activity.setTableName("submission");
+    activity.setTableName(Submission.TABLE_NAME);
     activity.setExplanation(null);
     activity.setUpdates(null);
     return activity;
@@ -109,117 +111,150 @@ public class SubmissionActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     class SubmissionUpdateActivityBuilder extends UpdateActivityBuilder {
       {
-        tableName("submission");
+        tableName(Submission.TABLE_NAME);
         actionType(ActionType.UPDATE);
         recordId(submission.getId());
       }
     }
 
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("service")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.service))
         .oldValue(oldSubmission.getService()).newValue(submission.getService()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("taxonomy")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.taxonomy))
         .oldValue(oldSubmission.getTaxonomy()).newValue(submission.getTaxonomy()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("experiment")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.experiment))
         .oldValue(oldSubmission.getExperiment()).newValue(submission.getExperiment()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("goal")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.goal))
         .oldValue(oldSubmission.getGoal()).newValue(submission.getGoal()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("massDetectionInstrument")
-        .oldValue(oldSubmission.getMassDetectionInstrument())
-        .newValue(submission.getMassDetectionInstrument()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("source")
+    updateBuilders.add(
+        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.massDetectionInstrument))
+            .oldValue(oldSubmission.getMassDetectionInstrument())
+            .newValue(submission.getMassDetectionInstrument()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.source))
         .oldValue(oldSubmission.getSource()).newValue(submission.getSource()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("injectionType")
-        .oldValue(oldSubmission.getInjectionType()).newValue(submission.getInjectionType()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteolyticDigestionMethod")
-        .oldValue(oldSubmission.getProteolyticDigestionMethod())
-        .newValue(submission.getProteolyticDigestionMethod()));
     updateBuilders
-        .add(new SubmissionUpdateActivityBuilder().column("usedProteolyticDigestionMethod")
-            .oldValue(oldSubmission.getUsedProteolyticDigestionMethod())
-            .newValue(submission.getUsedProteolyticDigestionMethod()));
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.injectionType))
+            .oldValue(oldSubmission.getInjectionType()).newValue(submission.getInjectionType()));
+    updateBuilders.add(
+        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.proteolyticDigestionMethod))
+            .oldValue(oldSubmission.getProteolyticDigestionMethod())
+            .newValue(submission.getProteolyticDigestionMethod()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder()
+        .column(qname(qsubmission.usedProteolyticDigestionMethod))
+        .oldValue(oldSubmission.getUsedProteolyticDigestionMethod())
+        .newValue(submission.getUsedProteolyticDigestionMethod()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder()
+        .column(qname(qsubmission.otherProteolyticDigestionMethod))
+        .oldValue(oldSubmission.getOtherProteolyticDigestionMethod())
+        .newValue(submission.getOtherProteolyticDigestionMethod()));
     updateBuilders
-        .add(new SubmissionUpdateActivityBuilder().column("otherProteolyticDigestionMethod")
-            .oldValue(oldSubmission.getOtherProteolyticDigestionMethod())
-            .newValue(submission.getOtherProteolyticDigestionMethod()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteinIdentification")
-        .oldValue(oldSubmission.getProteinIdentification())
-        .newValue(submission.getProteinIdentification()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteinIdentificationLink")
-        .oldValue(oldSubmission.getProteinIdentificationLink())
-        .newValue(submission.getProteinIdentificationLink()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("enrichmentType")
-        .oldValue(oldSubmission.getEnrichmentType()).newValue(submission.getEnrichmentType()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("otherEnrichmentType")
-        .oldValue(oldSubmission.getOtherEnrichmentType())
-        .newValue(submission.getOtherEnrichmentType()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("lowResolution")
-        .oldValue(oldSubmission.isLowResolution()).newValue(submission.isLowResolution()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("highResolution")
-        .oldValue(oldSubmission.isHighResolution()).newValue(submission.isHighResolution()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("msms")
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.proteinIdentification))
+            .oldValue(oldSubmission.getProteinIdentification())
+            .newValue(submission.getProteinIdentification()));
+    updateBuilders.add(
+        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.proteinIdentificationLink))
+            .oldValue(oldSubmission.getProteinIdentificationLink())
+            .newValue(submission.getProteinIdentificationLink()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.enrichmentType))
+            .oldValue(oldSubmission.getEnrichmentType()).newValue(submission.getEnrichmentType()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.otherEnrichmentType))
+            .oldValue(oldSubmission.getOtherEnrichmentType())
+            .newValue(submission.getOtherEnrichmentType()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.lowResolution))
+            .oldValue(oldSubmission.isLowResolution()).newValue(submission.isLowResolution()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.highResolution))
+            .oldValue(oldSubmission.isHighResolution()).newValue(submission.isHighResolution()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.msms))
         .oldValue(oldSubmission.isMsms()).newValue(submission.isMsms()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("exactMsms")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.exactMsms))
         .oldValue(oldSubmission.isExactMsms()).newValue(submission.isExactMsms()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("protein")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.protein))
         .oldValue(oldSubmission.getProtein()).newValue(submission.getProtein()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("postTranslationModification")
-        .oldValue(oldSubmission.getPostTranslationModification())
-        .newValue(submission.getPostTranslationModification()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("mudPitFraction")
-        .oldValue(oldSubmission.getMudPitFraction()).newValue(submission.getMudPitFraction()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteinContent")
-        .oldValue(oldSubmission.getProteinContent()).newValue(submission.getProteinContent()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("separation")
+    updateBuilders.add(
+        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.postTranslationModification))
+            .oldValue(oldSubmission.getPostTranslationModification())
+            .newValue(submission.getPostTranslationModification()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.mudPitFraction))
+            .oldValue(oldSubmission.getMudPitFraction()).newValue(submission.getMudPitFraction()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.proteinContent))
+            .oldValue(oldSubmission.getProteinContent()).newValue(submission.getProteinContent()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.separation))
         .oldValue(oldSubmission.getSeparation()).newValue(submission.getSeparation()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("thickness")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.thickness))
         .oldValue(oldSubmission.getThickness()).newValue(submission.getThickness()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("coloration")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.coloration))
         .oldValue(oldSubmission.getColoration()).newValue(submission.getColoration()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("otherColoration")
-        .oldValue(oldSubmission.getOtherColoration()).newValue(submission.getOtherColoration()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("developmentTime")
-        .oldValue(oldSubmission.getDevelopmentTime()).newValue(submission.getDevelopmentTime()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("decoloration")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder()
+        .column(qname(qsubmission.otherColoration)).oldValue(oldSubmission.getOtherColoration())
+        .newValue(submission.getOtherColoration()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder()
+        .column(qname(qsubmission.developmentTime)).oldValue(oldSubmission.getDevelopmentTime())
+        .newValue(submission.getDevelopmentTime()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.decoloration))
         .oldValue(oldSubmission.isDecoloration()).newValue(submission.isDecoloration()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("weightMarkerQuantity")
-        .oldValue(oldSubmission.getWeightMarkerQuantity())
-        .newValue(submission.getWeightMarkerQuantity()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("proteinQuantity")
-        .oldValue(oldSubmission.getProteinQuantity()).newValue(submission.getProteinQuantity()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("formula")
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.weightMarkerQuantity))
+            .oldValue(oldSubmission.getWeightMarkerQuantity())
+            .newValue(submission.getWeightMarkerQuantity()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder()
+        .column(qname(qsubmission.proteinQuantity)).oldValue(oldSubmission.getProteinQuantity())
+        .newValue(submission.getProteinQuantity()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.formula))
         .oldValue(oldSubmission.getFormula()).newValue(submission.getFormula()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("monoisotopicMass")
-        .oldValue(oldSubmission.getMonoisotopicMass()).newValue(submission.getMonoisotopicMass()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("averageMass")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder()
+        .column(qname(qsubmission.monoisotopicMass)).oldValue(oldSubmission.getMonoisotopicMass())
+        .newValue(submission.getMonoisotopicMass()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.averageMass))
         .oldValue(oldSubmission.getAverageMass()).newValue(submission.getAverageMass()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("solutionSolvent")
-        .oldValue(oldSubmission.getSolutionSolvent()).newValue(submission.getSolutionSolvent()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("otherSolvent")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder()
+        .column(qname(qsubmission.solutionSolvent)).oldValue(oldSubmission.getSolutionSolvent())
+        .newValue(submission.getSolutionSolvent()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.otherSolvent))
         .oldValue(oldSubmission.getOtherSolvent()).newValue(submission.getOtherSolvent()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("toxicity")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.toxicity))
         .oldValue(oldSubmission.getToxicity()).newValue(submission.getToxicity()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("lightSensitive")
-        .oldValue(oldSubmission.isLightSensitive()).newValue(submission.isLightSensitive()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("storageTemperature")
-        .oldValue(oldSubmission.getStorageTemperature())
-        .newValue(submission.getStorageTemperature()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantification")
-        .oldValue(oldSubmission.getQuantification()).newValue(submission.getQuantification()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("quantificationComment")
-        .oldValue(oldSubmission.getQuantificationComment())
-        .newValue(submission.getQuantificationComment()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("comment")
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.lightSensitive))
+            .oldValue(oldSubmission.isLightSensitive()).newValue(submission.isLightSensitive()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.storageTemperature))
+            .oldValue(oldSubmission.getStorageTemperature())
+            .newValue(submission.getStorageTemperature()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.quantification))
+            .oldValue(oldSubmission.getQuantification()).newValue(submission.getQuantification()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.quantificationComment))
+            .oldValue(oldSubmission.getQuantificationComment())
+            .newValue(submission.getQuantificationComment()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.comment))
         .oldValue(oldSubmission.getComment()).newValue(submission.getComment()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("additionalPrice")
-        .oldValue(oldSubmission.getAdditionalPrice()).newValue(submission.getAdditionalPrice()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("userId")
+    updateBuilders.add(new SubmissionUpdateActivityBuilder()
+        .column(qname(qsubmission.additionalPrice)).oldValue(oldSubmission.getAdditionalPrice())
+        .newValue(submission.getAdditionalPrice()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.user) + "Id")
         .oldValue(oldSubmission.getUser().getId()).newValue(submission.getUser().getId()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("laboratoryId")
-        .oldValue(oldSubmission.getLaboratory().getId())
-        .newValue(submission.getLaboratory().getId()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionDate")
-        .oldValue(oldSubmission.getSubmissionDate()).newValue(submission.getSubmissionDate()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column("hidden")
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.laboratory) + "Id")
+            .oldValue(oldSubmission.getLaboratory().getId())
+            .newValue(submission.getLaboratory().getId()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.submissionDate))
+            .oldValue(oldSubmission.getSubmissionDate()).newValue(submission.getSubmissionDate()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.digestionDate))
+            .oldValue(oldSubmission.getDigestionDate()).newValue(submission.getDigestionDate()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.analysisDate))
+        .oldValue(oldSubmission.getAnalysisDate()).newValue(submission.getAnalysisDate()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder()
+        .column(qname(qsubmission.dataAvailableDate)).oldValue(oldSubmission.getDataAvailableDate())
+        .newValue(submission.getDataAvailableDate()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.hidden))
         .oldValue(oldSubmission.isHidden()).newValue(submission.isHidden()));
     // Sample.
     Set<Long> oldSampleIds =
@@ -272,7 +307,7 @@ public class SubmissionActivityService {
       activity.setActionType(ActionType.UPDATE);
       activity.setRecordId(submission.getId());
       activity.setUser(user);
-      activity.setTableName("submission");
+      activity.setTableName(Submission.TABLE_NAME);
       activity.setExplanation(explanation);
       activity.setUpdates(new LinkedList<>(updates));
       return Optional.of(activity);

@@ -395,6 +395,94 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addConditions_DataAvailableDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.open(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.before(end));
+  }
+
+  @Test
+  public void addConditions_DataAvailableDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.closed(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_DataAvailableDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.openClosed(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_DataAvailableDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.closedOpen(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.before(end));
+  }
+
+  @Test
+  public void addConditions_DataAvailableDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.dataAvailableDateRange = Range.atLeast(start);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start));
+  }
+
+  @Test
+  public void addConditions_DataAvailableDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.dataAvailableDateRange = Range.greaterThan(start);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_DataAvailableDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.atMost(end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_DataAvailableDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.lessThan(end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.before(end));
+  }
+
+  @Test
   public void addConditions_Results_True() throws Exception {
     filter.results = true;
 
@@ -817,6 +905,94 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addCountConditions_DataAvailableDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.open(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.before(end));
+  }
+
+  @Test
+  public void addCountConditions_DataAvailableDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.closed(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_DataAvailableDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.openClosed(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_DataAvailableDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.closedOpen(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.before(end));
+  }
+
+  @Test
+  public void addCountConditions_DataAvailableDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.dataAvailableDateRange = Range.atLeast(start);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start));
+  }
+
+  @Test
+  public void addCountConditions_DataAvailableDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.dataAvailableDateRange = Range.greaterThan(start);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_DataAvailableDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.atMost(end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_DataAvailableDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.lessThan(end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.dataAvailableDate.before(end));
+  }
+
+  @Test
   public void addCountConditions_Results_True() throws Exception {
     filter.results = true;
 
@@ -976,6 +1152,12 @@ public class SubmissionFilterTest {
   private Submission analysisDate(LocalDate date) {
     Submission submission = mock(Submission.class);
     when(submission.getAnalysisDate()).thenReturn(date);
+    return submission;
+  }
+
+  private Submission dataAvailableDate(LocalDate date) {
+    Submission submission = mock(Submission.class);
+    when(submission.getDataAvailableDate()).thenReturn(date);
     return submission;
   }
 
@@ -1186,6 +1368,7 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(digestionDate(LocalDate.of(2011, 10, 9))));
     assertFalse(filter.test(digestionDate(LocalDate.of(2011, 12, 1))));
     assertFalse(filter.test(digestionDate(LocalDate.of(2011, 1, 1))));
+    assertFalse(filter.test(digestionDate(null)));
   }
 
   @Test
@@ -1198,6 +1381,7 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(digestionDate(LocalDate.of(2011, 10, 9))));
     assertTrue(filter.test(digestionDate(LocalDate.of(2011, 12, 1))));
     assertTrue(filter.test(digestionDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(digestionDate(null)));
   }
 
   @Test
@@ -1212,6 +1396,7 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(analysisDate(LocalDate.of(2011, 10, 9))));
     assertFalse(filter.test(analysisDate(LocalDate.of(2011, 12, 1))));
     assertFalse(filter.test(analysisDate(LocalDate.of(2011, 1, 1))));
+    assertFalse(filter.test(analysisDate(null)));
   }
 
   @Test
@@ -1224,6 +1409,35 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(analysisDate(LocalDate.of(2011, 10, 9))));
     assertTrue(filter.test(analysisDate(LocalDate.of(2011, 12, 1))));
     assertTrue(filter.test(analysisDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(analysisDate(null)));
+  }
+
+  @Test
+  public void test_DataAvailableDateRange() {
+    LocalDate from = LocalDate.of(2011, 1, 2);
+    LocalDate to = LocalDate.of(2011, 10, 9);
+    filter.dataAvailableDateRange = Range.closed(from, to);
+
+    assertFalse(filter.test(dataAvailableDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 1, 2))));
+    assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 10, 8))));
+    assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 10, 9))));
+    assertFalse(filter.test(dataAvailableDate(LocalDate.of(2011, 12, 1))));
+    assertFalse(filter.test(dataAvailableDate(LocalDate.of(2011, 1, 1))));
+    assertFalse(filter.test(dataAvailableDate(null)));
+  }
+
+  @Test
+  public void test_DataAvailableDateRange_Null() {
+    filter.dataAvailableDateRange = null;
+
+    assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 1, 2))));
+    assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 10, 8))));
+    assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 10, 9))));
+    assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 12, 1))));
+    assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(dataAvailableDate(null)));
   }
 
   @Test

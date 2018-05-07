@@ -49,6 +49,7 @@ public class SubmissionFilter implements Predicate<Submission> {
   public Range<LocalDate> dateRange;
   public Range<LocalDate> digestionDateRange;
   public Range<LocalDate> analysisDateRange;
+  public Range<LocalDate> dataAvailableDateRange;
   public Boolean results;
   public Boolean hidden;
   public List<OrderSpecifier<?>> sortOrders;
@@ -90,10 +91,16 @@ public class SubmissionFilter implements Predicate<Submission> {
       test &= dateRange.contains(toLocalDate(submission.getSubmissionDate()));
     }
     if (digestionDateRange != null) {
-      test &= digestionDateRange.contains(submission.getDigestionDate());
+      test &= submission.getDigestionDate() != null
+          && digestionDateRange.contains(submission.getDigestionDate());
     }
     if (analysisDateRange != null) {
-      test &= analysisDateRange.contains(submission.getAnalysisDate());
+      test &= submission.getAnalysisDate() != null
+          && analysisDateRange.contains(submission.getAnalysisDate());
+    }
+    if (dataAvailableDateRange != null) {
+      test &= submission.getDataAvailableDate() != null
+          && dataAvailableDateRange.contains(submission.getDataAvailableDate());
     }
     if (results != null) {
       Set<SampleStatus> analysedStatuses =
@@ -171,6 +178,22 @@ public class SubmissionFilter implements Predicate<Submission> {
           date = date.plusDays(1);
         }
         query.where(submission.analysisDate.before(date));
+      }
+    }
+    if (dataAvailableDateRange != null) {
+      if (dataAvailableDateRange.hasLowerBound()) {
+        LocalDate date = dataAvailableDateRange.lowerEndpoint();
+        if (dataAvailableDateRange.lowerBoundType() == BoundType.OPEN) {
+          date = date.plusDays(1);
+        }
+        query.where(submission.dataAvailableDate.goe(date));
+      }
+      if (dataAvailableDateRange.hasUpperBound()) {
+        LocalDate date = dataAvailableDateRange.upperEndpoint();
+        if (dataAvailableDateRange.upperBoundType() == BoundType.CLOSED) {
+          date = date.plusDays(1);
+        }
+        query.where(submission.dataAvailableDate.before(date));
       }
     }
     if (results != null) {
