@@ -124,6 +124,7 @@ public class SubmissionsViewPresenter {
       property(SUBMISSION, submission.service.getMetadata().getName());
   public static final String DIGESTION_DATE = qname(submission.digestionDate);
   public static final String ANALYSIS_DATE = qname(submission.analysisDate);
+  public static final String DATA_AVAILABLE_DATE = qname(submission.dataAvailableDate);
   public static final String EXPECTED_DATE = "predictedDate";
   public static final String SAMPLE_NAME =
       property(SAMPLE, submissionSample.name.getMetadata().getName());
@@ -347,6 +348,11 @@ public class SubmissionsViewPresenter {
         .addColumn(submission -> analysisDateLabel(submission), new ComponentRenderer())
         .setId(ANALYSIS_DATE).setCaption(resources.message(ANALYSIS_DATE)).setWidth(200);
     columnProperties.put(ANALYSIS_DATE, submission.analysisDate);
+    design.submissionsGrid
+        .addColumn(submission -> dataAvailableDateLabel(submission), new ComponentRenderer())
+        .setId(DATA_AVAILABLE_DATE).setCaption(resources.message(DATA_AVAILABLE_DATE))
+        .setWidth(200);
+    columnProperties.put(DATA_AVAILABLE_DATE, submission.dataAvailableDate);
     design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
     columnProperties.put(SAMPLE_COUNT, submission.samples.size());
@@ -406,6 +412,9 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getColumn(ANALYSIS_DATE).setHidable(true);
     design.submissionsGrid.getColumn(ANALYSIS_DATE)
         .setHidden(userPreferenceService.get(this, ANALYSIS_DATE, false));
+    design.submissionsGrid.getColumn(DATA_AVAILABLE_DATE).setHidable(true);
+    design.submissionsGrid.getColumn(DATA_AVAILABLE_DATE)
+        .setHidden(userPreferenceService.get(this, DATA_AVAILABLE_DATE, false));
     design.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_COUNT)
         .setHidden(userPreferenceService.get(this, SAMPLE_COUNT, false));
@@ -481,6 +490,10 @@ public class SubmissionsViewPresenter {
       filter.analysisDateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
+    filterRow.getCell(DATA_AVAILABLE_DATE).setComponent(dateFilter(e -> {
+      filter.dataAvailableDateRange = e.getSavedObject();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
       filter.anySampleNameContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
@@ -515,6 +528,8 @@ public class SubmissionsViewPresenter {
           .setEditorBinding(binder.forField(new DateField()).bind(DIGESTION_DATE));
       design.submissionsGrid.getColumn(ANALYSIS_DATE)
           .setEditorBinding(binder.forField(new DateField()).bind(ANALYSIS_DATE));
+      design.submissionsGrid.getColumn(DATA_AVAILABLE_DATE)
+          .setEditorBinding(binder.forField(new DateField()).bind(DATA_AVAILABLE_DATE));
     }
     design.submissionsGrid
         .setStyleGenerator(submission -> submission.isHidden() ? HIDDEN_STYLE : null);
@@ -550,6 +565,16 @@ public class SubmissionsViewPresenter {
     Label label = predictedDateLabel(submission.getAnalysisDate(),
         !anySampleGteStatus(submission, SampleStatus.CANCELLED));
     label.addStyleName(ANALYSIS_DATE);
+    return label;
+  }
+
+  private Label dataAvailableDateLabel(Submission submission) {
+    Label label = new Label();
+    if (submission.getDataAvailableDate() != null) {
+      DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+      label.setValue(formatter.format(submission.getDataAvailableDate()));
+    }
+    label.addStyleName(DATA_AVAILABLE_DATE);
     return label;
   }
 
