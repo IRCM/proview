@@ -1439,7 +1439,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void readOnly_False_ForceUpdate() {
-    Submission submission = new Submission();
+    Submission submission = new Submission(1L);
     submission.setService(Service.LC_MS_MS);
     SubmissionSample sample = new SubmissionSample();
     sample.setType(type);
@@ -1452,7 +1452,134 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
     presenter.setValue(submission);
 
+    assertFalse(design.service.isReadOnly());
+    assertFalse(design.sampleType.isReadOnly());
+    assertFalse(design.solutionSolvent.isReadOnly());
+    assertFalse(design.sampleCount.isReadOnly());
+    assertFalse(design.sampleName.isReadOnly());
+    assertFalse(design.formula.isReadOnly());
+    assertFalse(design.monoisotopicMass.isReadOnly());
+    assertFalse(design.averageMass.isReadOnly());
+    assertFalse(design.toxicity.isReadOnly());
+    assertFalse(design.lightSensitive.isReadOnly());
+    assertFalse(design.storageTemperature.isReadOnly());
+    assertFalse(design.sampleContainerType.isReadOnly());
+    assertFalse(design.plateName.isReadOnly());
+    SubmissionSample firstSample = dataProvider(design.samples).getItems().iterator().next();
+    assertFalse(
+        ((TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(firstSample))
+            .isReadOnly());
+    assertFalse(((TextField) design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).getValueProvider()
+        .apply(firstSample)).isReadOnly());
+    assertFalse(
+        ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample))
+            .isReadOnly());
+    assertFalse(design.experiment.isReadOnly());
+    assertFalse(design.experimentGoal.isReadOnly());
+    assertFalse(design.taxonomy.isReadOnly());
+    assertFalse(design.proteinName.isReadOnly());
+    assertFalse(design.proteinWeight.isReadOnly());
+    assertFalse(design.postTranslationModification.isReadOnly());
+    assertFalse(design.sampleQuantity.isReadOnly());
+    assertFalse(design.sampleVolume.isReadOnly());
+    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    verify(view.contaminantsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    assertFalse(design.digestion.isReadOnly());
+    assertFalse(design.usedProteolyticDigestionMethod.isReadOnly());
+    assertFalse(design.otherProteolyticDigestionMethod.isReadOnly());
+    assertFalse(design.injectionType.isReadOnly());
+    assertFalse(design.source.isReadOnly());
+    assertFalse(design.proteinContent.isReadOnly());
+    assertFalse(design.instrument.isReadOnly());
+    assertFalse(design.proteinIdentification.isReadOnly());
+    assertFalse(design.proteinIdentificationLink.isReadOnly());
+    assertFalse(design.quantification.isReadOnly());
+    assertFalse(design.quantificationComment.isReadOnly());
+    assertFalse(design.highResolution.isReadOnly());
+    assertFalse(design.acetonitrileSolvents.isReadOnly());
+    assertFalse(design.methanolSolvents.isReadOnly());
+    assertFalse(design.chclSolvents.isReadOnly());
+    assertFalse(design.otherSolvents.isReadOnly());
+    assertFalse(design.otherSolvent.isReadOnly());
+    assertFalse(design.comment.isReadOnly());
+    assertFalse(design.files.getColumn(REMOVE_FILE).isHidden());
     assertTrue(design.explanationPanel.isVisible());
+    assertTrue(design.save.isVisible());
+    assertTrue(design.print.isVisible());
+  }
+
+  @Test
+  public void readOnly_False_OnlySampleName() {
+    Submission submission = new Submission(1L);
+    submission.setService(Service.LC_MS_MS);
+    SubmissionSample sample = new SubmissionSample();
+    sample.setType(type);
+    sample.setOriginalContainer(new Tube());
+    sample.setStatus(SampleStatus.APPROVED);
+    sample.setStandards(Arrays.asList(new Standard()));
+    sample.setContaminants(Arrays.asList(new Contaminant()));
+    submission.setSamples(Arrays.asList(sample));
+    presenter.init(view);
+    presenter.setValue(submission);
+
+    assertTrue(design.service.isReadOnly());
+    assertTrue(design.sampleType.isReadOnly());
+    assertTrue(design.solutionSolvent.isReadOnly());
+    assertTrue(design.sampleCount.isReadOnly());
+    assertFalse(design.sampleName.isReadOnly());
+    assertTrue(design.formula.isReadOnly());
+    assertTrue(design.monoisotopicMass.isReadOnly());
+    assertTrue(design.averageMass.isReadOnly());
+    assertTrue(design.toxicity.isReadOnly());
+    assertTrue(design.lightSensitive.isReadOnly());
+    assertTrue(design.storageTemperature.isReadOnly());
+    assertTrue(design.sampleContainerType.isReadOnly());
+    assertFalse(design.plateName.isReadOnly());
+    SubmissionSample firstSample = dataProvider(design.samples).getItems().iterator().next();
+    assertFalse(
+        ((TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(firstSample))
+            .isReadOnly());
+    assertTrue(((TextField) design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).getValueProvider()
+        .apply(firstSample)).isReadOnly());
+    assertTrue(
+        ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample))
+            .isReadOnly());
+    assertTrue(design.experiment.isReadOnly());
+    assertTrue(design.experimentGoal.isReadOnly());
+    assertTrue(design.taxonomy.isReadOnly());
+    assertTrue(design.proteinName.isReadOnly());
+    assertTrue(design.proteinWeight.isReadOnly());
+    assertTrue(design.postTranslationModification.isReadOnly());
+    assertTrue(design.sampleQuantity.isReadOnly());
+    assertTrue(design.sampleVolume.isReadOnly());
+    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
+    verify(view.contaminantsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
+    assertTrue(design.digestion.isReadOnly());
+    assertTrue(design.usedProteolyticDigestionMethod.isReadOnly());
+    assertTrue(design.otherProteolyticDigestionMethod.isReadOnly());
+    assertTrue(design.injectionType.isReadOnly());
+    assertTrue(design.source.isReadOnly());
+    assertTrue(design.proteinContent.isReadOnly());
+    assertTrue(design.instrument.isReadOnly());
+    assertTrue(design.proteinIdentification.isReadOnly());
+    assertTrue(design.proteinIdentificationLink.isReadOnly());
+    assertTrue(design.quantification.isReadOnly());
+    assertTrue(design.quantificationComment.isReadOnly());
+    assertTrue(design.highResolution.isReadOnly());
+    assertTrue(design.acetonitrileSolvents.isReadOnly());
+    assertTrue(design.methanolSolvents.isReadOnly());
+    assertTrue(design.chclSolvents.isReadOnly());
+    assertTrue(design.otherSolvents.isReadOnly());
+    assertTrue(design.otherSolvent.isReadOnly());
+    assertTrue(design.comment.isReadOnly());
+    assertTrue(design.files.getColumn(REMOVE_FILE).isHidden());
+    assertFalse(design.explanationPanel.isVisible());
+    assertTrue(design.save.isVisible());
+    assertTrue(design.print.isVisible());
   }
 
   @Test

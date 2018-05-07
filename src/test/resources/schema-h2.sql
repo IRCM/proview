@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS submission (
   price double DEFAULT NULL,
   additionalPrice double DEFAULT NULL,
   submissionDate datetime NOT NULL,
+  sampleDeliveryDate date DEFAULT NULL,
   digestionDate date DEFAULT NULL,
   analysisDate date DEFAULT NULL,
   dataAvailableDate date DEFAULT NULL,

@@ -158,6 +158,7 @@ public class SubmissionActivityServiceTest {
     newSubmission.setLaboratory(newLaboratory);
     newSubmission.setUser(newUser);
     newSubmission.setSubmissionDate(Instant.now());
+    newSubmission.setSampleDeliveryDate(LocalDate.now().minusDays(3));
     newSubmission.setDigestionDate(LocalDate.now().minusDays(2));
     newSubmission.setAnalysisDate(LocalDate.now().minusDays(1));
     newSubmission.setDataAvailableDate(LocalDate.now());
@@ -170,6 +171,7 @@ public class SubmissionActivityServiceTest {
     Optional<Activity> optionalActivity =
         submissionActivityService.update(newSubmission, "unit_test");
 
+    final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     assertEquals(true, optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
     assertEquals(ActionType.UPDATE, activity.getActionType());
@@ -534,12 +536,20 @@ public class SubmissionActivityServiceTest {
     submissionDateActivity.setNewValue(instantFormatter.format(
         LocalDateTime.ofInstant(newSubmission.getSubmissionDate(), ZoneId.systemDefault())));
     expectedUpdateActivities.add(submissionDateActivity);
+    UpdateActivity sampleDeliveryDateActivity = new UpdateActivity();
+    sampleDeliveryDateActivity.setActionType(ActionType.UPDATE);
+    sampleDeliveryDateActivity.setTableName(Submission.TABLE_NAME);
+    sampleDeliveryDateActivity.setRecordId(newSubmission.getId());
+    sampleDeliveryDateActivity.setColumn(qname(qsubmission.sampleDeliveryDate));
+    sampleDeliveryDateActivity.setOldValue("2010-12-09");
+    sampleDeliveryDateActivity
+        .setNewValue(dateFormatter.format(newSubmission.getSampleDeliveryDate()));
+    expectedUpdateActivities.add(sampleDeliveryDateActivity);
     UpdateActivity digestionDateActivity = new UpdateActivity();
     digestionDateActivity.setActionType(ActionType.UPDATE);
     digestionDateActivity.setTableName(Submission.TABLE_NAME);
     digestionDateActivity.setRecordId(newSubmission.getId());
     digestionDateActivity.setColumn(qname(qsubmission.digestionDate));
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     digestionDateActivity.setOldValue("2010-12-11");
     digestionDateActivity.setNewValue(dateFormatter.format(newSubmission.getDigestionDate()));
     expectedUpdateActivities.add(digestionDateActivity);

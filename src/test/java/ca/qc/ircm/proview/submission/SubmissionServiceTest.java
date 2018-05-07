@@ -193,6 +193,7 @@ public class SubmissionServiceTest {
     assertEquals("Philippe", submission.getComment());
     assertEquals(toInstant(LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0)),
         submission.getSubmissionDate());
+    assertEquals(LocalDate.of(2010, 12, 9), submission.getSampleDeliveryDate());
     assertEquals(LocalDate.of(2010, 12, 11), submission.getDigestionDate());
     assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
     assertEquals(LocalDate.of(2010, 12, 15), submission.getDataAvailableDate());
@@ -280,6 +281,7 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getComment());
     assertEquals(toInstant(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0)),
         submission.getSubmissionDate());
+    assertNull(submission.getSampleDeliveryDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
     assertNull(submission.getDataAvailableDate());

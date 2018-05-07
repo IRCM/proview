@@ -219,6 +219,94 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addConditions_SampleDeliveryDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.open(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start.plusDays(1)));
+    verify(query).where(submission.sampleDeliveryDate.before(end));
+  }
+
+  @Test
+  public void addConditions_SampleDeliveryDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.closed(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start));
+    verify(query).where(submission.sampleDeliveryDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_SampleDeliveryDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.openClosed(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start.plusDays(1)));
+    verify(query).where(submission.sampleDeliveryDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_SampleDeliveryDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.closedOpen(start, end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start));
+    verify(query).where(submission.sampleDeliveryDate.before(end));
+  }
+
+  @Test
+  public void addConditions_SampleDeliveryDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.sampleDeliveryDateRange = Range.atLeast(start);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start));
+  }
+
+  @Test
+  public void addConditions_SampleDeliveryDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.sampleDeliveryDateRange = Range.greaterThan(start);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_SampleDeliveryDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.atMost(end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addConditions_SampleDeliveryDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.lessThan(end);
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.before(end));
+  }
+
+  @Test
   public void addConditions_DigestionDateRange_OpenRange() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
@@ -729,6 +817,94 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addCountConditions_SampleDeliveryDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.open(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start.plusDays(1)));
+    verify(query).where(submission.sampleDeliveryDate.before(end));
+  }
+
+  @Test
+  public void addCountConditions_SampleDeliveryDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.closed(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start));
+    verify(query).where(submission.sampleDeliveryDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_SampleDeliveryDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.openClosed(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start.plusDays(1)));
+    verify(query).where(submission.sampleDeliveryDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_SampleDeliveryDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.closedOpen(start, end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start));
+    verify(query).where(submission.sampleDeliveryDate.before(end));
+  }
+
+  @Test
+  public void addCountConditions_SampleDeliveryDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.sampleDeliveryDateRange = Range.atLeast(start);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start));
+  }
+
+  @Test
+  public void addCountConditions_SampleDeliveryDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.sampleDeliveryDateRange = Range.greaterThan(start);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_SampleDeliveryDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.atMost(end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void addCountConditions_SampleDeliveryDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.lessThan(end);
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.sampleDeliveryDate.before(end));
+  }
+
+  @Test
   public void addCountConditions_DigestionDateRange_OpenRange() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
@@ -1143,6 +1319,12 @@ public class SubmissionFilterTest {
     return submission;
   }
 
+  private Submission sampleDeliveryDate(LocalDate date) {
+    Submission submission = mock(Submission.class);
+    when(submission.getSampleDeliveryDate()).thenReturn(date);
+    return submission;
+  }
+
   private Submission digestionDate(LocalDate date) {
     Submission submission = mock(Submission.class);
     when(submission.getDigestionDate()).thenReturn(date);
@@ -1354,6 +1536,34 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 10, 9, 23, 40)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 12, 1, 0, 0)))));
     assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 0, 0)))));
+  }
+
+  @Test
+  public void test_SampleDeliveryDateRange() {
+    LocalDate from = LocalDate.of(2011, 1, 2);
+    LocalDate to = LocalDate.of(2011, 10, 9);
+    filter.sampleDeliveryDateRange = Range.closed(from, to);
+
+    assertFalse(filter.test(sampleDeliveryDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(sampleDeliveryDate(LocalDate.of(2011, 1, 2))));
+    assertTrue(filter.test(sampleDeliveryDate(LocalDate.of(2011, 10, 8))));
+    assertTrue(filter.test(sampleDeliveryDate(LocalDate.of(2011, 10, 9))));
+    assertFalse(filter.test(sampleDeliveryDate(LocalDate.of(2011, 12, 1))));
+    assertFalse(filter.test(sampleDeliveryDate(LocalDate.of(2011, 1, 1))));
+    assertFalse(filter.test(sampleDeliveryDate(null)));
+  }
+
+  @Test
+  public void test_SampleDeliveryDateRange_Null() {
+    filter.sampleDeliveryDateRange = null;
+
+    assertTrue(filter.test(sampleDeliveryDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(sampleDeliveryDate(LocalDate.of(2011, 1, 2))));
+    assertTrue(filter.test(sampleDeliveryDate(LocalDate.of(2011, 10, 8))));
+    assertTrue(filter.test(sampleDeliveryDate(LocalDate.of(2011, 10, 9))));
+    assertTrue(filter.test(sampleDeliveryDate(LocalDate.of(2011, 12, 1))));
+    assertTrue(filter.test(sampleDeliveryDate(LocalDate.of(2011, 1, 1))));
+    assertTrue(filter.test(sampleDeliveryDate(null)));
   }
 
   @Test
