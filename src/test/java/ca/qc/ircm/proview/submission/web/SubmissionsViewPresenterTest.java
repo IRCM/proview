@@ -365,6 +365,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     verify(helpWindow).setHelp(
         resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()), ContentMode.HTML);
+    verify(view).addWindow(helpWindow);
   }
 
   @Test

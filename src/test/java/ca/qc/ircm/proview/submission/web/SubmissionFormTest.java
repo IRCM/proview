@@ -56,8 +56,7 @@ public class SubmissionFormTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    view = new SubmissionForm(presenter, plateComponent, standardsForm, contaminantsForm,
-        gelForm);
+    view = new SubmissionForm(presenter, plateComponent, standardsForm, contaminantsForm, gelForm);
   }
 
   @Test

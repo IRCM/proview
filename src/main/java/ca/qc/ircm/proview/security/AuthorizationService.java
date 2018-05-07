@@ -408,7 +408,7 @@ public class AuthorizationService {
         boolean permitted = getSubject().getPrincipal().equals(owner.getId());
         Laboratory laboratory = submission.getLaboratory();
         permitted |= getSubject().isPermitted("laboratory:manager:" + laboratory.getId());
-        permitted &= submissionToApprove(submission);
+        permitted &= !submissionAfterApproved(submission);
         return permitted;
       }
     }
@@ -431,13 +431,13 @@ public class AuthorizationService {
     }
   }
 
-  private boolean submissionToApprove(Submission submissionParam) {
+  private boolean submissionAfterApproved(Submission submissionParam) {
     JPAQuery<Long> query = queryFactory.select(submission.id);
     query.from(submission);
     query.join(submission.samples, submissionSample);
     query.where(submission.id.eq(submissionParam.getId()));
-    query.where(submissionSample.status.ne(SampleStatus.TO_APPROVE));
-    return query.fetchCount() == 0;
+    query.where(submissionSample.status.gt(SampleStatus.APPROVED));
+    return query.fetchCount() > 0;
   }
 
   /**

@@ -18,7 +18,9 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.HEADER_STYLE;
+import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.HELP;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.INVALID_SUBMISSION;
+import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.SUBMISSION_DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,7 +36,10 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.web.HelpWindow;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.themes.ValoTheme;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +51,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Locale;
+
+import javax.inject.Provider;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
@@ -59,6 +66,10 @@ public class SubmissionViewPresenterTest {
   private AuthorizationService authorizationService;
   @Mock
   private Submission submission;
+  @Mock
+  private Provider<HelpWindow> helpWindowProvider;
+  @Mock
+  private HelpWindow helpWindow;
   @Captor
   private ArgumentCaptor<Boolean> booleanCaptor;
   @Value("${spring.application.name}")
@@ -72,26 +83,41 @@ public class SubmissionViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter =
-        new SubmissionViewPresenter(submissionService, authorizationService, applicationName);
+    presenter = new SubmissionViewPresenter(submissionService, authorizationService,
+        helpWindowProvider, applicationName);
     design = new SubmissionViewDesign();
     view.design = design;
     view.submissionForm = mock(SubmissionForm.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     presenter.init(view);
+    when(helpWindowProvider.get()).thenReturn(helpWindow);
   }
 
   @Test
   public void styles() {
     assertTrue(design.headerLabel.getStyleName().contains(HEADER_STYLE));
     assertTrue(design.headerLabel.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.help.getStyleName().contains(ValoTheme.BUTTON_LINK));
+    assertTrue(design.help.getStyleName().contains(ValoTheme.BUTTON_LARGE));
+    assertTrue(design.help.getStyleName().contains(ValoTheme.BUTTON_ICON_ONLY));
+    assertTrue(design.help.getStyleName().contains(HELP));
   }
 
   @Test
   public void captions() {
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER_STYLE), design.headerLabel.getValue());
+    assertEquals(resources.message(HELP), design.help.getCaption());
+  }
+
+  @Test
+  public void help() {
+    design.help.click();
+
+    verify(helpWindow).setHelp(
+        resources.message(SUBMISSION_DESCRIPTION, VaadinIcons.MENU.getHtml()), ContentMode.HTML);
+    verify(view).addWindow(helpWindow);
   }
 
   @Test
