@@ -362,12 +362,37 @@ public class SubmissionService {
   public void update(Submission submission, String explanation) throws IllegalArgumentException {
     validateUpdateSubmission(submission);
     authorizationService.checkSubmissionWritePermission(submission);
+    if (!authorizationService.hasAdminRole()
+        && anyStatusGreaterOrEquals(submission, SampleStatus.APPROVED)) {
+      Submission userSupplied = submission;
+      submission = entityManager.merge(submission);
+      entityManager.refresh(submission);
+      for (int i = 0; i < submission.getSamples().size(); i++) {
+        SubmissionSample sample = submission.getSamples().get(i);
+        entityManager.refresh(sample);
+        entityManager.refresh(sample.getOriginalContainer());
+        sample.setName(userSupplied.getSamples().get(i).getName());
+        if (sample.getOriginalContainer() instanceof Tube) {
+          Tube tube = (Tube) sample.getOriginalContainer();
+          tube.setName(userSupplied.getSamples().get(i).getOriginalContainer().getName());
+        } else {
+          Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
+          Plate userSuppliedPlate =
+              ((Well) userSupplied.getSamples().get(i).getOriginalContainer()).getPlate();
+          plate.setName(userSuppliedPlate.getName());
+        }
+        entityManager.detach(sample);
+        entityManager.detach(sample.getOriginalContainer());
+      }
+      entityManager.detach(submission);
+    }
 
-    prepareUpdate(submission);
+    doUpdate(submission);
 
     Optional<Activity> activity = submissionActivityService.update(submission, explanation);
     if (activity.isPresent()) {
       activityService.insert(activity.get());
+      entityManager.flush();
 
       if (!authorizationService.hasAdminRole()) {
         // Send email to admin users to inform them of the changes in submission.
@@ -387,17 +412,32 @@ public class SubmissionService {
         throw new IllegalArgumentException("Cannot update submission's owner");
       }
 
-      if (submission.getSamples().stream()
-          .filter(
-              sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.TO_APPROVE)
-          .findAny().isPresent()) {
+      if (anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
         throw new IllegalArgumentException("Cannot update submission if samples don't have "
-            + SampleStatus.TO_APPROVE.name() + " status");
+            + SampleStatus.APPROVED.name() + " status or less");
+      } else if (anyStatusGreaterOrEquals(submission, SampleStatus.APPROVED)) {
+        if (submission.getSamples().size() != old.getSamples().size()) {
+          throw new IllegalArgumentException(
+              "Cannot update number of samples in submission if samples don't have "
+                  + SampleStatus.TO_APPROVE.name() + " status");
+        } else if (!submission.getSamples().isEmpty()
+            && submission.getSamples().get(0).getOriginalContainer().getType() != old.getSamples()
+                .get(0).getOriginalContainer().getType()) {
+          throw new IllegalArgumentException(
+              "Cannot update container type in submission if samples don't have "
+                  + SampleStatus.TO_APPROVE.name() + " status");
+        }
       }
     }
   }
 
-  private void prepareUpdate(Submission submission) throws IllegalArgumentException {
+  private boolean anyStatusGreaterOrEquals(Submission submission, SampleStatus status) {
+    return submission.getSamples().stream()
+        .filter(sample -> sample.getStatus() != null && status.compareTo(sample.getStatus()) <= 0)
+        .findAny().isPresent();
+  }
+
+  private void doUpdate(Submission submission) throws IllegalArgumentException {
     Submission old = entityManager.find(Submission.class, submission.getId());
     submission.setLaboratory(submission.getUser().getLaboratory());
 
@@ -442,6 +482,7 @@ public class SubmissionService {
         .map(sample -> sample.getId()).collect(Collectors.toSet());
     old.getSamples().stream().filter(sample -> !sampleIds.contains(sample.getId())
         && sample.getOriginalContainer().getType() == TUBE).forEach(sample -> {
+          logger.debug("Remove tube {}", sample.getOriginalContainer());
           entityManager.remove(sample.getOriginalContainer());
         });
     // Populate tube ids.

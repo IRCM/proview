@@ -195,6 +195,7 @@ public class SubmissionServiceTest {
         submission.getSubmissionDate());
     assertEquals(LocalDate.of(2010, 12, 11), submission.getDigestionDate());
     assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
+    assertEquals(LocalDate.of(2010, 12, 15), submission.getDataAvailableDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
@@ -281,6 +282,7 @@ public class SubmissionServiceTest {
         submission.getSubmissionDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
+    assertNull(submission.getDataAvailableDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
@@ -372,7 +374,7 @@ public class SubmissionServiceTest {
     List<Submission> submissions = submissionService.all();
 
     verify(authorizationService).checkUserRole();
-    assertEquals(17, submissions.size());
+    assertEquals(18, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
@@ -391,7 +393,7 @@ public class SubmissionServiceTest {
     List<Submission> submissions = submissionService.all();
 
     verify(authorizationService).checkUserRole();
-    assertEquals(19, submissions.size());
+    assertEquals(20, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
@@ -589,7 +591,7 @@ public class SubmissionServiceTest {
     int count = submissionService.count(filter);
 
     verify(authorizationService).checkUserRole();
-    assertEquals(14, count);
+    assertEquals(15, count);
   }
 
   @Test
@@ -2647,13 +2649,286 @@ public class SubmissionServiceTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void update_NotToApprove() throws Exception {
+  public void update_Received() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 149L);
+    entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
+
+    submissionService.update(submission, null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_AfterReceived() throws Exception {
     Submission submission = entityManager.find(Submission.class, 147L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
       entityManager.detach(sa.getOriginalContainer());
     });
+
+    submissionService.update(submission, null);
+  }
+
+  @Test
+  public void update_SampleNameAndTube_Approved() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 164L);
+    entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+      sa.setName(sa.getName() + "-1");
+    });
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionService.update(submission, null);
+
+    entityManager.flush();
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
+    verify(activityService).insert(activity);
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    assertEquals((Long) 10L, submission.getUser().getId());
+    assertEquals((Long) 2L, submission.getLaboratory().getId());
+    assertEquals(Service.LC_MS_MS, submission.getService());
+    assertEquals("Homo Sapiens", submission.getTaxonomy());
+    assertEquals("POLR2B-Flag", submission.getExperiment());
+    assertEquals(null, submission.getGoal());
+    assertEquals(MassDetectionInstrument.VELOS, submission.getMassDetectionInstrument());
+    assertEquals(null, submission.getSource());
+    assertEquals(null, submission.getInjectionType());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
+    assertEquals(null, submission.getUsedProteolyticDigestionMethod());
+    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
+    assertEquals(ProteinIdentification.REFSEQ, submission.getProteinIdentification());
+    assertEquals(null, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getEnrichmentType());
+    assertEquals(null, submission.getOtherEnrichmentType());
+    assertEquals(null, submission.getProtein());
+    assertEquals(null, submission.getPostTranslationModification());
+    assertEquals(null, submission.getMudPitFraction());
+    assertEquals(ProteinContent.XLARGE, submission.getProteinContent());
+    assertEquals(null, submission.getComment());
+    assertEquals(toInstant(LocalDateTime.of(2018, 5, 3, 0, 0, 0, 0)),
+        submission.getSubmissionDate());
+    assertNull(submission.getDigestionDate());
+    assertNull(submission.getAnalysisDate());
+    List<SubmissionSample> samples = submission.getSamples();
+    assertEquals(1, samples.size());
+    SubmissionSample submissionSample = samples.get(0);
+    assertEquals((Long) 643L, submissionSample.getId());
+    assertEquals("POLR2B_201810503_01-1", submissionSample.getName());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
+    assertEquals("20 μl", submissionSample.getVolume());
+    assertEquals("15 μg", submissionSample.getQuantity());
+    assertEquals(null, submissionSample.getNumberProtein());
+    assertEquals(null, submissionSample.getMolecularWeight());
+    assertEquals(0, submissionSample.getContaminants().size());
+    assertEquals(0, submissionSample.getStandards().size());
+    Tube tube = (Tube) submissionSample.getOriginalContainer();
+    assertEquals((Long) 2280L, tube.getId());
+    assertEquals("POLR2B_201810503_01-1", tube.getName());
+    assertEquals(submissionSample.getId(), tube.getSample().getId());
+    assertEquals(false, tube.isBanned());
+    assertEquals(0, submission.getFiles().size());
+
+    // Validate log.
+    Submission submissionLogged = submissionCaptor.getValue();
+    assertEquals(submission.getId(), submissionLogged.getId());
+  }
+
+  @Test
+  public void update_SampleNameAndPlate_Approved() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 163L);
+    entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      sa.setStatus(SampleStatus.APPROVED);
+      entityManager.merge(sa);
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+      sa.setName(sa.getName() + "-1");
+    });
+    Plate plate = ((Well) (submission.getSamples().get(0).getOriginalContainer())).getPlate();
+    entityManager.detach(plate);
+    plate.setName(plate.getName() + "-1");
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionService.update(submission, null);
+
+    entityManager.flush();
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
+    verify(activityService).insert(activity);
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    assertEquals((Long) 10L, submission.getUser().getId());
+    assertEquals((Long) 2L, submission.getLaboratory().getId());
+    assertEquals(Service.LC_MS_MS, submission.getService());
+    assertEquals("Homo Sapiens", submission.getTaxonomy());
+    assertEquals("POLR2B-Flag", submission.getExperiment());
+    assertEquals(null, submission.getGoal());
+    assertEquals(MassDetectionInstrument.VELOS, submission.getMassDetectionInstrument());
+    assertEquals(null, submission.getSource());
+    assertEquals(null, submission.getInjectionType());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
+    assertEquals(null, submission.getUsedProteolyticDigestionMethod());
+    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
+    assertEquals(ProteinIdentification.REFSEQ, submission.getProteinIdentification());
+    assertEquals(null, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getEnrichmentType());
+    assertEquals(null, submission.getOtherEnrichmentType());
+    assertEquals(null, submission.getProtein());
+    assertEquals(null, submission.getPostTranslationModification());
+    assertEquals(null, submission.getMudPitFraction());
+    assertEquals(ProteinContent.XLARGE, submission.getProteinContent());
+    assertEquals(null, submission.getComment());
+    assertEquals(toInstant(LocalDateTime.of(2017, 11, 8, 0, 0, 0, 0)),
+        submission.getSubmissionDate());
+    assertNull(submission.getDigestionDate());
+    assertEquals(LocalDate.of(2017, 11, 25), submission.getAnalysisDate());
+    List<SubmissionSample> samples = submission.getSamples();
+    assertEquals(3, samples.size());
+    SubmissionSample submissionSample = samples.get(0);
+    assertEquals((Long) 640L, submissionSample.getId());
+    assertEquals("POLR2B_20171108_01-1", submissionSample.getName());
+    assertEquals(SampleType.DRY, submissionSample.getType());
+    assertEquals(null, submissionSample.getVolume());
+    assertEquals("15 μg", submissionSample.getQuantity());
+    assertEquals(null, submissionSample.getNumberProtein());
+    assertEquals(null, submissionSample.getMolecularWeight());
+    assertEquals(0, submissionSample.getContaminants().size());
+    assertEquals(0, submissionSample.getStandards().size());
+    Well well = (Well) submissionSample.getOriginalContainer();
+    assertEquals((Long) 1760L, well.getId());
+    assertEquals((Long) 123L, well.getPlate().getId());
+    assertEquals("Andrew-20171108-1", well.getPlate().getName());
+    assertEquals(submissionSample.getId(), well.getSample().getId());
+    assertEquals(false, well.isBanned());
+    assertEquals(0, submission.getFiles().size());
+
+    // Validate log.
+    Submission submissionLogged = submissionCaptor.getValue();
+    assertEquals(submission.getId(), submissionLogged.getId());
+  }
+
+  @Test
+  public void update_Approved_IgnoreOtherThanSampleName() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 164L);
+    entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      Tube container = (Tube) sa.getOriginalContainer();
+      entityManager.detach(container);
+      sa.setName(sa.getName() + "-1");
+      sa.setVolume("10ul");
+      container.setBanned(true);
+    });
+    submission.setExperiment("experiment");
+    submission.setGoal("goal");
+    Instant newInstant = Instant.now();
+    submission.setSubmissionDate(newInstant);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionService.update(submission, null);
+
+    entityManager.flush();
+    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
+    verify(activityService).insert(activity);
+    submission = entityManager.find(Submission.class, submission.getId());
+    entityManager.refresh(submission);
+    assertEquals((Long) 10L, submission.getUser().getId());
+    assertEquals((Long) 2L, submission.getLaboratory().getId());
+    assertEquals(Service.LC_MS_MS, submission.getService());
+    assertEquals("Homo Sapiens", submission.getTaxonomy());
+    assertEquals("POLR2B-Flag", submission.getExperiment());
+    assertEquals(null, submission.getGoal());
+    assertEquals(MassDetectionInstrument.VELOS, submission.getMassDetectionInstrument());
+    assertEquals(null, submission.getSource());
+    assertEquals(null, submission.getInjectionType());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
+    assertEquals(null, submission.getUsedProteolyticDigestionMethod());
+    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
+    assertEquals(ProteinIdentification.REFSEQ, submission.getProteinIdentification());
+    assertEquals(null, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getEnrichmentType());
+    assertEquals(null, submission.getOtherEnrichmentType());
+    assertEquals(null, submission.getProtein());
+    assertEquals(null, submission.getPostTranslationModification());
+    assertEquals(null, submission.getMudPitFraction());
+    assertEquals(ProteinContent.XLARGE, submission.getProteinContent());
+    assertEquals(null, submission.getComment());
+    assertEquals(toInstant(LocalDateTime.of(2018, 5, 3, 0, 0, 0, 0)),
+        submission.getSubmissionDate());
+    assertNull(submission.getDigestionDate());
+    assertNull(submission.getAnalysisDate());
+    List<SubmissionSample> samples = submission.getSamples();
+    assertEquals(1, samples.size());
+    SubmissionSample submissionSample = samples.get(0);
+    assertEquals((Long) 643L, submissionSample.getId());
+    assertEquals("POLR2B_201810503_01-1", submissionSample.getName());
+    assertEquals(SampleType.SOLUTION, submissionSample.getType());
+    assertEquals("20 μl", submissionSample.getVolume());
+    assertEquals("15 μg", submissionSample.getQuantity());
+    assertEquals(null, submissionSample.getNumberProtein());
+    assertEquals(null, submissionSample.getMolecularWeight());
+    assertEquals(0, submissionSample.getContaminants().size());
+    assertEquals(0, submissionSample.getStandards().size());
+    Tube tube = (Tube) submissionSample.getOriginalContainer();
+    assertEquals((Long) 2280L, tube.getId());
+    assertEquals("POLR2B_201810503_01-1", tube.getName());
+    assertEquals(submissionSample.getId(), tube.getSample().getId());
+    assertEquals(false, tube.isBanned());
+    assertEquals(0, submission.getFiles().size());
+
+    // Validate log.
+    Submission submissionLogged = submissionCaptor.getValue();
+    assertEquals(submission.getId(), submissionLogged.getId());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_SampleCount_Approved() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 164L);
+    entityManager.detach(submission);
+    submission.getSamples().forEach(sa -> {
+      entityManager.detach(sa);
+      entityManager.detach(sa.getOriginalContainer());
+    });
+    SubmissionSample sample = new SubmissionSample();
+    sample.setName("unit_test_eluate_01");
+    sample.setType(SampleType.SOLUTION);
+    sample.setVolume("10.0 μl");
+    sample.setQuantity("2.0 μg");
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
+    submission.getSamples().add(sample);
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    submissionService.update(submission, null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void update_ContainerType_Approved() throws Exception {
+    Submission submission = entityManager.find(Submission.class, 164L);
+    entityManager.detach(submission);
+    Plate plate = new Plate();
+    plate.setName("test-plate");
+    plate.initWells();
+    IntStream.range(0, submission.getSamples().size()).forEach(i -> {
+      SubmissionSample sample = submission.getSamples().get(i);
+      entityManager.detach(sample);
+      entityManager.detach(sample.getOriginalContainer());
+      sample.setOriginalContainer(plate.getWells().get(i));
+    });
+    when(submissionActivityService.update(any(Submission.class), any(String.class)))
+        .thenReturn(optionalActivity);
 
     submissionService.update(submission, null);
   }
