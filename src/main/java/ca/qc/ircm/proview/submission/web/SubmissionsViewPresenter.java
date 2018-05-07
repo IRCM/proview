@@ -122,6 +122,7 @@ public class SubmissionsViewPresenter {
       property(SUBMISSION, submission.laboratory.director.getMetadata().getName());
   public static final String SERVICE =
       property(SUBMISSION, submission.service.getMetadata().getName());
+  public static final String SAMPLE_DELIVERY_DATE = qname(submission.sampleDeliveryDate);
   public static final String DIGESTION_DATE = qname(submission.digestionDate);
   public static final String ANALYSIS_DATE = qname(submission.analysisDate);
   public static final String DATA_AVAILABLE_DATE = qname(submission.dataAvailableDate);
@@ -341,6 +342,11 @@ public class SubmissionsViewPresenter {
         .setId(SERVICE).setCaption(resources.message(SERVICE));
     columnProperties.put(SERVICE, submission.service);
     design.submissionsGrid
+        .addColumn(submission -> sampleDeliveryDateLabel(submission), new ComponentRenderer())
+        .setId(SAMPLE_DELIVERY_DATE).setCaption(resources.message(SAMPLE_DELIVERY_DATE))
+        .setWidth(200);
+    columnProperties.put(SAMPLE_DELIVERY_DATE, submission.sampleDeliveryDate);
+    design.submissionsGrid
         .addColumn(submission -> digestionDateLabel(submission), new ComponentRenderer())
         .setId(DIGESTION_DATE).setCaption(resources.message(DIGESTION_DATE)).setWidth(200);
     columnProperties.put(DIGESTION_DATE, submission.digestionDate);
@@ -406,6 +412,9 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getColumn(SERVICE).setHidable(true);
     design.submissionsGrid.getColumn(SERVICE)
         .setHidden(userPreferenceService.get(this, SERVICE, false));
+    design.submissionsGrid.getColumn(SAMPLE_DELIVERY_DATE).setHidable(true);
+    design.submissionsGrid.getColumn(SAMPLE_DELIVERY_DATE)
+        .setHidden(userPreferenceService.get(this, SAMPLE_DELIVERY_DATE, false));
     design.submissionsGrid.getColumn(DIGESTION_DATE).setHidable(true);
     design.submissionsGrid.getColumn(DIGESTION_DATE)
         .setHidden(userPreferenceService.get(this, DIGESTION_DATE, false));
@@ -482,6 +491,10 @@ public class SubmissionsViewPresenter {
       filter.service = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }, Service.values(), service -> service.getLabel(locale)));
+    filterRow.getCell(SAMPLE_DELIVERY_DATE).setComponent(dateFilter(e -> {
+      filter.sampleDeliveryDateRange = e.getSavedObject();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }));
     filterRow.getCell(DIGESTION_DATE).setComponent(dateFilter(e -> {
       filter.digestionDateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
@@ -515,15 +528,17 @@ public class SubmissionsViewPresenter {
       filter.hidden = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }, new Boolean[] { true, false }, value -> resources.message(property(HIDDEN, value))));
+    design.submissionsGrid.getEditor().setEnabled(true);
+    design.submissionsGrid.getEditor().addSaveListener(e -> {
+      Submission su = e.getBean();
+      logger.info("Updated submission {}", su, su);
+      submissionService.update(su, null);
+    });
+    Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+    design.submissionsGrid.getEditor().setBinder(binder);
+    design.submissionsGrid.getColumn(SAMPLE_DELIVERY_DATE)
+        .setEditorBinding(binder.forField(new DateField()).bind(SAMPLE_DELIVERY_DATE));
     if (authorizationService.hasAdminRole()) {
-      design.submissionsGrid.getEditor().setEnabled(true);
-      design.submissionsGrid.getEditor().addSaveListener(e -> {
-        Submission su = e.getBean();
-        logger.info("Updated submission {}", su, su);
-        submissionService.update(su, null);
-      });
-      Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-      design.submissionsGrid.getEditor().setBinder(binder);
       design.submissionsGrid.getColumn(DIGESTION_DATE)
           .setEditorBinding(binder.forField(new DateField()).bind(DIGESTION_DATE));
       design.submissionsGrid.getColumn(ANALYSIS_DATE)
@@ -552,6 +567,16 @@ public class SubmissionsViewPresenter {
   private boolean anySampleGteStatus(Submission submission, SampleStatus status) {
     return submission.getSamples().stream()
         .filter(sample -> sample.getStatus().compareTo(status) >= 0).findAny().isPresent();
+  }
+
+  private Label sampleDeliveryDateLabel(Submission submission) {
+    Label label = new Label();
+    if (submission.getSampleDeliveryDate() != null) {
+      DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+      label.setValue(formatter.format(submission.getSampleDeliveryDate()));
+    }
+    label.addStyleName(SAMPLE_DELIVERY_DATE);
+    return label;
   }
 
   private Label digestionDateLabel(Submission submission) {
