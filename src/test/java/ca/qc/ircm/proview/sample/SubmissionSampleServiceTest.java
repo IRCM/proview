@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,7 +70,7 @@ public class SubmissionSampleServiceTest {
   @Mock
   private Activity activity;
   @Captor
-  private ArgumentCaptor<Sample> sampleCaptor;
+  private ArgumentCaptor<SubmissionSample> sampleCaptor;
   private Optional<Activity> optionalActivity;
 
   /**
@@ -198,8 +197,7 @@ public class SubmissionSampleServiceTest {
     Collection<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample1);
     samples.add(sample2);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(samples);
 
@@ -211,11 +209,11 @@ public class SubmissionSampleServiceTest {
     assertEquals(1, testSample1.getVersion());
     assertEquals(SampleStatus.RECEIVED, testSample2.getStatus());
     assertEquals(1, testSample2.getVersion());
-    verify(sampleActivityService, times(2)).update(sampleCaptor.capture(), isNull(String.class));
+    verify(sampleActivityService, times(2)).updateStatus(sampleCaptor.capture());
     verify(activityService, times(2)).insert(activity);
-    SubmissionSample newTestSample1 = (SubmissionSample) sampleCaptor.getAllValues().get(0);
+    SubmissionSample newTestSample1 = sampleCaptor.getAllValues().get(0);
     assertEquals(SampleStatus.DIGESTED, newTestSample1.getStatus());
-    SubmissionSample newTestSample2 = (SubmissionSample) sampleCaptor.getAllValues().get(1);
+    SubmissionSample newTestSample2 = sampleCaptor.getAllValues().get(1);
     assertEquals(SampleStatus.RECEIVED, newTestSample2.getStatus());
   }
 
@@ -228,8 +226,7 @@ public class SubmissionSampleServiceTest {
     sample.setStatus(SampleStatus.DIGESTED);
     Collection<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(samples);
 
@@ -246,8 +243,7 @@ public class SubmissionSampleServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.RECEIVED);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(Arrays.asList(sample));
 
@@ -263,8 +259,7 @@ public class SubmissionSampleServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 559L);
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.RECEIVED);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(Arrays.asList(sample));
 
@@ -278,8 +273,7 @@ public class SubmissionSampleServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(Arrays.asList(sample));
 
@@ -293,8 +287,7 @@ public class SubmissionSampleServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(Arrays.asList(sample));
 
@@ -309,8 +302,7 @@ public class SubmissionSampleServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 559L);
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(Arrays.asList(sample));
 
@@ -324,8 +316,7 @@ public class SubmissionSampleServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(Arrays.asList(sample));
 
@@ -339,8 +330,7 @@ public class SubmissionSampleServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(Arrays.asList(sample));
 
@@ -355,8 +345,7 @@ public class SubmissionSampleServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 621L);
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(Arrays.asList(sample));
 
@@ -370,8 +359,7 @@ public class SubmissionSampleServiceTest {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.DATA_ANALYSIS);
-    when(sampleActivityService.update(any(Sample.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
     submissionSampleService.updateStatus(Arrays.asList(sample));
 

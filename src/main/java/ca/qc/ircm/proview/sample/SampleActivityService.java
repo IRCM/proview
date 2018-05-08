@@ -49,6 +49,7 @@ import javax.persistence.PersistenceContext;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SampleActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
+  private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -85,6 +86,54 @@ public class SampleActivityService {
   }
 
   /**
+   * Creates an activity about update of sample status.
+   *
+   * @param sample
+   *          sample containing new status
+   * @return activity about update of sample
+   */
+  @CheckReturnValue
+  public Optional<Activity> updateStatus(final SubmissionSample sample) {
+    User user = authorizationService.getCurrentUser();
+
+    final SubmissionSample oldSample = entityManager.find(SubmissionSample.class, sample.getId());
+
+    final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
+    Submission oldSubmission = oldSample.getSubmission();
+    Submission submission = sample.getSubmission();
+    updateBuilders.add(sampleUpdateActivity(sample).column(qname(qsubmissionSample.status))
+        .oldValue(oldSample.getStatus()).newValue(sample.getStatus()));
+    updateBuilders
+        .add(submissionUpdateActivity(submission).column(qname(qsubmission.sampleDeliveryDate))
+            .oldValue(oldSubmission.getSampleDeliveryDate())
+            .newValue(submission.getSampleDeliveryDate()));
+    updateBuilders.add(submissionUpdateActivity(submission).column(qname(qsubmission.digestionDate))
+        .oldValue(oldSubmission.getDigestionDate()).newValue(submission.getDigestionDate()));
+    updateBuilders.add(submissionUpdateActivity(submission).column(qname(qsubmission.analysisDate))
+        .oldValue(oldSubmission.getAnalysisDate()).newValue(submission.getAnalysisDate()));
+
+    // Keep updateBuilders that did not change.
+    final Collection<UpdateActivity> updates = new ArrayList<>();
+    for (UpdateActivityBuilder builder : updateBuilders) {
+      if (builder.isChanged()) {
+        updates.add(builder.build());
+      }
+    }
+
+    if (!updates.isEmpty()) {
+      Activity activity = new Activity();
+      activity.setActionType(ActionType.UPDATE);
+      activity.setRecordId(sample.getId());
+      activity.setUser(user);
+      activity.setTableName(Sample.TABLE_NAME);
+      activity.setUpdates(new LinkedList<>(updates));
+      return Optional.of(activity);
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  /**
    * Creates an activity about update of sample.
    *
    * @param newSample
@@ -100,13 +149,6 @@ public class SampleActivityService {
     final Sample oldSample = entityManager.find(Sample.class, newSample.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    class SampleUpdateActivityBuilder extends UpdateActivityBuilder {
-      {
-        tableName(Sample.TABLE_NAME);
-        actionType(ActionType.UPDATE);
-        recordId(newSample.getId());
-      }
-    }
 
     class ContaminantUpdateActivityBuilder extends UpdateActivityBuilder {
       {
@@ -142,13 +184,13 @@ public class SampleActivityService {
       }
     }
 
-    updateBuilders.add(new SampleUpdateActivityBuilder().column("name")
-        .oldValue(oldSample.getName()).newValue(newSample.getName()));
-    updateBuilders.add(new SampleUpdateActivityBuilder().column("support")
+    updateBuilders.add(sampleUpdateActivity(newSample).column("name").oldValue(oldSample.getName())
+        .newValue(newSample.getName()));
+    updateBuilders.add(sampleUpdateActivity(newSample).column("support")
         .oldValue(oldSample.getType()).newValue(newSample.getType()));
-    updateBuilders.add(new SampleUpdateActivityBuilder().column("volume")
+    updateBuilders.add(sampleUpdateActivity(newSample).column("volume")
         .oldValue(oldSample.getVolume()).newValue(newSample.getVolume()));
-    updateBuilders.add(new SampleUpdateActivityBuilder().column("quantity")
+    updateBuilders.add(sampleUpdateActivity(newSample).column("quantity")
         .oldValue(oldSample.getQuantity()).newValue(newSample.getQuantity()));
     // Standards.
     List<Standard> oldStandards =
@@ -196,12 +238,12 @@ public class SampleActivityService {
     if (newSample instanceof SubmissionSample) {
       SubmissionSample oldSubmissionSample = (SubmissionSample) oldSample;
       SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("status")
+      updateBuilders.add(sampleUpdateActivity(newSample).column("status")
           .oldValue(oldSubmissionSample.getStatus()).newValue(newSubmissionSample.getStatus()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("numberProtein")
+      updateBuilders.add(sampleUpdateActivity(newSample).column("numberProtein")
           .oldValue(oldSubmissionSample.getNumberProtein())
           .newValue(newSubmissionSample.getNumberProtein()));
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("molecularWeight")
+      updateBuilders.add(sampleUpdateActivity(newSample).column("molecularWeight")
           .oldValue(oldSubmissionSample.getMolecularWeight())
           .newValue(newSubmissionSample.getMolecularWeight()));
       // Contaminants.
@@ -250,23 +292,11 @@ public class SampleActivityService {
               .actionType(ActionType.INSERT));
         }
       }
-      Submission oldSubmission = oldSubmissionSample.getSubmission();
-      Submission newSubmission = newSubmissionSample.getSubmission();
-      updateBuilders
-          .add(submissionUpdateActivity(newSubmission).column(qname(qsubmission.sampleDeliveryDate))
-              .oldValue(oldSubmission.getSampleDeliveryDate())
-              .newValue(newSubmission.getSampleDeliveryDate()));
-      updateBuilders.add(submissionUpdateActivity(newSubmission)
-          .column(qname(qsubmission.digestionDate)).oldValue(oldSubmission.getDigestionDate())
-          .newValue(newSubmission.getDigestionDate()));
-      updateBuilders
-          .add(submissionUpdateActivity(newSubmission).column(qname(qsubmission.analysisDate))
-              .oldValue(oldSubmission.getAnalysisDate()).newValue(newSubmission.getAnalysisDate()));
     }
     if (newSample instanceof Control) {
       Control oldControl = (Control) oldSample;
       Control newControl = (Control) newSample;
-      updateBuilders.add(new SampleUpdateActivityBuilder().column("controlType")
+      updateBuilders.add(sampleUpdateActivity(newSample).column("controlType")
           .oldValue(oldControl.getControlType()).newValue(newControl.getControlType()));
     }
 
@@ -290,6 +320,11 @@ public class SampleActivityService {
     } else {
       return Optional.empty();
     }
+  }
+
+  private UpdateActivityBuilder sampleUpdateActivity(Sample sample) {
+    return new UpdateActivityBuilder().tableName(Sample.TABLE_NAME).actionType(ActionType.UPDATE)
+        .recordId(sample.getId());
   }
 
   private UpdateActivityBuilder submissionUpdateActivity(Submission submission) {

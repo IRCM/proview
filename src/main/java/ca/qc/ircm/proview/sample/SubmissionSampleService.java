@@ -121,7 +121,7 @@ public class SubmissionSampleService {
       entityManager.refresh(sample);
       sample.setStatus(status);
       // Log changes.
-      Optional<Activity> activity = sampleActivityService.update(sample, null);
+      Optional<Activity> activity = sampleActivityService.updateStatus(sample);
       if (activity.isPresent()) {
         activityService.insert(activity.get());
       }
