@@ -352,7 +352,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setId(REMOVE_FILE).setCaption(resources.message(property(FILES, REMOVE_FILE)))
         .setSortable(false);
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
-    design.explanationPanel.addStyleName(REQUIRED);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
     design.explanation.addStyleName(EXPLANATION);
     design.save.addStyleName(SAVE);
@@ -1119,7 +1118,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     boolean valid = true;
     valid &= validate(submissionBinder);
     valid &= validate(firstSampleBinder);
-    valid &= validate(() -> validateExplanation());
     Submission submission = submissionBinder.getBean();
     SubmissionSample sample = firstSampleBinder.getBean();
     if (submission.getService() == LC_MS_MS || submission.getService() == INTACT_PROTEIN) {
@@ -1205,18 +1203,6 @@ public class SubmissionFormPresenter implements BinderValidator {
       String error = resources.message(property(SOLVENTS, REQUIRED));
       design.solventsLayout.setComponentError(new UserError(error));
       logger.debug("validation error on {}: {}", SOLVENTS, error);
-      return ValidationResult.error(error);
-    }
-    return ValidationResult.ok();
-  }
-
-  private ValidationResult validateExplanation() {
-    design.explanation.setComponentError(null);
-    if (design.explanationPanel.isVisible() && design.explanation.getValue().isEmpty()) {
-      MessageResource generalResources = view.getGeneralResources();
-      String error = generalResources.message(REQUIRED);
-      design.explanation.setComponentError(new UserError(error));
-      logger.debug("validation error on {}: {}", EXPLANATION, error);
       return ValidationResult.error(error);
     }
     return ValidationResult.ok();

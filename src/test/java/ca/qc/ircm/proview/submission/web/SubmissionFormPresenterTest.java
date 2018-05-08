@@ -1136,7 +1136,6 @@ public class SubmissionFormPresenterTest {
     verify(view.filesUploader).addStyleName(FILES_UPLOADER);
     assertTrue(design.files.getStyleName().contains(FILES));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
-    assertTrue(design.explanationPanel.getStyleName().contains(REQUIRED));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
@@ -4432,7 +4431,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_MissingExplanation() throws Throwable {
-    Submission submission = entityManager.find(Submission.class, 147L);
+    Submission submission = entityManager.find(Submission.class, 164L);
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
@@ -4444,11 +4443,8 @@ public class SubmissionFormPresenterTest {
 
     design.save.click();
 
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.explanation.getErrorMessage().getFormattedHtmlMessage());
-    verify(submissionService, never()).update(any(), any());
+    verify(view, never()).showError(stringCaptor.capture());
+    verify(submissionService).update(any(), any());
   }
 
   @Test
