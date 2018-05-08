@@ -93,6 +93,7 @@ public class SampleActivityServiceTest {
     entityManager.detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     Submission submission = sample.getSubmission();
+    entityManager.detach(submission);
     LocalDate sampleDeliveryDate = LocalDate.now().minusDays(2);
     LocalDate digestionDate = LocalDate.now();
     LocalDate analysisDate = LocalDate.now().plusDays(1);
