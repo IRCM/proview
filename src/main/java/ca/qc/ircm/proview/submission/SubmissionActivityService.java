@@ -24,6 +24,9 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.QPlate;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -55,6 +58,7 @@ import javax.persistence.PersistenceContext;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SubmissionActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
+  private static final QPlate qplate = QPlate.plate;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
@@ -278,6 +282,12 @@ public class SubmissionActivityService {
         Optional<Activity> optionalActivity = sampleActivityService.update(sample, explanation);
         optionalActivity.ifPresent(activity -> updateBuilders.addAll(activity.getUpdates().stream()
             .map(ua -> new UpdateActivityBuilder(ua)).collect(Collectors.toList())));
+        if (sample.getOriginalContainer() instanceof Well) {
+          Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
+          Plate oldPlate = entityManager.find(Plate.class, plate.getId());
+          updateBuilders.add(plateUpdate(plate).column(qname(qplate.name))
+              .oldValue(oldPlate.getName()).newValue(plate.getName()));
+        }
       } else {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.INSERT)
             .tableName(Sample.TABLE_NAME).recordId(sample.getId()));
@@ -370,6 +380,14 @@ public class SubmissionActivityService {
     builder.tableName(Sample.TABLE_NAME);
     builder.actionType(ActionType.UPDATE);
     builder.recordId(sample.getId());
+    return builder;
+  }
+
+  private UpdateActivityBuilder plateUpdate(Plate plate) {
+    UpdateActivityBuilder builder = new UpdateActivityBuilder();
+    builder.tableName(Plate.TABLE_NAME);
+    builder.actionType(ActionType.UPDATE);
+    builder.recordId(plate.getId());
     return builder;
   }
 }

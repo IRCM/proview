@@ -31,6 +31,9 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.QPlate;
+import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.QSubmissionSample;
@@ -68,6 +71,7 @@ import javax.persistence.PersistenceContext;
 @ServiceTestAnnotations
 public class SubmissionActivityServiceTest {
   private static final QSubmission qsubmission = QSubmission.submission;
+  private static final QPlate qplate = QPlate.plate;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
   private SubmissionActivityService submissionActivityService;
   @PersistenceContext
@@ -638,6 +642,39 @@ public class SubmissionActivityServiceTest {
     addSampleActivity.setRecordId(640L);
     expectedUpdateActivities.add(addSampleActivity);
     expectedUpdateActivities.add(updateSampleNameActivity);
+    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
+  }
+
+  @Test
+  public void update_PlateName() {
+    Submission submission = entityManager.find(Submission.class, 163L);
+    entityManager.detach(submission);
+    submission.getSamples().forEach(sample -> {
+      entityManager.detach(sample);
+      entityManager.detach(sample.getOriginalContainer());
+    });
+    Plate plate = ((Well) submission.getSamples().get(0).getOriginalContainer()).getPlate();
+    entityManager.detach(plate);
+    plate.setName("mynewplatename");
+
+    Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
+
+    assertEquals(true, optionalActivity.isPresent());
+    Activity activity = optionalActivity.get();
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals(Submission.TABLE_NAME, activity.getTableName());
+    assertEquals(submission.getId(), activity.getRecordId());
+    assertEquals("unit_test", activity.getExplanation());
+    assertEquals(user, activity.getUser());
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
+    UpdateActivity plateNameActivity = new UpdateActivity();
+    plateNameActivity.setActionType(ActionType.UPDATE);
+    plateNameActivity.setTableName(Plate.TABLE_NAME);
+    plateNameActivity.setRecordId(plate.getId());
+    plateNameActivity.setColumn(qname(qplate.name));
+    plateNameActivity.setOldValue("Andrew-20171108");
+    plateNameActivity.setNewValue("mynewplatename");
+    expectedUpdateActivities.add(plateNameActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 
