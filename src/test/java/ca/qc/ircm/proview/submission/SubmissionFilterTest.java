@@ -35,6 +35,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Range;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
@@ -128,6 +129,16 @@ public class SubmissionFilterTest {
     filter.addConditions(query);
 
     verify(query).where(submission.samples.any().status.eq(SampleStatus.RECEIVED));
+  }
+
+  @Test
+  public void addConditions_Instrument() throws Exception {
+    filter.instrument = MassDetectionInstrument.LTQ_ORBI_TRAP;
+
+    filter.addConditions(query);
+
+    verify(query)
+        .where(submission.massDetectionInstrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
   }
 
   @Test
@@ -729,6 +740,16 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addCountConditions_Instrument() throws Exception {
+    filter.instrument = MassDetectionInstrument.LTQ_ORBI_TRAP;
+
+    filter.addCountConditions(query);
+
+    verify(query)
+        .where(submission.massDetectionInstrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
+  }
+
+  @Test
   public void addCountConditions_DateRange_OpenRange() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
@@ -1312,6 +1333,12 @@ public class SubmissionFilterTest {
     return submission;
   }
 
+  private Submission instrument(MassDetectionInstrument instrument) {
+    Submission submission = mock(Submission.class);
+    when(submission.getMassDetectionInstrument()).thenReturn(instrument);
+    return submission;
+  }
+
   private Submission date(Instant date) {
     Submission submission = new Submission();
     submission.setSubmissionDate(date);
@@ -1510,6 +1537,24 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertTrue(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
     assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, APPROVED)));
+  }
+
+  @Test
+  public void test_Instrument() {
+    filter.instrument = MassDetectionInstrument.LTQ_ORBI_TRAP;
+
+    assertTrue(filter.test(instrument(MassDetectionInstrument.LTQ_ORBI_TRAP)));
+    assertFalse(filter.test(instrument(MassDetectionInstrument.VELOS)));
+    assertFalse(filter.test(instrument(null)));
+  }
+
+  @Test
+  public void test_Instrument_Null() {
+    filter.instrument = null;
+
+    assertTrue(filter.test(instrument(MassDetectionInstrument.LTQ_ORBI_TRAP)));
+    assertTrue(filter.test(instrument(MassDetectionInstrument.VELOS)));
+    assertTrue(filter.test(instrument(null)));
   }
 
   @Test

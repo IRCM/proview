@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -46,6 +47,7 @@ public class SubmissionFilter implements Predicate<Submission> {
   public Service service;
   public String anySampleNameContains;
   public SampleStatus anySampleStatus;
+  public MassDetectionInstrument instrument;
   public Range<LocalDate> dateRange;
   public Range<LocalDate> sampleDeliveryDateRange;
   public Range<LocalDate> digestionDateRange;
@@ -87,6 +89,9 @@ public class SubmissionFilter implements Predicate<Submission> {
     if (anySampleStatus != null) {
       test &= submission.getSamples().isEmpty() || submission.getSamples().stream()
           .anyMatch(sample -> anySampleStatus.equals(sample.getStatus()));
+    }
+    if (instrument != null) {
+      test &= instrument == submission.getMassDetectionInstrument();
     }
     if (dateRange != null) {
       test &= dateRange.contains(toLocalDate(submission.getSubmissionDate()));
@@ -136,6 +141,9 @@ public class SubmissionFilter implements Predicate<Submission> {
     }
     if (anySampleStatus != null) {
       query.where(submission.samples.any().status.eq(anySampleStatus));
+    }
+    if (instrument != null) {
+      query.where(submission.massDetectionInstrument.eq(instrument));
     }
     if (dateRange != null) {
       if (dateRange.hasLowerBound()) {
