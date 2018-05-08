@@ -137,6 +137,7 @@ CREATE TABLE IF NOT EXISTS submission (
   digestionDate date DEFAULT NULL,
   analysisDate date DEFAULT NULL,
   dataAvailableDate date DEFAULT NULL,
+  version int(11) DEFAULT 0,
   laboratoryId bigint(20) NOT NULL,
   userId bigint(20) DEFAULT NULL,
   hidden tinyint(1) NOT NULL DEFAULT '0',
@@ -192,6 +193,7 @@ CREATE TABLE IF NOT EXISTS sample (
   quantity varchar(100) DEFAULT NULL,
   volume varchar(100) DEFAULT NULL,
   category varchar(50) DEFAULT NULL,
+  version int(11) DEFAULT 0,
   PRIMARY KEY (id),
   CONSTRAINT sample_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT sample_ibfk_2 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE

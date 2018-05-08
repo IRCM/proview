@@ -176,6 +176,7 @@ public class ControlServiceTest {
     assertEquals(SampleType.GEL, testControl.getType());
     assertEquals("20.0 μl", testControl.getVolume());
     assertEquals("12.0 μg", testControl.getQuantity());
+    assertEquals(1, testControl.getVersion());
     assertEquals(2, testControl.getStandards().size());
     Standard standard = testControl.getStandards().get(0);
     assertNotNull(standard.getId());
@@ -232,6 +233,7 @@ public class ControlServiceTest {
     assertEquals("2.0 μl", test.getVolume());
     assertEquals("40 μg", test.getQuantity());
     assertEquals(0, test.getStandards().size());
+    assertEquals(1, test.getVersion());
     // Validate log.
     Sample newSample = sampleCaptor.getValue();
     assertTrue(newSample instanceof Control);

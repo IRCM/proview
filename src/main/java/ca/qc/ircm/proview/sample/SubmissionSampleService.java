@@ -116,13 +116,16 @@ public class SubmissionSampleService {
     authorizationService.checkAdminRole();
 
     for (SubmissionSample sample : samples) {
+      SampleStatus status = sample.getStatus();
+      sample = entityManager.merge(sample);
+      entityManager.refresh(sample);
+      sample.setStatus(status);
       // Log changes.
       Optional<Activity> activity = sampleActivityService.update(sample, null);
       if (activity.isPresent()) {
         activityService.insert(activity.get());
       }
 
-      entityManager.merge(sample);
       if (SampleStatus.RECEIVED.equals(sample.getStatus())
           && sample.getSubmission().getSampleDeliveryDate() == null) {
         Submission submission = sample.getSubmission();
