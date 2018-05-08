@@ -57,8 +57,7 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
   }
 
   protected SubmissionForm(SubmissionFormPresenter presenter, PlateComponent plateComponent,
-      StandardsForm standardsForm, ContaminantsForm contaminantsForm,
-      GelForm gelForm) {
+      StandardsForm standardsForm, ContaminantsForm contaminantsForm, GelForm gelForm) {
     this.presenter = presenter;
     this.plateComponent = plateComponent;
     this.standardsForm = standardsForm;

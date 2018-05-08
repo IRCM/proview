@@ -3,15 +3,20 @@
  <head>
   <meta charset="UTF-8">
   <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;valo&quot;}">
-  <meta name="vaadin-version" content="8.0.5">
+  <meta name="vaadin-version" content="8.1.5">
   <meta name="package-mapping" content="ca_qc_ircm_proview_web:ca.qc.ircm.proview.web">
   <meta name="package-mapping" content="ca_qc_ircm_proview_submission_web:ca.qc.ircm.proview.submission.web">
  </head>
  <body>
   <vaadin-vertical-layout>
-   <vaadin-label style-name="h1" plain-text _id="headerLabel">
-     Submission of samples 
-   </vaadin-label>
+   <vaadin-horizontal-layout>
+    <vaadin-label style-name="h1" plain-text _id="headerLabel">
+      Submission of samples 
+    </vaadin-label>
+    <vaadin-button icon="fonticon://Vaadin-Icons/e72f" style-name="link large icon-only" plain-text _id="help" :middle>
+      Help 
+    </vaadin-button>
+   </vaadin-horizontal-layout>
    <vaadin-vertical-layout spacing="false" margin="false" _id="submissionFormLayout"></vaadin-vertical-layout>
   </vaadin-vertical-layout>
  </body>

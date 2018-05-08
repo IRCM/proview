@@ -116,13 +116,22 @@ public class SubmissionSampleService {
     authorizationService.checkAdminRole();
 
     for (SubmissionSample sample : samples) {
+      SampleStatus status = sample.getStatus();
+      sample = entityManager.merge(sample);
+      entityManager.refresh(sample);
+      sample.setStatus(status);
       // Log changes.
-      Optional<Activity> activity = sampleActivityService.update(sample, null);
+      Optional<Activity> activity = sampleActivityService.updateStatus(sample);
       if (activity.isPresent()) {
         activityService.insert(activity.get());
       }
 
-      entityManager.merge(sample);
+      if (SampleStatus.RECEIVED.equals(sample.getStatus())
+          && sample.getSubmission().getSampleDeliveryDate() == null) {
+        Submission submission = sample.getSubmission();
+        submission.setSampleDeliveryDate(LocalDate.now());
+        entityManager.merge(submission);
+      }
       if (SampleStatus.DIGESTED.equals(sample.getStatus())
           && sample.getSubmission().getDigestionDate() == null) {
         Submission submission = sample.getSubmission();

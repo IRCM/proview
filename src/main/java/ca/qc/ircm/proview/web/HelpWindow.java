@@ -56,6 +56,7 @@ public class HelpWindow extends Window implements BaseComponent {
     setContent(design);
     setHeight("700px");
     setWidth("1200px");
+    design.help.setWidth("1150px");
   }
 
   @Override

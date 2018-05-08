@@ -17,12 +17,17 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
+import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.web.HelpWindow;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.ContentMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +36,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Submission view presenter.
@@ -40,6 +46,9 @@ import javax.inject.Inject;
 public class SubmissionViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER_STYLE = "header";
+  public static final String HELP = "help";
+  public static final String SUBMISSION = qname(submission);
+  public static final String SUBMISSION_DESCRIPTION = property(SUBMISSION, "description");
   public static final String INVALID_SUBMISSION = property("submission", "invalid");
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);
   private SubmissionView view;
@@ -48,6 +57,8 @@ public class SubmissionViewPresenter {
   private SubmissionService submissionService;
   @Inject
   private AuthorizationService authorizationService;
+  @Inject
+  private Provider<HelpWindow> helpWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -55,9 +66,11 @@ public class SubmissionViewPresenter {
   }
 
   protected SubmissionViewPresenter(SubmissionService submissionService,
-      AuthorizationService authorizationService, String applicationName) {
+      AuthorizationService authorizationService, Provider<HelpWindow> helpWindowProvider,
+      String applicationName) {
     this.submissionService = submissionService;
     this.authorizationService = authorizationService;
+    this.helpWindowProvider = helpWindowProvider;
     this.applicationName = applicationName;
   }
 
@@ -80,6 +93,14 @@ public class SubmissionViewPresenter {
     view.setTitle(resources.message(TITLE, applicationName));
     design.headerLabel.addStyleName(HEADER_STYLE);
     design.headerLabel.setValue(resources.message(HEADER_STYLE));
+    design.help.addStyleName(HELP);
+    design.help.setCaption(resources.message(HELP));
+    design.help.addClickListener(e -> {
+      HelpWindow helpWindow = helpWindowProvider.get();
+      helpWindow.setHelp(resources.message(SUBMISSION_DESCRIPTION, VaadinIcons.MENU.getHtml()),
+          ContentMode.HTML);
+      view.addWindow(helpWindow);
+    });
   }
 
   /**

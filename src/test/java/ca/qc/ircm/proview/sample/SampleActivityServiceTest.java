@@ -88,6 +88,66 @@ public class SampleActivityServiceTest {
   }
 
   @Test
+  public void updateStatus() {
+    SubmissionSample sample = entityManager.find(SubmissionSample.class, 584L);
+    entityManager.detach(sample);
+    sample.setStatus(SampleStatus.ANALYSED);
+    Submission submission = sample.getSubmission();
+    entityManager.detach(submission);
+    LocalDate sampleDeliveryDate = LocalDate.now().minusDays(2);
+    LocalDate digestionDate = LocalDate.now();
+    LocalDate analysisDate = LocalDate.now().plusDays(1);
+    submission.setSampleDeliveryDate(sampleDeliveryDate);
+    submission.setDigestionDate(digestionDate);
+    submission.setAnalysisDate(analysisDate);
+
+    Optional<Activity> optionalActivity = sampleActivityService.updateStatus(sample);
+
+    final DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+    assertEquals(true, optionalActivity.isPresent());
+    Activity activity = optionalActivity.get();
+    assertEquals(ActionType.UPDATE, activity.getActionType());
+    assertEquals(Sample.TABLE_NAME, activity.getTableName());
+    assertEquals(sample.getId(), activity.getRecordId());
+    assertEquals(null, activity.getExplanation());
+    assertEquals(user, activity.getUser());
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
+    UpdateActivity statusActivity = new UpdateActivity();
+    statusActivity.setActionType(ActionType.UPDATE);
+    statusActivity.setTableName(Sample.TABLE_NAME);
+    statusActivity.setRecordId(sample.getId());
+    statusActivity.setColumn(qname(qsubmissionSample.status));
+    statusActivity.setOldValue(SampleStatus.ENRICHED.name());
+    statusActivity.setNewValue(SampleStatus.ANALYSED.name());
+    expectedUpdateActivities.add(statusActivity);
+    UpdateActivity sampleDeliveryDateActivity = new UpdateActivity();
+    sampleDeliveryDateActivity.setActionType(ActionType.UPDATE);
+    sampleDeliveryDateActivity.setTableName(Submission.TABLE_NAME);
+    sampleDeliveryDateActivity.setRecordId(submission.getId());
+    sampleDeliveryDateActivity.setColumn(qname(qsubmission.sampleDeliveryDate));
+    sampleDeliveryDateActivity.setOldValue("2014-10-14");
+    sampleDeliveryDateActivity.setNewValue(formatter.format(sampleDeliveryDate));
+    expectedUpdateActivities.add(sampleDeliveryDateActivity);
+    UpdateActivity digestionDateActivity = new UpdateActivity();
+    digestionDateActivity.setActionType(ActionType.UPDATE);
+    digestionDateActivity.setTableName(Submission.TABLE_NAME);
+    digestionDateActivity.setRecordId(submission.getId());
+    digestionDateActivity.setColumn(qname(qsubmission.digestionDate));
+    digestionDateActivity.setOldValue(null);
+    digestionDateActivity.setNewValue(formatter.format(digestionDate));
+    expectedUpdateActivities.add(digestionDateActivity);
+    UpdateActivity analysisDateActivity = new UpdateActivity();
+    analysisDateActivity.setActionType(ActionType.UPDATE);
+    analysisDateActivity.setTableName(Submission.TABLE_NAME);
+    analysisDateActivity.setRecordId(submission.getId());
+    analysisDateActivity.setColumn(qname(qsubmission.analysisDate));
+    analysisDateActivity.setOldValue(null);
+    analysisDateActivity.setNewValue(formatter.format(analysisDate));
+    expectedUpdateActivities.add(analysisDateActivity);
+    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
+  }
+
+  @Test
   public void update_SubmissionSample() {
     SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 442L);
     entityManager.detach(submissionSample);
@@ -539,17 +599,18 @@ public class SampleActivityServiceTest {
   }
 
   @Test
-  public void update_Submission_DigestionDateAndAnalysisDate() {
+  public void update_Submission_SampleDeliveryAndDigestionDateAndAnalysisDate() {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 584L);
     Submission submission = sample.getSubmission();
     entityManager.detach(sample);
     entityManager.detach(submission);
     sample.setStatus(SampleStatus.ANALYSED);
+    LocalDate sampleDeliveryDate = LocalDate.now().minusDays(2);
     LocalDate digestionDate = LocalDate.now();
-    LocalDate analysisDate = digestionDate.plusDays(1);
+    LocalDate analysisDate = LocalDate.now().plusDays(1);
+    submission.setSampleDeliveryDate(sampleDeliveryDate);
     submission.setDigestionDate(digestionDate);
     submission.setAnalysisDate(analysisDate);
-    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
 
     Optional<Activity> optionalActivity = sampleActivityService.update(sample, null);
 
@@ -569,22 +630,7 @@ public class SampleActivityServiceTest {
     statusActivity.setOldValue(SampleStatus.ENRICHED.name());
     statusActivity.setNewValue(SampleStatus.ANALYSED.name());
     expectedUpdateActivities.add(statusActivity);
-    UpdateActivity digestionDateActivity = new UpdateActivity();
-    digestionDateActivity.setActionType(ActionType.UPDATE);
-    digestionDateActivity.setTableName(Submission.TABLE_NAME);
-    digestionDateActivity.setRecordId(submission.getId());
-    digestionDateActivity.setColumn(qname(qsubmission.digestionDate));
-    digestionDateActivity.setOldValue(null);
-    digestionDateActivity.setNewValue(formatter.format(digestionDate));
-    expectedUpdateActivities.add(digestionDateActivity);
-    UpdateActivity analysisDateActivity = new UpdateActivity();
-    analysisDateActivity.setActionType(ActionType.UPDATE);
-    analysisDateActivity.setTableName(Submission.TABLE_NAME);
-    analysisDateActivity.setRecordId(submission.getId());
-    analysisDateActivity.setColumn(qname(qsubmission.analysisDate));
-    analysisDateActivity.setOldValue(null);
-    analysisDateActivity.setNewValue(formatter.format(analysisDate));
-    expectedUpdateActivities.add(analysisDateActivity);
+    // Submission dates updates are not recorded.
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

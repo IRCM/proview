@@ -52,6 +52,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
@@ -71,6 +72,12 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Column(name = "id", unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
+  /**
+   * Version number.
+   */
+  @Version
+  @Column(name = "version", nullable = false)
+  private int version;
   /**
    * Service chosen.
    */
@@ -328,6 +335,11 @@ public class Submission implements Data, LaboratoryData, Serializable {
    */
   @Column(name = "submissionDate")
   private Instant submissionDate;
+  /**
+   * Sample delivery date.
+   */
+  @Column(name = "sampleDeliveryDate")
+  private LocalDate sampleDeliveryDate;
   /**
    * Digestion date.
    */
@@ -827,5 +839,21 @@ public class Submission implements Data, LaboratoryData, Serializable {
 
   public void setDataAvailableDate(LocalDate dataAvailableDate) {
     this.dataAvailableDate = dataAvailableDate;
+  }
+
+  public LocalDate getSampleDeliveryDate() {
+    return sampleDeliveryDate;
+  }
+
+  public void setSampleDeliveryDate(LocalDate sampleDeliveryDate) {
+    this.sampleDeliveryDate = sampleDeliveryDate;
+  }
+
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
   }
 }

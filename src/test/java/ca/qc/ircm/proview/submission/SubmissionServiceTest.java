@@ -193,11 +193,13 @@ public class SubmissionServiceTest {
     assertEquals("Philippe", submission.getComment());
     assertEquals(toInstant(LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0)),
         submission.getSubmissionDate());
+    assertEquals(LocalDate.of(2010, 12, 9), submission.getSampleDeliveryDate());
     assertEquals(LocalDate.of(2010, 12, 11), submission.getDigestionDate());
     assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
     assertEquals(LocalDate.of(2010, 12, 15), submission.getDataAvailableDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
+    assertEquals(0, submission.getVersion());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals((Long) 3L, submission.getUser().getId());
     List<SubmissionSample> samples = submission.getSamples();
@@ -280,11 +282,13 @@ public class SubmissionServiceTest {
     assertEquals(null, submission.getComment());
     assertEquals(toInstant(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0)),
         submission.getSubmissionDate());
+    assertNull(submission.getSampleDeliveryDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
     assertNull(submission.getDataAvailableDate());
     assertEquals(null, submission.getPrice());
     assertEquals(null, submission.getAdditionalPrice());
+    assertEquals(0, submission.getVersion());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals((Long) 3L, submission.getUser().getId());
     List<SubmissionSample> samples = submission.getSamples();
@@ -1779,6 +1783,11 @@ public class SubmissionServiceTest {
     assertNotNull(submission.getSubmissionDate());
     assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
     assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertNull(submission.getSampleDeliveryDate());
+    assertNull(submission.getDigestionDate());
+    assertNull(submission.getAnalysisDate());
+    assertNull(submission.getDataAvailableDate());
+    assertEquals(1, submission.getVersion());
     samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -1909,6 +1918,11 @@ public class SubmissionServiceTest {
     assertNotNull(submission.getSubmissionDate());
     assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
     assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertNull(submission.getSampleDeliveryDate());
+    assertNull(submission.getDigestionDate());
+    assertNull(submission.getAnalysisDate());
+    assertNull(submission.getDataAvailableDate());
+    assertEquals(1, submission.getVersion());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = submission.getSamples().get(0);
@@ -2057,6 +2071,11 @@ public class SubmissionServiceTest {
     assertNotNull(submission.getSubmissionDate());
     assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
     assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertNull(submission.getSampleDeliveryDate());
+    assertNull(submission.getDigestionDate());
+    assertNull(submission.getAnalysisDate());
+    assertNull(submission.getDataAvailableDate());
+    assertEquals(1, submission.getVersion());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = submission.getSamples().get(0);
@@ -2196,6 +2215,11 @@ public class SubmissionServiceTest {
     assertEquals(true, submission.isLightSensitive());
     assertEquals(StorageTemperature.LOW, submission.getStorageTemperature());
     assertEquals("comment", submission.getComment());
+    assertNull(submission.getSampleDeliveryDate());
+    assertNull(submission.getDigestionDate());
+    assertNull(submission.getAnalysisDate());
+    assertNull(submission.getDataAvailableDate());
+    assertEquals(1, submission.getVersion());
     samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -2351,6 +2375,7 @@ public class SubmissionServiceTest {
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
     assertEquals(null, submission.getComment());
     assertEquals(newInstant, submission.getSubmissionDate());
+    assertEquals(1, submission.getVersion());
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);

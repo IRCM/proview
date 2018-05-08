@@ -39,6 +39,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
 /**
@@ -73,6 +74,12 @@ public abstract class Sample implements Data, Named, Serializable {
   @Column(name = "id", unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
+  /**
+   * Version number.
+   */
+  @Version
+  @Column(name = "version", nullable = false)
+  private int version;
   /**
    * Sample's name.
    */
@@ -192,4 +199,11 @@ public abstract class Sample implements Data, Named, Serializable {
     this.type = type;
   }
 
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
+  }
 }

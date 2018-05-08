@@ -15,46 +15,46 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (1,'LC_MS_MS','G100429',NULL,'Human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,'ONE_DIMENSION','ONE','SILVER',NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2010-10-15','2010-12-11','2010-12-13','2010-12-15','Philippe',NULL,NULL,2,3,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (32,'LC_MS_MS','cap_experiment','cap_goal','human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'MEDIUM',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2011-10-13',NULL,'2011-10-14','2011-10-17',NULL,NULL,NULL,2,3,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (33,'SMALL_MOLECULE',NULL,NULL,NULL,NULL,'ESI',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,'C100H100O100',654.654,654.654,'MeOH/TFA 0.1%',NULL,NULL,0,'MEDIUM',NULL,NULL,'2011-10-13',NULL,NULL,NULL,NULL,NULL,NULL,2,3,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (34,'LC_MS_MS','cap_experiment','cap_goal','human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'MEDIUM',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2011-10-17',NULL,'2011-11-15','2011-11-17',NULL,NULL,NULL,1,2,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (35,'LC_MS_MS','cap_experiment','cap_goal','human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'MEDIUM',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2011-11-09',NULL,'2011-11-09','2011-11-10',NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (36,'LC_MS_MS','cap_experiment','cap_goal','human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'MEDIUM',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2011-11-16',NULL,NULL,NULL,NULL,NULL,NULL,2,10,1);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (147,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-08','2014-10-08',NULL,NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (148,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-08','2014-10-08',NULL,NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (149,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-09',NULL,NULL,NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (150,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-14',NULL,NULL,NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (151,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-15',NULL,NULL,NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (152,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-15',NULL,NULL,NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (153,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-15',NULL,'2014-10-15','2014-10-17',NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (154,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-15',NULL,NULL,NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (155,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-17',NULL,'2014-10-17','2014-10-19',NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (156,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-22',NULL,'2014-10-22','2014-10-24',NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (161,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'SILAC','Heavy:Lys8,Arg10\nMedium:Lys4,Arg6\nLight:None','2015-05-27',NULL,NULL,NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (162,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'LABEL_FREE',NULL,'2015-05-26','2015-05-27',NULL,NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (163,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'REFSEQ',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'LABEL_FREE',NULL,'2017-11-08',NULL,'2017-11-25',NULL,NULL,NULL,NULL,2,10,0);
-INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,laboratoryId,userId,hidden)
-VALUES (164,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'REFSEQ',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2018-05-03',NULL,NULL,NULL,NULL,NULL,NULL,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (1,'LC_MS_MS','G100429',NULL,'Human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,'ONE_DIMENSION','ONE','SILVER',NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2010-10-15','2010-12-09','2010-12-11','2010-12-13','2010-12-15','Philippe',NULL,NULL,0,2,3,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (32,'LC_MS_MS','cap_experiment','cap_goal','human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'MEDIUM',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2011-10-13','2011-10-13',NULL,'2011-10-14','2011-10-17',NULL,NULL,NULL,0,2,3,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (33,'SMALL_MOLECULE',NULL,NULL,NULL,NULL,'ESI',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,'C100H100O100',654.654,654.654,'MeOH/TFA 0.1%',NULL,NULL,0,'MEDIUM',NULL,NULL,'2011-10-13',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,2,3,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (34,'LC_MS_MS','cap_experiment','cap_goal','human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'MEDIUM',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2011-10-17','2011-11-13',NULL,'2011-11-15','2011-11-17',NULL,NULL,NULL,0,1,2,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (35,'LC_MS_MS','cap_experiment','cap_goal','human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'MEDIUM',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2011-11-09','2011-11-09',NULL,'2011-11-09','2011-11-10',NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (36,'LC_MS_MS','cap_experiment','cap_goal','human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'MEDIUM',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2011-11-16','2011-11-17',NULL,NULL,NULL,NULL,NULL,NULL,0,2,10,1);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (147,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-08','2014-10-08','2014-10-08',NULL,NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (148,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-08','2014-10-08','2014-10-08',NULL,NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (149,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-09','2014-10-09',NULL,NULL,NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (150,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-14','2014-10-14',NULL,NULL,NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (151,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-15','2014-10-15',NULL,NULL,NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (152,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-15','2014-10-15',NULL,NULL,NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (153,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-15','2014-10-15',NULL,'2014-10-15','2014-10-17',NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (154,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-15','2014-10-15',NULL,NULL,NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (155,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-17','2014-10-17',NULL,'2014-10-17','2014-10-19',NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (156,'LC_MS_MS','POLR2A-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2014-10-22','2014-10-22',NULL,'2014-10-22','2014-10-24',NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (161,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'SILAC','Heavy:Lys8,Arg10\nMedium:Lys4,Arg6\nLight:None','2015-05-27','2015-05-28',NULL,NULL,NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (162,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'LABEL_FREE',NULL,'2015-05-26','2015-05-27','2015-05-27',NULL,NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (163,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'REFSEQ',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,'LABEL_FREE',NULL,'2017-11-08','2017-11-21',NULL,'2017-11-25',NULL,NULL,NULL,NULL,0,2,10,0);
+INSERT INTO submission (id,service,experiment,goal,taxonomy,massDetectionInstrument,source,injectionType,proteolyticDigestionMethod,usedProteolyticDigestionMethod,otherProteolyticDigestionMethod,proteinIdentification,proteinIdentificationLink,enrichmentType,otherEnrichmentType,lowResolution,highResolution,msms,exactMsms,mudPitFraction,proteinContent,protein,postTranslationModification,separation,thickness,coloration,otherColoration,developmentTime,decoloration,weightMarkerQuantity,proteinQuantity,formula,monoisotopicMass,averageMass,solutionSolvent,otherSolvent,toxicity,lightSensitive,storageTemperature,quantification,quantificationComment,submissionDate,sampleDeliveryDate,digestionDate,analysisDate,dataAvailableDate,comment,price,additionalPrice,version,laboratoryId,userId,hidden)
+VALUES (164,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'REFSEQ',NULL,NULL,NULL,0,0,0,0,NULL,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,'2018-05-03',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,2,10,0);
 INSERT INTO submissionfiles (id,submissionId,filename,content)
 VALUES (1,1,'protocol.txt',FILE_READ('${project.build.testOutputDirectory}/submissionfile1.txt'));
 INSERT INTO submissionfiles (id,submissionId,filename,content)
@@ -3735,178 +3735,178 @@ INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sam
 VALUES (2279,'TUBE','POLR2B_20150527_02',NULL,NULL,NULL,639,1,'2015-05-27 13:33:31',0);
 INSERT INTO samplecontainer (id,type,name,plateId,locationColumn,locationRow,sampleId,version,time,banned)
 VALUES (2280,'TUBE','POLR2B_20180503_01',NULL,NULL,NULL,643,1,'2018-05-03 14:29:15',0);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (1,'FAM119A_band_01',NULL,'GEL',1,7,1,0,NULL,NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (442,'CAP_20111013_01',NULL,'SOLUTION',2,6,32,0,'1.5 μg','50 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (443,'CAP_20111013_05',NULL,'SOLUTION',3,0,33,0,NULL,NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (444,'control_01','NEGATIVE_CONTROL','GEL',4,NULL,NULL,NULL,NULL,NULL,'CONTROL',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (445,'CAP_20111017_01',NULL,'SOLUTION',5,7,34,0,'1.5 μg','50 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (446,'CAP_20111109_01',NULL,'SOLUTION',8,6,35,0,'1.5 μg','50 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (447,'CAP_20111116_01',NULL,'SOLUTION',9,0,36,0,'1.5 μg','50 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (448,'control_02','NEGATIVE_CONTROL','GEL',10,NULL,NULL,NULL,NULL,NULL,'CONTROL',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (559,'POLR2A_20141008_1',NULL,'SOLUTION',11,3,147,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (560,'POLR2A_20141008_2',NULL,'SOLUTION',12,3,147,1,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (561,'POLR2A_20140908_01',NULL,'SOLUTION',13,3,148,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (562,'POLR2A_20140908_02',NULL,'SOLUTION',14,3,148,1,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (563,'POLR2A_20140908_03',NULL,'SOLUTION',15,3,148,2,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (564,'POLR2A_20140908_04',NULL,'SOLUTION',16,3,148,3,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (565,'POLR2A_20140908_05',NULL,'SOLUTION',17,3,148,4,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (566,'POLR2A_20140908_06',NULL,'SOLUTION',18,3,148,5,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (567,'POLR2A_20140908_07',NULL,'SOLUTION',19,3,148,6,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (568,'POLR2A_20140908_08',NULL,'SOLUTION',20,3,148,7,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (569,'POLR2A_20140909_01',NULL,'SOLUTION',21,2,149,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (570,'POLR2A_20140909_02',NULL,'SOLUTION',22,2,149,1,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (571,'POLR2A_20140909_03',NULL,'SOLUTION',23,2,149,2,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (572,'POLR2A_20140909_04',NULL,'SOLUTION',24,2,149,3,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (573,'POLR2A_20140909_05',NULL,'SOLUTION',25,2,149,4,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (574,'POLR2A_20140909_06',NULL,'SOLUTION',26,2,149,5,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (575,'POLR2A_20140909_07',NULL,'SOLUTION',27,2,149,6,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (576,'POLR2A_20140909_08',NULL,'SOLUTION',28,2,149,7,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (577,'POLR2A_20140909_09',NULL,'SOLUTION',29,2,149,8,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (578,'POLR2A_20140909_10',NULL,'SOLUTION',30,2,149,9,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (579,'POLR2A_20140914_01',NULL,'SOLUTION',31,4,150,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (580,'POLR2A_20140914_02',NULL,'SOLUTION',32,4,150,1,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (581,'POLR2A_20140914_03',NULL,'SOLUTION',33,4,150,2,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (582,'POLR2A_20140914_04',NULL,'SOLUTION',34,4,150,3,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (583,'POLR2A_20140914_05',NULL,'SOLUTION',35,4,150,4,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (584,'POLR2A_20140914_06',NULL,'SOLUTION',36,4,150,5,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (585,'POLR2A_20140914_07',NULL,'SOLUTION',37,4,150,6,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (586,'POLR2A_20140914_08',NULL,'SOLUTION',38,4,150,7,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (587,'POLR2A_20140914_09',NULL,'SOLUTION',39,4,150,8,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (588,'POLR2A_20140914_10',NULL,'SOLUTION',40,4,150,9,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (589,'POLR2A_20141015_01',NULL,'DRY',41,2,151,0,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (590,'POLR2A_20141015_02',NULL,'DRY',42,2,151,1,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (591,'POLR2A_20141015_03',NULL,'DRY',43,2,151,2,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (592,'POLR2A_20141015_04',NULL,'DRY',44,2,151,3,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (593,'POLR2A_20141015_05',NULL,'DRY',45,2,151,4,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (594,'POLR2A_20141015_06',NULL,'DRY',46,2,151,5,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (595,'POLR2A_20141015_07',NULL,'DRY',47,2,151,6,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (596,'POLR2A_20141015_08',NULL,'DRY',48,2,151,7,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (597,'POLR2A_20141015_09',NULL,'DRY',49,2,151,8,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (598,'POLR2A_20141015_10',NULL,'DRY',50,2,151,9,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (599,'POLR2A_20141015_11',NULL,'SOLUTION',51,2,152,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (600,'POLR2A_20141015_12',NULL,'SOLUTION',52,2,152,1,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (601,'POLR2A_20141015_13',NULL,'SOLUTION',53,2,152,2,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (602,'POLR2A_20141015_14',NULL,'SOLUTION',54,2,152,3,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (603,'POLR2A_20141015_15',NULL,'SOLUTION',55,2,152,4,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (604,'POLR2A_20141015_16',NULL,'SOLUTION',56,2,152,5,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (605,'POLR2A_20141015_17',NULL,'SOLUTION',57,2,152,6,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (606,'POLR2A_20141015_18',NULL,'SOLUTION',58,2,152,7,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (607,'POLR2A_20141015_19',NULL,'SOLUTION',59,2,152,8,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (608,'POLR2A_20141015_20',NULL,'SOLUTION',60,2,152,9,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (609,'POLR2A_20141015_21',NULL,'SOLUTION',61,2,153,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (610,'POLR2A_20141015_22',NULL,'SOLUTION',62,7,153,1,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (611,'POLR2A_20141015_23',NULL,'SOLUTION',63,4,153,2,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (612,'POLR2A_20141015_24',NULL,'SOLUTION',64,7,153,3,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (613,'POLR2A_20141015_31',NULL,'SOLUTION',67,2,154,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (614,'POLR2A_20141015_32',NULL,'SOLUTION',68,2,154,1,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (615,'POLR2A_20141015_33',NULL,'SOLUTION',69,2,154,2,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (616,'POLR2A_20141015_34',NULL,'SOLUTION',70,2,154,3,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (617,'POLR2A_20141015_35',NULL,'SOLUTION',71,2,154,4,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (618,'POLR2A_20141015_36',NULL,'SOLUTION',72,2,154,5,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (619,'POLR2A_20141015_37',NULL,'SOLUTION',73,2,154,6,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (620,'POLR2A_20141015_38',NULL,'SOLUTION',74,2,154,7,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (621,'POLR2A_20141017_01',NULL,'SOLUTION',79,4,155,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (622,'POLR2A_20141017_02',NULL,'SOLUTION',80,7,155,1,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (623,'POLR2A_20141017_03',NULL,'SOLUTION',81,2,155,2,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (624,'POLR2A_20141017_04',NULL,'SOLUTION',82,2,155,3,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (625,'POLR2A_20141017_05',NULL,'SOLUTION',83,2,155,4,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (626,'POLR2A_20141017_06',NULL,'SOLUTION',84,2,155,5,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (627,'POLR2A_20141022_01',NULL,'SOLUTION',85,7,156,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (628,'POLR2A_20141022_02',NULL,'SOLUTION',86,7,156,1,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (629,'POLR2A_20141022_03',NULL,'SOLUTION',87,7,156,2,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (630,'POLR2A_20141022_04',NULL,'SOLUTION',88,7,156,3,'15 μg','20 μl','SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (638,'POLR2B_20150527_01',NULL,'DRY',2278,2,161,0,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (639,'POLR2B_20150527_02',NULL,'DRY',2279,3,162,0,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (640,'POLR2B_20171108_01',NULL,'DRY',1760,0,163,0,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (641,'POLR2B_20171108_02',NULL,'DRY',1761,0,163,1,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (642,'POLR2B_20171108_03',NULL,'DRY',1762,0,163,2,'15 μg',NULL,'SUBMISSION',NULL,NULL);
-INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight)
-VALUES (643,'POLR2B_201810503_01',NULL,'SOLUTION',2280,1,164,0,'15 μg','20 μl','SUBMISSION',NULL,NULL);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (1,'FAM119A_band_01',NULL,'GEL',1,7,1,0,NULL,NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (442,'CAP_20111013_01',NULL,'SOLUTION',2,6,32,0,'1.5 μg','50 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (443,'CAP_20111013_05',NULL,'SOLUTION',3,0,33,0,NULL,NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (444,'control_01','NEGATIVE_CONTROL','GEL',4,NULL,NULL,NULL,NULL,NULL,'CONTROL',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (445,'CAP_20111017_01',NULL,'SOLUTION',5,7,34,0,'1.5 μg','50 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (446,'CAP_20111109_01',NULL,'SOLUTION',8,6,35,0,'1.5 μg','50 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (447,'CAP_20111116_01',NULL,'SOLUTION',9,0,36,0,'1.5 μg','50 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (448,'control_02','NEGATIVE_CONTROL','GEL',10,NULL,NULL,NULL,NULL,NULL,'CONTROL',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (559,'POLR2A_20141008_1',NULL,'SOLUTION',11,3,147,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (560,'POLR2A_20141008_2',NULL,'SOLUTION',12,3,147,1,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (561,'POLR2A_20140908_01',NULL,'SOLUTION',13,3,148,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (562,'POLR2A_20140908_02',NULL,'SOLUTION',14,3,148,1,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (563,'POLR2A_20140908_03',NULL,'SOLUTION',15,3,148,2,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (564,'POLR2A_20140908_04',NULL,'SOLUTION',16,3,148,3,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (565,'POLR2A_20140908_05',NULL,'SOLUTION',17,3,148,4,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (566,'POLR2A_20140908_06',NULL,'SOLUTION',18,3,148,5,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (567,'POLR2A_20140908_07',NULL,'SOLUTION',19,3,148,6,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (568,'POLR2A_20140908_08',NULL,'SOLUTION',20,3,148,7,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (569,'POLR2A_20140909_01',NULL,'SOLUTION',21,2,149,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (570,'POLR2A_20140909_02',NULL,'SOLUTION',22,2,149,1,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (571,'POLR2A_20140909_03',NULL,'SOLUTION',23,2,149,2,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (572,'POLR2A_20140909_04',NULL,'SOLUTION',24,2,149,3,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (573,'POLR2A_20140909_05',NULL,'SOLUTION',25,2,149,4,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (574,'POLR2A_20140909_06',NULL,'SOLUTION',26,2,149,5,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (575,'POLR2A_20140909_07',NULL,'SOLUTION',27,2,149,6,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (576,'POLR2A_20140909_08',NULL,'SOLUTION',28,2,149,7,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (577,'POLR2A_20140909_09',NULL,'SOLUTION',29,2,149,8,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (578,'POLR2A_20140909_10',NULL,'SOLUTION',30,2,149,9,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (579,'POLR2A_20140914_01',NULL,'SOLUTION',31,4,150,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (580,'POLR2A_20140914_02',NULL,'SOLUTION',32,4,150,1,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (581,'POLR2A_20140914_03',NULL,'SOLUTION',33,4,150,2,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (582,'POLR2A_20140914_04',NULL,'SOLUTION',34,4,150,3,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (583,'POLR2A_20140914_05',NULL,'SOLUTION',35,4,150,4,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (584,'POLR2A_20140914_06',NULL,'SOLUTION',36,4,150,5,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (585,'POLR2A_20140914_07',NULL,'SOLUTION',37,4,150,6,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (586,'POLR2A_20140914_08',NULL,'SOLUTION',38,4,150,7,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (587,'POLR2A_20140914_09',NULL,'SOLUTION',39,4,150,8,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (588,'POLR2A_20140914_10',NULL,'SOLUTION',40,4,150,9,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (589,'POLR2A_20141015_01',NULL,'DRY',41,2,151,0,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (590,'POLR2A_20141015_02',NULL,'DRY',42,2,151,1,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (591,'POLR2A_20141015_03',NULL,'DRY',43,2,151,2,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (592,'POLR2A_20141015_04',NULL,'DRY',44,2,151,3,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (593,'POLR2A_20141015_05',NULL,'DRY',45,2,151,4,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (594,'POLR2A_20141015_06',NULL,'DRY',46,2,151,5,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (595,'POLR2A_20141015_07',NULL,'DRY',47,2,151,6,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (596,'POLR2A_20141015_08',NULL,'DRY',48,2,151,7,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (597,'POLR2A_20141015_09',NULL,'DRY',49,2,151,8,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (598,'POLR2A_20141015_10',NULL,'DRY',50,2,151,9,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (599,'POLR2A_20141015_11',NULL,'SOLUTION',51,2,152,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (600,'POLR2A_20141015_12',NULL,'SOLUTION',52,2,152,1,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (601,'POLR2A_20141015_13',NULL,'SOLUTION',53,2,152,2,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (602,'POLR2A_20141015_14',NULL,'SOLUTION',54,2,152,3,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (603,'POLR2A_20141015_15',NULL,'SOLUTION',55,2,152,4,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (604,'POLR2A_20141015_16',NULL,'SOLUTION',56,2,152,5,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (605,'POLR2A_20141015_17',NULL,'SOLUTION',57,2,152,6,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (606,'POLR2A_20141015_18',NULL,'SOLUTION',58,2,152,7,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (607,'POLR2A_20141015_19',NULL,'SOLUTION',59,2,152,8,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (608,'POLR2A_20141015_20',NULL,'SOLUTION',60,2,152,9,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (609,'POLR2A_20141015_21',NULL,'SOLUTION',61,2,153,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (610,'POLR2A_20141015_22',NULL,'SOLUTION',62,7,153,1,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (611,'POLR2A_20141015_23',NULL,'SOLUTION',63,4,153,2,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (612,'POLR2A_20141015_24',NULL,'SOLUTION',64,7,153,3,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (613,'POLR2A_20141015_31',NULL,'SOLUTION',67,2,154,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (614,'POLR2A_20141015_32',NULL,'SOLUTION',68,2,154,1,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (615,'POLR2A_20141015_33',NULL,'SOLUTION',69,2,154,2,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (616,'POLR2A_20141015_34',NULL,'SOLUTION',70,2,154,3,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (617,'POLR2A_20141015_35',NULL,'SOLUTION',71,2,154,4,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (618,'POLR2A_20141015_36',NULL,'SOLUTION',72,2,154,5,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (619,'POLR2A_20141015_37',NULL,'SOLUTION',73,2,154,6,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (620,'POLR2A_20141015_38',NULL,'SOLUTION',74,2,154,7,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (621,'POLR2A_20141017_01',NULL,'SOLUTION',79,4,155,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (622,'POLR2A_20141017_02',NULL,'SOLUTION',80,7,155,1,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (623,'POLR2A_20141017_03',NULL,'SOLUTION',81,2,155,2,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (624,'POLR2A_20141017_04',NULL,'SOLUTION',82,2,155,3,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (625,'POLR2A_20141017_05',NULL,'SOLUTION',83,2,155,4,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (626,'POLR2A_20141017_06',NULL,'SOLUTION',84,2,155,5,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (627,'POLR2A_20141022_01',NULL,'SOLUTION',85,7,156,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (628,'POLR2A_20141022_02',NULL,'SOLUTION',86,7,156,1,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (629,'POLR2A_20141022_03',NULL,'SOLUTION',87,7,156,2,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (630,'POLR2A_20141022_04',NULL,'SOLUTION',88,7,156,3,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (638,'POLR2B_20150527_01',NULL,'DRY',2278,2,161,0,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (639,'POLR2B_20150527_02',NULL,'DRY',2279,3,162,0,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (640,'POLR2B_20171108_01',NULL,'DRY',1760,0,163,0,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (641,'POLR2B_20171108_02',NULL,'DRY',1761,0,163,1,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (642,'POLR2B_20171108_03',NULL,'DRY',1762,0,163,2,'15 μg',NULL,'SUBMISSION',NULL,NULL,0);
+INSERT INTO sample (id,name,controlType,type,containerId,status,submissionId,listIndex,quantity,volume,category,numberProtein,molecularWeight,version)
+VALUES (643,'POLR2B_201810503_01',NULL,'SOLUTION',2280,1,164,0,'15 μg','20 μl','SUBMISSION',NULL,NULL,0);
 INSERT INTO standard (id,name,quantity,sampleId,comment,deleted)
 VALUES (4,'std1','2 μg',445,NULL,0);
 INSERT INTO standard (id,name,quantity,sampleId,comment,deleted)

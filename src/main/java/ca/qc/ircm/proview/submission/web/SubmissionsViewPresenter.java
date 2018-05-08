@@ -31,6 +31,7 @@ import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
 import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.Sample;
@@ -122,9 +123,11 @@ public class SubmissionsViewPresenter {
       property(SUBMISSION, submission.laboratory.director.getMetadata().getName());
   public static final String SERVICE =
       property(SUBMISSION, submission.service.getMetadata().getName());
+  public static final String SAMPLE_DELIVERY_DATE = qname(submission.sampleDeliveryDate);
   public static final String DIGESTION_DATE = qname(submission.digestionDate);
   public static final String ANALYSIS_DATE = qname(submission.analysisDate);
   public static final String DATA_AVAILABLE_DATE = qname(submission.dataAvailableDate);
+  public static final String INSTRUMENT = qname(submission.massDetectionInstrument);
   public static final String EXPECTED_DATE = "predictedDate";
   public static final String SAMPLE_NAME =
       property(SAMPLE, submissionSample.name.getMetadata().getName());
@@ -341,6 +344,11 @@ public class SubmissionsViewPresenter {
         .setId(SERVICE).setCaption(resources.message(SERVICE));
     columnProperties.put(SERVICE, submission.service);
     design.submissionsGrid
+        .addColumn(submission -> sampleDeliveryDateLabel(submission), new ComponentRenderer())
+        .setId(SAMPLE_DELIVERY_DATE).setCaption(resources.message(SAMPLE_DELIVERY_DATE))
+        .setWidth(200);
+    columnProperties.put(SAMPLE_DELIVERY_DATE, submission.sampleDeliveryDate);
+    design.submissionsGrid
         .addColumn(submission -> digestionDateLabel(submission), new ComponentRenderer())
         .setId(DIGESTION_DATE).setCaption(resources.message(DIGESTION_DATE)).setWidth(200);
     columnProperties.put(DIGESTION_DATE, submission.digestionDate);
@@ -353,6 +361,12 @@ public class SubmissionsViewPresenter {
         .setId(DATA_AVAILABLE_DATE).setCaption(resources.message(DATA_AVAILABLE_DATE))
         .setWidth(200);
     columnProperties.put(DATA_AVAILABLE_DATE, submission.dataAvailableDate);
+    design.submissionsGrid
+        .addColumn(submission -> submission.getMassDetectionInstrument() != null
+            ? submission.getMassDetectionInstrument().getLabel(locale)
+            : MassDetectionInstrument.getNullLabel(locale))
+        .setId(INSTRUMENT).setCaption(resources.message(INSTRUMENT));
+    columnProperties.put(INSTRUMENT, submission.massDetectionInstrument);
     design.submissionsGrid.addColumn(submission -> submission.getSamples().size())
         .setId(SAMPLE_COUNT).setCaption(resources.message(SAMPLE_COUNT));
     columnProperties.put(SAMPLE_COUNT, submission.samples.size());
@@ -406,6 +420,9 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getColumn(SERVICE).setHidable(true);
     design.submissionsGrid.getColumn(SERVICE)
         .setHidden(userPreferenceService.get(this, SERVICE, false));
+    design.submissionsGrid.getColumn(SAMPLE_DELIVERY_DATE).setHidable(true);
+    design.submissionsGrid.getColumn(SAMPLE_DELIVERY_DATE)
+        .setHidden(userPreferenceService.get(this, SAMPLE_DELIVERY_DATE, false));
     design.submissionsGrid.getColumn(DIGESTION_DATE).setHidable(true);
     design.submissionsGrid.getColumn(DIGESTION_DATE)
         .setHidden(userPreferenceService.get(this, DIGESTION_DATE, false));
@@ -415,6 +432,9 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getColumn(DATA_AVAILABLE_DATE).setHidable(true);
     design.submissionsGrid.getColumn(DATA_AVAILABLE_DATE)
         .setHidden(userPreferenceService.get(this, DATA_AVAILABLE_DATE, false));
+    design.submissionsGrid.getColumn(INSTRUMENT).setHidable(true);
+    design.submissionsGrid.getColumn(INSTRUMENT)
+        .setHidden(userPreferenceService.get(this, INSTRUMENT, false));
     design.submissionsGrid.getColumn(SAMPLE_COUNT).setHidable(true);
     design.submissionsGrid.getColumn(SAMPLE_COUNT)
         .setHidden(userPreferenceService.get(this, SAMPLE_COUNT, false));
@@ -482,6 +502,10 @@ public class SubmissionsViewPresenter {
       filter.service = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }, Service.values(), service -> service.getLabel(locale)));
+    filterRow.getCell(SAMPLE_DELIVERY_DATE).setComponent(dateFilter(e -> {
+      filter.sampleDeliveryDateRange = e.getSavedObject();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }));
     filterRow.getCell(DIGESTION_DATE).setComponent(dateFilter(e -> {
       filter.digestionDateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
@@ -494,6 +518,11 @@ public class SubmissionsViewPresenter {
       filter.dataAvailableDateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
+    filterRow.getCell(INSTRUMENT).setComponent(comboBoxFilter(e -> {
+      filter.instrument = e.getValue();
+      design.submissionsGrid.getDataProvider().refreshAll();
+    }, MassDetectionInstrument.platformChoices().toArray(new MassDetectionInstrument[0]),
+        instrument -> instrument.getLabel(locale)));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
       filter.anySampleNameContains = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
@@ -515,21 +544,29 @@ public class SubmissionsViewPresenter {
       filter.hidden = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }, new Boolean[] { true, false }, value -> resources.message(property(HIDDEN, value))));
+    design.submissionsGrid.getEditor().setEnabled(true);
+    design.submissionsGrid.getEditor().addSaveListener(e -> {
+      Submission su = e.getBean();
+      logger.info("Updated submission {}", su, su);
+      submissionService.update(su, null);
+    });
+    Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+    design.submissionsGrid.getEditor().setBinder(binder);
+    design.submissionsGrid.getColumn(SAMPLE_DELIVERY_DATE)
+        .setEditorBinding(binder.forField(new DateField()).bind(SAMPLE_DELIVERY_DATE));
     if (authorizationService.hasAdminRole()) {
-      design.submissionsGrid.getEditor().setEnabled(true);
-      design.submissionsGrid.getEditor().addSaveListener(e -> {
-        Submission su = e.getBean();
-        logger.info("Updated submission {}", su, su);
-        submissionService.update(su, null);
-      });
-      Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-      design.submissionsGrid.getEditor().setBinder(binder);
       design.submissionsGrid.getColumn(DIGESTION_DATE)
           .setEditorBinding(binder.forField(new DateField()).bind(DIGESTION_DATE));
       design.submissionsGrid.getColumn(ANALYSIS_DATE)
           .setEditorBinding(binder.forField(new DateField()).bind(ANALYSIS_DATE));
       design.submissionsGrid.getColumn(DATA_AVAILABLE_DATE)
           .setEditorBinding(binder.forField(new DateField()).bind(DATA_AVAILABLE_DATE));
+      ComboBox<MassDetectionInstrument> instrumentField = new ComboBox<>();
+      instrumentField.setEmptySelectionCaption(MassDetectionInstrument.getNullLabel(locale));
+      instrumentField.setItems(MassDetectionInstrument.platformChoices());
+      instrumentField.setItemCaptionGenerator(instrument -> instrument.getLabel(locale));
+      design.submissionsGrid.getColumn(INSTRUMENT).setEditorBinding(binder.forField(instrumentField)
+          .withNullRepresentation(MassDetectionInstrument.NULL).bind(INSTRUMENT));
     }
     design.submissionsGrid
         .setStyleGenerator(submission -> submission.isHidden() ? HIDDEN_STYLE : null);
@@ -552,6 +589,16 @@ public class SubmissionsViewPresenter {
   private boolean anySampleGteStatus(Submission submission, SampleStatus status) {
     return submission.getSamples().stream()
         .filter(sample -> sample.getStatus().compareTo(status) >= 0).findAny().isPresent();
+  }
+
+  private Label sampleDeliveryDateLabel(Submission submission) {
+    Label label = new Label();
+    if (submission.getSampleDeliveryDate() != null) {
+      DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+      label.setValue(formatter.format(submission.getSampleDeliveryDate()));
+    }
+    label.addStyleName(SAMPLE_DELIVERY_DATE);
+    return label;
   }
 
   private Label digestionDateLabel(Submission submission) {

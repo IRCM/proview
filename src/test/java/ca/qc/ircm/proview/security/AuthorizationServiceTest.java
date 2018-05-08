@@ -982,6 +982,32 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  public void hasSubmissionWritePermission_SubmissionOwner_Approved() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    Submission submission = new Submission(164L);
+
+    boolean value = authorizationService.hasSubmissionWritePermission(submission);
+
+    assertTrue(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("ADMIN");
+  }
+
+  @Test
+  @WithSubject(userId = 10)
+  public void hasSubmissionWritePermission_SubmissionOwner_Received() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    Submission submission = new Submission(161L);
+
+    boolean value = authorizationService.hasSubmissionWritePermission(submission);
+
+    assertFalse(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("ADMIN");
+  }
+
+  @Test
+  @WithSubject(userId = 10)
   public void hasSubmissionWritePermission_SubmissionOwner_Analysed() {
     when(subject.hasRole("USER")).thenReturn(true);
     Submission submission = new Submission(156L);
@@ -1003,6 +1029,34 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertTrue(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("ADMIN");
+    verify(subject).isPermitted("laboratory:manager:2");
+  }
+
+  @Test
+  public void hasSubmissionWritePermission_LaboratoryManager_Approved() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
+    Submission submission = new Submission(164L);
+
+    boolean value = authorizationService.hasSubmissionWritePermission(submission);
+
+    assertTrue(value);
+    verify(subject).hasRole("USER");
+    verify(subject).hasRole("ADMIN");
+    verify(subject).isPermitted("laboratory:manager:2");
+  }
+
+  @Test
+  public void hasSubmissionWritePermission_LaboratoryManager_Received() {
+    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
+    Submission submission = new Submission(161L);
+
+    boolean value = authorizationService.hasSubmissionWritePermission(submission);
+
+    assertFalse(value);
     verify(subject).hasRole("USER");
     verify(subject).hasRole("ADMIN");
     verify(subject).isPermitted("laboratory:manager:2");
