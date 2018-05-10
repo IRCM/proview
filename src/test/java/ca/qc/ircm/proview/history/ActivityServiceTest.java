@@ -17,7 +17,11 @@
 
 package ca.qc.ircm.proview.history;
 
+import static ca.qc.ircm.proview.history.ActionType.DELETE;
+import static ca.qc.ircm.proview.history.ActionType.INSERT;
+import static ca.qc.ircm.proview.history.ActionType.UPDATE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -71,6 +75,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ActivityServiceTest {
+  private static final String SUBMISSION = Submission.class.getSimpleName();
   private ActivityService activityService;
   @PersistenceContext
   private EntityManager entityManager;
@@ -459,7 +464,37 @@ public class ActivityServiceTest {
     String description = activityService.description(activity, submission, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(resources.message("Submission.INSERT"), description);
+    assertEquals(resources.message(property(SUBMISSION, INSERT.name())), description);
+  }
+
+  @Test
+  public void description_Submission_Update() {
+    Submission submission = entityManager.find(Submission.class, 163L);
+    Activity activity = entityManager.find(Activity.class, 5936L);
+    UpdateActivity update1 = activity.getUpdates().get(0);
+    UpdateActivity update2 = activity.getUpdates().get(1);
+    UpdateActivity update3 = activity.getUpdates().get(2);
+    UpdateActivity update4 = activity.getUpdates().get(3);
+    UpdateActivity update5 = activity.getUpdates().get(4);
+
+    String description = activityService.description(activity, submission, locale);
+
+    verify(authorizationService).checkAdminRole();
+    String[] descriptionLines = description.split("\n", -1);
+    assertEquals(resources.message(property(SUBMISSION, UPDATE.name())), descriptionLines[0]);
+    assertEquals(resources.message(property(SUBMISSION, UPDATE.name(), UPDATE.name()),
+        update1.getTableName(), update1.getId(), update1.getColumn(), update1.getOldValue(),
+        update1.getNewValue()), descriptionLines[1]);
+    assertEquals(resources.message(property(SUBMISSION, UPDATE.name(), UPDATE.name()),
+        update2.getTableName(), update2.getId(), update2.getColumn(), update2.getOldValue(),
+        update2.getNewValue()), descriptionLines[2]);
+    assertEquals(resources.message(property(SUBMISSION, UPDATE.name(), UPDATE.name()),
+        update3.getTableName(), update3.getId(), update3.getColumn(), update3.getOldValue(),
+        update3.getNewValue()), descriptionLines[3]);
+    assertEquals(resources.message(property(SUBMISSION, UPDATE.name(), DELETE.name()),
+        update4.getTableName(), update4.getId()), descriptionLines[4]);
+    assertEquals(resources.message(property(SUBMISSION, UPDATE.name(), INSERT.name()),
+        update5.getTableName(), update5.getId()), descriptionLines[5]);
   }
 
   @Test

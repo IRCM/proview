@@ -27,8 +27,9 @@ import static ca.qc.ircm.proview.plate.QWell.well;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.treatment.QProtocol.protocol;
-import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
+import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
@@ -43,9 +44,10 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.Protocol;
-import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatedSample;
+import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -77,6 +79,7 @@ import javax.persistence.PersistenceContext;
 @Service
 @Transactional
 public class ActivityService {
+  private static final String SUBMISSION = Submission.class.getSimpleName();
   private static final Logger logger = LoggerFactory.getLogger(ActivityService.class);
   @PersistenceContext
   private EntityManager entityManager;
@@ -95,6 +98,10 @@ public class ActivityService {
     this.queryFactory = queryFactory;
     this.authorizationService = authorizationService;
     this.useFailsafeDescription = useFailsafeDescription;
+  }
+
+  private MessageResource resources(Locale locale) {
+    return new MessageResource(ActivityService.class, locale);
   }
 
   private ResourceBundle resourceBundle(Locale locale) {
@@ -294,8 +301,7 @@ public class ActivityService {
     query.join(treatedSample);
     query.where(treatedSample.in(treatment.treatedSamples));
     query.from(well);
-    query.where(
-        well.eq(treatedSample.container).or(well.eq(treatedSample.destinationContainer)));
+    query.where(well.eq(treatedSample.container).or(well.eq(treatedSample.destinationContainer)));
     query.where(activity.tableName.eq("treatment"));
     query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());
@@ -350,11 +356,12 @@ public class ActivityService {
     authorizationService.checkAdminRole();
 
     ResourceBundle bundle = resourceBundle(locale);
+    MessageResource resources = resources(locale);
     try {
       if (activity.getTableName().equals("sample")) {
         return sampleDescription(bundle, activity);
       } else if (activity.getTableName().equals("submission")) {
-        return submissionDescription(bundle, activity);
+        return submissionDescription(resources, activity);
       } else if (activity.getTableName().equals("dataanalysis")) {
         return dataAnalysisDescription(bundle, activity);
       } else if (activity.getTableName().equals("treatment")) {
@@ -488,8 +495,28 @@ public class ActivityService {
     return false;
   }
 
-  private String submissionDescription(ResourceBundle bundle, Activity activity) {
-    return message(bundle, "Submission.INSERT");
+  private String submissionDescription(MessageResource resources, Activity activity) {
+    StringBuilder message = new StringBuilder();
+    switch (activity.getActionType()) {
+      case INSERT:
+        message.append(resources.message(property(SUBMISSION, activity.getActionType().name())));
+        break;
+      case UPDATE:
+        message.append(resources.message(property(SUBMISSION, activity.getActionType().name())));
+        for (UpdateActivity update : activity.getUpdates()) {
+          message.append("\n");
+          message.append(resources.message(
+              property(SUBMISSION, activity.getActionType(), update.getActionType()),
+              update.getTableName(), update.getId(), update.getColumn(), update.getOldValue(),
+              update.getNewValue()));
+        }
+        break;
+      case DELETE:
+      default:
+        throw new AssertionError(
+            "ActionType " + activity.getActionType() + " not covered in switch case");
+    }
+    return message.toString();
   }
 
   private String dataAnalysisDescription(ResourceBundle bundle, Activity activity) {
@@ -607,8 +634,8 @@ public class ActivityService {
         }
         case STANDARD_ADDITION: {
           message.append(message(bundle, key + ".Sample", treatedSample.getSample().getName(),
-              treatedSample.getContainer().getType().ordinal(), container,
-              treatedSample.getName(), treatedSample.getQuantity()));
+              treatedSample.getContainer().getType().ordinal(), container, treatedSample.getName(),
+              treatedSample.getQuantity()));
           break;
         }
         case TRANSFER: {
