@@ -39,8 +39,9 @@ import javax.validation.constraints.Size;
  * Acquisition of a Sample in a MS analysis.
  */
 @Entity
-@Table(name = "acquisition")
+@Table(name = Acquisition.TABLE_NAME)
 public class Acquisition implements Data, Named, Serializable {
+  public static final String TABLE_NAME = "acquisition";
   private static final long serialVersionUID = 4253647399151347110L;
 
   /**

@@ -21,6 +21,7 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -61,7 +62,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = Submission.TABLE_NAME)
-public class Submission implements Data, LaboratoryData, Serializable {
+public class Submission implements Data, Named, LaboratoryData, Serializable {
   public static final String TABLE_NAME = "submission";
   private static final long serialVersionUID = 2223809698076034086L;
 
@@ -405,6 +406,15 @@ public class Submission implements Data, LaboratoryData, Serializable {
   @Override
   public String toString() {
     return "Submission [id=" + id + ", service=" + service + ", experiment=" + experiment + "]";
+  }
+
+  @Override
+  public String getName() {
+    if (experiment != null) {
+      return experiment;
+    } else {
+      return !samples.isEmpty() ? samples.get(0).getName() : "";
+    }
   }
 
   @Override

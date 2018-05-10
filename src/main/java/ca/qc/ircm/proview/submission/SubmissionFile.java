@@ -32,8 +32,9 @@ import javax.validation.constraints.Size;
  * Submission file.
  */
 @Entity
-@Table(name = "submissionfiles")
+@Table(name = SubmissionFile.TABLE_NAME)
 public class SubmissionFile implements Serializable {
+  public static final String TABLE_NAME = "submissionfiles";
   private static final long serialVersionUID = 2146676462335553712L;
   /**
    * Structure database identifier.

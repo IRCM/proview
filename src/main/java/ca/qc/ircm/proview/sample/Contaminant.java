@@ -35,8 +35,9 @@ import javax.validation.constraints.Size;
  * A Contaminant in a Sample.
  */
 @Entity
-@Table(name = "contaminant")
+@Table(name = Contaminant.TABLE_NAME)
 public class Contaminant implements Data, Named, Serializable {
+  public static final String TABLE_NAME = "contaminant";
   private static final long serialVersionUID = 7596363652613794846L;
 
   /**

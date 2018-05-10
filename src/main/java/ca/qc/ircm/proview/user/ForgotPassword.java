@@ -36,8 +36,9 @@ import javax.persistence.Table;
  * For forgotten password information.
  */
 @Entity
-@Table(name = "forgotpassword")
+@Table(name = ForgotPassword.TABLE_NAME)
 public class ForgotPassword implements Data, Serializable {
+  public static final String TABLE_NAME = "forgotpassword";
   private static final long serialVersionUID = -2805056622482303376L;
   /**
    * Database identifier.

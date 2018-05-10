@@ -35,8 +35,9 @@ import javax.validation.constraints.Size;
  * Internal standard in a Sample.
  */
 @Entity
-@Table(name = "standard")
+@Table(name = Standard.TABLE_NAME)
 public class Standard implements Data, Serializable, Named {
+  public static final String TABLE_NAME = "standard";
   private static final long serialVersionUID = 1027734850465332430L;
 
   /**

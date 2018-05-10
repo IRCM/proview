@@ -23,6 +23,8 @@ import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,8 +39,10 @@ import javax.validation.constraints.Size;
  * Treatment information that is specific to a sample.
  */
 @Entity
-@Table(name = "treatedsample")
-public class TreatedSample implements Data {
+@Table(name = TreatedSample.TABLE_NAME)
+public class TreatedSample implements Data, Serializable {
+  public static final String TABLE_NAME = "treatedsample";
+  private static final long serialVersionUID = -1654046284723997439L;
   /**
    * Database identifier.
    */

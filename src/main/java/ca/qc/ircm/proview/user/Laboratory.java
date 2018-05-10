@@ -39,9 +39,9 @@ import javax.validation.constraints.Size;
  * Laboratory where a user works.
  */
 @Entity
-@Table(name = "laboratory")
+@Table(name = Laboratory.TABLE_NAME)
 public class Laboratory implements Data, Serializable {
-
+  public static final String TABLE_NAME = "laboratory";
   private static final long serialVersionUID = 8294913257061846746L;
 
   /**

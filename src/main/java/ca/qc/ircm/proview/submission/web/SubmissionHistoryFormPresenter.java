@@ -154,10 +154,9 @@ public class SubmissionHistoryFormPresenter {
     design.activities.addColumn(ac -> formatter.format(toLocalDateTime(ac.getTimestamp())))
         .setId(TIMESTAMP).setCaption(resources.message(TIMESTAMP));
     design.activities
-        .addColumn(ac -> activityDescription(activityService.description(ac, submission, locale),
-            resources))
+        .addColumn(ac -> activityDescription(activityService.description(ac, locale), resources))
         .setId(DESCRIPTION).setCaption(resources.message(DESCRIPTION))
-        .setDescriptionGenerator(ac -> activityService.description(ac, submission, locale));
+        .setDescriptionGenerator(ac -> activityService.description(ac, locale));
     design.activities.addColumn(ac -> ac.getExplanation()).setId(EXPLANATION)
         .setCaption(resources.message(EXPLANATION));
     design.activities.addColumn(ac -> viewButton(ac), new ComponentRenderer()).setId(VIEW)
