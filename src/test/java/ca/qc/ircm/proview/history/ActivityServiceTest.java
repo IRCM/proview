@@ -498,6 +498,18 @@ public class ActivityServiceTest {
   }
 
   @Test
+  public void description_Sample_Insert() {
+    Activity activity = entityManager.find(Activity.class, 5549L);
+
+    String description = activityService.description(activity, locale);
+
+    verify(authorizationService).checkAdminRole();
+    String[] descriptionLines = description.split("\n", -1);
+    assertEquals(resources.message("activity", activity.getActionType(), activity.getTableName(),
+        activity.getId()), descriptionLines[0]);
+  }
+
+  @Test
   public void description_Sample_Update() {
     Submission submission = entityManager.find(Submission.class, 147L);
     Sample sample = entityManager.find(Sample.class, 559L);

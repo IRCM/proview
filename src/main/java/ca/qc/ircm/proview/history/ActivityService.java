@@ -339,6 +339,36 @@ public class ActivityService {
   }
 
   /**
+   * Returns description of activity.
+   *
+   * @param activity
+   *          activity
+   * @param locale
+   *          user's locale
+   * @return description of activity
+   */
+  public String description(Activity activity, Locale locale) {
+    if (activity == null || locale == null) {
+      return null;
+    }
+    authorizationService.checkAdminRole();
+
+    MessageResource resources = resources(locale);
+    StringBuilder builder = new StringBuilder();
+    builder.append(resources.message("activity", activity.getActionType().ordinal(),
+        activity.getTableName(), activity.getRecordId()));
+    if (activity.getUpdates() != null) {
+      for (UpdateActivity updateActivity : activity.getUpdates()) {
+        builder.append("\n");
+        builder.append(resources.message("update", updateActivity.getActionType().ordinal(),
+            updateActivity.getTableName(), updateActivity.getRecordId(), updateActivity.getColumn(),
+            updateActivity.getOldValue(), updateActivity.getNewValue()));
+      }
+    }
+    return builder.toString();
+  }
+
+  /**
    * Returns description of submission's activity.
    *
    * @param activity
