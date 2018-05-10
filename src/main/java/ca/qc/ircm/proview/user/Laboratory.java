@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.user;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.Named;
 
 import java.io.Serializable;
 import java.util.List;
@@ -40,7 +41,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = Laboratory.TABLE_NAME)
-public class Laboratory implements Data, Serializable {
+public class Laboratory implements Data, Named, Serializable {
   public static final String TABLE_NAME = "laboratory";
   private static final long serialVersionUID = 8294913257061846746L;
 
@@ -108,6 +109,7 @@ public class Laboratory implements Data, Serializable {
     this.organization = organization;
   }
 
+  @Override
   public String getName() {
     return name;
   }
