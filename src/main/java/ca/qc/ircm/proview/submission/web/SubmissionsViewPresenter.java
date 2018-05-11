@@ -330,8 +330,8 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.setDataProvider(searchSubmissions());
     design.submissionsGrid.addColumn(submission -> viewButton(submission), new ComponentRenderer())
         .setId(EXPERIMENT).setCaption(resources.message(EXPERIMENT))
-        .setComparator((s1, s2) -> collator.compare(Objects.toString(s1.getExperiment(), ""),
-            Objects.toString(s2.getExperiment(), "")));
+        .setComparator((s1, s2) -> collator.compare(Objects.toString(s1.getName(), ""),
+            Objects.toString(s2.getName(), "")));
     columnProperties.put(EXPERIMENT, submission.experiment);
     design.submissionsGrid.addColumn(submission -> submission.getUser().getName()).setId(USER)
         .setCaption(resources.message(USER))
@@ -576,12 +576,7 @@ public class SubmissionsViewPresenter {
   private Button viewButton(Submission submission) {
     Button button = new Button();
     button.addStyleName(EXPERIMENT);
-    if (submission.getService() == Service.SMALL_MOLECULE) {
-      button.setCaption(
-          submission.getSamples().stream().findFirst().map(sample -> sample.getName()).orElse(""));
-    } else {
-      button.setCaption(submission.getExperiment());
-    }
+    button.setCaption(submission.getName());
     button.addClickListener(e -> viewSubmission(submission));
     return button;
   }
