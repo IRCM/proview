@@ -200,7 +200,7 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     setStandardCount(1);
     assertTrue(optional(() -> standardsGrid()).isPresent());
     assertTrue(optional(() -> fillStandardsButton()).isPresent());
-    assertTrue(optional(() -> contaminantsPanel()).isPresent());
+    assertTrue(optional(() -> contaminantsContainer()).isPresent());
     assertTrue(optional(() -> contaminantCountField()).isPresent());
     setContaminantCount(1);
     assertTrue(optional(() -> contaminantsGrid()).isPresent());

@@ -180,7 +180,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String SAMPLE_VOLUME = submissionSample.volume.getMetadata().getName();
   public static final String SAMPLE_VOLUME_BEADS = property(SAMPLE_VOLUME, "beads");
   public static final String STANDARDS_PANEL = "standardsPanel";
-  public static final String CONTAMINANTS_PANEL = "contaminantsPanel";
+  public static final String CONTAMINANTS_CONTAINER = "contaminantsContainer";
   public static final String GEL_PANEL = "gelPanel";
   public static final String SERVICES_PANEL = "servicesPanel";
   public static final String DIGESTION =
@@ -323,8 +323,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     prepareExperimentComponents();
     design.standardsPanel.addStyleName(STANDARDS_PANEL);
     design.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
-    design.contaminantsPanel.addStyleName(CONTAMINANTS_PANEL);
-    design.contaminantsPanel.setCaption(resources.message(CONTAMINANTS_PANEL));
+    design.contaminantsContainer.addStyleName(CONTAMINANTS_CONTAINER);
     design.gelPanel.addStyleName(GEL_PANEL);
     design.gelPanel.setCaption(resources.message(GEL_PANEL));
     prepareServicesComponents();
@@ -912,7 +911,7 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.sampleVolume.setVisible(service != SMALL_MOLECULE && type.isSolution());
     design.standardsPanel
         .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
-    design.contaminantsPanel
+    design.contaminantsContainer
         .setVisible(service != SMALL_MOLECULE && (type.isSolution() || type.isDry()));
     design.gelPanel.setVisible(service == LC_MS_MS && type.isGel());
     design.digestion.setVisible(service == LC_MS_MS);

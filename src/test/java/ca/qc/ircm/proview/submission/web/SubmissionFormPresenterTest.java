@@ -35,7 +35,7 @@ import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXAMPLE;
@@ -1132,7 +1132,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.getStyleName().contains(SAMPLE_QUANTITY));
     assertTrue(design.sampleVolume.getStyleName().contains(SAMPLE_VOLUME));
     assertTrue(design.standardsPanel.getStyleName().contains(STANDARDS_PANEL));
-    assertTrue(design.contaminantsPanel.getStyleName().contains(CONTAMINANTS_PANEL));
+    assertTrue(design.contaminantsContainer.getStyleName().contains(CONTAMINANTS_CONTAINER));
     assertTrue(design.gelPanel.getStyleName().contains(GEL_PANEL));
     assertTrue(design.servicesPanel.getStyleName().contains(SERVICES_PANEL));
     assertTrue(design.digestion.getStyleName().contains(DIGESTION));
@@ -1236,7 +1236,6 @@ public class SubmissionFormPresenterTest {
     assertEquals(resources.message(SAMPLE_VOLUME + "." + EXAMPLE),
         design.sampleVolume.getPlaceholder());
     assertEquals(resources.message(STANDARDS_PANEL), design.standardsPanel.getCaption());
-    assertEquals(resources.message(CONTAMINANTS_PANEL), design.contaminantsPanel.getCaption());
     assertEquals(resources.message(GEL_PANEL), design.gelPanel.getCaption());
     assertEquals(resources.message(SERVICES_PANEL), design.servicesPanel.getCaption());
     assertEquals(resources.message(DIGESTION), design.digestion.getCaption());
@@ -1651,7 +1650,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -1715,7 +1714,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -1785,7 +1784,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -1849,7 +1848,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -1919,7 +1918,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -1983,7 +1982,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2053,7 +2052,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2117,7 +2116,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2223,7 +2222,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2287,7 +2286,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2357,7 +2356,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.contaminantsPanel.isVisible());
+    assertFalse(design.contaminantsContainer.isVisible());
     assertTrue(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2421,7 +2420,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.contaminantsPanel.isVisible());
+    assertFalse(design.contaminantsContainer.isVisible());
     assertTrue(design.gelPanel.isVisible());
     assertTrue(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2491,7 +2490,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.contaminantsPanel.isVisible());
+    assertFalse(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2554,7 +2553,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.contaminantsPanel.isVisible());
+    assertFalse(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2635,7 +2634,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.contaminantsPanel.isVisible());
+    assertFalse(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2697,7 +2696,7 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertFalse(design.standardsPanel.isVisible());
-    assertFalse(design.contaminantsPanel.isVisible());
+    assertFalse(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2767,7 +2766,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2831,7 +2830,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertTrue(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2901,7 +2900,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());
@@ -2965,7 +2964,7 @@ public class SubmissionFormPresenterTest {
     assertTrue(design.sampleQuantity.isVisible());
     assertFalse(design.sampleVolume.isVisible());
     assertTrue(design.standardsPanel.isVisible());
-    assertTrue(design.contaminantsPanel.isVisible());
+    assertTrue(design.contaminantsContainer.isVisible());
     assertFalse(design.gelPanel.isVisible());
     assertFalse(design.digestion.isVisible());
     assertFalse(design.usedProteolyticDigestionMethod.isVisible());

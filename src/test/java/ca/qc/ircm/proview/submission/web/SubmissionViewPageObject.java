@@ -30,7 +30,7 @@ import static ca.qc.ircm.proview.submission.web.GelFormPresenter.WEIGHT_MARKER_Q
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS;
@@ -354,13 +354,13 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(ButtonElement.class, standardsPanel().findElement(className(FILL_STANDARDS)));
   }
 
-  protected PanelElement contaminantsPanel() {
-    return wrap(PanelElement.class, findElement(className(CONTAMINANTS_PANEL)));
+  protected PanelElement contaminantsContainer() {
+    return wrap(PanelElement.class, findElement(className(CONTAMINANTS_CONTAINER)));
   }
 
   protected TextFieldElement contaminantCountField() {
     return wrap(TextFieldElement.class,
-        contaminantsPanel().findElement(className(CONTAMINANT_COUNT)));
+        contaminantsContainer().findElement(className(CONTAMINANT_COUNT)));
   }
 
   protected Integer getContaminantCount() {
@@ -376,11 +376,11 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected GridElement contaminantsGrid() {
-    return wrap(GridElement.class, contaminantsPanel().findElement(className(CONTAMINANTS)));
+    return wrap(GridElement.class, contaminantsContainer().findElement(className(CONTAMINANTS)));
   }
 
   protected ButtonElement fillContaminantsButton() {
-    return wrap(ButtonElement.class, contaminantsPanel().findElement(className(FILL_CONTAMINANTS)));
+    return wrap(ButtonElement.class, contaminantsContainer().findElement(className(FILL_CONTAMINANTS)));
   }
 
   protected PanelElement gelPanel() {

@@ -57,7 +57,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextField sampleQuantity;
   protected TextField sampleVolume;
   protected Panel standardsPanel;
-  protected Panel contaminantsPanel;
+  protected VerticalLayout contaminantsContainer;
   protected Panel gelPanel;
   protected Panel servicesPanel;
   protected RadioButtonGroup<ca.qc.ircm.proview.sample.ProteolyticDigestion> digestion;

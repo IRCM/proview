@@ -74,7 +74,7 @@ public class SubmissionForm extends CustomComponent implements BaseComponent {
     setCompositionRoot(design);
     design.samplesPlateContainer.addComponent(plateComponent);
     design.standardsPanel.setContent(standardsForm);
-    design.contaminantsPanel.setContent(contaminantsForm);
+    design.contaminantsContainer.addComponent(contaminantsForm);
     design.gelPanel.setContent(gelForm);
   }
 

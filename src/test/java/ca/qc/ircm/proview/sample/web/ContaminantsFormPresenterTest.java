@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.CONTAMINAN
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.COUNT;
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.FILL;
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.NAME;
+import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.PANEL;
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
@@ -93,6 +94,7 @@ public class ContaminantsFormPresenterTest {
   public void styles() {
     presenter.init(view);
 
+    assertTrue(design.panel.getStyleName().contains(PANEL));
     assertTrue(design.count.getStyleName().contains(COUNT));
     assertTrue(design.contaminants.getStyleName().contains(CONTAMINANTS));
     assertTrue(design.fill.getStyleName().contains(FILL));
@@ -102,6 +104,7 @@ public class ContaminantsFormPresenterTest {
   public void captions() {
     presenter.init(view);
 
+    assertEquals(resources.message(PANEL), design.panel.getCaption());
     assertEquals(resources.message(COUNT), design.count.getCaption());
     assertEquals(resources.message(FILL), design.fill.getCaption());
     assertEquals(VaadinIcons.ARROW_DOWN, design.fill.getIcon());

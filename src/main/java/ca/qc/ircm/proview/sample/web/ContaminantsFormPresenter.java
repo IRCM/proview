@@ -59,6 +59,7 @@ import java.util.stream.Collectors;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ContaminantsFormPresenter implements BinderValidator {
+  public static final String PANEL = "panel";
   public static final String COUNT = "count";
   public static final String CONTAMINANTS = submissionSample.contaminants.getMetadata().getName();
   public static final String NAME = contaminant.name.getMetadata().getName();
@@ -94,6 +95,8 @@ public class ContaminantsFormPresenter implements BinderValidator {
 
   private void prepareComponents() {
     final MessageResource resources = view.getResources();
+    design.panel.addStyleName(PANEL);
+    design.panel.setCaption(resources.message(PANEL));
     design.count.addStyleName(COUNT);
     design.count.setCaption(resources.message(COUNT));
     design.count.addValueChangeListener(e -> updateGrid(e.getValue()));
