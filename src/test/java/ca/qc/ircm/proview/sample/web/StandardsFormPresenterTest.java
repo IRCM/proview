@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.COUNT;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.FILL;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.NAME;
+import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.PANEL;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
@@ -93,6 +94,7 @@ public class StandardsFormPresenterTest {
   public void styles() {
     presenter.init(view);
 
+    assertTrue(design.panel.getStyleName().contains(PANEL));
     assertTrue(design.count.getStyleName().contains(COUNT));
     assertTrue(design.standards.getStyleName().contains(STANDARDS));
     assertTrue(design.fill.getStyleName().contains(FILL));
@@ -102,6 +104,7 @@ public class StandardsFormPresenterTest {
   public void captions() {
     presenter.init(view);
 
+    assertEquals(resources.message(PANEL), design.panel.getCaption());
     assertEquals(resources.message(COUNT), design.count.getCaption());
     assertEquals(resources.message(FILL), design.fill.getCaption());
     assertEquals(VaadinIcons.ARROW_DOWN, design.fill.getIcon());

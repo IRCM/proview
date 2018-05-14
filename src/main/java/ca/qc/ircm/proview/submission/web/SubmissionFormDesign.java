@@ -56,7 +56,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected TextField postTranslationModification;
   protected TextField sampleQuantity;
   protected TextField sampleVolume;
-  protected Panel standardsPanel;
+  protected VerticalLayout standardsContainer;
   protected VerticalLayout contaminantsContainer;
   protected Panel gelPanel;
   protected Panel servicesPanel;

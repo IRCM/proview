@@ -26,7 +26,7 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAMPLE_PANEL;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVED;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS_PANEL;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS_CONTAINER;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
@@ -150,7 +150,7 @@ public class ControlFormPresenterTest {
     assertTrue(design.quantityField.getStyleName().contains(QUANTITY));
     assertTrue(design.volumeField.getStyleName().contains(VOLUME));
     assertTrue(design.controlTypeField.getStyleName().contains(CONTROL_TYPE));
-    assertTrue(design.standardsPanel.getStyleName().contains(STANDARDS_PANEL));
+    assertTrue(design.standardsContainer.getStyleName().contains(STANDARDS_CONTAINER));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanationPanel.getStyleName().contains(REQUIRED));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
@@ -177,7 +177,6 @@ public class ControlFormPresenterTest {
       assertEquals(type.getLabel(locale),
           design.controlTypeField.getItemCaptionGenerator().apply(type));
     }
-    assertEquals(resources.message(STANDARDS_PANEL), design.standardsPanel.getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(null, design.explanation.getCaption());
     assertEquals(resources.message(SAVE), design.saveButton.getCaption());

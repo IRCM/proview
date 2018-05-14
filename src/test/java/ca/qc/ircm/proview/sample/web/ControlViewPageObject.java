@@ -23,7 +23,7 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION_PAN
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS_PANEL;
+import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS_CONTAINER;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.HEADER;
@@ -122,7 +122,7 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
   }
 
   protected PanelElement standardPanel() {
-    return wrap(PanelElement.class, findElement(className(STANDARDS_PANEL)));
+    return wrap(PanelElement.class, findElement(className(STANDARDS_CONTAINER)));
   }
 
   protected TextFieldElement standardCountField() {

@@ -64,7 +64,7 @@ public class ControlFormTest {
   public void init() throws Throwable {
     view.init();
 
-    assertEquals(standardsForm, view.design.standardsPanel.getContent());
+    assertEquals(standardsForm, view.design.standardsContainer.getComponent(0));
   }
 
   @Test

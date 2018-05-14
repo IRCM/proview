@@ -81,7 +81,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
@@ -327,7 +327,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected PanelElement standardsPanel() {
-    return wrap(PanelElement.class, findElement(className(STANDARDS_PANEL)));
+    return wrap(PanelElement.class, findElement(className(STANDARDS_CONTAINER)));
   }
 
   protected TextFieldElement standardCountField() {
