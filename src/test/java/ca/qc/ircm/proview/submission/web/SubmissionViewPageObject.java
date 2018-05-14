@@ -19,6 +19,14 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.COLORATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DECOLORATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.OTHER_COLORATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.PROTEIN_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.SEPARATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.THICKNESS;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
@@ -32,7 +40,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIME
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
@@ -80,14 +87,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTUR
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.COLORATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DECOLORATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DEVELOPMENT_TIME;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.OTHER_COLORATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.PROTEIN_QUANTITY;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.SEPARATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.THICKNESS;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.HEADER_STYLE;
 import static org.openqa.selenium.By.className;
 
@@ -241,10 +240,6 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
 
   protected void setSampleNameInGrid(int row, String name) {
     samplesGrid().getRow(row).getCell(0).$(TextFieldElement.class).first().setValue(name);
-  }
-
-  protected ButtonElement fillSamplesButton() {
-    return wrap(ButtonElement.class, findElement(className(FILL_SAMPLES)));
   }
 
   protected WebElement samplesPlate() {

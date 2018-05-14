@@ -183,7 +183,6 @@ public class SubmissionViewTest extends SubmissionViewPageObject {
     assertTrue(optional(() -> samplesLabel()).isPresent());
     setSampleContainerType(TUBE);
     assertTrue(optional(() -> samplesGrid()).isPresent());
-    assertTrue(optional(() -> fillSamplesButton()).isPresent());
     setSampleContainerType(WELL);
     assertTrue(optional(() -> samplesPlate()).isPresent());
     setSampleContainerType(TUBE);

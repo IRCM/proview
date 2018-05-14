@@ -40,7 +40,6 @@ import static ca.qc.ircm.proview.treatment.Solvent.METHANOL;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID;
@@ -166,7 +165,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String SAMPLES_LABEL = SAMPLES + "Label";
   public static final String SAMPLE_NUMBER_PROTEIN =
       submissionSample.numberProtein.getMetadata().getName();
-  public static final String FILL_SAMPLES = "fillSamples";
+  public static final String SAMPLES_DOWN = "samplesDown";
   public static final String SAMPLES_PLATE = SAMPLES + "Plate";
   public static final String EXPERIMENT_PANEL = "experimentPanel";
   public static final String EXPERIMENT = submission.experiment.getMetadata().getName();
@@ -246,6 +245,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   private Map<SubmissionSample, TextField> sampleNameFields = new HashMap<>();
   private Map<SubmissionSample, TextField> sampleNumberProteinFields = new HashMap<>();
   private Map<SubmissionSample, TextField> sampleMolecularWeightFields = new HashMap<>();
+  private Map<SubmissionSample, Button> sampleDownButtons = new HashMap<>();
   private ListDataProvider<SubmissionFile> filesDataProvider =
       DataProvider.ofCollection(new ArrayList<>());
   private Map<SubmissionFile, Button> fileDownloads = new HashMap<>();
@@ -504,11 +504,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.samples.addColumn(sample -> proteinWeightField(sample), new ComponentRenderer())
         .setId(PROTEIN_WEIGHT).setCaption(resources.message(PROTEIN_WEIGHT)).setWidth(170)
         .setSortable(false);
-    design.fillSamples.addStyleName(FILL_SAMPLES);
-    design.fillSamples.addStyleName(BUTTON_SKIP_ROW);
-    design.fillSamples.setCaption(resources.message(FILL_SAMPLES));
-    design.fillSamples.setIcon(VaadinIcons.ARROW_DOWN);
-    design.fillSamples.addClickListener(e -> fillSamples());
+    design.samples.addColumn(sample -> sampleDownButton(sample), new ComponentRenderer())
+        .setId(SAMPLES_DOWN).setCaption(resources.message(SAMPLES_DOWN)).setWidth(100)
+        .setSortable(false);
     view.plateComponent.addStyleName(SAMPLES_PLATE);
   }
 
@@ -541,6 +539,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       return sampleNameFields.get(sample);
     } else {
       TextField field = new TextField();
+      field.addStyleName(SAMPLE_NAME);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly || updatableSampleNamesOnly);
       field.setWidth("100%");
@@ -554,6 +553,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       return sampleNumberProteinFields.get(sample);
     } else {
       TextField field = new TextField();
+      field.addStyleName(SAMPLE_NUMBER_PROTEIN);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly || updatableSampleNamesOnly);
       field.setWidth("100%");
@@ -568,12 +568,48 @@ public class SubmissionFormPresenter implements BinderValidator {
       return sampleMolecularWeightFields.get(sample);
     } else {
       TextField field = new TextField();
+      field.addStyleName(PROTEIN_WEIGHT);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
       field.setReadOnly(readOnly || updatableSampleNamesOnly);
       field.setWidth("100%");
       field.setRequiredIndicatorVisible(true);
       sampleMolecularWeightFields.put(sample, field);
       return field;
+    }
+  }
+
+  private Button sampleDownButton(SubmissionSample sample) {
+    if (sampleDownButtons.containsKey(sample)) {
+      return sampleDownButtons.get(sample);
+    } else {
+      final MessageResource resources = view.getResources();
+      Button button = new Button();
+      button.addStyleName(ValoTheme.BUTTON_TINY);
+      button.addStyleName(SAMPLES_DOWN);
+      button.setIcon(VaadinIcons.ARROW_DOWN);
+      button.setIconAlternateText(resources.message(SAMPLES_DOWN));
+      button.addClickListener(e -> samplesDown(sample));
+      sampleDownButtons.put(sample, button);
+      return button;
+    }
+  }
+
+  private void samplesDown(SubmissionSample sample) {
+    boolean copy = false;
+    String name = sampleNameFields.get(sample).getValue();
+    String numberProtein = sampleNumberProteinFields.get(sample).getValue();
+    String molecularWeight = sampleMolecularWeightFields.get(sample).getValue();
+    List<SubmissionSample> samples =
+        VaadinUtils.gridItems(design.samples).collect(Collectors.toList());
+    for (SubmissionSample other : samples) {
+      if (sample.equals(other)) {
+        copy = true;
+      } else if (copy) {
+        name = Named.incrementLastNumber(name);
+        sampleNameFields.get(other).setValue(name);
+        sampleNumberProteinFields.get(other).setValue(numberProtein);
+        sampleMolecularWeightFields.get(other).setValue(molecularWeight);
+      }
     }
   }
 
@@ -854,17 +890,14 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.plateName
         .setVisible(service == LC_MS_MS && design.sampleContainerType.getValue() == WELL);
     design.samplesLabel.setVisible(service != SMALL_MOLECULE);
-    design.samplesLayout.setVisible(service == INTACT_PROTEIN
-        || (service == LC_MS_MS && design.sampleContainerType.getValue() != WELL));
     design.samples.setVisible(service == INTACT_PROTEIN
         || (service == LC_MS_MS && design.sampleContainerType.getValue() != WELL));
     design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).setHidden(service != INTACT_PROTEIN);
     design.samples.getColumn(PROTEIN_WEIGHT).setHidden(service != INTACT_PROTEIN);
+    design.samples.getColumn(SAMPLES_DOWN).setHidden(readOnly);
     design.samples.setWidth((float) design.samples.getColumns().stream()
         .filter(column -> !column.isHidden()).mapToDouble(column -> column.getWidth()).sum(),
         Unit.PIXELS);
-    design.fillSamples.setVisible((service == INTACT_PROTEIN
-        || (service == LC_MS_MS && design.sampleContainerType.getValue() != WELL)) && !readOnly);
     design.samplesPlateContainer
         .setVisible(service == LC_MS_MS && design.sampleContainerType.getValue() == WELL);
     design.experimentPanel.setVisible(service != SMALL_MOLECULE);
@@ -937,7 +970,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         .forEach(field -> field.setReadOnly(readOnly || updatableSampleNamesOnly));
     sampleMolecularWeightFields.values().stream()
         .forEach(field -> field.setReadOnly(readOnly || updatableSampleNamesOnly));
-    design.fillSamples.setVisible(!readOnly);
     view.plateComponent.setReadOnly(readOnly || updatableSampleNamesOnly);
     design.experiment.setReadOnly(readOnly || updatableSampleNamesOnly);
     design.experimentGoal.setReadOnly(readOnly || updatableSampleNamesOnly);
@@ -991,25 +1023,6 @@ public class SubmissionFormPresenter implements BinderValidator {
         samplesDataProvider.getItems().remove(remove);
       }
       samplesDataProvider.refreshAll();
-    }
-  }
-
-  private void fillSamples() {
-    List<SubmissionSample> samples =
-        VaadinUtils.gridItems(design.samples).collect(Collectors.toList());
-    if (!samples.isEmpty()) {
-      SubmissionSample first = samples.get(0);
-      String name = sampleNameFields.get(first).getValue();
-      String numberProtein = sampleNumberProteinFields.get(first).getValue();
-      String molecularWeight = sampleMolecularWeightFields.get(first).getValue();
-      for (SubmissionSample sample : samples.subList(1, samples.size())) {
-        name = Named.incrementLastNumber(name);
-        sampleNameFields.get(sample).setValue(name);
-        if (design.service.getValue() == INTACT_PROTEIN) {
-          sampleNumberProteinFields.get(sample).setValue(numberProtein);
-          sampleMolecularWeightFields.get(sample).setValue(molecularWeight);
-        }
-      }
     }
   }
 

@@ -45,9 +45,7 @@ public class SubmissionFormDesign extends VerticalLayout {
   protected RadioButtonGroup<ca.qc.ircm.proview.sample.SampleContainerType> sampleContainerType;
   protected TextField plateName;
   protected Label samplesLabel;
-  protected HorizontalLayout samplesLayout;
   protected Grid<ca.qc.ircm.proview.sample.SubmissionSample> samples;
-  protected Button fillSamples;
   protected VerticalLayout samplesPlateContainer;
   protected Panel experimentPanel;
   protected TextField experiment;
