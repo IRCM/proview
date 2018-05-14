@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.sample.web;
 import static ca.qc.ircm.proview.sample.QContaminant.contaminant;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
@@ -37,6 +36,7 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -65,7 +65,7 @@ public class ContaminantsFormPresenter implements BinderValidator {
   public static final String NAME = contaminant.name.getMetadata().getName();
   public static final String QUANTITY = contaminant.quantity.getMetadata().getName();
   public static final String COMMENT = contaminant.comment.getMetadata().getName();
-  public static final String FILL = "fill";
+  public static final String DOWN = "down";
   public static final String EXAMPLE = "example";
   private static final int DEFAULT_MAX_COUNT = 10;
   private static final Logger logger = LoggerFactory.getLogger(ContaminantsFormPresenter.class);
@@ -79,6 +79,7 @@ public class ContaminantsFormPresenter implements BinderValidator {
   private Map<Contaminant, TextField> nameFields = new HashMap<>();
   private Map<Contaminant, TextField> quantityFields = new HashMap<>();
   private Map<Contaminant, TextField> commentFields = new HashMap<>();
+  private Map<Contaminant, Button> downFields = new HashMap<>();
 
   /**
    * Called by view when view is initialized.
@@ -109,15 +110,12 @@ public class ContaminantsFormPresenter implements BinderValidator {
         .setId(NAME).setCaption(resources.message(NAME)).setSortable(false);
     design.contaminants
         .addColumn(contaminant -> quantityField(contaminant), new ComponentRenderer())
-        .setId(QUANTITY).setCaption(resources.message(QUANTITY)).setSortable(false);
+        .setId(QUANTITY).setCaption(resources.message(QUANTITY)).setSortable(false).setWidth(170);
     design.contaminants.addColumn(contaminant -> commentField(contaminant), new ComponentRenderer())
-        .setId(COMMENT).setCaption(resources.message(COMMENT)).setSortable(false);
-    design.fill.addStyleName(FILL);
-    design.fill.addStyleName(BUTTON_SKIP_ROW);
-    design.fill.setCaption(resources.message(FILL));
-    design.fill.setIcon(VaadinIcons.ARROW_DOWN);
-    design.fill.addClickListener(e -> fill());
-    design.fill.setVisible(!readOnly);
+        .setId(COMMENT).setCaption(resources.message(COMMENT)).setSortable(false).setWidth(170);
+    design.contaminants.addColumn(contaminant -> downField(contaminant), new ComponentRenderer())
+        .setId(DOWN).setCaption(resources.message(DOWN)).setSortable(false).setHidden(readOnly)
+        .setWidth(100);
   }
 
   private void countBinder() {
@@ -153,6 +151,7 @@ public class ContaminantsFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(NAME);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setWidth("100%");
       field.setReadOnly(readOnly);
       nameFields.put(contaminant, field);
       return field;
@@ -167,6 +166,7 @@ public class ContaminantsFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(QUANTITY);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setWidth("100%");
       field.setReadOnly(readOnly);
       field.setPlaceholder(resources.message(property(QUANTITY, EXAMPLE)));
       quantityFields.put(contaminant, field);
@@ -181,9 +181,45 @@ public class ContaminantsFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(COMMENT);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setWidth("100%");
       field.setReadOnly(readOnly);
       commentFields.put(contaminant, field);
       return field;
+    }
+  }
+
+  private Button downField(Contaminant contaminant) {
+    if (downFields.containsKey(contaminant)) {
+      return downFields.get(contaminant);
+    } else {
+      final MessageResource resources = view.getResources();
+      Button button = new Button();
+      button.addStyleName(DOWN);
+      button.addStyleName(ValoTheme.BUTTON_TINY);
+      button.setWidth("100%");
+      button.setIcon(VaadinIcons.ARROW_DOWN);
+      button.setIconAlternateText(resources.message(DOWN));
+      button.addClickListener(e -> fill(contaminant));
+      downFields.put(contaminant, button);
+      return button;
+    }
+  }
+
+  private void fill(Contaminant contaminant) {
+    List<Contaminant> contaminants =
+        VaadinUtils.gridItems(design.contaminants).collect(Collectors.toList());
+    String name = nameFields.get(contaminant).getValue();
+    String quantity = quantityFields.get(contaminant).getValue();
+    String comment = commentFields.get(contaminant).getValue();
+    boolean copy = false;
+    for (Contaminant other : contaminants) {
+      if (contaminant.equals(other)) {
+        copy = true;
+      } else if (copy) {
+        nameFields.get(other).setValue(name);
+        quantityFields.get(other).setValue(quantity);
+        commentFields.get(other).setValue(comment);
+      }
     }
   }
 
@@ -195,7 +231,7 @@ public class ContaminantsFormPresenter implements BinderValidator {
       } catch (NumberFormatException e) {
         count = 0;
       }
-      design.contaminantsLayout.setVisible(count > 0);
+      design.contaminants.setVisible(count > 0);
       while (dataProvider.getItems().size() > count) {
         Contaminant remove = dataProvider.getItems().stream()
             .skip(dataProvider.getItems().size() - 1).findFirst().orElse(null);
@@ -213,24 +249,8 @@ public class ContaminantsFormPresenter implements BinderValidator {
           }
         }
       }
-      design.contaminantsLayout.setVisible(count > 0);
+      design.contaminants.setVisible(count > 0);
       dataProvider.refreshAll();
-    }
-  }
-
-  private void fill() {
-    List<Contaminant> contaminants =
-        VaadinUtils.gridItems(design.contaminants).collect(Collectors.toList());
-    if (!contaminants.isEmpty()) {
-      Contaminant first = contaminants.get(0);
-      String name = nameFields.get(first).getValue();
-      String quantity = quantityFields.get(first).getValue();
-      String comment = commentFields.get(first).getValue();
-      for (Contaminant contaminant : contaminants.subList(1, contaminants.size())) {
-        nameFields.get(contaminant).setValue(name);
-        quantityFields.get(contaminant).setValue(quantity);
-        commentFields.get(contaminant).setValue(comment);
-      }
     }
   }
 
@@ -252,8 +272,8 @@ public class ContaminantsFormPresenter implements BinderValidator {
     this.readOnly = readOnly;
     countBinder.setReadOnly(readOnly);
     binders.values().stream().forEach(binder -> binder.setReadOnly(readOnly));
-    if (view != null) {
-      design.fill.setVisible(!readOnly);
+    if (design != null) {
+      design.contaminants.getColumn(DOWN).setHidden(readOnly);
     }
   }
 

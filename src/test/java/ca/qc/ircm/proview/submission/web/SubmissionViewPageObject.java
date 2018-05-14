@@ -120,7 +120,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   private static final String STANDARD_COUNT = StandardsFormPresenter.COUNT;
   private static final String FILL_STANDARDS = StandardsFormPresenter.FILL;
   private static final String CONTAMINANT_COUNT = ContaminantsFormPresenter.COUNT;
-  private static final String FILL_CONTAMINANTS = ContaminantsFormPresenter.FILL;
+  private static final String FILL_CONTAMINANTS = ContaminantsFormPresenter.DOWN;
 
   protected void open() {
     openView(SubmissionView.VIEW_NAME);
