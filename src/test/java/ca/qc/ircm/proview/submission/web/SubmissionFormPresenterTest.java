@@ -672,6 +672,14 @@ public class SubmissionFormPresenterTest {
         ComponentRenderer.class));
     assertFalse(design.samples.getColumn(SAMPLES_DOWN).isHidden());
     assertFalse(design.samples.getColumn(SAMPLES_DOWN).isSortable());
+    for (SubmissionSample sample : samples) {
+      Button button =
+          (Button) design.samples.getColumn(SAMPLES_DOWN).getValueProvider().apply(sample);
+      assertTrue(button.getStyleName().contains(SAMPLES_DOWN));
+      assertTrue(button.getStyleName().contains(ValoTheme.BUTTON_TINY));
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(SAMPLES_DOWN), button.getIconAlternateText());
+    }
   }
 
   @Test
