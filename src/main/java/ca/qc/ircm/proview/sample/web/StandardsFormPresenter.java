@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.sample.web;
 import static ca.qc.ircm.proview.sample.QStandard.standard;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
@@ -37,6 +36,7 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -65,7 +65,7 @@ public class StandardsFormPresenter implements BinderValidator {
   public static final String NAME = standard.name.getMetadata().getName();
   public static final String QUANTITY = standard.quantity.getMetadata().getName();
   public static final String COMMENT = standard.comment.getMetadata().getName();
-  public static final String FILL = "fill";
+  public static final String DOWN = "down";
   public static final String EXAMPLE = "example";
   private static final int DEFAULT_MAX_COUNT = 10;
   private static final Logger logger = LoggerFactory.getLogger(StandardsFormPresenter.class);
@@ -79,6 +79,7 @@ public class StandardsFormPresenter implements BinderValidator {
   private Map<Standard, TextField> nameFields = new HashMap<>();
   private Map<Standard, TextField> quantityFields = new HashMap<>();
   private Map<Standard, TextField> commentFields = new HashMap<>();
+  private Map<Standard, Button> downFields = new HashMap<>();
 
   /**
    * Called by view when view is initialized.
@@ -108,15 +109,12 @@ public class StandardsFormPresenter implements BinderValidator {
     design.standards.addColumn(standard -> nameField(standard), new ComponentRenderer()).setId(NAME)
         .setCaption(resources.message(NAME)).setSortable(false);
     design.standards.addColumn(standard -> quantityField(standard), new ComponentRenderer())
-        .setId(QUANTITY).setCaption(resources.message(QUANTITY)).setSortable(false);
+        .setId(QUANTITY).setCaption(resources.message(QUANTITY)).setSortable(false).setWidth(170);
     design.standards.addColumn(standard -> commentField(standard), new ComponentRenderer())
-        .setId(COMMENT).setCaption(resources.message(COMMENT)).setSortable(false);
-    design.fill.addStyleName(FILL);
-    design.fill.addStyleName(BUTTON_SKIP_ROW);
-    design.fill.setCaption(resources.message(FILL));
-    design.fill.setIcon(VaadinIcons.ARROW_DOWN);
-    design.fill.addClickListener(e -> fill());
-    design.fill.setVisible(!readOnly);
+        .setId(COMMENT).setCaption(resources.message(COMMENT)).setSortable(false).setWidth(170);
+    design.standards.addColumn(contaminant -> downField(contaminant), new ComponentRenderer())
+        .setId(DOWN).setCaption(resources.message(DOWN)).setSortable(false).setHidden(readOnly)
+        .setWidth(100);
   }
 
   private void countBinder() {
@@ -152,6 +150,7 @@ public class StandardsFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(NAME);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setWidth("100%");
       field.setReadOnly(readOnly);
       nameFields.put(standard, field);
       return field;
@@ -166,6 +165,7 @@ public class StandardsFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(QUANTITY);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setWidth("100%");
       field.setReadOnly(readOnly);
       field.setPlaceholder(resources.message(property(QUANTITY, EXAMPLE)));
       quantityFields.put(standard, field);
@@ -180,9 +180,43 @@ public class StandardsFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(COMMENT);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
+      field.setWidth("100%");
       field.setReadOnly(readOnly);
       commentFields.put(standard, field);
       return field;
+    }
+  }
+
+  private Button downField(Standard standard) {
+    if (downFields.containsKey(standard)) {
+      return downFields.get(standard);
+    } else {
+      final MessageResource resources = view.getResources();
+      Button button = new Button();
+      button.addStyleName(DOWN);
+      button.addStyleName(ValoTheme.BUTTON_TINY);
+      button.setIcon(VaadinIcons.ARROW_DOWN);
+      button.setIconAlternateText(resources.message(DOWN));
+      button.addClickListener(e -> fill(standard));
+      downFields.put(standard, button);
+      return button;
+    }
+  }
+
+  private void fill(Standard standard) {
+    List<Standard> standards = VaadinUtils.gridItems(design.standards).collect(Collectors.toList());
+    String name = nameFields.get(standard).getValue();
+    String quantity = quantityFields.get(standard).getValue();
+    String comment = commentFields.get(standard).getValue();
+    boolean copy = false;
+    for (Standard other : standards) {
+      if (standard.equals(other)) {
+        copy = true;
+      } else if (copy) {
+        nameFields.get(other).setValue(name);
+        quantityFields.get(other).setValue(quantity);
+        commentFields.get(other).setValue(comment);
+      }
     }
   }
 
@@ -194,7 +228,7 @@ public class StandardsFormPresenter implements BinderValidator {
       } catch (NumberFormatException e) {
         count = 0;
       }
-      design.standardsLayout.setVisible(count > 0);
+      design.standards.setVisible(count > 0);
       while (dataProvider.getItems().size() > count) {
         Standard remove = dataProvider.getItems().stream().skip(dataProvider.getItems().size() - 1)
             .findFirst().orElse(null);
@@ -212,23 +246,8 @@ public class StandardsFormPresenter implements BinderValidator {
           }
         }
       }
-      design.standardsLayout.setVisible(count > 0);
+      design.standards.setVisible(count > 0);
       dataProvider.refreshAll();
-    }
-  }
-
-  private void fill() {
-    List<Standard> standards = VaadinUtils.gridItems(design.standards).collect(Collectors.toList());
-    if (!standards.isEmpty()) {
-      Standard first = standards.get(0);
-      String name = nameFields.get(first).getValue();
-      String quantity = quantityFields.get(first).getValue();
-      String comment = commentFields.get(first).getValue();
-      for (Standard standard : standards.subList(1, standards.size())) {
-        nameFields.get(standard).setValue(name);
-        quantityFields.get(standard).setValue(quantity);
-        commentFields.get(standard).setValue(comment);
-      }
     }
   }
 
@@ -250,8 +269,8 @@ public class StandardsFormPresenter implements BinderValidator {
     this.readOnly = readOnly;
     countBinder.setReadOnly(readOnly);
     binders.values().stream().forEach(binder -> binder.setReadOnly(readOnly));
-    if (view != null) {
-      design.fill.setVisible(!readOnly);
+    if (design != null) {
+      design.standards.getColumn(DOWN).setHidden(readOnly);
     }
   }
 

@@ -28,7 +28,7 @@ import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.HEADER;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.COUNT;
-import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.FILL;
+import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.DOWN;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
 import static org.openqa.selenium.By.className;
 
@@ -181,7 +181,7 @@ public class ControlViewPageObject extends AbstractTestBenchTestCase {
   }
 
   protected ButtonElement fillStandardsButton() {
-    return wrap(ButtonElement.class, standardPanel().findElement(className(FILL)));
+    return wrap(ButtonElement.class, standardPanel().findElement(className(DOWN)));
   }
 
   protected PanelElement explanationPanel() {

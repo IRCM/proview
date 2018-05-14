@@ -196,7 +196,6 @@ public class ContaminantsFormPresenter implements BinderValidator {
       Button button = new Button();
       button.addStyleName(DOWN);
       button.addStyleName(ValoTheme.BUTTON_TINY);
-      button.setWidth("100%");
       button.setIcon(VaadinIcons.ARROW_DOWN);
       button.setIconAlternateText(resources.message(DOWN));
       button.addClickListener(e -> fill(contaminant));
