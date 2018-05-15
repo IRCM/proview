@@ -42,7 +42,6 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -75,6 +74,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -182,8 +182,6 @@ public class EnrichmentViewPresenterTest {
     assertTrue(design.enrichments.getStyleName().contains(COMPONENTS));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
-    assertTrue(design.down.getStyleName().contains(DOWN));
-    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
     assertTrue(design.remove.getStyleName().contains(REMOVE));
@@ -200,8 +198,6 @@ public class EnrichmentViewPresenterTest {
     assertEquals(resources.message(DELETED), design.deleted.getValue());
     assertEquals(resources.message(PROTOCOL_PANEL), design.protocolPanel.getCaption());
     assertEquals(resources.message(ENRICHMENTS_PANEL), design.enrichmentsPanel.getCaption());
-    assertEquals(resources.message(DOWN), design.down.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());
     assertEquals(resources.message(REMOVE), design.remove.getCaption());
@@ -238,7 +234,7 @@ public class EnrichmentViewPresenterTest {
     presenter.enter("");
 
     final ListDataProvider<TreatedSample> treatments = dataProvider(design.enrichments);
-    assertEquals(3, design.enrichments.getColumns().size());
+    assertEquals(4, design.enrichments.getColumns().size());
     assertEquals(SAMPLE, design.enrichments.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.enrichments.getColumn(SAMPLE).getCaption());
     for (TreatedSample ts : treatments.getItems()) {
@@ -264,6 +260,17 @@ public class EnrichmentViewPresenterTest {
           (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(COMMENT));
     }
+    assertEquals(DOWN, design.enrichments.getColumns().get(3).getId());
+    assertEquals(resources.message(DOWN), design.enrichments.getColumn(DOWN).getCaption());
+    assertTrue(containsInstanceOf(design.enrichments.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.enrichments.getColumn(DOWN).isSortable());
+    for (TreatedSample ts : treatments.getItems()) {
+      Button button = (Button) design.enrichments.getColumn(DOWN).getValueProvider().apply(ts);
+      assertTrue(button.getStyleName().contains(DOWN));
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(DOWN), button.getIconAlternateText());
+    }
     assertEquals(containers.size(), treatments.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(treatments.getItems().stream().filter(ts -> ts.getContainer().equals(container))
@@ -283,10 +290,37 @@ public class EnrichmentViewPresenterTest {
     TextField field =
         (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.enrichments.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (TreatedSample ts : treatments.getItems()) {
+      field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
+    }
+  }
+
+  @Test
+  public void down_Second() {
+    presenter.init(view);
+    presenter.enter("");
+    final List<TreatedSample> treatments =
+        new ArrayList<>(dataProvider(design.enrichments).getItems());
+    TreatedSample firstTs = treatments.get(1);
+    String comment = "test";
+    TextField field =
+        (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(firstTs);
+    field.setValue(comment);
+    Button button = (Button) design.enrichments.getColumn(DOWN).getValueProvider().apply(firstTs);
+
+    button.click();
+
+    {
+      TreatedSample ts = treatments.get(0);
+      field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+    }
+    for (TreatedSample ts : treatments.subList(1, treatments.size())) {
       field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
       assertEquals(comment, field.getValue());
     }
@@ -303,8 +337,10 @@ public class EnrichmentViewPresenterTest {
     TextField field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider()
         .apply(treatments.get(4));
     field.setValue(comment);
+    Button button =
+        (Button) design.enrichments.getColumn(DOWN).getValueProvider().apply(treatments.get(4));
 
-    design.down.click();
+    button.click();
 
     for (TreatedSample ts : treatments) {
       field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
@@ -323,8 +359,10 @@ public class EnrichmentViewPresenterTest {
     TextField field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider()
         .apply(treatments.get(5));
     field.setValue(comment);
+    Button button =
+        (Button) design.enrichments.getColumn(DOWN).getValueProvider().apply(treatments.get(5));
 
-    design.down.click();
+    button.click();
 
     for (TreatedSample ts : treatments) {
       field = (TextField) design.enrichments.getColumn(COMMENT).getValueProvider().apply(ts);
@@ -421,8 +459,7 @@ public class EnrichmentViewPresenterTest {
     Enrichment savedEnrichment = enrichmentCaptor.getValue();
     assertEquals((Long) 7L, savedEnrichment.getId());
     assertEquals((Long) 4L, savedEnrichment.getProtocol().getId());
-    assertEquals(enrichment.getTreatedSamples().size(),
-        savedEnrichment.getTreatedSamples().size());
+    assertEquals(enrichment.getTreatedSamples().size(), savedEnrichment.getTreatedSamples().size());
     for (int i = 0; i < enrichment.getTreatedSamples().size(); i++) {
       TreatedSample original = enrichment.getTreatedSamples().get(i);
       TreatedSample enriched = savedEnrichment.getTreatedSamples().get(i);

@@ -44,6 +44,7 @@ import com.vaadin.testbench.elements.TextFieldElement;
 
 public class EnrichmentViewPageObject extends AbstractTestBenchTestCase {
   private static final int COMMENT_COLUMN = 2;
+  private static final int DOWN_COLUMN = 3;
 
   protected void open() {
     openView(EnrichmentView.VIEW_NAME);
@@ -95,12 +96,9 @@ public class EnrichmentViewPageObject extends AbstractTestBenchTestCase {
     field.setValue(comment);
   }
 
-  protected ButtonElement down() {
-    return wrap(ButtonElement.class, findElement(className(DOWN)));
-  }
-
-  protected void clickDown() {
-    down().click();
+  protected void clickDown(int row) {
+    wrap(ButtonElement.class,
+        enrichments().getRow(row).getCell(DOWN_COLUMN).findElement(className(DOWN))).click();
   }
 
   protected PanelElement explanationPanel() {
