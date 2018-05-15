@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -37,6 +36,7 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -47,6 +47,7 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.GridRowDragger;
 import com.vaadin.ui.renderers.ComponentRenderer;
@@ -115,6 +116,7 @@ public class MsAnalysisViewPresenter implements BinderValidator {
   private Map<Acquisition, TextField> acquisitionFileFields = new HashMap<>();
   private Map<Acquisition, TextField> sampleListNameFields = new HashMap<>();
   private Map<Acquisition, TextField> commentFields = new HashMap<>();
+  private Map<Acquisition, Button> downButtons = new HashMap<>();
   @Inject
   private MsAnalysisService msAnalysisService;
   @Inject
@@ -208,12 +210,9 @@ public class MsAnalysisViewPresenter implements BinderValidator {
         .setId(ACQUISITION_FILE).setCaption(resources.message(ACQUISITION_FILE)).setSortable(false);
     design.acquisitions.addColumn(acquisition -> commentField(acquisition), new ComponentRenderer())
         .setId(COMMENT).setCaption(resources.message(COMMENT)).setSortable(false);
+    design.acquisitions.addColumn(acquisition -> downButton(acquisition), new ComponentRenderer())
+        .setId(DOWN).setCaption(resources.message(DOWN)).setSortable(false);
     new GridRowDragger<>(design.acquisitions);
-    design.down.addStyleName(DOWN);
-    design.down.addStyleName(BUTTON_SKIP_ROW);
-    design.down.setCaption(resources.message(DOWN));
-    design.down.setIcon(VaadinIcons.ARROW_DOWN);
-    design.down.addClickListener(e -> down());
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
     design.explanationPanel.setVisible(false);
@@ -311,6 +310,39 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     }
   }
 
+  private Button downButton(Acquisition acquisition) {
+    if (downButtons.get(acquisition) != null) {
+      return downButtons.get(acquisition);
+    } else {
+      final MessageResource resources = view.getResources();
+      Button button = new Button();
+      button.addStyleName(DOWN);
+      button.setIcon(VaadinIcons.ARROW_DOWN);
+      button.setIconAlternateText(resources.message(DOWN));
+      button.addClickListener(e -> down(acquisition));
+      downButtons.put(acquisition, button);
+      return button;
+    }
+  }
+
+  private void down(Acquisition acquisition) {
+    boolean copy = false;
+    String sampleListName = sampleListNameFields.get(acquisition).getValue();
+    String acquisitionFile = acquisitionFileFields.get(acquisition).getValue();
+    String comment = commentFields.get(acquisition).getValue();
+    for (Acquisition other : VaadinUtils.gridItems(design.acquisitions)
+        .collect(Collectors.toList())) {
+      if (acquisition.equals(other)) {
+        copy = true;
+      } else if (copy) {
+        acquisitionFile = Named.incrementLastNumber(acquisitionFile);
+        sampleListNameFields.get(other).setValue(sampleListName);
+        acquisitionFileFields.get(other).setValue(acquisitionFile);
+        commentFields.get(other).setValue(comment);
+      }
+    }
+  }
+
   private void updateAcquisitionCount(SampleContainer container, String value) {
     int count;
     try {
@@ -336,22 +368,6 @@ public class MsAnalysisViewPresenter implements BinderValidator {
       });
     }
     acquisitionsDataProvider.refreshAll();
-  }
-
-  private void down() {
-    if (!acquisitionsDataProvider.getItems().isEmpty()) {
-      Acquisition first = gridItems(design.acquisitions).findFirst().orElse(null);
-      String sampleListName = sampleListNameFields.get(first).getValue();
-      String acquisitionFile = acquisitionFileFields.get(first).getValue();
-      String comment = commentFields.get(first).getValue();
-      sampleListNameFields.values().forEach(field -> field.setValue(sampleListName));
-      for (Acquisition acquisition : gridItems(design.acquisitions).collect(Collectors.toList())) {
-        TextField field = acquisitionFileFields.get(acquisition);
-        field.setValue(acquisitionFile);
-        acquisitionFile = Named.incrementLastNumber(acquisitionFile);
-      }
-      commentFields.values().forEach(field -> field.setValue(comment));
-    }
   }
 
   private boolean validate() {

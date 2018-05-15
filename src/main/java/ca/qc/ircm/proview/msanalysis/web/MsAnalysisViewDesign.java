@@ -34,7 +34,6 @@ public class MsAnalysisViewDesign extends VerticalLayout {
   protected Grid<ca.qc.ircm.proview.sample.SampleContainer> containers;
   protected Panel acquisitionsPanel;
   protected Grid<ca.qc.ircm.proview.msanalysis.Acquisition> acquisitions;
-  protected Button down;
   protected Panel explanationPanel;
   protected TextArea explanation;
   protected Button save;
