@@ -114,7 +114,6 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     assertFalse(optional(() -> deleted()).isPresent());
     assertTrue(optional(() -> solubilisationsPanel()).isPresent());
     assertTrue(optional(() -> solubilisations()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertFalse(optional(() -> explanationPanel()).isPresent());
     assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -130,7 +129,6 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     assertFalse(optional(() -> deleted()).isPresent());
     assertTrue(optional(() -> solubilisationsPanel()).isPresent());
     assertTrue(optional(() -> solubilisations()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> explanationPanel()).isPresent());
     assertTrue(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -158,7 +156,7 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     setSolventVolume(0, solventVolume);
     String comment = "test comment";
     setComment(0, comment);
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -203,7 +201,7 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     setSolventVolume(0, solventVolume);
     String comment = "test comment";
     setComment(0, comment);
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -248,7 +246,7 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     setSolventVolume(0, solventVolume);
     String comment = "test comment";
     setComment(0, comment);
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
