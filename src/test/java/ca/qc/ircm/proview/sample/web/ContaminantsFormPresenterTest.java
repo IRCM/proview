@@ -20,12 +20,14 @@ package ca.qc.ircm.proview.sample.web;
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.COUNT;
-import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.FILL;
+import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.DOWN;
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.NAME;
+import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.PANEL;
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -40,8 +42,10 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
@@ -55,6 +59,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -93,25 +98,24 @@ public class ContaminantsFormPresenterTest {
   public void styles() {
     presenter.init(view);
 
+    assertTrue(design.panel.getStyleName().contains(PANEL));
     assertTrue(design.count.getStyleName().contains(COUNT));
     assertTrue(design.contaminants.getStyleName().contains(CONTAMINANTS));
-    assertTrue(design.fill.getStyleName().contains(FILL));
   }
 
   @Test
   public void captions() {
     presenter.init(view);
 
+    assertEquals(resources.message(PANEL), design.panel.getCaption());
     assertEquals(resources.message(COUNT), design.count.getCaption());
-    assertEquals(resources.message(FILL), design.fill.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.fill.getIcon());
   }
 
   @Test
   public void visible_Default() {
     presenter.init(view);
 
-    assertFalse(design.contaminantsLayout.isVisible());
+    assertFalse(design.contaminants.isVisible());
   }
 
   @Test
@@ -119,7 +123,7 @@ public class ContaminantsFormPresenterTest {
     presenter.init(view);
     design.count.setValue("0");
 
-    assertFalse(design.contaminantsLayout.isVisible());
+    assertFalse(design.contaminants.isVisible());
   }
 
   @Test
@@ -127,8 +131,8 @@ public class ContaminantsFormPresenterTest {
     presenter.init(view);
     design.count.setValue("1");
 
-    assertTrue(design.contaminantsLayout.isVisible());
-    assertTrue(design.fill.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertFalse(design.contaminants.getColumn(DOWN).isHidden());
   }
 
   @Test
@@ -138,8 +142,8 @@ public class ContaminantsFormPresenterTest {
 
     presenter.setReadOnly(true);
 
-    assertTrue(design.contaminantsLayout.isVisible());
-    assertFalse(design.fill.isVisible());
+    assertTrue(design.contaminants.isVisible());
+    assertTrue(design.contaminants.getColumn(DOWN).isHidden());
   }
 
   @Test
@@ -148,7 +152,7 @@ public class ContaminantsFormPresenterTest {
     List<Contaminant> contaminants = Arrays.asList(contaminant(), contaminant());
     presenter.setValue(contaminants);
 
-    assertEquals(3, design.contaminants.getColumns().size());
+    assertEquals(4, design.contaminants.getColumns().size());
     assertEquals(NAME, design.contaminants.getColumns().get(0).getId());
     assertTrue(containsInstanceOf(design.contaminants.getColumn(NAME).getExtensions(),
         ComponentRenderer.class));
@@ -157,6 +161,7 @@ public class ContaminantsFormPresenterTest {
       TextField field =
           (TextField) design.contaminants.getColumn(NAME).getValueProvider().apply(contaminant);
       assertTrue(field.getStyleName().contains(NAME));
+      assertTrue(field.getStyleName().contains(ValoTheme.TEXTAREA_TINY));
       assertEquals(contaminant.getName(), field.getValue());
       assertFalse(field.isReadOnly());
     }
@@ -168,6 +173,7 @@ public class ContaminantsFormPresenterTest {
       TextField field =
           (TextField) design.contaminants.getColumn(QUANTITY).getValueProvider().apply(contaminant);
       assertTrue(field.getStyleName().contains(QUANTITY));
+      assertTrue(field.getStyleName().contains(ValoTheme.TEXTAREA_TINY));
       assertEquals(contaminant.getQuantity(), field.getValue());
       assertFalse(field.isReadOnly());
     }
@@ -179,8 +185,21 @@ public class ContaminantsFormPresenterTest {
       TextField field =
           (TextField) design.contaminants.getColumn(COMMENT).getValueProvider().apply(contaminant);
       assertTrue(field.getStyleName().contains(COMMENT));
+      assertTrue(field.getStyleName().contains(ValoTheme.TEXTAREA_TINY));
       assertEquals(contaminant.getComment(), field.getValue());
       assertFalse(field.isReadOnly());
+    }
+    assertEquals(DOWN, design.contaminants.getColumns().get(3).getId());
+    assertTrue(containsInstanceOf(design.contaminants.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.contaminants.getColumn(DOWN).isSortable());
+    for (Contaminant contaminant : contaminants) {
+      Button button =
+          (Button) design.contaminants.getColumn(DOWN).getValueProvider().apply(contaminant);
+      assertTrue(button.getStyleName().contains(DOWN));
+      assertTrue(button.getStyleName().contains(ValoTheme.BUTTON_TINY));
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(DOWN), button.getIconAlternateText());
     }
   }
 
@@ -208,7 +227,7 @@ public class ContaminantsFormPresenterTest {
   }
 
   @Test
-  public void fill() {
+  public void down() {
     presenter.init(view);
     design.count.setValue("4");
     List<Contaminant> contaminants = items(design.contaminants);
@@ -226,9 +245,40 @@ public class ContaminantsFormPresenterTest {
     ((TextField) design.contaminants.getColumn(COMMENT).getValueProvider().apply(first))
         .setValue(filler.getComment());
 
-    design.fill.click();
+    ((Button) design.contaminants.getColumn(DOWN).getValueProvider().apply(first)).click();
 
     for (Contaminant contaminant : contaminants) {
+      assertEquals(filler.getName(), contaminant.getName());
+      assertEquals(filler.getQuantity(), contaminant.getQuantity());
+      assertEquals(filler.getComment(), contaminant.getComment());
+    }
+  }
+
+  @Test
+  public void down_Second() {
+    presenter.init(view);
+    design.count.setValue("4");
+    List<Contaminant> contaminants = gridItems(design.contaminants).collect(Collectors.toList());
+    Contaminant second = contaminants.get(1);
+    Contaminant filler = contaminant();
+    for (Contaminant contaminant : contaminants) {
+      design.contaminants.getColumn(NAME).getValueProvider().apply(contaminant);
+      design.contaminants.getColumn(QUANTITY).getValueProvider().apply(contaminant);
+      design.contaminants.getColumn(COMMENT).getValueProvider().apply(contaminant);
+    }
+    ((TextField) design.contaminants.getColumn(NAME).getValueProvider().apply(second))
+        .setValue(filler.getName());
+    ((TextField) design.contaminants.getColumn(QUANTITY).getValueProvider().apply(second))
+        .setValue(filler.getQuantity());
+    ((TextField) design.contaminants.getColumn(COMMENT).getValueProvider().apply(second))
+        .setValue(filler.getComment());
+
+    ((Button) design.contaminants.getColumn(DOWN).getValueProvider().apply(second)).click();
+
+    assertEquals(null, contaminants.get(0).getName());
+    assertEquals(null, contaminants.get(0).getQuantity());
+    assertEquals(null, contaminants.get(0).getComment());
+    for (Contaminant contaminant : contaminants.subList(1, contaminants.size())) {
       assertEquals(filler.getName(), contaminant.getName());
       assertEquals(filler.getQuantity(), contaminant.getQuantity());
       assertEquals(filler.getComment(), contaminant.getComment());

@@ -19,13 +19,15 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.COUNT;
-import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.FILL;
+import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.DOWN;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.NAME;
+import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.PANEL;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -40,8 +42,10 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
@@ -55,6 +59,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -93,25 +98,24 @@ public class StandardsFormPresenterTest {
   public void styles() {
     presenter.init(view);
 
+    assertTrue(design.panel.getStyleName().contains(PANEL));
     assertTrue(design.count.getStyleName().contains(COUNT));
     assertTrue(design.standards.getStyleName().contains(STANDARDS));
-    assertTrue(design.fill.getStyleName().contains(FILL));
   }
 
   @Test
   public void captions() {
     presenter.init(view);
 
+    assertEquals(resources.message(PANEL), design.panel.getCaption());
     assertEquals(resources.message(COUNT), design.count.getCaption());
-    assertEquals(resources.message(FILL), design.fill.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.fill.getIcon());
   }
 
   @Test
   public void visible_Default() {
     presenter.init(view);
 
-    assertFalse(design.standardsLayout.isVisible());
+    assertFalse(design.standards.isVisible());
   }
 
   @Test
@@ -119,7 +123,7 @@ public class StandardsFormPresenterTest {
     presenter.init(view);
     design.count.setValue("0");
 
-    assertFalse(design.standardsLayout.isVisible());
+    assertFalse(design.standards.isVisible());
   }
 
   @Test
@@ -127,8 +131,8 @@ public class StandardsFormPresenterTest {
     presenter.init(view);
     design.count.setValue("1");
 
-    assertTrue(design.standardsLayout.isVisible());
-    assertTrue(design.fill.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertFalse(design.standards.getColumn(DOWN).isHidden());
   }
 
   @Test
@@ -138,8 +142,8 @@ public class StandardsFormPresenterTest {
 
     presenter.setReadOnly(true);
 
-    assertTrue(design.standardsLayout.isVisible());
-    assertFalse(design.fill.isVisible());
+    assertTrue(design.standards.isVisible());
+    assertTrue(design.standards.getColumn(DOWN).isHidden());
   }
 
   @Test
@@ -148,7 +152,7 @@ public class StandardsFormPresenterTest {
     List<Standard> standards = Arrays.asList(standard(), standard());
     presenter.setValue(standards);
 
-    assertEquals(3, design.standards.getColumns().size());
+    assertEquals(4, design.standards.getColumns().size());
     assertEquals(NAME, design.standards.getColumns().get(0).getId());
     assertTrue(containsInstanceOf(design.standards.getColumn(NAME).getExtensions(),
         ComponentRenderer.class));
@@ -182,6 +186,17 @@ public class StandardsFormPresenterTest {
       assertEquals(standard.getComment(), field.getValue());
       assertFalse(field.isReadOnly());
     }
+    assertEquals(DOWN, design.standards.getColumns().get(3).getId());
+    assertTrue(containsInstanceOf(design.standards.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.standards.getColumn(DOWN).isSortable());
+    for (Standard standard : standards) {
+      Button button = (Button) design.standards.getColumn(DOWN).getValueProvider().apply(standard);
+      assertTrue(button.getStyleName().contains(DOWN));
+      assertTrue(button.getStyleName().contains(ValoTheme.BUTTON_TINY));
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(DOWN), button.getIconAlternateText());
+    }
   }
 
   @Test
@@ -208,7 +223,7 @@ public class StandardsFormPresenterTest {
   }
 
   @Test
-  public void fill() {
+  public void down() {
     presenter.init(view);
     design.count.setValue("4");
     List<Standard> standards = items(design.standards);
@@ -226,9 +241,40 @@ public class StandardsFormPresenterTest {
     ((TextField) design.standards.getColumn(COMMENT).getValueProvider().apply(first))
         .setValue(filler.getComment());
 
-    design.fill.click();
+    ((Button) design.standards.getColumn(DOWN).getValueProvider().apply(first)).click();
 
     for (Standard standard : standards) {
+      assertEquals(filler.getName(), standard.getName());
+      assertEquals(filler.getQuantity(), standard.getQuantity());
+      assertEquals(filler.getComment(), standard.getComment());
+    }
+  }
+
+  @Test
+  public void down_Second() {
+    presenter.init(view);
+    design.count.setValue("4");
+    List<Standard> standards = gridItems(design.standards).collect(Collectors.toList());
+    Standard second = standards.get(1);
+    Standard filler = standard();
+    for (Standard standard : standards) {
+      design.standards.getColumn(NAME).getValueProvider().apply(standard);
+      design.standards.getColumn(QUANTITY).getValueProvider().apply(standard);
+      design.standards.getColumn(COMMENT).getValueProvider().apply(standard);
+    }
+    ((TextField) design.standards.getColumn(NAME).getValueProvider().apply(second))
+        .setValue(filler.getName());
+    ((TextField) design.standards.getColumn(QUANTITY).getValueProvider().apply(second))
+        .setValue(filler.getQuantity());
+    ((TextField) design.standards.getColumn(COMMENT).getValueProvider().apply(second))
+        .setValue(filler.getComment());
+
+    ((Button) design.standards.getColumn(DOWN).getValueProvider().apply(second)).click();
+
+    assertEquals(null, standards.get(0).getName());
+    assertEquals(null, standards.get(0).getQuantity());
+    assertEquals(null, standards.get(0).getComment());
+    for (Standard standard : standards.subList(1, standards.size())) {
       assertEquals(filler.getName(), standard.getName());
       assertEquals(filler.getQuantity(), standard.getQuantity());
       assertEquals(filler.getComment(), standard.getComment());

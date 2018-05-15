@@ -42,7 +42,6 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -73,6 +72,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -187,8 +187,6 @@ public class StandardAdditionViewPresenterTest {
     assertTrue(design.standardAdditionsPanel.getStyleName().contains(STANDARD_ADDITIONS_PANEL));
     assertTrue(design.standardAdditions.getStyleName().contains(STANDARD_ADDITIONS));
     assertTrue(design.standardAdditions.getStyleName().contains(COMPONENTS));
-    assertTrue(design.down.getStyleName().contains(DOWN));
-    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
     assertTrue(design.save.getStyleName().contains(SAVE));
@@ -207,8 +205,6 @@ public class StandardAdditionViewPresenterTest {
     assertEquals(resources.message(DELETED), design.deleted.getValue());
     assertEquals(resources.message(STANDARD_ADDITIONS_PANEL),
         design.standardAdditionsPanel.getCaption());
-    assertEquals(resources.message(DOWN), design.down.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());
     assertEquals(resources.message(REMOVE), design.remove.getCaption());
@@ -222,7 +218,7 @@ public class StandardAdditionViewPresenterTest {
     presenter.enter("");
 
     final ListDataProvider<TreatedSample> treatments = dataProvider(design.standardAdditions);
-    assertEquals(5, design.standardAdditions.getColumns().size());
+    assertEquals(6, design.standardAdditions.getColumns().size());
     assertEquals(SAMPLE, design.standardAdditions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE),
         design.standardAdditions.getColumn(SAMPLE).getCaption());
@@ -271,6 +267,18 @@ public class StandardAdditionViewPresenterTest {
           (TextField) design.standardAdditions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(COMMENT));
     }
+    assertEquals(DOWN, design.standardAdditions.getColumns().get(5).getId());
+    assertEquals(resources.message(DOWN), design.standardAdditions.getColumn(DOWN).getCaption());
+    assertTrue(containsInstanceOf(design.standardAdditions.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.standardAdditions.getColumn(DOWN).isSortable());
+    for (TreatedSample ts : treatments.getItems()) {
+      Button button =
+          (Button) design.standardAdditions.getColumn(DOWN).getValueProvider().apply(ts);
+      assertTrue(button.getStyleName().contains(DOWN));
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(DOWN), button.getIconAlternateText());
+    }
     assertEquals(containers.size(), treatments.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(treatments.getItems().stream().filter(ts -> ts.getContainer().equals(container))
@@ -298,8 +306,10 @@ public class StandardAdditionViewPresenterTest {
     field =
         (TextField) design.standardAdditions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button =
+        (Button) design.standardAdditions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (TreatedSample ts : treatments.getItems()) {
       field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
@@ -312,12 +322,46 @@ public class StandardAdditionViewPresenterTest {
   }
 
   @Test
-  public void down_NoContainers() {
-    when(view.savedContainers()).thenReturn(new ArrayList<>());
+  public void downSecond() {
     presenter.init(view);
     presenter.enter("");
+    final List<TreatedSample> treatments =
+        new ArrayList<>(dataProvider(design.standardAdditions).getItems());
+    TreatedSample firstTs = treatments.get(1);
+    String sourceVolume = "2.0";
+    TextField field =
+        (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(firstTs);
+    field.setValue(sourceVolume);
+    String solvent = "test solvent";
+    field =
+        (TextField) design.standardAdditions.getColumn(QUANTITY).getValueProvider().apply(firstTs);
+    field.setValue(solvent);
+    String comment = "test";
+    field =
+        (TextField) design.standardAdditions.getColumn(COMMENT).getValueProvider().apply(firstTs);
+    field.setValue(comment);
+    Button button =
+        (Button) design.standardAdditions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
+
+    {
+      TreatedSample ts = treatments.get(0);
+      field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+      field = (TextField) design.standardAdditions.getColumn(QUANTITY).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+      field = (TextField) design.standardAdditions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+    }
+    for (TreatedSample ts : treatments.subList(1, treatments.size())) {
+      field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
+      assertEquals(sourceVolume, field.getValue());
+      field = (TextField) design.standardAdditions.getColumn(QUANTITY).getValueProvider().apply(ts);
+      assertEquals(solvent, field.getValue());
+      field = (TextField) design.standardAdditions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
+    }
   }
 
   @Test
@@ -339,8 +383,10 @@ public class StandardAdditionViewPresenterTest {
     field = (TextField) design.standardAdditions.getColumn(COMMENT).getValueProvider()
         .apply(treatments.get(4));
     field.setValue(comment);
+    Button button = (Button) design.standardAdditions.getColumn(DOWN).getValueProvider()
+        .apply(treatments.get(4));
 
-    design.down.click();
+    button.click();
 
     for (TreatedSample ts : treatments) {
       field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
@@ -371,8 +417,10 @@ public class StandardAdditionViewPresenterTest {
     field = (TextField) design.standardAdditions.getColumn(COMMENT).getValueProvider()
         .apply(treatments.get(5));
     field.setValue(comment);
+    Button button = (Button) design.standardAdditions.getColumn(DOWN).getValueProvider()
+        .apply(treatments.get(5));
 
-    design.down.click();
+    button.click();
 
     for (TreatedSample ts : treatments) {
       field = (TextField) design.standardAdditions.getColumn(NAME).getValueProvider().apply(ts);
@@ -509,8 +557,8 @@ public class StandardAdditionViewPresenterTest {
       assertEquals(quantities.get(i), diluted.getQuantity());
       assertEquals(comments.get(i), diluted.getComment());
     }
-    verify(view).showTrayNotification(resources.message(SAVED, standardAddition
-        .getTreatedSamples().stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).showTrayNotification(resources.message(SAVED, standardAddition.getTreatedSamples()
+        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(StandardAdditionView.VIEW_NAME, "5");
   }
 

@@ -60,7 +60,7 @@ public class ControlFormPresenter implements BinderValidator {
   public static final String QUANTITY = control.quantity.getMetadata().getName();
   public static final String VOLUME = control.volume.getMetadata().getName();
   public static final String CONTROL_TYPE = control.controlType.getMetadata().getName();
-  public static final String STANDARDS_PANEL = "standardsPanel";
+  public static final String STANDARDS_CONTAINER = "standardsPanel";
   public static final String EXAMPLE = "example";
   public static final String EXPLANATION_PANEL = "explanationPanel";
   public static final String EXPLANATION = "explanation";
@@ -94,8 +94,7 @@ public class ControlFormPresenter implements BinderValidator {
     sampleBinder.setBean(new Control());
     final MessageResource resources = view.getResources();
     prepareSamplesComponents();
-    design.standardsPanel.addStyleName(STANDARDS_PANEL);
-    design.standardsPanel.setCaption(resources.message(STANDARDS_PANEL));
+    design.standardsContainer.addStyleName(STANDARDS_CONTAINER);
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.addStyleName(REQUIRED);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));

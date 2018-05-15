@@ -55,7 +55,7 @@ public class ControlForm extends CustomComponent implements BaseComponent {
   public void init() {
     setSizeFull();
     setCompositionRoot(design);
-    design.standardsPanel.setContent(standardsForm);
+    design.standardsContainer.addComponent(standardsForm);
   }
 
   @Override

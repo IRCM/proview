@@ -55,6 +55,7 @@ public class MsAnalysisViewPageObject extends AbstractTestBenchTestCase {
   private static final int SAMPLE_LIST_NAME_COLUMN = 2;
   private static final int ACQUISITION_FILE_COLUMN = 3;
   private static final int COMMENT_COLUMN = 4;
+  private static final int DOWN_COLUMN = 5;
 
   protected void open() {
     openView(MsAnalysisView.VIEW_NAME);
@@ -143,12 +144,9 @@ public class MsAnalysisViewPageObject extends AbstractTestBenchTestCase {
     field.setValue(comment);
   }
 
-  protected ButtonElement down() {
-    return wrap(ButtonElement.class, findElement(className(DOWN)));
-  }
-
-  protected void clickDown() {
-    down().click();
+  protected void clickDown(int row) {
+    wrap(ButtonElement.class,
+        acquisitions().getRow(row).getCell(DOWN_COLUMN).findElement(className(DOWN))).click();
   }
 
   protected PanelElement explanationPanel() {

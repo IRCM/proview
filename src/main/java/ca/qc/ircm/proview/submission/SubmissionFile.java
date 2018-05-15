@@ -19,6 +19,8 @@ package ca.qc.ircm.proview.submission;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.proview.Named;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -32,8 +34,9 @@ import javax.validation.constraints.Size;
  * Submission file.
  */
 @Entity
-@Table(name = "submissionfiles")
-public class SubmissionFile implements Serializable {
+@Table(name = SubmissionFile.TABLE_NAME)
+public class SubmissionFile implements Named, Serializable {
+  public static final String TABLE_NAME = "submissionfiles";
   private static final long serialVersionUID = 2146676462335553712L;
   /**
    * Structure database identifier.
@@ -55,6 +58,11 @@ public class SubmissionFile implements Serializable {
   private byte[] content;
 
   public SubmissionFile() {
+  }
+
+  @Override
+  public String getName() {
+    return filename;
   }
 
   public SubmissionFile(String filename) {

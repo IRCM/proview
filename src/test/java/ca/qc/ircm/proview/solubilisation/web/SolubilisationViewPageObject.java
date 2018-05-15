@@ -47,6 +47,7 @@ public class SolubilisationViewPageObject extends AbstractTestBenchTestCase {
   private static final int SOLVENT_COLUMN = 2;
   private static final int SOLVENT_VOLUME_COLUMN = 3;
   private static final int COMMENT_COLUMN = 4;
+  private static final int DOWN_COLUMN = 5;
 
   protected void open() {
     openView(SolubilisationView.VIEW_NAME);
@@ -98,12 +99,9 @@ public class SolubilisationViewPageObject extends AbstractTestBenchTestCase {
     field.setValue(Objects.toString(comment, ""));
   }
 
-  protected ButtonElement down() {
-    return wrap(ButtonElement.class, findElement(className(DOWN)));
-  }
-
-  protected void clickDown() {
-    down().click();
+  protected void clickDown(int row) {
+    wrap(ButtonElement.class,
+        solubilisations().getRow(row).getCell(DOWN_COLUMN).findElement(className(DOWN))).click();
   }
 
   protected PanelElement explanationPanel() {

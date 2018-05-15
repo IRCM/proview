@@ -20,28 +20,43 @@ package ca.qc.ircm.proview.history;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.digestion.Digestion;
 import ca.qc.ircm.proview.dilution.Dilution;
 import ca.qc.ircm.proview.enrichment.Enrichment;
 import ca.qc.ircm.proview.fractionation.Fractionation;
+import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.sample.Contaminant;
+import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.TreatedSample;
+import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.user.Address;
+import ca.qc.ircm.proview.user.ForgotPassword;
+import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -63,11 +78,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-/**
- * Tests {@link ActivityServiceDefault} class.<br>
- * TODO Add description tests for sample treatment and analysis deletion.<br>
- * TODO Add description tests for plate treatment and analysis.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ActivityServiceTest {
@@ -83,60 +93,19 @@ public class ActivityServiceTest {
 
   @Before
   public void beforeTest() {
-    activityService = create(false);
-  }
-
-  private ActivityService create(boolean useFailsafeDescription) {
-    return new ActivityService(entityManager, queryFactory, authorizationService,
-        useFailsafeDescription);
+    activityService = new ActivityService(entityManager, queryFactory, authorizationService);
   }
 
   @Test
-  public void record_Submission() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5543L);
+  public void record_DataAnalysis() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5566L);
 
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof Submission);
-    Submission submission = (Submission) object;
-    assertEquals((Long) 1L, submission.getId());
-  }
-
-  @Test
-  public void record_Sample() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5635L);
-
-    Object object = activityService.record(activity);
-
-    verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof SubmissionSample);
-    SubmissionSample sample = (SubmissionSample) object;
-    assertEquals((Long) 559L, sample.getId());
-  }
-
-  @Test
-  public void record_Plate() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5559L);
-
-    Object object = activityService.record(activity);
-
-    verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof Plate);
-    Plate plate = (Plate) object;
-    assertEquals((Long) 26L, plate.getId());
-  }
-
-  @Test
-  public void record_Protocol() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5545L);
-
-    Object object = activityService.record(activity);
-
-    verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof Protocol);
-    Protocol protocol = (Protocol) object;
-    assertEquals((Long) 1L, protocol.getId());
+    assertTrue(object instanceof DataAnalysis);
+    DataAnalysis dataAnalysis = (DataAnalysis) object;
+    assertEquals((Long) 5L, dataAnalysis.getId());
   }
 
   @Test
@@ -188,6 +157,140 @@ public class ActivityServiceTest {
   }
 
   @Test
+  public void record_Acquisition() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(Acquisition.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Acquisition);
+    Acquisition acquisition = (Acquisition) object;
+    assertEquals((Long) 1L, acquisition.getId());
+  }
+
+  @Test
+  public void record_MsAnalysis() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5828L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof MsAnalysis);
+    MsAnalysis msAnalysis = (MsAnalysis) object;
+    assertEquals((Long) 19L, msAnalysis.getId());
+  }
+
+  @Test
+  public void record_Plate() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5559L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Plate);
+    Plate plate = (Plate) object;
+    assertEquals((Long) 26L, plate.getId());
+  }
+
+  @Test
+  public void record_Well() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(SampleContainer.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(128L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Well);
+    Well well = (Well) object;
+    assertEquals((Long) 128L, well.getId());
+  }
+
+  @Test
+  public void record_Contaminant() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(Contaminant.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(2L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Contaminant);
+    Contaminant contaminant = (Contaminant) object;
+    assertEquals((Long) 2L, contaminant.getId());
+  }
+
+  @Test
+  public void record_Control() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(Sample.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(444L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Control);
+    Control control = (Control) object;
+    assertEquals((Long) 444L, control.getId());
+  }
+
+  @Test
+  public void record_Sample() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5635L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof SubmissionSample);
+    SubmissionSample sample = (SubmissionSample) object;
+    assertEquals((Long) 559L, sample.getId());
+  }
+
+  @Test
+  public void record_SampleContainer() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(SampleContainer.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof SampleContainer);
+    SampleContainer container = (SampleContainer) object;
+    assertEquals((Long) 1L, container.getId());
+  }
+
+  @Test
+  public void record_Standard() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(Standard.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(4L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Standard);
+    Standard standard = (Standard) object;
+    assertEquals((Long) 4L, standard.getId());
+  }
+
+  @Test
+  public void record_SubmissionSample() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(Sample.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof SubmissionSample);
+    SubmissionSample sample = (SubmissionSample) object;
+    assertEquals((Long) 1L, sample.getId());
+  }
+
+  @Test
   public void record_Solubilisation() throws Exception {
     Activity activity = entityManager.find(Activity.class, 5763L);
 
@@ -212,6 +315,72 @@ public class ActivityServiceTest {
   }
 
   @Test
+  public void record_Submission() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5543L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Submission);
+    Submission submission = (Submission) object;
+    assertEquals((Long) 1L, submission.getId());
+  }
+
+  @Test
+  public void record_SubmissionFile() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(SubmissionFile.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof SubmissionFile);
+    SubmissionFile file = (SubmissionFile) object;
+    assertEquals((Long) 1L, file.getId());
+  }
+
+  @Test
+  public void record_Protocol() throws Exception {
+    Activity activity = entityManager.find(Activity.class, 5545L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Protocol);
+    Protocol protocol = (Protocol) object;
+    assertEquals((Long) 1L, protocol.getId());
+  }
+
+  @Test
+  public void record_TreatedSample() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(TreatedSample.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof TreatedSample);
+    TreatedSample ts = (TreatedSample) object;
+    assertEquals((Long) 1L, ts.getId());
+  }
+
+  @Test
+  public void record_Treatment() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(Treatment.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Treatment);
+    Treatment treatment = (Treatment) object;
+    assertEquals((Long) 1L, treatment.getId());
+  }
+
+  @Test
   public void record_Transfer() throws Exception {
     Activity activity = entityManager.find(Activity.class, 5657L);
 
@@ -224,27 +393,87 @@ public class ActivityServiceTest {
   }
 
   @Test
-  public void record_MsAnalysis() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5828L);
+  public void record_Tube() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(SampleContainer.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
 
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof MsAnalysis);
-    MsAnalysis msAnalysis = (MsAnalysis) object;
-    assertEquals((Long) 19L, msAnalysis.getId());
+    assertTrue(object instanceof Tube);
+    Tube tube = (Tube) object;
+    assertEquals((Long) 1L, tube.getId());
   }
 
   @Test
-  public void record_DataAnalysis() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5566L);
+  public void record_ForgotPassword() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(ForgotPassword.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(7L);
 
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof DataAnalysis);
-    DataAnalysis dataAnalysis = (DataAnalysis) object;
-    assertEquals((Long) 5L, dataAnalysis.getId());
+    assertTrue(object instanceof ForgotPassword);
+    ForgotPassword forgotPassword = (ForgotPassword) object;
+    assertEquals((Long) 7L, forgotPassword.getId());
+  }
+
+  @Test
+  public void record_Address() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(Address.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Address);
+    Address address = (Address) object;
+    assertEquals((Long) 1L, address.getId());
+  }
+
+  @Test
+  public void record_Laboratory() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(Laboratory.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(2L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof Laboratory);
+    Laboratory laboratory = (Laboratory) object;
+    assertEquals((Long) 2L, laboratory.getId());
+  }
+
+  @Test
+  public void record_PhoneNumber() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(PhoneNumber.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof PhoneNumber);
+    PhoneNumber phoneNumber = (PhoneNumber) object;
+    assertEquals((Long) 1L, phoneNumber.getId());
+  }
+
+  @Test
+  public void record_User() throws Exception {
+    Activity activity = mock(Activity.class);
+    when(activity.getTableName()).thenReturn(User.TABLE_NAME);
+    when(activity.getRecordId()).thenReturn(1L);
+
+    Object object = activityService.record(activity);
+
+    verify(authorizationService).checkAdminRole();
+    assertTrue(object instanceof User);
+    User user = (User) object;
+    assertEquals((Long) 1L, user.getId());
   }
 
   @Test
@@ -452,282 +681,44 @@ public class ActivityServiceTest {
   }
 
   @Test
-  public void description_Submission_Insert() {
+  public void description_Insert() {
     Submission submission = entityManager.find(Submission.class, 1L);
     Activity activity = entityManager.find(Activity.class, 5543L);
 
-    String description = activityService.description(activity, submission, locale);
+    String description = activityService.description(activity, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(resources.message("Submission.INSERT"), description);
+    assertEquals(resources.message("activity", activity.getActionType().ordinal(),
+        activity.getTableName(), submission.getName(), activity.getRecordId()), description);
   }
 
   @Test
-  public void description_Sample_Update() {
-    Submission submission = entityManager.find(Submission.class, 147L);
-    Sample sample = entityManager.find(Sample.class, 559L);
-    Activity activity = entityManager.find(Activity.class, 5635L);
-    UpdateActivity update = activity.getUpdates().get(0);
+  public void description_Update() {
+    Submission submission = entityManager.find(Submission.class, 163L);
+    Activity activity = entityManager.find(Activity.class, 5936L);
 
-    String description = activityService.description(activity, submission, locale);
+    String description = activityService.description(activity, locale);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(resources.message("Sample.UPDATE", sample.getName(), update.getColumn(),
-        update.getOldValue(), update.getNewValue()), description);
-  }
-
-  @Test
-  public void description_Solubilisation_Insert() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5550L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals("Solubilisation\n"
-        + "Sample FAM119A_band_01 in tube FAM119A_band_01 with 20 µl of Methanol", description);
-  }
-
-  @Test
-  @SuppressWarnings("checkstyle:LineLength")
-  public void description_Dilution_Insert() {
-    Submission submission = entityManager.find(Submission.class, 32L);
-    Activity activity = entityManager.find(Activity.class, 5561L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals("Dilution\n"
-        + "Sample CAP_20111013_01 in tube CAP_20111013_01 with 10 µl of sample in 20 µl of Methanol",
-        description);
-  }
-
-  @Test
-  public void description_Digestion_Insert() {
-    Submission submission = entityManager.find(Submission.class, 147L);
-    Activity activity = entityManager.find(Activity.class, 5639L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals("Digestion\n" + "Sample POLR2A_20141008_1 on plate G_20141008_01 (A-1)\n"
-        + "Sample POLR2A_20141008_2 on plate G_20141008_01 (B-1)", description);
-  }
-
-  @Test
-  public void description_Enrichment_Insert() {
-    Submission submission = entityManager.find(Submission.class, 150L);
-    Activity activity = entityManager.find(Activity.class, 5717L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals("Enrichment\n" + "Sample POLR2A_20140914_01 on plate A_20141014_01 (A-1)\n"
-        + "Sample POLR2A_20140914_02 on plate A_20141014_01 (B-1)", description);
-  }
-
-  @Test
-  public void description_StandardAddition_Insert() {
-    Submission submission = entityManager.find(Submission.class, 152L);
-    Activity activity = entityManager.find(Activity.class, 5796L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals("Added standard\n"
-        + "Standard adh (2 μg) added to sample POLR2A_20141015_11 on plate A_20141015_01 (A-6)\n"
-        + "Standard adh (2 μg) added to sample POLR2A_20141015_12 on plate A_20141015_01 (B-6)",
-        description);
-  }
-
-  @Test
-  @SuppressWarnings("checkstyle:LineLength")
-  public void description_Fractionation_Insert() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5557L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals("Fractionation\n"
-        + "Sample FAM119A_band_01 from tube FAM119A_band_01 to tube FAM119A_band_01_F1 - fraction 1",
-        description);
-  }
-
-  @Test
-  public void description_Transfer_Insert() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5558L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(
-        "Transfer\n"
-            + "Sample FAM119A_band_01 from tube FAM119A_band_01 to tube FAM119A_band_01_T1",
-        description);
-  }
-
-  @Test
-  public void description_Transfer_Delete() {
-    Submission submission = entityManager.find(Submission.class, 162L);
-    Activity activity = entityManager.find(Activity.class, 5933L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(
-        "Undone transfer\n"
-            + "Sample POLR2B_20150527_02 from tube POLR2B_20150527_02 to plate A_20141022_02 (A-3)",
-        description);
-  }
-
-  @Test
-  public void description_MsAnalysis_Insert() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5544L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals("MS analysis\n" + "Sample FAM119A_band_01 in tube FAM119A_band_01 - acquisition 1",
-        description);
-  }
-
-  @Test
-  public void description_DataAnalysis_Insert() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5552L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(
-        "Data analysis of protein requested - protein 123456, peptide null, max work time 2\n"
-            + "Sample FAM119A_band_01 status changed from ANALYSED to DATA_ANALYSIS",
-        description);
-  }
-
-  @Test
-  @SuppressWarnings("checkstyle:LineLength")
-  public void description_DataAnalysis_Update() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5553L);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(
-        "Updated data analysis of protein requested - protein 123456, peptide null, max work time 2\n"
-            + "Data analysis score changed from null to 123456: 95%\n"
-            + "Data analysis workTime changed from null to 1.75\n"
-            + "Data analysis status changed from TO_DO to ANALYSED\n"
-            + "Sample FAM119A_band_01 status changed from DATA_ANALYSIS to ANALYSED",
-        description);
-    assertNotNull(description);
-  }
-
-  @Test
-  public void description_Failsafe() {
-    activityService = create(true);
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5544L);
-    activity.setActionType(ActionType.UPDATE);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals("Updated msanalysis 1", description);
-  }
-
-  @Test
-  public void description_Failsafe_Null() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5544L);
-    activity.setActionType(ActionType.UPDATE);
-
-    String description = activityService.description(activity, submission, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertNull(description);
-  }
-
-  @Test
-  public void description_NullActivity() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 1L);
-
-    String description = activityService.description(null, submission, locale);
-
-    assertNull(description);
-  }
-
-  @Test
-  public void description_NullSubmission() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5543L);
-
-    String description = activityService.description(activity, null, locale);
-
-    assertNull(description);
-  }
-
-  @Test
-  public void description_NullLocale() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5543L);
-
-    String description = activityService.description(activity, submission, null);
-
-    assertNull(description);
-  }
-
-  @Test
-  public void plateDescription_Plate_Insert() {
-    Plate plate = entityManager.find(Plate.class, 26L);
-    Activity activity = entityManager.find(Activity.class, 5559L);
-
-    String description = activityService.plateDescription(plate, activity, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertNotNull(description);
-  }
-
-  @Test
-  public void plateDescription_Plate_Update() {
-    Plate plate = entityManager.find(Plate.class, 26L);
-    Activity activity = entityManager.find(Activity.class, 5570L);
-
-    String description = activityService.plateDescription(plate, activity, locale);
-
-    verify(authorizationService).checkAdminRole();
-    assertNotNull(description);
-  }
-
-  @Test
-  public void plateDescription_NullSample() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5543L);
-
-    String description = activityService.plateDescription(null, activity, locale);
-
-    assertNull(description);
-  }
-
-  @Test
-  public void plateDescription_NullActivity() throws Exception {
-    Plate plate = entityManager.find(Plate.class, 26L);
-
-    String description = activityService.plateDescription(plate, null, locale);
-
-    assertNull(description);
-  }
-
-  @Test
-  public void plateDescription_NullLocale() throws Exception {
-    Plate plate = entityManager.find(Plate.class, 26L);
-    Activity activity = entityManager.find(Activity.class, 5543L);
-
-    String description = activityService.plateDescription(plate, activity, null);
-
-    assertNull(description);
+    String[] descriptionLines = description.split("\n", -1);
+    assertEquals(resources.message("activity", activity.getActionType().ordinal(),
+        activity.getTableName(), submission.getName(), activity.getRecordId()),
+        descriptionLines[0]);
+    for (int i = 0; i < activity.getUpdates().size(); i++) {
+      UpdateActivity update = activity.getUpdates().get(i);
+      String name = null;
+      if (update.getTableName().equals(Submission.TABLE_NAME)) {
+        name = entityManager.find(Submission.class, update.getRecordId()).getName();
+      } else if (update.getTableName().equals(Sample.TABLE_NAME)) {
+        name = entityManager.find(Sample.class, update.getRecordId()).getName();
+      } else if (update.getTableName().equals(Plate.TABLE_NAME)) {
+        name = entityManager.find(Plate.class, update.getRecordId()).getName();
+      }
+      assertEquals(
+          resources.message("update", update.getActionType().ordinal(), update.getTableName(), name,
+              update.getRecordId(), update.getColumn(), update.getOldValue(), update.getNewValue()),
+          descriptionLines[i + 1]);
+    }
   }
 
   @Test

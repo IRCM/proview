@@ -116,7 +116,6 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> enrichmentsPanel()).isPresent());
     assertTrue(optional(() -> enrichments()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertFalse(optional(() -> explanationPanel()).isPresent());
     assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -134,7 +133,6 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     assertTrue(optional(() -> protocol()).isPresent());
     assertTrue(optional(() -> enrichmentsPanel()).isPresent());
     assertTrue(optional(() -> enrichments()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> explanationPanel()).isPresent());
     assertTrue(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -157,7 +155,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
   public void save_Tubes() throws Throwable {
     openWithTubes();
     setComment(0, "test comment");
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -192,7 +190,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
   public void save_Wells() throws Throwable {
     openWithWells();
     setComment(0, "test comment");
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -228,7 +226,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     openWithEnrichment();
     setComment(0, "test comment");
     setProtocol("enrichment_protocol_2");
-    clickDown();
+    clickDown(0);
 
     clickSave();
 

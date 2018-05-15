@@ -28,7 +28,6 @@ public class StandardAdditionViewDesign extends VerticalLayout {
   protected Label deleted;
   protected Panel standardAdditionsPanel;
   protected Grid<ca.qc.ircm.proview.treatment.TreatedSample> standardAdditions;
-  protected Button down;
   protected Panel explanationPanel;
   protected TextArea explanation;
   protected Button save;

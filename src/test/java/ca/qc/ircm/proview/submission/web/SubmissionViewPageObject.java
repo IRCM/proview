@@ -19,10 +19,18 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.CONTAMINANTS;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.COLORATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DECOLORATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.OTHER_COLORATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.PROTEIN_QUANTITY;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.SEPARATION;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.THICKNESS;
+import static ca.qc.ircm.proview.submission.web.GelFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.COMMENT_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.CONTAMINANTS_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.ENRICHEMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXCLUSIONS;
@@ -32,7 +40,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.EXPERIME
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILL_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FORMULA;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
@@ -74,20 +81,12 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLUTION_SOLVENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOLVENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.COLORATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DECOLORATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DEVELOPMENT_TIME;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.OTHER_COLORATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.PROTEIN_QUANTITY;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.SEPARATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.THICKNESS;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.HEADER_STYLE;
 import static org.openqa.selenium.By.className;
 
@@ -119,9 +118,9 @@ import java.nio.file.Path;
 
 public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase {
   private static final String STANDARD_COUNT = StandardsFormPresenter.COUNT;
-  private static final String FILL_STANDARDS = StandardsFormPresenter.FILL;
+  private static final String FILL_STANDARDS = StandardsFormPresenter.DOWN;
   private static final String CONTAMINANT_COUNT = ContaminantsFormPresenter.COUNT;
-  private static final String FILL_CONTAMINANTS = ContaminantsFormPresenter.FILL;
+  private static final String FILL_CONTAMINANTS = ContaminantsFormPresenter.DOWN;
 
   protected void open() {
     openView(SubmissionView.VIEW_NAME);
@@ -243,10 +242,6 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     samplesGrid().getRow(row).getCell(0).$(TextFieldElement.class).first().setValue(name);
   }
 
-  protected ButtonElement fillSamplesButton() {
-    return wrap(ButtonElement.class, findElement(className(FILL_SAMPLES)));
-  }
-
   protected WebElement samplesPlate() {
     return findElement(className(SAMPLES_PLATE));
   }
@@ -332,7 +327,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected PanelElement standardsPanel() {
-    return wrap(PanelElement.class, findElement(className(STANDARDS_PANEL)));
+    return wrap(PanelElement.class, findElement(className(STANDARDS_CONTAINER)));
   }
 
   protected TextFieldElement standardCountField() {
@@ -359,13 +354,13 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
     return wrap(ButtonElement.class, standardsPanel().findElement(className(FILL_STANDARDS)));
   }
 
-  protected PanelElement contaminantsPanel() {
-    return wrap(PanelElement.class, findElement(className(CONTAMINANTS_PANEL)));
+  protected PanelElement contaminantsContainer() {
+    return wrap(PanelElement.class, findElement(className(CONTAMINANTS_CONTAINER)));
   }
 
   protected TextFieldElement contaminantCountField() {
     return wrap(TextFieldElement.class,
-        contaminantsPanel().findElement(className(CONTAMINANT_COUNT)));
+        contaminantsContainer().findElement(className(CONTAMINANT_COUNT)));
   }
 
   protected Integer getContaminantCount() {
@@ -381,11 +376,11 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected GridElement contaminantsGrid() {
-    return wrap(GridElement.class, contaminantsPanel().findElement(className(CONTAMINANTS)));
+    return wrap(GridElement.class, contaminantsContainer().findElement(className(CONTAMINANTS)));
   }
 
   protected ButtonElement fillContaminantsButton() {
-    return wrap(ButtonElement.class, contaminantsPanel().findElement(className(FILL_CONTAMINANTS)));
+    return wrap(ButtonElement.class, contaminantsContainer().findElement(className(FILL_CONTAMINANTS)));
   }
 
   protected PanelElement gelPanel() {

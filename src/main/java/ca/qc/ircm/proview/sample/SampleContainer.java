@@ -41,10 +41,11 @@ import javax.persistence.Version;
  * An object that contains a {@link Sample}.
  */
 @Entity
-@Table(name = "samplecontainer")
+@Table(name = SampleContainer.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
 public abstract class SampleContainer implements Data, Named, Serializable {
+  public static final String TABLE_NAME = "samplecontainer";
   private static final long serialVersionUID = -2976707906426974263L;
 
   /**

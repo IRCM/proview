@@ -661,6 +661,8 @@ INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5934,2,'treatment',324,'DELETE','2015-05-27 14:41:52','Erroneous fractionation test');
 INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
 VALUES (5935,10,'submission',163,'INSERT','2017-11-08 10:30:15',NULL);
+INSERT INTO activity (id,userId,tableName,recordId,actionType,time,explanation)
+VALUES (5936,10,'submission',163,'UPDATE','2017-11-08 10:30:15',NULL);
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
 VALUES (1020,5551,'sample',442,'UPDATE','status','TO_APPROVE','ANALYSED');
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
@@ -1399,3 +1401,13 @@ INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionCo
 VALUES (1439,5934,'samplecontainer',1571,'UPDATE','sampleId','638',NULL);
 INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
 VALUES (1440,5934,'samplecontainer',1583,'UPDATE','sampleId','638',NULL);
+INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+VALUES (1441,5936,'submission',163,'UPDATE','experiment','POLR2B-Flag-before','POLR2B-Flag');
+INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+VALUES (1442,5936,'sample',642,'UPDATE','name','POLR2B_201810502_01','POLR2B_201810503_01');
+INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+VALUES (1443,5936,'plate',123,'UPDATE','name','Andrew-20171107','Andrew-20171108');
+INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+VALUES (1444,5936,'sample',643,'DELETE',null,null,null);
+INSERT INTO activityupdate (id,activityId,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+VALUES (1445,5936,'sample',641,'INSERT',null,null,null);

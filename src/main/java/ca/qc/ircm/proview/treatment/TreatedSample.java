@@ -20,8 +20,11 @@ package ca.qc.ircm.proview.treatment;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,8 +40,10 @@ import javax.validation.constraints.Size;
  * Treatment information that is specific to a sample.
  */
 @Entity
-@Table(name = "treatedsample")
-public class TreatedSample implements Data {
+@Table(name = TreatedSample.TABLE_NAME)
+public class TreatedSample implements Data, Serializable {
+  public static final String TABLE_NAME = "treatedsample";
+  private static final long serialVersionUID = -1654046284723997439L;
   /**
    * Database identifier.
    */
@@ -105,12 +110,12 @@ public class TreatedSample implements Data {
   @Column(name = "position", nullable = false)
   private Integer position;
   /**
-   * Fraction number. Used with {@link TreatmentType#MUDPIT}.
+   * Fraction number. Used with {@link FractionationType#MUDPIT}.
    */
   @Column(name = "number")
   private Integer number;
   /**
-   * PI interval. Used with {@link TreatmentType#PI}
+   * PI interval. Used with {@link FractionationType#PI}
    */
   @Column(name = "piInterval")
   @Size(max = 255)

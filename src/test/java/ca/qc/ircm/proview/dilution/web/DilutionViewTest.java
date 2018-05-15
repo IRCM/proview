@@ -114,7 +114,6 @@ public class DilutionViewTest extends DilutionViewPageObject {
     assertFalse(optional(() -> deleted()).isPresent());
     assertTrue(optional(() -> dilutionsPanel()).isPresent());
     assertTrue(optional(() -> dilutions()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertFalse(optional(() -> explanationPanel()).isPresent());
     assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -130,7 +129,6 @@ public class DilutionViewTest extends DilutionViewPageObject {
     assertFalse(optional(() -> deleted()).isPresent());
     assertTrue(optional(() -> dilutionsPanel()).isPresent());
     assertTrue(optional(() -> dilutions()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> explanationPanel()).isPresent());
     assertTrue(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -160,7 +158,7 @@ public class DilutionViewTest extends DilutionViewPageObject {
     setSolventVolume(0, solventVolume);
     String comment = "test comment";
     setComment(0, comment);
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -210,7 +208,7 @@ public class DilutionViewTest extends DilutionViewPageObject {
     setSolventVolume(0, solventVolume);
     String comment = "test comment";
     setComment(0, comment);
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -260,7 +258,7 @@ public class DilutionViewTest extends DilutionViewPageObject {
     setSolventVolume(0, solventVolume);
     String comment = "test comment";
     setComment(0, comment);
-    clickDown();
+    clickDown(0);
 
     clickSave();
 

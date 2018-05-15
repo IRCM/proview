@@ -28,7 +28,7 @@ public class ControlFormDesign extends VerticalLayout {
   protected TextField volumeField;
   protected TextField quantityField;
   protected ComboBox<ca.qc.ircm.proview.sample.ControlType> controlTypeField;
-  protected Panel standardsPanel;
+  protected VerticalLayout standardsContainer;
   protected Panel explanationPanel;
   protected TextArea explanation;
   protected Button saveButton;

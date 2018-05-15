@@ -18,9 +18,7 @@
 package ca.qc.ircm.proview.solubilisation.web;
 
 import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
-import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
@@ -32,6 +30,7 @@ import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.solubilisation.SolubilisationService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
+import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -41,6 +40,7 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
@@ -96,6 +96,7 @@ public class SolubilisationViewPresenter implements BinderValidator {
   private Map<TreatedSample, TextField> solventFields = new HashMap<>();
   private Map<TreatedSample, TextField> solventVolumeFields = new HashMap<>();
   private Map<TreatedSample, TextField> commentFields = new HashMap<>();
+  private Map<TreatedSample, Button> downButtons = new HashMap<>();
   @Inject
   private SolubilisationService solubilisationService;
   @Inject
@@ -151,11 +152,8 @@ public class SolubilisationViewPresenter implements BinderValidator {
         .setId(SOLVENT_VOLUME).setCaption(resources.message(SOLVENT_VOLUME)).setSortable(false);
     design.solubilisations.addColumn(ts -> commentField(ts), new ComponentRenderer()).setId(COMMENT)
         .setCaption(resources.message(COMMENT)).setSortable(false);
-    design.down.addStyleName(DOWN);
-    design.down.addStyleName(BUTTON_SKIP_ROW);
-    design.down.setCaption(resources.message(DOWN));
-    design.down.setIcon(VaadinIcons.ARROW_DOWN);
-    design.down.addClickListener(e -> down());
+    design.solubilisations.addColumn(ts -> downButton(ts), new ComponentRenderer()).setId(DOWN)
+        .setCaption(resources.message(DOWN)).setSortable(false);
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
     design.explanationPanel.setVisible(false);
@@ -224,15 +222,36 @@ public class SolubilisationViewPresenter implements BinderValidator {
     }
   }
 
-  private void down() {
-    if (!solubilisations.isEmpty()) {
-      TreatedSample first = gridItems(design.solubilisations).findFirst().orElse(null);
-      String solvent = solventFields.get(first).getValue();
-      String solventVolume = solventVolumeFields.get(first).getValue();
-      String comment = commentFields.get(first).getValue();
-      solventFields.values().forEach(field -> field.setValue(solvent));
-      solventVolumeFields.values().forEach(field -> field.setValue(solventVolume));
-      commentFields.values().forEach(field -> field.setValue(comment));
+  private Button downButton(TreatedSample ts) {
+    if (downButtons.get(ts) != null) {
+      return downButtons.get(ts);
+    } else {
+      final MessageResource resources = view.getResources();
+      Button button = new Button();
+      button.addStyleName(DOWN);
+      button.setIcon(VaadinIcons.ARROW_DOWN);
+      button.setIconAlternateText(resources.message(DOWN));
+      button.addClickListener(e -> down(ts));
+      downButtons.put(ts, button);
+      return button;
+    }
+  }
+
+  private void down(TreatedSample ts) {
+    boolean copy = false;
+    String solvent = solventFields.get(ts).getValue();
+    String solventVolume = solventVolumeFields.get(ts).getValue();
+    String comment = commentFields.get(ts).getValue();
+    for (TreatedSample other : VaadinUtils.gridItems(design.solubilisations)
+        .collect(Collectors.toList())) {
+      if (ts.equals(other)) {
+        copy = true;
+      }
+      if (copy) {
+        solventFields.get(other).setValue(solvent);
+        solventVolumeFields.get(other).setValue(solventVolume);
+        commentFields.get(other).setValue(comment);
+      }
     }
   }
 

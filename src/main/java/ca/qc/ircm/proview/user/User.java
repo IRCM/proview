@@ -43,8 +43,9 @@ import javax.validation.constraints.Size;
  * User of this program.
  */
 @Entity
-@Table(name = "user")
+@Table(name = User.TABLE_NAME)
 public class User implements Data, Named, Serializable {
+  public static final String TABLE_NAME = "user";
   public static final String LOCALE_PREFERENCE = "locale";
   private static final long serialVersionUID = 4251923438573972499L;
 

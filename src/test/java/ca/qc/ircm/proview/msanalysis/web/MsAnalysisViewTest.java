@@ -123,7 +123,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertTrue(optional(() -> containers()).isPresent());
     assertTrue(optional(() -> acquisitionsPanel()).isPresent());
     assertTrue(optional(() -> acquisitions()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertFalse(optional(() -> explanationPanel()).isPresent());
     assertFalse(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -144,7 +143,6 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertTrue(optional(() -> containers()).isPresent());
     assertTrue(optional(() -> acquisitionsPanel()).isPresent());
     assertTrue(optional(() -> acquisitions()).isPresent());
-    assertTrue(optional(() -> down()).isPresent());
     assertTrue(optional(() -> explanationPanel()).isPresent());
     assertTrue(optional(() -> explanation()).isPresent());
     assertTrue(optional(() -> save()).isPresent());
@@ -170,7 +168,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     setSampleListName(0, "sample_list");
     setAcquisitionFile(0, "acqui_01");
     setComment(0, "test comment");
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -234,7 +232,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     setSampleListName(0, "sample_list");
     setAcquisitionFile(0, "acqui_01");
     setComment(0, "test comment");
-    clickDown();
+    clickDown(0);
 
     clickSave();
 
@@ -296,7 +294,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     openWithMsAnalysis();
     setMassDetectionInstrument(MassDetectionInstrument.ORBITRAP_FUSION);
     setComment(0, "test comment");
-    clickDown();
+    clickDown(0);
 
     clickSave();
 

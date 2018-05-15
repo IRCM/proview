@@ -31,7 +31,6 @@
     <class>ca.qc.ircm.proview.fractionation.Fractionation</class>
     <class>ca.qc.ircm.proview.history.Activity</class>
     <class>ca.qc.ircm.proview.history.UpdateActivity</class>
-    <class>ca.qc.ircm.proview.user.Laboratory</class>
     <class>ca.qc.ircm.proview.msanalysis.Acquisition</class>
     <class>ca.qc.ircm.proview.msanalysis.MsAnalysis</class>
     <class>ca.qc.ircm.proview.persistence.InstantConverter</class>
@@ -54,8 +53,9 @@
     <class>ca.qc.ircm.proview.treatment.Treatment</class>
     <class>ca.qc.ircm.proview.transfer.Transfer</class>
     <class>ca.qc.ircm.proview.tube.Tube</class>
-    <class>ca.qc.ircm.proview.user.ForgotPassword</class>
     <class>ca.qc.ircm.proview.user.Address</class>
+    <class>ca.qc.ircm.proview.user.ForgotPassword</class>
+    <class>ca.qc.ircm.proview.user.Laboratory</class>
     <class>ca.qc.ircm.proview.user.PhoneNumber</class>
     <class>ca.qc.ircm.proview.user.Preference</class>
     <class>ca.qc.ircm.proview.user.User</class>

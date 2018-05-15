@@ -181,10 +181,8 @@ public class SubmissionHistoryFormPresenterTest {
         .thenReturn(Arrays.asList(activity1, activity2));
     activityDescription1 = "description 1";
     activityDescription2 = "description 2\nAnother line";
-    when(activityService.description(activity1, submission, locale))
-        .thenReturn(activityDescription1);
-    when(activityService.description(activity2, submission, locale))
-        .thenReturn(activityDescription2);
+    when(activityService.description(activity1, locale)).thenReturn(activityDescription1);
+    when(activityService.description(activity2, locale)).thenReturn(activityDescription2);
     when(activityService.record(any()))
         .thenAnswer(i -> realActivityService.record(i.getArgumentAt(0, Activity.class)));
     when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);

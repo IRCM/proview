@@ -37,8 +37,9 @@ import javax.validation.constraints.Size;
  * Phone number.
  */
 @Entity
-@Table(name = "phonenumber")
+@Table(name = PhoneNumber.TABLE_NAME)
 public class PhoneNumber implements Serializable {
+  public static final String TABLE_NAME = "phonenumber";
   private static final long serialVersionUID = 5548943595609304757L;
   /**
    * Database identifier.

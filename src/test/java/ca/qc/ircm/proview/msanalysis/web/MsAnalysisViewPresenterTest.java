@@ -51,7 +51,6 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -88,6 +87,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.GridDragSource;
 import com.vaadin.ui.components.grid.GridDragStartEvent;
@@ -209,8 +209,6 @@ public class MsAnalysisViewPresenterTest {
     assertTrue(design.acquisitions.getStyleName().contains(COMPONENTS));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
-    assertTrue(design.down.getStyleName().contains(DOWN));
-    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.save.getStyleName().contains(SAVE));
     assertTrue(design.save.getStyleName().contains(ValoTheme.BUTTON_PRIMARY));
     assertTrue(design.remove.getStyleName().contains(REMOVE));
@@ -232,8 +230,6 @@ public class MsAnalysisViewPresenterTest {
     assertEquals(resources.message(CONTAINERS_PANEL), design.containersPanel.getCaption());
     assertEquals(resources.message(ACQUISITIONS_PANEL), design.acquisitionsPanel.getCaption());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
-    assertEquals(resources.message(DOWN), design.down.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(SAVE), design.save.getCaption());
     assertEquals(resources.message(REMOVE), design.remove.getCaption());
     assertEquals(resources.message(BAN_CONTAINERS), design.banContainers.getCaption());
@@ -321,7 +317,7 @@ public class MsAnalysisViewPresenterTest {
     presenter.enter("");
 
     final ListDataProvider<Acquisition> acquisitions = dataProvider(design.acquisitions);
-    assertEquals(5, design.acquisitions.getColumns().size());
+    assertEquals(6, design.acquisitions.getColumns().size());
     assertEquals(SAMPLE, design.acquisitions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.acquisitions.getColumn(SAMPLE).getCaption());
     assertFalse(design.acquisitions.getColumn(SAMPLE).isSortable());
@@ -370,6 +366,18 @@ public class MsAnalysisViewPresenterTest {
       TextField field =
           (TextField) design.acquisitions.getColumn(COMMENT).getValueProvider().apply(acquisition);
       assertTrue(field.getStyleName().contains(COMMENT));
+    }
+    assertEquals(DOWN, design.acquisitions.getColumns().get(5).getId());
+    assertEquals(resources.message(DOWN), design.acquisitions.getColumn(DOWN).getCaption());
+    assertTrue(containsInstanceOf(design.acquisitions.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.acquisitions.getColumn(DOWN).isSortable());
+    for (Acquisition acquisition : acquisitions.getItems()) {
+      Button button =
+          (Button) design.acquisitions.getColumn(DOWN).getValueProvider().apply(acquisition);
+      assertTrue(button.getStyleName().contains(DOWN));
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(DOWN), button.getIconAlternateText());
     }
     assertEquals(containers.size(), acquisitions.getItems().size());
     for (SampleContainer container : containers) {
@@ -450,11 +458,64 @@ public class MsAnalysisViewPresenterTest {
     field = (TextField) design.acquisitions.getColumn(COMMENT).getValueProvider()
         .apply(firstAcquisition);
     field.setValue(comment);
+    Button button =
+        (Button) design.acquisitions.getColumn(DOWN).getValueProvider().apply(firstAcquisition);
 
-    design.down.click();
+    button.click();
 
     int index = 1;
     for (Acquisition acquisition : acquisitions.getItems()) {
+      field = (TextField) design.acquisitions.getColumn(SAMPLE_LIST_NAME).getValueProvider()
+          .apply(acquisition);
+      assertEquals(sampleListName, field.getValue());
+      field = (TextField) design.acquisitions.getColumn(ACQUISITION_FILE).getValueProvider()
+          .apply(acquisition);
+      assertEquals(acquisitionFileWithoutIndex + index++, field.getValue());
+      field =
+          (TextField) design.acquisitions.getColumn(COMMENT).getValueProvider().apply(acquisition);
+      assertEquals(comment, field.getValue());
+    }
+  }
+
+  @Test
+  public void down_Second() {
+    presenter.init(view);
+    presenter.enter("");
+    final List<Acquisition> acquisitions =
+        new ArrayList<>(dataProvider(design.acquisitions).getItems());
+    Acquisition firstAcquisition = acquisitions.get(1);
+    String sampleListName = "sample_list";
+    TextField field = (TextField) design.acquisitions.getColumn(SAMPLE_LIST_NAME).getValueProvider()
+        .apply(firstAcquisition);
+    field.setValue(sampleListName);
+    String acquisitionFileWithoutIndex = "acquisition_file_0";
+    String acquisitionFile = "acquisition_file_01";
+    field = (TextField) design.acquisitions.getColumn(ACQUISITION_FILE).getValueProvider()
+        .apply(firstAcquisition);
+    field.setValue(acquisitionFile);
+    String comment = "test";
+    field = (TextField) design.acquisitions.getColumn(COMMENT).getValueProvider()
+        .apply(firstAcquisition);
+    field.setValue(comment);
+    Button button =
+        (Button) design.acquisitions.getColumn(DOWN).getValueProvider().apply(firstAcquisition);
+
+    button.click();
+
+    {
+      Acquisition acquisition = acquisitions.get(0);
+      field = (TextField) design.acquisitions.getColumn(SAMPLE_LIST_NAME).getValueProvider()
+          .apply(acquisition);
+      assertEquals("", field.getValue());
+      field = (TextField) design.acquisitions.getColumn(ACQUISITION_FILE).getValueProvider()
+          .apply(acquisition);
+      assertEquals("", field.getValue());
+      field =
+          (TextField) design.acquisitions.getColumn(COMMENT).getValueProvider().apply(acquisition);
+      assertEquals("", field.getValue());
+    }
+    int index = 1;
+    for (Acquisition acquisition : acquisitions.subList(1, acquisitions.size())) {
       field = (TextField) design.acquisitions.getColumn(SAMPLE_LIST_NAME).getValueProvider()
           .apply(acquisition);
       assertEquals(sampleListName, field.getValue());
@@ -488,8 +549,10 @@ public class MsAnalysisViewPresenterTest {
     field = (TextField) design.acquisitions.getColumn(COMMENT).getValueProvider()
         .apply(firstAcquisition);
     field.setValue(comment);
+    Button button =
+        (Button) design.acquisitions.getColumn(DOWN).getValueProvider().apply(firstAcquisition);
 
-    design.down.click();
+    button.click();
 
     int index = 1;
     for (Acquisition acquisition : gridItems(design.acquisitions).collect(Collectors.toList())) {
@@ -526,8 +589,10 @@ public class MsAnalysisViewPresenterTest {
     field = (TextField) design.acquisitions.getColumn(COMMENT).getValueProvider()
         .apply(firstAcquisition);
     field.setValue(comment);
+    Button button =
+        (Button) design.acquisitions.getColumn(DOWN).getValueProvider().apply(firstAcquisition);
 
-    design.down.click();
+    button.click();
 
     int index = 1;
     for (Acquisition acquisition : gridItems(design.acquisitions).collect(Collectors.toList())) {

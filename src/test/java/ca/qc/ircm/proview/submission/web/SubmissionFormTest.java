@@ -65,8 +65,8 @@ public class SubmissionFormTest {
 
     assertEquals(1, view.design.samplesPlateContainer.getComponentCount());
     assertEquals(plateComponent, view.design.samplesPlateContainer.getComponent(0));
-    assertEquals(standardsForm, view.design.standardsPanel.getContent());
-    assertEquals(contaminantsForm, view.design.contaminantsPanel.getContent());
+    assertEquals(standardsForm, view.design.standardsContainer.getComponent(0));
+    assertEquals(contaminantsForm, view.design.contaminantsContainer.getComponent(0));
     assertEquals(gelForm, view.design.gelPanel.getContent());
   }
 
