@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.treatment;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 
@@ -109,12 +110,12 @@ public class TreatedSample implements Data, Serializable {
   @Column(name = "position", nullable = false)
   private Integer position;
   /**
-   * Fraction number. Used with {@link TreatmentType#MUDPIT}.
+   * Fraction number. Used with {@link FractionationType#MUDPIT}.
    */
   @Column(name = "number")
   private Integer number;
   /**
-   * PI interval. Used with {@link TreatmentType#PI}
+   * PI interval. Used with {@link FractionationType#PI}
    */
   @Column(name = "piInterval")
   @Size(max = 255)
