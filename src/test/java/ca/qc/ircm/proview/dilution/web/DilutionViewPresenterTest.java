@@ -43,7 +43,6 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
@@ -76,6 +75,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -198,8 +198,6 @@ public class DilutionViewPresenterTest {
     assertTrue(design.dilutionsPanel.getStyleName().contains(DILUTIONS_PANEL));
     assertTrue(design.dilutions.getStyleName().contains(DILUTIONS));
     assertTrue(design.dilutions.getStyleName().contains(COMPONENTS));
-    assertTrue(design.down.getStyleName().contains(DOWN));
-    assertTrue(design.down.getStyleName().contains(BUTTON_SKIP_ROW));
     assertTrue(design.explanationPanel.getStyleName().contains(EXPLANATION_PANEL));
     assertTrue(design.explanation.getStyleName().contains(EXPLANATION));
     assertTrue(design.save.getStyleName().contains(SAVE));
@@ -217,8 +215,6 @@ public class DilutionViewPresenterTest {
     assertEquals(resources.message(HEADER), design.header.getValue());
     assertEquals(resources.message(DELETED), design.deleted.getValue());
     assertEquals(resources.message(DILUTIONS_PANEL), design.dilutionsPanel.getCaption());
-    assertEquals(resources.message(DOWN), design.down.getCaption());
-    assertEquals(VaadinIcons.ARROW_DOWN, design.down.getIcon());
     assertEquals(resources.message(EXPLANATION_PANEL), design.explanationPanel.getCaption());
     assertEquals(resources.message(SAVE), design.save.getCaption());
     assertEquals(resources.message(REMOVE), design.remove.getCaption());
@@ -232,7 +228,7 @@ public class DilutionViewPresenterTest {
     presenter.enter("");
 
     final ListDataProvider<TreatedSample> treatments = dataProvider(design.dilutions);
-    assertEquals(6, design.dilutions.getColumns().size());
+    assertEquals(7, design.dilutions.getColumns().size());
     assertEquals(SAMPLE, design.dilutions.getColumns().get(0).getId());
     assertEquals(resources.message(SAMPLE), design.dilutions.getColumn(SAMPLE).getCaption());
     for (TreatedSample ts : treatments.getItems()) {
@@ -289,6 +285,17 @@ public class DilutionViewPresenterTest {
           (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(ts);
       assertTrue(field.getStyleName().contains(COMMENT));
     }
+    assertEquals(DOWN, design.dilutions.getColumns().get(6).getId());
+    assertEquals(resources.message(DOWN), design.dilutions.getColumn(DOWN).getCaption());
+    assertTrue(containsInstanceOf(design.dilutions.getColumn(DOWN).getExtensions(),
+        ComponentRenderer.class));
+    assertFalse(design.dilutions.getColumn(DOWN).isSortable());
+    for (TreatedSample ts : treatments.getItems()) {
+      Button button = (Button) design.dilutions.getColumn(DOWN).getValueProvider().apply(ts);
+      assertTrue(button.getStyleName().contains(DOWN));
+      assertEquals(VaadinIcons.ARROW_DOWN, button.getIcon());
+      assertEquals(resources.message(DOWN), button.getIconAlternateText());
+    }
     assertEquals(containers.size(), treatments.getItems().size());
     for (SampleContainer container : containers) {
       assertTrue(treatments.getItems().stream().filter(ts -> ts.getContainer().equals(container))
@@ -318,8 +325,9 @@ public class DilutionViewPresenterTest {
     String comment = "test";
     field = (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.dilutions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (TreatedSample ts : treatments.getItems()) {
       field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
@@ -334,12 +342,52 @@ public class DilutionViewPresenterTest {
   }
 
   @Test
-  public void down_NoContainers() {
-    when(view.savedContainers()).thenReturn(new ArrayList<>());
+  public void down_Second() {
     presenter.init(view);
     presenter.enter("");
+    final List<TreatedSample> treatments =
+        new ArrayList<>(dataProvider(design.dilutions).getItems());
+    TreatedSample firstTs = treatments.get(1);
+    String sourceVolume = "2.0";
+    TextField field =
+        (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(firstTs);
+    field.setValue(sourceVolume);
+    String solvent = "test solvent";
+    field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(firstTs);
+    field.setValue(solvent);
+    String solventVolume = "10";
+    field =
+        (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(firstTs);
+    field.setValue(solventVolume);
+    String comment = "test";
+    field = (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(firstTs);
+    field.setValue(comment);
+    Button button = (Button) design.dilutions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
+
+    {
+      TreatedSample ts = treatments.get(0);
+      field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+      field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+      field = (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+      field = (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals("", field.getValue());
+    }
+    for (int i = 1; i < treatments.size(); i++) {
+      TreatedSample ts = treatments.get(i);
+      field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
+      assertEquals(sourceVolume, field.getValue());
+      field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(ts);
+      assertEquals(solvent, field.getValue());
+      field = (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(ts);
+      assertEquals(solventVolume, field.getValue());
+      field = (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(ts);
+      assertEquals(comment, field.getValue());
+    }
   }
 
   @Test
@@ -349,24 +397,24 @@ public class DilutionViewPresenterTest {
     design.dilutions.sort(SAMPLE, SortDirection.DESCENDING);
     final List<TreatedSample> treatments =
         new ArrayList<>(dataProvider(design.dilutions).getItems());
+    TreatedSample firstTs = treatments.get(4);
     String sourceVolume = "2.0";
-    TextField field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider()
-        .apply(treatments.get(4));
+    TextField field =
+        (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(firstTs);
     field.setValue(sourceVolume);
     String solvent = "test solvent";
-    field =
-        (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(treatments.get(4));
+    field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(firstTs);
     field.setValue(solvent);
     String solventVolume = "10";
-    field = (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider()
-        .apply(treatments.get(4));
+    field =
+        (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(firstTs);
     field.setValue(solventVolume);
     String comment = "test";
-    field =
-        (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(treatments.get(4));
+    field = (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.dilutions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (TreatedSample ts : treatments) {
       field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
@@ -387,24 +435,24 @@ public class DilutionViewPresenterTest {
     design.dilutions.sort(CONTAINER, SortDirection.DESCENDING);
     final List<TreatedSample> treatments =
         new ArrayList<>(dataProvider(design.dilutions).getItems());
+    TreatedSample firstTs = treatments.get(5);
     String sourceVolume = "2.0";
-    TextField field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider()
-        .apply(treatments.get(5));
+    TextField field =
+        (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(firstTs);
     field.setValue(sourceVolume);
     String solvent = "test solvent";
-    field =
-        (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(treatments.get(5));
+    field = (TextField) design.dilutions.getColumn(SOLVENT).getValueProvider().apply(firstTs);
     field.setValue(solvent);
     String solventVolume = "10";
-    field = (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider()
-        .apply(treatments.get(5));
+    field =
+        (TextField) design.dilutions.getColumn(SOLVENT_VOLUME).getValueProvider().apply(firstTs);
     field.setValue(solventVolume);
     String comment = "test";
-    field =
-        (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(treatments.get(5));
+    field = (TextField) design.dilutions.getColumn(COMMENT).getValueProvider().apply(firstTs);
     field.setValue(comment);
+    Button button = (Button) design.dilutions.getColumn(DOWN).getValueProvider().apply(firstTs);
 
-    design.down.click();
+    button.click();
 
     for (TreatedSample ts : treatments) {
       field = (TextField) design.dilutions.getColumn(SOURCE_VOLUME).getValueProvider().apply(ts);
@@ -629,8 +677,8 @@ public class DilutionViewPresenterTest {
       assertEquals(solventVolumes.get(i), diluted.getSolventVolume(), 0.0001);
       assertEquals(comments.get(i), diluted.getComment());
     }
-    verify(view).showTrayNotification(resources.message(SAVED, dilution.getTreatedSamples()
-        .stream().map(ts -> ts.getSample().getId()).distinct().count()));
+    verify(view).showTrayNotification(resources.message(SAVED, dilution.getTreatedSamples().stream()
+        .map(ts -> ts.getSample().getId()).distinct().count()));
     verify(view).navigateTo(DilutionView.VIEW_NAME, "4");
   }
 
