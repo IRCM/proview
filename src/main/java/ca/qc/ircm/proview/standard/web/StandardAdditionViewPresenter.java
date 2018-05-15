@@ -18,9 +18,7 @@
 package ca.qc.ircm.proview.standard.web;
 
 import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
-import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
-import static ca.qc.ircm.proview.web.WebConstants.BUTTON_SKIP_ROW;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -31,6 +29,7 @@ import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.standard.StandardAdditionService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
+import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.BeanValidationBinder;
@@ -39,6 +38,7 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.UserError;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import org.slf4j.Logger;
@@ -94,6 +94,7 @@ public class StandardAdditionViewPresenter implements BinderValidator {
   private Map<TreatedSample, TextField> nameFields = new HashMap<>();
   private Map<TreatedSample, TextField> quantityFields = new HashMap<>();
   private Map<TreatedSample, TextField> commentFields = new HashMap<>();
+  private Map<TreatedSample, Button> downButtons = new HashMap<>();
   @Inject
   private StandardAdditionService standardAdditionService;
   @Inject
@@ -149,11 +150,8 @@ public class StandardAdditionViewPresenter implements BinderValidator {
         .setId(QUANTITY).setCaption(resources.message(QUANTITY)).setSortable(false);
     design.standardAdditions.addColumn(ts -> commentField(ts), new ComponentRenderer())
         .setId(COMMENT).setCaption(resources.message(COMMENT)).setSortable(false);
-    design.down.addStyleName(DOWN);
-    design.down.addStyleName(BUTTON_SKIP_ROW);
-    design.down.setCaption(resources.message(DOWN));
-    design.down.setIcon(VaadinIcons.ARROW_DOWN);
-    design.down.addClickListener(e -> down());
+    design.standardAdditions.addColumn(ts -> downButton(ts), new ComponentRenderer()).setId(DOWN)
+        .setCaption(resources.message(DOWN)).setSortable(false);
     design.explanationPanel.addStyleName(EXPLANATION_PANEL);
     design.explanationPanel.setCaption(resources.message(EXPLANATION_PANEL));
     design.explanationPanel.setVisible(false);
@@ -220,15 +218,36 @@ public class StandardAdditionViewPresenter implements BinderValidator {
     }
   }
 
-  private void down() {
-    if (!standardAdditions.isEmpty()) {
-      TreatedSample first = gridItems(design.standardAdditions).findFirst().orElse(null);
-      String name = nameFields.get(first).getValue();
-      String quantity = quantityFields.get(first).getValue();
-      String comment = commentFields.get(first).getValue();
-      nameFields.values().forEach(field -> field.setValue(name));
-      quantityFields.values().forEach(field -> field.setValue(quantity));
-      commentFields.values().forEach(field -> field.setValue(comment));
+  private Button downButton(TreatedSample ts) {
+    if (downButtons.get(ts) != null) {
+      return downButtons.get(ts);
+    } else {
+      final MessageResource resources = view.getResources();
+      Button button = new Button();
+      button.addStyleName(DOWN);
+      button.setIcon(VaadinIcons.ARROW_DOWN);
+      button.setIconAlternateText(resources.message(DOWN));
+      button.addClickListener(e -> down(ts));
+      downButtons.put(ts, button);
+      return button;
+    }
+  }
+
+  private void down(TreatedSample ts) {
+    boolean copy = false;
+    String name = nameFields.get(ts).getValue();
+    String quantity = quantityFields.get(ts).getValue();
+    String comment = commentFields.get(ts).getValue();
+    for (TreatedSample other : VaadinUtils.gridItems(design.standardAdditions)
+        .collect(Collectors.toList())) {
+      if (ts.equals(other)) {
+        copy = true;
+      }
+      if (copy) {
+        nameFields.get(other).setValue(name);
+        quantityFields.get(other).setValue(quantity);
+        commentFields.get(other).setValue(comment);
+      }
     }
   }
 
