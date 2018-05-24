@@ -40,16 +40,14 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
+import java.util.Locale;
+import javax.inject.Inject;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Locale;
-
-import javax.inject.Inject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations

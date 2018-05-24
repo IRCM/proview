@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.web;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.util.ReflectTools;
-
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Locale;

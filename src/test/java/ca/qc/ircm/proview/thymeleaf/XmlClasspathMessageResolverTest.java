@@ -20,13 +20,12 @@ package ca.qc.ircm.proview.thymeleaf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.thymeleaf.templateresource.ClassLoaderTemplateResource;
 import org.thymeleaf.templateresource.ITemplateResource;
-
-import java.util.Locale;
-import java.util.Map;
 
 public class XmlClasspathMessageResolverTest {
   private XmlClasspathMessageResolver xmlMessageResolver;

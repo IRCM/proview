@@ -31,6 +31,13 @@ import ca.qc.ircm.proview.user.User;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.inject.Inject;
+import javax.mail.Message.RecipientType;
+import javax.mail.Multipart;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.junit.After;
 import org.junit.Before;
@@ -40,15 +47,6 @@ import org.mockito.Mock;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.inject.Inject;
-import javax.mail.Message.RecipientType;
-import javax.mail.Multipart;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations

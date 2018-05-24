@@ -21,14 +21,12 @@ import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 
-import com.google.common.collect.BoundType;
-import com.google.common.collect.Range;
-
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.text.Strings;
+import com.google.common.collect.BoundType;
+import com.google.common.collect.Range;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;

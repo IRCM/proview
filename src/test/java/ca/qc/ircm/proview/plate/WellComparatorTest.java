@@ -20,10 +20,9 @@ package ca.qc.ircm.proview.plate;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.plate.WellComparator.Compare;
-import org.junit.Test;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import org.junit.Test;
 
 public class WellComparatorTest {
   @Test

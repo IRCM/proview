@@ -23,12 +23,11 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
+import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Locale;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations

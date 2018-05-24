@@ -28,11 +28,10 @@ import static ca.qc.ircm.proview.sample.SampleStatus.TO_APPROVE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import org.junit.Test;
 
 public class SampleStatusTest {
   @Test

@@ -19,12 +19,11 @@ package ca.qc.ircm.proview.persistence;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import org.junit.Before;
+import org.junit.Test;
 
 public class InstantConverterTest {
   private InstantConverter instantConverter;

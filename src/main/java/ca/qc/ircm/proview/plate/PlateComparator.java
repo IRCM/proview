@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.plate;
 
 import ca.qc.ircm.proview.NamedComparator;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Comparator;

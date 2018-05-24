@@ -112,9 +112,8 @@ import com.vaadin.testbench.elements.PanelElement;
 import com.vaadin.testbench.elements.RadioButtonGroupElement;
 import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
-import org.openqa.selenium.WebElement;
-
 import java.nio.file.Path;
+import org.openqa.selenium.WebElement;
 
 public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase {
   private static final String STANDARD_COUNT = StandardsFormPresenter.COUNT;

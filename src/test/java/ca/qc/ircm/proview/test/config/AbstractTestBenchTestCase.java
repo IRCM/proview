@@ -28,17 +28,16 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.CheckBoxElement;
 import com.vaadin.testbench.elements.MenuBarElement;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Additional functions for TestBenchTestCase.

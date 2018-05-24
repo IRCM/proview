@@ -34,13 +34,12 @@ import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
 import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.ui.AbstractTextField;
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.util.Locale;
 
 /**
  * Submission form presenter for gel properties.

@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.msanalysis;
 
 import ca.qc.ircm.utils.MessageResource;
-
 import java.util.Locale;
 
 /**

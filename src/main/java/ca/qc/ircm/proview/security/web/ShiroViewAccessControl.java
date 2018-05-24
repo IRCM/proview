@@ -19,15 +19,14 @@ package ca.qc.ircm.proview.security.web;
 
 import com.vaadin.spring.access.ViewAccessControl;
 import com.vaadin.ui.UI;
+import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.security.RolesAllowed;
-import javax.inject.Inject;
 
 /**
  * ViewAccessControl for Shiro.

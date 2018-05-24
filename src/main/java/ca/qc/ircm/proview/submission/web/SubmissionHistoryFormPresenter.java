@@ -52,18 +52,16 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.renderers.ComponentRenderer;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
-
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 
 /**
  * Submission history form presenter.

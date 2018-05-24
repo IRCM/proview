@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.persistence;
 
 import java.util.Locale;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 

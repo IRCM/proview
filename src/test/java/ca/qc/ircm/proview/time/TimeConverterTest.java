@@ -22,13 +22,12 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import org.junit.Test;
 
 public class TimeConverterTest {
   @Test

@@ -17,19 +17,16 @@
 
 package ca.qc.ircm.proview.web.filter;
 
-import com.google.common.collect.Range;
-
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
+import com.google.common.collect.Range;
 import com.vaadin.shared.Registration;
+import java.time.LocalDate;
+import javax.inject.Inject;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.time.LocalDate;
-
-import javax.inject.Inject;
 
 /**
  * Instant filter component.

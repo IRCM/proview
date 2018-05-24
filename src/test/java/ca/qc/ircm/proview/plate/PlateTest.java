@@ -22,10 +22,9 @@ import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import org.junit.Test;
-
 import java.util.List;
 import java.util.Optional;
+import org.junit.Test;
 
 public class PlateTest {
   private Optional<Well> find(List<Well> wells, int row, int column) {

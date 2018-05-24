@@ -22,9 +22,8 @@ import static ca.qc.ircm.proview.dataanalysis.DataAnalysisType.PROTEIN;
 import static ca.qc.ircm.proview.dataanalysis.DataAnalysisType.PROTEIN_PEPTIDE;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import java.util.Locale;
+import org.junit.Test;
 
 public class DataAnalysisTypeTest {
   @Test

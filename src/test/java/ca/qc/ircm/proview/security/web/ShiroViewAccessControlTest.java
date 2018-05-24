@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.ui.UI;
+import javax.annotation.security.RolesAllowed;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.junit.Before;
@@ -34,8 +35,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.annotation.security.RolesAllowed;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations

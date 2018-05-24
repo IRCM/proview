@@ -19,6 +19,11 @@ package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.mail.MailConfiguration;
 import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
+import javax.inject.Inject;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,12 +37,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-
-import javax.inject.Inject;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 
 /**
  * Configuration for Spring.

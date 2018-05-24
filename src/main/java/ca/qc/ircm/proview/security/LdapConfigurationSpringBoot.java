@@ -17,14 +17,13 @@
 
 package ca.qc.ircm.proview.security;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 @Configuration
 @EnableConfigurationProperties

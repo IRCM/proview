@@ -22,7 +22,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.Sample;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

@@ -21,9 +21,8 @@ import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import java.util.Locale;
+import org.junit.Test;
 
 public class SampleContainerTypeTest {
   @Test

@@ -55,7 +55,6 @@ import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
 import com.vaadin.testbench.elements.PasswordFieldElement;
 import com.vaadin.testbench.elements.TextFieldElement;
-
 import java.util.Arrays;
 
 public abstract class UserPageObject extends AbstractTestBenchTestCase {

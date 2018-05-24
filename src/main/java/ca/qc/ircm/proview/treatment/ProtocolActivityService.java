@@ -21,12 +21,11 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
+import javax.annotation.CheckReturnValue;
+import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.CheckReturnValue;
-import javax.inject.Inject;
 
 /**
  * Creates activities about {@link Protocol} that can be recorded.

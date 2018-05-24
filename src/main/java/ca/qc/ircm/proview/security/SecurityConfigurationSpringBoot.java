@@ -17,6 +17,14 @@
 
 package ca.qc.ircm.proview.security;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Provider;
 import org.apache.shiro.authz.permission.WildcardPermissionResolver;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.Hex;
@@ -30,16 +38,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 /**
  * Security configuration.

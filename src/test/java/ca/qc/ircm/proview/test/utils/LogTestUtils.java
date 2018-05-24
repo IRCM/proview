@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.test.utils;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.history.UpdateActivity;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;

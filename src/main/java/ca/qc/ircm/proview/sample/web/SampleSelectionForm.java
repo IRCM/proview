@@ -23,14 +23,12 @@ import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.CustomComponent;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 /**
  * Sample selection form.

@@ -23,14 +23,13 @@ import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.utils.MessageResource;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import javax.inject.Inject;
 
 /**
  * Sample view presenter.

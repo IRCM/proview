@@ -34,7 +34,6 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringNavigator;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.UI;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Provider;

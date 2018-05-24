@@ -25,13 +25,12 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Window;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Windows that shows submission.

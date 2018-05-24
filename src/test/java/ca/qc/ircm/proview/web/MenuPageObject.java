@@ -51,9 +51,8 @@ import ca.qc.ircm.proview.user.web.SignasViewPresenter;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.MenuBarElement;
-import org.openqa.selenium.WebElement;
-
 import java.util.stream.IntStream;
+import org.openqa.selenium.WebElement;
 
 public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   private static final int EMAIL_COLUMN = 0;

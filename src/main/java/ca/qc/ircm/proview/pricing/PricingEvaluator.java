@@ -18,10 +18,9 @@
 package ca.qc.ircm.proview.pricing;
 
 import ca.qc.ircm.proview.submission.Submission;
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.time.Instant;
+import org.springframework.stereotype.Component;
 
 /**
  * Compute prices of analysis and modifications asked by user.

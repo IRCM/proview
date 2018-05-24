@@ -18,12 +18,11 @@
 package ca.qc.ircm.proview.cache;
 
 import ca.qc.ircm.proview.security.SecurityConfiguration;
+import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.CachingSecurityManager;
 import org.springframework.stereotype.Component;
-
-import javax.inject.Inject;
 
 /**
  * Flushes different caches.

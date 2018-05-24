@@ -23,6 +23,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import org.apache.shiro.authz.permission.WildcardPermissionResolver;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.Hex;
@@ -31,11 +34,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations

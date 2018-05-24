@@ -21,16 +21,14 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import javax.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.nio.file.Paths;
-
-import javax.inject.Inject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations

@@ -36,17 +36,15 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
 import com.vaadin.server.UserError;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.regex.Pattern;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.regex.Pattern;
-
-import javax.inject.Inject;
 
 /**
  * Control form presenter.

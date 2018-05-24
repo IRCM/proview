@@ -22,19 +22,17 @@ import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.server.StreamResource;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Locale;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Locale;
-
-import javax.inject.Inject;
 
 /**
  * Plate view presenter.

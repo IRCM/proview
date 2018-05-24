@@ -21,7 +21,6 @@ import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.provider.Query;
 import com.vaadin.ui.Grid;
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;

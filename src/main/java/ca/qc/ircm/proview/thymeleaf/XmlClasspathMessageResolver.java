@@ -18,9 +18,6 @@
 package ca.qc.ircm.proview.thymeleaf;
 
 import ca.qc.ircm.utils.XmlResourceBundleControl;
-import org.thymeleaf.messageresolver.StandardMessageResolver;
-import org.thymeleaf.templateresource.ITemplateResource;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Enumeration;
@@ -29,6 +26,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import org.thymeleaf.messageresolver.StandardMessageResolver;
+import org.thymeleaf.templateresource.ITemplateResource;
 
 /**
  * IMessageResolver for Thymeleaf that resolves XML files.

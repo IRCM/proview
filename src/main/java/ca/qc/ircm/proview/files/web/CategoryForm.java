@@ -20,12 +20,11 @@ package ca.qc.ircm.proview.files.web;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.CustomComponent;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 /**
  * Form containing one category of guidelines.

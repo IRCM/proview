@@ -26,13 +26,12 @@ import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import java.util.Locale;
+import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.Cookie;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Locale;
-import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations

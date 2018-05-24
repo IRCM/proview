@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.user.User;
 import com.vaadin.server.SerializablePredicate;
-
 import java.util.Locale;
 
 /**

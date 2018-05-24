@@ -22,14 +22,12 @@ import static ca.qc.ircm.proview.text.Strings.normalize;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 
-import com.google.common.collect.BoundType;
-import com.google.common.collect.Range;
-
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import com.google.common.collect.BoundType;
+import com.google.common.collect.Range;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;

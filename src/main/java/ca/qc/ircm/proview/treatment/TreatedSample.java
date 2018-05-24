@@ -23,9 +23,7 @@ import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
-
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

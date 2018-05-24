@@ -31,7 +31,6 @@ import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.WindowElement;
-
 import java.util.Locale;
 
 public abstract class SampleStatusPageObject extends AbstractTestBenchTestCase {

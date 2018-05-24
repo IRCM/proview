@@ -28,13 +28,12 @@ import ca.qc.ircm.proview.web.CloseWindowOnViewChange.CloseWindowOnViewChangeLis
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.ui.UI;
+import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Locale;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations

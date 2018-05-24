@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.web;
 
 import com.vaadin.ui.Component;
 import com.vaadin.util.ReflectTools;
-
 import java.lang.reflect.Method;
 
 /**

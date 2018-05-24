@@ -26,7 +26,6 @@ import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

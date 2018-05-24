@@ -40,15 +40,13 @@ import ca.qc.ircm.proview.user.web.ValidateView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.UI;
+import java.util.Locale;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.util.Locale;
-
-import javax.inject.Inject;
 
 /**
  * Menu presenter.

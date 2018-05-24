@@ -22,10 +22,8 @@ import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
-
 import java.io.Serializable;
 import java.time.Instant;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;

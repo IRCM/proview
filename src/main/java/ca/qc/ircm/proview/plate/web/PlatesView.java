@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.plate.web;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.CustomComponent;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;

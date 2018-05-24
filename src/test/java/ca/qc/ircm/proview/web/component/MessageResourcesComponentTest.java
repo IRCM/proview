@@ -22,10 +22,9 @@ import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.TextField;
+import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Locale;
 
 public class MessageResourcesComponentTest {
   private TestMessageResourcesComponent messageResourcesComponent;

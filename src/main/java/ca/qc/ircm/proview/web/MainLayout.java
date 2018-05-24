@@ -21,12 +21,11 @@ import static ca.qc.ircm.proview.FindbugsExplanations.DESIGNER_NP_UNWRITTEN_PUBL
 
 import com.vaadin.ui.CustomComponent;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 /**
  * View base layout.

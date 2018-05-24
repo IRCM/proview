@@ -19,10 +19,9 @@ package ca.qc.ircm.proview.persistence;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Locale;
 
 public class LocaleConverterTest {
   private LocaleConverter localeConverter;

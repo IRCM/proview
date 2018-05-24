@@ -18,17 +18,15 @@
 package ca.qc.ircm.proview.logging.web;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
-import org.slf4j.MDC;
-import org.springframework.web.filter.GenericFilterBean;
-
 import java.io.IOException;
-
 import javax.inject.Inject;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import org.slf4j.MDC;
+import org.springframework.web.filter.GenericFilterBean;
 
 /**
  * Request filter that set MDC context for loggers.

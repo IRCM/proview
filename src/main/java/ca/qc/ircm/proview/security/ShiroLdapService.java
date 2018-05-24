@@ -17,15 +17,8 @@
 
 package ca.qc.ircm.proview.security;
 
-import org.apache.shiro.realm.ldap.JndiLdapContextFactory;
-import org.apache.shiro.realm.ldap.LdapUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
 import java.text.MessageFormat;
 import java.util.Collection;
-
 import javax.inject.Inject;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -34,6 +27,11 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
+import org.apache.shiro.realm.ldap.JndiLdapContextFactory;
+import org.apache.shiro.realm.ldap.LdapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Services for LDAP (active directory).

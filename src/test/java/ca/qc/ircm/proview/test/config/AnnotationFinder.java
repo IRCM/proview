@@ -17,10 +17,9 @@
 
 package ca.qc.ircm.proview.test.config;
 
-import org.springframework.core.annotation.AnnotationUtils;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import org.springframework.core.annotation.AnnotationUtils;
 
 /**
  * Finds annotations on method or class.

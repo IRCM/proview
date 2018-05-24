@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.submission;
 
 import ca.qc.ircm.utils.MessageResource;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;

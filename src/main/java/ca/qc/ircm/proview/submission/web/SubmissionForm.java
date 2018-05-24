@@ -25,13 +25,12 @@ import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.CustomComponent;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.vaadin.easyuploads.MultiFileUpload;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 /**
  * Submission form.

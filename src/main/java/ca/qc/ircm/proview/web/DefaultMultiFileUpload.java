@@ -19,9 +19,8 @@ package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import ca.qc.ircm.utils.MessageResource;
-import org.vaadin.easyuploads.MultiFileUpload;
-
 import java.io.File;
+import org.vaadin.easyuploads.MultiFileUpload;
 
 /**
  * Extension of MultiFileUpload to support localized messages.

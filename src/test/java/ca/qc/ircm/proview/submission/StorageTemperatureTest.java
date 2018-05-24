@@ -21,9 +21,8 @@ import static ca.qc.ircm.proview.submission.StorageTemperature.LOW;
 import static ca.qc.ircm.proview.submission.StorageTemperature.MEDIUM;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import java.util.Locale;
+import org.junit.Test;
 
 public class StorageTemperatureTest {
   @Test

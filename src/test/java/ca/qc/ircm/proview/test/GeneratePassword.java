@@ -20,13 +20,12 @@ package ca.qc.ircm.proview.test;
 import ca.qc.ircm.proview.Main;
 import ca.qc.ircm.proview.security.PasswordVersion;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
+import java.util.Random;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-
-import java.util.Random;
 
 public class GeneratePassword {
   public static final String PASSWORD_ALGORITHM = "SHA-256";

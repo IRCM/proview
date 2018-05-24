@@ -25,17 +25,15 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import java.util.List;
+import java.util.Locale;
+import javax.inject.Inject;
+import javax.inject.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
-import java.util.Locale;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations

@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.tube;
 
 import ca.qc.ircm.proview.NamedComparator;
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Locale;

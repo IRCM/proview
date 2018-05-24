@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.web.WebConstants.SAVED_CONTAINERS;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import com.vaadin.ui.Component;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

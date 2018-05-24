@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.history;
 
 import ca.qc.ircm.proview.history.DatabaseLogUtil.DatabaseBoolean;
-
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;

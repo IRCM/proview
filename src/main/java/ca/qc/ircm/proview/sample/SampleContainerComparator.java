@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.sample;
 
 import ca.qc.ircm.proview.plate.Well;
-
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;

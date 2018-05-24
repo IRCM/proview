@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.SAVE;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.MenuBarElement;

@@ -20,10 +20,8 @@ package ca.qc.ircm.proview.user;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
-
 import java.io.Serializable;
 import java.time.Instant;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

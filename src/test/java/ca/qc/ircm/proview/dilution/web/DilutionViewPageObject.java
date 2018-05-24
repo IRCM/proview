@@ -41,7 +41,6 @@ import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.PanelElement;
 import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
-
 import java.util.Objects;
 
 public class DilutionViewPageObject extends AbstractTestBenchTestCase {

@@ -26,9 +26,8 @@ import static ca.qc.ircm.proview.treatment.TreatmentType.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.treatment.TreatmentType.TRANSFER;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import java.util.Locale;
+import org.junit.Test;
 
 public class TreatmentTypeTest {
   @Test

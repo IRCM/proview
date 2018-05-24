@@ -19,17 +19,15 @@ package ca.qc.ircm.proview.security;
 
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.naming.NamingException;
 
 /**
  * Services for LDAP (active directory).

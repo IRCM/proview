@@ -21,9 +21,8 @@ import static ca.qc.ircm.proview.sample.ControlType.NEGATIVE_CONTROL;
 import static ca.qc.ircm.proview.sample.ControlType.POSITIVE_CONTROL;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import java.util.Locale;
+import org.junit.Test;
 
 public class ControlTypeTest {
   @Test

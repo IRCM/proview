@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.pricing;
 
 import ca.qc.ircm.proview.submission.Submission;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;

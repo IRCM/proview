@@ -17,9 +17,8 @@
 
 package ca.qc.ircm.proview.security;
 
-import org.apache.shiro.authz.Permission;
-
 import java.io.Serializable;
+import org.apache.shiro.authz.Permission;
 
 /**
  * Permission of a maintenance robot.

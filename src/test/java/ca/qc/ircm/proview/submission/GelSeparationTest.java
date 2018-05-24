@@ -21,9 +21,8 @@ import static ca.qc.ircm.proview.submission.GelSeparation.ONE_DIMENSION;
 import static ca.qc.ircm.proview.submission.GelSeparation.TWO_DIMENSION;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import java.util.Locale;
+import org.junit.Test;
 
 public class GelSeparationTest {
   @Test

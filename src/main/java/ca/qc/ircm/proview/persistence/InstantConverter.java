@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.persistence;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 

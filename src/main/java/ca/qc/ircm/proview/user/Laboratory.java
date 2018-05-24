@@ -21,10 +21,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
-
 import java.io.Serializable;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;

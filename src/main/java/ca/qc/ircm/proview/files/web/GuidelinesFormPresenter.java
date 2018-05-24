@@ -19,14 +19,12 @@ package ca.qc.ircm.proview.files.web;
 
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Provider;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 /**
  * Guidelines form presenter.

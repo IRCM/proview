@@ -24,7 +24,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.components.grid.EditorImpl;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

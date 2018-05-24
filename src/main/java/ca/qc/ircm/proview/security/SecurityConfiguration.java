@@ -17,9 +17,8 @@
 
 package ca.qc.ircm.proview.security;
 
-import org.apache.shiro.realm.Realm;
-
 import java.util.List;
+import org.apache.shiro.realm.Realm;
 
 /**
  * Security configuration.

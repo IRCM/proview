@@ -23,12 +23,11 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.ui.Window;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 /**
  * Windows that shows submission.
