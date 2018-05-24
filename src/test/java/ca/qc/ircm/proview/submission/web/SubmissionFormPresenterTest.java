@@ -100,6 +100,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STYLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.UPDATE_ERROR;
@@ -1104,6 +1105,7 @@ public class SubmissionFormPresenterTest {
   public void styles() {
     presenter.init(view);
 
+    verify(view).addStyleName(STYLE);
     assertTrue(design.sampleTypeWarning.getStyleName().contains(SAMPLE_TYPE_WARNING));
     assertTrue(design.inactiveWarning.getStyleName().contains(INACTIVE_WARNING));
     assertTrue(design.guidelines.getStyleName().contains(ValoTheme.BUTTON_FRIENDLY));

@@ -84,6 +84,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SOURCE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
+import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STYLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TAXONOMY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION;
@@ -138,7 +139,8 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected ButtonElement guidelines() {
-    return wrap(ButtonElement.class, findElement(className(GUIDELINES)));
+    return wrap(ButtonElement.class,
+        findElement(className(STYLE)).findElement(className(GUIDELINES)));
   }
 
   protected void clickGuidelines() {

@@ -138,6 +138,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionFormPresenter implements BinderValidator {
+  public static final String STYLE = "submission-form";
   public static final String SAMPLE_TYPE_WARNING = "sampleTypeWarning";
   public static final String INACTIVE_WARNING = "inactive";
   public static final String GUIDELINES = "guidelines";
@@ -282,6 +283,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   public void init(SubmissionForm view) {
     this.view = view;
     design = view.design;
+    view.addStyleName(STYLE);
     view.createFilesUploader(fileHandler());
     prepareComponents();
     setValue(null);
