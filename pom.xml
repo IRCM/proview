@@ -732,14 +732,6 @@
           <excludeFilterFile>${basedir}/findbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${maven-checkstyle-plugin.version}</version>
-        <configuration>
-          <configLocation>google-checks-vaadin-suppress.xml</configLocation>
-        </configuration>
-      </plugin>
     </plugins>
   </reporting>
   <profiles>
