@@ -300,7 +300,6 @@ public class PlatesViewPresenterTest {
     HeaderRow filterRow = design.plates.getHeaderRow(1);
     HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
     AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
-    Label label = (Label) layout.getComponent(0);
     TextField textField = (TextField) layout.getComponent(1);
     Integer filterValue = 5;
     ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
@@ -311,6 +310,7 @@ public class PlatesViewPresenterTest {
 
     listener.valueChange(event);
 
+    Label label = (Label) layout.getComponent(0);
     assertEquals(resources.message(property(EMPTY_COUNT, FILTER)), label.getValue());
     verify(platesDataProvider).refreshAll();
     PlateFilter filter = presenter.getFilter();
@@ -350,15 +350,15 @@ public class PlatesViewPresenterTest {
     HeaderCell cell = filterRow.getCell(EMPTY_COUNT);
     AbstractOrderedLayout layout = (AbstractOrderedLayout) cell.getComponent();
     TextField textField = (TextField) layout.getComponent(1);
-    Integer filterValue = 5;
-    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
-        .getListeners(ValueChangeEvent.class).iterator().next();
     ValueChangeEvent<String> event = mock(ValueChangeEvent.class);
     when(event.getComponent()).thenReturn(textField);
     when(event.getValue()).thenReturn("a");
     event = mock(ValueChangeEvent.class);
     when(event.getComponent()).thenReturn(textField);
+    Integer filterValue = 5;
     when(event.getValue()).thenReturn(filterValue.toString());
+    ValueChangeListener<String> listener = (ValueChangeListener<String>) textField
+        .getListeners(ValueChangeEvent.class).iterator().next();
 
     listener.valueChange(event);
 
@@ -542,7 +542,7 @@ public class PlatesViewPresenterTest {
     when(plateService.nameAvailable(any())).thenReturn(true);
     presenter.init(view);
     Plate plate = plates.get(0);
-    String name = plate.getName();
+    final String name = plate.getName();
     gridStartEdit(design.plates, plate);
     TextField nameField = (TextField) design.plates.getColumn(NAME).getEditorBinding().getField();
     nameField.setValue("unit_test");

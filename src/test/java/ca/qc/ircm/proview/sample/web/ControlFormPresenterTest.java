@@ -124,7 +124,7 @@ public class ControlFormPresenterTest {
     design.quantityField.setValue(quantity);
     design.volumeField.setValue(volume);
     design.controlTypeField.setValue(controlType);
-    List<Standard> standards = new ArrayList<>();
+    final List<Standard> standards = new ArrayList<>();
     Standard standard1 = new Standard();
     standard1.setName(standardName1);
     standard1.setQuantity(standardQuantity1);

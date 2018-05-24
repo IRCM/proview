@@ -37,7 +37,7 @@ public class CloseWindowOnViewChange extends AbstractExtension {
     extend(window);
   }
 
-  public void extend(Window window) {
+  protected void extend(Window window) {
     super.extend(window);
     this.window = window;
     registration = window.getUI().getNavigator().addViewChangeListener(listener());
@@ -54,6 +54,13 @@ public class CloseWindowOnViewChange extends AbstractExtension {
     return new CloseWindowOnViewChangeListener(this);
   }
 
+  /**
+   * Registers {@link CloseWindowOnViewChange} extension to window.
+   *
+   * @param window
+   *          window
+   * @return {@link CloseWindowOnViewChange} extension
+   */
   public static CloseWindowOnViewChange closeWindowOnViewChange(Window window) {
     CloseWindowOnViewChange instance = new CloseWindowOnViewChange();
     instance.extend(window);

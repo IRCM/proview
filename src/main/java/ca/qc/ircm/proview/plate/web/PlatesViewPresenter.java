@@ -124,8 +124,8 @@ public class PlatesViewPresenter {
   }
 
   private void prepareComponents() {
-    MessageResource resources = view.getResources();
-    MessageResource generalResources = view.getGeneralResources();
+    final MessageResource resources = view.getResources();
+    final MessageResource generalResources = view.getGeneralResources();
     final Locale locale = view.getLocale();
     final Collator collator = Collator.getInstance(locale);
     final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
@@ -173,7 +173,6 @@ public class PlatesViewPresenter {
             minimumEmptyCount = null;
             field.setComponentError(
                 new UserError(generalResources.message(OUT_OF_RANGE, 0, Plate.DEFAULT_PLATE_SIZE)));
-          } else {
           }
         } catch (NumberFormatException e) {
           minimumEmptyCount = null;

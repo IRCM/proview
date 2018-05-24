@@ -75,6 +75,9 @@ public class ContaminantsFormPresenterTest {
   private MessageResource generalResources =
       new MessageResource(WebConstants.GENERAL_MESSAGES, locale);
 
+  /**
+   * Before test.
+   */
   @Before
   public void beforeTest() {
     presenter = new ContaminantsFormPresenter();

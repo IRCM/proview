@@ -219,7 +219,7 @@ public class SubmissionSampleServiceTest {
   public void updateStatus_Name() throws Throwable {
     SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
     entityManager.detach(sample);
-    String name = sample.getName();
+    final String name = sample.getName();
     sample.setName("unit_test");
     sample.setStatus(SampleStatus.DIGESTED);
     Collection<SubmissionSample> samples = new LinkedList<>();

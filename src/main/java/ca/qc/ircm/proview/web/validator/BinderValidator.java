@@ -111,6 +111,16 @@ public interface BinderValidator {
     });
   }
 
+  /**
+   * Adds error to component.<br>
+   * This may replace component's current error for a {@link CompositeErrorMessage} containing the
+   * old and new errors.
+   *
+   * @param error
+   *          error
+   * @param component
+   *          component
+   */
   public default void addError(ErrorMessage error, AbstractComponent component) {
     if (component.getComponentError() == null) {
       component.setComponentError(error);

@@ -50,6 +50,9 @@ public class ControlForm extends CustomComponent implements BaseComponent {
     this.presenter = presenter;
   }
 
+  /**
+   * Initializes form.
+   */
   @PostConstruct
   public void init() {
     setSizeFull();

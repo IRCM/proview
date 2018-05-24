@@ -78,6 +78,13 @@ public class PhoneNumber implements Serializable {
         + extension + "]";
   }
 
+  /**
+   * Returns value to show in user interface for this phone number.
+   *
+   * @param locale
+   *          user's locale
+   * @return value to show in user interface for this phone number
+   */
   public String getValue(Locale locale) {
     MessageResource resources = new MessageResource(PhoneNumber.class, locale);
     return resources.message("value", number, extension != null && !extension.isEmpty() ? 1 : 0,

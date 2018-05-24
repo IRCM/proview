@@ -364,6 +364,7 @@ public class FractionationServiceTest {
       fractionationService.undo(fractionation, "undo unit test", true, false);
       fail("Expected IllegalArgumentException to be thrown");
     } catch (IllegalArgumentException e) {
+      // Success.
     }
     verify(authorizationService).checkAdminRole();
   }

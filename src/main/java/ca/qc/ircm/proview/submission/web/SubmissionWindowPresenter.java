@@ -51,6 +51,12 @@ public class SubmissionWindowPresenter {
     this.authorizationService = authorizationService;
   }
 
+  /**
+   * Initializes presenter.
+   * 
+   * @param window
+   *          window
+   */
   public void init(SubmissionWindow window) {
     this.window = window;
     design = window.design;
@@ -59,7 +65,7 @@ public class SubmissionWindowPresenter {
 
   private void prepareComponents() {
     closeWindowOnViewChange(window);
-    MessageResource resources = window.getResources();
+    final MessageResource resources = window.getResources();
     window.addStyleName(WINDOW_STYLE);
     window.setHeight("700px");
     window.setWidth("1200px");

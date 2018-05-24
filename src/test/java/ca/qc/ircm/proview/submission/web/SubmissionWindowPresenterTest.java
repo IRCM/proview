@@ -64,6 +64,9 @@ public class SubmissionWindowPresenterTest {
   private MessageResource resources = new MessageResource(SubmissionWindow.class, locale);
   private Submission submission;
 
+  /**
+   * Before test.
+   */
   @Before
   public void beforeTest() {
     presenter = new SubmissionWindowPresenter(authorizationService);

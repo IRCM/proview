@@ -59,6 +59,12 @@ public class PlateWindowPresenter {
     this.plateService = plateService;
   }
 
+  /**
+   * Initializes presenter.
+   * 
+   * @param view
+   *          view
+   */
   public void init(PlateWindow view) {
     logger.debug("Plate window");
     this.view = view;

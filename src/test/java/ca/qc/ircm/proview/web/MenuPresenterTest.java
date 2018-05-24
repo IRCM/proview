@@ -105,6 +105,9 @@ public class MenuPresenterTest {
   private MessageResource resources = new MessageResource(Menu.class, locale);
   private String contextPath = "/";
 
+  /**
+   * Before test.
+   */
   @Before
   public void beforeTest() {
     presenter = new MenuPresenter(authorizationService, authenticationService);

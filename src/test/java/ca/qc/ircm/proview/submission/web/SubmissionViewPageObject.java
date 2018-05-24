@@ -379,7 +379,8 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected ButtonElement fillContaminantsButton() {
-    return wrap(ButtonElement.class, contaminantsContainer().findElement(className(FILL_CONTAMINANTS)));
+    return wrap(ButtonElement.class,
+        contaminantsContainer().findElement(className(FILL_CONTAMINANTS)));
   }
 
   protected PanelElement gelPanel() {

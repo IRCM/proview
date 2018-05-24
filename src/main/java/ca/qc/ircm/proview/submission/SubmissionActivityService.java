@@ -106,7 +106,7 @@ public class SubmissionActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> update(final Submission submission, final String explanation) {
-    User user = authorizationService.getCurrentUser();
+    final User user = authorizationService.getCurrentUser();
 
     final Submission oldSubmission = entityManager.find(Submission.class, submission.getId());
 

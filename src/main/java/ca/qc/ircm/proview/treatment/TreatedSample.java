@@ -124,6 +124,11 @@ public class TreatedSample implements Data, Serializable {
   @Column(name = "comment")
   private String comment;
 
+  /**
+   * Returns fration's name based on sample's name.
+   * 
+   * @return fration's name based on sample's name
+   */
   public String getFractionName() {
     if (getSample() != null && getSample().getName() != null) {
       StringBuilder builder = new StringBuilder();

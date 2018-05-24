@@ -239,6 +239,12 @@ public class SubmissionFilter implements Predicate<Submission> {
     addFilterConditions(query);
   }
 
+  /**
+   * Adds conditions to query to match filters.
+   * 
+   * @param query
+   *          database query
+   */
   public void addConditions(JPAQuery<?> query) {
     addFilterConditions(query);
     if (sortOrders != null) {

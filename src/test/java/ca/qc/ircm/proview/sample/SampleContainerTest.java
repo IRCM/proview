@@ -33,8 +33,8 @@ public class SampleContainerTest {
 
   @Test(expected = OptimisticLockException.class)
   public void update_FailVersion() throws Throwable {
-    Sample sample1 = entityManager.find(Sample.class, 442L);
-    Sample sample2 = entityManager.find(Sample.class, 443L);
+    final Sample sample1 = entityManager.find(Sample.class, 442L);
+    final Sample sample2 = entityManager.find(Sample.class, 443L);
     SampleContainer sampleContainer1 = entityManager.find(SampleContainer.class, 130L);
     entityManager.detach(sampleContainer1);
     SampleContainer sampleContainer2 = entityManager.find(SampleContainer.class, 130L);

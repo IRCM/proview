@@ -46,6 +46,13 @@ public class VaadinTestUtils {
     return (ListDataProvider<V>) radios.getDataProvider();
   }
 
+  /**
+   * Returns items in grid, unsorted and non-filtered.
+   *
+   * @param grid
+   *          grid
+   * @return items in grid, unsorted and non-filtered
+   */
   @SuppressWarnings("unchecked")
   public static <V> List<V> items(Grid<V> grid) {
     if (grid.getDataProvider() instanceof ListDataProvider) {
@@ -64,6 +71,14 @@ public class VaadinTestUtils {
     return new ArrayList<>(dataProvider(radios).getItems());
   }
 
+  /**
+   * Simulates a open edit event in grid.
+   *
+   * @param grid
+   *          grid
+   * @param value
+   *          value to edit
+   */
   public static <V> void gridStartEdit(Grid<V> grid, V value) {
     try {
       Method method = EditorImpl.class.getDeclaredMethod("doEdit", Object.class);

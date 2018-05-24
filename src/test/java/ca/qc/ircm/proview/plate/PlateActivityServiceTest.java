@@ -101,7 +101,7 @@ public class PlateActivityServiceTest {
     assertEquals(plate.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
     assertEquals(user, activity.getUser());
-    Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
+    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameUpdate = new UpdateActivity();
     nameUpdate.setTableName(Plate.TABLE_NAME);
     nameUpdate.setRecordId(plate.getId());

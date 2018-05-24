@@ -46,7 +46,8 @@ public class StringsTest {
     assertEquals("a", Strings.normalize("ą"));
     assertEquals("c", Strings.normalize("ć"));
     assertEquals("e", Strings.normalize("ę"));
-    //assertEquals("l", Strings.normalize("ł")); Doesn't work because ł in Unicode is not l with a slash, but its own character.
+    // Doesn't work because ł in Unicode is not l with a slash, but its own character.
+    //assertEquals("l", Strings.normalize("ł"));
     assertEquals("n", Strings.normalize("ń"));
     assertEquals("o", Strings.normalize("ó"));
     assertEquals("s", Strings.normalize("ś"));

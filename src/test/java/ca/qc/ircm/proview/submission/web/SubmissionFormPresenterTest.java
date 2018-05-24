@@ -440,7 +440,7 @@ public class SubmissionFormPresenterTest {
   }
 
   private void setValuesInStandardsTable() {
-    List<Standard> standards = new ArrayList<>();
+    final List<Standard> standards = new ArrayList<>();
     Standard standard1 = new Standard();
     standard1.setName(standardName1);
     standard1.setQuantity(standardQuantity1);
@@ -455,7 +455,7 @@ public class SubmissionFormPresenterTest {
   }
 
   private void setValuesInContaminantsTable() {
-    List<Contaminant> contaminants = new ArrayList<>();
+    final List<Contaminant> contaminants = new ArrayList<>();
     Contaminant contaminant1 = new Contaminant();
     contaminant1.setName(contaminantName1);
     contaminant1.setQuantity(contaminantQuantity1);
@@ -3601,7 +3601,7 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_ExistsPlateName_Update() throws Throwable {
     Submission submission = entityManager.find(Submission.class, 163L);
-    Plate plate = ((Well) submission.getSamples().get(0).getOriginalContainer()).getPlate();
+    final Plate plate = ((Well) submission.getSamples().get(0).getOriginalContainer()).getPlate();
     presenter.init(view);
     presenter.setValue(submission);
     when(plateService.nameAvailable(any())).thenReturn(false);

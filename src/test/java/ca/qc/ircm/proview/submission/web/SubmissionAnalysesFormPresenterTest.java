@@ -211,7 +211,7 @@ public class SubmissionAnalysesFormPresenterTest {
     presenter.setValue(submission);
 
     for (int i = 0; i < analyses.size(); i++) {
-      MsAnalysis analysis = analyses.get(i);
+      final MsAnalysis analysis = analyses.get(i);
       Button button = viewAnalyses().get(i);
       assertTrue(button.getStyleName().contains(VIEW));
       assertEquals(resources.message(VIEW), button.getCaption());

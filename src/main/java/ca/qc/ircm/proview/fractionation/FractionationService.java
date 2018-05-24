@@ -149,7 +149,7 @@ public class FractionationService extends BaseTreatmentService {
   public void insert(Fractionation fractionation) {
     authorizationService.checkAdminRole();
     chechSameUserForAllSamples(fractionation);
-    User user = authorizationService.getCurrentUser();
+    final User user = authorizationService.getCurrentUser();
     validateWellDestination(fractionation);
 
     fractionation.getTreatedSamples().forEach(ts -> ts.setTreatment(fractionation));

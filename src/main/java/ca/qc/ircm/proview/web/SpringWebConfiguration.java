@@ -73,6 +73,11 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
     return new ServletListenerRegistrationBean<>(new ShiroWebEnvironmentListener());
   }
 
+  /**
+   * Returns {@link LocaleResolver} instance.
+   * 
+   * @return {@link LocaleResolver} instance
+   */
   @Bean
   public LocaleResolver localeResolver() {
     SessionLocaleResolver slr = new SessionLocaleResolver();
@@ -80,6 +85,11 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
     return slr;
   }
 
+  /**
+   * Returns {@link LocaleChangeInterceptor} instance.
+   * 
+   * @return {@link LocaleChangeInterceptor} instance
+   */
   @Bean
   public LocaleChangeInterceptor localeChangeInterceptor() {
     LocaleChangeInterceptor lci = new LocaleChangeInterceptor();

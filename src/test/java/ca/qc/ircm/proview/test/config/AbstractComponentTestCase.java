@@ -36,8 +36,11 @@ public abstract class AbstractComponentTestCase {
   @Mock
   protected VaadinSession vaadinSession;
 
+  /**
+   * Mock UI for tests.
+   */
   @Before
-  public void connectUi() {
+  public void mockUiForTest() {
     when(ui.getConnectorTracker()).thenReturn(connectorTracker);
     when(ui.getSession()).thenReturn(vaadinSession);
     when(vaadinSession.hasLock()).thenReturn(true);

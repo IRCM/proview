@@ -60,6 +60,12 @@ public class CategoryForm extends CustomComponent implements BaseComponent {
     presenter.setValue(category);
   }
 
+  /**
+   * Sets category.
+   * 
+   * @param category
+   *          category
+   */
   public void setValue(Category category) {
     this.category = category;
     if (isAttached()) {

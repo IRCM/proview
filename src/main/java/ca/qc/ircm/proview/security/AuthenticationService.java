@@ -83,7 +83,7 @@ public class AuthenticationService {
   protected AuthenticationService() {
   }
 
-  public AuthenticationService(EntityManager entityManager,
+  protected AuthenticationService(EntityManager entityManager,
       SecurityConfiguration securityConfiguration, LdapConfiguration ldapConfiguration,
       SpringLdapService springLdapService, ShiroLdapService shiroLdapService, String ldapUsername) {
     this.entityManager = entityManager;

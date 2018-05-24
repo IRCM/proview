@@ -1453,7 +1453,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       firstSample.setType(original.getType());
       firstSample.setVolume(original.getVolume());
     }
-    SampleContainer container = firstSample.getOriginalContainer();
+    final SampleContainer container = firstSample.getOriginalContainer();
 
     submissionBinder.setBean(submission);
     firstSampleBinder.setBean(firstSample);

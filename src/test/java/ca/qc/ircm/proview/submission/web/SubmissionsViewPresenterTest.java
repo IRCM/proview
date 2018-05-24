@@ -2089,7 +2089,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     ComboBox<MassDetectionInstrument> field =
         (ComboBox<MassDetectionInstrument>) design.submissionsGrid.getColumn(INSTRUMENT)
             .getEditorBinding().getField();
-    MassDetectionInstrument instrument = submission.getMassDetectionInstrument();
+    final MassDetectionInstrument instrument = submission.getMassDetectionInstrument();
     field.setValue(MassDetectionInstrument.ORBITRAP_FUSION);
     design.submissionsGrid.getEditor().cancel();
 
@@ -2102,10 +2102,10 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
-    LocalDate sampleDeliveryDate = LocalDate.now().minusDays(2);
-    LocalDate digestionDate = LocalDate.now().minusDays(1);
-    LocalDate analysisDate = LocalDate.now().plusDays(1);
-    LocalDate dataAvaibleDate = LocalDate.now().plusDays(2);
+    final LocalDate sampleDeliveryDate = LocalDate.now().minusDays(2);
+    final LocalDate digestionDate = LocalDate.now().minusDays(1);
+    final LocalDate analysisDate = LocalDate.now().plusDays(1);
+    final LocalDate dataAvaibleDate = LocalDate.now().plusDays(2);
     gridStartEdit(design.submissionsGrid, submission);
     DateField sampleDeliveryDateField = (DateField) design.submissionsGrid
         .getColumn(SAMPLE_DELIVERY_DATE).getEditorBinding().getField();

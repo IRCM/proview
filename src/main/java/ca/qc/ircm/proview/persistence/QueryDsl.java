@@ -29,6 +29,15 @@ public class QueryDsl {
     return path.getMetadata().getName();
   }
 
+  /**
+   * Returns {@link OrderSpecifier} for specified path and order.
+   * 
+   * @param path
+   *          path
+   * @param descending
+   *          true if descending, false for ascending
+   * @return {@link OrderSpecifier} for specified path and order
+   */
   public static <T extends Comparable<?>> OrderSpecifier<T>
       direction(ComparableExpressionBase<T> path, boolean descending) {
     if (descending) {
