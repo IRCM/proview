@@ -34,6 +34,8 @@ public class PlatesView extends CustomComponent implements BaseView {
   private static final long serialVersionUID = -3581153300579000271L;
   protected PlatesViewDesign design = new PlatesViewDesign();
   @Inject
+  protected PlatesSelectionComponent platesSelection;
+  @Inject
   private transient PlatesViewPresenter presenter;
 
   /**
@@ -42,6 +44,7 @@ public class PlatesView extends CustomComponent implements BaseView {
   @PostConstruct
   public void init() {
     setCompositionRoot(design);
+    design.platesLayout.addComponent(platesSelection);
   }
 
   @Override
