@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.test.config;
 
 import static org.mockito.Mockito.when;
 
+import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.UI;
@@ -35,6 +36,8 @@ public abstract class AbstractComponentTestCase {
   protected ConnectorTracker connectorTracker;
   @Mock
   protected VaadinSession vaadinSession;
+  @Mock
+  protected Navigator navigator;
 
   /**
    * Mock UI for tests.
@@ -43,6 +46,7 @@ public abstract class AbstractComponentTestCase {
   public void mockUiForTest() {
     when(ui.getConnectorTracker()).thenReturn(connectorTracker);
     when(ui.getSession()).thenReturn(vaadinSession);
+    when(ui.getNavigator()).thenReturn(navigator);
     when(vaadinSession.hasLock()).thenReturn(true);
   }
 }
