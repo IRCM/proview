@@ -17,8 +17,12 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
+
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,13 +41,17 @@ public class RegisterViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(RegisterViewPresenter.class);
   private RegisterView view;
   private RegisterViewDesign design;
+  @Inject
+  private AuthorizationService authorizationService;
   @Value("${spring.application.name}")
   private String applicationName;
 
   public RegisterViewPresenter() {
   }
 
-  protected RegisterViewPresenter(String applicationName) {
+  protected RegisterViewPresenter(AuthorizationService authorizationService,
+      String applicationName) {
+    this.authorizationService = authorizationService;
     this.applicationName = applicationName;
   }
 
@@ -66,6 +74,10 @@ public class RegisterViewPresenter {
     view.setTitle(resources.message(TITLE, applicationName));
     design.headerLabel.addStyleName(HEADER);
     design.headerLabel.setValue(resources.message(HEADER));
+    if (authorizationService.hasAdminRole()) {
+      view.setTitle(resources.message(property(TITLE, "admin"), applicationName));
+      design.headerLabel.setValue(resources.message(property(HEADER, "admin")));
+    }
   }
 
   private void addFieldListeners() {
