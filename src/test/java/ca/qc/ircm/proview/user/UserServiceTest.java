@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -705,6 +706,8 @@ public class UserServiceTest {
     verify(email).addTo("christian.poitras@ircm.qc.ca");
     verify(email).addTo("liam.li@ircm.qc.ca");
     verify(email).addTo("jackson.smith@ircm.qc.ca");
+    verify(email, never()).addTo("robert.stlouis@ircm.qc.ca");
+    verify(email, never()).addTo("benoit.coulombe@ircm.qc.ca");
     verify(email, times(3)).setSubject(stringCaptor.capture());
     assertEquals(1,
         stringCaptor.getAllValues().stream()

@@ -305,6 +305,7 @@ public class SubmissionService {
     query.join(user.laboratory, laboratory);
     query.where(user.admin.eq(true));
     query.where(user.valid.eq(true));
+    query.where(user.active.eq(true));
     query.where(user.id.ne(1L));
     return query.fetch();
   }

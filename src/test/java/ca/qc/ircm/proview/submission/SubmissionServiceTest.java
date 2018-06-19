@@ -2317,6 +2317,7 @@ public class SubmissionServiceTest {
     verify(email).addTo("christian.poitras@ircm.qc.ca");
     verify(email).addTo("liam.li@ircm.qc.ca");
     verify(email).addTo("jackson.smith@ircm.qc.ca");
+    verify(email, never()).addTo("robert.stlouis@ircm.qc.ca");
     verify(email, never()).addTo("benoit.coulombe@ircm.qc.ca");
     verify(email).setSubject("New samples were submitted");
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
