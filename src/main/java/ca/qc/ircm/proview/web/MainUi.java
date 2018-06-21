@@ -73,7 +73,7 @@ public class MainUi extends UI {
   @Override
   protected void init(VaadinRequest vaadinRequest) {
     if (getUI().getLocale() == null) {
-      // TODO Use user's locale rather than a default one.
+      // User's locale not recognized, use default locale.
       getUI().getSession().setLocale(DEFAULT_LOCALE);
     }
     if (getUI().getSession().getAttribute(SKIP_ABOUT) == null) {
