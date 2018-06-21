@@ -86,7 +86,6 @@ public class SubmissionAnalysesFormPresenter {
   public static final String STATUS = dataAnalysis.status.getMetadata().getName();
   public static final String DESCRIPTION = "description";
   public static final String VALUE = "value";
-
   @SuppressWarnings("unused")
   private static final Logger logger =
       LoggerFactory.getLogger(SubmissionAnalysesFormPresenter.class);
@@ -195,7 +194,6 @@ public class SubmissionAnalysesFormPresenter {
 
   private ValidationResult validateScore(String value, ValueContext context,
       DataAnalysisStatus status) {
-    logger.debug("validateScore, value={}, status={}", value, status);
     if (value == null && status == DataAnalysisStatus.ANALYSED) {
       MessageResource generalResources = view.getGeneralResources();
       return ValidationResult.error(generalResources.message(REQUIRED));
@@ -206,7 +204,6 @@ public class SubmissionAnalysesFormPresenter {
 
   private ValidationResult validateWorkTime(Double value, ValueContext context,
       DataAnalysisStatus status) {
-    logger.debug("validateWorkTime, value={}, status={}", value, status);
     if (value == null && status == DataAnalysisStatus.ANALYSED) {
       MessageResource generalResources = view.getGeneralResources();
       return ValidationResult.error(generalResources.message(REQUIRED));
