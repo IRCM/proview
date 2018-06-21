@@ -433,7 +433,6 @@ public class SubmissionTreatmentsFormPresenterTest {
   }
 
   @Test
-  @SuppressWarnings("rawtypes")
   public void treatmentsGrid() {
     presenter.init(view);
     presenter.setValue(submission);
