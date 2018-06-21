@@ -68,6 +68,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -213,13 +214,14 @@ public class TransferViewPresenter implements BinderValidator {
     design.destinationPlatesField.setCaption(resources.message(DESTINATION_PLATES));
     design.destinationPlatesField.setItemCaptionGenerator(Plate::getName);
     design.destinationPlatesField.setEmptySelectionAllowed(false);
-    design.destinationPlatesField.setNewItemHandler(name -> {
+    design.destinationPlatesField.setNewItemProvider(name -> {
       Plate plate = new Plate(null, name);
       plate.initWells();
       ((ListDataProvider<Plate>) design.destinationPlatesField.getDataProvider()).getItems()
           .add(plate);
       design.destinationPlatesField.getDataProvider().refreshItem(plate);
-      design.destinationPlatesField.setValue(plate);
+      design.destinationPlatesField.getDataProvider().refreshAll();
+      return Optional.of(plate);
     });
     PlateFilter filter = new PlateFilter();
     filter.submission = false;
@@ -345,10 +347,10 @@ public class TransferViewPresenter implements BinderValidator {
       field.setItemCaptionGenerator(Tube::getName);
       field.setEmptySelectionAllowed(false);
       field.setRequiredIndicatorVisible(true);
-      field.setNewItemHandler(name -> {
+      field.setNewItemProvider(name -> {
         Tube tube = new Tube(null, name);
         field.setItems(tube);
-        field.setValue(tube);
+        return Optional.of(tube);
       });
       destinationTubes.put(ts, field);
       return field;

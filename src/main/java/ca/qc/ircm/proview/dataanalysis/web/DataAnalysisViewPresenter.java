@@ -46,6 +46,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.inject.Inject;
@@ -225,15 +226,16 @@ public class DataAnalysisViewPresenter implements BinderValidator {
       ListDataProvider<Double> dataProvider =
           DataProvider.fromStream(Stream.of(MAX_WORK_TIME_VALUES));
       field.setDataProvider(dataProvider);
-      field.setNewItemHandler(workTime -> {
+      field.setNewItemProvider(workTime -> {
         try {
           Double value = Double.valueOf(workTime);
           dataProvider.getItems().add(value);
           dataProvider.refreshItem(value);
-          field.setValue(value);
+          return Optional.of(value);
         } catch (NumberFormatException e) {
           final MessageResource generalResources = view.getGeneralResources();
           field.setComponentError(new UserError(generalResources.message(INVALID_NUMBER)));
+          return Optional.empty();
         }
       });
       maxWorkTimeFields.put(dataAnalysis, field);

@@ -67,6 +67,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -265,8 +266,9 @@ public class DataAnalysisViewPresenterTest {
     List<DataAnalysis> analyses = new ArrayList<>(dataProvider(design.analyses).getItems());
     ComboBox<Double> field = (ComboBox<Double>) design.analyses.getColumn(MAX_WORK_TIME)
         .getValueProvider().apply(analyses.get(0));
-    field.getNewItemHandler().accept("8");
-    assertEquals(8.0, field.getValue(), 0.00001);
+    Optional<Double> optionalNewValue = field.getNewItemProvider().apply("8");
+    assertTrue(optionalNewValue.isPresent());
+    assertEquals(8.0, optionalNewValue.get(), 0.00001);
     List<Double> values = new ArrayList<>(dataProvider(field).getItems());
     assertEquals(DataAnalysisViewPresenter.getMaxWorkTimeValues().length + 1, values.size());
     assertTrue(values.contains(8.0));
@@ -284,7 +286,8 @@ public class DataAnalysisViewPresenterTest {
     List<DataAnalysis> analyses = new ArrayList<>(dataProvider(design.analyses).getItems());
     ComboBox<Double> field = (ComboBox<Double>) design.analyses.getColumn(MAX_WORK_TIME)
         .getValueProvider().apply(analyses.get(0));
-    field.getNewItemHandler().accept("a");
+    Optional<Double> optionalNewValue = field.getNewItemProvider().apply("a");
+    assertFalse(optionalNewValue.isPresent());
     assertEquals(errorMessage(generalResources.message(INVALID_NUMBER)),
         field.getErrorMessage().getFormattedHtmlMessage());
     List<Double> values = new ArrayList<>(dataProvider(field).getItems());
@@ -303,7 +306,10 @@ public class DataAnalysisViewPresenterTest {
     List<DataAnalysis> analyses = new ArrayList<>(dataProvider(design.analyses).getItems());
     ComboBox<Double> field = (ComboBox<Double>) design.analyses.getColumn(MAX_WORK_TIME)
         .getValueProvider().apply(analyses.get(0));
-    field.getNewItemHandler().accept("0.25");
+    Optional<Double> optionalNewValue = field.getNewItemProvider().apply("0.25");
+    assertTrue(optionalNewValue.isPresent());
+    assertEquals(0.25, optionalNewValue.get(), 0.00001);
+    field.setValue(optionalNewValue.get());
     assertNotNull(field.getErrorMessage().getFormattedHtmlMessage());
   }
 

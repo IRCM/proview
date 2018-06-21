@@ -82,6 +82,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
@@ -216,8 +217,10 @@ public class DigestionViewPresenterTest {
       assertEquals(protocol.getName(), design.protocol.getItemCaptionGenerator().apply(protocol));
     }
     String newProtocolName = "test protocol";
-    design.protocol.getNewItemHandler().accept(newProtocolName);
-    assertEquals(newProtocolName, design.protocol.getValue().getName());
+    Optional<Protocol> optionalNewProtocol =
+        design.protocol.getNewItemProvider().apply(newProtocolName);
+    assertTrue(optionalNewProtocol.isPresent());
+    assertEquals(newProtocolName, optionalNewProtocol.get().getName());
     assertEquals(this.protocols.size() + 1, protocols.getItems().size());
     assertTrue(protocols.getItems().stream()
         .filter(protocol -> protocol.getName().equals(newProtocolName)).findAny().isPresent());
@@ -457,8 +460,7 @@ public class DigestionViewPresenterTest {
     Digestion savedDigestion = digestionCaptor.getValue();
     assertEquals((Long) 6L, savedDigestion.getId());
     assertEquals((Long) 3L, savedDigestion.getProtocol().getId());
-    assertEquals(digestion.getTreatedSamples().size(),
-        savedDigestion.getTreatedSamples().size());
+    assertEquals(digestion.getTreatedSamples().size(), savedDigestion.getTreatedSamples().size());
     for (int i = 0; i < digestion.getTreatedSamples().size(); i++) {
       TreatedSample original = digestion.getTreatedSamples().get(i);
       TreatedSample digested = savedDigestion.getTreatedSamples().get(i);

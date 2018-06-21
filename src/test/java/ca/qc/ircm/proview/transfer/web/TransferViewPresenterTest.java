@@ -112,6 +112,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
@@ -406,12 +407,13 @@ public class TransferViewPresenterTest {
       assertTrue(field.getStyleName().contains(DESTINATION_TUBE));
       ListDataProvider<Tube> dataProvider = dataProvider(field);
       assertTrue(dataProvider.getItems().isEmpty());
-      assertNotNull(field.getNewItemHandler());
+      assertNotNull(field.getNewItemProvider());
       assertFalse(field.isEmptySelectionAllowed());
       assertTrue(field.isRequiredIndicatorVisible());
-      field.getNewItemHandler().accept("test new tube");
-      assertNull(field.getValue().getId());
-      assertEquals("test new tube", field.getValue().getName());
+      Optional<Tube> optionalNewTube = field.getNewItemProvider().apply("test new tube");
+      assertTrue(optionalNewTube.isPresent());
+      assertNull(optionalNewTube.get().getId());
+      assertEquals("test new tube", optionalNewTube.get().getName());
       dataProvider = dataProvider(field);
       assertEquals(1, dataProvider.getItems().size());
       assertTrue(find(dataProvider.getItems(), "test new tube").isPresent());
@@ -429,7 +431,7 @@ public class TransferViewPresenterTest {
       assertTrue(field.getStyleName().contains(DESTINATION_WELL));
       ListDataProvider<Well> dataProvider = dataProvider(field);
       assertTrue(dataProvider.getItems().isEmpty());
-      assertNull(field.getNewItemHandler());
+      assertNull(field.getNewItemProvider());
       assertFalse(field.isEmptySelectionAllowed());
       assertTrue(field.isRequiredIndicatorVisible());
     }
@@ -487,16 +489,18 @@ public class TransferViewPresenterTest {
     assertNull(plateFilter.containsAnySamples);
     assertFalse(plateFilter.submission);
     assertFalse(design.destinationPlatesField.isEmptySelectionAllowed());
-    assertNotNull(design.destinationPlatesField.getNewItemHandler());
+    assertNotNull(design.destinationPlatesField.getNewItemProvider());
     assertTrue(design.destinationPlatesField.isRequiredIndicatorVisible());
     Collection<Plate> plates = dataProvider(design.destinationPlatesField).getItems();
     assertEquals(destinationPlates.size(), plates.size());
     assertTrue(plates.containsAll(destinationPlates));
     assertTrue(destinationPlates.containsAll(plates));
-    design.destinationPlatesField.getNewItemHandler().accept("test new plate");
-    assertEquals(null, design.destinationPlatesField.getValue().getId());
-    assertEquals("test new plate", design.destinationPlatesField.getValue().getName());
-    assertEquals(12 * 8, design.destinationPlatesField.getValue().getWells().size());
+    Optional<Plate> optionalNewPlate =
+        design.destinationPlatesField.getNewItemProvider().apply("test new plate");
+    assertTrue(optionalNewPlate.isPresent());
+    assertEquals(null, optionalNewPlate.get().getId());
+    assertEquals("test new plate", optionalNewPlate.get().getName());
+    assertEquals(12 * 8, optionalNewPlate.get().getWells().size());
     plates = dataProvider(design.destinationPlatesField).getItems();
     assertEquals(destinationPlates.size() + 1, plates.size());
     assertTrue(find(plates, "test new plate").isPresent());

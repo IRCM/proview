@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.slf4j.Logger;
@@ -144,12 +145,12 @@ public class DigestionViewPresenter implements BinderValidator {
     design.protocol.addStyleName(PROTOCOL);
     design.protocol.setEmptySelectionAllowed(false);
     design.protocol.setItemCaptionGenerator(protocol -> protocol.getName());
-    design.protocol.setNewItemHandler(name -> {
+    design.protocol.setNewItemProvider(name -> {
       Protocol protocol = new Protocol(null, name);
       protocol.setType(Protocol.Type.DIGESTION);
       protocolsProvider.getItems().add(protocol);
       protocolsProvider.refreshItem(protocol);
-      design.protocol.setValue(protocol);
+      return Optional.of(protocol);
     });
     protocolsProvider = DataProvider.ofCollection(protocolService.all(Protocol.Type.DIGESTION));
     design.protocol.setDataProvider(protocolsProvider);
