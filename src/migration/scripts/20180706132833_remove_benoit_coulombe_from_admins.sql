@@ -15,17 +15,17 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
--- // add denis faubert as approver
+-- // remove benoit coulombe from admins
 -- Migration SQL that makes the change goes here.
 
 UPDATE user
-SET approver = 1
-WHERE email = 'denis.faubert@ircm.qc.ca';
+SET admin = 0
+WHERE email = 'benoit.coulombe@ircm.qc.ca';
 
 
 -- //@UNDO
 -- SQL to undo the change goes here.
 
 UPDATE user
-SET approver = 0
-WHERE email = 'denis.faubert@ircm.qc.ca';
+SET admin = 1
+WHERE email = 'benoit.coulombe@ircm.qc.ca';
