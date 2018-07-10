@@ -32,7 +32,6 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected Button selectContainers;
   protected Label selectedContainersLabel;
   protected Button updateStatusButton;
-  protected Button approve;
   protected Button hide;
   protected Button show;
   protected HorizontalLayout treatmentButtons;

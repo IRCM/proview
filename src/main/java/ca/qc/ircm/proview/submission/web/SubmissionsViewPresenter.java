@@ -148,8 +148,6 @@ public class SubmissionsViewPresenter {
   public static final String SELECT_CONTAINERS_LABEL = "selectContainersLabel";
   public static final String SELECTION_EMPTY = "selection.empty";
   public static final String UPDATE_STATUS = "updateStatus";
-  public static final String APPROVE = "approve";
-  public static final String APPROVE_DONE = "approve.done";
   public static final String HIDE = "hide";
   public static final String HIDE_DONE = "hide.done";
   public static final String SHOW = "show";
@@ -274,10 +272,6 @@ public class SubmissionsViewPresenter {
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
     design.updateStatusButton.addClickListener(e -> updateStatus());
-    design.approve.addStyleName(APPROVE);
-    design.approve.setCaption(resources.message(APPROVE));
-    design.approve.setVisible(authorizationService.hasApproverRole());
-    design.approve.addClickListener(e -> approve());
     design.hide.addStyleName(HIDE);
     design.hide.setCaption(resources.message(HIDE));
     design.hide.setVisible(authorizationService.hasAdminRole());
@@ -479,7 +473,7 @@ public class SubmissionsViewPresenter {
           .getColumns().stream().map(col -> col.getId()).toArray(String[]::new));
     });
     design.submissionsGrid.setFrozenColumnCount(1);
-    if (authorizationService.hasAdminRole() || authorizationService.hasApproverRole()) {
+    if (authorizationService.hasAdminRole()) {
       design.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
     }
     HeaderRow filterRow = design.submissionsGrid.appendHeaderRow();
@@ -840,21 +834,6 @@ public class SubmissionsViewPresenter {
   private void updateStatus() {
     saveSelectedSamples();
     view.navigateTo(SampleStatusView.VIEW_NAME);
-  }
-
-  private void approve() {
-    MessageResource resources = view.getResources();
-    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
-      logger.debug("Approve submissions {}", submissions);
-      submissionService.approve(submissions);
-      view.showTrayNotification(resources.message(APPROVE_DONE, submissions.size()));
-      view.navigateTo(SubmissionsView.VIEW_NAME);
-    } else {
-      String error = resources.message(SELECTION_EMPTY);
-      logger.debug("Validation error: {}", error);
-      view.showError(error);
-    }
   }
 
   private void hide() {

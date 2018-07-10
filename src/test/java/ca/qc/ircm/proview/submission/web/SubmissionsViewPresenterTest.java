@@ -21,8 +21,6 @@ import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ALL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ANALYSIS_DATE;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.APPROVE;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.APPROVE_DONE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
@@ -307,7 +305,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.selectContainers.getStyleName().contains(SELECT_CONTAINERS));
     assertTrue(design.selectedContainersLabel.getStyleName().contains(SELECT_CONTAINERS_LABEL));
     assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
-    assertTrue(design.approve.getStyleName().contains(APPROVE));
     assertTrue(design.hide.getStyleName().contains(HIDE));
     assertTrue(design.show.getStyleName().contains(SHOW));
     assertTrue(design.transfer.getStyleName().contains(TRANSFER));
@@ -342,7 +339,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(resources.message(SELECT_CONTAINERS_LABEL, 0),
         design.selectedContainersLabel.getValue());
     assertEquals(resources.message(UPDATE_STATUS), design.updateStatusButton.getCaption());
-    assertEquals(resources.message(APPROVE), design.approve.getCaption());
     assertEquals(resources.message(HIDE), design.hide.getCaption());
     assertEquals(resources.message(SHOW), design.show.getCaption());
     assertEquals(resources.message(TRANSFER), design.transfer.getCaption());
@@ -1761,30 +1757,11 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.sampleSelectionLayout.isVisible());
     assertTrue(design.containerSelectionLayout.isVisible());
     assertTrue(design.updateStatusButton.isVisible());
-    assertFalse(design.approve.isVisible());
     assertTrue(design.hide.isVisible());
     assertTrue(design.show.isVisible());
     assertTrue(design.treatmentButtons.isVisible());
     assertTrue(design.msAnalysis.isVisible());
     assertFalse(design.dataAnalysis.isVisible());
-  }
-
-  @Test
-  public void visible_Approver() {
-    when(authorizationService.hasApproverRole()).thenReturn(true);
-    presenter.init(view);
-
-    assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Multi);
-    assertTrue(design.addSubmission.isVisible());
-    assertFalse(design.sampleSelectionLayout.isVisible());
-    assertFalse(design.containerSelectionLayout.isVisible());
-    assertFalse(design.updateStatusButton.isVisible());
-    assertTrue(design.approve.isVisible());
-    assertFalse(design.hide.isVisible());
-    assertFalse(design.show.isVisible());
-    assertFalse(design.treatmentButtons.isVisible());
-    assertFalse(design.msAnalysis.isVisible());
-    assertTrue(design.dataAnalysis.isVisible());
   }
 
   @Test
@@ -2336,34 +2313,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
-  public void approve() {
-    when(authorizationService.hasApproverRole()).thenReturn(true);
-    presenter.init(view);
-    design.submissionsGrid.select(submissions.get(0));
-    design.submissionsGrid.select(submissions.get(1));
-
-    design.approve.click();
-
-    verify(submissionService).approve(submissionsCaptor.capture());
-    assertEquals(2, submissionsCaptor.getValue().size());
-    assertTrue(find(submissionsCaptor.getValue(), submissions.get(0).getId()).isPresent());
-    assertTrue(find(submissionsCaptor.getValue(), submissions.get(1).getId()).isPresent());
-    verify(view).showTrayNotification(resources.message(APPROVE_DONE, 2));
-    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
-  }
-
-  @Test
-  public void approve_NoSelection() {
-    when(authorizationService.hasApproverRole()).thenReturn(true);
-    presenter.init(view);
-
-    design.approve.click();
-
-    verify(submissionService, never()).approve(any());
-    verify(view).showError(resources.message(SELECTION_EMPTY));
-  }
-
-  @Test
   public void hide() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
@@ -2387,7 +2336,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     design.hide.click();
 
-    verify(submissionService, never()).approve(any());
+    verify(submissionService, never()).hide(any());
     verify(view).showError(resources.message(SELECTION_EMPTY));
   }
 
@@ -2415,7 +2364,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     design.hide.click();
 
-    verify(submissionService, never()).approve(any());
+    verify(submissionService, never()).show(any());
     verify(view).showError(resources.message(SELECTION_EMPTY));
   }
 

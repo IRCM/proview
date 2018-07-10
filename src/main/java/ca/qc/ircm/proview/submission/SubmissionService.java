@@ -496,27 +496,6 @@ public class SubmissionService {
   }
 
   /**
-   * Approve analysis of all samples in submissions.
-   *
-   * @param submissions
-   *          submissions
-   */
-  public void approve(Collection<Submission> submissions) {
-    authorizationService.checkApproverRole();
-
-    for (Submission submission : submissions) {
-      submission.getSamples().stream()
-          .filter(sample -> sample.getStatus() == SampleStatus.TO_APPROVE)
-          .forEach(sample -> sample.setStatus(SampleStatus.APPROVED));
-      entityManager.merge(submission);
-      Optional<Activity> activity = submissionActivityService.approve(submission);
-      if (activity.isPresent()) {
-        activityService.insert(activity.get());
-      }
-    }
-  }
-
-  /**
    * Hide submissions.
    *
    * @param submissions

@@ -39,7 +39,6 @@ import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -191,12 +190,8 @@ public class SampleStatusViewPresenterTest {
       assertEquals(sample.getStatus(), field.getValue());
       assertEquals(sample.getStatus() != SampleStatus.TO_APPROVE, field.isEnabled());
       for (SampleStatus status : SampleStatus.values()) {
-        if (status == SampleStatus.TO_APPROVE) {
-          assertFalse(dataProvider(field).getItems().contains(status));
-        } else {
-          assertTrue(dataProvider(field).getItems().contains(status));
-          assertEquals(status.getLabel(locale), field.getItemCaptionGenerator().apply(status));
-        }
+        assertTrue(dataProvider(field).getItems().contains(status));
+        assertEquals(status.getLabel(locale), field.getItemCaptionGenerator().apply(status));
       }
     }
     assertEquals(resources.message(DOWN), design.samplesGrid.getColumn(DOWN).getCaption());

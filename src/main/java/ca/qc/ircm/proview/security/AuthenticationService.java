@@ -360,9 +360,6 @@ public class AuthenticationService {
     }
     if (user.isAdmin()) {
       roles.add(UserRole.ADMIN.name());
-      if (user.isApprover()) {
-        roles.add(UserRole.APPROVER.name());
-      }
     }
     if (user.getId() == ROBOT_ID) {
       roles.add(UserRole.MANAGER.name());

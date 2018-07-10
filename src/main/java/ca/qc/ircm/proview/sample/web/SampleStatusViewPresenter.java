@@ -154,7 +154,6 @@ public class SampleStatusViewPresenter implements BinderValidator {
       statuses.addStyleName(NEW_STATUS);
       statuses.setEmptySelectionAllowed(false);
       List<SampleStatus> items = new ArrayList<>(Arrays.asList(SampleStatus.values()));
-      items.remove(0);
       statuses.setItems(items);
       statuses.setItemCaptionGenerator(status -> status.getLabel(locale));
       statuses.setEnabled(sample.getStatus() != SampleStatus.TO_APPROVE);

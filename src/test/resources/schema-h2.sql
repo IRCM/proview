@@ -45,7 +45,6 @@ CREATE TABLE IF NOT EXISTS user (
   active tinyint(1) NOT NULL DEFAULT '0',
   valid tinyint(1) NOT NULL DEFAULT '0',
   admin tinyint(1) NOT NULL DEFAULT '0',
-  approver tinyint(1) NOT NULL DEFAULT '0',
   registerTime datetime NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY userEmail (email),

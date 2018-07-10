@@ -3171,60 +3171,6 @@ public class SubmissionServiceTest {
   }
 
   @Test
-  public void approve() throws Exception {
-    Submission submission1 = entityManager.find(Submission.class, 147L);
-    submission1.getSamples().stream().forEach(sample -> sample.setStatus(SampleStatus.TO_APPROVE));
-    Submission submission2 = entityManager.find(Submission.class, 163L);
-    when(submissionActivityService.approve(any())).thenReturn(optionalActivity);
-
-    submissionService.approve(Arrays.asList(submission1, submission2));
-
-    verify(authorizationService).checkApproverRole();
-    for (SubmissionSample sample : submission1.getSamples()) {
-      assertEquals(SampleStatus.APPROVED, sample.getStatus());
-    }
-    for (SubmissionSample sample : submission2.getSamples()) {
-      assertEquals(SampleStatus.APPROVED, sample.getStatus());
-    }
-    entityManager.flush();
-    verify(submissionActivityService).approve(submission1);
-    verify(submissionActivityService).approve(submission2);
-    verify(activityService, times(2)).insert(activity);
-    submission1 = entityManager.find(Submission.class, submission1.getId());
-    submission2 = entityManager.find(Submission.class, submission2.getId());
-    for (SubmissionSample sample : submission1.getSamples()) {
-      assertEquals(SampleStatus.APPROVED, sample.getStatus());
-    }
-    for (SubmissionSample sample : submission2.getSamples()) {
-      assertEquals(SampleStatus.APPROVED, sample.getStatus());
-    }
-  }
-
-  @Test
-  public void approve_SomeAlreadyApproved() throws Exception {
-    Submission submission1 = entityManager.find(Submission.class, 147L);
-    Submission submission2 = entityManager.find(Submission.class, 163L);
-    when(submissionActivityService.approve(submission1)).thenReturn(Optional.empty());
-    when(submissionActivityService.approve(submission2)).thenReturn(optionalActivity);
-
-    submissionService.approve(Arrays.asList(submission1, submission2));
-
-    verify(authorizationService).checkApproverRole();
-    entityManager.flush();
-    verify(submissionActivityService).approve(submission1);
-    verify(submissionActivityService).approve(submission2);
-    verify(activityService).insert(activity);
-    submission1 = entityManager.find(Submission.class, submission1.getId());
-    submission2 = entityManager.find(Submission.class, submission2.getId());
-    for (SubmissionSample sample : submission1.getSamples()) {
-      assertEquals(SampleStatus.DIGESTED, sample.getStatus());
-    }
-    for (SubmissionSample sample : submission2.getSamples()) {
-      assertEquals(SampleStatus.APPROVED, sample.getStatus());
-    }
-  }
-
-  @Test
   public void hide() throws Exception {
     Submission submission1 = entityManager.find(Submission.class, 147L);
     entityManager.detach(submission1);

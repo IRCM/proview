@@ -85,6 +85,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class AuthenticationServiceTest {
+  private static final String USER = UserRole.USER.name();
+  private static final String MANAGER = UserRole.MANAGER.name();
+  private static final String ADMIN = UserRole.ADMIN.name();
   private AuthenticationService authenticationService;
   @PersistenceContext
   private EntityManager entityManager;
@@ -624,10 +627,9 @@ public class AuthenticationServiceTest {
     AuthorizationInfo authorization =
         authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(3L, realmName));
 
-    assertEquals(true, authorization.getRoles().contains("USER"));
-    assertEquals(true, authorization.getRoles().contains("MANAGER"));
-    assertEquals(false, authorization.getRoles().contains("ADMIN"));
-    assertEquals(false, authorization.getRoles().contains("APPROVER"));
+    assertEquals(true, authorization.getRoles().contains(USER));
+    assertEquals(true, authorization.getRoles().contains(MANAGER));
+    assertEquals(false, authorization.getRoles().contains(ADMIN));
     assertEquals(true,
         implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:3")));
     assertEquals(true,
@@ -657,10 +659,9 @@ public class AuthenticationServiceTest {
     AuthorizationInfo authorization =
         authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(2L, realmName));
 
-    assertEquals(true, authorization.getRoles().contains("USER"));
-    assertEquals(true, authorization.getRoles().contains("MANAGER"));
-    assertEquals(true, authorization.getRoles().contains("ADMIN"));
-    assertEquals(true, authorization.getRoles().contains("APPROVER"));
+    assertEquals(true, authorization.getRoles().contains(USER));
+    assertEquals(true, authorization.getRoles().contains(MANAGER));
+    assertEquals(true, authorization.getRoles().contains(ADMIN));
     assertEquals(true,
         implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:2")));
     assertEquals(true,
@@ -690,10 +691,9 @@ public class AuthenticationServiceTest {
     AuthorizationInfo authorization =
         authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(5L, realmName));
 
-    assertEquals(true, authorization.getRoles().contains("USER"));
-    assertEquals(false, authorization.getRoles().contains("MANAGER"));
-    assertEquals(true, authorization.getRoles().contains("ADMIN"));
-    assertEquals(false, authorization.getRoles().contains("APPROVER"));
+    assertEquals(true, authorization.getRoles().contains(USER));
+    assertEquals(false, authorization.getRoles().contains(MANAGER));
+    assertEquals(true, authorization.getRoles().contains(ADMIN));
     assertEquals(true,
         implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:5")));
     assertEquals(true,
@@ -719,49 +719,13 @@ public class AuthenticationServiceTest {
   }
 
   @Test
-  public void getAuthorizationInfo_ApproverNotAdmin() {
-    entityManager.find(User.class, 3L).setApprover(true);
-
-    AuthorizationInfo authorization =
-        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(3L, realmName));
-
-    assertEquals(true, authorization.getRoles().contains("USER"));
-    assertEquals(true, authorization.getRoles().contains("MANAGER"));
-    assertEquals(false, authorization.getRoles().contains("ADMIN"));
-    assertEquals(false, authorization.getRoles().contains("APPROVER"));
-    assertEquals(true,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:3")));
-    assertEquals(true,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:write:3")));
-    assertEquals(true, implies(authorization.getObjectPermissions(),
-        new WildcardPermission("user:write_password:3")));
-    assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:10")));
-    assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("laboratory:read:1")));
-    assertEquals(true,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("laboratory:read:2")));
-    assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("laboratory:read:3")));
-    assertEquals(false, implies(authorization.getObjectPermissions(),
-        new WildcardPermission("laboratory:manager:1")));
-    assertEquals(true, implies(authorization.getObjectPermissions(),
-        new WildcardPermission("laboratory:manager:2")));
-    assertEquals(false, implies(authorization.getObjectPermissions(),
-        new WildcardPermission("laboratory:manager:3")));
-    assertEquals(false,
-        implies(authorization.getObjectPermissions(), new WildcardPermission("abc:read:1")));
-  }
-
-  @Test
   public void getAuthorizationInfo_Invalid() {
     AuthorizationInfo authorization =
         authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(6L, realmName));
 
-    assertEquals(false, authorization.getRoles().contains("USER"));
-    assertEquals(false, authorization.getRoles().contains("MANAGER"));
-    assertEquals(false, authorization.getRoles().contains("ADMIN"));
-    assertEquals(false, authorization.getRoles().contains("APPROVER"));
+    assertEquals(false, authorization.getRoles().contains(USER));
+    assertEquals(false, authorization.getRoles().contains(MANAGER));
+    assertEquals(false, authorization.getRoles().contains(ADMIN));
     assertEquals(false,
         implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:6")));
     assertEquals(false,
@@ -791,10 +755,9 @@ public class AuthenticationServiceTest {
     AuthorizationInfo authorization =
         authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(12L, realmName));
 
-    assertEquals(false, authorization.getRoles().contains("USER"));
-    assertEquals(false, authorization.getRoles().contains("MANAGER"));
-    assertEquals(false, authorization.getRoles().contains("ADMIN"));
-    assertEquals(false, authorization.getRoles().contains("APPROVER"));
+    assertEquals(false, authorization.getRoles().contains(USER));
+    assertEquals(false, authorization.getRoles().contains(MANAGER));
+    assertEquals(false, authorization.getRoles().contains(ADMIN));
     assertEquals(false,
         implies(authorization.getObjectPermissions(), new WildcardPermission("user:read:12")));
     assertEquals(false,
@@ -824,10 +787,9 @@ public class AuthenticationServiceTest {
     AuthorizationInfo authorization =
         authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(1L, realmName));
 
-    assertEquals(true, authorization.getRoles().contains("USER"));
-    assertEquals(true, authorization.getRoles().contains("MANAGER"));
-    assertEquals(true, authorization.getRoles().contains("ADMIN"));
-    assertEquals(true, authorization.getRoles().contains("APPROVER"));
+    assertEquals(true, authorization.getRoles().contains(USER));
+    assertEquals(true, authorization.getRoles().contains(MANAGER));
+    assertEquals(true, authorization.getRoles().contains(ADMIN));
     assertEquals(true, implies(authorization.getObjectPermissions(), new RobotPermission()));
     assertEquals(true, implies(authorization.getObjectPermissions(), new WildcardPermission("*")));
   }
