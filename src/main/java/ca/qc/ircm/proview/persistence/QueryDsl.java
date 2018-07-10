@@ -31,7 +31,9 @@ public class QueryDsl {
 
   /**
    * Returns {@link OrderSpecifier} for specified path and order.
-   * 
+   *
+   * @param <T>
+   *          path type
    * @param path
    *          path
    * @param descending

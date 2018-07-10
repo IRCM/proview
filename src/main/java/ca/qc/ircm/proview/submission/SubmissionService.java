@@ -349,14 +349,14 @@ public class SubmissionService {
 
   /**
    * Updates submission. <br>
-   * <strong>Will only work if all samples status are {@link SampleStatus#TO_APPROVE}</strong>
+   * <strong>Will only work if all samples status are {@link SampleStatus#WAITING}</strong>
    *
    * @param submission
    *          submission with new information
    * @param explanation
    *          explanation for changes made to submission
    * @throws IllegalArgumentException
-   *           samples don't all have {@link SampleStatus#TO_APPROVE} status
+   *           samples don't all have {@link SampleStatus#WAITING} status
    */
   public void update(Submission submission, String explanation) throws IllegalArgumentException {
     validateUpdateSubmission(submission);
