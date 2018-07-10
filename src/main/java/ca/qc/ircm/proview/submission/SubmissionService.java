@@ -242,7 +242,7 @@ public class SubmissionService {
     Plate plate = plate(submission);
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
-      sample.setStatus(SampleStatus.TO_APPROVE);
+      sample.setStatus(SampleStatus.WAITING);
     });
 
     entityManager.persist(submission);
@@ -362,7 +362,7 @@ public class SubmissionService {
     validateUpdateSubmission(submission);
     authorizationService.checkSubmissionWritePermission(submission);
     if (!authorizationService.hasAdminRole()
-        && anyStatusGreaterOrEquals(submission, SampleStatus.APPROVED)) {
+        && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
       Submission userSupplied = submission;
       submission = entityManager.merge(submission);
       entityManager.refresh(submission);
@@ -413,19 +413,7 @@ public class SubmissionService {
 
       if (anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
         throw new IllegalArgumentException("Cannot update submission if samples don't have "
-            + SampleStatus.APPROVED.name() + " status or less");
-      } else if (anyStatusGreaterOrEquals(submission, SampleStatus.APPROVED)) {
-        if (submission.getSamples().size() != old.getSamples().size()) {
-          throw new IllegalArgumentException(
-              "Cannot update number of samples in submission if samples don't have "
-                  + SampleStatus.TO_APPROVE.name() + " status");
-        } else if (!submission.getSamples().isEmpty()
-            && submission.getSamples().get(0).getOriginalContainer().getType() != old.getSamples()
-                .get(0).getOriginalContainer().getType()) {
-          throw new IllegalArgumentException(
-              "Cannot update container type in submission if samples don't have "
-                  + SampleStatus.TO_APPROVE.name() + " status");
-        }
+            + SampleStatus.WAITING.name() + " status or less");
       }
     }
   }
@@ -444,7 +432,7 @@ public class SubmissionService {
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
       if (sample.getId() == null) {
-        sample.setStatus(SampleStatus.TO_APPROVE);
+        sample.setStatus(SampleStatus.WAITING);
         entityManager.persist(sample);
       }
     });

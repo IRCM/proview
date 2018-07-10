@@ -188,7 +188,6 @@ public class SampleStatusViewPresenterTest {
           .getColumn(NEW_STATUS).getValueProvider().apply(sample);
       assertTrue(field.getStyleName().contains(NEW_STATUS));
       assertEquals(sample.getStatus(), field.getValue());
-      assertEquals(sample.getStatus() != SampleStatus.TO_APPROVE, field.isEnabled());
       for (SampleStatus status : SampleStatus.values()) {
         assertTrue(dataProvider(field).getItems().contains(status));
         assertEquals(status.getLabel(locale), field.getItemCaptionGenerator().apply(status));
@@ -387,7 +386,7 @@ public class SampleStatusViewPresenterTest {
     ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
     design.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(sample2);
-    newStatus1.setValue(SampleStatus.APPROVED);
+    newStatus1.setValue(SampleStatus.WAITING);
     final ConfirmDialog confirmDialog = new TestConfirmDialog(true);
 
     design.saveButton.click();
@@ -406,7 +405,7 @@ public class SampleStatusViewPresenterTest {
     assertTrue(find(samples, sample2.getId()).isPresent());
     sample1 = find(samples, sample1.getId()).orElse(null);
     sample2 = find(samples, sample2.getId()).orElse(null);
-    assertEquals(SampleStatus.APPROVED, sample1.getStatus());
+    assertEquals(SampleStatus.WAITING, sample1.getStatus());
     assertEquals(SampleStatus.DIGESTED, sample2.getStatus());
     verify(view).showTrayNotification(resources.message(SAVE + ".done", 2));
   }
@@ -423,7 +422,7 @@ public class SampleStatusViewPresenterTest {
     ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
         .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
     design.samplesGrid.getColumn(NEW_STATUS).getValueProvider().apply(sample2);
-    newStatus1.setValue(SampleStatus.TO_APPROVE);
+    newStatus1.setValue(SampleStatus.WAITING);
     final ConfirmDialog confirmDialog = new TestConfirmDialog(false);
 
     design.saveButton.click();
@@ -436,38 +435,6 @@ public class SampleStatusViewPresenterTest {
     listener.onClose(confirmDialog);
     verify(view, never()).showError(any());
     verify(submissionSampleService, never()).updateStatus(any());
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void updateStatus_SomeToApprove() {
-    entityManager.find(SubmissionSample.class, 559L).setStatus(SampleStatus.TO_APPROVE);
-    presenter.init(view);
-    presenter.enter("");
-    List<SubmissionSample> gridSamples =
-        new ArrayList<>(dataProvider(design.samplesGrid).getItems());
-    SubmissionSample sample1 = gridSamples.get(0);
-    SubmissionSample sample2 = gridSamples.get(1);
-    ComboBox<SampleStatus> newStatus1 = (ComboBox<SampleStatus>) design.samplesGrid
-        .getColumn(NEW_STATUS).getValueProvider().apply(sample1);
-    ComboBox<SampleStatus> newStatus2 = (ComboBox<SampleStatus>) design.samplesGrid
-        .getColumn(NEW_STATUS).getValueProvider().apply(sample2);
-    newStatus1.setValue(SampleStatus.ANALYSED);
-    newStatus2.setValue(SampleStatus.DIGESTED);
-
-    design.saveButton.click();
-
-    verify(submissionSampleService).updateStatus(samplesCaptor.capture());
-    Collection<SubmissionSample> samples = samplesCaptor.getValue();
-    assertEquals(1, samples.size());
-    assertTrue(find(samples, sample1.getId()).isPresent());
-    sample1 = find(samples, sample1.getId()).orElse(null);
-    assertEquals(SampleStatus.ANALYSED, sample1.getStatus());
-    verify(view).showTrayNotification(resources.message(SAVE + ".done", 1));
-    samples = dataProvider(design.samplesGrid).getItems();
-    sample1 = find(samples, sample1.getId()).orElse(null);
-    assertEquals(SampleStatus.ANALYSED.getLabel(locale),
-        design.samplesGrid.getColumn(STATUS).getValueProvider().apply(sample1));
   }
 
   @Test

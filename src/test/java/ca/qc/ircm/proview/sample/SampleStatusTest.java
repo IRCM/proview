@@ -18,13 +18,12 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
-import static ca.qc.ircm.proview.sample.SampleStatus.APPROVED;
 import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
 import static ca.qc.ircm.proview.sample.SampleStatus.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.sample.SampleStatus.DIGESTED;
 import static ca.qc.ircm.proview.sample.SampleStatus.ENRICHED;
 import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
-import static ca.qc.ircm.proview.sample.SampleStatus.TO_APPROVE;
+import static ca.qc.ircm.proview.sample.SampleStatus.WAITING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -49,21 +48,15 @@ public class SampleStatusTest {
   }
 
   @Test
-  public void getLabel_Toapprove() {
-    assertEquals("To approve", TO_APPROVE.getLabel(Locale.ENGLISH));
-    assertEquals("À approuver", TO_APPROVE.getLabel(Locale.FRENCH));
-  }
-
-  @Test
-  public void getLabel_Approved() {
-    assertEquals("Approved", APPROVED.getLabel(Locale.ENGLISH));
-    assertEquals("Approuvé", APPROVED.getLabel(Locale.FRENCH));
+  public void getLabel_Waiting() {
+    assertEquals("Waiting for samples", WAITING.getLabel(Locale.ENGLISH));
+    assertEquals("Échantillons en attente", WAITING.getLabel(Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Received() {
-    assertEquals("Received", RECEIVED.getLabel(Locale.ENGLISH));
-    assertEquals("Reçu", RECEIVED.getLabel(Locale.FRENCH));
+    assertEquals("Samples received", RECEIVED.getLabel(Locale.ENGLISH));
+    assertEquals("Échantillons reçus", RECEIVED.getLabel(Locale.FRENCH));
   }
 
   @Test

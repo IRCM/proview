@@ -53,7 +53,7 @@ public class VaadinUtilsTest {
     sample2 = new SubmissionSample(null, "second by name");
     sample2.setStatus(SampleStatus.DIGESTED);
     sample3 = new SubmissionSample(null, "second by name");
-    sample3.setStatus(SampleStatus.TO_APPROVE);
+    sample3.setStatus(SampleStatus.WAITING);
     samples = Arrays.asList(sample1, sample2, sample3);
   }
 

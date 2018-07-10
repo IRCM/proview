@@ -25,13 +25,9 @@ import java.util.Locale;
  */
 public enum SampleStatus {
   /**
-   * Sample price must be approved by manager.
+   * Waiting to receive sample.
    */
-  TO_APPROVE,
-  /**
-   * Sample is approved.
-   */
-  APPROVED,
+  WAITING,
   /**
    * Sample was received and awaits treatments and analysis.
    */

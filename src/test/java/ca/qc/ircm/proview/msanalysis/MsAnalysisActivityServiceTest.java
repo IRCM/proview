@@ -114,7 +114,7 @@ public class MsAnalysisActivityServiceTest {
     sampleStatusActivity.setTableName(Sample.TABLE_NAME);
     sampleStatusActivity.setRecordId(sample.getId());
     sampleStatusActivity.setColumn(qname(qsubmissionSample.status));
-    sampleStatusActivity.setOldValue(SampleStatus.TO_APPROVE.name());
+    sampleStatusActivity.setOldValue(SampleStatus.WAITING.name());
     sampleStatusActivity.setNewValue(SampleStatus.ANALYSED.name());
     expectedUpdateActivities.add(sampleStatusActivity);
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;

@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -39,7 +38,6 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.QSubmissionSample;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
-import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -749,48 +747,6 @@ public class SubmissionActivityServiceTest {
     entityManager.detach(submission);
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
-
-    assertEquals(false, optionalActivity.isPresent());
-  }
-
-  @Test
-  public void approve() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 147L);
-    entityManager.detach(submission);
-    submission.getSamples().stream().forEach(sample -> entityManager.detach(sample));
-    Submission old = entityManager.find(Submission.class, 147L);
-    old.getSamples().stream().forEach(sample -> sample.setStatus(SampleStatus.TO_APPROVE));
-
-    Optional<Activity> optionalActivity = submissionActivityService.approve(submission);
-
-    assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals(Submission.TABLE_NAME, activity.getTableName());
-    assertEquals(submission.getId(), activity.getRecordId());
-    assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
-    for (SubmissionSample sample : submission.getSamples()) {
-      UpdateActivity serviceActivity = new UpdateActivity();
-      serviceActivity.setActionType(ActionType.UPDATE);
-      serviceActivity.setTableName(Sample.TABLE_NAME);
-      serviceActivity.setRecordId(sample.getId());
-      serviceActivity.setColumn(submissionSample.status.getMetadata().getName());
-      serviceActivity.setOldValue(SampleStatus.TO_APPROVE.name());
-      serviceActivity.setNewValue(sample.getStatus().name());
-      expectedUpdateActivities.add(serviceActivity);
-    }
-    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
-  }
-
-  @Test
-  public void approve_NoChange() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 147L);
-    entityManager.detach(submission);
-    submission.getSamples().stream().forEach(sample -> entityManager.detach(sample));
-
-    Optional<Activity> optionalActivity = submissionActivityService.approve(submission);
 
     assertEquals(false, optionalActivity.isPresent());
   }

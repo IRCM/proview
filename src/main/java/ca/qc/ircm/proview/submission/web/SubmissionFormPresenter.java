@@ -232,7 +232,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   private SubmissionForm view;
   private SubmissionFormDesign design;
   private boolean readOnly = false;
-  private boolean updatableSampleNamesOnly = false;
   private Binder<Submission> submissionBinder = new BeanValidationBinder<>(Submission.class);
   private Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
@@ -539,7 +538,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(SAMPLE_NAME);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(readOnly || updatableSampleNamesOnly);
+      field.setReadOnly(readOnly);
       field.setWidth("100%");
       sampleNameFields.put(sample, field);
       return field;
@@ -553,7 +552,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(SAMPLE_NUMBER_PROTEIN);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(readOnly || updatableSampleNamesOnly);
+      field.setReadOnly(readOnly);
       field.setWidth("100%");
       field.setRequiredIndicatorVisible(true);
       sampleNumberProteinFields.put(sample, field);
@@ -568,7 +567,7 @@ public class SubmissionFormPresenter implements BinderValidator {
       TextField field = new TextField();
       field.addStyleName(PROTEIN_WEIGHT);
       field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-      field.setReadOnly(readOnly || updatableSampleNamesOnly);
+      field.setReadOnly(readOnly);
       field.setWidth("100%");
       field.setRequiredIndicatorVisible(true);
       sampleMolecularWeightFields.put(sample, field);
@@ -920,8 +919,8 @@ public class SubmissionFormPresenter implements BinderValidator {
         design.digestion.isVisible() && design.digestion.getValue() == ProteolyticDigestion.OTHER);
     design.otherProteolyticDigestionMethodNote.setVisible(
         design.digestion.isVisible() && design.digestion.getValue() == ProteolyticDigestion.OTHER);
-    design.enrichment.setVisible(!readOnly && !updatableSampleNamesOnly && service == LC_MS_MS);
-    design.exclusions.setVisible(!readOnly && !updatableSampleNamesOnly && service == LC_MS_MS);
+    design.enrichment.setVisible(!readOnly && service == LC_MS_MS);
+    design.exclusions.setVisible(!readOnly && service == LC_MS_MS);
     design.injectionType.setVisible(service == INTACT_PROTEIN);
     design.source.setVisible(service == INTACT_PROTEIN);
     design.proteinContent.setVisible(service == LC_MS_MS);
@@ -944,61 +943,59 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setVisible(service == SMALL_MOLECULE && design.otherSolvents.getValue());
     design.structureFile.setVisible(service == SMALL_MOLECULE);
     design.gelImageFile.setVisible(service == LC_MS_MS && type.isGel());
-    view.filesUploader.setVisible(!readOnly && !updatableSampleNamesOnly);
+    view.filesUploader.setVisible(!readOnly);
     design.save.setVisible(!readOnly);
     design.print.setVisible(submissionBinder.getBean().getId() != null);
   }
 
   private void updateReadOnly() {
-    design.service.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.sampleType.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.solutionSolvent.setReadOnly(readOnly || updatableSampleNamesOnly);
+    design.service.setReadOnly(readOnly);
+    design.sampleType.setReadOnly(readOnly);
+    design.solutionSolvent.setReadOnly(readOnly);
     design.sampleName.setReadOnly(readOnly);
-    design.formula.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.monoisotopicMass.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.averageMass.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.toxicity.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.lightSensitive.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.storageTemperature.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.sampleContainerType.setReadOnly(readOnly || updatableSampleNamesOnly);
+    design.formula.setReadOnly(readOnly);
+    design.monoisotopicMass.setReadOnly(readOnly);
+    design.averageMass.setReadOnly(readOnly);
+    design.toxicity.setReadOnly(readOnly);
+    design.lightSensitive.setReadOnly(readOnly);
+    design.storageTemperature.setReadOnly(readOnly);
+    design.sampleContainerType.setReadOnly(readOnly);
     design.plateName.setReadOnly(readOnly);
-    design.sampleCount.setReadOnly(readOnly || updatableSampleNamesOnly);
+    design.sampleCount.setReadOnly(readOnly);
     sampleNameFields.values().stream().forEach(field -> field.setReadOnly(readOnly));
-    sampleNumberProteinFields.values().stream()
-        .forEach(field -> field.setReadOnly(readOnly || updatableSampleNamesOnly));
-    sampleMolecularWeightFields.values().stream()
-        .forEach(field -> field.setReadOnly(readOnly || updatableSampleNamesOnly));
-    view.plateComponent.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.experiment.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.experimentGoal.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.taxonomy.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.proteinName.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.proteinWeight.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.postTranslationModification.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.sampleQuantity.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.sampleVolume.setReadOnly(readOnly || updatableSampleNamesOnly);
-    view.standardsForm.setReadOnly(readOnly || updatableSampleNamesOnly);
-    view.contaminantsForm.setReadOnly(readOnly || updatableSampleNamesOnly);
-    view.gelForm.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.digestion.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.usedProteolyticDigestionMethod.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.otherProteolyticDigestionMethod.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.injectionType.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.source.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.proteinContent.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.instrument.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.proteinIdentification.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.proteinIdentificationLink.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.quantification.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.quantificationComment.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.highResolution.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.acetonitrileSolvents.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.methanolSolvents.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.chclSolvents.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.otherSolvents.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.otherSolvent.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.comment.setReadOnly(readOnly || updatableSampleNamesOnly);
-    design.files.getColumn(REMOVE_FILE).setHidden(readOnly || updatableSampleNamesOnly);
+    sampleNumberProteinFields.values().stream().forEach(field -> field.setReadOnly(readOnly));
+    sampleMolecularWeightFields.values().stream().forEach(field -> field.setReadOnly(readOnly));
+    view.plateComponent.setReadOnly(readOnly);
+    design.experiment.setReadOnly(readOnly);
+    design.experimentGoal.setReadOnly(readOnly);
+    design.taxonomy.setReadOnly(readOnly);
+    design.proteinName.setReadOnly(readOnly);
+    design.proteinWeight.setReadOnly(readOnly);
+    design.postTranslationModification.setReadOnly(readOnly);
+    design.sampleQuantity.setReadOnly(readOnly);
+    design.sampleVolume.setReadOnly(readOnly);
+    view.standardsForm.setReadOnly(readOnly);
+    view.contaminantsForm.setReadOnly(readOnly);
+    view.gelForm.setReadOnly(readOnly);
+    design.digestion.setReadOnly(readOnly);
+    design.usedProteolyticDigestionMethod.setReadOnly(readOnly);
+    design.otherProteolyticDigestionMethod.setReadOnly(readOnly);
+    design.injectionType.setReadOnly(readOnly);
+    design.source.setReadOnly(readOnly);
+    design.proteinContent.setReadOnly(readOnly);
+    design.instrument.setReadOnly(readOnly);
+    design.proteinIdentification.setReadOnly(readOnly);
+    design.proteinIdentificationLink.setReadOnly(readOnly);
+    design.quantification.setReadOnly(readOnly);
+    design.quantificationComment.setReadOnly(readOnly);
+    design.highResolution.setReadOnly(readOnly);
+    design.acetonitrileSolvents.setReadOnly(readOnly);
+    design.methanolSolvents.setReadOnly(readOnly);
+    design.chclSolvents.setReadOnly(readOnly);
+    design.otherSolvents.setReadOnly(readOnly);
+    design.otherSolvent.setReadOnly(readOnly);
+    design.comment.setReadOnly(readOnly);
+    design.files.getColumn(REMOVE_FILE).setHidden(readOnly);
   }
 
   private void updateSampleCount(String countValue) {
@@ -1517,15 +1514,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     filesDataProvider.getItems().addAll(files);
     filesDataProvider.refreshAll();
     design.explanationPanel.setVisible(authorizationService.hasAdminRole() && samples.stream()
-        .filter(
-            sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.TO_APPROVE)
+        .filter(sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.WAITING)
         .findAny().isPresent());
-    updatableSampleNamesOnly =
-        !authorizationService.hasAdminRole()
-            && samples.stream()
-                .filter(sample -> sample.getStatus() != null
-                    && SampleStatus.TO_APPROVE.compareTo(sample.getStatus()) < 0)
-                .findAny().isPresent();
     preparePrint(submissionBinder.getBean());
     updateVisible();
     updateReadOnly();

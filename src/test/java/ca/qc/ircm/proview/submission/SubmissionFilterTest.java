@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
-import static ca.qc.ircm.proview.sample.SampleStatus.APPROVED;
+import static ca.qc.ircm.proview.sample.SampleStatus.WAITING;
 import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
 import static ca.qc.ircm.proview.sample.SampleStatus.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.sample.SampleStatus.DIGESTED;
@@ -1524,7 +1524,7 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
     assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertFalse(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertFalse(filter.test(sampleStatuses(RECEIVED, DIGESTED, APPROVED)));
+    assertFalse(filter.test(sampleStatuses(RECEIVED, DIGESTED, WAITING)));
   }
 
   @Test
@@ -1534,7 +1534,7 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
     assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertTrue(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, APPROVED)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, WAITING)));
   }
 
   @Test
@@ -1700,7 +1700,7 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
     assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertTrue(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertFalse(filter.test(sampleStatuses(RECEIVED, DIGESTED, APPROVED)));
+    assertFalse(filter.test(sampleStatuses(RECEIVED, DIGESTED, WAITING)));
   }
 
   @Test
@@ -1710,7 +1710,7 @@ public class SubmissionFilterTest {
     assertFalse(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
     assertFalse(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertFalse(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, APPROVED)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, WAITING)));
   }
 
   @Test
@@ -1720,7 +1720,7 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
     assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
     assertTrue(filter.test(sampleStatuses(DATA_ANALYSIS, CANCELLED)));
-    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, APPROVED)));
+    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, WAITING)));
   }
 
   @Test

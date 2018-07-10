@@ -573,7 +573,7 @@ public class SubmissionFormPresenterTest {
     contaminant.setQuantity(contaminantQuantity2);
     contaminant.setComment(contaminantComment2);
     contaminants.add(contaminant);
-    sample.setStatus(SampleStatus.TO_APPROVE);
+    sample.setStatus(SampleStatus.WAITING);
     sample.setSubmission(submission);
     samples.add(sample);
     sample = new SubmissionSample();
@@ -623,7 +623,7 @@ public class SubmissionFormPresenterTest {
     file.setFilename(filesFilename2);
     file.setContent(filesContent2);
     files.add(file);
-    sample.setStatus(SampleStatus.TO_APPROVE);
+    sample.setStatus(SampleStatus.WAITING);
     sample.setSubmission(submission);
     samples.add(sample);
     return submission;
@@ -1541,78 +1541,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.comment.isReadOnly());
     assertFalse(design.files.getColumn(REMOVE_FILE).isHidden());
     assertTrue(design.explanationPanel.isVisible());
-    assertTrue(design.save.isVisible());
-    assertTrue(design.print.isVisible());
-  }
-
-  @Test
-  public void readOnly_False_OnlySampleName() {
-    Submission submission = new Submission(1L);
-    submission.setService(Service.LC_MS_MS);
-    SubmissionSample sample = new SubmissionSample();
-    sample.setType(type);
-    sample.setOriginalContainer(new Tube());
-    sample.setStatus(SampleStatus.APPROVED);
-    sample.setStandards(Arrays.asList(new Standard()));
-    sample.setContaminants(Arrays.asList(new Contaminant()));
-    submission.setSamples(Arrays.asList(sample));
-    presenter.init(view);
-    presenter.setValue(submission);
-
-    assertTrue(design.service.isReadOnly());
-    assertTrue(design.sampleType.isReadOnly());
-    assertTrue(design.solutionSolvent.isReadOnly());
-    assertTrue(design.sampleCount.isReadOnly());
-    assertFalse(design.sampleName.isReadOnly());
-    assertTrue(design.formula.isReadOnly());
-    assertTrue(design.monoisotopicMass.isReadOnly());
-    assertTrue(design.averageMass.isReadOnly());
-    assertTrue(design.toxicity.isReadOnly());
-    assertTrue(design.lightSensitive.isReadOnly());
-    assertTrue(design.storageTemperature.isReadOnly());
-    assertTrue(design.sampleContainerType.isReadOnly());
-    assertFalse(design.plateName.isReadOnly());
-    SubmissionSample firstSample = dataProvider(design.samples).getItems().iterator().next();
-    assertFalse(
-        ((TextField) design.samples.getColumn(SAMPLE_NAME).getValueProvider().apply(firstSample))
-            .isReadOnly());
-    assertTrue(((TextField) design.samples.getColumn(SAMPLE_NUMBER_PROTEIN).getValueProvider()
-        .apply(firstSample)).isReadOnly());
-    assertTrue(
-        ((TextField) design.samples.getColumn(PROTEIN_WEIGHT).getValueProvider().apply(firstSample))
-            .isReadOnly());
-    assertTrue(design.experiment.isReadOnly());
-    assertTrue(design.experimentGoal.isReadOnly());
-    assertTrue(design.taxonomy.isReadOnly());
-    assertTrue(design.proteinName.isReadOnly());
-    assertTrue(design.proteinWeight.isReadOnly());
-    assertTrue(design.postTranslationModification.isReadOnly());
-    assertTrue(design.sampleQuantity.isReadOnly());
-    assertTrue(design.sampleVolume.isReadOnly());
-    verify(view.standardsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
-    verify(view.contaminantsForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
-    assertTrue(design.digestion.isReadOnly());
-    assertTrue(design.usedProteolyticDigestionMethod.isReadOnly());
-    assertTrue(design.otherProteolyticDigestionMethod.isReadOnly());
-    assertTrue(design.injectionType.isReadOnly());
-    assertTrue(design.source.isReadOnly());
-    assertTrue(design.proteinContent.isReadOnly());
-    assertTrue(design.instrument.isReadOnly());
-    assertTrue(design.proteinIdentification.isReadOnly());
-    assertTrue(design.proteinIdentificationLink.isReadOnly());
-    assertTrue(design.quantification.isReadOnly());
-    assertTrue(design.quantificationComment.isReadOnly());
-    assertTrue(design.highResolution.isReadOnly());
-    assertTrue(design.acetonitrileSolvents.isReadOnly());
-    assertTrue(design.methanolSolvents.isReadOnly());
-    assertTrue(design.chclSolvents.isReadOnly());
-    assertTrue(design.otherSolvents.isReadOnly());
-    assertTrue(design.otherSolvent.isReadOnly());
-    assertTrue(design.comment.isReadOnly());
-    assertTrue(design.files.getColumn(REMOVE_FILE).isHidden());
-    assertFalse(design.explanationPanel.isVisible());
     assertTrue(design.save.isVisible());
     assertTrue(design.print.isVisible());
   }
@@ -5981,7 +5909,7 @@ public class SubmissionFormPresenterTest {
     assertEquals(standardName2, standard.getName());
     assertEquals(standardQuantity2, standard.getQuantity());
     assertEquals(standardComment2, standard.getComment());
-    assertEquals(SampleStatus.TO_APPROVE, sample.getStatus());
+    assertEquals(SampleStatus.WAITING, sample.getStatus());
     assertEquals(submission, sample.getSubmission());
     assertEquals(2, sample.getContaminants().size());
     Contaminant contaminant = sample.getContaminants().get(0);

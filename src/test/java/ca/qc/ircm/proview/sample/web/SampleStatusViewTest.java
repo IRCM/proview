@@ -104,7 +104,7 @@ public class SampleStatusViewTest extends SampleStatusPageObject {
   @Test
   public void save_Regress() throws Throwable {
     openWithSubmissions();
-    setSampleStatus(0, SampleStatus.APPROVED);
+    setSampleStatus(0, SampleStatus.WAITING);
 
     clickSave();
 

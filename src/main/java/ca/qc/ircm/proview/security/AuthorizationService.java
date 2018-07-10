@@ -418,7 +418,7 @@ public class AuthorizationService {
     query.from(submission);
     query.join(submission.samples, submissionSample);
     query.where(submission.id.eq(submissionParam.getId()));
-    query.where(submissionSample.status.gt(SampleStatus.APPROVED));
+    query.where(submissionSample.status.gt(SampleStatus.WAITING));
     return query.fetchCount() > 0;
   }
 
