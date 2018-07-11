@@ -22,6 +22,7 @@ import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.user.User;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -44,7 +45,7 @@ import javax.persistence.Table;
 @Table(name = Treatment.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
-public abstract class Treatment implements Data {
+public abstract class Treatment implements Data, Serializable {
   /**
    * Type of errors that forces Digestion to be deleted.
    */
@@ -61,6 +62,7 @@ public abstract class Treatment implements Data {
   }
 
   public static final String TABLE_NAME = "treatment";
+  private static final long serialVersionUID = 3942922473290365646L;
 
   /**
    * Database identifier.

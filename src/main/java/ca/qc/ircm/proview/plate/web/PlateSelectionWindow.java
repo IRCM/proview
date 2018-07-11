@@ -17,12 +17,15 @@
 
 package ca.qc.ircm.proview.plate.web;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD;
+
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.component.BaseComponent;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.Window;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -34,6 +37,9 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@SuppressFBWarnings(
+    value = "NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD",
+    justification = DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD)
 public class PlateSelectionWindow extends Window implements BaseComponent {
   private static final long serialVersionUID = 3449238156530889834L;
   protected PlateSelectionWindowDesign design = new PlateSelectionWindowDesign();

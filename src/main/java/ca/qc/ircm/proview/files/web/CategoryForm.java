@@ -36,7 +36,7 @@ public class CategoryForm extends CustomComponent implements BaseComponent {
   protected CategoryFormDesign design = new CategoryFormDesign();
   @Inject
   private transient CategoryFormPresenter presenter;
-  private Category category;
+  private transient Category category;
 
   protected CategoryForm() {
   }
@@ -62,7 +62,7 @@ public class CategoryForm extends CustomComponent implements BaseComponent {
 
   /**
    * Sets category.
-   * 
+   *
    * @param category
    *          category
    */
