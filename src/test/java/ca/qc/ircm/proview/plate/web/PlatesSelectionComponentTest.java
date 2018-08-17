@@ -78,38 +78,38 @@ public class PlatesSelectionComponentTest extends AbstractComponentTestCase {
   }
 
   @Test
-  public void getSelectionItems() {
+  public void getSelectedItems() {
     component.plates.setItems(plates);
     component.plates.select(plates.get(0));
     component.plates.select(plates.get(1));
 
-    Set<Plate> selection = component.getSelectionItems();
+    Set<Plate> selection = component.getSelectedItems();
 
     assertEquals(1, selection.size());
     assertTrue(selection.contains(plates.get(1)));
   }
 
   @Test
-  public void getSelectionItems_Single() {
+  public void getSelectedItems_Single() {
     component.plates.setItems(plates);
     component.setSelectionMode(SelectionMode.SINGLE);
     component.plates.select(plates.get(0));
     component.plates.select(plates.get(1));
 
-    Set<Plate> selection = component.getSelectionItems();
+    Set<Plate> selection = component.getSelectedItems();
 
     assertEquals(1, selection.size());
     assertTrue(selection.contains(plates.get(1)));
   }
 
   @Test
-  public void getSelectionItems_Multi() {
+  public void getSelectedItems_Multi() {
     component.plates.setItems(plates);
     component.setSelectionMode(SelectionMode.MULTI);
     component.plates.select(plates.get(0));
     component.plates.select(plates.get(1));
 
-    Set<Plate> selection = component.getSelectionItems();
+    Set<Plate> selection = component.getSelectedItems();
 
     assertEquals(2, selection.size());
     assertTrue(selection.contains(plates.get(0)));
@@ -117,11 +117,11 @@ public class PlatesSelectionComponentTest extends AbstractComponentTestCase {
   }
 
   @Test
-  public void setSelectionItems() {
+  public void setSelectedItems() {
     component.plates.setItems(plates);
     component.setSelectionMode(SelectionMode.SINGLE);
 
-    component.setSelectionItems(plates.subList(0, 2));
+    component.setSelectedItems(plates.subList(0, 2));
 
     Set<Plate> selection = component.plates.getSelectedItems();
     assertEquals(1, selection.size());
@@ -129,11 +129,11 @@ public class PlatesSelectionComponentTest extends AbstractComponentTestCase {
   }
 
   @Test
-  public void setSelectionItems_Single() {
+  public void setSelectedItems_Single() {
     component.plates.setItems(plates);
     component.setSelectionMode(SelectionMode.SINGLE);
 
-    component.setSelectionItems(plates.subList(0, 2));
+    component.setSelectedItems(plates.subList(0, 2));
 
     Set<Plate> selection = component.plates.getSelectedItems();
     assertEquals(1, selection.size());
@@ -141,23 +141,23 @@ public class PlatesSelectionComponentTest extends AbstractComponentTestCase {
   }
 
   @Test
-  public void setSelectionItems_Single_Null() {
+  public void setSelectedItems_Single_Null() {
     component.plates.setItems(plates);
     component.setSelectionMode(SelectionMode.SINGLE);
 
-    component.setSelectionItems(null);
+    component.setSelectedItems(null);
 
     Set<Plate> selection = component.plates.getSelectedItems();
     assertEquals(0, selection.size());
   }
 
   @Test
-  public void setSelectionItems_Multi() {
+  public void setSelectedItems_Multi() {
     component.plates.setItems(plates);
     component.setSelectionMode(SelectionMode.MULTI);
     component.plates.select(plates.get(0));
 
-    component.setSelectionItems(plates.subList(0, 2));
+    component.setSelectedItems(plates.subList(0, 2));
 
     Set<Plate> selection = component.plates.getSelectedItems();
     assertEquals(2, selection.size());
@@ -166,13 +166,13 @@ public class PlatesSelectionComponentTest extends AbstractComponentTestCase {
   }
 
   @Test
-  public void setSelectionItems_Null() {
+  public void setSelectedItems_Null() {
     component.plates.setItems(plates);
     component.setSelectionMode(SelectionMode.MULTI);
     component.plates.select(plates.get(0));
     component.plates.select(plates.get(1));
 
-    component.setSelectionItems(null);
+    component.setSelectedItems(null);
 
     Set<Plate> selection = component.plates.getSelectedItems();
     assertEquals(0, selection.size());

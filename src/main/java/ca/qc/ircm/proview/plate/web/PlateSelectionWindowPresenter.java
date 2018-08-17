@@ -75,8 +75,8 @@ public class PlateSelectionWindowPresenter {
     logger.debug("Plates selection window");
     this.view = view;
     design = view.design;
-    MessageResource resources = view.getResources();
-    MessageResource generalResources = view.getGeneralResources();
+    final MessageResource resources = view.getResources();
+    final MessageResource generalResources = view.getGeneralResources();
     view.setHeight("750px");
     view.setWidth("1150px");
     view.addStyleName(WINDOW_STYLE);
@@ -110,8 +110,8 @@ public class PlateSelectionWindowPresenter {
   }
 
   private void select() {
-    if (!view.platesSelection.getSelectionItems().isEmpty()) {
-      view.fireSaveEvent(view.platesSelection.getSelectionItems().iterator().next());
+    if (!view.platesSelection.getSelectedItems().isEmpty()) {
+      view.fireSaveEvent(view.platesSelection.getSelectedItems().iterator().next());
     } else {
       view.fireSaveEvent(null);
     }
@@ -122,7 +122,7 @@ public class PlateSelectionWindowPresenter {
       throw new NullPointerException("plate cannot be null");
     }
     if (plate.getId() != null) {
-      view.platesSelection.setSelectionItems(Collections.nCopies(1, plate));
+      view.platesSelection.setSelectedItems(Collections.nCopies(1, plate));
     } else {
       binder.setBean(plate);
     }

@@ -67,11 +67,17 @@ public class PlatesSelectionComponent extends CustomComponent implements BaseVie
     plates.setSelectionMode(selectionMode);
   }
 
-  public Set<Plate> getSelectionItems() {
+  public Set<Plate> getSelectedItems() {
     return plates.getSelectedItems();
   }
 
-  public void setSelectionItems(Collection<Plate> plates) {
+  /**
+   * Sets selected items.
+   *
+   * @param plates
+   *          selected plates
+   */
+  public void setSelectedItems(Collection<Plate> plates) {
     this.plates.deselectAll();
     if (plates != null) {
       plates.forEach(plate -> this.plates.select(plate));

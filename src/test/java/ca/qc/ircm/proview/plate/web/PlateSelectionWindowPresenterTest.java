@@ -181,7 +181,7 @@ public class PlateSelectionWindowPresenterTest extends AbstractComponentTestCase
   @Test
   public void select() {
     presenter.init(window);
-    when(window.platesSelection.getSelectionItems())
+    when(window.platesSelection.getSelectedItems())
         .thenReturn(Stream.of(plate).collect(Collectors.toSet()));
 
     design.select.click();
@@ -196,7 +196,7 @@ public class PlateSelectionWindowPresenterTest extends AbstractComponentTestCase
 
     presenter.setValue(plate);
 
-    verify(window.platesSelection).setSelectionItems(platesCaptor.capture());
+    verify(window.platesSelection).setSelectedItems(platesCaptor.capture());
     Collection<Plate> selection = platesCaptor.getValue();
     assertEquals(1, selection.size());
     assertTrue(selection.contains(plate));

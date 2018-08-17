@@ -18,11 +18,11 @@
 package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
-import static ca.qc.ircm.proview.sample.SampleStatus.WAITING;
 import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
 import static ca.qc.ircm.proview.sample.SampleStatus.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.sample.SampleStatus.DIGESTED;
 import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
+import static ca.qc.ircm.proview.sample.SampleStatus.WAITING;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static org.junit.Assert.assertFalse;
