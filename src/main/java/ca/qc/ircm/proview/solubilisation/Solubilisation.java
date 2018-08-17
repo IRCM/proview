@@ -29,6 +29,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("SOLUBILISATION")
 public class Solubilisation extends Treatment implements Data {
+  private static final long serialVersionUID = 7078289225177289337L;
+
   public Solubilisation() {
     super();
   }

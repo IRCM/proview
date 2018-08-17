@@ -28,6 +28,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("ENRICHMENT")
 public class Enrichment extends Treatment {
+  private static final long serialVersionUID = -4439226698650316724L;
+
   public Enrichment() {
     super();
   }

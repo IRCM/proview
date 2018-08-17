@@ -28,6 +28,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("DILUTION")
 public class Dilution extends Treatment {
+  private static final long serialVersionUID = -3898957380724676071L;
+
   public Dilution() {
   }
 

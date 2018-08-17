@@ -29,6 +29,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("STANDARD_ADDITION")
 public class StandardAddition extends Treatment implements Data {
+  private static final long serialVersionUID = 8760252289893147123L;
+
   public StandardAddition() {
     super();
   }

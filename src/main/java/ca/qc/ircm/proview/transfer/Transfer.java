@@ -28,6 +28,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("TRANSFER")
 public class Transfer extends Treatment {
+  private static final long serialVersionUID = 2171898463655011446L;
+
   public Transfer() {
     super();
   }

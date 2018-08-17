@@ -32,6 +32,7 @@ import javax.persistence.Enumerated;
 @Entity
 @DiscriminatorValue("FRACTIONATION")
 public class Fractionation extends Treatment {
+  private static final long serialVersionUID = 1416679934489708298L;
   /**
    * How samples where split.
    */

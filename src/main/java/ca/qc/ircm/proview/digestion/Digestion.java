@@ -28,6 +28,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("DIGESTION")
 public class Digestion extends Treatment {
+  private static final long serialVersionUID = -8217434621540535982L;
+
   public Digestion() {
   }
 
