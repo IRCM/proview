@@ -40,8 +40,9 @@ public class QueryDsl {
    *          true if descending, false for ascending
    * @return {@link OrderSpecifier} for specified path and order
    */
-  public static <T extends Comparable<?>> OrderSpecifier<T>
-      direction(ComparableExpressionBase<T> path, boolean descending) {
+  @SuppressWarnings("rawtypes")
+  public static <T extends Comparable> OrderSpecifier<T> direction(ComparableExpressionBase<T> path,
+      boolean descending) {
     if (descending) {
       return path.desc();
     } else {
