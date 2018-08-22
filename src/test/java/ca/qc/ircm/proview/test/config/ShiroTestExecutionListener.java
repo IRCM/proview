@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.web.AboutView;
+import ca.qc.ircm.proview.web.ContactView;
 import com.vaadin.testbench.TestBenchTestCase;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,7 +51,7 @@ import org.springframework.test.context.TestContext;
  */
 public class ShiroTestExecutionListener extends InjectIntoTestExecutionListener {
   public static final String REMEMBER_ME_COOKIE_NAME = "rememberMe";
-  private static final String ANONYMOUS_VIEW = AboutView.VIEW_NAME;
+  private static final String ANONYMOUS_VIEW = ContactView.VIEW_NAME;
   public static final String DOMAIN = "localhost";
   private static final Logger logger = LoggerFactory.getLogger(ShiroTestExecutionListener.class);
   private ThreadState threadState;

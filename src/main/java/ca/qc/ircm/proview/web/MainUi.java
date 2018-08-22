@@ -20,8 +20,6 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.web.WebConstants.DEFAULT_LOCALE;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
-import ca.qc.ircm.proview.user.web.ForgotPasswordView;
-import ca.qc.ircm.proview.user.web.ValidateView;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
@@ -48,7 +46,6 @@ import javax.servlet.ServletContext;
 @Push(value = PushMode.AUTOMATIC, transport = Transport.LONG_POLLING)
 @Widgetset("ca.qc.ircm.proview.ProviewWidgetset")
 public class MainUi extends UI {
-  private static final String SKIP_ABOUT = "SKIP_ABOUT";
   private static final long serialVersionUID = 5623532890650543834L;
   @Inject
   private MainLayout layout;
@@ -75,13 +72,6 @@ public class MainUi extends UI {
     if (getUI().getLocale() == null) {
       // User's locale not recognized, use default locale.
       getUI().getSession().setLocale(DEFAULT_LOCALE);
-    }
-    if (getUI().getSession().getAttribute(SKIP_ABOUT) == null) {
-      getUI().getSession().setAttribute(SKIP_ABOUT, true);
-      String url = getPage().getLocation().toString();
-      if (!url.contains(ForgotPasswordView.VIEW_NAME) && !url.contains(ValidateView.VIEW_NAME)) {
-        getNavigator().navigateTo(AboutView.VIEW_NAME);
-      }
     }
     checkForLegacyHashBangUrl();
   }

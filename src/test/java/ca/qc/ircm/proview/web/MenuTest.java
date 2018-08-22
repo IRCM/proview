@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.user.web.SigninView;
 import java.util.Locale;
 import java.util.Set;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class MenuTest extends MenuPageObject {
     clickSignout();
 
     Thread.sleep(50); // Wait for redirection.
-    assertEquals(viewUrl(AboutView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
     Set<Cookie> cookies = driver.manage().getCookies();
     assertFalse(cookies.stream().filter(cookie -> cookie.getName().equals(REMEMBER_ME_COOKIE_NAME))
         .findAny().isPresent());
@@ -90,14 +91,5 @@ public class MenuTest extends MenuPageObject {
     assertTrue(optional(() -> accessMenuItem()).isPresent());
     assertTrue(optional(() -> signasMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
-  }
-
-  @Test
-  public void aboutMenu() throws Throwable {
-    openView(ContactView.VIEW_NAME);
-
-    clickAbout();
-
-    assertEquals(viewUrl(AboutView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

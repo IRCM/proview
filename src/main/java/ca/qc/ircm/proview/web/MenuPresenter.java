@@ -78,7 +78,6 @@ public class MenuPresenter {
   public static final String CONTACT = "contact";
   public static final String GUIDELINES = "guidelines";
   public static final String SIGNIN = "signin";
-  public static final String ABOUT = "about";
   private static final Logger logger = LoggerFactory.getLogger(MenuPresenter.class);
   private Menu view;
   private MenuItem home;
@@ -105,7 +104,6 @@ public class MenuPresenter {
   private MenuItem contact;
   private MenuItem guidelines;
   private MenuItem signin;
-  private MenuItem about;
   @Inject
   private AuthorizationService authorizationService;
   @Inject
@@ -210,8 +208,6 @@ public class MenuPresenter {
     signin = view.menu.addItem(resources.message(SIGNIN), item -> changeView(SigninView.VIEW_NAME));
     signin.setStyleName(SIGNIN);
     signin.setVisible(false);
-    about = view.menu.addItem(resources.message(ABOUT), item -> changeView(AboutView.VIEW_NAME));
-    about.setStyleName(ABOUT);
   }
 
   private void updateVisible() {

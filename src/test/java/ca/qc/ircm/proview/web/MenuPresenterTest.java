@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.MenuPresenter.ABOUT;
 import static ca.qc.ircm.proview.web.MenuPresenter.ACCESS;
 import static ca.qc.ircm.proview.web.MenuPresenter.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTACT;
@@ -165,7 +164,6 @@ public class MenuPresenterTest {
     assertTrue(view.menu.getItems().get(9).getStyleName().contains(CONTACT));
     assertTrue(view.menu.getItems().get(10).getStyleName().contains(GUIDELINES));
     assertTrue(view.menu.getItems().get(11).getStyleName().contains(SIGNIN));
-    assertTrue(view.menu.getItems().get(12).getStyleName().contains(ABOUT));
   }
 
   @Test
@@ -196,7 +194,6 @@ public class MenuPresenterTest {
     assertTrue(item(CONTACT).isVisible());
     assertFalse(item(GUIDELINES).isVisible());
     assertTrue(item(SIGNIN).isVisible());
-    assertTrue(item(ABOUT).isVisible());
   }
 
   @Test
@@ -229,7 +226,6 @@ public class MenuPresenterTest {
     assertTrue(item(CONTACT).isVisible());
     assertTrue(item(GUIDELINES).isVisible());
     assertFalse(item(SIGNIN).isVisible());
-    assertTrue(item(ABOUT).isVisible());
   }
 
   @Test
@@ -263,7 +259,6 @@ public class MenuPresenterTest {
     assertTrue(item(CONTACT).isVisible());
     assertTrue(item(GUIDELINES).isVisible());
     assertFalse(item(SIGNIN).isVisible());
-    assertTrue(item(ABOUT).isVisible());
   }
 
   @Test
@@ -297,7 +292,6 @@ public class MenuPresenterTest {
     assertTrue(item(CONTACT).isVisible());
     assertTrue(item(GUIDELINES).isVisible());
     assertFalse(item(SIGNIN).isVisible());
-    assertTrue(item(ABOUT).isVisible());
   }
 
   @Test
@@ -331,7 +325,6 @@ public class MenuPresenterTest {
     assertTrue(item(CONTACT).isVisible());
     assertTrue(item(GUIDELINES).isVisible());
     assertFalse(item(SIGNIN).isVisible());
-    assertTrue(item(ABOUT).isVisible());
   }
 
   @Test
@@ -362,7 +355,6 @@ public class MenuPresenterTest {
     assertEquals(resources.message(CONTACT), item(CONTACT).getText());
     assertEquals(resources.message(GUIDELINES), item(GUIDELINES).getText());
     assertEquals(resources.message(SIGNIN), item(SIGNIN).getText());
-    assertEquals(resources.message(ABOUT), item(ABOUT).getText());
   }
 
   @Test
@@ -577,14 +569,5 @@ public class MenuPresenterTest {
     item(SIGNIN).getCommand().menuSelected(item(SIGNIN));
 
     verify(view).navigateTo(SigninView.VIEW_NAME);
-  }
-
-  @Test
-  public void aboutMenu() throws Throwable {
-    presenter.init(view);
-
-    item(ABOUT).getCommand().menuSelected(item(ABOUT));
-
-    verify(view).navigateTo(AboutView.VIEW_NAME);
   }
 }

@@ -19,10 +19,11 @@ package ca.qc.ircm.proview.web;
 
 import static org.junit.Assert.assertEquals;
 
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.test.config.DontSkipAbout;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
+import ca.qc.ircm.proview.user.web.SigninView;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
-@DontSkipAbout
 public class HomePageTest extends AbstractTestBenchTestCase {
   private void open() {
     openView(MainView.VIEW_NAME);
@@ -40,7 +40,7 @@ public class HomePageTest extends AbstractTestBenchTestCase {
   public void intro_NotSigned() throws Throwable {
     open();
 
-    assertEquals(viewUrl(AboutView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
@@ -49,6 +49,6 @@ public class HomePageTest extends AbstractTestBenchTestCase {
   public void intro_Signed() throws Throwable {
     open();
 
-    assertEquals(viewUrl(AboutView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }
