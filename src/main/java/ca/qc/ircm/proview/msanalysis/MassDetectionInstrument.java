@@ -18,46 +18,59 @@
 package ca.qc.ircm.proview.msanalysis;
 
 import ca.qc.ircm.utils.MessageResource;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Instruments available for protein mass detection.
  */
 public enum MassDetectionInstrument {
-  NULL(true, false), VELOS(true), Q_EXACTIVE(true), TSQ_VANTAGE, ORBITRAP_FUSION(true),
-  LTQ_ORBI_TRAP, Q_TOF, TOF;
+  NULL, VELOS, Q_EXACTIVE, TSQ_VANTAGE, ORBITRAP_FUSION, LTQ_ORBI_TRAP, Q_TOF, TOF;
 
-  public final boolean userChoice;
-  public final boolean platformChoice;
+  private static final List<MassDetectionInstrument> USER_CHOICES;
+  private static final List<MassDetectionInstrument> PLATFORM_CHOICES;
+  private static final List<MassDetectionInstrument> FILTER_CHOICES;
+  static {
+    List<MassDetectionInstrument> choices = new ArrayList<>();
+    choices.add(VELOS);
+    choices.add(Q_EXACTIVE);
+    choices.add(ORBITRAP_FUSION);
+    PLATFORM_CHOICES = Collections.unmodifiableList(new ArrayList<>(choices));
+    choices.add(0, NULL);
+    USER_CHOICES = Collections.unmodifiableList(new ArrayList<>(choices));
+    FILTER_CHOICES = Collections.unmodifiableList(new ArrayList<>(choices));
+  }
+
+  public final boolean available;
 
   MassDetectionInstrument() {
-    this(false, false);
+    this(false);
   }
 
   MassDetectionInstrument(boolean available) {
-    this(available, available);
-  }
-
-  MassDetectionInstrument(boolean userChoice, boolean platformChoice) {
-    this.userChoice = userChoice;
-    this.platformChoice = platformChoice;
+    this.available = available;
   }
 
   public static List<MassDetectionInstrument> userChoices() {
-    return Stream.of(MassDetectionInstrument.values()).filter(instrument -> instrument.userChoice)
-        .collect(Collectors.toList());
+    return new ArrayList<>(USER_CHOICES);
   }
 
   public static List<MassDetectionInstrument> platformChoices() {
-    return Stream.of(MassDetectionInstrument.values())
-        .filter(instrument -> instrument.platformChoice).collect(Collectors.toList());
+    return new ArrayList<>(PLATFORM_CHOICES);
+  }
+
+  public static List<MassDetectionInstrument> filterChoices() {
+    return new ArrayList<>(FILTER_CHOICES);
   }
 
   public static String getNullLabel(Locale locale) {
     return NULL.getLabel(locale);
+  }
+
+  public boolean isAvailable() {
+    return USER_CHOICES.contains(this);
   }
 
   private MessageResource getResources(Locale locale) {

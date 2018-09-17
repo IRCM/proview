@@ -89,7 +89,12 @@ public class SubmissionFilter implements Predicate<Submission> {
           .anyMatch(sample -> anySampleStatus.equals(sample.getStatus()));
     }
     if (instrument != null) {
-      test &= instrument == submission.getMassDetectionInstrument();
+      if (instrument == MassDetectionInstrument.NULL) {
+        test &= submission.getMassDetectionInstrument() == null
+            || instrument == submission.getMassDetectionInstrument();
+      } else {
+        test &= instrument == submission.getMassDetectionInstrument();
+      }
     }
     if (dateRange != null) {
       test &= dateRange.contains(toLocalDate(submission.getSubmissionDate()));
@@ -141,7 +146,11 @@ public class SubmissionFilter implements Predicate<Submission> {
       query.where(submission.samples.any().status.eq(anySampleStatus));
     }
     if (instrument != null) {
-      query.where(submission.massDetectionInstrument.eq(instrument));
+      if (instrument == MassDetectionInstrument.NULL) {
+        query.where(submission.massDetectionInstrument.isNull());
+      } else {
+        query.where(submission.massDetectionInstrument.eq(instrument));
+      }
     }
     if (dateRange != null) {
       if (dateRange.hasLowerBound()) {
@@ -241,7 +250,7 @@ public class SubmissionFilter implements Predicate<Submission> {
 
   /**
    * Adds conditions to query to match filters.
-   * 
+   *
    * @param query
    *          database query
    */

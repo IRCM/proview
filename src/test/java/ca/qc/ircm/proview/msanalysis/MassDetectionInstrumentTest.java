@@ -26,8 +26,6 @@ import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TOF;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TSQ_VANTAGE;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.VELOS;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Locale;
@@ -36,15 +34,6 @@ import org.junit.Test;
 public class MassDetectionInstrumentTest {
   @Test
   public void userChoices() {
-    assertTrue(NULL.userChoice);
-    assertTrue(VELOS.userChoice);
-    assertTrue(Q_EXACTIVE.userChoice);
-    assertFalse(TSQ_VANTAGE.userChoice);
-    assertTrue(ORBITRAP_FUSION.userChoice);
-    assertFalse(LTQ_ORBI_TRAP.userChoice);
-    assertFalse(Q_TOF.userChoice);
-    assertFalse(TOF.userChoice);
-
     List<MassDetectionInstrument> availables = MassDetectionInstrument.userChoices();
     assertEquals(4, availables.size());
     assertEquals(NULL, availables.get(0));
@@ -55,20 +44,21 @@ public class MassDetectionInstrumentTest {
 
   @Test
   public void platformChoices() {
-    assertFalse(NULL.platformChoice);
-    assertTrue(VELOS.platformChoice);
-    assertTrue(Q_EXACTIVE.platformChoice);
-    assertFalse(TSQ_VANTAGE.platformChoice);
-    assertTrue(ORBITRAP_FUSION.platformChoice);
-    assertFalse(LTQ_ORBI_TRAP.platformChoice);
-    assertFalse(Q_TOF.platformChoice);
-    assertFalse(TOF.platformChoice);
-
     List<MassDetectionInstrument> availables = MassDetectionInstrument.platformChoices();
     assertEquals(3, availables.size());
     assertEquals(VELOS, availables.get(0));
     assertEquals(Q_EXACTIVE, availables.get(1));
     assertEquals(ORBITRAP_FUSION, availables.get(2));
+  }
+
+  @Test
+  public void filterChoices() {
+    List<MassDetectionInstrument> availables = MassDetectionInstrument.filterChoices();
+    assertEquals(4, availables.size());
+    assertEquals(NULL, availables.get(0));
+    assertEquals(VELOS, availables.get(1));
+    assertEquals(Q_EXACTIVE, availables.get(2));
+    assertEquals(ORBITRAP_FUSION, availables.get(3));
   }
 
   @Test

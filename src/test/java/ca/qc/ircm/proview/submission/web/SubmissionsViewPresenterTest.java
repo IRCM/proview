@@ -1605,7 +1605,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(resources.message(ALL), comboBox.getEmptySelectionCaption());
     assertEquals(resources.message(ALL), comboBox.getPlaceholder());
     List<MassDetectionInstrument> instruments = items(comboBox);
-    assertEquals(MassDetectionInstrument.platformChoices(), instruments);
+    assertEquals(MassDetectionInstrument.filterChoices(), instruments);
     for (MassDetectionInstrument instrument : instruments) {
       assertEquals(instrument.getLabel(locale),
           comboBox.getItemCaptionGenerator().apply(instrument));

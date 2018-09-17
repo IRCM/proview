@@ -140,6 +140,15 @@ public class SubmissionFilterTest {
   }
 
   @Test
+  public void addConditions_InstrumentForceNull() throws Exception {
+    filter.instrument = MassDetectionInstrument.NULL;
+
+    filter.addConditions(query);
+
+    verify(query).where(submission.massDetectionInstrument.isNull());
+  }
+
+  @Test
   public void addConditions_DateRange_OpenRange() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
@@ -745,6 +754,15 @@ public class SubmissionFilterTest {
 
     verify(query)
         .where(submission.massDetectionInstrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
+  }
+
+  @Test
+  public void addCountConditions_InstrumentForceNull() throws Exception {
+    filter.instrument = MassDetectionInstrument.NULL;
+
+    filter.addCountConditions(query);
+
+    verify(query).where(submission.massDetectionInstrument.isNull());
   }
 
   @Test
@@ -1543,7 +1561,18 @@ public class SubmissionFilterTest {
 
     assertTrue(filter.test(instrument(MassDetectionInstrument.LTQ_ORBI_TRAP)));
     assertFalse(filter.test(instrument(MassDetectionInstrument.VELOS)));
+    assertFalse(filter.test(instrument(MassDetectionInstrument.NULL)));
     assertFalse(filter.test(instrument(null)));
+  }
+
+  @Test
+  public void test_Instrument_OnlyNull() {
+    filter.instrument = MassDetectionInstrument.NULL;
+
+    assertFalse(filter.test(instrument(MassDetectionInstrument.LTQ_ORBI_TRAP)));
+    assertFalse(filter.test(instrument(MassDetectionInstrument.VELOS)));
+    assertTrue(filter.test(instrument(MassDetectionInstrument.NULL)));
+    assertTrue(filter.test(instrument(null)));
   }
 
   @Test
@@ -1552,6 +1581,7 @@ public class SubmissionFilterTest {
 
     assertTrue(filter.test(instrument(MassDetectionInstrument.LTQ_ORBI_TRAP)));
     assertTrue(filter.test(instrument(MassDetectionInstrument.VELOS)));
+    assertTrue(filter.test(instrument(MassDetectionInstrument.NULL)));
     assertTrue(filter.test(instrument(null)));
   }
 

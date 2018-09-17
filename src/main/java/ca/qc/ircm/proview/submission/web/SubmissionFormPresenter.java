@@ -722,7 +722,7 @@ public class SubmissionFormPresenter implements BinderValidator {
         .setItemCaptionGenerator(instrument -> instrument != null ? instrument.getLabel(locale)
             : MassDetectionInstrument.getNullLabel(locale));
     design.instrument
-        .setItemEnabledProvider(instrument -> instrument != null ? instrument.userChoice : true);
+        .setItemEnabledProvider(instrument -> instrument != null ? instrument.isAvailable() : true);
     submissionBinder.forField(design.instrument)
         .withNullRepresentation(MassDetectionInstrument.NULL).bind(INSTRUMENT);
     design.proteinIdentification.addStyleName(PROTEIN_IDENTIFICATION);
@@ -1487,7 +1487,7 @@ public class SubmissionFormPresenter implements BinderValidator {
           Stream.concat(MassDetectionInstrumentSource.availables().stream(), Stream.of(source)));
     }
     MassDetectionInstrument instrument = submission.getMassDetectionInstrument();
-    if (instrument != null && !instrument.userChoice) {
+    if (instrument != null && !instrument.isAvailable()) {
       design.instrument.setItems(Stream.concat(instrumentValues().stream(), Stream.of(instrument)));
     }
     ProteinIdentification proteinIdentification = submission.getProteinIdentification();

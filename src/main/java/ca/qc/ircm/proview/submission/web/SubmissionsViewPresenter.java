@@ -512,7 +512,7 @@ public class SubmissionsViewPresenter {
     filterRow.getCell(INSTRUMENT).setComponent(comboBoxFilter(e -> {
       filter.instrument = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
-    }, MassDetectionInstrument.platformChoices().toArray(new MassDetectionInstrument[0]),
+    }, MassDetectionInstrument.filterChoices().toArray(new MassDetectionInstrument[0]),
         instrument -> instrument.getLabel(locale)));
     filterRow.getCell(SAMPLE_NAME).setComponent(textFilter(e -> {
       filter.anySampleNameContains = e.getValue();
