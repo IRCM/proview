@@ -77,12 +77,8 @@
         vertical-align: top;
         min-width: 15em;
       }
-      .service-information span, .service-information pre {
+      .service-information span {
         display: inline-block;
-      }
-      .service-information pre {
-        margin: 0;
-        padding: 0;
       }
       .solvent-separator {
         margin-right: 0.3em;
@@ -91,7 +87,7 @@
         vertical-align: top;
         min-width: 5em;
       }
-      .comment span, .comment pre {
+      .comment span {
         display: inline-block;
         margin: 0;
         padding: 0;
@@ -356,7 +352,7 @@
       <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.quantification != null && (submission.quantification.name() == 'SILAC' || submission.quantification.name() == 'TMT')}">
         <span class="label" th:if="${submission.quantification.name() != 'TMT'}" th:text="#{submission.quantificationComment}">Quantification labels:</span>
         <span class="label" th:if="${submission.quantification.name() == 'TMT'}" th:text="#{submission.quantificationComment.TMT}">Used mass tagging kit:</span>
-        <pre class="quantificationComment" th:text="${submission.quantificationComment}">Heavy: Lys8, Arg10</pre>
+        <span class="quantificationComment" th:utext="${#strings.replace(#strings.escapeXml(submission.quantificationComment),'&#10;','&lt;br&gt;')}">Heavy: Lys8, Arg10</span>
       </div>
       <div th:if="${submission.service.name() == 'SMALL_MOLECULE'}">
         <span class="label" th:text="#{submission.highResolution}">Analysis:</span>
@@ -372,7 +368,7 @@
     </div>
     <div class="comment section">
       <span class="label" th:text="#{submission.comment}">Comment:</span>
-      <pre class="comment" th:text="${submission.comment}">My comments</pre>
+      <span class="comment" th:utext="${#strings.replace(#strings.escapeXml(submission.comment),'&#10;','&lt;br&gt;')}">My comments</span>
     </div>
     <div class="samples-details section" th:if="${submission.service.name() == 'INTACT_PROTEIN'}">
       <h3 th:text="#{samples-details}">Samples details</h3>

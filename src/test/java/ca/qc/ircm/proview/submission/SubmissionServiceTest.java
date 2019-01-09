@@ -690,6 +690,10 @@ public class SubmissionServiceTest {
     return submission;
   }
 
+  private String formatMultiline(String comment) {
+    return comment != null ? comment.replaceAll("\\r?\\n", "<br>") : "";
+  }
+
   @Test
   public void print_LcmsmsSolution() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
@@ -776,7 +780,7 @@ public class SubmissionServiceTest {
     assertFalse(content.contains("class=\"highResolution\""));
     assertFalse(content.contains("class=\"solvent\""));
     assertTrue(content.contains("class=\"comment\""));
-    assertTrue(content.contains(submission.getComment()));
+    assertTrue(content.contains(formatMultiline(submission.getComment())));
     assertFalse(content.contains("class=\"samples-details section\""));
     assertFalse(content.contains("class=\"plate-information section"));
   }
@@ -1039,7 +1043,7 @@ public class SubmissionServiceTest {
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment")));
-    assertTrue(content.contains(submission.getQuantificationComment()));
+    assertTrue(content.contains(formatMultiline(submission.getQuantificationComment())));
   }
 
   @Test
@@ -1070,7 +1074,7 @@ public class SubmissionServiceTest {
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
-    assertTrue(content.contains(submission.getQuantificationComment()));
+    assertTrue(content.contains(formatMultiline(submission.getQuantificationComment())));
   }
 
   @Test
@@ -1181,7 +1185,7 @@ public class SubmissionServiceTest {
     assertFalse(content.contains("class=\"highResolution\""));
     assertFalse(content.contains("class=\"solvent\""));
     assertTrue(content.contains("class=\"comment\""));
-    assertTrue(content.contains(submission.getComment()));
+    assertTrue(content.contains(formatMultiline(submission.getComment())));
     assertFalse(content.contains("class=\"samples-details section\""));
     assertFalse(content.contains("class=\"plate-information section"));
   }
@@ -1371,7 +1375,7 @@ public class SubmissionServiceTest {
           content.contains(solvent.getLabel(locale)));
     }
     assertTrue(content.contains("class=\"comment\""));
-    assertTrue(content.contains(submission.getComment()));
+    assertTrue(content.contains(formatMultiline(submission.getComment())));
     assertFalse(content.contains("class=\"samples-details section\""));
     assertFalse(content.contains("class=\"plate-information section"));
   }
@@ -1570,7 +1574,7 @@ public class SubmissionServiceTest {
     assertFalse(content.contains("class=\"highResolution\""));
     assertFalse(content.contains("class=\"solvent\""));
     assertTrue(content.contains("class=\"comment\""));
-    assertTrue(content.contains(submission.getComment()));
+    assertTrue(content.contains(formatMultiline(submission.getComment())));
     assertTrue(content.contains("class=\"samples-details section\""));
     for (SubmissionSample sample : submission.getSamples()) {
       assertTrue(content.contains(String.valueOf(sample.getNumberProtein())));
