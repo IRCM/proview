@@ -188,46 +188,10 @@ public class AuthenticationService {
     if (token == null || token.getPrincipal() == null || token.getCredentials() == null) {
       throw new UnknownAccountException("No account found for user []");
     }
-    if (ldapConfiguration.enabled()) {
-      try {
-        return getSpringLdapAuthenticationInfo(token);
-      } catch (AuthenticationException ldapAuthenticationException) {
-        return getLocalAuthenticationInfo(token);
-      }
-    } else {
-      return getLocalAuthenticationInfo(token);
-    }
-  }
-
-  private AuthenticationInfo getSpringLdapAuthenticationInfo(UsernamePasswordToken token) {
-    String username = token.getUsername();
-    String email = null;
-    if (username.contains("@")) {
-      String ldapUsername = ldapService.getUsername(username);
-      if (ldapService.isPasswordValid(ldapUsername, String.valueOf(token.getPassword()))) {
-        email = username;
-      }
-    } else {
-      if (ldapService.isPasswordValid(username, String.valueOf(token.getPassword()))) {
-        email = ldapService.getEmail(username);
-      }
-    }
-    User user = getUser(email);
-    if (user == null) {
-      throw new UnknownAccountException("No account found for user [" + username + "]");
-    }
-    user.setSignAttempts(0);
-    user.setLastSignAttempt(Instant.now());
-    entityManager.merge(user);
-    return new SimpleAuthenticationInfo(user.getId(), user.getHashedPassword(),
-        new SimpleByteSource(Hex.decode(user.getSalt())), realmName());
-  }
-
-  private AuthenticationInfo getLocalAuthenticationInfo(UsernamePasswordToken token) {
     String username = token.getUsername();
     User user = getUser(username);
     if (user == null) {
-      throw new UnknownAccountException("No account found for user [" + username + "]");
+      throw new UnknownAccountException("No account found for user []");
     }
     if (!user.isValid()) {
       throw new InvalidAccountException("Account for user [" + username + "] is invalid");
@@ -238,23 +202,22 @@ public class AuthenticationService {
     if (!canAttempt(user)) {
       throw new ExcessiveAttemptsException("To many attemps for user [" + username + "]");
     }
-    try {
-      if (!credentialMatches(token, user)) {
-        user.setSignAttempts(user.getSignAttempts() + 1);
+
+    if (!isPasswordValid(token, user)) {
+      // Try LDAP, if available.
+      if (token.getPassword() == null || !ldapConfiguration.enabled()
+          || !isLdapPasswordValid(username, String.valueOf(token.getPassword()))) {
+        incrementSignAttemps(user);
         if (user.getSignAttempts() >= securityConfiguration.disableSignAttemps()) {
           user.setActive(false);
+          entityManager.merge(user);
         }
         throw new IncorrectCredentialsException("Submitted credentials for token [" + token
             + "] did not match the expected credentials.");
       }
-
-      user.setSignAttempts(0);
-      return new SimpleAuthenticationInfo(user.getId(), user.getHashedPassword(),
-          new SimpleByteSource(Hex.decode(user.getSalt())), realmName());
-    } finally {
-      user.setLastSignAttempt(Instant.now());
-      entityManager.merge(user);
     }
+    resetSignAttemps(user);
+    return authenticationInfo(user);
   }
 
   private boolean canAttempt(User user) {
@@ -268,7 +231,7 @@ public class AuthenticationService {
     return true;
   }
 
-  private boolean credentialMatches(UsernamePasswordToken token, User user) {
+  private boolean isPasswordValid(UsernamePasswordToken token, User user) {
     if (user.getPasswordVersion() == null) {
       return false;
     }
@@ -283,6 +246,28 @@ public class AuthenticationService {
       }
     }
     return false;
+  }
+
+  private boolean isLdapPasswordValid(String email, String password) {
+    String username = ldapService.getUsername(email);
+    return username != null && ldapService.isPasswordValid(username, password);
+  }
+
+  private void resetSignAttemps(User user) {
+    user.setSignAttempts(0);
+    user.setLastSignAttempt(Instant.now());
+    entityManager.merge(user);
+  }
+
+  private void incrementSignAttemps(User user) {
+    user.setSignAttempts(user.getSignAttempts() + 1);
+    user.setLastSignAttempt(Instant.now());
+    entityManager.merge(user);
+  }
+
+  private AuthenticationInfo authenticationInfo(User user) {
+    return new SimpleAuthenticationInfo(user.getId(), user.getHashedPassword(),
+        new SimpleByteSource(Hex.decode(user.getSalt())), realmName());
   }
 
   /**
