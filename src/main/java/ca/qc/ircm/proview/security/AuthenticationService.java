@@ -208,10 +208,6 @@ public class AuthenticationService {
       if (token.getPassword() == null || !ldapConfiguration.enabled()
           || !isLdapPasswordValid(username, String.valueOf(token.getPassword()))) {
         incrementSignAttemps(user);
-        if (user.getSignAttempts() >= securityConfiguration.disableSignAttemps()) {
-          user.setActive(false);
-          entityManager.merge(user);
-        }
         throw new IncorrectCredentialsException("Submitted credentials for token [" + token
             + "] did not match the expected credentials.");
       }
@@ -262,6 +258,9 @@ public class AuthenticationService {
   private void incrementSignAttemps(User user) {
     user.setSignAttempts(user.getSignAttempts() + 1);
     user.setLastSignAttempt(Instant.now());
+    if (user.getSignAttempts() >= securityConfiguration.disableSignAttemps()) {
+      user.setActive(false);
+    }
     entityManager.merge(user);
   }
 
