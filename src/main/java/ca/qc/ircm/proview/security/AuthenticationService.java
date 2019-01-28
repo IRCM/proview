@@ -51,7 +51,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.SimpleByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,10 +70,6 @@ public class AuthenticationService {
   private LdapConfiguration ldapConfiguration;
   @Inject
   private LdapService ldapService;
-  @Inject
-  private ShiroLdapService shiroLdapService;
-  @Value("${spring.ldap.username:#{null}}")
-  private String ldapUsername;
   /**
    * Used to generate salt for passwords.
    */
@@ -85,13 +80,11 @@ public class AuthenticationService {
 
   protected AuthenticationService(EntityManager entityManager,
       SecurityConfiguration securityConfiguration, LdapConfiguration ldapConfiguration,
-      LdapService ldapService, ShiroLdapService shiroLdapService, String ldapUsername) {
+      LdapService ldapService) {
     this.entityManager = entityManager;
     this.securityConfiguration = securityConfiguration;
     this.ldapConfiguration = ldapConfiguration;
     this.ldapService = ldapService;
-    this.shiroLdapService = shiroLdapService;
-    this.ldapUsername = ldapUsername;
   }
 
   private Subject getSubject() {
@@ -197,11 +190,7 @@ public class AuthenticationService {
     }
     if (ldapConfiguration.enabled()) {
       try {
-        if (ldapUsername == null) {
-          return getShiroLdapAuthenticationInfo(token);
-        } else {
-          return getSpringLdapAuthenticationInfo(token);
-        }
+        return getSpringLdapAuthenticationInfo(token);
       } catch (AuthenticationException ldapAuthenticationException) {
         return getLocalAuthenticationInfo(token);
       }
@@ -223,20 +212,6 @@ public class AuthenticationService {
         email = ldapService.getEmail(username);
       }
     }
-    User user = getUser(email);
-    if (user == null) {
-      throw new UnknownAccountException("No account found for user [" + username + "]");
-    }
-    user.setSignAttempts(0);
-    user.setLastSignAttempt(Instant.now());
-    entityManager.merge(user);
-    return new SimpleAuthenticationInfo(user.getId(), user.getHashedPassword(),
-        new SimpleByteSource(Hex.decode(user.getSalt())), realmName());
-  }
-
-  private AuthenticationInfo getShiroLdapAuthenticationInfo(UsernamePasswordToken token) {
-    String username = token.getUsername();
-    String email = shiroLdapService.getEmail(username, String.valueOf(token.getPassword()));
     User user = getUser(email);
     if (user == null) {
       throw new UnknownAccountException("No account found for user [" + username + "]");

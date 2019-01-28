@@ -99,8 +99,6 @@ public class AuthenticationServiceTest {
   private LdapConfiguration ldapConfiguration;
   @Mock
   private LdapService ldapService;
-  @Mock
-  private ShiroLdapService shiroLdapService;
   @Captor
   private ArgumentCaptor<PrincipalCollection> principalCollectionCaptor;
   @Captor
@@ -118,7 +116,7 @@ public class AuthenticationServiceTest {
   @Before
   public void beforeTest() {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, ldapService, shiroLdapService, null);
+        ldapConfiguration, ldapService);
     passwordVersion = realSecurityConfiguration.getPasswordVersion();
     when(securityConfiguration.getPasswordVersions())
         .thenReturn(Collections.nCopies(1, passwordVersion));
@@ -269,7 +267,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(ldapService, shiroLdapService);
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -294,7 +292,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(ldapService, shiroLdapService);
+    verifyZeroInteractions(ldapService);
   }
 
   @Test(expected = InvalidAccountException.class)
@@ -350,7 +348,7 @@ public class AuthenticationServiceTest {
     assertEquals(1, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(ldapService, shiroLdapService);
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -367,7 +365,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(ldapService, shiroLdapService);
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -388,7 +386,7 @@ public class AuthenticationServiceTest {
 
     assertEquals(maximumSignAttemps, user.getSignAttempts());
     assertEquals(lastSignAttempt, user.getLastSignAttempt());
-    verifyZeroInteractions(ldapService, shiroLdapService);
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -404,7 +402,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(ldapService, shiroLdapService);
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -426,7 +424,7 @@ public class AuthenticationServiceTest {
     assertEquals(maximumSignAttemps + 1, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(ldapService, shiroLdapService);
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
@@ -449,73 +447,13 @@ public class AuthenticationServiceTest {
     assertFalse(user.isActive());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(ldapService, shiroLdapService);
-  }
-
-  @Test
-  public void getAuthenticationInfo_ShiroLdap() throws Throwable {
-    when(ldapConfiguration.enabled()).thenReturn(true);
-    when(shiroLdapService.getEmail(any(), any())).thenReturn("christian.poitras@ircm.qc.ca");
-    UsernamePasswordToken token = new UsernamePasswordToken("poitrasc", "password2");
-
-    AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
-
-    verify(shiroLdapService).getEmail("poitrasc", "password2");
-    assertEquals(2L, authentication.getPrincipals().getPrimaryPrincipal());
-    assertEquals(1, authentication.getPrincipals().fromRealm(realmName).size());
-    assertEquals(2L, authentication.getPrincipals().fromRealm(realmName).iterator().next());
-    assertEquals("b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7",
-        authentication.getCredentials());
-    assertTrue(authentication instanceof SaltedAuthenticationInfo);
-    SaltedAuthenticationInfo saltedAuthentication = (SaltedAuthenticationInfo) authentication;
-    assertEquals(
-        "d04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d"
-            + "58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d",
-        saltedAuthentication.getCredentialsSalt().toHex());
-    User user = entityManager.find(User.class, 2L);
-    assertEquals(0, user.getSignAttempts());
-    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
-    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-  }
-
-  @Test
-  public void getAuthenticationInfo_ShiroLdapNotExists_LocalExists() throws Throwable {
-    when(ldapConfiguration.enabled()).thenReturn(true);
-    UsernamePasswordToken token =
-        new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
-
-    AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
-
-    verify(shiroLdapService).getEmail("christian.poitras@ircm.qc.ca", "password");
-    assertEquals(2L, authentication.getPrincipals().getPrimaryPrincipal());
-    assertEquals(1, authentication.getPrincipals().fromRealm(realmName).size());
-    assertEquals(2L, authentication.getPrincipals().fromRealm(realmName).iterator().next());
-    assertEquals("b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7",
-        authentication.getCredentials());
-    assertTrue(authentication instanceof SaltedAuthenticationInfo);
-    SaltedAuthenticationInfo saltedAuthentication = (SaltedAuthenticationInfo) authentication;
-    assertEquals(
-        "d04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d"
-            + "58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d",
-        saltedAuthentication.getCredentialsSalt().toHex());
-    User user = entityManager.find(User.class, 2L);
-    assertEquals(0, user.getSignAttempts());
-    assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
-    assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-  }
-
-  @Test(expected = UnknownAccountException.class)
-  public void getAuthenticationInfo_ShiroLdapInvalid_LocalNotExists() throws Throwable {
-    when(ldapConfiguration.enabled()).thenReturn(true);
-    UsernamePasswordToken token = new UsernamePasswordToken("poitrasc", "password");
-
-    authenticationService.getAuthenticationInfo(token);
+    verifyZeroInteractions(ldapService);
   }
 
   @Test
   public void getAuthenticationInfo_SpringLdap() throws Throwable {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, ldapService, shiroLdapService, "someuser");
+        ldapConfiguration, ldapService);
     when(ldapConfiguration.enabled()).thenReturn(true);
     when(ldapService.isPasswordValid(any(), any())).thenReturn(true);
     when(ldapService.getEmail(any())).thenReturn("christian.poitras@ircm.qc.ca");
@@ -545,7 +483,7 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthenticationInfo_SpringLdap_Email() throws Throwable {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, ldapService, shiroLdapService, "someuser");
+        ldapConfiguration, ldapService);
     when(ldapConfiguration.enabled()).thenReturn(true);
     when(ldapService.getUsername(any())).thenReturn("poitrasc");
     when(ldapService.isPasswordValid(any(), any())).thenReturn(true);
@@ -576,7 +514,7 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthenticationInfo_SpringLdapNotExists_LocalExists() throws Throwable {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, ldapService, shiroLdapService, "someuser");
+        ldapConfiguration, ldapService);
     when(ldapConfiguration.enabled()).thenReturn(true);
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
@@ -604,7 +542,7 @@ public class AuthenticationServiceTest {
   @Test(expected = UnknownAccountException.class)
   public void getAuthenticationInfo_SpringLdapInvalid_LocalNotExists() throws Throwable {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, ldapService, shiroLdapService, "someuser");
+        ldapConfiguration, ldapService);
     when(ldapConfiguration.enabled()).thenReturn(true);
     UsernamePasswordToken token = new UsernamePasswordToken("poitrasc", "password");
 
