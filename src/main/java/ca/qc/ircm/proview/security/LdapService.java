@@ -33,17 +33,17 @@ import org.springframework.stereotype.Component;
  * Services for LDAP (active directory).
  */
 @Component
-public class SpringLdapService {
-  private static final Logger logger = LoggerFactory.getLogger(SpringLdapService.class);
+public class LdapService {
+  private static final Logger logger = LoggerFactory.getLogger(LdapService.class);
   @Inject
   private LdapTemplate ldapTemplate;
   @Inject
   private LdapConfiguration ldapConfiguration;
 
-  protected SpringLdapService() {
+  protected LdapService() {
   }
 
-  public SpringLdapService(LdapTemplate ldapTemplate, LdapConfiguration ldapConfiguration) {
+  public LdapService(LdapTemplate ldapTemplate, LdapConfiguration ldapConfiguration) {
     this.ldapTemplate = ldapTemplate;
     this.ldapConfiguration = ldapConfiguration;
   }
@@ -57,7 +57,7 @@ public class SpringLdapService {
    *          password
    * @return true if user exists in LDAP and password is valid, false otherwise
    */
-  public boolean passwordValid(String username, String password) {
+  public boolean isPasswordValid(String username, String password) {
     try {
       LdapQuery query = query().where(ldapConfiguration.idAttribute()).is(username);
       ldapTemplate.authenticate(query, password);
@@ -76,7 +76,7 @@ public class SpringLdapService {
    *          username
    * @return user's email from LDAP or null if user does not exists
    */
-  public String email(String username) {
+  public String getEmail(String username) {
     LdapQuery query = query().attributes(ldapConfiguration.mailAttribute())
         .where(ldapConfiguration.idAttribute()).is(username);
     AttributesMapper<String> mapper =
@@ -99,7 +99,7 @@ public class SpringLdapService {
    *          user's email
    * @return user's username on LDAP or null if user does not exists
    */
-  public String username(String email) {
+  public String getUsername(String email) {
     LdapQuery query = query().attributes(ldapConfiguration.idAttribute())
         .where(ldapConfiguration.mailAttribute()).is(email);
     AttributesMapper<String> mapper =

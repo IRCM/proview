@@ -70,7 +70,7 @@ public class AuthenticationService {
   @Inject
   private LdapConfiguration ldapConfiguration;
   @Inject
-  private SpringLdapService springLdapService;
+  private LdapService ldapService;
   @Inject
   private ShiroLdapService shiroLdapService;
   @Value("${spring.ldap.username:#{null}}")
@@ -85,11 +85,11 @@ public class AuthenticationService {
 
   protected AuthenticationService(EntityManager entityManager,
       SecurityConfiguration securityConfiguration, LdapConfiguration ldapConfiguration,
-      SpringLdapService springLdapService, ShiroLdapService shiroLdapService, String ldapUsername) {
+      LdapService ldapService, ShiroLdapService shiroLdapService, String ldapUsername) {
     this.entityManager = entityManager;
     this.securityConfiguration = securityConfiguration;
     this.ldapConfiguration = ldapConfiguration;
-    this.springLdapService = springLdapService;
+    this.ldapService = ldapService;
     this.shiroLdapService = shiroLdapService;
     this.ldapUsername = ldapUsername;
   }
@@ -214,13 +214,13 @@ public class AuthenticationService {
     String username = token.getUsername();
     String email = null;
     if (username.contains("@")) {
-      String ldapUsername = springLdapService.username(username);
-      if (springLdapService.passwordValid(ldapUsername, String.valueOf(token.getPassword()))) {
+      String ldapUsername = ldapService.getUsername(username);
+      if (ldapService.isPasswordValid(ldapUsername, String.valueOf(token.getPassword()))) {
         email = username;
       }
     } else {
-      if (springLdapService.passwordValid(username, String.valueOf(token.getPassword()))) {
-        email = springLdapService.email(username);
+      if (ldapService.isPasswordValid(username, String.valueOf(token.getPassword()))) {
+        email = ldapService.getEmail(username);
       }
     }
     User user = getUser(email);

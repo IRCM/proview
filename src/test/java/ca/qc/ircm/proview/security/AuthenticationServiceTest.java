@@ -98,7 +98,7 @@ public class AuthenticationServiceTest {
   @Mock
   private LdapConfiguration ldapConfiguration;
   @Mock
-  private SpringLdapService springLdapService;
+  private LdapService ldapService;
   @Mock
   private ShiroLdapService shiroLdapService;
   @Captor
@@ -118,7 +118,7 @@ public class AuthenticationServiceTest {
   @Before
   public void beforeTest() {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, springLdapService, shiroLdapService, null);
+        ldapConfiguration, ldapService, shiroLdapService, null);
     passwordVersion = realSecurityConfiguration.getPasswordVersion();
     when(securityConfiguration.getPasswordVersions())
         .thenReturn(Collections.nCopies(1, passwordVersion));
@@ -269,7 +269,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(springLdapService, shiroLdapService);
+    verifyZeroInteractions(ldapService, shiroLdapService);
   }
 
   @Test
@@ -294,7 +294,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(springLdapService, shiroLdapService);
+    verifyZeroInteractions(ldapService, shiroLdapService);
   }
 
   @Test(expected = InvalidAccountException.class)
@@ -350,7 +350,7 @@ public class AuthenticationServiceTest {
     assertEquals(1, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(springLdapService, shiroLdapService);
+    verifyZeroInteractions(ldapService, shiroLdapService);
   }
 
   @Test
@@ -367,7 +367,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(springLdapService, shiroLdapService);
+    verifyZeroInteractions(ldapService, shiroLdapService);
   }
 
   @Test
@@ -388,7 +388,7 @@ public class AuthenticationServiceTest {
 
     assertEquals(maximumSignAttemps, user.getSignAttempts());
     assertEquals(lastSignAttempt, user.getLastSignAttempt());
-    verifyZeroInteractions(springLdapService, shiroLdapService);
+    verifyZeroInteractions(ldapService, shiroLdapService);
   }
 
   @Test
@@ -404,7 +404,7 @@ public class AuthenticationServiceTest {
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(springLdapService, shiroLdapService);
+    verifyZeroInteractions(ldapService, shiroLdapService);
   }
 
   @Test
@@ -426,7 +426,7 @@ public class AuthenticationServiceTest {
     assertEquals(maximumSignAttemps + 1, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(springLdapService, shiroLdapService);
+    verifyZeroInteractions(ldapService, shiroLdapService);
   }
 
   @Test
@@ -449,7 +449,7 @@ public class AuthenticationServiceTest {
     assertFalse(user.isActive());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
-    verifyZeroInteractions(springLdapService, shiroLdapService);
+    verifyZeroInteractions(ldapService, shiroLdapService);
   }
 
   @Test
@@ -515,16 +515,16 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthenticationInfo_SpringLdap() throws Throwable {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, springLdapService, shiroLdapService, "someuser");
+        ldapConfiguration, ldapService, shiroLdapService, "someuser");
     when(ldapConfiguration.enabled()).thenReturn(true);
-    when(springLdapService.passwordValid(any(), any())).thenReturn(true);
-    when(springLdapService.email(any())).thenReturn("christian.poitras@ircm.qc.ca");
+    when(ldapService.isPasswordValid(any(), any())).thenReturn(true);
+    when(ldapService.getEmail(any())).thenReturn("christian.poitras@ircm.qc.ca");
     UsernamePasswordToken token = new UsernamePasswordToken("poitrasc", "password2");
 
     AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
 
-    verify(springLdapService).passwordValid("poitrasc", "password2");
-    verify(springLdapService).email("poitrasc");
+    verify(ldapService).isPasswordValid("poitrasc", "password2");
+    verify(ldapService).getEmail("poitrasc");
     assertEquals(2L, authentication.getPrincipals().getPrimaryPrincipal());
     assertEquals(1, authentication.getPrincipals().fromRealm(realmName).size());
     assertEquals(2L, authentication.getPrincipals().fromRealm(realmName).iterator().next());
@@ -545,17 +545,17 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthenticationInfo_SpringLdap_Email() throws Throwable {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, springLdapService, shiroLdapService, "someuser");
+        ldapConfiguration, ldapService, shiroLdapService, "someuser");
     when(ldapConfiguration.enabled()).thenReturn(true);
-    when(springLdapService.username(any())).thenReturn("poitrasc");
-    when(springLdapService.passwordValid(any(), any())).thenReturn(true);
+    when(ldapService.getUsername(any())).thenReturn("poitrasc");
+    when(ldapService.isPasswordValid(any(), any())).thenReturn(true);
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password2");
 
     AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
 
-    verify(springLdapService).username("christian.poitras@ircm.qc.ca");
-    verify(springLdapService).passwordValid("poitrasc", "password2");
+    verify(ldapService).getUsername("christian.poitras@ircm.qc.ca");
+    verify(ldapService).isPasswordValid("poitrasc", "password2");
     assertEquals(2L, authentication.getPrincipals().getPrimaryPrincipal());
     assertEquals(1, authentication.getPrincipals().fromRealm(realmName).size());
     assertEquals(2L, authentication.getPrincipals().fromRealm(realmName).iterator().next());
@@ -576,14 +576,14 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthenticationInfo_SpringLdapNotExists_LocalExists() throws Throwable {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, springLdapService, shiroLdapService, "someuser");
+        ldapConfiguration, ldapService, shiroLdapService, "someuser");
     when(ldapConfiguration.enabled()).thenReturn(true);
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
 
     AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
 
-    verify(springLdapService).username("christian.poitras@ircm.qc.ca");
+    verify(ldapService).getUsername("christian.poitras@ircm.qc.ca");
     assertEquals(2L, authentication.getPrincipals().getPrimaryPrincipal());
     assertEquals(1, authentication.getPrincipals().fromRealm(realmName).size());
     assertEquals(2L, authentication.getPrincipals().fromRealm(realmName).iterator().next());
@@ -604,7 +604,7 @@ public class AuthenticationServiceTest {
   @Test(expected = UnknownAccountException.class)
   public void getAuthenticationInfo_SpringLdapInvalid_LocalNotExists() throws Throwable {
     authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, springLdapService, shiroLdapService, "someuser");
+        ldapConfiguration, ldapService, shiroLdapService, "someuser");
     when(ldapConfiguration.enabled()).thenReturn(true);
     UsernamePasswordToken token = new UsernamePasswordToken("poitrasc", "password");
 

@@ -31,8 +31,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SpringLdapServiceTest {
-  private SpringLdapService ldapService;
+public class LdapServiceTest {
+  private LdapService ldapService;
   @Inject
   private LdapTemplate ldapTemplate;
   @Inject
@@ -40,31 +40,36 @@ public class SpringLdapServiceTest {
 
   @Before
   public void beforeTest() {
-    ldapService = new SpringLdapService(ldapTemplate, ldapConfiguration);
+    ldapService = new LdapService(ldapTemplate, ldapConfiguration);
   }
 
   @Test
-  public void passwordValid_True() {
-    assertTrue(ldapService.passwordValid("poitrasc", "secret"));
+  public void isPasswordValid_True() {
+    assertTrue(ldapService.isPasswordValid("poitrasc", "secret"));
   }
 
   @Test
-  public void passwordValid_InvalidUser() {
-    assertFalse(ldapService.passwordValid("invalid", "secret"));
+  public void isPasswordValid_InvalidUser() {
+    assertFalse(ldapService.isPasswordValid("invalid", "secret"));
   }
 
   @Test
-  public void passwordValid_InvalidPassword() {
-    assertFalse(ldapService.passwordValid("poitrasc", "secret2"));
+  public void isPasswordValid_InvalidPassword() {
+    assertFalse(ldapService.isPasswordValid("poitrasc", "secret2"));
   }
 
   @Test
-  public void email() {
-    assertEquals("christian.poitras@ircm.qc.ca", ldapService.email("poitrasc"));
+  public void getEmail() {
+    assertEquals("christian.poitras@ircm.qc.ca", ldapService.getEmail("poitrasc"));
   }
 
   @Test
-  public void username() {
-    assertEquals("poitrasc", ldapService.username("christian.poitras@ircm.qc.ca"));
+  public void getEmail_Invalid() {
+    assertEquals(null, ldapService.getEmail("invalid"));
+  }
+
+  @Test
+  public void getUsername() {
+    assertEquals("poitrasc", ldapService.getUsername("christian.poitras@ircm.qc.ca"));
   }
 }
