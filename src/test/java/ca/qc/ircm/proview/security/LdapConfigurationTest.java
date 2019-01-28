@@ -24,8 +24,6 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,17 +31,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class LdapConfigurationTest {
   @Inject
   private LdapConfiguration ldapConfiguration;
-  @Inject
-  private LdapTemplate ldapTemplate;
 
   @Test
   public void defaultProperties() throws Throwable {
-    LdapContextSource contextSource = (LdapContextSource) ldapTemplate.getContextSource();
     assertTrue(ldapConfiguration.enabled());
-    assertEquals(contextSource.getUrls()[0], ldapConfiguration.url());
-    assertEquals("uid={0},ou=people,dc=mycompany,dc=com", ldapConfiguration.userDnTemplate());
-    assertEquals("dc=mycompany,dc=com", ldapConfiguration.base());
-    assertEquals("uid={0}", ldapConfiguration.userFilter());
     assertEquals("uid", ldapConfiguration.idAttribute());
     assertEquals("mail", ldapConfiguration.mailAttribute());
   }

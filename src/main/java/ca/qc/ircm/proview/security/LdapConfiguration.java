@@ -23,14 +23,6 @@ package ca.qc.ircm.proview.security;
 public interface LdapConfiguration {
   public boolean enabled();
 
-  public String url();
-
-  public String userDnTemplate();
-
-  public String base();
-
-  public String userFilter();
-
   public String idAttribute();
 
   public String mailAttribute();

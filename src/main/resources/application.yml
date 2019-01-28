@@ -41,12 +41,6 @@ spring:
       enabled: false
   thymeleaf:
     cache: false
-  ldap:
-    base: dc=mycompany,dc=com
-    user-dn-template: uid={0},ou=people,dc=mycompany,dc=com
-    user-filter: uid={0}
-    id-attribute: uid
-    mail-attribute: mail
 
 # Web server.
 server:
@@ -72,6 +66,11 @@ security:
     path: /noUrlBecauseShiroSecurityIsUsedForVaadin
   user:
     name: admin
+
+ldap:
+  enabled: false
+  id-attribute: uid
+  mail-attribute: mail
 
 email:
   enabled: true
@@ -125,6 +124,9 @@ spring:
       credential:
         username: uid=poitrasc
         password: secret
+
+ldap:
+  enabled: true
 
 logos:
   files:

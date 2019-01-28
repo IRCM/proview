@@ -17,59 +17,22 @@
 
 package ca.qc.ircm.proview.security;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.LdapContextSource;
 
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = LdapConfigurationSpringBoot.PREFIX)
 public class LdapConfigurationSpringBoot implements LdapConfiguration {
-  public static final String PREFIX = "spring.ldap";
-  private String base;
-  private String userDnTemplate;
-  private String userFilter;
+  public static final String PREFIX = "ldap";
+  private boolean enabled;
   private String idAttribute;
   private String mailAttribute;
-  private LdapContextSource contextSource;
-  @Inject
-  private LdapTemplate ldapTemplate;
-
-  @PostConstruct
-  public void init() {
-    contextSource = (LdapContextSource) ldapTemplate.getContextSource();
-    ldapTemplate.setIgnorePartialResultException(true);
-  }
 
   @Override
   public boolean enabled() {
-    return contextSource.getUrls() != null && contextSource.getUrls().length > 0;
-  }
-
-  @Override
-  public String url() {
-    return contextSource.getUrls() != null && contextSource.getUrls().length > 0
-        ? contextSource.getUrls()[0]
-        : null;
-  }
-
-  @Override
-  public String userDnTemplate() {
-    return userDnTemplate;
-  }
-
-  @Override
-  public String base() {
-    return base;
-  }
-
-  @Override
-  public String userFilter() {
-    return userFilter;
+    return enabled;
   }
 
   @Override
@@ -82,28 +45,12 @@ public class LdapConfigurationSpringBoot implements LdapConfiguration {
     return mailAttribute;
   }
 
-  public String getBase() {
-    return base;
+  public boolean isEnabled() {
+    return enabled;
   }
 
-  public void setBase(String base) {
-    this.base = base;
-  }
-
-  public String getUserDnTemplate() {
-    return userDnTemplate;
-  }
-
-  public void setUserDnTemplate(String userDnTemplate) {
-    this.userDnTemplate = userDnTemplate;
-  }
-
-  public String getUserFilter() {
-    return userFilter;
-  }
-
-  public void setUserFilter(String userFilter) {
-    this.userFilter = userFilter;
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
   }
 
   public String getIdAttribute() {
