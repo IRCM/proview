@@ -60,7 +60,7 @@
     <vaadin-spreadsheet.version>2.0.1</vaadin-spreadsheet.version> 
     <confirmdialog.version>3.2.0</confirmdialog.version>
     <popupbutton.version>3.0.0</popupbutton.version>
-    <easyuploads.version>8.0.0</easyuploads.version>
+    <easyuploads.version>9.0.0</easyuploads.version>
     <guava.version>21.0</guava.version>
     <commons-lang3.version>3.5</commons-lang3.version>
     <commons-email.version>1.4</commons-email.version>
@@ -314,11 +314,11 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-compatibility-server</artifactId>
+      <artifactId>vaadin-server</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-compatibility-shared</artifactId>
+      <artifactId>vaadin-shared</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
@@ -330,7 +330,7 @@
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-compatibility-client</artifactId>
+      <artifactId>vaadin-client</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
