@@ -61,14 +61,14 @@
     <confirmdialog.version>3.2.0</confirmdialog.version>
     <popupbutton.version>3.0.0</popupbutton.version>
     <easyuploads.version>9.0.0</easyuploads.version>
-    <guava.version>21.0</guava.version>
-    <commons-lang3.version>3.5</commons-lang3.version>
-    <commons-email.version>1.4</commons-email.version>
-    <mariadb-connector.version>1.5.7</mariadb-connector.version>
+    <guava.version>27.0.1-jre</guava.version>
+    <commons-lang3.version>3.8.1</commons-lang3.version>
+    <commons-email.version>1.5</commons-email.version>
+    <mariadb-java-client.version>2.4.0</mariadb-java-client.version>
     <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
-    <findbugs.version>3.0.0</findbugs.version>
+    <findbugs.version>3.0.1</findbugs.version>
     <selenium.version>3.4.0</selenium.version>
-    <greenmail.version>1.5.2</greenmail.version>
+    <greenmail.version>1.5.9</greenmail.version>
     <testbench.skip>true</testbench.skip>
     <testbench.driver>org.openqa.selenium.phantomjs.PhantomJSDriver</testbench.driver>
     <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
@@ -610,7 +610,7 @@
             <dependency>
               <groupId>org.mariadb.jdbc</groupId>
               <artifactId>mariadb-java-client</artifactId>
-              <version>${mariadb-connector.version}</version>
+              <version>${mariadb-java-client.version}</version>
             </dependency>
           </dependencies>
         </plugin>
