@@ -61,7 +61,7 @@
     <confirmdialog.version>3.2.0</confirmdialog.version>
     <popupbutton.version>3.0.0</popupbutton.version>
     <easyuploads.version>9.0.0</easyuploads.version>
-    <guava.version>27.0.1-jre</guava.version>
+    <guava.version>21.0</guava.version>
     <commons-lang3.version>3.8.1</commons-lang3.version>
     <commons-email.version>1.5</commons-email.version>
     <mariadb-java-client.version>2.4.0</mariadb-java-client.version>
