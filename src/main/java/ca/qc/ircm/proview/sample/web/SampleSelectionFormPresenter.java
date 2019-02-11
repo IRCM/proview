@@ -17,11 +17,11 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.QControl.control;
-import static ca.qc.ircm.proview.sample.QSample.sample;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.tube.QTube.tube;
+import static ca.qc.ircm.proview.sample.ControlProperties.CONTROL_TYPE;
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SampleProperties.ORIGINAL_CONTAINER;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.SUBMISSION;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 
@@ -31,6 +31,8 @@ import ca.qc.ircm.proview.sample.ControlType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.submission.SubmissionProperties;
+import ca.qc.ircm.proview.tube.TubeProperties;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.GridSortOrder;
@@ -58,17 +60,11 @@ public class SampleSelectionFormPresenter {
   public static final String SAMPLES = "samples";
   public static final String CONTROLS_PANEL = "controlsPanel";
   public static final String CONTROLS = "controls";
-  public static final String NAME = sample.name.getMetadata().getName();
-  public static final String STATUS = submissionSample.status.getMetadata().getName();
   public static final String SAMPLES_LAST_CONTAINER = "lastContainer";
-  public static final String CONTROL_TYPE = control.controlType.getMetadata().getName();
-  public static final String ORIGINAL_CONTAINER = sample.originalContainer.getMetadata().getName();
   public static final String ORIGINAL_CONTAINER_NAME =
-      property(ORIGINAL_CONTAINER, tube.name.getMetadata().getName());
+      property(ORIGINAL_CONTAINER, TubeProperties.NAME);
   public static final String UPDATE = "update";
-  public static final String SUBMISSION = submission.getMetadata().getName();
-  public static final String EXPERIMENT =
-      property(SUBMISSION, submission.experiment.getMetadata().getName());
+  public static final String EXPERIMENT = property(SUBMISSION, SubmissionProperties.EXPERIMENT);
   public static final String SELECT = "select";
   public static final String CLEAR = "clear";
   private SampleSelectionForm view;

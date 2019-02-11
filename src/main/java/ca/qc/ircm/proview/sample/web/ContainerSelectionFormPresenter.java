@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
@@ -66,7 +65,7 @@ public class ContainerSelectionFormPresenter {
   public static final String TYPE = "type";
   public static final String TUBES_PANEL = "tubesPanel";
   public static final String TUBES = "tubes";
-  public static final String SAMPLE = sample.getMetadata().getName();
+  public static final String SAMPLE = "sample";
   public static final String CONTAINER_TUBE = "tube";
   public static final String PLATES_PANEL = "platesPanel";
   public static final String PLATES = "plates";
@@ -219,7 +218,9 @@ public class ContainerSelectionFormPresenter {
     SampleContainerType type = design.type.getValue();
     if (type == TUBE) {
       tubes.values().forEach(field -> field.setComponentError(null));
-      for (ComboBox<Tube> field : tubes.values()) {
+      for (Map.Entry<Sample, ComboBox<Tube>> fieldEntry : tubes.entrySet()) {
+        Sample sample = fieldEntry.getKey();
+        ComboBox<Tube> field = fieldEntry.getValue();
         if (field.getValue() == null) {
           String message = generalResources.message(REQUIRED);
           logger.debug("Validation error {} for sample {} tube", message, sample);

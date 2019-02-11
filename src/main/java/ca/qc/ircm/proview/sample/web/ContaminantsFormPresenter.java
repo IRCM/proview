@@ -17,8 +17,10 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.QContaminant.contaminant;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.sample.ContaminantProperties.COMMENT;
+import static ca.qc.ircm.proview.sample.ContaminantProperties.NAME;
+import static ca.qc.ircm.proview.sample.ContaminantProperties.QUANTITY;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.CONTAMINANTS;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -60,10 +62,6 @@ import org.springframework.stereotype.Controller;
 public class ContaminantsFormPresenter implements BinderValidator {
   public static final String PANEL = "panel";
   public static final String COUNT = "count";
-  public static final String CONTAMINANTS = submissionSample.contaminants.getMetadata().getName();
-  public static final String NAME = contaminant.name.getMetadata().getName();
-  public static final String QUANTITY = contaminant.quantity.getMetadata().getName();
-  public static final String COMMENT = contaminant.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String EXAMPLE = "example";
   private static final int DEFAULT_MAX_COUNT = 10;

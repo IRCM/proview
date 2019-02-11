@@ -17,8 +17,10 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.QStandard.standard;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.sample.SampleProperties.STANDARDS;
+import static ca.qc.ircm.proview.sample.StandardProperties.COMMENT;
+import static ca.qc.ircm.proview.sample.StandardProperties.NAME;
+import static ca.qc.ircm.proview.sample.StandardProperties.QUANTITY;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -60,10 +62,6 @@ import org.springframework.stereotype.Controller;
 public class StandardsFormPresenter implements BinderValidator {
   public static final String PANEL = "panel";
   public static final String COUNT = "count";
-  public static final String STANDARDS = submissionSample.standards.getMetadata().getName();
-  public static final String NAME = standard.name.getMetadata().getName();
-  public static final String QUANTITY = standard.quantity.getMetadata().getName();
-  public static final String COMMENT = standard.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String EXAMPLE = "example";
   private static final int DEFAULT_MAX_COUNT = 10;

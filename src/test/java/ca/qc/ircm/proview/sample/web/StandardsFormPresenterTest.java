@@ -17,13 +17,13 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.COMMENT;
+import static ca.qc.ircm.proview.sample.SampleProperties.STANDARDS;
+import static ca.qc.ircm.proview.sample.StandardProperties.COMMENT;
+import static ca.qc.ircm.proview.sample.StandardProperties.NAME;
+import static ca.qc.ircm.proview.sample.StandardProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.COUNT;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.DOWN;
-import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.PANEL;
-import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.QUANTITY;
-import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;

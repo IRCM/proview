@@ -17,8 +17,9 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.SUBMISSION;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -29,6 +30,7 @@ import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.submission.SubmissionProperties;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -68,11 +70,7 @@ public class SampleStatusViewPresenter implements BinderValidator {
   public static final String HEADER = "header";
   public static final String SAMPLES = "samples";
   public static final String SAVE = "save";
-  public static final String NAME = submissionSample.name.getMetadata().getName();
-  public static final String STATUS = submissionSample.status.getMetadata().getName();
-  public static final String SUBMISSION = submission.getMetadata().getName();
-  public static final String EXPERIMENT =
-      property(SUBMISSION, submission.experiment.getMetadata().getName());
+  public static final String EXPERIMENT = property(SUBMISSION, SubmissionProperties.EXPERIMENT);
   public static final String NEW_STATUS = "newStatus";
   public static final String DOWN = "down";
   public static final String REGRESS = "regress";

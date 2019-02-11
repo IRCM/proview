@@ -17,21 +17,22 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
+import static ca.qc.ircm.proview.sample.ControlProperties.CONTROL_TYPE;
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
+import static ca.qc.ircm.proview.sample.SampleProperties.STANDARDS;
+import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
+import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION_PANEL;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS_CONTAINER;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.sample.web.ControlViewPresenter.HEADER;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.COUNT;
 import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.DOWN;
-import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
 import static org.openqa.selenium.By.className;
 
+import ca.qc.ircm.proview.sample.StandardProperties;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
@@ -42,9 +43,9 @@ import com.vaadin.testbench.elements.TextAreaElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 public class ControlViewPageObject extends AbstractTestBenchTestCase {
-  private static final String STANDARD_NAME = StandardsFormPresenter.NAME;
-  private static final String STANDARD_QUANTITY = StandardsFormPresenter.QUANTITY;
-  private static final String STANDARD_COMMENT = StandardsFormPresenter.COMMENT;
+  private static final String STANDARD_NAME = StandardProperties.NAME;
+  private static final String STANDARD_QUANTITY = StandardProperties.QUANTITY;
+  private static final String STANDARD_COMMENT = StandardProperties.COMMENT;
   private static final int NAME_COLUMN = 0;
   private static final int QUANTITY_COLUMN = 1;
   private static final int COMMENT_COLUMN = 2;

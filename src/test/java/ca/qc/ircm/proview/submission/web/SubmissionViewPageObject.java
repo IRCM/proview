@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.sample.web.ContaminantsFormPresenter.CONTAMINANTS;
-import static ca.qc.ircm.proview.sample.web.StandardsFormPresenter.STANDARDS;
+import static ca.qc.ircm.proview.sample.SampleProperties.STANDARDS;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.web.GelFormPresenter.COLORATION;
 import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DECOLORATION;
 import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DEVELOPMENT_TIME;

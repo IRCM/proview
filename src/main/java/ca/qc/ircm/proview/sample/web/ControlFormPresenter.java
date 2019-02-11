@@ -17,7 +17,11 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.QControl.control;
+import static ca.qc.ircm.proview.sample.ControlProperties.CONTROL_TYPE;
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
+import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
+import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -53,11 +57,6 @@ import org.springframework.stereotype.Controller;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ControlFormPresenter implements BinderValidator {
   public static final String SAMPLE_PANEL = "samplePanel";
-  public static final String NAME = control.name.getMetadata().getName();
-  public static final String TYPE = control.type.getMetadata().getName();
-  public static final String QUANTITY = control.quantity.getMetadata().getName();
-  public static final String VOLUME = control.volume.getMetadata().getName();
-  public static final String CONTROL_TYPE = control.controlType.getMetadata().getName();
   public static final String STANDARDS_CONTAINER = "standardsPanel";
   public static final String EXAMPLE = "example";
   public static final String EXPLANATION_PANEL = "explanationPanel";

@@ -17,18 +17,18 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.CONTROL_TYPE;
+import static ca.qc.ircm.proview.sample.ControlProperties.CONTROL_TYPE;
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
+import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
+import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXAMPLE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.EXPLANATION_PANEL;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.NAME;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.QUANTITY;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAMPLE_PANEL;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVE;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.SAVED;
 import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.STANDARDS_CONTAINER;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.TYPE;
-import static ca.qc.ircm.proview.sample.web.ControlFormPresenter.VOLUME;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;

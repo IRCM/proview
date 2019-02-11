@@ -17,18 +17,18 @@
 
 package ca.qc.ircm.proview.sample.web;
 
+import static ca.qc.ircm.proview.sample.ControlProperties.CONTROL_TYPE;
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CLEAR;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROLS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROLS_PANEL;
-import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.CONTROL_TYPE;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.EXPERIMENT;
-import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.ORIGINAL_CONTAINER_NAME;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_LAST_CONTAINER;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.SELECT;
-import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter.UPDATE;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;

@@ -17,19 +17,19 @@
 
 package ca.qc.ircm.proview.sample.web;
 
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.CANCEL;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.DOWN;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.EXPERIMENT;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.HEADER;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.INVALID_SAMPLES;
-import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.NAME;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.NEW_STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.OK;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.REGRESS;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.REGRESS_MESSAGE;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAMPLES;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.SAVE;
-import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.STATUS;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
