@@ -17,12 +17,15 @@
 
 package ca.qc.ircm.proview.msanalysis.web;
 
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.ACQUISITION_FILE;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.COMMENT;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.SAMPLE_LIST_NAME;
+import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.SOURCE;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.ACQUISITIONS;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.ACQUISITIONS_PANEL;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.ACQUISITION_COUNT;
-import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.ACQUISITION_FILE;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.BAN_CONTAINERS;
-import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.CONTAINERS;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.CONTAINERS_PANEL;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.DELETED;
@@ -30,12 +33,9 @@ import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.DOWN;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.HEADER;
-import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.MASS_DETECTION_INSTRUMENT;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.MS_ANALYSIS_PANEL;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.REMOVE;
-import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SAMPLE_LIST_NAME;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SAVE;
-import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.SOURCE;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;

@@ -17,8 +17,13 @@
 
 package ca.qc.ircm.proview.msanalysis.web;
 
-import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
-import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.ACQUISITION_FILE;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.COMMENT;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.CONTAINER;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.SAMPLE;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.SAMPLE_LIST_NAME;
+import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.SOURCE;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
@@ -76,19 +81,11 @@ public class MsAnalysisViewPresenter implements BinderValidator {
   public static final String HEADER = "header";
   public static final String DELETED = "deleted";
   public static final String MS_ANALYSIS_PANEL = "msAnalysisPanel";
-  public static final String MASS_DETECTION_INSTRUMENT =
-      msAnalysis.massDetectionInstrument.getMetadata().getName();
-  public static final String SOURCE = msAnalysis.source.getMetadata().getName();
   public static final String CONTAINERS_PANEL = "containersPanel";
   public static final String CONTAINERS = "containers";
   public static final String ACQUISITIONS_PANEL = "acquisitionsPanel";
   public static final String ACQUISITIONS = "acquisitions";
-  public static final String SAMPLE = acquisition.sample.getMetadata().getName();
-  public static final String CONTAINER = acquisition.container.getMetadata().getName();
-  public static final String ACQUISITION_COUNT = acquisition.getMetadata().getName() + "Count";
-  public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
-  public static final String SAMPLE_LIST_NAME = acquisition.sampleListName.getMetadata().getName();
-  public static final String COMMENT = acquisition.comment.getMetadata().getName();
+  public static final String ACQUISITION_COUNT = "acquisitionCount";
   public static final String DOWN = "down";
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
