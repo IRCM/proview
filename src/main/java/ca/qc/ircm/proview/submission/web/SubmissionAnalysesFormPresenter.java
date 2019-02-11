@@ -17,20 +17,27 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
-import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
-import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.PEPTIDE;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.PROTEIN;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.SCORE;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.STATUS;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.WORK_TIME;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.ACQUISITION_FILE;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.SAMPLE;
+import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.ACQUISITIONS;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
+import ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisService;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
+import ca.qc.ircm.proview.sample.SampleProperties;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.utils.MessageResource;
@@ -68,22 +75,12 @@ import org.springframework.stereotype.Controller;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionAnalysesFormPresenter {
-  public static final String ANALYSIS = msAnalysis.getMetadata().getName();
+  public static final String ANALYSIS = "msAnalysis";
   public static final String VIEW = "view";
-  public static final String ACQUISITIONS = msAnalysis.acquisitions.getMetadata().getName();
-  public static final String SAMPLE = acquisition.sample.getMetadata().getName();
-  public static final String NAME =
-      property(SAMPLE, acquisition.sample.name.getMetadata().getName());
-  public static final String ACQUISITION_FILE = acquisition.acquisitionFile.getMetadata().getName();
+  public static final String NAME = property(SAMPLE, SampleProperties.NAME);
   public static final String DATA_ANALYSES_PANEL = "dataAnalysesPanel";
   public static final String DATA_ANALYSES = "dataAnalyses";
-  public static final String PROTEIN = dataAnalysis.protein.getMetadata().getName();
-  public static final String PEPTIDE = dataAnalysis.peptide.getMetadata().getName();
-  public static final String DATA_ANALYSIS_TYPE = dataAnalysis.type.getMetadata().getName();
-  public static final String MAX_WORK_TIME = dataAnalysis.maxWorkTime.getMetadata().getName();
-  public static final String SCORE = dataAnalysis.score.getMetadata().getName();
-  public static final String WORK_TIME = dataAnalysis.workTime.getMetadata().getName();
-  public static final String STATUS = dataAnalysis.status.getMetadata().getName();
+  public static final String DATA_ANALYSIS_TYPE = DataAnalysisProperties.TYPE;
   public static final String DESCRIPTION = "description";
   public static final String VALUE = "value";
   @SuppressWarnings("unused")

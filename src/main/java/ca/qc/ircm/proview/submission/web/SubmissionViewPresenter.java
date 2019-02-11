@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
-import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -46,7 +44,7 @@ public class SubmissionViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER_STYLE = "header";
   public static final String HELP = "help";
-  public static final String SUBMISSION = qname(submission);
+  public static final String SUBMISSION = "submission";
   public static final String SUBMISSION_DESCRIPTION = property(SUBMISSION, "description");
   public static final String INVALID_SUBMISSION = property("submission", "invalid");
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);

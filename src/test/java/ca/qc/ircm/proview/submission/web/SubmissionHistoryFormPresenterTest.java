@@ -17,19 +17,19 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTION_TYPE;
+import static ca.qc.ircm.proview.history.ActivityProperties.ACTION_TYPE;
+import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
+import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
+import static ca.qc.ircm.proview.history.ActivityProperties.USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTIVITIES;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.ACTIVITIES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.DESCRIPTION_LONG;
-import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.LAST_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLE_STATUS;
-import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.TIMESTAMP;
-import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.VIEW;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;

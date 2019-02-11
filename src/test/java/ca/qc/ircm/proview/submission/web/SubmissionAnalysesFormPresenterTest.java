@@ -17,21 +17,21 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITIONS;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ACQUISITION_FILE;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.PEPTIDE;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.PROTEIN;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.SCORE;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.STATUS;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.WORK_TIME;
+import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.ACQUISITION_FILE;
+import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.ACQUISITIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSES;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DATA_ANALYSIS_TYPE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.NAME;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.PEPTIDE;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.PROTEIN;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.SCORE;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.VIEW;
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.WORK_TIME;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.gridStartEdit;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;

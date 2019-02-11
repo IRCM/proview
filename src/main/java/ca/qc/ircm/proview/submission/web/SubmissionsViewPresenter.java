@@ -17,10 +17,13 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
-import static ca.qc.ircm.proview.sample.QSample.sample;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
@@ -34,6 +37,7 @@ import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleProperties;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
@@ -44,8 +48,10 @@ import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
+import ca.qc.ircm.proview.submission.SubmissionProperties;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.transfer.web.TransferView;
+import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.HelpWindow;
 import ca.qc.ircm.proview.web.SaveListener;
@@ -111,33 +117,22 @@ public class SubmissionsViewPresenter {
   public static final String SUBMISSIONS = "submissions";
   public static final String SUBMISSIONS_DESCRIPTION = property(SUBMISSIONS, "description");
   public static final String SAMPLE_COUNT = "sampleCount";
-  public static final String SUBMISSION = submission.getMetadata().getName();
-  public static final String SAMPLE = sample.getMetadata().getName();
-  public static final String EXPERIMENT =
-      property(SUBMISSION, submission.experiment.getMetadata().getName());
-  public static final String USER = property(SUBMISSION, submission.user.getMetadata().getName());
-  public static final String DIRECTOR =
-      property(SUBMISSION, submission.laboratory.director.getMetadata().getName());
-  public static final String SERVICE =
-      property(SUBMISSION, submission.service.getMetadata().getName());
-  public static final String SAMPLE_DELIVERY_DATE = qname(submission.sampleDeliveryDate);
-  public static final String DIGESTION_DATE = qname(submission.digestionDate);
-  public static final String ANALYSIS_DATE = qname(submission.analysisDate);
-  public static final String DATA_AVAILABLE_DATE = qname(submission.dataAvailableDate);
-  public static final String INSTRUMENT = qname(submission.massDetectionInstrument);
+  public static final String SUBMISSION = "submission";
+  public static final String SAMPLE = "sample";
+  public static final String EXPERIMENT = property(SUBMISSION, SubmissionProperties.EXPERIMENT);
+  public static final String USER = property(SUBMISSION, SubmissionProperties.USER);
+  public static final String DIRECTOR = property(SUBMISSION, LaboratoryProperties.DIRECTOR);
+  public static final String SERVICE = property(SUBMISSION, SubmissionProperties.SERVICE);
+  public static final String INSTRUMENT = MASS_DETECTION_INSTRUMENT;
   public static final String EXPECTED_DATE = "predictedDate";
-  public static final String SAMPLE_NAME =
-      property(SAMPLE, submissionSample.name.getMetadata().getName());
+  public static final String SAMPLE_NAME = property(SAMPLE, SampleProperties.NAME);
   public static final String SAMPLE_STATUSES = "statuses";
   public static final String SAMPLE_STATUSES_SEPARATOR = property(SAMPLE_STATUSES, "separator");
-  public static final String DATE =
-      property(SUBMISSION, submission.submissionDate.getMetadata().getName());
+  public static final String DATE = property(SUBMISSION, SUBMISSION_DATE);
   public static final String LINKED_TO_RESULTS = "results";
   public static final String TREATMENTS = "treatments";
-  public static final String HIDDEN =
-      property(SUBMISSION, submission.hidden.getMetadata().getName());
-  public static final String HIDDEN_STYLE =
-      styleName(SUBMISSION, submission.hidden.getMetadata().getName());
+  public static final String HIDDEN = property(SUBMISSION, SubmissionProperties.HIDDEN);
+  public static final String HIDDEN_STYLE = styleName(SUBMISSION, SubmissionProperties.HIDDEN);
   public static final String HISTORY = "history";
   public static final String ALL = "all";
   public static final String ADD_SUBMISSION = "addSubmission";

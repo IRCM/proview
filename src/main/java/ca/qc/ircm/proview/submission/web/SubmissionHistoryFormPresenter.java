@@ -17,8 +17,12 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.history.QActivity.activity;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.history.ActivityProperties.ACTION_TYPE;
+import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
+import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
+import static ca.qc.ircm.proview.history.ActivityProperties.USER;
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
@@ -71,17 +75,13 @@ import org.springframework.stereotype.Controller;
 public class SubmissionHistoryFormPresenter {
   public static final String SAMPLES_PANEL = "samplesPanel";
   public static final String SAMPLES = "samples";
-  public static final String SAMPLE_NAME = submissionSample.name.getMetadata().getName();
-  public static final String SAMPLE_STATUS = submissionSample.status.getMetadata().getName();
+  public static final String SAMPLE_NAME = NAME;
+  public static final String SAMPLE_STATUS = STATUS;
   public static final String LAST_CONTAINER = "lastContainer";
   public static final String ACTIVITIES_PANEL = "activitiesPanel";
   public static final String ACTIVITIES = "activities";
-  public static final String USER = activity.user.getMetadata().getName();
-  public static final String ACTION_TYPE = activity.actionType.getMetadata().getName();
-  public static final String TIMESTAMP = activity.timestamp.getMetadata().getName();
   public static final String DESCRIPTION = "description";
   public static final String DESCRIPTION_LONG = property(DESCRIPTION, "long");
-  public static final String EXPLANATION = activity.explanation.getMetadata().getName();
   public static final String VIEW = "view";
   public static final String VIEW_ERROR = "view.error";
   private SubmissionHistoryForm view;

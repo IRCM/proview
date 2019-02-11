@@ -17,7 +17,14 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.COLORATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_COLORATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_QUANTITY;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SEPARATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -47,15 +54,6 @@ import org.springframework.stereotype.Controller;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class GelFormPresenter implements BinderValidator {
-  public static final String SEPARATION = submission.separation.getMetadata().getName();
-  public static final String THICKNESS = submission.thickness.getMetadata().getName();
-  public static final String COLORATION = submission.coloration.getMetadata().getName();
-  public static final String OTHER_COLORATION = submission.otherColoration.getMetadata().getName();
-  public static final String DEVELOPMENT_TIME = submission.developmentTime.getMetadata().getName();
-  public static final String DECOLORATION = submission.decoloration.getMetadata().getName();
-  public static final String WEIGHT_MARKER_QUANTITY =
-      submission.weightMarkerQuantity.getMetadata().getName();
-  public static final String PROTEIN_QUANTITY = submission.proteinQuantity.getMetadata().getName();
   public static final String EXAMPLE = "example";
   private static final Logger logger = LoggerFactory.getLogger(GelFormPresenter.class);
   private GelForm view;

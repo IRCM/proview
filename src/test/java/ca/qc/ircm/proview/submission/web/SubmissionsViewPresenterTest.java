@@ -18,17 +18,18 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ALL;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS_DESCRIPTION;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIRECTOR;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHMENT;
@@ -46,7 +47,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.MS_ANAL
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.NO_SELECTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES_SEPARATOR;

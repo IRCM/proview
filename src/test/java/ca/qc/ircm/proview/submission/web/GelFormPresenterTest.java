@@ -17,15 +17,15 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.COLORATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DECOLORATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.COLORATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_COLORATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_QUANTITY;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SEPARATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.GelFormPresenter.EXAMPLE;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.OTHER_COLORATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.PROTEIN_QUANTITY;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.SEPARATION;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.THICKNESS;
-import static ca.qc.ircm.proview.submission.web.GelFormPresenter.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;

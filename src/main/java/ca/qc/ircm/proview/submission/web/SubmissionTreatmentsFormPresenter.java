@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
@@ -27,13 +25,16 @@ import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.fractionation.web.FractionationView;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.sample.SampleProperties;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleProperties;
 import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
 import ca.qc.ircm.proview.standard.web.StandardAdditionView;
-import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionProperties;
 import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentProperties;
 import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -58,17 +59,14 @@ import org.springframework.stereotype.Controller;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionTreatmentsFormPresenter implements BinderValidator {
   public static final String SAMPLES_PANEL = "samplesPanel";
-  public static final String SAMPLES = QSubmission.submission.samples.getMetadata().getName();
-  public static final String SAMPLES_NAME =
-      property(SAMPLES, submissionSample.name.getMetadata().getName());
-  public static final String SAMPLES_STATUS =
-      property(SAMPLES, submissionSample.status.getMetadata().getName());
+  public static final String SAMPLES = SubmissionProperties.SAMPLES;
+  public static final String SAMPLES_NAME = property(SAMPLES, SampleProperties.NAME);
+  public static final String SAMPLES_STATUS = property(SAMPLES, SubmissionSampleProperties.STATUS);
   public static final String SAMPLES_LAST_CONTAINER = property(SAMPLES, "lastContainer");
   public static final String TREATMENTS_PANEL = "treatmentsPanel";
   public static final String TREATMENTS = "treatments";
   public static final String TREATMENT_TYPE = property(TREATMENTS, "type");
-  public static final String TREATMENT_TIME =
-      property(TREATMENTS, treatment.insertTime.getMetadata().getName());
+  public static final String TREATMENT_TIME = property(TREATMENTS, TreatmentProperties.INSERT_TIME);
   public static final String TREATMENT_SAMPLES = property(TREATMENTS, "samples");
   private SubmissionTreatmentsForm view;
   private SubmissionTreatmentsFormDesign design;
@@ -122,8 +120,8 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
         .setId(TREATMENT_TYPE).setCaption(resources.message(TREATMENT_TYPE));
     design.treatments.addColumn(treatment -> dateFormatter.format(treatment.getInsertTime()))
         .setId(TREATMENT_TIME).setCaption(resources.message(TREATMENT_TIME));
-    design.treatments.addColumn(treatment -> treatedSampleCount(treatment))
-        .setId(TREATMENT_SAMPLES).setCaption(resources.message(TREATMENT_SAMPLES))
+    design.treatments.addColumn(treatment -> treatedSampleCount(treatment)).setId(TREATMENT_SAMPLES)
+        .setCaption(resources.message(TREATMENT_SAMPLES))
         .setDescriptionGenerator(treatment -> treatedSampleDescription(treatment));
     design.treatments.sort(TREATMENT_TIME);
     updateSubmission();

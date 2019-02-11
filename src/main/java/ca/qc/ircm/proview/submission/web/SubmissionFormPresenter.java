@@ -18,22 +18,54 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource.ESI;
-import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
+import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
+import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEIGHT;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.NUMBER_PROTEIN;
 import static ca.qc.ircm.proview.submission.GelSeparation.ONE_DIMENSION;
 import static ca.qc.ircm.proview.submission.GelThickness.ONE;
-import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.submission.QSubmissionFile.submissionFile;
 import static ca.qc.ircm.proview.submission.Quantification.SILAC;
 import static ca.qc.ircm.proview.submission.Quantification.TMT;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
+import static ca.qc.ircm.proview.submission.SubmissionFileProperties.FILENAME;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.AVERAGE_MASS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.FILES;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.FORMULA;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.GOAL;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INJECTION_TYPE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.LIGHT_SENSITIVE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.MONOISOTOPIC_MASS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_PROTEOLYTIC_DIGESTION_METHOD;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_SOLVENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.POST_TRANSLATION_MODIFICATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_CONTENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_IDENTIFICATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_IDENTIFICATION_LINK;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEOLYTIC_DIGESTION_METHOD;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION_COMMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLUTION_SOLVENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLVENTS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SOURCE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_PROTEOLYTIC_DIGESTION_METHOD;
 import static ca.qc.ircm.proview.treatment.Solvent.ACETONITRILE;
 import static ca.qc.ircm.proview.treatment.Solvent.CHCL3;
 import static ca.qc.ircm.proview.treatment.Solvent.METHANOL;
@@ -55,6 +87,7 @@ import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateProperties;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -144,81 +177,45 @@ public class SubmissionFormPresenter implements BinderValidator {
   public static final String GUIDELINES = "guidelines";
   public static final String SERVICE_PANEL = "servicePanel";
   public static final String SERVICE = "service";
-  public static final String SAMPLES = submission.samples.getMetadata().getName();
   public static final String SAMPLES_PANEL = "samplesPanel";
-  public static final String SAMPLE_TYPE = submissionSample.type.getMetadata().getName();
-  public static final String SOLUTION_SOLVENT = submission.solutionSolvent.getMetadata().getName();
+  public static final String SAMPLE_TYPE = TYPE;
   public static final String SAMPLE_COUNT = "sampleCount";
-  public static final String SAMPLE_NAME = submissionSample.name.getMetadata().getName();
-  public static final String FORMULA = submission.formula.getMetadata().getName();
-  public static final String MONOISOTOPIC_MASS =
-      submission.monoisotopicMass.getMetadata().getName();
-  public static final String AVERAGE_MASS = submission.averageMass.getMetadata().getName();
-  public static final String TOXICITY = submission.toxicity.getMetadata().getName();
-  public static final String LIGHT_SENSITIVE = submission.lightSensitive.getMetadata().getName();
-  public static final String STORAGE_TEMPERATURE =
-      submission.storageTemperature.getMetadata().getName();
+  public static final String SAMPLE_NAME = NAME;
   public static final String SAMPLES_CONTAINER_TYPE = SAMPLES + "ContainerType";
-  public static final String PLATE = plate.getMetadata().getName();
-  public static final String PLATE_NAME = plate.name.getMetadata().getName();
+  public static final String PLATE = "plate";
+  public static final String PLATE_NAME = PlateProperties.NAME;
   public static final String SAMPLES_LABEL = SAMPLES + "Label";
-  public static final String SAMPLE_NUMBER_PROTEIN =
-      submissionSample.numberProtein.getMetadata().getName();
+  public static final String SAMPLE_NUMBER_PROTEIN = NUMBER_PROTEIN;
   public static final String SAMPLES_DOWN = "samplesDown";
   public static final String SAMPLES_PLATE = SAMPLES + "Plate";
   public static final String EXPERIMENT_PANEL = "experimentPanel";
-  public static final String EXPERIMENT = submission.experiment.getMetadata().getName();
-  public static final String EXPERIMENT_GOAL = submission.goal.getMetadata().getName();
-  public static final String TAXONOMY = submission.taxonomy.getMetadata().getName();
-  public static final String PROTEIN_NAME = submission.protein.getMetadata().getName();
-  public static final String PROTEIN_WEIGHT =
-      submissionSample.molecularWeight.getMetadata().getName();
-  public static final String POST_TRANSLATION_MODIFICATION =
-      submission.postTranslationModification.getMetadata().getName();
-  public static final String SAMPLE_QUANTITY = submissionSample.quantity.getMetadata().getName();
-  public static final String SAMPLE_VOLUME = submissionSample.volume.getMetadata().getName();
+  public static final String EXPERIMENT_GOAL = GOAL;
+  public static final String PROTEIN_NAME = PROTEIN;
+  public static final String PROTEIN_WEIGHT = MOLECULAR_WEIGHT;
+  public static final String SAMPLE_QUANTITY = QUANTITY;
+  public static final String SAMPLE_VOLUME = VOLUME;
   public static final String SAMPLE_VOLUME_BEADS = property(SAMPLE_VOLUME, "beads");
   public static final String STANDARDS_CONTAINER = "standardsContainer";
   public static final String CONTAMINANTS_CONTAINER = "contaminantsContainer";
   public static final String GEL_PANEL = "gelPanel";
   public static final String SERVICES_PANEL = "servicesPanel";
-  public static final String DIGESTION =
-      submission.proteolyticDigestionMethod.getMetadata().getName();
-  public static final String USED_DIGESTION =
-      submission.usedProteolyticDigestionMethod.getMetadata().getName();
-  public static final String OTHER_DIGESTION =
-      submission.otherProteolyticDigestionMethod.getMetadata().getName();
+  public static final String DIGESTION = PROTEOLYTIC_DIGESTION_METHOD;
+  public static final String USED_DIGESTION = USED_PROTEOLYTIC_DIGESTION_METHOD;
+  public static final String OTHER_DIGESTION = OTHER_PROTEOLYTIC_DIGESTION_METHOD;
   public static final String ENRICHEMENT = "enrichment";
   public static final String EXCLUSIONS = "exclusions";
-  public static final String INJECTION_TYPE = submission.injectionType.getMetadata().getName();
-  public static final String SOURCE = submission.source.getMetadata().getName();
-  public static final String PROTEIN_CONTENT = submission.proteinContent.getMetadata().getName();
-  public static final String INSTRUMENT =
-      submission.massDetectionInstrument.getMetadata().getName();
-  public static final String PROTEIN_IDENTIFICATION =
-      submission.proteinIdentification.getMetadata().getName();
-  public static final String PROTEIN_IDENTIFICATION_LINK =
-      submission.proteinIdentificationLink.getMetadata().getName();
-  public static final String QUANTIFICATION = submission.quantification.getMetadata().getName();
-  public static final String QUANTIFICATION_COMMENT =
-      submission.quantificationComment.getMetadata().getName();
-  public static final String HIGH_RESOLUTION = submission.highResolution.getMetadata().getName();
-  public static final String SOLVENTS = submission.solvents.getMetadata().getName();
-  public static final String OTHER_SOLVENT = submission.otherSolvent.getMetadata().getName();
-  public static final String OTHER_SOLVENT_NOTE =
-      property(submission.otherSolvent.getMetadata().getName(), "note");
+  public static final String INSTRUMENT = MASS_DETECTION_INSTRUMENT;
+  public static final String OTHER_SOLVENT_NOTE = property(OTHER_SOLVENT, "note");
   public static final String COMMENT_PANEL = "commentPanel";
-  public static final String COMMENT = submission.comment.getMetadata().getName();
   public static final String STRUCTURE_FILE = "structureFile";
   public static final String GEL_IMAGE_FILE = "gelImageFile";
-  public static final String FILES = submission.files.getMetadata().getName();
   public static final String FILES_PANEL = FILES + "Panel";
   public static final String FILES_UPLOADER = FILES + "Uploader";
   public static final String EXPLANATION_PANEL = "explanationPanel";
   public static final String EXPLANATION = "explanation";
   public static final int MAXIMUM_FILES_SIZE = 50 * 1024 * 1024; // 50MB
   public static final int MAXIMUM_FILES_COUNT = 6;
-  public static final String FILE_FILENAME = submissionFile.filename.getMetadata().getName();
+  public static final String FILE_FILENAME = FILENAME;
   public static final String REMOVE_FILE = "removeFile";
   public static final String SAVE = "save";
   public static final String PRINT = "print";
