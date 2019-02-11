@@ -17,19 +17,19 @@
 
 package ca.qc.ircm.proview.dataanalysis.web;
 
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.MAX_WORK_TIME;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.PEPTIDE;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.PROTEIN;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.SAMPLE;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.TYPE;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.ANALYSES;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.HEADER;
-import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.MAX_WORK_TIME;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.MULTIPLE_PROTEINS;
-import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.PEPTIDE;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.PEPTIDE_ANALYSIS;
-import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.PROTEIN;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.PROTEIN_ANALYSIS;
-import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.SAVE;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.SAVED;
 import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.TITLE;
-import static ca.qc.ircm.proview.dataanalysis.web.DataAnalysisViewPresenter.TYPE;
 import static ca.qc.ircm.proview.sample.web.SampleStatusViewPresenter.INVALID_SAMPLES;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;

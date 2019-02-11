@@ -17,14 +17,14 @@
 
 package ca.qc.ircm.proview.plate.web;
 
+import static ca.qc.ircm.proview.plate.PlateProperties.INSERT_TIME;
+import static ca.qc.ircm.proview.plate.PlateProperties.NAME;
+import static ca.qc.ircm.proview.plate.PlateProperties.SUBMISSION;
 import static ca.qc.ircm.proview.plate.web.PlatesSelectionComponentPresenter.EMPTY_COUNT;
 import static ca.qc.ircm.proview.plate.web.PlatesSelectionComponentPresenter.FILTER;
-import static ca.qc.ircm.proview.plate.web.PlatesSelectionComponentPresenter.INSERT_TIME;
 import static ca.qc.ircm.proview.plate.web.PlatesSelectionComponentPresenter.LAST_TREATMENT;
-import static ca.qc.ircm.proview.plate.web.PlatesSelectionComponentPresenter.NAME;
 import static ca.qc.ircm.proview.plate.web.PlatesSelectionComponentPresenter.PLATES;
 import static ca.qc.ircm.proview.plate.web.PlatesSelectionComponentPresenter.SAMPLE_COUNT;
-import static ca.qc.ircm.proview.plate.web.PlatesSelectionComponentPresenter.SUBMISSION;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.gridStartEdit;

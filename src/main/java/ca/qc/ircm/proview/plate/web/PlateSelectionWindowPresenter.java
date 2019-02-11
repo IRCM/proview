@@ -17,8 +17,7 @@
 
 package ca.qc.ircm.proview.plate.web;
 
-import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
-import static ca.qc.ircm.proview.plate.QPlate.plate;
+import static ca.qc.ircm.proview.plate.PlateProperties.NAME;
 import static ca.qc.ircm.proview.web.CloseWindowOnViewChange.closeWindowOnViewChange;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -46,7 +45,6 @@ import org.springframework.stereotype.Controller;
 public class PlateSelectionWindowPresenter {
   public static final String WINDOW_STYLE = "plates-selection-window";
   public static final String TITLE = "title";
-  public static final String NAME = qname(plate.name);
   public static final String SELECT_NEW = "selectNew";
   public static final String SELECT = "select";
   private static final Logger logger = LoggerFactory.getLogger(PlateSelectionWindowPresenter.class);

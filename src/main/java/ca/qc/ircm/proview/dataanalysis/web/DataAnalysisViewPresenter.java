@@ -17,7 +17,11 @@
 
 package ca.qc.ircm.proview.dataanalysis.web;
 
-import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.MAX_WORK_TIME;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.PEPTIDE;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.PROTEIN;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.SAMPLE;
+import static ca.qc.ircm.proview.dataanalysis.DataAnalysisProperties.TYPE;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
@@ -69,11 +73,6 @@ public class DataAnalysisViewPresenter implements BinderValidator {
   public static final String PEPTIDE_ANALYSIS = "peptideAnalysis";
   public static final String MULTIPLE_PROTEINS = "multipleProteins";
   public static final String ANALYSES = "analyses";
-  public static final String SAMPLE = dataAnalysis.sample.getMetadata().getName();
-  public static final String PROTEIN = dataAnalysis.protein.getMetadata().getName();
-  public static final String PEPTIDE = dataAnalysis.peptide.getMetadata().getName();
-  public static final String TYPE = dataAnalysis.type.getMetadata().getName();
-  public static final String MAX_WORK_TIME = dataAnalysis.maxWorkTime.getMetadata().getName();
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
   public static final String INVALID_SAMPLES = "samples.invalid";

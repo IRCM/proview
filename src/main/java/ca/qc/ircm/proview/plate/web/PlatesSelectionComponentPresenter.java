@@ -17,7 +17,9 @@
 
 package ca.qc.ircm.proview.plate.web;
 
-import static ca.qc.ircm.proview.plate.QPlate.plate;
+import static ca.qc.ircm.proview.plate.PlateProperties.INSERT_TIME;
+import static ca.qc.ircm.proview.plate.PlateProperties.NAME;
+import static ca.qc.ircm.proview.plate.PlateProperties.SUBMISSION;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
@@ -74,13 +76,10 @@ import org.springframework.stereotype.Controller;
 public class PlatesSelectionComponentPresenter {
   public static final String PLATES = "plates";
   public static final String ALL = "all";
-  public static final String NAME = plate.name.getMetadata().getName();
   public static final String EMPTY_COUNT = "emptyCount";
   public static final String SAMPLE_COUNT = "sampleCount";
   public static final String LAST_TREATMENT = "lastTreatment";
   public static final String FILTER = "filter";
-  public static final String INSERT_TIME = plate.insertTime.getMetadata().getName();
-  public static final String SUBMISSION = plate.submission.getMetadata().getName();
   @SuppressWarnings("unused")
   private static final Logger logger =
       LoggerFactory.getLogger(PlatesSelectionComponentPresenter.class);

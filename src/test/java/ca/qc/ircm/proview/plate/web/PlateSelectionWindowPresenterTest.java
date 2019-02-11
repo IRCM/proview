@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.plate.web;
 
-import static ca.qc.ircm.proview.plate.web.PlateSelectionWindowPresenter.NAME;
+import static ca.qc.ircm.proview.plate.PlateProperties.NAME;
 import static ca.qc.ircm.proview.plate.web.PlateSelectionWindowPresenter.SELECT;
 import static ca.qc.ircm.proview.plate.web.PlateSelectionWindowPresenter.SELECT_NEW;
 import static ca.qc.ircm.proview.plate.web.PlateSelectionWindowPresenter.TITLE;
