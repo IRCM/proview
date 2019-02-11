@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.dataanalysis;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import java.io.Serializable;
@@ -39,6 +40,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = DataAnalysis.TABLE_NAME)
+@GeneratePropertyNames
 public class DataAnalysis implements Data, Serializable {
   public static final String TABLE_NAME = "dataanalysis";
   private static final long serialVersionUID = 7855087016781621873L;

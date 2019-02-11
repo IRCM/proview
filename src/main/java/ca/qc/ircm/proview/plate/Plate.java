@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.plate;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.Sample;
@@ -44,6 +45,7 @@ import javax.validation.constraints.Min;
  */
 @Entity
 @Table(name = Plate.TABLE_NAME)
+@GeneratePropertyNames
 public class Plate implements Data, Serializable, Named {
   public static final String TABLE_NAME = "plate";
   public static final int DEFAULT_COLUMN_COUNT = 12;

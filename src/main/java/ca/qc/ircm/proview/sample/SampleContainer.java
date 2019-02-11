@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.sample;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
@@ -42,6 +43,7 @@ import javax.persistence.Version;
 @Table(name = SampleContainer.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
+@GeneratePropertyNames
 public abstract class SampleContainer implements Data, Named, Serializable {
   public static final String TABLE_NAME = "samplecontainer";
   private static final long serialVersionUID = -2976707906426974263L;

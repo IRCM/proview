@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -33,6 +34,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = SubmissionFile.TABLE_NAME)
+@GeneratePropertyNames
 public class SubmissionFile implements Named, Serializable {
   public static final String TABLE_NAME = "submissionfiles";
   private static final long serialVersionUID = 2146676462335553712L;

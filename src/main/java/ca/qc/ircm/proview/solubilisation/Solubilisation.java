@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.solubilisation;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
@@ -28,6 +29,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("SOLUBILISATION")
+@GeneratePropertyNames
 public class Solubilisation extends Treatment implements Data {
   private static final long serialVersionUID = 7078289225177289337L;
 

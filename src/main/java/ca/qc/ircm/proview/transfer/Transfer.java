@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.transfer;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import javax.persistence.DiscriminatorValue;
@@ -27,6 +28,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("TRANSFER")
+@GeneratePropertyNames
 public class Transfer extends Treatment {
   private static final long serialVersionUID = 2171898463655011446L;
 

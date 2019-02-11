@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.msanalysis;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.Sample;
@@ -38,6 +39,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = Acquisition.TABLE_NAME)
+@GeneratePropertyNames
 public class Acquisition implements Data, Named, Serializable {
   public static final String TABLE_NAME = "acquisition";
   private static final long serialVersionUID = 4253647399151347110L;

@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.user;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.utils.MessageResource;
 import java.io.Serializable;
 import java.util.Locale;
@@ -36,6 +37,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = PhoneNumber.TABLE_NAME)
+@GeneratePropertyNames
 public class PhoneNumber implements Serializable {
   public static final String TABLE_NAME = "phonenumber";
   private static final long serialVersionUID = 5548943595609304757L;

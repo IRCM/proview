@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +33,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = Address.TABLE_NAME)
+@GeneratePropertyNames
 public class Address implements Serializable {
   public static final String TABLE_NAME = "address";
   private static final long serialVersionUID = 6036866850504348215L;

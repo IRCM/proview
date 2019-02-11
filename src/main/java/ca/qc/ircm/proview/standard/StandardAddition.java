@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.standard;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
@@ -28,6 +29,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("STANDARD_ADDITION")
+@GeneratePropertyNames
 public class StandardAddition extends Treatment implements Data {
   private static final long serialVersionUID = 8760252289893147123L;
 

@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "preference")
+@GeneratePropertyNames
 class Preference {
   /**
    * Database identifier.

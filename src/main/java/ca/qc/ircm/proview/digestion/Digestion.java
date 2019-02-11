@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.digestion;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import javax.persistence.DiscriminatorValue;
@@ -27,6 +28,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("DIGESTION")
+@GeneratePropertyNames
 public class Digestion extends Treatment {
   private static final long serialVersionUID = -8217434621540535982L;
 

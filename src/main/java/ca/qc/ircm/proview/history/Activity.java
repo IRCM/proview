@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.history;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.user.User;
 import java.time.Instant;
@@ -40,6 +41,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "activity")
+@GeneratePropertyNames
 public class Activity implements Data {
   /**
    * Database identifier of activity.

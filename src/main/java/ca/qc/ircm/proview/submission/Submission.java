@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
@@ -60,6 +61,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = Submission.TABLE_NAME)
+@GeneratePropertyNames
 public class Submission implements Data, Named, LaboratoryData, Serializable {
   public static final String TABLE_NAME = "submission";
   private static final long serialVersionUID = 2223809698076034086L;

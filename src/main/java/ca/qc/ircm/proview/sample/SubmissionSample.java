@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample;
 
 import static javax.persistence.EnumType.ORDINAL;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -40,6 +41,7 @@ import javax.validation.constraints.Min;
  */
 @Entity
 @DiscriminatorValue("SUBMISSION")
+@GeneratePropertyNames
 public class SubmissionSample extends Sample implements LaboratoryData, Named {
   private static final long serialVersionUID = -7652364189294805763L;
 

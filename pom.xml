@@ -67,6 +67,7 @@
     <mariadb-java-client.version>2.4.0</mariadb-java-client.version>
     <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
     <findbugs.version>3.0.1</findbugs.version>
+    <generate-property-names.version>0.5</generate-property-names.version>
     <selenium.version>3.4.0</selenium.version>
     <greenmail.version>1.5.9</greenmail.version>
     <testbench.skip>true</testbench.skip>
@@ -331,6 +332,12 @@
       <version>${findbugs.version}</version>
     </dependency>
     <dependency>
+      <groupId>ca.qc.ircm</groupId>
+      <artifactId>generate-property-names</artifactId>
+      <version>${generate-property-names.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <scope>runtime</scope>
@@ -409,12 +416,6 @@
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>${resources-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <compilerArgument>-proc:none</compilerArgument>
-          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>

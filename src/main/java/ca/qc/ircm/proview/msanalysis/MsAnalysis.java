@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.msanalysis;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import java.io.Serializable;
 import java.time.Instant;
@@ -40,6 +41,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = MsAnalysis.TABLE_NAME)
+@GeneratePropertyNames
 public class MsAnalysis implements Data, Serializable {
   public static final String TABLE_NAME = "msanalysis";
   private static final long serialVersionUID = 7334138327920441104L;

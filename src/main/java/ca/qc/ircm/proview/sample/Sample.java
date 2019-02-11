@@ -21,6 +21,7 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
@@ -47,19 +48,20 @@ import javax.validation.constraints.Size;
 @Table(name = Sample.TABLE_NAME)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "category")
+@GeneratePropertyNames
 public abstract class Sample implements Data, Named, Serializable {
   /**
    * Sample category.
    */
   public static enum Category {
-    /**
-     * Submission of sample to analyse.
-     */
-    SUBMISSION,
-    /**
-     * Control.
-     */
-    CONTROL
+  /**
+   * Submission of sample to analyse.
+   */
+  SUBMISSION,
+  /**
+   * Control.
+   */
+  CONTROL
   }
 
   public static final String TABLE_NAME = "sample";

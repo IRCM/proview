@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import java.io.Serializable;
 import java.time.Instant;
@@ -35,6 +36,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = ForgotPassword.TABLE_NAME)
+@GeneratePropertyNames
 public class ForgotPassword implements Data, Serializable {
   public static final String TABLE_NAME = "forgotpassword";
   private static final long serialVersionUID = -2805056622482303376L;

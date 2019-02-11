@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.history;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,6 +36,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "activityupdate")
+@GeneratePropertyNames
 public class UpdateActivity implements Data {
   /**
    * Database identifier of update activity.

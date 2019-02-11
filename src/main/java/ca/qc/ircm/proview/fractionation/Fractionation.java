@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.fractionation;
 
 import static javax.persistence.EnumType.STRING;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import javax.persistence.Column;
@@ -31,6 +32,7 @@ import javax.persistence.Enumerated;
  */
 @Entity
 @DiscriminatorValue("FRACTIONATION")
+@GeneratePropertyNames
 public class Fractionation extends Treatment {
   private static final long serialVersionUID = 1416679934489708298L;
   /**

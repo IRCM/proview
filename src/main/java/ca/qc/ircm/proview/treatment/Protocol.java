@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.treatment;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
@@ -36,12 +37,13 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = Protocol.TABLE_NAME)
+@GeneratePropertyNames
 public class Protocol implements Data, Serializable, Named {
   /**
    * Protocol types.
    */
   public static enum Type {
-    DIGESTION, ENRICHMENT;
+  DIGESTION, ENRICHMENT;
   }
 
   public static final String TABLE_NAME = "protocol";

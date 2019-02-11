@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
@@ -34,6 +35,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = Standard.TABLE_NAME)
+@GeneratePropertyNames
 public class Standard implements Data, Serializable, Named {
   public static final String TABLE_NAME = "standard";
   private static final long serialVersionUID = 1027734850465332430L;

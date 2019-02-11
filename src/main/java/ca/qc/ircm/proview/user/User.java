@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
@@ -42,6 +43,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = User.TABLE_NAME)
+@GeneratePropertyNames
 public class User implements Data, Named, Serializable {
   public static final String TABLE_NAME = "user";
   public static final String LOCALE_PREFERENCE = "locale";

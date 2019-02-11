@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample;
 
 import static javax.persistence.EnumType.STRING;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Named;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -30,6 +31,7 @@ import javax.persistence.Enumerated;
  */
 @Entity
 @DiscriminatorValue("CONTROL")
+@GeneratePropertyNames
 public class Control extends Sample implements Named {
   private static final long serialVersionUID = 5008215649619278441L;
 

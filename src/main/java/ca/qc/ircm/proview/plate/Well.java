@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.plate;
 
+import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -35,6 +36,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @DiscriminatorValue("WELL")
+@GeneratePropertyNames
 public class Well extends SampleContainer implements Data, Named, Serializable {
   private static final long serialVersionUID = 212003765334493656L;
 
