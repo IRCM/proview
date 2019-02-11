@@ -18,8 +18,6 @@
 package ca.qc.ircm.proview.standard.web;
 
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.BAN_CONTAINERS;
-import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.COMMENT;
-import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.CONTAINER;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.DELETED;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.DOWN;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.EXPLANATION;
@@ -27,12 +25,9 @@ import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.EXPL
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.HEADER;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.INVALID_CONTAINERS;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.INVALID_STANDARD_ADDITION;
-import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.NAME;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.NO_CONTAINERS;
-import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.QUANTITY;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.REMOVED;
-import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.SAVE;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.SAVED;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.STANDARD_ADDITIONS;
@@ -41,6 +36,11 @@ import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.TITL
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.NAME;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.QUANTITY;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SAMPLE;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;

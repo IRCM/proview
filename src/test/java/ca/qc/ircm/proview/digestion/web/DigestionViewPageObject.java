@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.digestion.web;
 
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.BAN_CONTAINERS;
-import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DELETED;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DIGESTIONS;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DIGESTIONS_PANEL;
@@ -26,10 +25,11 @@ import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.DOWN;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.HEADER;
-import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.PROTOCOL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.PROTOCOL_PANEL;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.SAVE;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatmentProperties.PROTOCOL;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;

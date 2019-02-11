@@ -17,20 +17,20 @@
 
 package ca.qc.ircm.proview.fractionation.web;
 
-import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.COMMENT;
-import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.CONTAINER;
-import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.DESTINATION;
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.FRACTIONS;
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.FRACTIONS_PANEL;
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.HEADER;
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.INVALID_FRACTIONATION;
-import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.NUMBER;
-import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.PI_INTERVAL;
-import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.TITLE;
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.TYPE;
 import static ca.qc.ircm.proview.fractionation.web.FractionationViewPresenter.TYPE_PANEL;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.DESTINATION_CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.NUMBER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.PI_INTERVAL;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SAMPLE;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -140,12 +140,12 @@ public class FractionationViewPresenterTest {
       assertEquals(ts.getContainer().getFullName(),
           design.fractions.getColumn(CONTAINER).getValueProvider().apply(ts));
     }
-    assertEquals(DESTINATION, design.fractions.getColumns().get(2).getId());
-    assertEquals(resources.message(DESTINATION),
-        design.fractions.getColumn(DESTINATION).getCaption());
+    assertEquals(DESTINATION_CONTAINER, design.fractions.getColumns().get(2).getId());
+    assertEquals(resources.message(DESTINATION_CONTAINER),
+        design.fractions.getColumn(DESTINATION_CONTAINER).getCaption());
     for (TreatedSample ts : fractions) {
       assertEquals(ts.getDestinationContainer().getFullName(),
-          design.fractions.getColumn(DESTINATION).getValueProvider().apply(ts));
+          design.fractions.getColumn(DESTINATION_CONTAINER).getValueProvider().apply(ts));
     }
     assertEquals(NUMBER, design.fractions.getColumns().get(3).getId());
     assertEquals(resources.message(NUMBER), design.fractions.getColumn(NUMBER).getCaption());

@@ -18,18 +18,18 @@
 package ca.qc.ircm.proview.standard.web;
 
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.BAN_CONTAINERS;
-import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.DELETED;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.DOWN;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.HEADER;
-import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.NAME;
-import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.QUANTITY;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.SAVE;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.STANDARD_ADDITIONS;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.STANDARD_ADDITIONS_PANEL;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.NAME;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.QUANTITY;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;

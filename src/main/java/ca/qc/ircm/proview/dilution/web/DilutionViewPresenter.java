@@ -17,7 +17,12 @@
 
 package ca.qc.ircm.proview.dilution.web;
 
-import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SAMPLE;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOLVENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOLVENT_VOLUME;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOURCE_VOLUME;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -67,12 +72,6 @@ public class DilutionViewPresenter implements BinderValidator {
   public static final String DELETED = "deleted";
   public static final String DILUTIONS_PANEL = "dilutionsPanel";
   public static final String DILUTIONS = "dilutions";
-  public static final String SAMPLE = treatedSample.sample.getMetadata().getName();
-  public static final String CONTAINER = treatedSample.container.getMetadata().getName();
-  public static final String SOURCE_VOLUME = treatedSample.sourceVolume.getMetadata().getName();
-  public static final String SOLVENT = treatedSample.solvent.getMetadata().getName();
-  public static final String SOLVENT_VOLUME = treatedSample.solventVolume.getMetadata().getName();
-  public static final String COMMENT = treatedSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";

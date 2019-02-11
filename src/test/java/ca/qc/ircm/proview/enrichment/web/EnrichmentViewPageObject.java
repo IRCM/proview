@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.enrichment.web;
 
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.BAN_CONTAINERS;
-import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.DELETED;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.DOWN;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHMENTS;
@@ -26,10 +25,11 @@ import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.ENRICHME
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.EXPLANATION_PANEL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.HEADER;
-import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.PROTOCOL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.PROTOCOL_PANEL;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.SAVE;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatmentProperties.PROTOCOL;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;

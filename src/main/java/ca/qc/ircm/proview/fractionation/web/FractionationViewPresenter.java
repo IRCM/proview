@@ -17,7 +17,12 @@
 
 package ca.qc.ircm.proview.fractionation.web;
 
-import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.DESTINATION_CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.NUMBER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.PI_INTERVAL;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SAMPLE;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -52,13 +57,6 @@ public class FractionationViewPresenter implements BinderValidator {
   public static final String TYPE = "type";
   public static final String FRACTIONS_PANEL = "fractionsPanel";
   public static final String FRACTIONS = "fractions";
-  public static final String SAMPLE = treatedSample.sample.getMetadata().getName();
-  public static final String CONTAINER = treatedSample.container.getMetadata().getName();
-  public static final String DESTINATION =
-      treatedSample.destinationContainer.getMetadata().getName();
-  public static final String NUMBER = treatedSample.number.getMetadata().getName();
-  public static final String PI_INTERVAL = treatedSample.piInterval.getMetadata().getName();
-  public static final String COMMENT = treatedSample.comment.getMetadata().getName();
   public static final String INVALID_FRACTIONATION = "fractionation.invalid";
   private static final Logger logger = LoggerFactory.getLogger(FractionationViewPresenter.class);
   private FractionationView view;
@@ -113,10 +111,11 @@ public class FractionationViewPresenter implements BinderValidator {
     design.fractions
         .addColumn(ts -> ts.getContainer() != null ? ts.getContainer().getFullName() : "")
         .setId(CONTAINER).setCaption(resources.message(CONTAINER));
-    design.fractions.addColumn(
-        ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
-            : "")
-        .setId(DESTINATION).setCaption(resources.message(DESTINATION));
+    design.fractions
+        .addColumn(
+            ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
+                : "")
+        .setId(DESTINATION_CONTAINER).setCaption(resources.message(DESTINATION_CONTAINER));
     design.fractions.addColumn(ts -> ts.getNumber()).setId(NUMBER)
         .setCaption(resources.message(NUMBER));
     design.fractions.addColumn(ts -> ts.getPiInterval()).setId(PI_INTERVAL)

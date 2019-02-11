@@ -17,8 +17,10 @@
 
 package ca.qc.ircm.proview.digestion.web;
 
-import static ca.qc.ircm.proview.digestion.QDigestion.digestion;
-import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SAMPLE;
+import static ca.qc.ircm.proview.treatment.TreatmentProperties.PROTOCOL;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -68,12 +70,8 @@ public class DigestionViewPresenter implements BinderValidator {
   public static final String HEADER = "header";
   public static final String DELETED = "deleted";
   public static final String PROTOCOL_PANEL = "protocolPanel";
-  public static final String PROTOCOL = digestion.protocol.getMetadata().getName();
   public static final String DIGESTIONS_PANEL = "digestionsPanel";
   public static final String DIGESTIONS = "digestions";
-  public static final String SAMPLE = treatedSample.sample.getMetadata().getName();
-  public static final String CONTAINER = treatedSample.container.getMetadata().getName();
-  public static final String COMMENT = treatedSample.comment.getMetadata().getName();
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
   public static final String DOWN = "down";

@@ -17,7 +17,11 @@
 
 package ca.qc.ircm.proview.standard.web;
 
-import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.NAME;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.QUANTITY;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SAMPLE;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
@@ -65,11 +69,6 @@ public class StandardAdditionViewPresenter implements BinderValidator {
   public static final String DELETED = "deleted";
   public static final String STANDARD_ADDITIONS_PANEL = "standardAdditionsPanel";
   public static final String STANDARD_ADDITIONS = "standardAdditions";
-  public static final String SAMPLE = treatedSample.sample.getMetadata().getName();
-  public static final String CONTAINER = treatedSample.container.getMetadata().getName();
-  public static final String NAME = treatedSample.name.getMetadata().getName();
-  public static final String QUANTITY = treatedSample.quantity.getMetadata().getName();
-  public static final String COMMENT = treatedSample.comment.getMetadata().getName();
   public static final String DOWN = "down";
   public static final String EXPLANATION = "explanation";
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";

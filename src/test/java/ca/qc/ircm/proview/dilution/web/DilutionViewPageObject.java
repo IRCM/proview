@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.dilution.web;
 
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.BAN_CONTAINERS;
-import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DELETED;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DILUTIONS;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.DILUTIONS_PANEL;
@@ -28,9 +27,10 @@ import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.EXPLANATION_
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.HEADER;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SAVE;
-import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SOLVENT;
-import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SOLVENT_VOLUME;
-import static ca.qc.ircm.proview.dilution.web.DilutionViewPresenter.SOURCE_VOLUME;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOLVENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOLVENT_VOLUME;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOURCE_VOLUME;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;

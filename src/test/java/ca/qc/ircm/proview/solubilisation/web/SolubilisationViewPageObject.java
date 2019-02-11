@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.solubilisation.web;
 
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.BAN_CONTAINERS;
-import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.COMMENT;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.DELETED;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.DOWN;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.EXPLANATION;
@@ -28,8 +27,9 @@ import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SAVE;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SOLUBILISATIONS;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SOLUBILISATIONS_PANEL;
-import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SOLVENT;
-import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SOLVENT_VOLUME;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOLVENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOLVENT_VOLUME;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;

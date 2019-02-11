@@ -17,10 +17,11 @@
 
 package ca.qc.ircm.proview.transfer.web;
 
-import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
-import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.DESTINATION_CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SAMPLE;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.gridItems;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
@@ -93,10 +94,6 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String TRANSFER_TYPE = "type";
   public static final String TRANSFERS_PANEL = "transfersPanel";
   public static final String TRANSFERS = "transfers";
-  public static final String SAMPLE = treatedSample.sample.getMetadata().getName();
-  public static final String CONTAINER = treatedSample.container.getMetadata().getName();
-  public static final String DESTINATION_CONTAINER =
-      treatedSample.destinationContainer.getMetadata().getName();
   public static final String DESTINATION_CONTAINER_DUPLICATE =
       property(DESTINATION_CONTAINER, "duplicate");
   public static final String DESTINATION_COUNT = DESTINATION_CONTAINER + "Count";
@@ -117,9 +114,6 @@ public class TransferViewPresenter implements BinderValidator {
   public static final String EXPLANATION_PANEL = EXPLANATION + "Panel";
   public static final String SAVE = "save";
   public static final String SAVED = "saved";
-  public static final String DESTINATION_SAMPLE = sample.getMetadata().getName();
-  public static final String DESTINATION_SAMPLE_NAME =
-      property(DESTINATION_SAMPLE, sample.name.getMetadata().getName());
   public static final String DOWN = "down";
   public static final String REMOVE = "remove";
   public static final String REMOVED = "removed";

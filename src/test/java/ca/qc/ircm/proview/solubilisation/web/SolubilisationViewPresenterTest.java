@@ -18,8 +18,6 @@
 package ca.qc.ircm.proview.solubilisation.web;
 
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.BAN_CONTAINERS;
-import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.COMMENT;
-import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.CONTAINER;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.DELETED;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.DOWN;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.EXPLANATION;
@@ -30,17 +28,19 @@ import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.REMOVED;
-import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SAMPLE;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SAVE;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SAVED;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SOLUBILISATIONS;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SOLUBILISATIONS_PANEL;
-import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SOLVENT;
-import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.SOLVENT_VOLUME;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SAMPLE;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOLVENT;
+import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOLVENT_VOLUME;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
