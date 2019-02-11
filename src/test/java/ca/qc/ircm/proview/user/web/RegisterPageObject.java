@@ -17,30 +17,30 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
+import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
+import static ca.qc.ircm.proview.user.AddressProperties.STATE;
+import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
+import static ca.qc.ircm.proview.user.UserProperties.ADDRESS;
+import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
+import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
+import static ca.qc.ircm.proview.user.UserProperties.NAME;
+import static ca.qc.ircm.proview.user.UserProperties.PHONE_NUMBERS;
 import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.HEADER;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_COUNTRY;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_LINE;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_POSTAL_CODE;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_STATE;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_TOWN;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADD_PHONE_NUMBER;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADD_PHONE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.CLEAR_ADDRESS;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.CONFIRM_PASSWORD;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.EMAIL;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.LABORATORY_ORGANIZATION;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.MANAGER;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.NAME;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.NEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.PASSWORD;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBERS;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBER_EXTENSION;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBER_NUMBER;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBER_TYPE;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_EXTENSION;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBER;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_TYPE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.REGISTER_WARNING;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.REMOVE_PHONE_NUMBER;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.REMOVE_PHONE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.SAVE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.USER;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
@@ -199,7 +199,7 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement townField() {
-    return wrap(TextFieldElement.class, findElement(className(ADDRESS_TOWN)));
+    return wrap(TextFieldElement.class, findElement(className(TOWN)));
   }
 
   protected String getTown() {
@@ -211,7 +211,7 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement stateField() {
-    return wrap(TextFieldElement.class, findElement(className(ADDRESS_STATE)));
+    return wrap(TextFieldElement.class, findElement(className(STATE)));
   }
 
   protected String getState() {
@@ -223,7 +223,7 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement countryField() {
-    return wrap(TextFieldElement.class, findElement(className(ADDRESS_COUNTRY)));
+    return wrap(TextFieldElement.class, findElement(className(COUNTRY)));
   }
 
   protected String getCountry() {
@@ -235,7 +235,7 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement postalCodeField() {
-    return wrap(TextFieldElement.class, findElement(className(ADDRESS_POSTAL_CODE)));
+    return wrap(TextFieldElement.class, findElement(className(POSTAL_CODE)));
   }
 
   protected String getPostalCode() {
@@ -259,7 +259,7 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   }
 
   protected ComboBoxElement phoneTypeField() {
-    return wrap(ComboBoxElement.class, findElement(className(PHONE_NUMBER_TYPE)));
+    return wrap(ComboBoxElement.class, findElement(className(PHONE_TYPE)));
   }
 
   protected PhoneNumberType getPhoneType() {
@@ -271,7 +271,7 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement phoneNumberField() {
-    return wrap(TextFieldElement.class, findElement(className(PHONE_NUMBER_NUMBER)));
+    return wrap(TextFieldElement.class, findElement(className(PHONE_NUMBER)));
   }
 
   protected String getPhoneNumber() {
@@ -283,7 +283,7 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   }
 
   protected TextFieldElement phoneExtensionField() {
-    return wrap(TextFieldElement.class, findElement(className(PHONE_NUMBER_EXTENSION)));
+    return wrap(TextFieldElement.class, findElement(className(PHONE_EXTENSION)));
   }
 
   protected String getPhoneExtension() {
@@ -295,11 +295,11 @@ public abstract class RegisterPageObject extends AbstractTestBenchTestCase {
   }
 
   protected ButtonElement removePhoneNumberButton() {
-    return wrap(ButtonElement.class, findElement(className(REMOVE_PHONE_NUMBER)));
+    return wrap(ButtonElement.class, findElement(className(REMOVE_PHONE)));
   }
 
   protected ButtonElement addPhoneNumberButton() {
-    return wrap(ButtonElement.class, findElement(className(ADD_PHONE_NUMBER)));
+    return wrap(ButtonElement.class, findElement(className(ADD_PHONE)));
   }
 
   protected LabelElement registerWarningLabel() {

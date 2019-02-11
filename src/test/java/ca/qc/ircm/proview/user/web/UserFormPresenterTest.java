@@ -17,30 +17,30 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_COUNTRY;
+import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
+import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
+import static ca.qc.ircm.proview.user.AddressProperties.STATE;
+import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
+import static ca.qc.ircm.proview.user.UserProperties.ADDRESS;
+import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
+import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
+import static ca.qc.ircm.proview.user.UserProperties.NAME;
+import static ca.qc.ircm.proview.user.UserProperties.PHONE_NUMBERS;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_LINE;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_POSTAL_CODE;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_STATE;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADDRESS_TOWN;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADD_PHONE_NUMBER;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.ADD_PHONE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.CLEAR_ADDRESS;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.CONFIRM_PASSWORD;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.EMAIL;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.LABORATORY_ORGANIZATION;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.MANAGER;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.NAME;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.NEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.PASSWORD;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_EXTENSION;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBER;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBERS;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBER_EXTENSION;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBER_NUMBER;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_NUMBER_TYPE;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.PHONE_TYPE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.REGISTER_WARNING;
-import static ca.qc.ircm.proview.user.web.UserFormPresenter.REMOVE_PHONE_NUMBER;
+import static ca.qc.ircm.proview.user.web.UserFormPresenter.REMOVE_PHONE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.SAVE;
 import static ca.qc.ircm.proview.user.web.UserFormPresenter.USER;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
@@ -248,18 +248,18 @@ public class UserFormPresenterTest {
         design.laboratoryNameField.getStyleName().contains(styleName(LABORATORY, LABORATORY_NAME)));
     assertTrue(design.addressPanel.getStyleName().contains(ADDRESS));
     assertTrue(design.addressLineField.getStyleName().contains(ADDRESS_LINE));
-    assertTrue(design.townField.getStyleName().contains(ADDRESS_TOWN));
-    assertTrue(design.stateField.getStyleName().contains(ADDRESS_STATE));
-    assertTrue(design.countryField.getStyleName().contains(ADDRESS_COUNTRY));
-    assertTrue(design.postalCodeField.getStyleName().contains(ADDRESS_POSTAL_CODE));
+    assertTrue(design.townField.getStyleName().contains(TOWN));
+    assertTrue(design.stateField.getStyleName().contains(STATE));
+    assertTrue(design.countryField.getStyleName().contains(COUNTRY));
+    assertTrue(design.postalCodeField.getStyleName().contains(POSTAL_CODE));
     assertTrue(design.clearAddressButton.getStyleName().contains(CLEAR_ADDRESS));
     assertTrue(design.phoneNumbersPanel.getStyleName().contains(PHONE_NUMBERS));
     assertEquals(1, design.phoneNumbersLayout.getComponentCount());
-    assertTrue(typeField(0).getStyleName().contains(PHONE_NUMBER_TYPE));
-    assertTrue(numberField(0).getStyleName().contains(PHONE_NUMBER_NUMBER));
-    assertTrue(extensionField(0).getStyleName().contains(PHONE_NUMBER_EXTENSION));
-    assertTrue(removePhoneNumberButton(0).getStyleName().contains(REMOVE_PHONE_NUMBER));
-    assertTrue(design.addPhoneNumberButton.getStyleName().contains(ADD_PHONE_NUMBER));
+    assertTrue(typeField(0).getStyleName().contains(PHONE_TYPE));
+    assertTrue(numberField(0).getStyleName().contains(PHONE_NUMBER));
+    assertTrue(extensionField(0).getStyleName().contains(PHONE_EXTENSION));
+    assertTrue(removePhoneNumberButton(0).getStyleName().contains(REMOVE_PHONE));
+    assertTrue(design.addPhoneNumberButton.getStyleName().contains(ADD_PHONE));
     assertTrue(design.registerWarningLabel.getStyleName().contains(REGISTER_WARNING));
     assertTrue(design.registerWarningLabel.getStyleName().contains(LABEL_WARNING));
     assertTrue(design.saveButton.getStyleName().contains(SAVE));
@@ -293,36 +293,34 @@ public class UserFormPresenterTest {
         design.addressLineField.getCaption());
     assertEquals(resources.message(property(ADDRESS, ADDRESS_LINE, PLACEHOLDER)),
         design.addressLineField.getPlaceholder());
-    assertEquals(resources.message(property(ADDRESS, ADDRESS_TOWN)), design.townField.getCaption());
-    assertEquals(resources.message(property(ADDRESS, ADDRESS_TOWN, PLACEHOLDER)),
+    assertEquals(resources.message(property(ADDRESS, TOWN)), design.townField.getCaption());
+    assertEquals(resources.message(property(ADDRESS, TOWN, PLACEHOLDER)),
         design.townField.getPlaceholder());
-    assertEquals(resources.message(property(ADDRESS, ADDRESS_STATE)),
-        design.stateField.getCaption());
-    assertEquals(resources.message(property(ADDRESS, ADDRESS_STATE, PLACEHOLDER)),
+    assertEquals(resources.message(property(ADDRESS, STATE)), design.stateField.getCaption());
+    assertEquals(resources.message(property(ADDRESS, STATE, PLACEHOLDER)),
         design.stateField.getPlaceholder());
-    assertEquals(resources.message(property(ADDRESS, ADDRESS_COUNTRY)),
-        design.countryField.getCaption());
-    assertEquals(resources.message(property(ADDRESS, ADDRESS_COUNTRY, PLACEHOLDER)),
+    assertEquals(resources.message(property(ADDRESS, COUNTRY)), design.countryField.getCaption());
+    assertEquals(resources.message(property(ADDRESS, COUNTRY, PLACEHOLDER)),
         design.countryField.getPlaceholder());
-    assertEquals(resources.message(property(ADDRESS, ADDRESS_POSTAL_CODE)),
+    assertEquals(resources.message(property(ADDRESS, POSTAL_CODE)),
         design.postalCodeField.getCaption());
-    assertEquals(resources.message(property(ADDRESS, ADDRESS_POSTAL_CODE, PLACEHOLDER)),
+    assertEquals(resources.message(property(ADDRESS, POSTAL_CODE, PLACEHOLDER)),
         design.postalCodeField.getPlaceholder());
     assertEquals(resources.message(CLEAR_ADDRESS), design.clearAddressButton.getCaption());
     assertEquals(resources.message(PHONE_NUMBERS), design.phoneNumbersPanel.getCaption());
     assertEquals(1, design.phoneNumbersLayout.getComponentCount());
-    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_TYPE)),
+    assertEquals(resources.message(property(PHONE, PHONE_TYPE)),
         typeField(0).getCaption());
-    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER)),
+    assertEquals(resources.message(property(PHONE, PHONE_NUMBER)),
         numberField(0).getCaption());
-    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, PLACEHOLDER)),
+    assertEquals(resources.message(property(PHONE, PHONE_NUMBER, PLACEHOLDER)),
         numberField(0).getPlaceholder());
-    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION)),
+    assertEquals(resources.message(property(PHONE, PHONE_EXTENSION)),
         extensionField(0).getCaption());
-    assertEquals(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, PLACEHOLDER)),
+    assertEquals(resources.message(property(PHONE, PHONE_EXTENSION, PLACEHOLDER)),
         extensionField(0).getPlaceholder());
-    assertEquals(resources.message(REMOVE_PHONE_NUMBER), removePhoneNumberButton(0).getCaption());
-    assertEquals(resources.message(ADD_PHONE_NUMBER), design.addPhoneNumberButton.getCaption());
+    assertEquals(resources.message(REMOVE_PHONE), removePhoneNumberButton(0).getCaption());
+    assertEquals(resources.message(ADD_PHONE), design.addPhoneNumberButton.getCaption());
     assertEquals(resources.message(REGISTER_WARNING), design.registerWarningLabel.getValue());
     assertEquals(resources.message(SAVE), design.saveButton.getCaption());
   }
@@ -1348,7 +1346,7 @@ public class UserFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(
-        errorMessage(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, "invalid"))),
+        errorMessage(resources.message(property(PHONE, PHONE_NUMBER, "invalid"))),
         numberField(0).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1363,7 +1361,7 @@ public class UserFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(
-        errorMessage(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, "invalid"))),
+        errorMessage(resources.message(property(PHONE, PHONE_EXTENSION, "invalid"))),
         extensionField(0).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1406,7 +1404,7 @@ public class UserFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(
-        errorMessage(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, "invalid"))),
+        errorMessage(resources.message(property(PHONE, PHONE_NUMBER, "invalid"))),
         numberField(1).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1421,7 +1419,7 @@ public class UserFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(
-        errorMessage(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, "invalid"))),
+        errorMessage(resources.message(property(PHONE, PHONE_EXTENSION, "invalid"))),
         extensionField(1).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }

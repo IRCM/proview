@@ -17,10 +17,19 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.QAddress.address;
-import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
-import static ca.qc.ircm.proview.user.QPhoneNumber.phoneNumber;
-import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
+import static ca.qc.ircm.proview.user.AddressProperties.LINE;
+import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
+import static ca.qc.ircm.proview.user.AddressProperties.STATE;
+import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.EXTENSION;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.NUMBER;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.TYPE;
+import static ca.qc.ircm.proview.user.UserProperties.ADDRESS;
+import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
+import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
+import static ca.qc.ircm.proview.user.UserProperties.NAME;
+import static ca.qc.ircm.proview.user.UserProperties.PHONE_NUMBERS;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
@@ -33,6 +42,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
@@ -63,32 +73,21 @@ import org.springframework.stereotype.Controller;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserFormPresenter implements BinderValidator {
-  public static final String USER = user.getMetadata().getName();
-  public static final String ID = user.id.getMetadata().getName();
-  public static final String EMAIL = user.email.getMetadata().getName();
-  public static final String NAME = user.name.getMetadata().getName();
+  public static final String USER = "user";
   public static final String PASSWORD = "password";
   public static final String CONFIRM_PASSWORD = "confirmPassword";
-  public static final String LABORATORY = laboratory.getMetadata().getName();
   public static final String NEW_LABORATORY = "newLaboratory";
   public static final String MANAGER = "manager";
-  public static final String LABORATORY_ORGANIZATION =
-      laboratory.organization.getMetadata().getName();
-  public static final String LABORATORY_NAME = laboratory.name.getMetadata().getName();
-  public static final String ADDRESS = address.getMetadata().getName();
-  public static final String ADDRESS_LINE = address.line.getMetadata().getName();
-  public static final String ADDRESS_TOWN = address.town.getMetadata().getName();
-  public static final String ADDRESS_STATE = address.state.getMetadata().getName();
-  public static final String ADDRESS_COUNTRY = address.country.getMetadata().getName();
-  public static final String ADDRESS_POSTAL_CODE = address.postalCode.getMetadata().getName();
+  public static final String LABORATORY_ORGANIZATION = LaboratoryProperties.ORGANIZATION;
+  public static final String LABORATORY_NAME = LaboratoryProperties.NAME;
+  public static final String ADDRESS_LINE = LINE;
   public static final String CLEAR_ADDRESS = "clearAddress";
-  public static final String PHONE_NUMBERS = user.phoneNumbers.getMetadata().getName();
-  public static final String PHONE_NUMBER = phoneNumber.getMetadata().getName();
-  public static final String PHONE_NUMBER_TYPE = phoneNumber.type.getMetadata().getName();
-  public static final String PHONE_NUMBER_NUMBER = phoneNumber.number.getMetadata().getName();
-  public static final String PHONE_NUMBER_EXTENSION = phoneNumber.extension.getMetadata().getName();
-  public static final String REMOVE_PHONE_NUMBER = "removePhoneNumber";
-  public static final String ADD_PHONE_NUMBER = "addPhoneNumber";
+  public static final String PHONE = "phone";
+  public static final String PHONE_TYPE = TYPE;
+  public static final String PHONE_NUMBER = NUMBER;
+  public static final String PHONE_EXTENSION = EXTENSION;
+  public static final String REMOVE_PHONE = "removePhone";
+  public static final String ADD_PHONE = "addPhone";
   public static final String REGISTER_WARNING = "registerWarning";
   public static final String SAVE = "save";
   private static final Logger logger = LoggerFactory.getLogger(UserFormPresenter.class);
@@ -206,36 +205,33 @@ public class UserFormPresenter implements BinderValidator {
         .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_LINE, PLACEHOLDER)));
     addressBinder.forField(design.addressLineField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getLine, Address::setLine);
-    design.townField.addStyleName(ADDRESS_TOWN);
-    design.townField.setCaption(resources.message(property(ADDRESS, ADDRESS_TOWN)));
-    design.townField
-        .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_TOWN, PLACEHOLDER)));
+    design.townField.addStyleName(TOWN);
+    design.townField.setCaption(resources.message(property(ADDRESS, TOWN)));
+    design.townField.setPlaceholder(resources.message(property(ADDRESS, TOWN, PLACEHOLDER)));
     addressBinder.forField(design.townField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getTown, Address::setTown);
-    design.stateField.addStyleName(ADDRESS_STATE);
-    design.stateField.setCaption(resources.message(property(ADDRESS, ADDRESS_STATE)));
-    design.stateField
-        .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_STATE, PLACEHOLDER)));
+    design.stateField.addStyleName(STATE);
+    design.stateField.setCaption(resources.message(property(ADDRESS, STATE)));
+    design.stateField.setPlaceholder(resources.message(property(ADDRESS, STATE, PLACEHOLDER)));
     addressBinder.forField(design.stateField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getState, Address::setState);
-    design.countryField.addStyleName(ADDRESS_COUNTRY);
-    design.countryField.setCaption(resources.message(property(ADDRESS, ADDRESS_COUNTRY)));
-    design.countryField
-        .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_COUNTRY, PLACEHOLDER)));
+    design.countryField.addStyleName(COUNTRY);
+    design.countryField.setCaption(resources.message(property(ADDRESS, COUNTRY)));
+    design.countryField.setPlaceholder(resources.message(property(ADDRESS, COUNTRY, PLACEHOLDER)));
     addressBinder.forField(design.countryField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getCountry, Address::setCountry);
-    design.postalCodeField.addStyleName(ADDRESS_POSTAL_CODE);
-    design.postalCodeField.setCaption(resources.message(property(ADDRESS, ADDRESS_POSTAL_CODE)));
+    design.postalCodeField.addStyleName(POSTAL_CODE);
+    design.postalCodeField.setCaption(resources.message(property(ADDRESS, POSTAL_CODE)));
     design.postalCodeField
-        .setPlaceholder(resources.message(property(ADDRESS, ADDRESS_POSTAL_CODE, PLACEHOLDER)));
+        .setPlaceholder(resources.message(property(ADDRESS, POSTAL_CODE, PLACEHOLDER)));
     addressBinder.forField(design.postalCodeField).asRequired(generalResources.message(REQUIRED))
         .bind(Address::getPostalCode, Address::setPostalCode);
     design.clearAddressButton.addStyleName(CLEAR_ADDRESS);
     design.clearAddressButton.setCaption(resources.message(CLEAR_ADDRESS));
     design.phoneNumbersPanel.addStyleName(PHONE_NUMBERS);
     design.phoneNumbersPanel.setCaption(resources.message(PHONE_NUMBERS));
-    design.addPhoneNumberButton.addStyleName(ADD_PHONE_NUMBER);
-    design.addPhoneNumberButton.setCaption(resources.message(ADD_PHONE_NUMBER));
+    design.addPhoneNumberButton.addStyleName(ADD_PHONE);
+    design.addPhoneNumberButton.setCaption(resources.message(ADD_PHONE));
     design.registerWarningLabel.addStyleName(REGISTER_WARNING);
     design.registerWarningLabel.setValue(resources.message(REGISTER_WARNING));
     design.saveButton.addStyleName(SAVE);
@@ -318,8 +314,8 @@ public class UserFormPresenter implements BinderValidator {
     layout.setMargin(false);
     design.phoneNumbersLayout.addComponent(layout);
     ComboBox<PhoneNumberType> typeField = new ComboBox<>();
-    typeField.addStyleName(PHONE_NUMBER_TYPE);
-    typeField.setCaption(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_TYPE)));
+    typeField.addStyleName(PHONE_TYPE);
+    typeField.setCaption(resources.message(property(PHONE, PHONE_TYPE)));
     typeField.setEmptySelectionAllowed(false);
     typeField.setItems(PhoneNumberType.values());
     typeField.setItemCaptionGenerator(type -> type.getLabel(view.getLocale()));
@@ -327,29 +323,26 @@ public class UserFormPresenter implements BinderValidator {
         .bind(PhoneNumber::getType, PhoneNumber::setType);
     layout.addComponent(typeField);
     TextField numberField = new TextField();
-    numberField.addStyleName(PHONE_NUMBER_NUMBER);
-    numberField.setCaption(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER)));
-    numberField.setPlaceholder(
-        resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, PLACEHOLDER)));
+    numberField.addStyleName(PHONE_NUMBER);
+    numberField.setCaption(resources.message(property(PHONE, PHONE_NUMBER)));
+    numberField.setPlaceholder(resources.message(property(PHONE, PHONE_NUMBER, PLACEHOLDER)));
     phoneNumberBinder.forField(numberField).asRequired(generalResources.message(REQUIRED))
         .withValidator(new RegexpValidator(
-            resources.message(property(PHONE_NUMBER, PHONE_NUMBER_NUMBER, "invalid")), "[\\d\\-]*"))
+            resources.message(property(PHONE, PHONE_NUMBER, "invalid")), "[\\d\\-]*"))
         .bind(PhoneNumber::getNumber, PhoneNumber::setNumber);
     layout.addComponent(numberField);
     TextField extensionField = new TextField();
-    extensionField.addStyleName(PHONE_NUMBER_EXTENSION);
-    extensionField.setCaption(resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION)));
-    extensionField.setPlaceholder(
-        resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, PLACEHOLDER)));
+    extensionField.addStyleName(PHONE_EXTENSION);
+    extensionField.setCaption(resources.message(property(PHONE, PHONE_EXTENSION)));
+    extensionField.setPlaceholder(resources.message(property(PHONE, PHONE_EXTENSION, PLACEHOLDER)));
     phoneNumberBinder.forField(extensionField)
         .withValidator(new RegexpValidator(
-            resources.message(property(PHONE_NUMBER, PHONE_NUMBER_EXTENSION, "invalid")),
-            "[\\d\\-]*"))
+            resources.message(property(PHONE, PHONE_EXTENSION, "invalid")), "[\\d\\-]*"))
         .bind(PhoneNumber::getExtension, PhoneNumber::setExtension);
     layout.addComponent(extensionField);
     Button removeButton = new Button();
-    removeButton.addStyleName(REMOVE_PHONE_NUMBER);
-    removeButton.setCaption(resources.message(REMOVE_PHONE_NUMBER));
+    removeButton.addStyleName(REMOVE_PHONE);
+    removeButton.setCaption(resources.message(REMOVE_PHONE));
     removeButton.addClickListener(e -> removePhoneNumber(phoneNumberBinder, layout, removeButton));
     removePhoneNumberButtons.add(removeButton);
     layout.addComponent(removeButton);

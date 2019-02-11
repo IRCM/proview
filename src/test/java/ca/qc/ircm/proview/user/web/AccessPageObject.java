@@ -17,10 +17,10 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.ACTIVATE;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.CLEAR;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.DEACTIVATE;
-import static ca.qc.ircm.proview.user.web.AccessViewPresenter.EMAIL;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.AccessViewPresenter.USERS_GRID;
 import static org.openqa.selenium.By.className;

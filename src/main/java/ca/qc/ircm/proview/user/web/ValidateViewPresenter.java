@@ -17,12 +17,14 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
+import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
+import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.user.QLaboratory;
-import ca.qc.ircm.proview.user.QUser;
+import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
@@ -55,13 +57,8 @@ public class ValidateViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER = "header";
   public static final String USERS = "users";
-  public static final String EMAIL = QUser.user.email.getMetadata().getName();
-  public static final String NAME = QUser.user.name.getMetadata().getName();
-  public static final String LABORATORY = QUser.user.laboratory.getMetadata().getName();
-  public static final String LABORATORY_NAME =
-      property(LABORATORY, QLaboratory.laboratory.name.getMetadata().getName());
-  public static final String ORGANIZATION =
-      property(LABORATORY, QLaboratory.laboratory.organization.getMetadata().getName());
+  public static final String LABORATORY_NAME = property(LABORATORY, LaboratoryProperties.NAME);
+  public static final String ORGANIZATION = property(LABORATORY, LaboratoryProperties.ORGANIZATION);
   public static final String VALIDATE = "validate";
   public static final String REMOVE = "remove";
   public static final String VALIDATE_SELECTED = "validateSelected";

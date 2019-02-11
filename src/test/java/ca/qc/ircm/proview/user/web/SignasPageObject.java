@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
+import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;

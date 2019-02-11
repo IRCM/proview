@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.EMAIL;
+import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE_SELECTED;

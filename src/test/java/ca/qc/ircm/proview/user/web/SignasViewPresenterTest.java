@@ -18,10 +18,10 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.EMAIL;
+import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
+import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.LABORATORY_NAME;
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.NAME;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.ORGANIZATION;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGNED_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
