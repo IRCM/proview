@@ -70,12 +70,12 @@ CREATE TABLE IF NOT EXISTS laboratoryuser (
 );
 CREATE TABLE IF NOT EXISTS laboratorymanager (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  userId bigint(20) NOT NULL,
-  laboratoryId bigint(20) NOT NULL,
+  managers_id bigint(20) NOT NULL,
+  laboratory_id bigint(20) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE (userId,laboratoryId),
-  CONSTRAINT laboratorymanager_ibfk_1 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT laboratorymanager_ibfk_2 FOREIGN KEY (laboratoryId) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
+  UNIQUE (managers_id,laboratory_id),
+  CONSTRAINT laboratorymanager_ibfk_1 FOREIGN KEY (managers_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT laboratorymanager_ibfk_2 FOREIGN KEY (laboratory_id) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS forgotpassword (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),

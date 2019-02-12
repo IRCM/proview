@@ -141,21 +141,21 @@ INSERT INTO laboratoryuser (userId,laboratoryId)
 VALUES ('26', '5');
 INSERT INTO laboratoryuser (userId,laboratoryId)
 VALUES ('27', '2');
-INSERT INTO laboratorymanager (userId,laboratoryId)
+INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('1', '1');
-INSERT INTO laboratorymanager (userId,laboratoryId)
+INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('2', '1');
-INSERT INTO laboratorymanager (userId,laboratoryId)
+INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('3', '2');
-INSERT INTO laboratorymanager (userId,laboratoryId)
+INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('6', '3');
-INSERT INTO laboratorymanager (userId,laboratoryId)
+INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('19', '4');
-INSERT INTO laboratorymanager (userId,laboratoryId)
+INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('24', '4');
-INSERT INTO laboratorymanager (userId,laboratoryId)
+INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('25', '5');
-INSERT INTO laboratorymanager (userId,laboratoryId)
+INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('27', '2');
 INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
 VALUES (7,10,'2014-09-03 11:39:47',803369922,0);
