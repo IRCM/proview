@@ -29,7 +29,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
@@ -49,35 +48,32 @@ public class Laboratory implements Data, Named, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Name.
    */
-  @Column(name = "name", nullable = false)
+  @Column(nullable = false)
   @Size(max = 255)
   private String name;
   /**
    * Organization / company.
    */
-  @Column(name = "organization", nullable = false)
+  @Column(nullable = false)
   @Size(max = 255)
   private String organization;
   /**
    * Director.
    */
-  @Column(name = "director", nullable = false)
+  @Column(nullable = false)
   @Size(max = 255)
   private String director;
   /**
    * Managers of this laboratory.
    */
   @ManyToMany(cascade = CascadeType.PERSIST)
-  @JoinTable(
-      name = "laboratorymanager",
-      joinColumns = @JoinColumn(name = "laboratoryId"),
-      inverseJoinColumns = @JoinColumn(name = "userId"))
+  @JoinTable(name = "laboratorymanager")
   private List<User> managers;
 
   public Laboratory() {
