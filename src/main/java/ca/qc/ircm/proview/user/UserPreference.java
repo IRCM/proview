@@ -39,25 +39,25 @@ class UserPreference {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * User.
    */
   @ManyToOne
-  @JoinColumn(name = "userId")
+  @JoinColumn
   private User user;
   /**
    * Preference.
    */
   @ManyToOne
-  @JoinColumn(name = "preferenceId")
+  @JoinColumn
   private Preference preference;
   /**
    * Preference's value.
    */
-  @Column(name = "value")
+  @Column
   private byte[] value;
 
   public Long getId() {

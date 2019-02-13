@@ -344,11 +344,11 @@ CREATE TABLE IF NOT EXISTS preference (
 CREATE INDEX IF NOT EXISTS preferenceName ON preference (name);
 CREATE TABLE IF NOT EXISTS userpreference (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  preferenceId bigint(20) NOT NULL,
-  userId bigint(20) NOT NULL,
+  preference_id bigint(20) NOT NULL,
+  user_id bigint(20) NOT NULL,
   value blob DEFAULT NULL,
   PRIMARY KEY (id),
-  UNIQUE (preferenceId, userId),
-  CONSTRAINT userpreference_ibfk_1 FOREIGN KEY (preferenceId) REFERENCES preference (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT userpreference_ibfk_2 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
+  UNIQUE (preference_id, user_id),
+  CONSTRAINT userpreference_ibfk_1 FOREIGN KEY (preference_id) REFERENCES preference (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT userpreference_ibfk_2 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
