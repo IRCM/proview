@@ -49,54 +49,54 @@ public class DataAnalysis implements Data, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Sample link to data to analyse.
    */
   @ManyToOne
-  @JoinColumn(name = "sampleId", updatable = false)
+  @JoinColumn(updatable = false)
   private SubmissionSample sample;
   /**
    * Proteins to analyse.
    */
-  @Column(name = "protein", nullable = false)
+  @Column(nullable = false)
   @Size(max = 255)
   private String protein;
   /**
    * Specific peptides to analyse.
    */
-  @Column(name = "peptide")
+  @Column
   @Size(max = 255)
   private String peptide;
   /**
    * Type of analysis.
    */
-  @Column(name = "analysisType", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private DataAnalysisType type;
   /**
    * Maximum amount of time to work.
    */
-  @Column(name = "maxWorkTime", nullable = false)
+  @Column(nullable = false)
   @DecimalMin("0.5")
   private Double maxWorkTime;
   /**
    * Score given to elements that were analysed.
    */
-  @Column(name = "score")
+  @Column
   private String score;
   /**
    * Work time spent on analysis.
    */
-  @Column(name = "workTime")
+  @Column
   @DecimalMin("0.0")
   private Double workTime;
   /**
    * Analyse status.
    */
-  @Column(name = "status", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private DataAnalysisStatus status;
 

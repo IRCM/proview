@@ -833,9 +833,9 @@ INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisitio
 VALUES (424,24,629,87,1,'XL_20141022_03','XL_20141022_03_COU_01',1,0,NULL);
 INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
 VALUES (425,25,630,88,1,'XL_20141022_04','XL_20141022_04_COU_01',1,0,NULL);
-INSERT INTO dataanalysis (id,sampleId,protein,peptide,maxWorkTime,score,workTime,status,analysisType)
+INSERT INTO dataanalysis (id,sample_id,protein,peptide,maxworktime,score,worktime,status,type)
 VALUES (3,1,'123456',NULL,2,'123456: 95%',1.75,'ANALYSED','PROTEIN');
-INSERT INTO dataanalysis (id,sampleId,protein,peptide,maxWorkTime,score,workTime,status,analysisType)
+INSERT INTO dataanalysis (id,sample_id,protein,peptide,maxworktime,score,worktime,status,type)
 VALUES (4,442,'123456, 58774','3, 4',4,NULL,NULL,'TO_DO','PROTEIN_PEPTIDE');
-INSERT INTO dataanalysis (id,sampleId,protein,peptide,maxWorkTime,score,workTime,status,analysisType)
+INSERT INTO dataanalysis (id,sample_id,protein,peptide,maxworktime,score,worktime,status,type)
 VALUES (5,446,'85574','54, 62',2.3,NULL,NULL,'TO_DO','PROTEIN_PEPTIDE');

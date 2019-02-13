@@ -300,16 +300,16 @@ CREATE TABLE IF NOT EXISTS acquisition (
 CREATE INDEX IF NOT EXISTS acquisitionFile ON acquisition (acquisitionFile,sampleId);
 CREATE TABLE IF NOT EXISTS dataanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  sampleId bigint(20) NOT NULL,
+  sample_id bigint(20) NOT NULL,
   protein varchar(255) NOT NULL,
   peptide varchar(255) DEFAULT NULL,
-  maxWorkTime double NOT NULL,
+  maxworktime double NOT NULL,
   score clob,
-  workTime double DEFAULT NULL,
+  worktime double DEFAULT NULL,
   status varchar(50) NOT NULL,
-  analysisType varchar(50) NOT NULL,
+  type varchar(50) NOT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT dataanalysis_ibfk_1 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT dataanalysis_ibfk_1 FOREIGN KEY (sample_id) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS activity (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
