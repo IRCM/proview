@@ -313,18 +313,18 @@ CREATE TABLE IF NOT EXISTS dataanalysis (
 );
 CREATE TABLE IF NOT EXISTS activity (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  userId bigint(20) NOT NULL,
-  tableName varchar(50) NOT NULL,
-  recordId bigint(20) NOT NULL,
-  actionType varchar(50) NOT NULL,
-  time datetime NOT NULL,
+  user_id bigint(20) NOT NULL,
+  tablename varchar(50) NOT NULL,
+  recordid bigint(20) NOT NULL,
+  actiontype varchar(50) NOT NULL,
+  timestamp datetime NOT NULL,
   explanation clob,
   PRIMARY KEY (id)
 );
-CREATE INDEX IF NOT EXISTS activityRecordIndex ON activity (tableName,recordId,actionType);
+CREATE INDEX IF NOT EXISTS activityRecordIndex ON activity (tablename,recordid,actiontype);
 CREATE TABLE IF NOT EXISTS activityupdate (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  activityId bigint(20) DEFAULT NULL,
+  updates_id bigint(20) DEFAULT NULL,
   tableName varchar(50) NOT NULL,
   recordId bigint(20) NOT NULL,
   actionType varchar(50) NOT NULL,
@@ -332,7 +332,7 @@ CREATE TABLE IF NOT EXISTS activityupdate (
   oldValue varchar(255) DEFAULT NULL,
   newValue varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT activityupdate_ibfk_1 FOREIGN KEY (activityId) REFERENCES activity (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT activityupdate_ibfk_1 FOREIGN KEY (updates_id) REFERENCES activity (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS preference (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),

@@ -47,47 +47,47 @@ public class Activity implements Data {
    * Database identifier of activity.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * User that made the action.
    */
   @ManyToOne
-  @JoinColumn(name = "userId", updatable = false)
+  @JoinColumn(updatable = false)
   private User user;
   /**
    * Table name of affected data.
    */
-  @Column(name = "tableName", nullable = false)
+  @Column(nullable = false)
   private String tableName;
   /**
    * Database identifier of data.
    */
-  @Column(name = "recordId", nullable = false)
+  @Column(nullable = false)
   private Long recordId;
   /**
    * Type of action.
    */
-  @Column(name = "actionType", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private ActionType actionType;
   /**
    * Moment where action was performed.
    */
-  @Column(name = "time", nullable = false)
+  @Column(nullable = false)
   private Instant timestamp;
   /**
    * Explanation of changes.
    */
-  @Column(name = "explanation", nullable = false)
+  @Column(nullable = false)
   private String explanation;
   /**
    * Updates done in this action, if any. This will most likely be null or empty if
    * {@link #getActionType()} does not return {@link ActionType#UPDATE}.
    */
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "activityId")
+  @JoinColumn
   private List<UpdateActivity> updates;
 
   @Override
