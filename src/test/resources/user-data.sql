@@ -25,33 +25,33 @@ INSERT INTO laboratory (id,name,organization,director)
 VALUES ('4', 'Biochemistry of Epigenetic Inheritance', 'IRCM', 'Robert Williams');
 INSERT INTO laboratory (id,name,organization,director)
 VALUES ('5', 'Génétique moléculaire et développement', 'IRCM', 'Marie Trudel');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('1', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('2', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('3', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('4', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('5', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('6', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('7', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('8', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('9', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('10', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('11', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('12', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('13', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
-INSERT INTO address (id,line,town,state,country,postalCode)
+INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('14', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
 INSERT INTO user (id,email,password,salt,passwordVersion,signAttempts,lastSignAttempt,name,locale,addressId,active,valid,admin,registerTime)
 VALUES ('1', 'proview@ircm.qc.ca', 'b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7', 'd04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d', '1', null, null, 'Robot', null, null, '1', '1', '1', '2008-08-10 12:34:22');

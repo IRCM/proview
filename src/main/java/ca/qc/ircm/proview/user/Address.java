@@ -41,37 +41,37 @@ public class Address implements Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Address line.
    */
-  @Column(name = "line", nullable = false)
+  @Column(nullable = false)
   @Size(max = 200)
   private String line;
   /**
    * Town.
    */
-  @Column(name = "town", nullable = false)
+  @Column(nullable = false)
   @Size(max = 50)
   private String town;
   /**
    * State / province.
    */
-  @Column(name = "state", nullable = false)
+  @Column(nullable = false)
   @Size(max = 50)
   private String state;
   /**
    * Country.
    */
-  @Column(name = "country", nullable = false)
+  @Column(nullable = false)
   @Size(max = 50)
   private String country;
   /**
    * Postal code.
    */
-  @Column(name = "postalCode", nullable = false)
+  @Column(nullable = false)
   @Size(max = 50)
   private String postalCode;
 

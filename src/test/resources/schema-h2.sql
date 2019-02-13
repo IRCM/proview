@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS address (
   town varchar(50) NOT NULL,
   state varchar(50) NOT NULL,
   country varchar(50) NOT NULL,
-  postalCode varchar(50) NOT NULL,
+  postalcode varchar(50) NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS user (
