@@ -38,19 +38,19 @@ class Preference {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Object getting and setting the preference.
    */
-  @Column(name = "referer", nullable = false)
+  @Column(nullable = false)
   @Size(max = 255)
   private String referer;
   /**
    * Name of the preference.
    */
-  @Column(name = "name", nullable = false)
+  @Column(nullable = false)
   @Size(max = 255)
   private String name;
 
