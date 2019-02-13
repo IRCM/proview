@@ -42,23 +42,23 @@ public class UpdateActivity implements Data {
    * Database identifier of update activity.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Table name of affected data.
    */
-  @Column(name = "tableName", nullable = false)
+  @Column(nullable = false)
   private String tableName;
   /**
    * Database identifier of data.
    */
-  @Column(name = "recordId", nullable = false)
+  @Column(nullable = false)
   private Long recordId;
   /**
    * Type of action.
    */
-  @Column(name = "actionType", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private ActionType actionType;
   /**
@@ -71,14 +71,14 @@ public class UpdateActivity implements Data {
    * Database column value before update. Only valid if {@link #actionType} is
    * {@link ActionType#UPDATE}.
    */
-  @Column(name = "oldValue")
+  @Column
   @Size(max = 255)
   private String oldValue;
   /**
    * Database column value after update. Only valid if {@link #actionType} is
    * {@link ActionType#UPDATE}.
    */
-  @Column(name = "newValue")
+  @Column
   @Size(max = 255)
   private String newValue;
 

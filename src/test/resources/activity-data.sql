@@ -663,751 +663,751 @@ INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explana
 VALUES (5935,10,'submission',163,'INSERT','2017-11-08 10:30:15',NULL);
 INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
 VALUES (5936,10,'submission',163,'UPDATE','2017-11-08 10:30:15',NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1020,5551,'sample',442,'UPDATE','status','TO_APPROVE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1021,5552,'sample',1,'UPDATE','status','ANALYSED','DATA_ANALYSIS');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1022,5553,'dataanalysis',3,'UPDATE','score',NULL,'123456: 95%');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1023,5553,'dataanalysis',3,'UPDATE','workTime',NULL,'1.75');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1024,5553,'dataanalysis',3,'UPDATE','status','TO_DO','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1025,5553,'sample',1,'UPDATE','status','DATA_ANALYSIS','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1026,5554,'sample',442,'UPDATE','status','ANALYSED','DATA_ANALYSIS');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1028,5557,'samplecontainer',6,'INSERT',NULL,NULL,NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1029,5558,'samplecontainer',7,'INSERT',NULL,NULL,NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1030,5565,'sample',446,'UPDATE','status','TO_APPROVE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1031,5566,'sample',446,'UPDATE','status','ANALYSED','DATA_ANALYSIS');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1033,5568,'sample',445,'UPDATE','status','TO_APPROVE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1034,5569,'samplecontainer',128,'UPDATE','sampleId',NULL,'1');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1035,5570,'samplecontainer',199,'UPDATE','banned','0','1');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1036,5570,'samplecontainer',211,'UPDATE','banned','0','1');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1037,5570,'samplecontainer',223,'UPDATE','banned','0','1');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1038,5573,'samplecontainer',129,'UPDATE','sampleId',NULL,'1');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1069,5635,'sample',559,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1070,5636,'sample',560,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1071,5638,'samplecontainer',224,'UPDATE','sampleId',NULL,'559');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1072,5638,'samplecontainer',236,'UPDATE','sampleId',NULL,'560');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1073,5640,'sample',559,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1074,5641,'sample',560,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1075,5643,'sample',561,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1076,5644,'sample',562,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1077,5645,'sample',563,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1078,5646,'sample',564,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1079,5647,'sample',565,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1080,5648,'sample',566,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1081,5649,'sample',567,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1082,5650,'sample',568,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1085,5657,'samplecontainer',321,'UPDATE','sampleId',NULL,'565');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1086,5657,'samplecontainer',333,'UPDATE','sampleId',NULL,'566');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1091,5659,'samplecontainer',323,'UPDATE','sampleId',NULL,'567');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1092,5659,'samplecontainer',335,'UPDATE','sampleId',NULL,'567');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1093,5659,'samplecontainer',347,'UPDATE','sampleId',NULL,'568');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1094,5659,'samplecontainer',359,'UPDATE','sampleId',NULL,'568');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1095,5661,'samplecontainer',416,'UPDATE','sampleId',NULL,'565');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1096,5661,'samplecontainer',428,'UPDATE','sampleId',NULL,'565');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1097,5661,'samplecontainer',440,'UPDATE','sampleId',NULL,'566');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1098,5661,'samplecontainer',452,'UPDATE','sampleId',NULL,'566');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1099,5662,'samplecontainer',417,'UPDATE','sampleId',NULL,'567');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1100,5662,'samplecontainer',429,'UPDATE','sampleId',NULL,'567');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1101,5662,'samplecontainer',441,'UPDATE','sampleId',NULL,'568');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1102,5662,'samplecontainer',453,'UPDATE','sampleId',NULL,'568');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1109,5665,'samplecontainer',320,'UPDATE','sampleId',NULL,'561');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1110,5665,'samplecontainer',332,'UPDATE','sampleId',NULL,'562');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1111,5666,'samplecontainer',322,'UPDATE','sampleId',NULL,'564');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1112,5666,'samplecontainer',334,'UPDATE','sampleId',NULL,'564');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1113,5666,'samplecontainer',346,'UPDATE','sampleId',NULL,'563');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1114,5666,'samplecontainer',358,'UPDATE','sampleId',NULL,'563');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1115,5667,'sample',561,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1116,5668,'sample',562,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1117,5669,'sample',563,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1118,5670,'sample',564,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1119,5671,'sample',565,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1120,5672,'sample',566,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1121,5673,'sample',567,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1122,5674,'sample',568,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1125,5679,'samplecontainer',608,'UPDATE','sampleId',NULL,'569');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1126,5679,'samplecontainer',620,'UPDATE','sampleId',NULL,'570');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1127,5682,'samplecontainer',513,'UPDATE','sampleId',NULL,'571');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1128,5682,'samplecontainer',525,'UPDATE','sampleId',NULL,'572');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1133,5685,'samplecontainer',515,'UPDATE','sampleId',NULL,'574');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1134,5685,'samplecontainer',527,'UPDATE','sampleId',NULL,'574');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1135,5685,'samplecontainer',539,'UPDATE','sampleId',NULL,'573');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1136,5685,'samplecontainer',551,'UPDATE','sampleId',NULL,'573');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1137,5687,'samplecontainer',516,'UPDATE','sampleId',NULL,'575');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1138,5687,'samplecontainer',528,'UPDATE','sampleId',NULL,'576');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1139,5689,'samplecontainer',704,'UPDATE','sampleId',NULL,'575');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1140,5689,'samplecontainer',716,'UPDATE','sampleId',NULL,'575');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1141,5689,'samplecontainer',728,'UPDATE','sampleId',NULL,'576');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1142,5689,'samplecontainer',740,'UPDATE','sampleId',NULL,'576');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1143,5691,'samplecontainer',517,'UPDATE','sampleId',NULL,'577');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1144,5691,'samplecontainer',529,'UPDATE','sampleId',NULL,'577');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1145,5691,'samplecontainer',541,'UPDATE','sampleId',NULL,'578');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1146,5691,'samplecontainer',553,'UPDATE','sampleId',NULL,'578');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1147,5692,'samplecontainer',705,'UPDATE','sampleId',NULL,'577');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1148,5692,'samplecontainer',717,'UPDATE','sampleId',NULL,'577');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1149,5692,'samplecontainer',729,'UPDATE','sampleId',NULL,'578');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1150,5692,'samplecontainer',741,'UPDATE','sampleId',NULL,'578');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1151,5694,'sample',569,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1152,5695,'sample',570,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1153,5696,'sample',571,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1154,5697,'sample',572,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1155,5698,'sample',573,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1156,5699,'sample',574,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1157,5700,'sample',575,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1158,5701,'sample',576,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1159,5702,'sample',577,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1160,5703,'sample',578,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1161,5704,'sample',579,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1162,5705,'sample',580,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1163,5706,'sample',581,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1164,5707,'sample',582,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1165,5708,'sample',583,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1166,5709,'sample',584,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1167,5710,'sample',585,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1168,5711,'sample',586,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1169,5712,'sample',587,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1170,5713,'sample',588,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1171,5716,'samplecontainer',800,'UPDATE','sampleId',NULL,'579');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1172,5716,'samplecontainer',812,'UPDATE','sampleId',NULL,'580');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1173,5718,'samplecontainer',801,'UPDATE','sampleId',NULL,'581');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1174,5718,'samplecontainer',813,'UPDATE','sampleId',NULL,'582');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1175,5718,'samplecontainer',825,'UPDATE','sampleId',NULL,'583');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1176,5718,'samplecontainer',837,'UPDATE','sampleId',NULL,'584');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1177,5718,'samplecontainer',849,'UPDATE','sampleId',NULL,'585');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1178,5718,'samplecontainer',861,'UPDATE','sampleId',NULL,'586');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1179,5718,'samplecontainer',873,'UPDATE','sampleId',NULL,'587');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1180,5718,'samplecontainer',885,'UPDATE','sampleId',NULL,'588');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1181,5723,'samplecontainer',896,'UPDATE','sampleId',NULL,'581');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1182,5723,'samplecontainer',908,'UPDATE','sampleId',NULL,'582');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1183,5724,'samplecontainer',898,'UPDATE','sampleId',NULL,'585');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1184,5724,'samplecontainer',910,'UPDATE','sampleId',NULL,'586');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1185,5725,'samplecontainer',897,'UPDATE','sampleId',NULL,'583');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1186,5725,'samplecontainer',909,'UPDATE','sampleId',NULL,'583');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1187,5725,'samplecontainer',921,'UPDATE','sampleId',NULL,'584');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1188,5725,'samplecontainer',933,'UPDATE','sampleId',NULL,'584');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1189,5726,'samplecontainer',899,'UPDATE','sampleId',NULL,'587');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1190,5726,'samplecontainer',911,'UPDATE','sampleId',NULL,'587');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1191,5726,'samplecontainer',923,'UPDATE','sampleId',NULL,'588');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1192,5726,'samplecontainer',935,'UPDATE','sampleId',NULL,'588');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1193,5727,'samplecontainer',802,'UPDATE','sampleId',NULL,'587');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1194,5727,'samplecontainer',814,'UPDATE','sampleId',NULL,'587');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1195,5727,'samplecontainer',826,'UPDATE','sampleId',NULL,'588');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1196,5727,'samplecontainer',838,'UPDATE','sampleId',NULL,'588');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1197,5728,'samplecontainer',803,'UPDATE','sampleId',NULL,'585');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1198,5728,'samplecontainer',815,'UPDATE','sampleId',NULL,'585');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1199,5728,'samplecontainer',827,'UPDATE','sampleId',NULL,'586');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1200,5728,'samplecontainer',839,'UPDATE','sampleId',NULL,'586');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1201,5729,'sample',569,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1202,5730,'sample',570,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1203,5731,'sample',571,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1204,5732,'sample',572,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1205,5733,'sample',573,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1206,5734,'sample',574,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1207,5735,'sample',575,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1208,5736,'sample',576,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1209,5737,'sample',577,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1210,5738,'sample',578,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1211,5739,'sample',579,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1212,5740,'sample',580,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1213,5741,'sample',581,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1214,5742,'sample',582,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1215,5743,'sample',583,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1216,5744,'sample',584,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1217,5745,'sample',585,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1218,5746,'sample',586,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1219,5747,'sample',587,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1220,5748,'sample',588,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1221,5750,'sample',589,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1222,5751,'sample',590,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1223,5752,'sample',591,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1224,5753,'sample',592,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1225,5754,'sample',593,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1226,5755,'sample',594,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1227,5756,'sample',595,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1228,5757,'sample',596,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1229,5758,'sample',597,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1230,5759,'sample',598,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1231,5762,'samplecontainer',992,'UPDATE','sampleId',NULL,'589');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1232,5762,'samplecontainer',1004,'UPDATE','sampleId',NULL,'590');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1233,5768,'samplecontainer',993,'UPDATE','sampleId',NULL,'591');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1234,5768,'samplecontainer',1005,'UPDATE','sampleId',NULL,'592');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1235,5769,'samplecontainer',995,'UPDATE','sampleId',NULL,'595');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1236,5769,'samplecontainer',1007,'UPDATE','sampleId',NULL,'596');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1237,5770,'samplecontainer',994,'UPDATE','sampleId',NULL,'593');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1238,5770,'samplecontainer',1006,'UPDATE','sampleId',NULL,'593');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1239,5770,'samplecontainer',1018,'UPDATE','sampleId',NULL,'594');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1240,5770,'samplecontainer',1030,'UPDATE','sampleId',NULL,'594');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1241,5771,'samplecontainer',996,'UPDATE','sampleId',NULL,'597');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1242,5771,'samplecontainer',1008,'UPDATE','sampleId',NULL,'597');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1243,5771,'samplecontainer',1020,'UPDATE','sampleId',NULL,'598');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1244,5771,'samplecontainer',1032,'UPDATE','sampleId',NULL,'598');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1245,5772,'samplecontainer',1088,'UPDATE','sampleId',NULL,'595');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1246,5772,'samplecontainer',1100,'UPDATE','sampleId',NULL,'595');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1247,5772,'samplecontainer',1112,'UPDATE','sampleId',NULL,'596');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1248,5772,'samplecontainer',1124,'UPDATE','sampleId',NULL,'596');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1249,5773,'samplecontainer',1089,'UPDATE','sampleId',NULL,'597');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1250,5773,'samplecontainer',1101,'UPDATE','sampleId',NULL,'597');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1251,5773,'samplecontainer',1113,'UPDATE','sampleId',NULL,'598');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1252,5773,'samplecontainer',1125,'UPDATE','sampleId',NULL,'598');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1253,5774,'sample',589,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1254,5775,'sample',590,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1255,5776,'sample',591,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1256,5777,'sample',592,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1257,5778,'sample',593,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1258,5779,'sample',594,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1259,5780,'sample',595,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1260,5781,'sample',596,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1261,5782,'sample',597,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1262,5783,'sample',598,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1263,5785,'sample',599,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1264,5786,'sample',600,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1265,5787,'sample',601,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1266,5788,'sample',602,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1267,5789,'sample',603,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1268,5790,'sample',604,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1269,5791,'sample',605,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1270,5792,'sample',606,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1271,5793,'sample',607,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1272,5794,'sample',608,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1273,5795,'samplecontainer',997,'UPDATE','sampleId',NULL,'599');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1274,5795,'samplecontainer',1009,'UPDATE','sampleId',NULL,'600');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1275,5801,'samplecontainer',998,'UPDATE','sampleId',NULL,'601');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1276,5801,'samplecontainer',1010,'UPDATE','sampleId',NULL,'602');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1277,5802,'samplecontainer',1000,'UPDATE','sampleId',NULL,'605');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1278,5802,'samplecontainer',1012,'UPDATE','sampleId',NULL,'606');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1279,5803,'samplecontainer',999,'UPDATE','sampleId',NULL,'603');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1280,5803,'samplecontainer',1011,'UPDATE','sampleId',NULL,'603');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1281,5803,'samplecontainer',1023,'UPDATE','sampleId',NULL,'604');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1282,5803,'samplecontainer',1035,'UPDATE','sampleId',NULL,'604');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1283,5804,'samplecontainer',1001,'UPDATE','sampleId',NULL,'608');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1284,5804,'samplecontainer',1013,'UPDATE','sampleId',NULL,'608');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1285,5804,'samplecontainer',1025,'UPDATE','sampleId',NULL,'607');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1286,5804,'samplecontainer',1037,'UPDATE','sampleId',NULL,'607');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1287,5805,'samplecontainer',1090,'UPDATE','sampleId',NULL,'605');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1288,5805,'samplecontainer',1102,'UPDATE','sampleId',NULL,'605');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1289,5805,'samplecontainer',1114,'UPDATE','sampleId',NULL,'606');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1290,5805,'samplecontainer',1126,'UPDATE','sampleId',NULL,'606');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1291,5806,'samplecontainer',1091,'UPDATE','sampleId',NULL,'608');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1292,5806,'samplecontainer',1103,'UPDATE','sampleId',NULL,'608');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1293,5806,'samplecontainer',1115,'UPDATE','sampleId',NULL,'607');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1294,5806,'samplecontainer',1127,'UPDATE','sampleId',NULL,'607');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1295,5807,'sample',599,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1296,5808,'sample',600,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1297,5809,'sample',601,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1298,5810,'sample',602,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1299,5811,'sample',603,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1300,5812,'sample',604,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1301,5813,'sample',605,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1302,5814,'sample',606,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1303,5815,'sample',607,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1304,5816,'sample',608,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1305,5818,'sample',609,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1306,5819,'sample',610,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1307,5820,'sample',611,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1308,5821,'sample',612,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1309,5822,'samplecontainer',65,'INSERT',NULL,NULL,NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1310,5823,'samplecontainer',66,'INSERT',NULL,NULL,NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1311,5824,'samplecontainer',1076,'UPDATE','sampleId',NULL,'611');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1312,5825,'samplecontainer',1077,'UPDATE','sampleId',NULL,'612');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1313,5828,'sample',610,'UPDATE','status','RECEIVED','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1314,5829,'sample',612,'UPDATE','status','RECEIVED','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1315,5830,'sample',609,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1316,5831,'sample',611,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1317,5833,'sample',613,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1318,5834,'sample',614,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1319,5835,'sample',615,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1320,5836,'sample',616,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1321,5837,'sample',617,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1322,5838,'sample',618,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1323,5839,'sample',619,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1324,5840,'sample',620,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1325,5841,'samplecontainer',75,'INSERT',NULL,NULL,NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1326,5842,'samplecontainer',76,'INSERT',NULL,NULL,NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1327,5843,'samplecontainer',77,'INSERT',NULL,NULL,NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1328,5844,'samplecontainer',78,'INSERT',NULL,NULL,NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1329,5846,'samplecontainer',1184,'UPDATE','sampleId',NULL,'614');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1330,5847,'samplecontainer',1185,'UPDATE','sampleId',NULL,'616');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1331,5848,'samplecontainer',1186,'UPDATE','sampleId',NULL,'618');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1332,5849,'samplecontainer',1187,'UPDATE','sampleId',NULL,'620');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1333,5850,'samplecontainer',1208,'UPDATE','sampleId',NULL,'613');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1334,5851,'samplecontainer',1160,'UPDATE','sampleId',NULL,'614');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1335,5852,'samplecontainer',1188,'UPDATE','sampleId',NULL,'615');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1336,5852,'samplecontainer',1200,'UPDATE','sampleId',NULL,'615');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1337,5853,'samplecontainer',1161,'UPDATE','sampleId',NULL,'616');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1338,5853,'samplecontainer',1173,'UPDATE','sampleId',NULL,'616');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1339,5854,'samplecontainer',1189,'UPDATE','sampleId',NULL,'617');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1340,5855,'samplecontainer',1162,'UPDATE','sampleId',NULL,'618');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1341,5856,'samplecontainer',1163,'UPDATE','sampleId',NULL,'617');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1342,5856,'samplecontainer',1175,'UPDATE','sampleId',NULL,'617');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1343,5857,'samplecontainer',1190,'UPDATE','sampleId',NULL,'618');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1344,5857,'samplecontainer',1202,'UPDATE','sampleId',NULL,'618');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1345,5858,'samplecontainer',1191,'UPDATE','sampleId',NULL,'619');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1346,5858,'samplecontainer',1203,'UPDATE','sampleId',NULL,'619');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1347,5859,'samplecontainer',1164,'UPDATE','sampleId',NULL,'620');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1348,5859,'samplecontainer',1176,'UPDATE','sampleId',NULL,'620');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1349,5860,'samplecontainer',1165,'UPDATE','sampleId',NULL,'619');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1350,5860,'samplecontainer',1177,'UPDATE','sampleId',NULL,'619');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1351,5861,'samplecontainer',1192,'UPDATE','sampleId',NULL,'620');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1352,5861,'samplecontainer',1204,'UPDATE','sampleId',NULL,'620');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1353,5863,'sample',621,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1354,5864,'sample',622,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1355,5865,'sample',623,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1356,5866,'sample',624,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1357,5867,'sample',625,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1358,5868,'sample',626,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1359,5869,'sample',613,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1360,5870,'sample',614,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1361,5871,'sample',615,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1362,5872,'sample',616,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1363,5873,'sample',617,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1364,5874,'sample',618,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1365,5875,'sample',619,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1366,5876,'sample',620,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1367,5878,'samplecontainer',1280,'UPDATE','sampleId',NULL,'621');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1368,5878,'samplecontainer',1292,'UPDATE','sampleId',NULL,'621');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1369,5879,'samplecontainer',1281,'UPDATE','sampleId',NULL,'622');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1370,5879,'samplecontainer',1293,'UPDATE','sampleId',NULL,'622');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1371,5880,'sample',621,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1372,5881,'sample',622,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1373,5883,'sample',622,'UPDATE','status','TO_ANALYSE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1374,5883,'sample',622,'UPDATE','status','TO_ANALYSE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1375,5884,'samplecontainer',1282,'UPDATE','sampleId',NULL,'623');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1376,5884,'samplecontainer',1294,'UPDATE','sampleId',NULL,'623');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1377,5885,'samplecontainer',1283,'UPDATE','sampleId',NULL,'624');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1378,5885,'samplecontainer',1295,'UPDATE','sampleId',NULL,'624');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1379,5886,'samplecontainer',1284,'UPDATE','sampleId',NULL,'625');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1380,5886,'samplecontainer',1296,'UPDATE','sampleId',NULL,'625');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1381,5887,'samplecontainer',1285,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1382,5887,'samplecontainer',1297,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1383,5889,'samplecontainer',1376,'UPDATE','sampleId',NULL,'623');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1384,5889,'samplecontainer',1388,'UPDATE','sampleId',NULL,'623');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1385,5890,'samplecontainer',1377,'UPDATE','sampleId',NULL,'625');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1386,5890,'samplecontainer',1389,'UPDATE','sampleId',NULL,'625');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1387,5891,'samplecontainer',1378,'UPDATE','sampleId',NULL,'624');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1388,5891,'samplecontainer',1390,'UPDATE','sampleId',NULL,'624');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1389,5891,'samplecontainer',1402,'UPDATE','sampleId',NULL,'624');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1390,5891,'samplecontainer',1414,'UPDATE','sampleId',NULL,'624');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1391,5892,'samplecontainer',1379,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1392,5892,'samplecontainer',1391,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1393,5892,'samplecontainer',1403,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1394,5892,'samplecontainer',1415,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1395,5893,'samplecontainer',1328,'UPDATE','sampleId',NULL,'625');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1396,5893,'samplecontainer',1340,'UPDATE','sampleId',NULL,'625');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1397,5893,'samplecontainer',1352,'UPDATE','sampleId',NULL,'625');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1398,5893,'samplecontainer',1364,'UPDATE','sampleId',NULL,'625');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1399,5894,'samplecontainer',1329,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1400,5894,'samplecontainer',1341,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1401,5894,'samplecontainer',1353,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1402,5894,'samplecontainer',1365,'UPDATE','sampleId',NULL,'626');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1403,5895,'sample',623,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1404,5896,'sample',624,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1405,5897,'sample',625,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1406,5898,'sample',626,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1407,5900,'sample',627,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1408,5901,'sample',628,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1409,5902,'sample',629,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1410,5903,'sample',630,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1411,5904,'sample',627,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1412,5905,'sample',628,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1413,5906,'sample',629,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1414,5907,'sample',630,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1415,5908,'sample',627,'UPDATE','status','TO_ANALYSE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1416,5909,'sample',628,'UPDATE','status','TO_ANALYSE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1417,5910,'sample',629,'UPDATE','status','TO_ANALYSE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1418,5911,'sample',630,'UPDATE','status','TO_ANALYSE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1419,5913,'samplecontainer',1472,'UPDATE','sampleId',NULL,'627');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1420,5914,'samplecontainer',1474,'UPDATE','sampleId',NULL,'629');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1421,5915,'samplecontainer',1473,'UPDATE','sampleId',NULL,'628');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1422,5915,'samplecontainer',1485,'UPDATE','sampleId',NULL,'628');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1423,5916,'samplecontainer',1475,'UPDATE','sampleId',NULL,'630');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1424,5916,'samplecontainer',1487,'UPDATE','sampleId',NULL,'630');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1425,5918,'samplecontainer',1568,'UPDATE','sampleId',NULL,'629');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1426,5918,'samplecontainer',1580,'UPDATE','sampleId',NULL,'629');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1427,5919,'samplecontainer',1569,'UPDATE','sampleId',NULL,'630');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1428,5919,'samplecontainer',1581,'UPDATE','sampleId',NULL,'630');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1431,5925,'sample',638,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1432,5926,'sample',639,'UPDATE','status','TO_APPROVE','RECEIVED');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1433,5929,'samplecontainer',1570,'UPDATE','sampleId',NULL,'639');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1434,5930,'samplecontainer',1571,'UPDATE','sampleId',NULL,'638');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1435,5930,'samplecontainer',1583,'UPDATE','sampleId',NULL,'638');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1436,5932,'sample',639,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1437,5931,'sample',638,'UPDATE','status','RECEIVED','TO_ANALYSE');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1438,5933,'samplecontainer',1570,'UPDATE','sampleId','639',NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1439,5934,'samplecontainer',1571,'UPDATE','sampleId','638',NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1440,5934,'samplecontainer',1583,'UPDATE','sampleId','638',NULL);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1441,5936,'submission',163,'UPDATE','experiment','POLR2B-Flag-before','POLR2B-Flag');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1442,5936,'sample',642,'UPDATE','name','POLR2B_201810502_01','POLR2B_201810503_01');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1443,5936,'plate',123,'UPDATE','name','Andrew-20171107','Andrew-20171108');
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1444,5936,'sample',643,'DELETE',null,null,null);
-INSERT INTO activityupdate (id,updates_id,tableName,recordId,actionType,actionColumn,oldValue,newValue)
+INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1445,5936,'sample',641,'INSERT',null,null,null);

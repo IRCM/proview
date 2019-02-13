@@ -325,12 +325,12 @@ CREATE INDEX IF NOT EXISTS activityRecordIndex ON activity (tablename,recordid,a
 CREATE TABLE IF NOT EXISTS activityupdate (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   updates_id bigint(20) DEFAULT NULL,
-  tableName varchar(50) NOT NULL,
-  recordId bigint(20) NOT NULL,
-  actionType varchar(50) NOT NULL,
-  actionColumn varchar(70) DEFAULT NULL,
-  oldValue varchar(255) DEFAULT NULL,
-  newValue varchar(255) DEFAULT NULL,
+  tablename varchar(50) NOT NULL,
+  recordid bigint(20) NOT NULL,
+  actiontype varchar(50) NOT NULL,
+  actioncolumn varchar(70) DEFAULT NULL,
+  oldvalue varchar(255) DEFAULT NULL,
+  newvalue varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
   CONSTRAINT activityupdate_ibfk_1 FOREIGN KEY (updates_id) REFERENCES activity (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
