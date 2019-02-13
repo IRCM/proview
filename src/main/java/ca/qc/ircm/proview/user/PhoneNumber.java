@@ -45,25 +45,25 @@ public class PhoneNumber implements Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Phone number type.
    */
-  @Column(name = "type", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private PhoneNumberType type;
   /**
    * Phone number.
    */
-  @Column(name = "number", nullable = false)
+  @Column(nullable = false)
   @Size(max = 50)
   private String number;
   /**
    * Extension.
    */
-  @Column(name = "extension")
+  @Column
   @Size(max = 20)
   private String extension;
 
