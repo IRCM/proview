@@ -53,93 +53,90 @@ public class User implements Data, Named, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Email of User. This is also a unique id.
    */
-  @Column(name = "email", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @Size(max = 255)
   private String email;
   /**
    * First name.
    */
-  @Column(name = "name", nullable = false)
+  @Column(nullable = false)
   @Size(max = 255)
   private String name;
   /**
    * True if user is registered and is currently valid.
    */
-  @Column(name = "valid", nullable = false)
+  @Column(nullable = false)
   private boolean valid = false;
   /**
    * True if User is active. An active user can log into program.
    */
-  @Column(name = "active", nullable = false)
+  @Column(nullable = false)
   private boolean active = false;
   /**
    * True if User is an admin user.
    */
-  @Column(name = "admin", nullable = false)
+  @Column(nullable = false)
   private boolean admin = false;
   /**
    * Hashed password.
    */
-  @Column(name = "password")
+  @Column
   @Size(max = 255)
   private String hashedPassword;
   /**
    * Password's salt.
    */
-  @Column(name = "salt")
+  @Column
   @Size(max = 255)
   private String salt;
   /**
    * Password's version.
    */
-  @Column(name = "passwordVersion")
+  @Column
   private Integer passwordVersion;
   /**
    * Number of sign attempts since last successful sign.
    */
-  @Column(name = "signAttempts")
+  @Column
   private int signAttempts;
   /**
    * Last sign attempts (success or fail).
    */
-  @Column(name = "lastSignAttempt")
+  @Column
   private Instant lastSignAttempt;
   /**
    * Register time.
    */
-  @Column(name = "registerTime")
+  @Column
   private Instant registerTime;
   /**
    * User's prefered locale.
    */
-  @Column(name = "locale")
+  @Column
   private Locale locale;
   /**
    * User's laboratory.
    */
   @ManyToOne
-  @JoinTable(
-      name = "laboratoryuser",
-      joinColumns = @JoinColumn(name = "userId"),
-      inverseJoinColumns = @JoinColumn(name = "laboratoryId"))
+  @JoinTable(name = "laboratoryuser")
   private Laboratory laboratory;
   /**
    * Address.
    */
   @ManyToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "addressId")
+  @JoinColumn
   private Address address;
   /**
    * Phone numbers.
    */
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "userId")
+  @JoinColumn
   private List<PhoneNumber> phoneNumbers;
 
   public User() {
