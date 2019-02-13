@@ -79,12 +79,12 @@ CREATE TABLE IF NOT EXISTS laboratorymanager (
 );
 CREATE TABLE IF NOT EXISTS forgotpassword (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  userId bigint(20) NOT NULL,
-  requestMoment datetime NOT NULL,
-  confirmNumber int(11) NOT NULL,
+  user_id bigint(20) NOT NULL,
+  requestmoment datetime NOT NULL,
+  confirmnumber int(11) NOT NULL,
   used tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  CONSTRAINT forgotpassword_ibfk_1 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT forgotpassword_ibfk_1 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS submission (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),

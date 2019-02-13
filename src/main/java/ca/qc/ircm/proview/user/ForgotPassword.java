@@ -44,29 +44,29 @@ public class ForgotPassword implements Data, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Moment where User requested a forgot password.
    */
-  @Column(name = "requestMoment")
+  @Column
   private Instant requestMoment;
   /**
    * Confirm number for the forgot password request.
    */
-  @Column(name = "confirmNumber")
+  @Column
   private int confirmNumber;
   /**
    * Forgot password request was used.
    */
-  @Column(name = "used")
+  @Column
   private boolean used;
   /**
    * User that created this forgot password request.
    */
   @ManyToOne
-  @JoinColumn(name = "userId")
+  @JoinColumn
   private User user;
 
   @Override

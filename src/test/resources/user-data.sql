@@ -157,13 +157,13 @@ INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('25', '5');
 INSERT INTO laboratorymanager (managers_id,laboratory_id)
 VALUES ('27', '2');
-INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
+INSERT INTO forgotpassword (id,user_id,requestmoment,confirmnumber,used)
 VALUES (7,10,'2014-09-03 11:39:47',803369922,0);
-INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
+INSERT INTO forgotpassword (id,user_id,requestmoment,confirmnumber,used)
 VALUES (8,3,'2013-12-03 11:39:47',-1742054942,1);
-INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
+INSERT INTO forgotpassword (id,user_id,requestmoment,confirmnumber,used)
 VALUES (9,10,CURRENT_TIMESTAMP,174407008,0);
-INSERT INTO forgotpassword (id,userId,requestMoment,confirmNumber,used)
+INSERT INTO forgotpassword (id,user_id,requestmoment,confirmnumber,used)
 VALUES (10,10,CURRENT_TIMESTAMP,460559412,1);
 INSERT INTO preference (id,referer,name)
 VALUES (1,'ca.qc.ircm.proview.user.UserPreferenceServiceTest', 'preference_1');
