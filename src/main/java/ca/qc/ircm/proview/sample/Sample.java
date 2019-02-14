@@ -71,50 +71,50 @@ public abstract class Sample implements Data, Named, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Version number.
    */
   @Version
-  @Column(name = "version", nullable = false)
+  @Column(nullable = false)
   private int version;
   /**
    * Sample's name.
    */
-  @Column(name = "name")
+  @Column
   @Size(min = 2, max = 150)
   private String name;
   /**
    * Type of sample.
    */
-  @Column(name = "type")
+  @Column
   @Enumerated(STRING)
   private SampleType type;
   /**
    * Volume of Sample (generally in ul).
    */
-  @Column(name = "volume")
+  @Column
   @Size(max = 100)
   private String volume;
   /**
    * Quantity of Sample (generally in ug or pmol).
    */
-  @Column(name = "quantity", nullable = false)
+  @Column(nullable = false)
   @Size(max = 100)
   private String quantity;
   /**
    * Container where sample was originally located.
    */
   @ManyToOne
-  @JoinColumn(name = "containerId")
+  @JoinColumn
   private SampleContainer originalContainer;
   /**
    * Standards that are in the sample.
    */
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "sampleId", updatable = false, nullable = false)
+  @JoinColumn(updatable = false, nullable = false)
   private List<Standard> standards;
 
   public Sample() {

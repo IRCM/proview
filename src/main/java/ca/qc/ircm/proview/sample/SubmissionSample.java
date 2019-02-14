@@ -48,32 +48,32 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
   /**
    * Sample status.
    */
-  @Column(name = "status", nullable = false)
+  @Column(nullable = false)
   @Enumerated(ORDINAL)
   private SampleStatus status;
   /**
    * Number of Proteins in Sample.
    */
-  @Column(name = "numberProtein")
+  @Column
   @Min(0)
   private Integer numberProtein;
   /**
    * Molecular weight of Protein in Sample.
    */
-  @Column(name = "molecularWeight")
+  @Column
   @Min(0)
   private Double molecularWeight;
   /**
    * Submission of this sample.
    */
   @ManyToOne
-  @JoinColumn(name = "submissionId")
+  @JoinColumn
   private Submission submission;
   /**
    * Contaminants that are in the same at submission.
    */
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "sampleId", updatable = false, nullable = false)
+  @JoinColumn(updatable = false, nullable = false)
   private List<Contaminant> contaminants;
 
   public SubmissionSample() {

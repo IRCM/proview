@@ -38,7 +38,7 @@ public class Control extends Sample implements Named {
   /**
    * Control type.
    */
-  @Column(name = "controlType", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private ControlType controlType;
 

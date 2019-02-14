@@ -181,21 +181,21 @@ CREATE INDEX IF NOT EXISTS samplecontainerName ON samplecontainer (name);
 CREATE TABLE IF NOT EXISTS sample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(150) DEFAULT NULL,
-  controlType varchar(50) DEFAULT NULL,
+  controltype varchar(50) DEFAULT NULL,
   type varchar(50) DEFAULT NULL,
-  containerId bigint(20) DEFAULT NULL,
+  originalcontainer_id bigint(20) DEFAULT NULL,
   status int(5) DEFAULT NULL,
-  numberProtein int(11) DEFAULT NULL,
-  submissionId bigint(20) DEFAULT NULL,
-  listIndex int(10) DEFAULT NULL,
-  molecularWeight double DEFAULT NULL,
+  numberprotein int(11) DEFAULT NULL,
+  submission_id bigint(20) DEFAULT NULL,
+  listindex int(10) DEFAULT NULL,
+  molecularweight double DEFAULT NULL,
   quantity varchar(100) DEFAULT NULL,
   volume varchar(100) DEFAULT NULL,
   category varchar(50) DEFAULT NULL,
   version int(11) DEFAULT 0,
   PRIMARY KEY (id),
-  CONSTRAINT sample_ibfk_1 FOREIGN KEY (submissionId) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT sample_ibfk_2 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT sample_ibfk_1 FOREIGN KEY (submission_id) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT sample_ibfk_2 FOREIGN KEY (originalcontainer_id) REFERENCES samplecontainer (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE INDEX IF NOT EXISTS sampleName ON sample (name);
 ALTER TABLE samplecontainer
@@ -204,21 +204,21 @@ CREATE TABLE IF NOT EXISTS standard (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) DEFAULT NULL,
   quantity varchar(100) DEFAULT NULL,
-  sampleId bigint(20) DEFAULT NULL,
+  standards_id bigint(20) DEFAULT NULL,
   comment clob,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  CONSTRAINT standard_ibfk_1 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT standard_ibfk_1 FOREIGN KEY (standards_id) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS contaminant (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) DEFAULT NULL,
   quantity varchar(100) DEFAULT NULL,
-  sampleId bigint(20) DEFAULT NULL,
+  contaminants_id bigint(20) DEFAULT NULL,
   comment clob,
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  CONSTRAINT contaminant_ibfk_1 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT contaminant_ibfk_1 FOREIGN KEY (contaminants_id) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS solvent (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
