@@ -155,10 +155,10 @@ CREATE TABLE IF NOT EXISTS submissionfiles (
 CREATE TABLE IF NOT EXISTS plate (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) NOT NULL,
-  columnCount int NOT NULL,
-  rowCount int NOT NULL,
+  columncount int NOT NULL,
+  rowcount int NOT NULL,
   submission tinyint NOT NULL DEFAULT '0',
-  insertTime datetime NOT NULL,
+  inserttime datetime NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE INDEX IF NOT EXISTS plateName ON plate (name);

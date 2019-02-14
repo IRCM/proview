@@ -57,35 +57,35 @@ public class Plate implements Data, Serializable, Named {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Name of this Plate.
    */
-  @Column(name = "name", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   private String name;
   /**
    * Number of columns.
    */
-  @Column(name = "columnCount", nullable = false)
+  @Column(nullable = false)
   @Min(1)
   private int columnCount = DEFAULT_COLUMN_COUNT;
   /**
    * Number of rows.
    */
-  @Column(name = "rowCount", nullable = false)
+  @Column(nullable = false)
   @Min(1)
   private int rowCount = DEFAULT_ROW_COUNT;
   /**
    * True if plate was submitted by a user.
    */
-  @Column(name = "submission")
+  @Column
   private boolean submission;
   /**
    * Time when analysis was inserted.
    */
-  @Column(name = "insertTime", nullable = false)
+  @Column(nullable = false)
   private Instant insertTime;
   /**
    * List of all treatments done on samples.
