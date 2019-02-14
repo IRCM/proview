@@ -44,30 +44,30 @@ public class Contaminant implements Data, Named, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Contaminant name.
    */
-  @Column(name = "name", nullable = false)
+  @Column(nullable = false)
   @Size(max = 100)
   private String name;
   /**
    * Quantity of Contaminant.
    */
-  @Column(name = "quantity")
+  @Column
   @Size(max = 100)
   private String quantity;
   /**
    * Comment about contaminant.
    */
-  @Column(name = "comment")
+  @Column
   private String comment;
   /**
    * True if contaminant was deleted.
    */
-  @Column(name = "deleted", nullable = false)
+  @Column(nullable = false)
   private boolean deleted;
 
   @Override
