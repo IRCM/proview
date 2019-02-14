@@ -282,22 +282,22 @@ CREATE TABLE IF NOT EXISTS msanalysis (
 );
 CREATE TABLE IF NOT EXISTS acquisition (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  msAnalysisId bigint(20) DEFAULT NULL,
-  sampleId bigint(20) NOT NULL,
-  containerId bigint(20) DEFAULT NULL,
-  numberOfAcquisition int(11) DEFAULT NULL,
-  sampleListName varchar(255) DEFAULT NULL,
-  acquisitionFile varchar(255) DEFAULT NULL,
+  msanalysis_id bigint(20) DEFAULT NULL,
+  sample_id bigint(20) NOT NULL,
+  container_id bigint(20) DEFAULT NULL,
+  numberofacquisition int(11) DEFAULT NULL,
+  samplelistname varchar(255) DEFAULT NULL,
+  acquisitionfile varchar(255) DEFAULT NULL,
   position int(11) NOT NULL,
-  listIndex int(11) DEFAULT NULL,
+  listindex int(11) DEFAULT NULL,
   comment varchar(255) DEFAULT NULL,
   PRIMARY KEY (id),
-  UNIQUE (sampleId,position),
-  CONSTRAINT acquisition_ibfk_1 FOREIGN KEY (msAnalysisId) REFERENCES msanalysis (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT acquisition_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
-  CONSTRAINT acquisition_ibfk_3 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
+  UNIQUE (sample_id,position),
+  CONSTRAINT acquisition_ibfk_1 FOREIGN KEY (msanalysis_id) REFERENCES msanalysis (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT acquisition_ibfk_2 FOREIGN KEY (sample_id) REFERENCES sample (id) ON UPDATE CASCADE,
+  CONSTRAINT acquisition_ibfk_3 FOREIGN KEY (container_id) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
-CREATE INDEX IF NOT EXISTS acquisitionFile ON acquisition (acquisitionFile,sampleId);
+CREATE INDEX IF NOT EXISTS acquisitionFile ON acquisition (acquisitionfile,sample_id);
 CREATE TABLE IF NOT EXISTS dataanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   sample_id bigint(20) NOT NULL,

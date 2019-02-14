@@ -48,53 +48,53 @@ public class Acquisition implements Data, Named, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * MS Analysis.
    */
   @ManyToOne
-  @JoinColumn(name = "msAnalysisId", nullable = false)
+  @JoinColumn(nullable = false)
   private MsAnalysis msAnalysis;
   /**
    * Sample's container type.
    */
   @ManyToOne
-  @JoinColumn(name = "containerId", nullable = false)
+  @JoinColumn(nullable = false)
   private SampleContainer container;
   /**
    * Sample acquired.
    */
   @ManyToOne
-  @JoinColumn(name = "sampleId", nullable = false)
+  @JoinColumn(nullable = false)
   private Sample sample;
   /**
    * Number of acquisition on the sample.
    */
-  @Column(name = "numberOfAcquisition")
+  @Column
   private Integer numberOfAcquisition;
   /**
    * Name of Sample list being analysed.
    */
-  @Column(name = "sampleListName")
+  @Column
   @Size(max = 255)
   private String sampleListName;
   /**
    * File containing acquisition information.
    */
-  @Column(name = "acquisitionFile")
+  @Column
   @Size(max = 255)
   private String acquisitionFile;
   /**
    * Acquisition index number that is appended when showing LIMS.
    */
-  @Column(name = "position")
+  @Column
   private Integer position;
   /**
    * Any comment on this acquisition.
    */
-  @Column(name = "comment")
+  @Column
   @Size(max = 255)
   private String comment;
 

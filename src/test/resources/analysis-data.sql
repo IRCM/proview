@@ -805,33 +805,33 @@ INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,del
 VALUES (24,'NSI','VELOS','2014-10-22 09:50:16',0,NULL,NULL);
 INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (25,'NSI','VELOS','2014-10-22 09:50:43',0,NULL,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (1,1,1,1,1,'XL_20100614_02','XL_20100614_COU_09',1,1,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (409,12,442,2,1,'XL_20111014_01','XL_20111014_COU_01',1,0,'after ADH');
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (410,13,446,8,1,'XL_20111014_02','XL_20111014_COU_02',1,1,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (411,14,444,4,1,'XL_20111115_01','XL_20111115_COU_01',2,0,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (412,14,445,5,1,'XL_20111115_01','XL_20111115_COU_02',1,1,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (413,13,444,4,1,'XL_20111014_03','XL_20111014_COU_03',1,0,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (418,19,610,66,1,'XL_20141015_01','XL_20141015_01_COU_01',1,0,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (419,20,612,1077,1,'XL_20141015_02','XL_20141015_02_COU_02',1,0,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (420,21,622,1281,1,'XL_20141017_01','QE_20150519_ADH_04',1,0,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (421,21,622,1293,1,'XL_20141017_01','VL_20150519_ADH_32',2,1,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (422,22,627,85,1,'XL_20141022_01','VL_20150519_ADH_33',1,0,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (423,23,628,86,1,'XL_20141022_02','VL_20150514_SMI_06',1,0,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (424,24,629,87,1,'XL_20141022_03','XL_20141022_03_COU_01',1,0,NULL);
-INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
+INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (425,25,630,88,1,'XL_20141022_04','XL_20141022_04_COU_01',1,0,NULL);
 INSERT INTO dataanalysis (id,sample_id,protein,peptide,maxworktime,score,worktime,status,type)
 VALUES (3,1,'123456',NULL,2,'123456: 95%',1.75,'ANALYSED','PROTEIN');
