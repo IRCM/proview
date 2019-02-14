@@ -53,19 +53,19 @@ public class Protocol implements Data, Serializable, Named {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Name of the Protocol.
    */
-  @Column(name = "name", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @Size(max = 100)
   private String name;
   /**
    * Protocol type.
    */
-  @Column(name = "type", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private Type type;
 
