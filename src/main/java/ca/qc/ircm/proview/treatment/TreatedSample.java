@@ -48,82 +48,82 @@ public class TreatedSample implements Data, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Treatment.
    */
   @ManyToOne
-  @JoinColumn(name = "treatmentId", nullable = false)
+  @JoinColumn(nullable = false)
   private Treatment treatment;
   /**
    * Sample that received treatment.
    */
   @ManyToOne
-  @JoinColumn(name = "sampleId", nullable = false)
+  @JoinColumn(nullable = false)
   private Sample sample;
   /**
    * Sample's container.
    */
   @ManyToOne
-  @JoinColumn(name = "containerId", nullable = false)
+  @JoinColumn(nullable = false)
   private SampleContainer container;
   /**
    * Sample's destination container, if any.
    */
   @ManyToOne
-  @JoinColumn(name = "destinationContainerId")
+  @JoinColumn
   private SampleContainer destinationContainer;
   /**
    * Volume of source transfered.
    */
-  @Column(name = "sourceVolume", nullable = false)
+  @Column(nullable = false)
   @Min(0)
   private Double sourceVolume;
   /**
    * Solvent used for dilution.
    */
-  @Column(name = "solvent", nullable = false)
+  @Column(nullable = false)
   private String solvent;
   /**
    * Volume of solvent used.
    */
-  @Column(name = "solventVolume", nullable = false)
+  @Column(nullable = false)
   @Min(0)
   private Double solventVolume;
   /**
    * Name of standard added.
    */
-  @Column(name = "name", nullable = false)
+  @Column(nullable = false)
   @Size(max = 100)
   private String name;
   /**
    * Quantity of standard added.
    */
-  @Column(name = "quantity", nullable = false)
+  @Column(nullable = false)
   @Size(max = 100)
   private String quantity;
   /**
    * Fraction index number that is appended when showing LIMS number of treatedSample.
    */
-  @Column(name = "position", nullable = false)
+  @Column(nullable = false)
   private Integer position;
   /**
    * Fraction number. Used with {@link FractionationType#MUDPIT}.
    */
-  @Column(name = "number")
+  @Column
   private Integer number;
   /**
    * PI interval. Used with {@link FractionationType#PI}
    */
-  @Column(name = "piInterval")
+  @Column
   @Size(max = 255)
   private String piInterval;
   /**
    * Comment about sample's treatment.
    */
-  @Column(name = "comment")
+  @Column
   private String comment;
 
   /**

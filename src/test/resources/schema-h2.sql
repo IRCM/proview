@@ -250,25 +250,25 @@ CREATE TABLE IF NOT EXISTS treatment (
 );
 CREATE TABLE IF NOT EXISTS treatedsample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  treatmentId bigint(20) DEFAULT NULL,
-  sampleId bigint(20) NOT NULL,
-  containerId bigint(20) DEFAULT NULL,
-  listIndex int(10) DEFAULT NULL,
-  destinationContainerId bigint(20) DEFAULT NULL,
+  treatment_id bigint(20) DEFAULT NULL,
+  sample_id bigint(20) NOT NULL,
+  container_id bigint(20) DEFAULT NULL,
+  listindex int(10) DEFAULT NULL,
+  destinationcontainer_id bigint(20) DEFAULT NULL,
   comment clob,
-  sourceVolume double DEFAULT NULL,
+  sourcevolume double DEFAULT NULL,
   solvent varchar(255) DEFAULT NULL,
-  solventVolume double DEFAULT NULL,
+  solventvolume double DEFAULT NULL,
   name varchar(100) DEFAULT NULL,
   quantity varchar(100) DEFAULT NULL,
   position int(11) DEFAULT NULL,
   number int(11) DEFAULT NULL,
-  piInterval varchar(50) DEFAULT NULL,
+  piinterval varchar(50) DEFAULT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT treatedsample_ibfk_1 FOREIGN KEY (treatmentId) REFERENCES treatment (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT treatedsample_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON UPDATE CASCADE,
-  CONSTRAINT treatedsample_ibfk_3 FOREIGN KEY (containerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE,
-  CONSTRAINT treatedsample_ibfk_4 FOREIGN KEY (destinationContainerId) REFERENCES samplecontainer (id) ON UPDATE CASCADE
+  CONSTRAINT treatedsample_ibfk_1 FOREIGN KEY (treatment_id) REFERENCES treatment (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT treatedsample_ibfk_2 FOREIGN KEY (sample_id) REFERENCES sample (id) ON UPDATE CASCADE,
+  CONSTRAINT treatedsample_ibfk_3 FOREIGN KEY (container_id) REFERENCES samplecontainer (id) ON UPDATE CASCADE,
+  CONSTRAINT treatedsample_ibfk_4 FOREIGN KEY (destinationcontainer_id) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS msanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
