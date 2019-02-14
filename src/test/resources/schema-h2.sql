@@ -273,11 +273,11 @@ CREATE TABLE IF NOT EXISTS treatedsample (
 CREATE TABLE IF NOT EXISTS msanalysis (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   source varchar(100) DEFAULT NULL,
-  massDetectionInstrument varchar(100) NOT NULL,
-  insertTime datetime NOT NULL,
+  massdetectioninstrument varchar(100) NOT NULL,
+  inserttime datetime NOT NULL,
   deleted tinyint(4) NOT NULL DEFAULT '0',
-  deletionType varchar(50) DEFAULT NULL,
-  deletionExplanation clob,
+  deletiontype varchar(50) DEFAULT NULL,
+  deletionexplanation clob,
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS acquisition (

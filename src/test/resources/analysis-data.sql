@@ -783,27 +783,27 @@ INSERT INTO treatedsample (id,treatmentId,sampleId,containerId,listIndex,destina
 VALUES (473,324,638,2278,0,1583,NULL,NULL,NULL,NULL,NULL,NULL,2,4,NULL);
 INSERT INTO treatedsample (id,treatmentId,sampleId,containerId,listIndex,destinationContainerId,comment,sourceVolume,solvent,solventVolume,name,quantity,position,number,piInterval)
 VALUES (474,324,638,2278,1,1571,NULL,NULL,NULL,NULL,NULL,NULL,1,2,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (1,'NSI','LTQ_ORBI_TRAP','2010-12-13 14:10:27',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (12,'LDTD','LTQ_ORBI_TRAP','2011-10-14 14:14:25',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (13,'LDTD','LTQ_ORBI_TRAP','2011-11-09 15:37:09',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (14,'LDTD','LTQ_ORBI_TRAP','2011-11-15 10:09:11',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (19,'LDTD','VELOS','2014-10-15 15:52:55',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (20,'LDTD','VELOS','2014-10-15 15:53:34',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (21,'NSI','VELOS','2014-10-17 11:34:47',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (22,'NSI','VELOS','2014-10-22 09:49:08',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (23,'NSI','VELOS','2014-10-22 09:49:39',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (24,'NSI','VELOS','2014-10-22 09:50:16',0,NULL,NULL);
-INSERT INTO msanalysis (id,source,massDetectionInstrument,insertTime,deleted,deletionType,deletionExplanation)
+INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (25,'NSI','VELOS','2014-10-22 09:50:43',0,NULL,NULL);
 INSERT INTO acquisition (id,msAnalysisId,sampleId,containerId,numberOfAcquisition,sampleListName,acquisitionFile,position,listIndex,comment)
 VALUES (1,1,1,1,1,'XL_20100614_02','XL_20100614_COU_09',1,1,NULL);

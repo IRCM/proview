@@ -135,6 +135,7 @@ public class MsAnalysisService extends BaseTreatmentService {
     chechSameUserForAllSamples(msAnalysis);
 
     // Add MS analysis to database.
+    msAnalysis.getAcquisitions().stream().forEach(ac -> ac.setMsAnalysis(msAnalysis));
     Instant insertTime = Instant.now();
     msAnalysis.setInsertTime(insertTime);
     setPositions(msAnalysis.getAcquisitions());

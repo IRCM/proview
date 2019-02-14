@@ -31,7 +31,6 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
@@ -50,41 +49,40 @@ public class MsAnalysis implements Data, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Mass detection instrument used in this MS analysis.
    */
-  @Column(name = "massDetectionInstrument", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private MassDetectionInstrument massDetectionInstrument;
   /**
    * Selected Source for mass detection instrument.
    */
-  @Column(name = "source")
+  @Column
   @Enumerated(STRING)
   private MassDetectionInstrumentSource source;
   /**
    * Time when analysis was inserted.
    */
-  @Column(name = "insertTime", nullable = false)
+  @Column(nullable = false)
   private Instant insertTime;
   /**
    * True if MS analysis was deleted.
    */
-  @Column(name = "deleted", nullable = false)
+  @Column(nullable = false)
   private boolean deleted;
   /**
    * Description of what caused the MS analysis to be deleted.
    */
-  @Column(name = "deletionExplanation")
+  @Column
   private String deletionExplanation;
   /**
    * Acquisitions of samples made in this MS analysis.
    */
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "msAnalysisId", nullable = false)
+  @OneToMany(mappedBy = "msAnalysis", cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderColumn(name = "listIndex")
   private List<Acquisition> acquisitions;
 
