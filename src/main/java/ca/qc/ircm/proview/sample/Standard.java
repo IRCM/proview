@@ -44,30 +44,30 @@ public class Standard implements Data, Serializable, Named {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Standard name.
    */
-  @Column(name = "name", nullable = false)
+  @Column(nullable = false)
   @Size(max = 100)
   private String name;
   /**
    * Quantity of Standard.
    */
-  @Column(name = "quantity")
+  @Column
   @Size(max = 100)
   private String quantity;
   /**
    * Comment about standard.
    */
-  @Column(name = "comment")
+  @Column
   private String comment;
   /**
    * True if standard was deleted.
    */
-  @Column(name = "deleted", nullable = false)
+  @Column(nullable = false)
   private boolean deleted;
 
   @Override
