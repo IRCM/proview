@@ -237,16 +237,16 @@ CREATE TABLE IF NOT EXISTS protocol (
 CREATE TABLE IF NOT EXISTS treatment (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   type varchar(100) DEFAULT NULL,
-  protocolId bigint(20) DEFAULT NULL,
-  fractionationType varchar(50) DEFAULT NULL,
-  userId bigint(20) DEFAULT NULL,
-  insertTime datetime NOT NULL,
+  protocol_id bigint(20) DEFAULT NULL,
+  fractionationtype varchar(50) DEFAULT NULL,
+  user_id bigint(20) DEFAULT NULL,
+  inserttime datetime NOT NULL,
   deleted tinyint(4) NOT NULL DEFAULT '0',
-  deletionType varchar(50) DEFAULT NULL,
-  deletionExplanation clob,
+  deletiontype varchar(50) DEFAULT NULL,
+  deletionexplanation clob,
   PRIMARY KEY (id),
-  CONSTRAINT treatment_ibfk_1 FOREIGN KEY (protocolId) REFERENCES protocol (id) ON UPDATE CASCADE,
-  CONSTRAINT treatment_ibfk_2 FOREIGN KEY (userId) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT treatment_ibfk_1 FOREIGN KEY (protocol_id) REFERENCES protocol (id) ON UPDATE CASCADE,
+  CONSTRAINT treatment_ibfk_2 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS treatedsample (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),

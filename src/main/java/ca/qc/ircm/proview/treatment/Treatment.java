@@ -70,35 +70,35 @@ public abstract class Treatment implements Data, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Protocol used for treatment, if any.
    */
   @ManyToOne
-  @JoinColumn(name = "protocolId")
+  @JoinColumn
   private Protocol protocol;
   /**
    * User who made the treatment.
    */
   @ManyToOne
-  @JoinColumn(name = "userId")
+  @JoinColumn
   private User user;
   /**
    * Time when treatment took plate.
    */
-  @Column(name = "insertTime", nullable = false)
+  @Column(nullable = false)
   private Instant insertTime;
   /**
    * True if treatment was deleted.
    */
-  @Column(name = "deleted", nullable = false)
+  @Column(nullable = false)
   private boolean deleted;
   /**
    * Description of what caused the treatment to be deleted.
    */
-  @Column(name = "deletionExplanation")
+  @Column
   private String deletionExplanation;
   /**
    * List of all treatments done on samples.
