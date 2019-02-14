@@ -166,16 +166,16 @@ CREATE TABLE IF NOT EXISTS samplecontainer (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   type varchar(50) NOT NULL,
   name varchar(100) DEFAULT NULL,
-  plateId bigint(20) DEFAULT NULL,
-  locationColumn int(11) DEFAULT NULL,
-  locationRow int(11) DEFAULT NULL,
-  sampleId bigint(20) DEFAULT NULL,
+  plate_id bigint(20) DEFAULT NULL,
+  col int(11) DEFAULT NULL,
+  row int(11) DEFAULT NULL,
+  sample_id bigint(20) DEFAULT NULL,
   version int(11) DEFAULT 0,
-  time datetime NOT NULL,
+  timestamp datetime NOT NULL,
   banned tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  UNIQUE KEY samplecontainerPlateId (plateId,locationColumn,locationRow),
-  CONSTRAINT samplecontainer_ibfk_1 FOREIGN KEY (plateId) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE
+  UNIQUE KEY samplecontainerPlateId (plate_id,col,row),
+  CONSTRAINT samplecontainer_ibfk_1 FOREIGN KEY (plate_id) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE INDEX IF NOT EXISTS samplecontainerName ON samplecontainer (name);
 CREATE TABLE IF NOT EXISTS sample (
@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS sample (
 );
 CREATE INDEX IF NOT EXISTS sampleName ON sample (name);
 ALTER TABLE samplecontainer
-ADD CONSTRAINT IF NOT EXISTS samplecontainer_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
+ADD CONSTRAINT IF NOT EXISTS samplecontainer_ibfk_2 FOREIGN KEY (sample_id) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
 CREATE TABLE IF NOT EXISTS standard (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   name varchar(100) DEFAULT NULL,

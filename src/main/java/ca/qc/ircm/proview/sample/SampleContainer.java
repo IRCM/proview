@@ -52,30 +52,30 @@ public abstract class SampleContainer implements Data, Named, Serializable {
    * Database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Sample inside container.
    */
   @ManyToOne
-  @JoinColumn(name = "sampleId")
+  @JoinColumn
   private Sample sample;
   /**
    * Version number.
    */
   @Version
-  @Column(name = "version", nullable = false)
+  @Column(nullable = false)
   private int version;
   /**
    * Timestamp of this container. This property should not be set.
    */
-  @Column(name = "time", nullable = false)
+  @Column(nullable = false)
   private Instant timestamp;
   /**
    * True if container cannot receive a sample.
    */
-  @Column(name = "banned", nullable = false)
+  @Column(nullable = false)
   private boolean banned;
 
   public SampleContainer() {

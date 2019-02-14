@@ -44,17 +44,17 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
    * Plate where this well is located.
    */
   @ManyToOne
-  @JoinColumn(name = "plateId", nullable = false)
+  @JoinColumn(nullable = false)
   private Plate plate;
   /**
    * Row where well is located on plate.
    */
-  @Column(name = "locationRow", updatable = false, nullable = false)
+  @Column(updatable = false, nullable = false)
   private int row;
   /**
    * Column where well is located on plate.
    */
-  @Column(name = "locationColumn", updatable = false, nullable = false)
+  @Column(name = "col", updatable = false, nullable = false)
   private int column;
 
   /**

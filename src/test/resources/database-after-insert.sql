@@ -16,4 +16,4 @@
 --
 
 ALTER TABLE samplecontainer
-ADD CONSTRAINT samplecontainer_ibfk_2 FOREIGN KEY (sampleId) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
+ADD CONSTRAINT samplecontainer_ibfk_2 FOREIGN KEY (sample_id) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;

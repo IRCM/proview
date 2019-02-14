@@ -39,7 +39,7 @@ public class Tube extends SampleContainer implements Data, Named, Serializable {
   /**
    * Name used to identify tube.
    */
-  @Column(name = "name", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   private String name;
 
   public Tube() {
