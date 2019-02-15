@@ -38,7 +38,7 @@ public class Fractionation extends Treatment {
   /**
    * How samples where split.
    */
-  @Column(name = "fractionationType", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private FractionationType fractionationType;
 
