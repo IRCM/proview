@@ -42,19 +42,19 @@ public class SubmissionFile implements Named, Serializable {
    * Structure database identifier.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Filename as entered by user.
    */
-  @Column(name = "filename", nullable = false)
+  @Column(nullable = false)
   @Size(max = 255)
   private String filename;
   /**
    * Binary content of file.
    */
-  @Column(name = "content", nullable = false)
+  @Column(nullable = false)
   private byte[] content;
 
   public SubmissionFile() {
