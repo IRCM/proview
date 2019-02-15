@@ -70,61 +70,61 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    * Database identifier of this Submission.
    */
   @Id
-  @Column(name = "id", unique = true, nullable = false)
+  @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
   /**
    * Version number.
    */
   @Version
-  @Column(name = "version", nullable = false)
+  @Column(nullable = false)
   private int version;
   /**
    * Service chosen.
    */
-  @Column(name = "service", nullable = false)
+  @Column(nullable = false)
   @Enumerated(STRING)
   private Service service;
   /**
    * Taxonomy of Sample content.
    */
-  @Column(name = "taxonomy")
+  @Column
   @Size(max = 100)
   private String taxonomy;
   /**
    * User's experiment.
    */
-  @Column(name = "experiment")
+  @Column
   @Size(max = 100)
   private String experiment;
   /**
    * Experiment's goal.
    */
-  @Column(name = "goal")
+  @Column
   @Size(max = 150)
   private String goal;
   /**
    * Mass detection instrument.
    */
-  @Column(name = "massDetectionInstrument")
+  @Column
   @Enumerated(STRING)
   private MassDetectionInstrument massDetectionInstrument;
   /**
    * Intact protein ionization source for mass detection instrument.
    */
-  @Column(name = "source")
+  @Column
   @Enumerated(STRING)
   private MassDetectionInstrumentSource source;
   /**
    * Injection type.
    */
-  @Column(name = "injectionType")
+  @Column
   @Enumerated(STRING)
   private InjectionType injectionType;
   /**
    * Proteolytic digestion method.
    */
-  @Column(name = "proteolyticDigestionMethod")
+  @Column
   @Enumerated(STRING)
   private ProteolyticDigestion proteolyticDigestionMethod;
   /**
@@ -133,7 +133,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    *
    * @see ProteolyticDigestion
    */
-  @Column(name = "usedProteolyticDigestionMethod")
+  @Column
   @Size(max = 100)
   private String usedProteolyticDigestionMethod;
   /**
@@ -142,246 +142,246 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    *
    * @see ProteolyticDigestion
    */
-  @Column(name = "otherProteolyticDigestionMethod")
+  @Column
   @Size(max = 100)
   private String otherProteolyticDigestionMethod;
   /**
    * Database on which Protein identification will be made.
    */
-  @Column(name = "proteinIdentification")
+  @Column
   @Enumerated(STRING)
   private ProteinIdentification proteinIdentification;
   /**
    * Link to non-conventional Protein identification database.
    */
-  @Column(name = "proteinIdentificationLink")
+  @Column
   @Size(max = 255)
   private String proteinIdentificationLink;
   /**
    * Peptide enrichmentType.
    */
-  @Column(name = "enrichmentType")
+  @Column
   @Enumerated(STRING)
   private EnrichmentType enrichmentType;
   /**
    * Other peptide enrichmentType.
    */
-  @Column(name = "otherEnrichmentType")
+  @Column
   @Size(max = 100)
   private String otherEnrichmentType;
   /**
    * Low resolution mass detection for sample.
    */
-  @Column(name = "lowResolution", nullable = false)
+  @Column(nullable = false)
   private boolean lowResolution;
   /**
    * High resolution mass detection for sample.
    */
-  @Column(name = "highResolution", nullable = false)
+  @Column(nullable = false)
   private boolean highResolution;
   /**
    * True if Small molecule should have an msms analysis.
    */
-  @Column(name = "msms", nullable = false)
+  @Column(nullable = false)
   private boolean msms;
   /**
    * True if Small molecule should have an exact msms analysis. High resolution mass detection ir
    * required for this.
    */
-  @Column(name = "exactMsms", nullable = false)
+  @Column(nullable = false)
   private boolean exactMsms;
   /**
    * 2 dimension liquid chromatographie with MudPit.
    */
-  @Column(name = "mudPitFraction")
+  @Column
   @Enumerated(STRING)
   private MudPitFraction mudPitFraction;
   /**
    * Number of Proteins in samples.
    */
-  @Column(name = "proteinContent")
+  @Column
   @Enumerated(STRING)
   private ProteinContent proteinContent;
   /**
    * Protein that should be found in Sample.
    */
-  @Column(name = "protein")
+  @Column
   @Size(max = 100)
   private String protein;
   /**
    * Post-translationnal modification to Protein.
    */
-  @Column(name = "postTranslationModification")
+  @Column
   @Size(max = 150)
   private String postTranslationModification;
   /**
    * Gel separation.
    */
-  @Column(name = "separation")
+  @Column
   @Enumerated(STRING)
   private GelSeparation separation;
   /**
    * Gel thickness.
    */
-  @Column(name = "thickness")
+  @Column
   @Enumerated(STRING)
   private GelThickness thickness;
   /**
    * Gel coloration.
    */
-  @Column(name = "coloration")
+  @Column
   @Enumerated(STRING)
   private GelColoration coloration;
   /**
    * Other gel coloration (if any).
    */
-  @Column(name = "otherColoration")
+  @Column
   @Size(max = 100)
   private String otherColoration;
   /**
    * Gel development time (for coloration).
    */
-  @Column(name = "developmentTime")
+  @Column
   @Size(max = 100)
   private String developmentTime;
   /**
    * Gel decoloration.
    */
-  @Column(name = "decoloration", nullable = false)
+  @Column(nullable = false)
   private boolean decoloration = false;
   /**
    * Quantity of weight marker.
    */
-  @Column(name = "weightMarkerQuantity")
+  @Column
   private Double weightMarkerQuantity;
   /**
    * Quantity of proteins in gel (total).
    */
-  @Column(name = "proteinQuantity")
+  @Column
   @Size(max = 100)
   private String proteinQuantity;
   /**
    * Molecule Formula.
    */
-  @Column(name = "formula")
+  @Column
   @Size(max = 50)
   private String formula;
   /**
    * Monoisotopic mass.
    */
-  @Column(name = "monoisotopicMass")
+  @Column
   @Min(0)
   private Double monoisotopicMass;
   /**
    * Average mass.
    */
-  @Column(name = "averageMass")
+  @Column
   @Min(0)
   private Double averageMass;
   /**
    * Solvent in which the sample is in. (Solution sample only)
    */
-  @Column(name = "solutionSolvent")
+  @Column
   @Size(max = 100)
   private String solutionSolvent;
   /**
    * Solvents that our lab uses that can solubilise sample.
    */
   @ElementCollection(targetClass = Solvent.class)
-  @CollectionTable(name = "solvent", joinColumns = @JoinColumn(name = "submissionId"))
-  @Column(name = "solvent", nullable = false)
+  @CollectionTable(name = "solvent")
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private List<Solvent> solvents;
   /**
    * Other solvent value for Solvent.OTHER in solventList.
    */
-  @Column(name = "otherSolvent")
+  @Column
   @Size(max = 100)
   private String otherSolvent;
   /**
    * Toxicity of sample.
    */
-  @Column(name = "toxicity")
+  @Column
   @Size(max = 100)
   private String toxicity;
   /**
    * Sample is sensitive to light.
    */
-  @Column(name = "lightSensitive", nullable = false)
+  @Column(nullable = false)
   private boolean lightSensitive = false;
   /**
    * Storage temperature.
    */
-  @Column(name = "storageTemperature")
+  @Column
   @Enumerated(STRING)
   private StorageTemperature storageTemperature;
   /**
    * Quantification.
    */
-  @Column(name = "quantification")
+  @Column
   @Enumerated(STRING)
   private Quantification quantification;
   /**
    * Quantification comments (labels for silac).
    */
-  @Column(name = "quantificationComment")
+  @Column
   private String quantificationComment;
   /**
    * Any comment on this sample.
    */
-  @Column(name = "comment")
+  @Column
   private String comment;
   /**
    * Date of submission.
    */
-  @Column(name = "submissionDate")
+  @Column
   private Instant submissionDate;
   /**
    * Sample delivery date.
    */
-  @Column(name = "sampleDeliveryDate")
+  @Column
   private LocalDate sampleDeliveryDate;
   /**
    * Digestion date.
    */
-  @Column(name = "digestionDate")
+  @Column
   private LocalDate digestionDate;
   /**
    * Analysis date.
    */
-  @Column(name = "analysisDate")
+  @Column
   private LocalDate analysisDate;
   /**
    * Data available date.
    */
-  @Column(name = "dataAvailableDate")
+  @Column
   private LocalDate dataAvailableDate;
   /**
    * True if submission is hidden.
    */
-  @Column(name = "hidden")
+  @Column
   private boolean hidden;
   /**
    * Price charged when sample was first submitted.
    */
-  @Column(name = "price")
+  @Column
   private BigDecimal price;
   /**
    * Additional price charged by proteomic laboratory members due to change in sample's submission.
    */
-  @Column(name = "additionalPrice")
+  @Column
   private BigDecimal additionalPrice;
   /**
    * User who made the Submission.
    */
   @ManyToOne
-  @JoinColumn(name = "userId")
+  @JoinColumn
   private User user;
   /**
    * Laboratory who made the Submission.
    */
   @ManyToOne
-  @JoinColumn(name = "laboratoryId")
+  @JoinColumn
   private Laboratory laboratory;
   /**
    * Samples that are part of this submission.
@@ -393,7 +393,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    * Additional files related to submission.
    */
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "submissionId")
+  @JoinColumn
   private List<SubmissionFile> files;
 
   public Submission() {
