@@ -19,22 +19,27 @@ package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.mail.MailConfiguration;
 import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
+import java.util.Collections;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
+import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.jta.JtaTransactionManager;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -43,29 +48,24 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
  */
 @Configuration
 @EnableTransactionManagement
-public class SpringConfiguration {
-  @Inject
-  private DataSource dataSource;
+public class SpringConfiguration extends JpaBaseConfiguration {
   @Inject
   private MailConfiguration mailConfiguration;
 
-  /**
-   * Creates entity manager factory.
-   *
-   * @return entity manager factory
-   */
-  @Bean
-  public EntityManagerFactory entityManagerFactory() {
-    LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-    factory.setPersistenceUnitName("proview");
-    factory.setDataSource(dataSource);
-    factory.afterPropertiesSet();
-    return factory.getObject();
+  protected SpringConfiguration(DataSource dataSource, JpaProperties properties,
+      ObjectProvider<JtaTransactionManager> jtaTransactionManagerProvider,
+      ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
+    super(dataSource, properties, jtaTransactionManagerProvider, transactionManagerCustomizers);
   }
 
-  @Bean
-  public PlatformTransactionManager txManager() {
-    return new JpaTransactionManager(entityManagerFactory());
+  @Override
+  protected AbstractJpaVendorAdapter createJpaVendorAdapter() {
+    return new EclipseLinkJpaVendorAdapter();
+  }
+
+  @Override
+  protected Map<String, Object> getVendorProperties() {
+    return Collections.singletonMap("eclipselink.weaving", "static");
   }
 
   /**

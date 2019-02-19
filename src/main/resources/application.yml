@@ -124,6 +124,8 @@ spring:
       credential:
         username: uid=poitrasc
         password: secret
+  jpa:
+    show-sql: false
 
 ldap:
   enabled: true
