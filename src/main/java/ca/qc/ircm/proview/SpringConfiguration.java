@@ -19,12 +19,13 @@ package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.mail.MailConfiguration;
 import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.sql.DataSource;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
@@ -65,7 +66,10 @@ public class SpringConfiguration extends JpaBaseConfiguration {
 
   @Override
   protected Map<String, Object> getVendorProperties() {
-    return Collections.singletonMap("eclipselink.weaving", "static");
+    Map<String, Object> properties = new HashMap<>();
+    properties.put(PersistenceUnitProperties.WEAVING, "static");
+    properties.put(PersistenceUnitProperties.CACHE_SHARED_DEFAULT, "false");
+    return properties;
   }
 
   /**
