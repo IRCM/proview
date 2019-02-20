@@ -32,7 +32,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
-import ca.qc.ircm.proview.SpringConfiguration;
 import ca.qc.ircm.proview.cache.CacheFlusher;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.security.AuthenticationService;
@@ -61,9 +60,9 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.util.StringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -71,20 +70,23 @@ import org.thymeleaf.util.StringUtils;
 public class UserServiceTest {
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
-  private UserService userService;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private SpringConfiguration springConfiguration;
-  @Mock
+  private UserService userService;
+  @Inject
+  private UserRepository repository;
+  @Inject
+  private LaboratoryRepository laboratoryRepository;
+  @MockBean
   private AuthenticationService authenticationService;
-  @Mock
+  @MockBean
   private ApplicationConfiguration applicationConfiguration;
-  @Mock
+  @MockBean
   private EmailService emailService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
-  @Mock
+  @MockBean
   private CacheFlusher cacheFlusher;
   @Mock
   private MimeMessageHelper email;
@@ -99,9 +101,6 @@ public class UserServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    TemplateEngine templateEngine = springConfiguration.emailTemplateEngine();
-    userService = new UserService(entityManager, authenticationService, templateEngine,
-        emailService, cacheFlusher, applicationConfiguration, authorizationService);
     when(applicationConfiguration.getUrl(any(String.class))).thenAnswer(new Answer<String>() {
       @Override
       public String answer(InvocationOnMock invocation) throws Throwable {
@@ -290,7 +289,7 @@ public class UserServiceTest {
 
   @Test
   public void all_InvalidInLaboratory() throws Throwable {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
     UserFilter parameters = new UserFilter();
     parameters.valid = false;
     parameters.laboratory = laboratory;
@@ -317,7 +316,7 @@ public class UserServiceTest {
 
   @Test
   public void all_ValidInLaboratory() throws Throwable {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
     UserFilter parameters = new UserFilter();
     parameters.valid = true;
     parameters.laboratory = laboratory;
@@ -400,7 +399,7 @@ public class UserServiceTest {
 
   @Test
   public void register_Admin() throws Throwable {
-    final User manager = entityManager.find(User.class, 1L);
+    final User manager = repository.findOne(1L);
     when(authorizationService.getCurrentUser()).thenReturn(manager);
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
@@ -424,16 +423,13 @@ public class UserServiceTest {
 
     userService.register(user, "password", null, registerUserWebContext());
 
-    entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(authorizationService).getCurrentUser();
     verify(authenticationService).hashPassword("password");
-    Laboratory laboratory = manager.getLaboratory();
-    entityManager.refresh(laboratory);
+    Laboratory laboratory = laboratoryRepository.findOne(manager.getLaboratory().getId());
     assertFalse(find(laboratory.getManagers(), user.getId()).isPresent());
     assertNotNull(user.getId());
-    user = entityManager.find(User.class, user.getId());
-    entityManager.refresh(user);
+    user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -485,17 +481,14 @@ public class UserServiceTest {
 
     userService.register(user, "password", manager, registerUserWebContext());
 
-    entityManager.flush();
     verifyZeroInteractions(authorizationService);
     verify(authenticationService).hashPassword("password");
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    entityManager.refresh(laboratory);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
     assertEquals(2, laboratory.getManagers().size());
     assertTrue(find(laboratory.getManagers(), 3L).isPresent());
     assertTrue(find(laboratory.getManagers(), 27L).isPresent());
     assertNotNull(user.getId());
-    user = entityManager.find(User.class, user.getId());
-    entityManager.refresh(user);
+    user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -545,9 +538,9 @@ public class UserServiceTest {
 
   @Test
   public void register_ExistingLaboratory_EnglishEmail() throws Throwable {
-    User updateLocale = entityManager.find(User.class, 3L);
+    User updateLocale = repository.findOne(3L);
     updateLocale.setLocale(Locale.CANADA);
-    entityManager.flush();
+    repository.save(updateLocale);
     final User manager = new User();
     manager.setEmail("benoit.coulombe@ircm.qc.ca");
     User user = new User();
@@ -571,7 +564,6 @@ public class UserServiceTest {
 
     userService.register(user, "password", manager, registerUserWebContext());
 
-    entityManager.flush();
     MessageResource resources =
         new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA);
     verify(email).setSubject(resources.message("email.subject"));
@@ -596,7 +588,7 @@ public class UserServiceTest {
 
   @Test
   public void register_ExistingLaboratory_Invalid() throws Throwable {
-    final User manager = entityManager.find(User.class, 6L);
+    final User manager = repository.findOne(6L);
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -651,19 +643,16 @@ public class UserServiceTest {
 
     userService.register(user, "password", null, registerUserWebContext());
 
-    entityManager.flush();
     verifyZeroInteractions(authorizationService);
     verify(authenticationService).hashPassword("password");
     assertNotNull(laboratory.getId());
     assertNotNull(user.getId());
-    laboratory = entityManager.find(Laboratory.class, laboratory.getId());
-    entityManager.refresh(laboratory);
+    laboratory = laboratoryRepository.findOne(laboratory.getId());
     assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Ribonucleoprotein Biochemistry", laboratory.getName());
     assertEquals(1, laboratory.getManagers().size());
     assertEquals(user.getId(), laboratory.getManagers().get(0).getId());
-    user = entityManager.find(User.class, user.getId());
-    entityManager.refresh(user);
+    user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -745,8 +734,7 @@ public class UserServiceTest {
 
   @Test
   public void update() throws Throwable {
-    User user = entityManager.find(User.class, 12L);
-    entityManager.detach(user);
+    User user = repository.findOne(12L);
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
     user.setLocale(Locale.US);
@@ -772,12 +760,8 @@ public class UserServiceTest {
 
     userService.update(user, null);
 
-    entityManager.flush();
     verify(authorizationService).checkUserWritePermission(user);
-    user = entityManager.find(User.class, user.getId());
-    entityManager.refresh(user);
-    Laboratory laboratory = entityManager.find(Laboratory.class, user.getLaboratory().getId());
-    entityManager.refresh(laboratory);
+    user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -812,10 +796,9 @@ public class UserServiceTest {
   }
 
   @Test
-  public void update_Director() throws Throwable {
+  public void update_Manager() throws Throwable {
     when(authorizationService.hasManagerRole()).thenReturn(true);
-    User user = entityManager.find(User.class, 3L);
-    entityManager.detach(user);
+    User user = repository.findOne(3L);
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
     user.setLocale(Locale.US);
@@ -841,12 +824,8 @@ public class UserServiceTest {
 
     userService.update(user, null);
 
-    entityManager.flush();
     verify(authorizationService).checkUserWritePermission(user);
-    user = entityManager.find(User.class, user.getId());
-    entityManager.refresh(user);
-    Laboratory laboratory = entityManager.find(Laboratory.class, user.getLaboratory().getId());
-    entityManager.refresh(laboratory);
+    user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -882,15 +861,13 @@ public class UserServiceTest {
 
   @Test
   public void updatePassword() throws Throwable {
-    User user = entityManager.find(User.class, 4L);
-    entityManager.detach(user);
+    User user = repository.findOne(4L);
 
     userService.update(user, "unit_test_password");
 
-    entityManager.flush();
     verify(authorizationService).checkUserWritePermission(user);
     verify(authenticationService).hashPassword("unit_test_password");
-    user = entityManager.find(User.class, 4L);
+    user = repository.findOne(4L);
     assertEquals(hashedPassword.getPassword(), user.getHashedPassword());
     assertEquals(hashedPassword.getSalt(), user.getSalt());
     assertEquals((Integer) hashedPassword.getPasswordVersion(), user.getPasswordVersion());
@@ -899,8 +876,7 @@ public class UserServiceTest {
   @Test
   public void update_Lab() throws Throwable {
     when(authorizationService.hasManagerRole()).thenReturn(true);
-    User user = entityManager.find(User.class, 3L);
-    entityManager.detach(user);
+    User user = repository.findOne(3L);
 
     user.setEmail("unit_test@ircm.qc.ca");
     user.getLaboratory().setName("lab test");
@@ -908,12 +884,10 @@ public class UserServiceTest {
 
     userService.update(user, null);
 
-    entityManager.flush();
     verify(authorizationService).checkUserWritePermission(user);
     verify(authorizationService).hasManagerRole();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    user = entityManager.find(User.class, user.getId());
-    entityManager.refresh(user);
+    user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("lab test", user.getLaboratory().getName());
     assertEquals("organization test", user.getLaboratory().getOrganization());
@@ -921,8 +895,7 @@ public class UserServiceTest {
 
   @Test
   public void validate() throws Throwable {
-    User user = entityManager.find(User.class, 7L);
-    entityManager.detach(user);
+    User user = repository.findOne(7L);
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     Collection<User> users = new LinkedList<>();
@@ -930,10 +903,9 @@ public class UserServiceTest {
 
     userService.validate(users, homeWebContext());
 
-    entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
-    user = entityManager.find(User.class, 7L);
+    user = repository.findOne(7L);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -962,11 +934,10 @@ public class UserServiceTest {
 
   @Test
   public void validate_EnglishEmail() throws Throwable {
-    User updateLocale = entityManager.find(User.class, 7L);
+    User updateLocale = repository.findOne(7L);
     updateLocale.setLocale(Locale.CANADA);
-    entityManager.flush();
-    User user = entityManager.find(User.class, 7L);
-    entityManager.detach(user);
+    repository.save(updateLocale);
+    User user = repository.findOne(7L);
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     Collection<User> users = new LinkedList<>();
@@ -974,7 +945,6 @@ public class UserServiceTest {
 
     userService.validate(users, homeWebContext());
 
-    entityManager.flush();
     MessageResource resources =
         new MessageResource(UserService.class.getName() + "_ValidateEmail", Locale.CANADA);
     verify(email).setSubject(resources.message("email.subject"));
@@ -997,18 +967,16 @@ public class UserServiceTest {
 
   @Test
   public void activate() throws Throwable {
-    User user = entityManager.find(User.class, 12L);
-    entityManager.detach(user);
+    User user = repository.findOne(12L);
     assertEquals(false, user.isActive());
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
     userService.activate(users);
 
-    entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
-    user = entityManager.find(User.class, 12L);
+    user = repository.findOne(12L);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -1016,17 +984,15 @@ public class UserServiceTest {
 
   @Test
   public void deactivate() throws Throwable {
-    User user = entityManager.find(User.class, 10L);
-    entityManager.detach(user);
+    User user = repository.findOne(10L);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
     userService.deactivate(users);
 
-    entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
-    user = entityManager.find(User.class, 10L);
+    user = repository.findOne(10L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -1034,17 +1000,15 @@ public class UserServiceTest {
 
   @Test
   public void deactivate_Manager() throws Throwable {
-    User user = entityManager.find(User.class, 3L);
-    entityManager.detach(user);
+    User user = repository.findOne(3L);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
     userService.deactivate(users);
 
-    entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
-    user = entityManager.find(User.class, 3L);
+    user = repository.findOne(3L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -1052,17 +1016,15 @@ public class UserServiceTest {
 
   @Test
   public void deactivate_Admin() throws Throwable {
-    User user = entityManager.find(User.class, 4L);
-    entityManager.detach(user);
+    User user = repository.findOne(4L);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
     userService.deactivate(users);
 
-    entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
-    user = entityManager.find(User.class, 4L);
+    user = repository.findOne(4L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(true, user.isAdmin());
@@ -1070,8 +1032,7 @@ public class UserServiceTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void deactivate_Robot() throws Throwable {
-    User user = entityManager.find(User.class, 1L);
-    entityManager.detach(user);
+    User user = repository.findOne(1L);
     assertEquals(true, user.isActive());
 
     Collection<User> users = new LinkedList<>();
@@ -1081,127 +1042,105 @@ public class UserServiceTest {
 
   @Test
   public void addManagerAdmin() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 1L);
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 5L);
+    Laboratory laboratory = laboratoryRepository.findOne(1L);
+    User user = repository.findOne(5L);
 
     userService.addManager(laboratory, user);
 
-    entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(cacheFlusher).flushShiroCache();
-    laboratory = entityManager.find(Laboratory.class, 1L);
+    laboratory = laboratoryRepository.findOne(1L);
     List<User> testManagers = laboratory.getManagers();
     assertEquals(true, testManagers.contains(user));
   }
 
   @Test
   public void addManager() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 10L);
-    entityManager.detach(user);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    User user = repository.findOne(10L);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
 
     userService.addManager(laboratory, user);
 
-    entityManager.flush();
     verify(authorizationService).checkAdminRole();
     verify(cacheFlusher).flushShiroCache();
-    laboratory = entityManager.find(Laboratory.class, 2L);
+    laboratory = laboratoryRepository.findOne(2L);
     List<User> testManagers = laboratory.getManagers();
     assertTrue(find(testManagers, user.getId()).isPresent());
   }
 
   @Test
   public void addManager_InactivatedUser() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 12L);
-    entityManager.detach(user);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    User user = repository.findOne(12L);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
     assertEquals(false, user.isActive());
 
     userService.addManager(laboratory, user);
 
-    entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    laboratory = entityManager.find(Laboratory.class, 2L);
+    laboratory = laboratoryRepository.findOne(2L);
     List<User> testManagers = laboratory.getManagers();
-    User testUser = entityManager.find(User.class, 12L);
+    User testUser = repository.findOne(12L);
     assertTrue(find(testManagers, user.getId()).isPresent());
     assertEquals(true, testUser.isActive());
   }
 
   @Test
   public void addManager_AlreadyManager() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 3L);
-    entityManager.detach(user);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    User user = repository.findOne(3L);
     List<User> managers = laboratory.getManagers();
     assertTrue(find(managers, user.getId()).isPresent());
 
     userService.addManager(laboratory, user);
 
-    entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    laboratory = entityManager.find(Laboratory.class, 2L);
+    laboratory = laboratoryRepository.findOne(2L);
     List<User> testManagers = laboratory.getManagers();
     assertTrue(find(testManagers, user.getId()).isPresent());
   }
 
   @Test(expected = UserNotMemberOfLaboratoryException.class)
   public void addManager_WrongLaboratory() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 2L);
-    entityManager.detach(user);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    User user = repository.findOne(2L);
 
     userService.addManager(laboratory, user);
   }
 
   @Test(expected = InvalidUserException.class)
   public void addManager_Invalid() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 7L);
-    entityManager.detach(user);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    User user = repository.findOne(7L);
 
     userService.addManager(laboratory, user);
   }
 
   @Test
   public void addManager_DirectorChange() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
     laboratory.setDirector("Test");
-    entityManager.merge(laboratory);
-    entityManager.flush();
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 10L);
-    entityManager.detach(user);
+    laboratoryRepository.save(laboratory);
+    User user = repository.findOne(10L);
 
     userService.addManager(laboratory, user);
 
-    entityManager.flush();
-    laboratory = entityManager.find(Laboratory.class, 2L);
+    laboratory = laboratoryRepository.findOne(2L);
     assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test
   public void removeManagerAdmin() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 1L);
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 2L);
-    entityManager.detach(user);
+    Laboratory laboratory = laboratoryRepository.findOne(1L);
+    User user = repository.findOne(2L);
 
     userService.removeManager(laboratory, user);
 
-    entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    laboratory = entityManager.find(Laboratory.class, 1L);
+    laboratory = laboratoryRepository.findOne(1L);
     verify(cacheFlusher).flushShiroCache();
     List<User> testManagers = laboratory.getManagers();
     assertFalse(find(testManagers, user.getId()).isPresent());
@@ -1209,10 +1148,8 @@ public class UserServiceTest {
 
   @Test
   public void removeManager_UnmanagedLaboratory() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 3L);
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 6L);
-    entityManager.detach(user);
+    Laboratory laboratory = laboratoryRepository.findOne(3L);
+    User user = repository.findOne(6L);
 
     try {
       userService.removeManager(laboratory, user);
@@ -1224,18 +1161,15 @@ public class UserServiceTest {
 
   @Test
   public void removeManager() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
-    entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 27L);
-    entityManager.detach(user);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    User user = repository.findOne(27L);
     List<User> managers = laboratory.getManagers();
     assertTrue(find(managers, user.getId()).isPresent());
 
     userService.removeManager(laboratory, user);
 
-    entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    laboratory = entityManager.find(Laboratory.class, 2L);
+    laboratory = laboratoryRepository.findOne(2L);
     verify(cacheFlusher).flushShiroCache();
     List<User> testManagers = laboratory.getManagers();
     assertFalse(find(testManagers, user.getId()).isPresent());
@@ -1243,9 +1177,9 @@ public class UserServiceTest {
 
   @Test
   public void removeManager_AlreadyNotManager() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 10L);
+    User user = repository.findOne(10L);
     entityManager.detach(user);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
@@ -1254,16 +1188,16 @@ public class UserServiceTest {
 
     entityManager.flush();
     verify(authorizationService).checkAdminRole();
-    laboratory = entityManager.find(Laboratory.class, 2L);
+    laboratory = laboratoryRepository.findOne(2L);
     List<User> testManagers = laboratory.getManagers();
     assertFalse(find(testManagers, user.getId()).isPresent());
   }
 
   @Test(expected = UserNotMemberOfLaboratoryException.class)
   public void removeManager_WrongLaboratory() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 2L);
+    User user = repository.findOne(2L);
     entityManager.detach(user);
 
     userService.removeManager(laboratory, user);
@@ -1271,24 +1205,24 @@ public class UserServiceTest {
 
   @Test
   public void removeManager_DirectorChange() throws Exception {
-    Laboratory laboratory = entityManager.find(Laboratory.class, 2L);
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
     laboratory.setDirector("Test");
     entityManager.merge(laboratory);
     entityManager.flush();
     entityManager.detach(laboratory);
-    User user = entityManager.find(User.class, 27L);
+    User user = repository.findOne(27L);
     entityManager.detach(user);
 
     userService.removeManager(laboratory, user);
 
     entityManager.flush();
-    laboratory = entityManager.find(Laboratory.class, 2L);
+    laboratory = laboratoryRepository.findOne(2L);
     assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test
   public void deleteValid() throws Throwable {
-    User user = entityManager.find(User.class, 5L);
+    User user = repository.findOne(5L);
     entityManager.detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<>();
@@ -1304,7 +1238,7 @@ public class UserServiceTest {
 
   @Test
   public void delete() throws Throwable {
-    User user = entityManager.find(User.class, 7L);
+    User user = repository.findOne(7L);
     entityManager.detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<>();
@@ -1314,13 +1248,13 @@ public class UserServiceTest {
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    user = entityManager.find(User.class, 7L);
+    user = repository.findOne(7L);
     assertNull(user);
   }
 
   @Test
   public void delete_NewLaboratory() throws Throwable {
-    User user = entityManager.find(User.class, 6L);
+    User user = repository.findOne(6L);
     entityManager.detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<>();
@@ -1330,9 +1264,9 @@ public class UserServiceTest {
 
     entityManager.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    user = entityManager.find(User.class, 6L);
+    user = repository.findOne(6L);
     assertNull(user);
-    Laboratory laboratory = entityManager.find(Laboratory.class, 3L);
+    Laboratory laboratory = laboratoryRepository.findOne(3L);
     assertNull(laboratory);
   }
 }

@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user;
 
-import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QUser.user;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
@@ -28,7 +27,8 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.google.common.collect.Lists;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +53,10 @@ import org.thymeleaf.context.Context;
 public class UserService {
   private static final long ROBOT_ID = 1L;
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private UserRepository repository;
+  @Inject
+  private LaboratoryRepository laboratoryRepository;
   @Inject
   private AuthenticationService authenticationService;
   @Inject
@@ -70,22 +70,6 @@ public class UserService {
   @Inject
   private AuthorizationService authorizationService;
 
-  protected UserService() {
-  }
-
-  protected UserService(EntityManager entityManager, AuthenticationService authenticationService,
-      TemplateEngine emailTemplateEngine, EmailService emailService, CacheFlusher cacheFlusher,
-      ApplicationConfiguration applicationConfiguration,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.authenticationService = authenticationService;
-    this.emailTemplateEngine = emailTemplateEngine;
-    this.emailService = emailService;
-    this.cacheFlusher = cacheFlusher;
-    this.applicationConfiguration = applicationConfiguration;
-    this.authorizationService = authorizationService;
-  }
-
   /**
    * Selects user from database.
    *
@@ -98,7 +82,7 @@ public class UserService {
       return null;
     }
 
-    User user = entityManager.find(User.class, id);
+    User user = repository.findOne(id);
     authorizationService.checkUserReadPermission(user);
     return user;
   }
@@ -125,11 +109,7 @@ public class UserService {
       return null;
     }
 
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.email.eq(email));
-    User ret = query.fetchOne();
-    return ret;
+    return repository.findByEmail(email);
   }
 
   /**
@@ -144,10 +124,7 @@ public class UserService {
       return false;
     }
 
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.email.eq(email));
-    return query.fetchOne() != null;
+    return repository.findByEmail(email) != null;
   }
 
   /**
@@ -163,15 +140,10 @@ public class UserService {
       return false;
     }
 
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.from(laboratory);
-    query.where(user.valid.eq(true));
-    query.where(user.active.eq(true));
-    query.where(user.admin.eq(false));
-    query.where(user.email.eq(email));
-    query.where(laboratory.managers.contains(user));
-    return query.fetchOne() != null;
+    BooleanExpression predicate =
+        user.valid.eq(true).and(user.active.eq(true)).and(user.admin.eq(false))
+            .and(user.email.eq(email)).and(user.laboratory.managers.contains(user));
+    return repository.count(predicate) > 0;
   }
 
   /**
@@ -197,22 +169,20 @@ public class UserService {
       authorizationService.checkAdminRole();
     }
 
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.id.ne(ROBOT_ID));
+    BooleanExpression predicate = user.id.ne(ROBOT_ID);
     if (parameters.active != null) {
-      query.where(user.active.eq(parameters.active));
+      predicate = predicate.and(user.active.eq(parameters.active));
     }
     if (parameters.valid != null) {
-      query.where(user.valid.eq(parameters.valid));
+      predicate = predicate.and(user.valid.eq(parameters.valid));
     }
     if (parameters.admin != null) {
-      query.where(user.admin.eq(parameters.admin));
+      predicate = predicate.and(user.admin.eq(parameters.admin));
     }
     if (parameters.laboratory != null) {
-      query.where(user.laboratory.eq(parameters.laboratory));
+      predicate = predicate.and(user.laboratory.eq(parameters.laboratory));
     }
-    return query.fetch();
+    return Lists.newArrayList(repository.findAll(predicate));
   }
 
   /**
@@ -255,9 +225,9 @@ public class UserService {
 
     setUserPassword(user, password);
     user.setLaboratory(manager.getLaboratory());
-    entityManager.persist(user);
+    repository.save(user);
+    repository.flush();
 
-    entityManager.flush();
     // Send email to manager to inform him that a new user has registered.
     try {
       this.sendEmailForNewUser(user, manager, webContext);
@@ -308,10 +278,10 @@ public class UserService {
     laboratory.setDirector(manager.getName());
     laboratory.setManagers(new ArrayList<User>());
     laboratory.getManagers().add(manager);
-    entityManager.persist(laboratory);
+    laboratoryRepository.save(laboratory);
+    laboratoryRepository.flush();
 
     // Send email to admin users to inform them that a new laboratory has registered.
-    entityManager.flush();
     try {
       this.sendEmailForNewLaboratory(laboratory, manager, webContext);
     } catch (Throwable e) {
@@ -322,13 +292,9 @@ public class UserService {
   }
 
   private List<User> adminUsers() {
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.admin.eq(true));
-    query.where(user.valid.eq(true));
-    query.where(user.active.eq(true));
-    query.where(user.id.ne(ROBOT_ID));
-    return query.fetch();
+    BooleanExpression predicate = user.admin.eq(true).and(user.valid.eq(true))
+        .and(user.active.eq(true)).and(user.id.ne(ROBOT_ID));
+    return Lists.newArrayList(repository.findAll(predicate));
   }
 
   private void sendEmailForNewLaboratory(final Laboratory laboratory, final User manager,
@@ -377,7 +343,8 @@ public class UserService {
     user.setValid(true);
     user.setActive(true);
     user.setLaboratory(manager.getLaboratory());
-    entityManager.persist(user);
+    repository.save(user);
+    repository.flush();
 
     cacheFlusher.flushShiroCache();
 
@@ -401,12 +368,12 @@ public class UserService {
       setUserPassword(user, newPassword);
     }
 
-    entityManager.merge(user);
+    repository.save(user);
 
     if (authorizationService.hasManagerRole()) {
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
       updateDirectorName(user.getLaboratory(), user);
-      entityManager.merge(user.getLaboratory());
+      laboratoryRepository.save(user.getLaboratory());
     }
 
     logger.info("User {} updated", user);
@@ -433,8 +400,7 @@ public class UserService {
    */
   public void validate(Collection<User> users, HomeWebContext webContext) {
     for (User user : users) {
-      user = entityManager.merge(user);
-      entityManager.refresh(user);
+      user = repository.findOne(user.getId());
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
       user.setValid(true);
@@ -493,8 +459,7 @@ public class UserService {
    */
   public void activate(Collection<User> users) {
     for (User user : users) {
-      user = entityManager.merge(user);
-      entityManager.refresh(user);
+      user = repository.findOne(user.getId());
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
       user.setActive(true);
@@ -519,14 +484,10 @@ public class UserService {
       if (user.getId() == ROBOT_ID) {
         throw new IllegalArgumentException("Robot cannot be deactivated");
       }
-
-      user = entityManager.merge(user);
-      entityManager.refresh(user);
     }
 
     for (User user : users) {
-      user = entityManager.merge(user);
-      entityManager.refresh(user);
+      user = repository.findOne(user.getId());
       user.setActive(false);
     }
 
@@ -551,10 +512,8 @@ public class UserService {
       throws UserNotMemberOfLaboratoryException, InvalidUserException {
     authorizationService.checkAdminRole();
 
-    laboratory = entityManager.merge(laboratory);
-    entityManager.refresh(laboratory);
-    user = entityManager.merge(user);
-    entityManager.refresh(user);
+    laboratory = laboratoryRepository.findOne(laboratory.getId());
+    user = repository.findOne(user.getId());
 
     if (!laboratory.equals(user.getLaboratory())) {
       throw new UserNotMemberOfLaboratoryException();
@@ -588,10 +547,8 @@ public class UserService {
       throws UserNotMemberOfLaboratoryException, UnmanagedLaboratoryException {
     authorizationService.checkAdminRole();
 
-    laboratory = entityManager.merge(laboratory);
-    entityManager.refresh(laboratory);
-    manager = entityManager.merge(manager);
-    entityManager.refresh(manager);
+    laboratory = laboratoryRepository.findOne(laboratory.getId());
+    manager = repository.findOne(manager.getId());
 
     if (!laboratory.equals(manager.getLaboratory())) {
       throw new UserNotMemberOfLaboratoryException();
@@ -615,8 +572,7 @@ public class UserService {
    */
   public void delete(Collection<User> users) {
     for (User user : users) {
-      user = entityManager.merge(user);
-      entityManager.refresh(user);
+      user = repository.findOne(user.getId());
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
       if (user.isValid()) {
@@ -624,9 +580,9 @@ public class UserService {
       }
 
       boolean manager = user.getLaboratory().getManagers().contains(user);
-      entityManager.remove(user);
+      repository.delete(user);
       if (manager) {
-        entityManager.remove(user.getLaboratory());
+        laboratoryRepository.delete(user.getLaboratory());
       }
     }
 
