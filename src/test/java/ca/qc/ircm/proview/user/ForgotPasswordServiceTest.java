@@ -28,19 +28,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
-import ca.qc.ircm.proview.SpringConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.shiro.authz.AuthorizationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,9 +48,9 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.util.StringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -62,18 +58,17 @@ import org.thymeleaf.util.StringUtils;
 public class ForgotPasswordServiceTest {
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(ForgotPasswordServiceTest.class);
-  private ForgotPasswordService forgotPasswordServiceDefault;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory jpaQueryFactory;
+  private ForgotPasswordService service;
   @Inject
-  private SpringConfiguration springConfiguration;
-  @Mock
+  private ForgotPasswordRepository repository;
+  @Inject
+  private UserRepository userRepository;
+  @MockBean
   private ApplicationConfiguration applicationConfiguration;
-  @Mock
+  @MockBean
   private EmailService emailService;
-  @Mock
+  @MockBean
   private AuthenticationService authenticationService;
   @Mock
   private MimeMessageHelper email;
@@ -89,10 +84,7 @@ public class ForgotPasswordServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    TemplateEngine templateEngine = springConfiguration.emailTemplateEngine();
-    forgotPasswordServiceDefault = new ForgotPasswordService(entityManager, jpaQueryFactory,
-        authenticationService, templateEngine, emailService, applicationConfiguration);
-    user = entityManager.find(User.class, 10L);
+    user = userRepository.findOne(10L);
     when(applicationConfiguration.getUrl(any(String.class))).thenAnswer(new Answer<String>() {
       @Override
       public String answer(InvocationOnMock invocation) throws Throwable {
@@ -111,10 +103,9 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void get() throws Exception {
-    ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(9L, 174407008);
+    ForgotPassword forgotPassword = service.get(9L, 174407008);
 
-    forgotPassword =
-        forgotPasswordServiceDefault.get(forgotPassword.getId(), forgotPassword.getConfirmNumber());
+    forgotPassword = service.get(forgotPassword.getId(), forgotPassword.getConfirmNumber());
 
     assertEquals((Long) 9L, forgotPassword.getId());
     assertEquals(174407008, forgotPassword.getConfirmNumber());
@@ -126,28 +117,28 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void get_Expired() throws Exception {
-    ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(7L, 803369922);
+    ForgotPassword forgotPassword = service.get(7L, 803369922);
 
     assertNull(forgotPassword);
   }
 
   @Test
   public void get_NullId() throws Exception {
-    ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(null, confirmNumber);
+    ForgotPassword forgotPassword = service.get(null, confirmNumber);
 
     assertNull(forgotPassword);
   }
 
   @Test
   public void get_NullConfirmNumber() throws Exception {
-    ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(7L, null);
+    ForgotPassword forgotPassword = service.get(7L, null);
 
     assertNull(forgotPassword);
   }
 
   @Test
   public void get_Used() throws Exception {
-    ForgotPassword forgotPassword = forgotPasswordServiceDefault.get(10L, 460559412);
+    ForgotPassword forgotPassword = service.get(10L, 460559412);
 
     assertNull(forgotPassword);
   }
@@ -157,7 +148,7 @@ public class ForgotPasswordServiceTest {
     when(authenticationService.isRobot(any(Long.class))).thenReturn(true);
 
     try {
-      forgotPasswordServiceDefault.insert(user.getEmail(), forgotPasswordWebContext());
+      service.insert(user.getEmail(), forgotPasswordWebContext());
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -166,14 +157,13 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void insert() throws Exception {
-    ForgotPassword forgotPassword =
-        forgotPasswordServiceDefault.insert(user.getEmail(), forgotPasswordWebContext());
+    ForgotPassword forgotPassword = service.insert(user.getEmail(), forgotPasswordWebContext());
 
-    entityManager.flush();
+    repository.flush();
     assertNotNull(forgotPassword.getId());
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
-    forgotPassword = entityManager.find(ForgotPassword.class, forgotPassword.getId());
+    forgotPassword = repository.findOne(forgotPassword.getId());
     assertNotNull(forgotPassword.getConfirmNumber());
     assertTrue(
         Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
@@ -193,11 +183,11 @@ public class ForgotPasswordServiceTest {
 
   private void insert_Email(final Locale locale) throws Exception {
     user.setLocale(locale);
-    entityManager.merge(user);
+    userRepository.save(user);
 
-    forgotPasswordServiceDefault.insert(user.getEmail(), forgotPasswordWebContext());
+    service.insert(user.getEmail(), forgotPasswordWebContext());
 
-    entityManager.flush();
+    repository.flush();
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo(user.getEmail());
@@ -222,13 +212,12 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void updatePassword() throws Exception {
-    ForgotPassword forgotPassword = entityManager.find(ForgotPassword.class, 9L);
+    ForgotPassword forgotPassword = repository.findOne(9L);
 
-    forgotPasswordServiceDefault.updatePassword(forgotPassword, "abc");
+    service.updatePassword(forgotPassword, "abc");
 
-    entityManager.flush();
-    assertNull(forgotPasswordServiceDefault.get(forgotPassword.getId(),
-        forgotPassword.getConfirmNumber()));
+    repository.flush();
+    assertNull(service.get(forgotPassword.getId(), forgotPassword.getConfirmNumber()));
     verify(authenticationService).hashPassword("abc");
     User user = forgotPassword.getUser();
     assertEquals(hashedPassword.getPassword(), user.getHashedPassword());
@@ -238,10 +227,10 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void updatePassword_Expired() throws Exception {
-    ForgotPassword forgotPassword = entityManager.find(ForgotPassword.class, 7L);
+    ForgotPassword forgotPassword = repository.findOne(7L);
 
     try {
-      forgotPasswordServiceDefault.updatePassword(forgotPassword, "abc");
+      service.updatePassword(forgotPassword, "abc");
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Ignore.

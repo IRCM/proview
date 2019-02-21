@@ -17,24 +17,17 @@
 
 package ca.qc.ircm.proview.user;
 
-import static ca.qc.ircm.proview.user.QForgotPassword.forgotPassword;
-import static ca.qc.ircm.proview.user.QUser.user;
-
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.time.Period;
 import java.util.Locale;
 import java.util.Random;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,10 +48,10 @@ public class ForgotPasswordService {
    */
   public static final Period VALID_PERIOD = Period.ofDays(2);
   private final Logger logger = LoggerFactory.getLogger(ForgotPasswordService.class);
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory jpaQueryFactory;
+  private ForgotPasswordRepository repository;
+  @Inject
+  private UserRepository userRepository;
   @Inject
   private AuthenticationService authenticatingService;
   @Inject
@@ -70,18 +63,6 @@ public class ForgotPasswordService {
   private Random random;
 
   protected ForgotPasswordService() {
-    random = new Random();
-  }
-
-  protected ForgotPasswordService(EntityManager entityManager, JPAQueryFactory jpaQueryFactory,
-      AuthenticationService authenticatingService, TemplateEngine emailTemplateEngine,
-      EmailService emailService, ApplicationConfiguration applicationConfiguration) {
-    this.entityManager = entityManager;
-    this.jpaQueryFactory = jpaQueryFactory;
-    this.authenticatingService = authenticatingService;
-    this.emailTemplateEngine = emailTemplateEngine;
-    this.emailService = emailService;
-    this.applicationConfiguration = applicationConfiguration;
     random = new Random();
   }
 
@@ -99,20 +80,13 @@ public class ForgotPasswordService {
       return null;
     }
 
-    JPAQuery<ForgotPassword> query = jpaQueryFactory.select(forgotPassword);
-    query.from(forgotPassword);
-    query.where(forgotPassword.id.eq(id));
-    query.where(forgotPassword.confirmNumber.eq(confirmNumber));
-    query.where(forgotPassword.used.eq(false));
-    query.where(forgotPassword.requestMoment.after(Instant.now().minus(VALID_PERIOD)));
-    return query.fetchOne();
-  }
-
-  private User getUser(String email) {
-    JPAQuery<User> query = jpaQueryFactory.select(user);
-    query.from(user);
-    query.where(user.email.eq(email));
-    return query.fetchOne();
+    ForgotPassword forgotPassword = repository.findOne(id);
+    if (confirmNumber.equals(forgotPassword.getConfirmNumber()) && !forgotPassword.isUsed()
+        && forgotPassword.getRequestMoment().isAfter(Instant.now().minus(VALID_PERIOD))) {
+      return forgotPassword;
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -134,13 +108,12 @@ public class ForgotPasswordService {
     int rand = random.nextInt(Integer.MAX_VALUE);
     forgotPassword.setConfirmNumber(rand);
 
-    User user = getUser(email);
+    User user = userRepository.findByEmail(email);
     if (authenticatingService.isRobot(user.getId())) {
       throw new UnauthorizedException("Cannot change password for robot");
     }
     forgotPassword.setUser(user);
-    entityManager.persist(forgotPassword);
-    entityManager.flush();
+    repository.saveAndFlush(forgotPassword);
     try {
       this.sendMail(email, forgotPassword, user.getLocale(), webContext);
     } catch (Throwable e) {
@@ -201,14 +174,14 @@ public class ForgotPasswordService {
     // Encrypt password.
     HashedPassword hashedPassword = authenticatingService.hashPassword(newPassword);
     // Update password.
-    user = entityManager.merge(user);
-    entityManager.refresh(user);
+    user = userRepository.findOne(user.getId());
     user.setHashedPassword(hashedPassword.getPassword());
     user.setSalt(hashedPassword.getSalt());
+    userRepository.save(user);
 
     // Tag ForgotPassword has being used.
     forgotPassword.setUsed(true);
-    entityManager.merge(forgotPassword);
+    repository.save(forgotPassword);
 
     logger.info("Forgot password request {} was used", forgotPassword);
   }
