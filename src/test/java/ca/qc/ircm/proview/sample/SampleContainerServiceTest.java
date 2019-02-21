@@ -23,38 +23,25 @@ import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SampleContainerServiceTest {
-  private SampleContainerService sampleContainerService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private SampleContainerService service;
+  @MockBean
   private AuthorizationService authorizationService;
-
-  @Before
-  public void beforeTest() {
-    sampleContainerService =
-        new SampleContainerService(entityManager, queryFactory, authorizationService);
-  }
 
   @Test
   public void get_Id() throws Throwable {
-    SampleContainer container = sampleContainerService.get(1L);
+    SampleContainer container = service.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(container.getSample());
     assertEquals((Long) 1L, container.getId());
@@ -67,7 +54,7 @@ public class SampleContainerServiceTest {
 
   @Test
   public void get_NullId() throws Throwable {
-    SampleContainer container = sampleContainerService.get((Long) null);
+    SampleContainer container = service.get((Long) null);
 
     assertNull(container);
   }
@@ -76,7 +63,7 @@ public class SampleContainerServiceTest {
   public void last() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    SampleContainer container = sampleContainerService.last(sample);
+    SampleContainer container = service.last(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals((Long) 129L, container.getId());
@@ -89,7 +76,7 @@ public class SampleContainerServiceTest {
 
   @Test
   public void last_Null() throws Throwable {
-    SampleContainer container = sampleContainerService.last(null);
+    SampleContainer container = service.last(null);
 
     assertNull(container);
   }

@@ -17,14 +17,8 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static ca.qc.ircm.proview.sample.QSampleContainer.sampleContainer;
-
 import ca.qc.ircm.proview.security.AuthorizationService;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,21 +28,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SampleContainerService {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
+  private SampleContainerRepository repository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected SampleContainerService() {
-  }
-
-  protected SampleContainerService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -63,7 +48,7 @@ public class SampleContainerService {
       return null;
     }
 
-    SampleContainer container = entityManager.find(SampleContainer.class, id);
+    SampleContainer container = repository.findOne(id);
     if (container != null) {
       authorizationService.checkSampleReadPermission(container.getSample());
     }
@@ -83,11 +68,6 @@ public class SampleContainerService {
     }
     authorizationService.checkSampleReadPermission(sample);
 
-    JPAQuery<SampleContainer> query = queryFactory.select(sampleContainer);
-    query.from(sampleContainer);
-    query.where(sampleContainer.sample.eq(sample));
-    query.orderBy(sampleContainer.timestamp.desc());
-    query.limit(1);
-    return query.fetchOne();
+    return repository.findFirstBySampleOrderByTimestampDesc(sample);
   }
 }
