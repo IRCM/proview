@@ -73,7 +73,7 @@ public class UserServiceTest {
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
-  private UserService userService;
+  private UserService service;
   @Inject
   private UserRepository repository;
   @Inject
@@ -131,7 +131,7 @@ public class UserServiceTest {
 
   @Test
   public void get_Id() throws Throwable {
-    User user = userService.get(3L);
+    User user = service.get(3L);
 
     verify(authorizationService).checkUserReadPermission(user);
     assertEquals((Long) 3L, user.getId());
@@ -166,14 +166,14 @@ public class UserServiceTest {
 
   @Test
   public void get_NullId() throws Throwable {
-    User user = userService.get((Long) null);
+    User user = service.get((Long) null);
 
     assertNull(user);
   }
 
   @Test
   public void get_Email() throws Throwable {
-    User user = userService.get("benoit.coulombe@ircm.qc.ca");
+    User user = service.get("benoit.coulombe@ircm.qc.ca");
 
     verify(authorizationService).checkUserReadPermission(user);
     assertEquals((Long) 3L, user.getId());
@@ -208,14 +208,14 @@ public class UserServiceTest {
 
   @Test
   public void get_NullEmail() throws Throwable {
-    User user = userService.get((String) null);
+    User user = service.get((String) null);
 
     assertNull(user);
   }
 
   @Test
   public void exists_Email_True() throws Throwable {
-    boolean exists = userService.exists("christian.poitras@ircm.qc.ca");
+    boolean exists = service.exists("christian.poitras@ircm.qc.ca");
 
     assertEquals(true, exists);
 
@@ -224,7 +224,7 @@ public class UserServiceTest {
 
   @Test
   public void exists_Email_False() throws Throwable {
-    boolean exists = userService.exists("abc@ircm.qc.ca");
+    boolean exists = service.exists("abc@ircm.qc.ca");
 
     assertEquals(false, exists);
 
@@ -233,56 +233,56 @@ public class UserServiceTest {
 
   @Test
   public void exists_Email_Null() throws Throwable {
-    boolean exists = userService.exists(null);
+    boolean exists = service.exists(null);
 
     assertEquals(false, exists);
   }
 
   @Test
   public void isManager_Robot() throws Throwable {
-    boolean manager = userService.isManager("proview@ircm.qc.ca");
+    boolean manager = service.isManager("proview@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Admin() throws Throwable {
-    boolean manager = userService.isManager("christian.poitras@ircm.qc.ca");
+    boolean manager = service.isManager("christian.poitras@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Manager() throws Throwable {
-    boolean manager = userService.isManager("benoit.coulombe@ircm.qc.ca");
+    boolean manager = service.isManager("benoit.coulombe@ircm.qc.ca");
 
     assertEquals(true, manager);
   }
 
   @Test
   public void isManager_NonManager() throws Throwable {
-    boolean manager = userService.isManager("james.johnson@ircm.qc.ca");
+    boolean manager = service.isManager("james.johnson@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Invalid() throws Throwable {
-    boolean manager = userService.isManager("nicole.francis@ircm.qc.ca");
+    boolean manager = service.isManager("nicole.francis@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Inactive() throws Throwable {
-    boolean manager = userService.isManager("marie.trudel@ircm.qc.ca");
+    boolean manager = service.isManager("marie.trudel@ircm.qc.ca");
 
     assertEquals(false, manager);
   }
 
   @Test
   public void isManager_Null() throws Throwable {
-    boolean manager = userService.isManager(null);
+    boolean manager = service.isManager(null);
 
     assertEquals(false, manager);
   }
@@ -294,7 +294,7 @@ public class UserServiceTest {
     parameters.valid = false;
     parameters.laboratory = laboratory;
 
-    List<User> users = userService.all(parameters);
+    List<User> users = service.all(parameters);
 
     verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
     assertEquals(1, users.size());
@@ -306,7 +306,7 @@ public class UserServiceTest {
     UserFilter parameters = new UserFilter();
     parameters.valid = false;
 
-    List<User> users = userService.all(parameters);
+    List<User> users = service.all(parameters);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, users.size());
@@ -321,7 +321,7 @@ public class UserServiceTest {
     parameters.valid = true;
     parameters.laboratory = laboratory;
 
-    List<User> users = userService.all(parameters);
+    List<User> users = service.all(parameters);
 
     verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
     assertEquals(4, users.size());
@@ -336,7 +336,7 @@ public class UserServiceTest {
     UserFilter parameters = new UserFilter();
     parameters.valid = true;
 
-    List<User> users = userService.all(parameters);
+    List<User> users = service.all(parameters);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(12, users.size());
@@ -359,7 +359,7 @@ public class UserServiceTest {
     UserFilter parameters = new UserFilter();
     parameters.admin = false;
 
-    List<User> users = userService.all(parameters);
+    List<User> users = service.all(parameters);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(10, users.size());
@@ -377,7 +377,7 @@ public class UserServiceTest {
 
   @Test
   public void all_Null() throws Throwable {
-    List<User> users = userService.all(null);
+    List<User> users = service.all(null);
 
     authorizationService.checkAdminRole();
     assertEquals(14, users.size());
@@ -421,8 +421,9 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    userService.register(user, "password", null, registerUserWebContext());
+    service.register(user, "password", null, registerUserWebContext());
 
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(authorizationService).getCurrentUser();
     verify(authenticationService).hashPassword("password");
@@ -479,8 +480,9 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    userService.register(user, "password", manager, registerUserWebContext());
+    service.register(user, "password", manager, registerUserWebContext());
 
+    repository.flush();
     verifyZeroInteractions(authorizationService);
     verify(authenticationService).hashPassword("password");
     Laboratory laboratory = laboratoryRepository.findOne(2L);
@@ -562,8 +564,9 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    userService.register(user, "password", manager, registerUserWebContext());
+    service.register(user, "password", manager, registerUserWebContext());
 
+    repository.flush();
     MessageResource resources =
         new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA);
     verify(email).setSubject(resources.message("email.subject"));
@@ -609,7 +612,7 @@ public class UserServiceTest {
     user.setPhoneNumbers(phoneNumbers);
 
     try {
-      userService.register(user, "password", manager, registerUserWebContext());
+      service.register(user, "password", manager, registerUserWebContext());
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -641,8 +644,9 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    userService.register(user, "password", null, registerUserWebContext());
+    service.register(user, "password", null, registerUserWebContext());
 
+    repository.flush();
     verifyZeroInteractions(authorizationService);
     verify(authenticationService).hashPassword("password");
     assertNotNull(laboratory.getId());
@@ -758,8 +762,9 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber2);
     user.setPhoneNumbers(phoneNumbers);
 
-    userService.update(user, null);
+    service.update(user, null);
 
+    repository.flush();
     verify(authorizationService).checkUserWritePermission(user);
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
@@ -822,8 +827,9 @@ public class UserServiceTest {
     phoneNumbers.add(phoneNumber2);
     user.setPhoneNumbers(phoneNumbers);
 
-    userService.update(user, null);
+    service.update(user, null);
 
+    repository.flush();
     verify(authorizationService).checkUserWritePermission(user);
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
@@ -863,8 +869,9 @@ public class UserServiceTest {
   public void updatePassword() throws Throwable {
     User user = repository.findOne(4L);
 
-    userService.update(user, "unit_test_password");
+    service.update(user, "unit_test_password");
 
+    repository.flush();
     verify(authorizationService).checkUserWritePermission(user);
     verify(authenticationService).hashPassword("unit_test_password");
     user = repository.findOne(4L);
@@ -882,8 +889,9 @@ public class UserServiceTest {
     user.getLaboratory().setName("lab test");
     user.getLaboratory().setOrganization("organization test");
 
-    userService.update(user, null);
+    service.update(user, null);
 
+    repository.flush();
     verify(authorizationService).checkUserWritePermission(user);
     verify(authorizationService).hasManagerRole();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
@@ -901,8 +909,9 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userService.validate(users, homeWebContext());
+    service.validate(users, homeWebContext());
 
+    repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(7L);
@@ -943,8 +952,9 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userService.validate(users, homeWebContext());
+    service.validate(users, homeWebContext());
 
+    repository.flush();
     MessageResource resources =
         new MessageResource(UserService.class.getName() + "_ValidateEmail", Locale.CANADA);
     verify(email).setSubject(resources.message("email.subject"));
@@ -972,8 +982,9 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userService.activate(users);
+    service.activate(users);
 
+    repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(12L);
@@ -988,8 +999,9 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userService.deactivate(users);
+    service.deactivate(users);
 
+    repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(10L);
@@ -1004,8 +1016,9 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userService.deactivate(users);
+    service.deactivate(users);
 
+    repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(3L);
@@ -1020,8 +1033,9 @@ public class UserServiceTest {
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userService.deactivate(users);
+    service.deactivate(users);
 
+    repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(4L);
@@ -1037,7 +1051,7 @@ public class UserServiceTest {
 
     Collection<User> users = new LinkedList<>();
     users.add(user);
-    userService.deactivate(users);
+    service.deactivate(users);
   }
 
   @Test
@@ -1045,8 +1059,9 @@ public class UserServiceTest {
     Laboratory laboratory = laboratoryRepository.findOne(1L);
     User user = repository.findOne(5L);
 
-    userService.addManager(laboratory, user);
+    service.addManager(laboratory, user);
 
+    laboratoryRepository.flush();
     verify(authorizationService).checkAdminRole();
     verify(cacheFlusher).flushShiroCache();
     laboratory = laboratoryRepository.findOne(1L);
@@ -1061,8 +1076,9 @@ public class UserServiceTest {
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
 
-    userService.addManager(laboratory, user);
+    service.addManager(laboratory, user);
 
+    laboratoryRepository.flush();
     verify(authorizationService).checkAdminRole();
     verify(cacheFlusher).flushShiroCache();
     laboratory = laboratoryRepository.findOne(2L);
@@ -1078,8 +1094,9 @@ public class UserServiceTest {
     assertEquals(false, managers.contains(user));
     assertEquals(false, user.isActive());
 
-    userService.addManager(laboratory, user);
+    service.addManager(laboratory, user);
 
+    laboratoryRepository.flush();
     verify(authorizationService).checkAdminRole();
     laboratory = laboratoryRepository.findOne(2L);
     List<User> testManagers = laboratory.getManagers();
@@ -1095,8 +1112,9 @@ public class UserServiceTest {
     List<User> managers = laboratory.getManagers();
     assertTrue(find(managers, user.getId()).isPresent());
 
-    userService.addManager(laboratory, user);
+    service.addManager(laboratory, user);
 
+    laboratoryRepository.flush();
     verify(authorizationService).checkAdminRole();
     laboratory = laboratoryRepository.findOne(2L);
     List<User> testManagers = laboratory.getManagers();
@@ -1108,7 +1126,7 @@ public class UserServiceTest {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(2L);
 
-    userService.addManager(laboratory, user);
+    service.addManager(laboratory, user);
   }
 
   @Test(expected = InvalidUserException.class)
@@ -1116,7 +1134,7 @@ public class UserServiceTest {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(7L);
 
-    userService.addManager(laboratory, user);
+    service.addManager(laboratory, user);
   }
 
   @Test
@@ -1126,8 +1144,9 @@ public class UserServiceTest {
     laboratoryRepository.save(laboratory);
     User user = repository.findOne(10L);
 
-    userService.addManager(laboratory, user);
+    service.addManager(laboratory, user);
 
+    laboratoryRepository.flush();
     laboratory = laboratoryRepository.findOne(2L);
     assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
@@ -1137,8 +1156,9 @@ public class UserServiceTest {
     Laboratory laboratory = laboratoryRepository.findOne(1L);
     User user = repository.findOne(2L);
 
-    userService.removeManager(laboratory, user);
+    service.removeManager(laboratory, user);
 
+    laboratoryRepository.flush();
     verify(authorizationService).checkAdminRole();
     laboratory = laboratoryRepository.findOne(1L);
     verify(cacheFlusher).flushShiroCache();
@@ -1152,7 +1172,7 @@ public class UserServiceTest {
     User user = repository.findOne(6L);
 
     try {
-      userService.removeManager(laboratory, user);
+      service.removeManager(laboratory, user);
       fail("Expected UnmanagedLaboratoryException");
     } catch (UnmanagedLaboratoryException e) {
       // Ignore.
@@ -1166,8 +1186,9 @@ public class UserServiceTest {
     List<User> managers = laboratory.getManagers();
     assertTrue(find(managers, user.getId()).isPresent());
 
-    userService.removeManager(laboratory, user);
+    service.removeManager(laboratory, user);
 
+    laboratoryRepository.flush();
     verify(authorizationService).checkAdminRole();
     laboratory = laboratoryRepository.findOne(2L);
     verify(cacheFlusher).flushShiroCache();
@@ -1178,15 +1199,13 @@ public class UserServiceTest {
   @Test
   public void removeManager_AlreadyNotManager() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
-    entityManager.detach(laboratory);
     User user = repository.findOne(10L);
-    entityManager.detach(user);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
 
-    userService.removeManager(laboratory, user);
+    service.removeManager(laboratory, user);
 
-    entityManager.flush();
+    laboratoryRepository.flush();
     verify(authorizationService).checkAdminRole();
     laboratory = laboratoryRepository.findOne(2L);
     List<User> testManagers = laboratory.getManagers();
@@ -1196,26 +1215,21 @@ public class UserServiceTest {
   @Test(expected = UserNotMemberOfLaboratoryException.class)
   public void removeManager_WrongLaboratory() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
-    entityManager.detach(laboratory);
     User user = repository.findOne(2L);
-    entityManager.detach(user);
 
-    userService.removeManager(laboratory, user);
+    service.removeManager(laboratory, user);
   }
 
   @Test
   public void removeManager_DirectorChange() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     laboratory.setDirector("Test");
-    entityManager.merge(laboratory);
-    entityManager.flush();
-    entityManager.detach(laboratory);
+    laboratoryRepository.saveAndFlush(laboratory);
     User user = repository.findOne(27L);
-    entityManager.detach(user);
 
-    userService.removeManager(laboratory, user);
+    service.removeManager(laboratory, user);
 
-    entityManager.flush();
+    laboratoryRepository.flush();
     laboratory = laboratoryRepository.findOne(2L);
     assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
@@ -1223,13 +1237,12 @@ public class UserServiceTest {
   @Test
   public void deleteValid() throws Throwable {
     User user = repository.findOne(5L);
-    entityManager.detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
     try {
-      userService.delete(users);
+      service.delete(users);
       fail("Expected DeleteValidUserException");
     } catch (DeleteValidUserException e) {
       // Ignore.
@@ -1239,14 +1252,13 @@ public class UserServiceTest {
   @Test
   public void delete() throws Throwable {
     User user = repository.findOne(7L);
-    entityManager.detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userService.delete(users);
+    service.delete(users);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     user = repository.findOne(7L);
     assertNull(user);
@@ -1255,14 +1267,13 @@ public class UserServiceTest {
   @Test
   public void delete_NewLaboratory() throws Throwable {
     User user = repository.findOne(6L);
-    entityManager.detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
-    userService.delete(users);
+    service.delete(users);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     user = repository.findOne(6L);
     assertNull(user);

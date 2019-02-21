@@ -70,6 +70,9 @@ public class UserService {
   @Inject
   private AuthorizationService authorizationService;
 
+  protected UserService() {
+  }
+
   /**
    * Selects user from database.
    *
@@ -225,8 +228,7 @@ public class UserService {
 
     setUserPassword(user, password);
     user.setLaboratory(manager.getLaboratory());
-    repository.save(user);
-    repository.flush();
+    repository.saveAndFlush(user);
 
     // Send email to manager to inform him that a new user has registered.
     try {
@@ -278,8 +280,7 @@ public class UserService {
     laboratory.setDirector(manager.getName());
     laboratory.setManagers(new ArrayList<User>());
     laboratory.getManagers().add(manager);
-    laboratoryRepository.save(laboratory);
-    laboratoryRepository.flush();
+    laboratoryRepository.saveAndFlush(laboratory);
 
     // Send email to admin users to inform them that a new laboratory has registered.
     try {
@@ -343,8 +344,7 @@ public class UserService {
     user.setValid(true);
     user.setActive(true);
     user.setLaboratory(manager.getLaboratory());
-    repository.save(user);
-    repository.flush();
+    repository.saveAndFlush(user);
 
     cacheFlusher.flushShiroCache();
 
