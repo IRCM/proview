@@ -24,34 +24,23 @@ import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SampleServiceTest {
-  private SampleService sampleService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private SampleService service;
+  @MockBean
   private AuthorizationService authorizationService;
-
-  /**
-   * Before test.
-   */
-  @Before
-  public void beforeTest() {
-    sampleService = new SampleService(entityManager, authorizationService);
-  }
 
   @Test
   public void get_SubmissionSample_Gel() throws Throwable {
-    Sample sample = sampleService.get(1L);
+    Sample sample = service.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof SubmissionSample);
@@ -67,7 +56,7 @@ public class SampleServiceTest {
 
   @Test
   public void get_SubmissionSample() throws Throwable {
-    Sample sample = sampleService.get(442L);
+    Sample sample = service.get(442L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof SubmissionSample);
@@ -85,7 +74,7 @@ public class SampleServiceTest {
 
   @Test
   public void get_Control() throws Throwable {
-    Sample sample = sampleService.get(444L);
+    Sample sample = service.get(444L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof Control);
@@ -102,7 +91,7 @@ public class SampleServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Sample sample = sampleService.get(null);
+    Sample sample = service.get(null);
 
     assertNull(sample);
   }
