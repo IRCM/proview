@@ -29,6 +29,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
+import com.google.common.collect.Lists;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.io.IOException;
@@ -40,8 +41,6 @@ import java.util.Locale;
 import java.util.Optional;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -63,8 +62,10 @@ import org.thymeleaf.context.Context;
 @Transactional
 public class PlateService {
   public static final String PLATE = "plate";
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private PlateRepository repository;
+  @Inject
+  private WellRepository wellRepository;
   @Inject
   private JPAQueryFactory queryFactory;
   @Inject
@@ -81,19 +82,6 @@ public class PlateService {
   protected PlateService() {
   }
 
-  protected PlateService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      PlateActivityService plateActivityService, ActivityService activityService,
-      AuthorizationService authorizationService, TemplateEngine emailTemplateEngine,
-      ApplicationConfiguration applicationConfiguration) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.plateActivityService = plateActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
-    this.emailTemplateEngine = emailTemplateEngine;
-    this.applicationConfiguration = applicationConfiguration;
-  }
-
   /**
    * Returns plate with specified id.
    *
@@ -106,7 +94,7 @@ public class PlateService {
       return null;
     }
 
-    Plate plate = entityManager.find(Plate.class, id);
+    Plate plate = repository.findOne(id);
     authorizationService.checkPlateReadPermission(plate);
     return plate;
   }
@@ -124,10 +112,7 @@ public class PlateService {
     if (filter == null) {
       filter = new PlateFilter();
     }
-    JPAQuery<Plate> query = queryFactory.select(plate);
-    query.from(plate);
-    filter.addConditions(query);
-    return query.distinct().fetch();
+    return Lists.newArrayList(repository.findAll(filter.predicate()));
   }
 
   /**
@@ -145,10 +130,7 @@ public class PlateService {
     User user = authorizationService.getCurrentUser();
 
     if (authorizationService.hasAdminRole()) {
-      JPAQuery<Long> query = queryFactory.select(plate.id);
-      query.from(plate);
-      query.where(plate.name.eq(name));
-      return query.fetchCount() == 0;
+      return repository.countByName(name) == 0;
     } else {
       JPAQuery<Long> query = queryFactory.select(plate.id);
       query.from(plate);
@@ -275,9 +257,8 @@ public class PlateService {
 
     plate.setInsertTime(Instant.now());
     initWellList(plate);
-    entityManager.persist(plate);
+    repository.saveAndFlush(plate);
 
-    entityManager.flush();
     // Log insertion of plate.
     Activity activity = plateActivityService.insert(plate);
     activityService.insert(activity);
@@ -297,7 +278,7 @@ public class PlateService {
   public void update(Plate plate) {
     authorizationService.checkAdminRole();
 
-    entityManager.merge(plate);
+    repository.save(plate);
 
     Optional<Activity> optionalActivity = plateActivityService.update(plate);
     optionalActivity.ifPresent(activity -> activityService.insert(activity));
@@ -330,7 +311,7 @@ public class PlateService {
     activityService.insert(activity);
 
     for (Well well : wells) {
-      entityManager.merge(well);
+      wellRepository.save(well);
     }
   }
 
@@ -361,7 +342,7 @@ public class PlateService {
     activityService.insert(activity);
 
     for (Well well : wells) {
-      entityManager.merge(well);
+      wellRepository.save(well);
     }
   }
 }

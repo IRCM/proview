@@ -25,8 +25,8 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.text.Strings;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -70,9 +70,15 @@ public class PlateFilter implements Predicate<Plate> {
     return test;
   }
 
-  private void addFilterConditions(JPAQuery<?> query) {
+  /**
+   * Returns QueryDSL predicate matching filter.
+   *
+   * @return QueryDSL predicate matching filter
+   */
+  public com.querydsl.core.types.Predicate predicate() {
+    BooleanBuilder predicate = new BooleanBuilder();
     if (nameContains != null) {
-      query.where(plate.name.contains(nameContains));
+      predicate.and(plate.name.contains(nameContains));
     }
     if (insertTimeRange != null) {
       if (insertTimeRange.hasLowerBound()) {
@@ -80,30 +86,28 @@ public class PlateFilter implements Predicate<Plate> {
         if (insertTimeRange.lowerBoundType() == BoundType.OPEN) {
           date = date.plusDays(1);
         }
-        query.where(plate.insertTime.goe(toInstant(date)));
+        predicate.and(plate.insertTime.goe(toInstant(date)));
       }
       if (insertTimeRange.hasUpperBound()) {
         LocalDate date = insertTimeRange.upperEndpoint();
         if (insertTimeRange.upperBoundType() == BoundType.CLOSED) {
           date = date.plusDays(1);
         }
-        query.where(plate.insertTime.before(toInstant(date)));
+        predicate.and(plate.insertTime.before(toInstant(date)));
       }
     }
     if (submission != null) {
-      query.where(plate.submission.eq(submission));
+      predicate.and(plate.submission.eq(submission));
     }
     if (minimumEmptyCount != null) {
       QWell mecW = new QWell("mecW");
-      query.where(plate.columnCount.multiply(plate.rowCount).subtract(minimumEmptyCount)
-          .goe(JPAExpressions.select(mecW.sample.count()).from(plate.wells, mecW)));
+      predicate =
+          predicate.and(plate.columnCount.multiply(plate.rowCount).subtract(minimumEmptyCount)
+              .goe(JPAExpressions.select(mecW.sample.count()).from(plate.wells, mecW)));
     }
     if (containsAnySamples != null) {
-      query.where(plate.wells.any().sample.in(containsAnySamples));
+      predicate.and(plate.wells.any().sample.in(containsAnySamples));
     }
-  }
-
-  public void addConditions(JPAQuery<?> query) {
-    addFilterConditions(query);
+    return predicate.getValue();
   }
 }

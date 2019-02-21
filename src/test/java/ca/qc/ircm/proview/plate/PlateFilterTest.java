@@ -19,16 +19,17 @@ package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.google.common.collect.Range;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import java.time.Instant;
@@ -317,149 +318,149 @@ public class PlateFilterTest {
   }
 
   @Test
-  public void addConditions_NameContains() throws Exception {
+  public void predicate_NameContains() throws Exception {
     filter.nameContains = "test";
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.name.contains("test"));
+    assertEquals(plate.name.contains("test"), predicate);
   }
 
   @Test
-  public void addConditions_MinimumEmptyCount() throws Exception {
+  public void predicate_MinimumEmptyCount() throws Exception {
     filter.minimumEmptyCount = 40;
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
     QWell mecW = new QWell("mecW");
-    verify(query).where(plate.columnCount.multiply(plate.rowCount).subtract(40)
-        .goe(JPAExpressions.select(mecW.sample.count()).from(plate.wells, mecW)));
+    assertEquals(plate.columnCount.multiply(plate.rowCount).subtract(40)
+        .goe(JPAExpressions.select(mecW.sample.count()).from(plate.wells, mecW)), predicate);
   }
 
   @Test
-  public void addConditions_InsertTimeRange_OpenRange() throws Exception {
+  public void predicate_InsertTimeRange_OpenRange() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.insertTimeRange = Range.open(start, end);
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.insertTime.goe(toInstant(start.plusDays(1))));
-    verify(query).where(plate.insertTime.before(toInstant(end)));
+    assertEquals(plate.insertTime.goe(toInstant(start.plusDays(1)))
+        .and(plate.insertTime.before(toInstant(end))), predicate);
   }
 
   @Test
-  public void addConditions_InsertTimeRange_ClosedRange() throws Exception {
+  public void predicate_InsertTimeRange_ClosedRange() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.insertTimeRange = Range.closed(start, end);
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.insertTime.goe(toInstant(start)));
-    verify(query).where(plate.insertTime.before(toInstant(end.plusDays(1))));
+    assertEquals(plate.insertTime.goe(toInstant(start))
+        .and(plate.insertTime.before(toInstant(end.plusDays(1)))), predicate);
   }
 
   @Test
-  public void addConditions_InsertTimeRange_OpenClosedRange() throws Exception {
+  public void predicate_InsertTimeRange_OpenClosedRange() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.insertTimeRange = Range.openClosed(start, end);
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.insertTime.goe(toInstant(start.plusDays(1))));
-    verify(query).where(plate.insertTime.before(toInstant(end.plusDays(1))));
+    assertEquals(plate.insertTime.goe(toInstant(start.plusDays(1)))
+        .and(plate.insertTime.before(toInstant(end.plusDays(1)))), predicate);
   }
 
   @Test
-  public void addConditions_InsertTimeRange_ClosedOpenRange() throws Exception {
+  public void predicate_InsertTimeRange_ClosedOpenRange() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.insertTimeRange = Range.closedOpen(start, end);
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.insertTime.goe(toInstant(start)));
-    verify(query).where(plate.insertTime.before(toInstant(end)));
+    assertEquals(
+        plate.insertTime.goe(toInstant(start)).and(plate.insertTime.before(toInstant(end))),
+        predicate);
   }
 
   @Test
-  public void addConditions_InsertTimeRange_AtLeast() throws Exception {
+  public void predicate_InsertTimeRange_AtLeast() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.insertTimeRange = Range.atLeast(start);
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.insertTime.goe(toInstant(start)));
+    assertEquals(plate.insertTime.goe(toInstant(start)), predicate);
   }
 
   @Test
-  public void addConditions_InsertTimeRange_GreaterThan() throws Exception {
+  public void predicate_InsertTimeRange_GreaterThan() throws Exception {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.insertTimeRange = Range.greaterThan(start);
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.insertTime.goe(toInstant(start.plusDays(1))));
+    assertEquals(plate.insertTime.goe(toInstant(start.plusDays(1))), predicate);
   }
 
   @Test
-  public void addConditions_InsertTimeRange_AtMost() throws Exception {
+  public void predicate_InsertTimeRange_AtMost() throws Exception {
     LocalDate end = LocalDate.now();
     filter.insertTimeRange = Range.atMost(end);
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.insertTime.before(toInstant(end.plusDays(1))));
+    assertEquals(plate.insertTime.before(toInstant(end.plusDays(1))), predicate);
   }
 
   @Test
-  public void addConditions_InsertTimeRange_LessThan() throws Exception {
+  public void predicate_InsertTimeRange_LessThan() throws Exception {
     LocalDate end = LocalDate.now();
     filter.insertTimeRange = Range.lessThan(end);
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.insertTime.before(toInstant(end)));
+    assertEquals(plate.insertTime.before(toInstant(end)), predicate);
   }
 
   @Test
-  public void addConditions_Submission_True() throws Exception {
+  public void predicate_Submission_True() throws Exception {
     filter.submission = true;
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.submission.eq(true));
+    assertEquals(plate.submission.eq(true), predicate);
   }
 
   @Test
-  public void addConditions_Submission_False() throws Exception {
+  public void predicate_Submission_False() throws Exception {
     filter.submission = false;
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.submission.eq(false));
+    assertEquals(plate.submission.eq(false), predicate);
   }
 
   @Test
-  public void addConditions_ContainsAnySample() throws Exception {
+  public void predicate_ContainsAnySample() throws Exception {
     filter.containsAnySamples =
         Arrays.asList(new SubmissionSample(5L), new SubmissionSample(8L), new Control(12L));
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.wells.any().sample.in(filter.containsAnySamples));
+    assertEquals(plate.wells.any().sample.in(filter.containsAnySamples), predicate);
   }
 
   @Test
-  public void addConditions_NameContainsAndSubmission() {
+  public void predicate_NameContainsAndSubmission() {
     filter.nameContains = "test";
     filter.submission = true;
 
-    filter.addConditions(query);
+    Predicate predicate = filter.predicate();
 
-    verify(query).where(plate.name.contains("test"));
-    verify(query).where(plate.submission.eq(true));
+    assertEquals(plate.name.contains("test").and(plate.submission.eq(true)), predicate);
   }
 }
