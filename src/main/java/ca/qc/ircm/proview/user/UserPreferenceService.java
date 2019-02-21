@@ -21,9 +21,7 @@ import static ca.qc.ircm.proview.user.QPreference.preference;
 import static ca.qc.ircm.proview.user.QUserPreference.userPreference;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
-import com.querydsl.jpa.impl.JPADeleteClause;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,8 +29,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,21 +38,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserPreferenceService {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory jpaQueryFactory;
+  private UserPreferenceRepository repository;
+  @Inject
+  private PreferenceRepository preferenceRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected UserPreferenceService() {
   }
 
-  protected UserPreferenceService(EntityManager entityManager, JPAQueryFactory jpaQueryFactory,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.jpaQueryFactory = jpaQueryFactory;
-    this.authorizationService = authorizationService;
+  private String toString(Object referer) {
+    return referer.getClass().getName();
   }
 
   private byte[] toBytes(Object value) {
@@ -74,6 +67,23 @@ public class UserPreferenceService {
     try (ObjectInputStream objectInput = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
       return objectInput.readObject();
     }
+  }
+
+  private UserPreference find(User user, String referer, String name) {
+    BooleanExpression predicate = userPreference.preference.referer.eq(referer)
+        .and(userPreference.preference.name.eq(name)).and(userPreference.user.eq(user));
+    return repository.findOne(predicate);
+  }
+
+  private UserPreference find(User user, Preference preference) {
+    BooleanExpression predicate =
+        userPreference.user.eq(user).and(userPreference.preference.eq(preference));
+    return repository.findOne(predicate);
+  }
+
+  private Preference findPreference(String referer, String name) {
+    BooleanExpression predicate = preference.referer.eq(referer).and(preference.name.eq(name));
+    return preferenceRepository.findOne(predicate);
   }
 
   /**
@@ -99,15 +109,10 @@ public class UserPreferenceService {
       return defaultValue;
     }
 
-    JPAQuery<UserPreference> query = jpaQueryFactory.select(userPreference);
-    query.from(userPreference);
-    query.where(userPreference.preference.referer.eq(referer.getClass().getName()));
-    query.where(userPreference.preference.name.eq(name));
-    query.where(userPreference.user.eq(user));
-    UserPreference preference = query.fetchOne();
-    if (preference != null) {
+    UserPreference userPreference = find(user, toString(referer), name);
+    if (userPreference != null) {
       try {
-        return (T) toObject(preference.getValue());
+        return (T) toObject(userPreference.getValue());
       } catch (ClassNotFoundException | IOException e) {
         return defaultValue;
       }
@@ -129,32 +134,23 @@ public class UserPreferenceService {
   public void save(Object referer, String name, Serializable value) {
     final String refererName = referer.getClass().getName();
     final User user = authorizationService.getCurrentUser();
-    JPAQuery<Preference> preferenceQuery = jpaQueryFactory.select(preference);
-    preferenceQuery.from(preference);
-    preferenceQuery.where(preference.referer.eq(refererName));
-    preferenceQuery.where(preference.name.eq(name));
-    Preference preference = preferenceQuery.fetchOne();
+    Preference preference = findPreference(toString(referer), name);
     if (preference == null) {
       preference = new Preference();
       preference.setReferer(refererName);
       preference.setName(name);
-      entityManager.persist(preference);
+      preferenceRepository.save(preference);
     }
-    JPAQuery<UserPreference> query = jpaQueryFactory.select(userPreference);
-    query.from(userPreference);
-    query.where(userPreference.preference.eq(preference));
-    query.where(userPreference.user.eq(user));
-    UserPreference userPreference = query.fetchOne();
+    UserPreference userPreference = find(user, preference);
     if (userPreference != null) {
       userPreference.setValue(toBytes(value));
-      entityManager.merge(userPreference);
     } else {
       userPreference = new UserPreference();
       userPreference.setPreference(preference);
       userPreference.setUser(user);
       userPreference.setValue(toBytes(value));
-      entityManager.persist(userPreference);
     }
+    repository.save(userPreference);
   }
 
   /**
@@ -167,11 +163,7 @@ public class UserPreferenceService {
    */
   public void delete(Object referer, String name) {
     User user = authorizationService.getCurrentUser();
-    JPADeleteClause query = jpaQueryFactory.delete(userPreference);
-    query.where(userPreference.preference.referer.eq(referer.getClass().getName()));
-    query.where(userPreference.preference.name.eq(name));
-    query.where(userPreference.user.eq(user));
-    query.execute();
+    repository.deleteByUserAndPreferenceRefererAndPreferenceName(user, toString(referer), name);
   }
 
   /**
@@ -183,9 +175,6 @@ public class UserPreferenceService {
    *          preference's name
    */
   public void deleteAll(Object referer, String name) {
-    JPADeleteClause query = jpaQueryFactory.delete(preference);
-    query.where(preference.referer.eq(referer.getClass().getName()));
-    query.where(preference.name.eq(name));
-    query.execute();
+    preferenceRepository.deleteByRefererAndName(toString(referer), name);
   }
 }

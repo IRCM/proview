@@ -20,23 +20,21 @@ package ca.qc.ircm.proview.user;
 import static ca.qc.ircm.proview.user.QPreference.preference;
 import static ca.qc.ircm.proview.user.QUserPreference.userPreference;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,12 +42,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class UserPreferenceServiceTest {
   private static final String PREFERENCE_1 = "preference_1";
   private static final String PREFERENCE_2 = "preference_2";
-  private UserPreferenceService userPreferenceService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory jpaQueryFactory;
-  @Mock
+  private UserPreferenceService service;
+  @Inject
+  private UserPreferenceRepository repository;
+  @Inject
+  private PreferenceRepository preferenceRepository;
+  @Inject
+  private UserRepository userRepository;
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -58,10 +59,12 @@ public class UserPreferenceServiceTest {
    */
   @Before
   public void beforeTest() {
-    userPreferenceService =
-        new UserPreferenceService(entityManager, jpaQueryFactory, authorizationService);
-    user = entityManager.find(User.class, 2L);
+    user = userRepository.findOne(2L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
+  }
+
+  private String referer() {
+    return this.getClass().getName();
   }
 
   private Object getValue(UserPreference preference) throws IOException, ClassNotFoundException {
@@ -71,83 +74,84 @@ public class UserPreferenceServiceTest {
     }
   }
 
+  private UserPreference find(User user, String referer, String name) {
+    BooleanExpression predicate = userPreference.preference.referer.eq(referer)
+        .and(userPreference.preference.name.eq(name)).and(userPreference.user.eq(user));
+    return repository.findOne(predicate);
+  }
+
+  private Preference findPreference(String referer, String name) {
+    BooleanExpression predicate = preference.referer.eq(referer).and(preference.name.eq(name));
+    return preferenceRepository.findOne(predicate);
+  }
+
   @Test
   public void get() {
-    assertEquals("value 1", userPreferenceService.get(this, PREFERENCE_1, "default value"));
-    assertEquals((Integer) 208, userPreferenceService.get(this, PREFERENCE_2, 20));
+    assertEquals("value 1", service.get(this, PREFERENCE_1, "default value"));
+    assertEquals((Integer) 208, service.get(this, PREFERENCE_2, 20));
   }
 
   @Test
   public void get_MissingUserPreference() {
-    User user = entityManager.find(User.class, 10L);
+    User user = userRepository.findOne(10L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    assertEquals("default value", userPreferenceService.get(this, PREFERENCE_1, "default value"));
-    assertEquals((Integer) 20, userPreferenceService.get(this, PREFERENCE_2, 20));
+    assertEquals("default value", service.get(this, PREFERENCE_1, "default value"));
+    assertEquals((Integer) 20, service.get(this, PREFERENCE_2, 20));
   }
 
   @Test
   public void get_MissingPreference() {
     assertEquals("default value",
-        userPreferenceService.get(this, "missing reference", "default value"));
+        service.get(this, "missing reference", "default value"));
   }
 
   @Test
   public void get_NullReferer() {
-    assertEquals("default value", userPreferenceService.get(null, PREFERENCE_1, "default value"));
+    assertEquals("default value", service.get(null, PREFERENCE_1, "default value"));
   }
 
   @Test
   public void get_NullName() {
-    assertEquals("default value", userPreferenceService.get(this, null, "default value"));
+    assertEquals("default value", service.get(this, null, "default value"));
   }
 
   @Test
   public void get_NoCurrentUser() {
     when(authorizationService.getCurrentUser()).thenReturn(null);
 
-    assertEquals("default value", userPreferenceService.get(this, PREFERENCE_1, "default value"));
+    assertEquals("default value", service.get(this, PREFERENCE_1, "default value"));
   }
 
   @Test
   public void get_NullDefaultValue() {
-    assertNull(userPreferenceService.get(this, "missing reference", null));
+    assertNull(service.get(this, "missing reference", null));
   }
 
   @Test
   public void save_Insert_All() throws Throwable {
     String value = "test value 1";
     String name = "test new preference";
-    User user = entityManager.find(User.class, 10L);
+    User user = userRepository.findOne(10L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    userPreferenceService.save(this, name, value);
-    entityManager.flush();
+    service.save(this, name, value);
+    repository.flush();
 
-    JPAQuery<UserPreference> query = jpaQueryFactory.select(userPreference);
-    query.from(userPreference);
-    query.where(userPreference.preference.referer.eq(this.getClass().getName()));
-    query.where(userPreference.preference.name.eq(name));
-    query.where(userPreference.user.eq(user));
-    UserPreference userPreference = query.fetchOne();
+    UserPreference userPreference = find(user, referer(), name);
     assertEquals(value, getValue(userPreference));
   }
 
   @Test
   public void save_Insert() throws Throwable {
     String value = "test value 1";
-    User user = entityManager.find(User.class, 10L);
+    User user = userRepository.findOne(10L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    userPreferenceService.save(this, PREFERENCE_1, value);
-    entityManager.flush();
+    service.save(this, PREFERENCE_1, value);
+    repository.flush();
 
-    JPAQuery<UserPreference> query = jpaQueryFactory.select(userPreference);
-    query.from(userPreference);
-    query.where(userPreference.preference.referer.eq(this.getClass().getName()));
-    query.where(userPreference.preference.name.eq(PREFERENCE_1));
-    query.where(userPreference.user.eq(user));
-    UserPreference userPreference = query.fetchOne();
+    UserPreference userPreference = find(user, referer(), PREFERENCE_1);
     assertEquals(value, getValue(userPreference));
   }
 
@@ -155,15 +159,10 @@ public class UserPreferenceServiceTest {
   public void save_Update() throws Throwable {
     String newValue = "new value 1";
 
-    userPreferenceService.save(this, PREFERENCE_1, newValue);
-    entityManager.flush();
+    service.save(this, PREFERENCE_1, newValue);
+    repository.flush();
 
-    JPAQuery<UserPreference> query = jpaQueryFactory.select(userPreference);
-    query.from(userPreference);
-    query.where(userPreference.preference.referer.eq(this.getClass().getName()));
-    query.where(userPreference.preference.name.eq(PREFERENCE_1));
-    query.where(userPreference.user.eq(user));
-    UserPreference userPreference = query.fetchOne();
+    UserPreference userPreference = find(user, referer(), PREFERENCE_1);
     assertEquals(newValue, getValue(userPreference));
   }
 
@@ -171,45 +170,30 @@ public class UserPreferenceServiceTest {
   public void save_UpdateToNull() throws Throwable {
     String newValue = null;
 
-    userPreferenceService.save(this, PREFERENCE_1, newValue);
-    entityManager.flush();
+    service.save(this, PREFERENCE_1, newValue);
+    repository.flush();
 
-    JPAQuery<UserPreference> query = jpaQueryFactory.select(userPreference);
-    query.from(userPreference);
-    query.where(userPreference.preference.referer.eq(this.getClass().getName()));
-    query.where(userPreference.preference.name.eq(PREFERENCE_1));
-    query.where(userPreference.user.eq(user));
-    UserPreference userPreference = query.fetchOne();
+    UserPreference userPreference = find(user, referer(), PREFERENCE_1);
     assertEquals(newValue, getValue(userPreference));
   }
 
   @Test
   public void delete() {
-    userPreferenceService.delete(this, PREFERENCE_1);
-    entityManager.flush();
+    service.delete(this, PREFERENCE_1);
+    repository.flush();
 
-    JPAQuery<Preference> preferenceQuery = jpaQueryFactory.select(preference);
-    preferenceQuery.from(preference);
-    preferenceQuery.where(preference.referer.eq(this.getClass().getName()));
-    preferenceQuery.where(preference.name.eq(PREFERENCE_1));
-    assertEquals(1, preferenceQuery.fetchCount());
-    JPAQuery<UserPreference> query = jpaQueryFactory.select(userPreference);
-    query.from(userPreference);
-    query.where(userPreference.preference.referer.eq(this.getClass().getName()));
-    query.where(userPreference.preference.name.eq(PREFERENCE_1));
-    query.where(userPreference.user.eq(user));
-    assertEquals(0, query.fetchCount());
+    Preference preference = findPreference(referer(), PREFERENCE_1);
+    assertNotNull(preference);
+    UserPreference userPreference = find(user, referer(), PREFERENCE_1);
+    assertNull(userPreference);
   }
 
   @Test
   public void deleteAll() {
-    userPreferenceService.deleteAll(this, PREFERENCE_1);
-    entityManager.flush();
+    service.deleteAll(this, PREFERENCE_1);
+    preferenceRepository.flush();
 
-    JPAQuery<Preference> query = jpaQueryFactory.select(preference);
-    query.from(preference);
-    query.where(preference.referer.eq(this.getClass().getName()));
-    query.where(preference.name.eq(PREFERENCE_1));
-    assertEquals(0, query.fetchCount());
+    Preference preference = findPreference(referer(), PREFERENCE_1);
+    assertNull(preference);
   }
 }
