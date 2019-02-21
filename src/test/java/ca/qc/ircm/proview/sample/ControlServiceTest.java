@@ -32,34 +32,31 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ControlServiceTest {
-  private ControlService controlService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private ControlService service;
+  @Inject
+  private ControlRepository repository;
+  @MockBean
   private SampleActivityService sampleActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -74,14 +71,12 @@ public class ControlServiceTest {
    */
   @Before
   public void beforeTest() {
-    controlService = new ControlService(entityManager, queryFactory, sampleActivityService,
-        activityService, authorizationService);
     optionalActivity = Optional.of(activity);
   }
 
   @Test
   public void get_Id() {
-    Control control = controlService.get(444L);
+    Control control = service.get(444L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 444L, control.getId());
@@ -96,14 +91,14 @@ public class ControlServiceTest {
 
   @Test
   public void get_NullId() {
-    Control control = controlService.get(null);
+    Control control = service.get(null);
 
     assertNull(control);
   }
 
   @Test
   public void all() {
-    List<Control> controls = controlService.all();
+    List<Control> controls = service.all();
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, controls.size());
@@ -113,7 +108,7 @@ public class ControlServiceTest {
 
   @Test
   public void exists_True() throws Throwable {
-    boolean exists = controlService.exists("control_01");
+    boolean exists = service.exists("control_01");
 
     verify(authorizationService).checkUserRole();
     assertEquals(true, exists);
@@ -121,7 +116,7 @@ public class ControlServiceTest {
 
   @Test
   public void exists_False() throws Throwable {
-    boolean exists = controlService.exists("control_AB");
+    boolean exists = service.exists("control_AB");
 
     verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
@@ -129,7 +124,7 @@ public class ControlServiceTest {
 
   @Test
   public void exists_SubmissionSampleName() throws Throwable {
-    boolean exists = controlService.exists("CAP_20111013_05");
+    boolean exists = service.exists("CAP_20111013_05");
 
     verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
@@ -137,7 +132,7 @@ public class ControlServiceTest {
 
   @Test
   public void exists_Null() throws Throwable {
-    boolean exists = controlService.exists(null);
+    boolean exists = service.exists(null);
 
     assertEquals(false, exists);
   }
@@ -163,13 +158,13 @@ public class ControlServiceTest {
     control.getStandards().add(standard2);
     when(sampleActivityService.insertControl(any(Control.class))).thenReturn(activity);
 
-    controlService.insert(control);
+    service.insert(control);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).insertControl(controlCaptor.capture());
     verify(activityService).insert(activity);
-    Control testControl = controlService.get(control.getId());
+    Control testControl = service.get(control.getId());
     assertEquals("nc_test_000001", testControl.getName());
     assertEquals(SampleType.GEL, testControl.getType());
     assertEquals("20.0 μl", testControl.getVolume());
@@ -207,8 +202,7 @@ public class ControlServiceTest {
 
   @Test
   public void update() {
-    Control control = entityManager.find(Control.class, 444L);
-    entityManager.detach(control);
+    Control control = repository.findOne(444L);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
     control.setType(SampleType.SOLUTION);
@@ -217,14 +211,13 @@ public class ControlServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    controlService.update(control, "test changes");
+    service.update(control, "test changes");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
-    Control test = entityManager.find(Control.class, control.getId());
-    entityManager.refresh(test);
+    Control test = repository.findOne(control.getId());
     assertEquals("nc_test_000001", test.getName());
     assertEquals(ControlType.POSITIVE_CONTROL, test.getControlType());
     assertEquals(SampleType.SOLUTION, test.getType());
@@ -246,25 +239,23 @@ public class ControlServiceTest {
 
   @Test
   public void update_AddStandard() {
-    Control control = entityManager.find(Control.class, 444L);
-    entityManager.detach(control);
     Standard standard = new Standard();
     standard.setName("my_new_standard");
     standard.setQuantity("3 μg");
     standard.setComment("some_comment");
+    Control control = repository.findOne(444L);
     control.getStandards().add(standard);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    controlService.update(control, "test changes");
+    service.update(control, "test changes");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     // Validate new standard.
-    Control test = entityManager.find(Control.class, control.getId());
-    entityManager.refresh(test);
+    Control test = repository.findOne(control.getId());
     assertEquals(1, test.getStandards().size());
     Standard testStandard = test.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
@@ -283,11 +274,7 @@ public class ControlServiceTest {
 
   @Test
   public void update_UpdateStandard() {
-    Control control = entityManager.find(Control.class, 448L);
-    entityManager.detach(control);
-    for (Standard standard : control.getStandards()) {
-      entityManager.detach(standard);
-    }
+    Control control = repository.findOne(448L);
     // Change standard.
     Standard standard = control.getStandards().get(0);
     standard.setName("new_standard_name");
@@ -296,15 +283,14 @@ public class ControlServiceTest {
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    controlService.update(control, "test changes");
+    service.update(control, "test changes");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     // Validate standard update.
-    Control test = entityManager.find(Control.class, control.getId());
-    entityManager.refresh(test);
+    Control test = repository.findOne(control.getId());
     assertEquals(1, test.getStandards().size());
     Standard testStandard = test.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
@@ -323,21 +309,19 @@ public class ControlServiceTest {
 
   @Test
   public void update_RemoveStandard() {
-    Control control = entityManager.find(Control.class, 448L);
-    entityManager.detach(control);
+    Control control = repository.findOne(448L);
     control.getStandards().remove(0);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    controlService.update(control, "test changes");
+    service.update(control, "test changes");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     // Validate standard deletion.
-    Control test = entityManager.find(Control.class, control.getId());
-    entityManager.refresh(test);
+    Control test = repository.findOne(control.getId());
     assertEquals(0, test.getStandards().size());
     // Validate activity log.
     Sample newSample = sampleCaptor.getValue();
