@@ -29,38 +29,41 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DataAnalysisServiceTest {
-  private DataAnalysisService dataAnalysisService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private DataAnalysisService service;
+  @Inject
+  private DataAnalysisRepository repository;
+  @Inject
+  private SubmissionRepository submissionRepository;
+  @Inject
+  private SubmissionSampleRepository submissionSampleRepository;
+  @MockBean
   private DataAnalysisActivityService dataAnalysisActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -73,14 +76,12 @@ public class DataAnalysisServiceTest {
    */
   @Before
   public void beforeTest() {
-    dataAnalysisService = new DataAnalysisService(entityManager, queryFactory,
-        dataAnalysisActivityService, activityService, authorizationService);
     optionalActivity = Optional.of(activity);
   }
 
   @Test
   public void get() {
-    DataAnalysis dataAnalysis = dataAnalysisService.get(3L);
+    DataAnalysis dataAnalysis = service.get(3L);
 
     verify(authorizationService).checkDataAnalysisReadPermission(dataAnalysis);
     assertEquals((Long) 3L, dataAnalysis.getId());
@@ -96,16 +97,16 @@ public class DataAnalysisServiceTest {
 
   @Test
   public void get_Null() {
-    DataAnalysis dataAnalysis = dataAnalysisService.get(null);
+    DataAnalysis dataAnalysis = service.get(null);
 
     assertNull(dataAnalysis);
   }
 
   @Test
   public void all() {
-    Submission submission = entityManager.find(Submission.class, 1L);
+    Submission submission = submissionRepository.findOne(1L);
 
-    List<DataAnalysis> dataAnalyses = dataAnalysisService.all(submission);
+    List<DataAnalysis> dataAnalyses = service.all(submission);
 
     verify(authorizationService).checkSubmissionReadPermission(submission);
     assertEquals(1, dataAnalyses.size());
@@ -123,14 +124,14 @@ public class DataAnalysisServiceTest {
 
   @Test
   public void all_Null() {
-    List<DataAnalysis> dataAnalyses = dataAnalysisService.all(null);
+    List<DataAnalysis> dataAnalyses = service.all(null);
 
     assertEquals(0, dataAnalyses.size());
   }
 
   @Test
   public void insert() {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     DataAnalysis dataAnalysis = new DataAnalysis();
     dataAnalysis.setSample(sample);
@@ -142,12 +143,12 @@ public class DataAnalysisServiceTest {
     dataAnalyses.add(dataAnalysis);
     when(dataAnalysisActivityService.insert(any(DataAnalysis.class))).thenReturn(activity);
 
-    dataAnalysisService.insert(dataAnalyses);
+    service.insert(dataAnalyses);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNotNull(dataAnalysis.getId());
-    dataAnalysis = dataAnalysisService.get(dataAnalysis.getId());
+    dataAnalysis = service.get(dataAnalysis.getId());
     assertEquals(dataAnalysis.getId(), dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("85574", dataAnalysis.getProtein());
@@ -157,7 +158,7 @@ public class DataAnalysisServiceTest {
     assertEquals(null, dataAnalysis.getWorkTime());
     assertEquals(DataAnalysisStatus.TO_DO, dataAnalysis.getStatus());
     assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
-    sample = entityManager.find(SubmissionSample.class, 1L);
+    sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     verify(dataAnalysisActivityService).insert(dataAnalysisCaptor.capture());
     verify(activityService).insert(activity);
@@ -175,10 +176,9 @@ public class DataAnalysisServiceTest {
 
   @Test
   public void update() {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
-    DataAnalysis dataAnalysis = dataAnalysisService.get(3L);
-    entityManager.detach(dataAnalysis);
+    DataAnalysis dataAnalysis = service.get(3L);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456", dataAnalysis.getProtein());
@@ -194,11 +194,11 @@ public class DataAnalysisServiceTest {
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    dataAnalysisService.update(dataAnalysis, "unit_test");
+    service.update(dataAnalysis, "unit_test");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
-    dataAnalysis = dataAnalysisService.get(3L);
+    dataAnalysis = service.get(3L);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456", dataAnalysis.getProtein());
@@ -208,7 +208,7 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 2.0, dataAnalysis.getWorkTime());
     assertEquals(DataAnalysisStatus.CANCELLED, dataAnalysis.getStatus());
     assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
-    sample = entityManager.find(SubmissionSample.class, 1L);
+    sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
@@ -227,10 +227,9 @@ public class DataAnalysisServiceTest {
 
   @Test
   public void update_StatusTodo() {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
-    DataAnalysis dataAnalysis = dataAnalysisService.get(3L);
-    entityManager.detach(dataAnalysis);
+    DataAnalysis dataAnalysis = service.get(3L);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456", dataAnalysis.getProtein());
@@ -246,10 +245,10 @@ public class DataAnalysisServiceTest {
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    dataAnalysisService.update(dataAnalysis, "unit_test");
+    service.update(dataAnalysis, "unit_test");
 
-    entityManager.flush();
-    dataAnalysis = dataAnalysisService.get(3L);
+    repository.flush();
+    dataAnalysis = service.get(3L);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456", dataAnalysis.getProtein());
@@ -259,7 +258,7 @@ public class DataAnalysisServiceTest {
     assertEquals(null, dataAnalysis.getWorkTime());
     assertEquals(DataAnalysisStatus.TO_DO, dataAnalysis.getStatus());
     assertEquals(DataAnalysisType.PROTEIN, dataAnalysis.getType());
-    sample = entityManager.find(SubmissionSample.class, 1L);
+    sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
@@ -278,10 +277,9 @@ public class DataAnalysisServiceTest {
 
   @Test
   public void update_StatusAnalysed() {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
+    SubmissionSample sample = submissionSampleRepository.findOne(442L);
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
-    DataAnalysis dataAnalysis = dataAnalysisService.get(4L);
-    entityManager.detach(dataAnalysis);
+    DataAnalysis dataAnalysis = service.get(4L);
     assertEquals((Long) 4L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456, 58774", dataAnalysis.getProtein());
@@ -297,10 +295,10 @@ public class DataAnalysisServiceTest {
     when(dataAnalysisActivityService.update(any(DataAnalysis.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    dataAnalysisService.update(dataAnalysis, "unit_test");
+    service.update(dataAnalysis, "unit_test");
 
-    entityManager.flush();
-    dataAnalysis = dataAnalysisService.get(4L);
+    repository.flush();
+    dataAnalysis = service.get(4L);
     assertEquals((Long) 4L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456, 58774", dataAnalysis.getProtein());
@@ -310,7 +308,7 @@ public class DataAnalysisServiceTest {
     assertEquals((Double) 3.50, dataAnalysis.getWorkTime());
     assertEquals(DataAnalysisStatus.ANALYSED, dataAnalysis.getStatus());
     assertEquals(DataAnalysisType.PROTEIN_PEPTIDE, dataAnalysis.getType());
-    sample = entityManager.find(SubmissionSample.class, 442L);
+    sample = submissionSampleRepository.findOne(442L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     verify(dataAnalysisActivityService).update(dataAnalysisCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);

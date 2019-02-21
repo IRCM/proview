@@ -22,17 +22,16 @@ import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.google.common.collect.Lists;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +41,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class DataAnalysisService {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
+  private DataAnalysisRepository repository;
+  @Inject
+  private SubmissionSampleRepository sampleRepository;
   @Inject
   private DataAnalysisActivityService dataAnalysisActivityService;
   @Inject
@@ -54,16 +53,6 @@ public class DataAnalysisService {
   private AuthorizationService authorizationService;
 
   protected DataAnalysisService() {
-  }
-
-  protected DataAnalysisService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      DataAnalysisActivityService dataAnalysisActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.dataAnalysisActivityService = dataAnalysisActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -77,7 +66,7 @@ public class DataAnalysisService {
     if (id == null) {
       return null;
     }
-    DataAnalysis dataAnalysis = entityManager.find(DataAnalysis.class, id);
+    DataAnalysis dataAnalysis = repository.findOne(id);
 
     authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
 
@@ -97,10 +86,8 @@ public class DataAnalysisService {
     }
     authorizationService.checkSubmissionReadPermission(submission);
 
-    JPAQuery<DataAnalysis> query = queryFactory.select(dataAnalysis);
-    query.from(dataAnalysis);
-    query.where(dataAnalysis.sample.in(submission.getSamples()));
-    return query.fetch();
+    BooleanExpression predicate = dataAnalysis.sample.in(submission.getSamples());
+    return Lists.newArrayList(repository.findAll(predicate));
   }
 
   /**
@@ -121,24 +108,21 @@ public class DataAnalysisService {
 
       // Insert data analysis.
       dataAnalysis.setStatus(DataAnalysisStatus.TO_DO);
-      entityManager.persist(dataAnalysis);
-      entityManager.flush();
+      repository.saveAndFlush(dataAnalysis);
 
       // Log insertion of data analysis.
       Activity activity = dataAnalysisActivityService.insert(dataAnalysis);
       activityService.insert(activity);
 
-      entityManager.merge(dataAnalysis.getSample());
+      sampleRepository.save(dataAnalysis.getSample());
     }
   }
 
   private boolean existsTodoBySampleWithExclude(DataAnalysis dataAnalysisParam) {
-    JPAQuery<Long> query = queryFactory.select(dataAnalysis.id);
-    query.from(dataAnalysis);
-    query.where(dataAnalysis.sample.eq(dataAnalysisParam.getSample()));
-    query.where(dataAnalysis.status.eq(DataAnalysisStatus.TO_DO));
-    query.where(dataAnalysis.ne(dataAnalysisParam));
-    return query.fetchCount() > 0;
+    BooleanExpression predicate = dataAnalysis.sample.eq(dataAnalysisParam.getSample())
+        .and(dataAnalysis.status.eq(DataAnalysisStatus.TO_DO))
+        .and(dataAnalysis.ne(dataAnalysisParam));
+    return repository.count(predicate) > 0;
   }
 
   /**
@@ -178,7 +162,7 @@ public class DataAnalysisService {
       activityService.insert(activity.get());
     }
 
-    entityManager.merge(dataAnalysis);
-    entityManager.merge(dataAnalysis.getSample());
+    repository.save(dataAnalysis);
+    sampleRepository.save(dataAnalysis.getSample());
   }
 }
