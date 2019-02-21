@@ -27,12 +27,10 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,28 +45,28 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionSampleServiceTest {
-  private SubmissionSampleService submissionSampleService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private SubmissionSampleService service;
+  @Inject
+  private SubmissionSampleRepository repository;
+  @MockBean
   private SampleActivityService sampleActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
-  private PricingEvaluator pricingEvaluator;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
   @Captor
   private ArgumentCaptor<SubmissionSample> sampleCaptor;
+  @PersistenceContext
+  private EntityManager entityManager;
   private Optional<Activity> optionalActivity;
 
   /**
@@ -76,14 +74,12 @@ public class SubmissionSampleServiceTest {
    */
   @Before
   public void beforeTest() {
-    submissionSampleService = new SubmissionSampleService(entityManager, queryFactory,
-        sampleActivityService, activityService, authorizationService);
     optionalActivity = Optional.of(activity);
   }
 
   @Test
   public void get_Gel() throws Throwable {
-    SubmissionSample sample = submissionSampleService.get(1L);
+    SubmissionSample sample = service.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof SubmissionSample);
@@ -103,7 +99,7 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void get() throws Throwable {
-    SubmissionSample sample = submissionSampleService.get(442L);
+    SubmissionSample sample = service.get(442L);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertTrue(sample instanceof SubmissionSample);
@@ -125,7 +121,7 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void get_NullId() throws Throwable {
-    SubmissionSample sample = submissionSampleService.get((Long) null);
+    SubmissionSample sample = service.get((Long) null);
 
     assertNull(sample);
   }
@@ -135,7 +131,7 @@ public class SubmissionSampleServiceTest {
     User user = new User(3L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    boolean exists = submissionSampleService.exists("CAP_20111013_05");
+    boolean exists = service.exists("CAP_20111013_05");
 
     verify(authorizationService).checkUserRole();
     assertEquals(true, exists);
@@ -146,7 +142,7 @@ public class SubmissionSampleServiceTest {
     User user = new User(3L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    boolean exists = submissionSampleService.exists("CAP_20111013_80");
+    boolean exists = service.exists("CAP_20111013_80");
 
     verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
@@ -157,7 +153,7 @@ public class SubmissionSampleServiceTest {
     User user = new User(10L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    boolean exists = submissionSampleService.exists("CAP_20111013_05");
+    boolean exists = service.exists("CAP_20111013_05");
 
     verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
@@ -168,7 +164,7 @@ public class SubmissionSampleServiceTest {
     User user = new User(3L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    boolean exists = submissionSampleService.exists("control_01");
+    boolean exists = service.exists("control_01");
 
     verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
@@ -179,30 +175,28 @@ public class SubmissionSampleServiceTest {
     User user = new User(3L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    boolean exists = submissionSampleService.exists(null);
+    boolean exists = service.exists(null);
 
     assertEquals(false, exists);
   }
 
   @Test
   public void updateStatus() throws Throwable {
-    SubmissionSample sample1 = entityManager.find(SubmissionSample.class, 443L);
-    entityManager.detach(sample1);
+    SubmissionSample sample1 = repository.findOne(443L);
     sample1.setStatus(SampleStatus.DIGESTED);
-    SubmissionSample sample2 = entityManager.find(SubmissionSample.class, 445L);
-    entityManager.detach(sample2);
+    SubmissionSample sample2 = repository.findOne(445L);
     sample2.setStatus(SampleStatus.RECEIVED);
     Collection<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample1);
     samples.add(sample2);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(samples);
+    service.updateStatus(samples);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
-    SubmissionSample testSample1 = entityManager.find(SubmissionSample.class, 443L);
-    SubmissionSample testSample2 = entityManager.find(SubmissionSample.class, 445L);
+    SubmissionSample testSample1 = repository.findOne(443L);
+    SubmissionSample testSample2 = repository.findOne(445L);
     assertEquals(SampleStatus.DIGESTED, testSample1.getStatus());
     assertEquals(1, testSample1.getVersion());
     assertEquals(SampleStatus.RECEIVED, testSample2.getStatus());
@@ -217,7 +211,7 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void updateStatus_Name() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
+    SubmissionSample sample = repository.findOne(443L);
     entityManager.detach(sample);
     final String name = sample.getName();
     sample.setName("unit_test");
@@ -226,11 +220,11 @@ public class SubmissionSampleServiceTest {
     samples.add(sample);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(samples);
+    service.updateStatus(samples);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
-    sample = entityManager.find(SubmissionSample.class, 443L);
+    sample = repository.findOne(443L);
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
     assertEquals(name, sample.getName());
     assertEquals(1, sample.getVersion());
@@ -238,15 +232,14 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void updateStatus_Received_SampleDeliveryDate_UpdatedNull() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
-    entityManager.detach(sample);
+    SubmissionSample sample = repository.findOne(443L);
     sample.setStatus(SampleStatus.RECEIVED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(Arrays.asList(sample));
+    service.updateStatus(Arrays.asList(sample));
 
-    entityManager.flush();
-    sample = entityManager.find(SubmissionSample.class, 443L);
+    repository.flush();
+    sample = repository.findOne(443L);
     assertTrue(
         LocalDate.now().minusDays(2).isBefore(sample.getSubmission().getSampleDeliveryDate()));
     assertTrue(LocalDate.now().plusDays(2).isAfter(sample.getSubmission().getSampleDeliveryDate()));
@@ -254,115 +247,107 @@ public class SubmissionSampleServiceTest {
 
   @Test
   public void updateStatus_Received_SampleDeliveryDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 559L);
-    entityManager.detach(sample);
+    SubmissionSample sample = repository.findOne(559L);
     sample.setStatus(SampleStatus.RECEIVED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(Arrays.asList(sample));
+    service.updateStatus(Arrays.asList(sample));
 
-    entityManager.flush();
-    sample = entityManager.find(SubmissionSample.class, 559L);
+    repository.flush();
+    sample = repository.findOne(559L);
     assertEquals(LocalDate.of(2014, 10, 8), sample.getSubmission().getSampleDeliveryDate());
   }
 
   @Test
   public void updateStatus_Digested_SampleDeliveryDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
-    entityManager.detach(sample);
+    SubmissionSample sample = repository.findOne(443L);
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(Arrays.asList(sample));
+    service.updateStatus(Arrays.asList(sample));
 
-    entityManager.flush();
-    sample = entityManager.find(SubmissionSample.class, 443L);
+    repository.flush();
+    sample = repository.findOne(443L);
     assertNull(sample.getSubmission().getSampleDeliveryDate());
   }
 
   @Test
   public void updateStatus_Digested_SubmissionDigestionDate_UpdatedNull() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
-    entityManager.detach(sample);
+    SubmissionSample sample = repository.findOne(443L);
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(Arrays.asList(sample));
+    service.updateStatus(Arrays.asList(sample));
 
-    entityManager.flush();
-    sample = entityManager.find(SubmissionSample.class, 443L);
+    repository.flush();
+    sample = repository.findOne(443L);
     assertTrue(LocalDate.now().minusDays(2).isBefore(sample.getSubmission().getDigestionDate()));
     assertTrue(LocalDate.now().plusDays(2).isAfter(sample.getSubmission().getDigestionDate()));
   }
 
   @Test
   public void updateStatus_Digested_SubmissionDigestionDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 559L);
-    entityManager.detach(sample);
+    SubmissionSample sample = repository.findOne(559L);
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(Arrays.asList(sample));
+    service.updateStatus(Arrays.asList(sample));
 
-    entityManager.flush();
-    sample = entityManager.find(SubmissionSample.class, 559L);
+    repository.flush();
+    sample = repository.findOne(559L);
     assertEquals(LocalDate.of(2014, 10, 8), sample.getSubmission().getDigestionDate());
   }
 
   @Test
   public void updateStatus_Analysed_SubmissionDigestionDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
-    entityManager.detach(sample);
+    SubmissionSample sample = repository.findOne(443L);
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(Arrays.asList(sample));
+    service.updateStatus(Arrays.asList(sample));
 
-    entityManager.flush();
-    sample = entityManager.find(SubmissionSample.class, 443L);
+    repository.flush();
+    sample = repository.findOne(443L);
     assertNull(sample.getSubmission().getDigestionDate());
   }
 
   @Test
   public void updateStatus_Analysed_SubmissionAnalysisDate_UpdatedNull() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
-    entityManager.detach(sample);
+    SubmissionSample sample = repository.findOne(443L);
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(Arrays.asList(sample));
+    service.updateStatus(Arrays.asList(sample));
 
-    entityManager.flush();
-    sample = entityManager.find(SubmissionSample.class, 443L);
+    repository.flush();
+    sample = repository.findOne(443L);
     assertTrue(LocalDate.now().minusDays(2).isBefore(sample.getSubmission().getAnalysisDate()));
     assertTrue(LocalDate.now().plusDays(2).isAfter(sample.getSubmission().getAnalysisDate()));
   }
 
   @Test
   public void updateStatus_Analysed_SubmissionAnalysisDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 621L);
-    entityManager.detach(sample);
+    SubmissionSample sample = repository.findOne(621L);
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(Arrays.asList(sample));
+    service.updateStatus(Arrays.asList(sample));
 
-    entityManager.flush();
-    sample = entityManager.find(SubmissionSample.class, 621L);
+    repository.flush();
+    sample = repository.findOne(621L);
     assertEquals(LocalDate.of(2014, 10, 17), sample.getSubmission().getAnalysisDate());
   }
 
   @Test
   public void updateStatus_DataAnalysiss_SubmissionAnalysisDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 443L);
-    entityManager.detach(sample);
+    SubmissionSample sample = repository.findOne(443L);
     sample.setStatus(SampleStatus.DATA_ANALYSIS);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    submissionSampleService.updateStatus(Arrays.asList(sample));
+    service.updateStatus(Arrays.asList(sample));
 
-    entityManager.flush();
-    sample = entityManager.find(SubmissionSample.class, 443L);
+    repository.flush();
+    sample = repository.findOne(443L);
     assertNull(sample.getSubmission().getAnalysisDate());
   }
 }

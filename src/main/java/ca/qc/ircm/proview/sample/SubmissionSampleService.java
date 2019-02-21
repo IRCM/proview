@@ -23,15 +23,13 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -40,10 +38,10 @@ import org.springframework.transaction.annotation.Transactional;
 @org.springframework.stereotype.Service
 @Transactional
 public class SubmissionSampleService {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
+  private SubmissionSampleRepository repository;
+  @Inject
+  private SubmissionRepository submissionRepository;
   @Inject
   private SampleActivityService sampleActivityService;
   @Inject
@@ -52,16 +50,6 @@ public class SubmissionSampleService {
   private AuthorizationService authorizationService;
 
   protected SubmissionSampleService() {
-  }
-
-  protected SubmissionSampleService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      SampleActivityService sampleActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.sampleActivityService = sampleActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -76,7 +64,7 @@ public class SubmissionSampleService {
       return null;
     }
 
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, id);
+    SubmissionSample sample = repository.findOne(id);
     authorizationService.checkSampleReadPermission(sample);
     return sample;
   }
@@ -97,11 +85,9 @@ public class SubmissionSampleService {
     authorizationService.checkUserRole();
     User currentUser = authorizationService.getCurrentUser();
 
-    JPAQuery<Long> query = queryFactory.select(submissionSample.id);
-    query.from(submissionSample);
-    query.where(submissionSample.name.eq(name));
-    query.where(submissionSample.submission.user.eq(currentUser));
-    return query.fetchCount() > 0;
+    BooleanExpression predicate =
+        submissionSample.name.eq(name).and(submissionSample.submission.user.eq(currentUser));
+    return repository.count(predicate) > 0;
   }
 
   /**
@@ -115,8 +101,7 @@ public class SubmissionSampleService {
 
     for (SubmissionSample sample : samples) {
       SampleStatus status = sample.getStatus();
-      sample = entityManager.merge(sample);
-      entityManager.refresh(sample);
+      sample = repository.findOne(sample.getId());
       sample.setStatus(status);
       // Log changes.
       Optional<Activity> activity = sampleActivityService.updateStatus(sample);
@@ -128,19 +113,19 @@ public class SubmissionSampleService {
           && sample.getSubmission().getSampleDeliveryDate() == null) {
         Submission submission = sample.getSubmission();
         submission.setSampleDeliveryDate(LocalDate.now());
-        entityManager.merge(submission);
+        submissionRepository.save(submission);
       }
       if (SampleStatus.DIGESTED.equals(sample.getStatus())
           && sample.getSubmission().getDigestionDate() == null) {
         Submission submission = sample.getSubmission();
         submission.setDigestionDate(LocalDate.now());
-        entityManager.merge(submission);
+        submissionRepository.save(submission);
       }
       if (SampleStatus.ANALYSED.equals(sample.getStatus())
           && sample.getSubmission().getAnalysisDate() == null) {
         Submission submission = sample.getSubmission();
         submission.setAnalysisDate(LocalDate.now());
-        entityManager.merge(submission);
+        submissionRepository.save(submission);
       }
     }
   }
