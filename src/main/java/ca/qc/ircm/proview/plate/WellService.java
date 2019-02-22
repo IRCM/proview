@@ -19,8 +19,6 @@ package ca.qc.ircm.proview.plate;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,17 +28,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class WellService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private WellRepository wellRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected WellService() {
-  }
-
-  protected WellService(EntityManager entityManager, AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -56,6 +49,6 @@ public class WellService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Well.class, id);
+    return wellRepository.findOne(id);
   }
 }

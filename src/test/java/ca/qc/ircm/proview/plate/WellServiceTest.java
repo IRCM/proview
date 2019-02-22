@@ -25,31 +25,23 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class WellServiceTest {
-  private WellService wellService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private WellService service;
+  @MockBean
   private AuthorizationService authorizationService;
-
-  @Before
-  public void beforeTest() {
-    wellService = new WellService(entityManager, authorizationService);
-  }
 
   @Test
   public void get() throws Exception {
-    Well well = wellService.get(129L);
+    Well well = service.get(129L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 129L, well.getId());
@@ -65,7 +57,7 @@ public class WellServiceTest {
 
   @Test
   public void get_Null() throws Exception {
-    Well well = wellService.get(null);
+    Well well = service.get(null);
 
     assertNull(well);
   }
