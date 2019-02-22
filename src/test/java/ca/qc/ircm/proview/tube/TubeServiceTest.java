@@ -29,38 +29,26 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class TubeServiceTest {
-  private TubeService tubeService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private TubeService service;
+  @MockBean
   private AuthorizationService authorizationService;
-
-  @Before
-  public void beforeTest() {
-    tubeService = new TubeService(entityManager, queryFactory, authorizationService);
-  }
 
   @Test
   public void get() throws Throwable {
-    Tube tube = tubeService.get(1L);
+    Tube tube = service.get(1L);
 
     verify(authorizationService).checkSampleReadPermission(tube.getSample());
     assertEquals((Long) 1L, tube.getId());
@@ -74,14 +62,14 @@ public class TubeServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Tube tube = tubeService.get((Long) null);
+    Tube tube = service.get((Long) null);
 
     assertNull(tube);
   }
 
   @Test
   public void nameAvailable_True() throws Throwable {
-    boolean available = tubeService.nameAvailable("FAM119A_band_01");
+    boolean available = service.nameAvailable("FAM119A_band_01");
 
     verify(authorizationService).checkAdminRole();
     assertFalse(available);
@@ -89,7 +77,7 @@ public class TubeServiceTest {
 
   @Test
   public void nameAvailable_False() throws Throwable {
-    boolean available = tubeService.nameAvailable("unit_test");
+    boolean available = service.nameAvailable("unit_test");
 
     verify(authorizationService).checkAdminRole();
     assertTrue(available);
@@ -97,7 +85,7 @@ public class TubeServiceTest {
 
   @Test
   public void nameAvailable_Null() throws Throwable {
-    boolean available = tubeService.nameAvailable(null);
+    boolean available = service.nameAvailable(null);
 
     assertFalse(available);
   }
@@ -106,7 +94,7 @@ public class TubeServiceTest {
   public void all() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    List<Tube> tubes = tubeService.all(sample);
+    List<Tube> tubes = service.all(sample);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertEquals(3, tubes.size());
@@ -118,7 +106,7 @@ public class TubeServiceTest {
 
   @Test
   public void all_Null() throws Throwable {
-    List<Tube> tubes = tubeService.all(null);
+    List<Tube> tubes = service.all(null);
 
     assertEquals(0, tubes.size());
   }

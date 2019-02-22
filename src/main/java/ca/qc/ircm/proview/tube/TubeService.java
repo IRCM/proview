@@ -17,17 +17,11 @@
 
 package ca.qc.ircm.proview.tube;
 
-import static ca.qc.ircm.proview.tube.QTube.tube;
-
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,21 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TubeService {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
+  private TubeRepository repository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected TubeService() {
-  }
-
-  protected TubeService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -66,7 +51,7 @@ public class TubeService {
       return null;
     }
 
-    Tube tube = entityManager.find(Tube.class, id);
+    Tube tube = repository.findOne(id);
     if (tube != null) {
       authorizationService.checkSampleReadPermission(tube.getSample());
     }
@@ -86,19 +71,11 @@ public class TubeService {
     }
     authorizationService.checkAdminRole();
 
-    JPAQuery<Long> query = queryFactory.select(tube.id);
-    query.from(tube);
-    query.where(tube.name.eq(name));
-    return query.fetchCount() == 0;
+    return repository.countByName(name) == 0;
   }
 
   /**
-   * <p>
-   * Returns digestion tubes used for sample.
-   * </p>
-   * <p>
-   * Tubes are ordered from most recent to older tubes.
-   * </p>
+   * Returns tubes used for sample.
    *
    * @param sample
    *          sample.
@@ -110,9 +87,6 @@ public class TubeService {
     }
     authorizationService.checkSampleReadPermission(sample);
 
-    JPAQuery<Tube> query = queryFactory.select(tube);
-    query.from(tube);
-    query.where(tube.sample.eq(sample));
-    return query.fetch();
+    return repository.findBySample(sample);
   }
 }
