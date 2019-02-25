@@ -40,6 +40,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
@@ -68,7 +69,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class PlateServiceTest {
+public class PlateServiceTest extends AbstractServiceTestCase {
   @Inject
   private PlateService service;
   @Inject
@@ -530,6 +531,7 @@ public class PlateServiceTest {
   @Test
   public void ban_OneWell() {
     Plate plate = repository.findOne(26L);
+    detach(plate);
     WellLocation location = new WellLocation(0, 0);
     when(plateActivityService.ban(anyCollectionOf(Well.class), any(String.class)))
         .thenReturn(activity);
@@ -550,6 +552,7 @@ public class PlateServiceTest {
   @Test
   public void ban_MultipleWells() {
     Plate plate = repository.findOne(26L);
+    detach(plate);
     WellLocation from = new WellLocation(3, 3);
     WellLocation to = new WellLocation(5, 4);
     when(plateActivityService.ban(anyCollectionOf(Well.class), any(String.class)))
@@ -573,6 +576,7 @@ public class PlateServiceTest {
   @Test
   public void activate_OneWell() {
     Plate plate = repository.findOne(26L);
+    detach(plate);
     WellLocation location = new WellLocation(6, 11);
     when(plateActivityService.activate(anyCollectionOf(Well.class), any(String.class)))
         .thenReturn(activity);
@@ -593,6 +597,7 @@ public class PlateServiceTest {
   @Test
   public void activate_MultipleWells() {
     Plate plate = repository.findOne(26L);
+    detach(plate);
     WellLocation from = new WellLocation(5, 11);
     WellLocation to = new WellLocation(7, 11);
     when(plateActivityService.activate(anyCollectionOf(Well.class), any(String.class)))
