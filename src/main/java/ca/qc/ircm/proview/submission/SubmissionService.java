@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QUser.user;
 
 import ca.qc.ircm.proview.history.ActionType;
@@ -27,16 +26,23 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.utils.MessageResource;
+import com.google.common.collect.Lists;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
@@ -50,8 +56,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -66,8 +70,16 @@ import org.thymeleaf.context.Context;
 @Transactional
 public class SubmissionService {
   private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SubmissionRepository repository;
+  @Inject
+  private SubmissionSampleRepository sampleRepository;
+  @Inject
+  private PlateRepository plateRepository;
+  @Inject
+  private TubeRepository tubeRepository;
+  @Inject
+  private UserRepository userRepository;
   @Inject
   private JPAQueryFactory queryFactory;
   @Inject
@@ -86,20 +98,6 @@ public class SubmissionService {
   protected SubmissionService() {
   }
 
-  protected SubmissionService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      SubmissionActivityService submissionActivityService, ActivityService activityService,
-      PricingEvaluator pricingEvaluator, TemplateEngine emailTemplateEngine,
-      EmailService emailService, AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.submissionActivityService = submissionActivityService;
-    this.activityService = activityService;
-    this.pricingEvaluator = pricingEvaluator;
-    this.emailTemplateEngine = emailTemplateEngine;
-    this.emailService = emailService;
-    this.authorizationService = authorizationService;
-  }
-
   /**
    * Selects submission from database.
    *
@@ -112,7 +110,7 @@ public class SubmissionService {
       return null;
     }
 
-    Submission submission = entityManager.find(Submission.class, id);
+    Submission submission = repository.findOne(id);
     authorizationService.checkSubmissionReadPermission(submission);
     return submission;
   }
@@ -143,7 +141,16 @@ public class SubmissionService {
     JPAQuery<Submission> query = queryFactory.select(submission);
     initializeAllQuery(query);
     if (filter != null) {
-      filter.addConditions(query);
+      query.where(filter.predicate());
+      if (filter.sortOrders != null) {
+        query.orderBy(filter.sortOrders.toArray(new OrderSpecifier[0]));
+      }
+      if (filter.offset != null) {
+        query.offset(filter.offset);
+      }
+      if (filter.limit != null) {
+        query.limit(filter.limit);
+      }
     }
     return query.distinct().fetch();
   }
@@ -163,7 +170,7 @@ public class SubmissionService {
     JPAQuery<Long> query = queryFactory.select(submission.id.countDistinct());
     initializeAllQuery(query);
     if (filter != null) {
-      filter.addCountConditions(query);
+      query.where(filter.predicate());
     }
     return query.fetchFirst().intValue();
   }
@@ -245,7 +252,7 @@ public class SubmissionService {
       sample.setStatus(SampleStatus.WAITING);
     });
 
-    entityManager.persist(submission);
+    repository.save(submission);
     if (plate != null) {
       persistPlate(submission, plate);
     } else {
@@ -261,7 +268,7 @@ public class SubmissionService {
       logger.error("Could not send email containing new submitted samples", e);
     }
 
-    entityManager.flush();
+    repository.flush();
     // Log insertion to database.
     Activity activity = submissionActivityService.insert(submission);
     activityService.insert(activity);
@@ -281,7 +288,7 @@ public class SubmissionService {
     submission.getSamples().forEach(sample -> {
       sample.getOriginalContainer().setSample(sample);
     });
-    entityManager.persist(plate);
+    plateRepository.save(plate);
   }
 
   private void persistTubes(Submission submission) {
@@ -296,18 +303,13 @@ public class SubmissionService {
     tube.setTimestamp(Instant.now());
     otherTubeNames.add(tube.getName());
     sample.setOriginalContainer(tube);
-    entityManager.persist(tube);
+    tubeRepository.save(tube);
   }
 
   private List<User> adminUsers() {
-    JPAQuery<User> query = queryFactory.select(user);
-    query.from(user);
-    query.join(user.laboratory, laboratory);
-    query.where(user.admin.eq(true));
-    query.where(user.valid.eq(true));
-    query.where(user.active.eq(true));
-    query.where(user.id.ne(1L));
-    return query.fetch();
+    BooleanExpression predicate =
+        user.admin.eq(true).and(user.valid.eq(true)).and(user.active.eq(true)).and(user.id.ne(1L));
+    return Lists.newArrayList(userRepository.findAll(predicate));
   }
 
   /**
@@ -364,12 +366,9 @@ public class SubmissionService {
     if (!authorizationService.hasAdminRole()
         && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
       Submission userSupplied = submission;
-      submission = entityManager.merge(submission);
-      entityManager.refresh(submission);
+      submission = repository.findOne(submission.getId());
       for (int i = 0; i < submission.getSamples().size(); i++) {
         SubmissionSample sample = submission.getSamples().get(i);
-        entityManager.refresh(sample);
-        entityManager.refresh(sample.getOriginalContainer());
         sample.setName(userSupplied.getSamples().get(i).getName());
         if (sample.getOriginalContainer() instanceof Tube) {
           Tube tube = (Tube) sample.getOriginalContainer();
@@ -380,10 +379,7 @@ public class SubmissionService {
               ((Well) userSupplied.getSamples().get(i).getOriginalContainer()).getPlate();
           plate.setName(userSuppliedPlate.getName());
         }
-        entityManager.detach(sample);
-        entityManager.detach(sample.getOriginalContainer());
       }
-      entityManager.detach(submission);
     }
 
     doUpdate(submission);
@@ -391,7 +387,7 @@ public class SubmissionService {
     Optional<Activity> activity = submissionActivityService.update(submission, explanation);
     if (activity.isPresent()) {
       activityService.insert(activity.get());
-      entityManager.flush();
+      repository.flush();
 
       if (!authorizationService.hasAdminRole()) {
         // Send email to admin users to inform them of the changes in submission.
@@ -406,7 +402,7 @@ public class SubmissionService {
 
   private void validateUpdateSubmission(Submission submission) {
     if (!authorizationService.hasAdminRole()) {
-      Submission old = entityManager.find(Submission.class, submission.getId());
+      Submission old = repository.findOne(submission.getId());
       if (!old.getUser().getId().equals(submission.getUser().getId())) {
         throw new IllegalArgumentException("Cannot update submission's owner");
       }
@@ -425,7 +421,7 @@ public class SubmissionService {
   }
 
   private void doUpdate(Submission submission) throws IllegalArgumentException {
-    Submission old = entityManager.find(Submission.class, submission.getId());
+    Submission old = repository.findOne(submission.getId());
     submission.setLaboratory(submission.getUser().getLaboratory());
 
     removeUnusedContainers(submission, old);
@@ -433,17 +429,17 @@ public class SubmissionService {
       sample.setSubmission(submission);
       if (sample.getId() == null) {
         sample.setStatus(SampleStatus.WAITING);
-        entityManager.persist(sample);
+        sampleRepository.save(sample);
       }
     });
 
-    entityManager.merge(submission);
+    repository.save(submission);
     Plate plate = plate(submission);
     if (plate != null) {
       if (plate.getId() == null) {
         persistPlate(submission, plate);
       } else {
-        entityManager.merge(plate);
+        plateRepository.save(plate);
       }
     } else {
       Set<String> otherTubeNames = new HashSet<>();
@@ -453,7 +449,7 @@ public class SubmissionService {
           persistTube(sample, otherTubeNames);
         } else {
           tube.setName(sample.getName());
-          entityManager.merge(tube);
+          tubeRepository.save(tube);
         }
       }
     }
@@ -463,14 +459,14 @@ public class SubmissionService {
     Plate plate = plate(submission);
     Plate oldPlate = plate(old);
     if (oldPlate != null && (plate == null || !oldPlate.getId().equals(plate.getId()))) {
-      entityManager.remove(plate);
+      plateRepository.delete(plate);
     }
     Set<Long> sampleIds = submission.getSamples().stream().filter(sample -> sample.getId() != null)
         .map(sample -> sample.getId()).collect(Collectors.toSet());
     old.getSamples().stream().filter(sample -> !sampleIds.contains(sample.getId())
         && sample.getOriginalContainer().getType() == TUBE).forEach(sample -> {
           logger.debug("Remove tube {}", sample.getOriginalContainer());
-          entityManager.remove(sample.getOriginalContainer());
+          tubeRepository.delete((Tube) sample.getOriginalContainer());
         });
     // Populate tube ids.
     submission.getSamples().stream()
@@ -493,9 +489,9 @@ public class SubmissionService {
     authorizationService.checkAdminRole();
 
     for (Submission submission : submissions) {
-      submission = entityManager.merge(submission);
-      entityManager.refresh(submission);
+      submission = repository.findOne(submission.getId());
       submission.setHidden(true);
+      repository.save(submission);
 
       Optional<Activity> activity = submissionActivityService.update(submission, null);
       if (activity.isPresent()) {
@@ -514,9 +510,9 @@ public class SubmissionService {
     authorizationService.checkAdminRole();
 
     for (Submission submission : submissions) {
-      submission = entityManager.merge(submission);
-      entityManager.refresh(submission);
+      submission = repository.findOne(submission.getId());
       submission.setHidden(false);
+      repository.save(submission);
 
       Optional<Activity> activity = submissionActivityService.update(submission, null);
       if (activity.isPresent()) {

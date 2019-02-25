@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
 import java.time.LocalDate;
@@ -123,6 +124,132 @@ public class SubmissionFilter implements Predicate<Submission> {
       test &= submission.getSamples().isEmpty() || results ? analysed : !analysed;
     }
     return test;
+  }
+
+  /**
+   * Returns QueryDSL predicate matching filter.
+   *
+   * @return QueryDSL predicate matching filter
+   */
+  public com.querydsl.core.types.Predicate predicate() {
+    BooleanBuilder predicate = new BooleanBuilder();
+    if (experimentContains != null) {
+      predicate.and(submission.experiment.contains(experimentContains));
+    }
+    if (userContains != null) {
+      predicate.and(submission.user.email.contains(userContains)
+          .or(submission.user.name.contains(userContains)));
+    }
+    if (directorContains != null) {
+      predicate.and(submission.laboratory.director.contains(directorContains));
+    }
+    if (service != null) {
+      predicate.and(submission.service.eq(service));
+    }
+    if (anySampleNameContains != null) {
+      predicate.and(submission.samples.any().name.contains(anySampleNameContains));
+    }
+    if (anySampleStatus != null) {
+      predicate.and(submission.samples.any().status.eq(anySampleStatus));
+    }
+    if (instrument != null) {
+      if (instrument == MassDetectionInstrument.NULL) {
+        predicate.and(submission.massDetectionInstrument.isNull());
+      } else {
+        predicate.and(submission.massDetectionInstrument.eq(instrument));
+      }
+    }
+    if (dateRange != null) {
+      if (dateRange.hasLowerBound()) {
+        LocalDate date = dateRange.lowerEndpoint();
+        if (dateRange.lowerBoundType() == BoundType.OPEN) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.submissionDate.goe(toInstant(date)));
+      }
+      if (dateRange.hasUpperBound()) {
+        LocalDate date = dateRange.upperEndpoint();
+        if (dateRange.upperBoundType() == BoundType.CLOSED) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.submissionDate.before(toInstant(date)));
+      }
+    }
+    if (digestionDateRange != null) {
+      if (digestionDateRange.hasLowerBound()) {
+        LocalDate date = digestionDateRange.lowerEndpoint();
+        if (digestionDateRange.lowerBoundType() == BoundType.OPEN) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.digestionDate.goe(date));
+      }
+      if (digestionDateRange.hasUpperBound()) {
+        LocalDate date = digestionDateRange.upperEndpoint();
+        if (digestionDateRange.upperBoundType() == BoundType.CLOSED) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.digestionDate.before(date));
+      }
+    }
+    if (sampleDeliveryDateRange != null) {
+      if (sampleDeliveryDateRange.hasLowerBound()) {
+        LocalDate date = sampleDeliveryDateRange.lowerEndpoint();
+        if (sampleDeliveryDateRange.lowerBoundType() == BoundType.OPEN) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.sampleDeliveryDate.goe(date));
+      }
+      if (sampleDeliveryDateRange.hasUpperBound()) {
+        LocalDate date = sampleDeliveryDateRange.upperEndpoint();
+        if (sampleDeliveryDateRange.upperBoundType() == BoundType.CLOSED) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.sampleDeliveryDate.before(date));
+      }
+    }
+    if (analysisDateRange != null) {
+      if (analysisDateRange.hasLowerBound()) {
+        LocalDate date = analysisDateRange.lowerEndpoint();
+        if (analysisDateRange.lowerBoundType() == BoundType.OPEN) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.analysisDate.goe(date));
+      }
+      if (analysisDateRange.hasUpperBound()) {
+        LocalDate date = analysisDateRange.upperEndpoint();
+        if (analysisDateRange.upperBoundType() == BoundType.CLOSED) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.analysisDate.before(date));
+      }
+    }
+    if (dataAvailableDateRange != null) {
+      if (dataAvailableDateRange.hasLowerBound()) {
+        LocalDate date = dataAvailableDateRange.lowerEndpoint();
+        if (dataAvailableDateRange.lowerBoundType() == BoundType.OPEN) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.dataAvailableDate.goe(date));
+      }
+      if (dataAvailableDateRange.hasUpperBound()) {
+        LocalDate date = dataAvailableDateRange.upperEndpoint();
+        if (dataAvailableDateRange.upperBoundType() == BoundType.CLOSED) {
+          date = date.plusDays(1);
+        }
+        predicate.and(submission.dataAvailableDate.before(date));
+      }
+    }
+    if (results != null) {
+      if (results) {
+        predicate.and(submission.samples.any().status.in(SampleStatus.analysedStatuses()));
+      } else {
+        predicate.and(submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
+      }
+    }
+    if (hidden != null) {
+      predicate.and(submission.hidden.eq(hidden));
+    }
+    return predicate.getValue();
   }
 
   private void addFilterConditions(JPAQuery<?> query) {

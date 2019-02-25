@@ -53,14 +53,17 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -89,29 +92,36 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.thymeleaf.TemplateEngine;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionServiceTest {
-  private SubmissionService submissionService;
+  @Inject
+  private SubmissionService service;
+  @Inject
+  private SubmissionRepository repository;
+  @Inject
+  private SubmissionSampleRepository sampleRepository;
+  @Inject
+  private UserRepository userRepository;
+  @Inject
+  private LaboratoryRepository laboratoryRepository;
+  @Inject
+  private TubeRepository tubeRepository;
   @PersistenceContext
   private EntityManager entityManager;
-  @Inject
-  private JPAQueryFactory queryFactory;
-  @Inject
-  private TemplateEngine emailTemplateEngine;
-  @Mock
+  @MockBean
   private SubmissionActivityService submissionActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private EmailService emailService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
-  @Mock
+  @MockBean
   private PricingEvaluator pricingEvaluator;
   @Mock
   private Activity activity;
@@ -132,10 +142,7 @@ public class SubmissionServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    submissionService = new SubmissionService(entityManager, queryFactory,
-        submissionActivityService, activityService, pricingEvaluator, emailTemplateEngine,
-        emailService, authorizationService);
-    user = entityManager.find(User.class, 4L);
+    user = userRepository.findOne(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(emailService.htmlEmail()).thenReturn(email);
     optionalActivity = Optional.of(activity);
@@ -152,7 +159,7 @@ public class SubmissionServiceTest {
 
   @Test
   public void get() throws Throwable {
-    Submission submission = submissionService.get(1L);
+    Submission submission = service.get(1L);
 
     verify(authorizationService).checkSubmissionReadPermission(submission);
     assertEquals((Long) 1L, submission.getId());
@@ -230,7 +237,7 @@ public class SubmissionServiceTest {
 
   @Test
   public void get_33() throws Throwable {
-    Submission submission = submissionService.get(33L);
+    Submission submission = service.get(33L);
 
     verify(authorizationService).checkSubmissionReadPermission(submission);
     assertEquals((Long) 33L, submission.getId());
@@ -311,7 +318,7 @@ public class SubmissionServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Submission submission = submissionService.get(null);
+    Submission submission = service.get(null);
 
     assertNull(submission);
   }
@@ -322,7 +329,7 @@ public class SubmissionServiceTest {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    List<Submission> submissions = submissionService.all();
+    List<Submission> submissions = service.all();
 
     verify(authorizationService).checkUserRole();
     assertTrue(find(submissions, 32).isPresent());
@@ -356,7 +363,7 @@ public class SubmissionServiceTest {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    List<Submission> submissions = submissionService.all();
+    List<Submission> submissions = service.all();
 
     verify(authorizationService).checkUserRole();
     assertEquals(3, submissions.size());
@@ -373,7 +380,7 @@ public class SubmissionServiceTest {
     when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
         .thenReturn(true);
 
-    List<Submission> submissions = submissionService.all();
+    List<Submission> submissions = service.all();
 
     verify(authorizationService).checkUserRole();
     assertEquals(18, submissions.size());
@@ -392,7 +399,7 @@ public class SubmissionServiceTest {
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(authorizationService.hasAdminRole()).thenReturn(true);
 
-    List<Submission> submissions = submissionService.all();
+    List<Submission> submissions = service.all();
 
     verify(authorizationService).checkUserRole();
     assertEquals(20, submissions.size());
@@ -410,11 +417,12 @@ public class SubmissionServiceTest {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
     SubmissionFilter filter = mock(SubmissionFilter.class);
+    when(filter.predicate()).thenReturn(submission.isNotNull());
 
-    List<Submission> submissions = submissionService.all(filter);
+    List<Submission> submissions = service.all(filter);
 
     verify(authorizationService).checkUserRole();
-    verify(filter).addConditions(any());
+    verify(filter).predicate();
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
     assertFalse(find(submissions, 34).isPresent());
@@ -428,7 +436,7 @@ public class SubmissionServiceTest {
     SubmissionFilter filter = new SubmissionFilter();
     filter.experimentContains = "exp";
 
-    List<Submission> submissions = submissionService.all(filter);
+    List<Submission> submissions = service.all(filter);
 
     verify(authorizationService).checkUserRole();
     assertTrue(find(submissions, 32).isPresent());
@@ -446,7 +454,7 @@ public class SubmissionServiceTest {
     filter.offset = 2;
     filter.limit = 3;
 
-    List<Submission> submissions = submissionService.all(filter);
+    List<Submission> submissions = service.all(filter);
 
     verify(authorizationService).checkUserRole();
     assertEquals(3, submissions.size());
@@ -466,7 +474,7 @@ public class SubmissionServiceTest {
     filter.offset = 2;
     filter.limit = 3;
 
-    List<Submission> submissions = submissionService.all(filter);
+    List<Submission> submissions = service.all(filter);
 
     verify(authorizationService).checkUserRole();
     assertEquals(3, submissions.size());
@@ -483,7 +491,7 @@ public class SubmissionServiceTest {
     SubmissionFilter filter = new SubmissionFilter();
     filter.sortOrders = Arrays.asList(submission.experiment.asc());
 
-    List<Submission> submissions = submissionService.all(filter);
+    List<Submission> submissions = service.all(filter);
 
     verify(authorizationService).checkUserRole();
     assertEquals((Long) 33L, submissions.get(0).getId());
@@ -499,7 +507,7 @@ public class SubmissionServiceTest {
     SubmissionFilter filter = new SubmissionFilter();
     filter.sortOrders = Arrays.asList(submission.samples.any().name.asc());
 
-    List<Submission> submissions = submissionService.all(filter);
+    List<Submission> submissions = service.all(filter);
 
     verify(authorizationService).checkUserRole();
     assertEquals((Long) 32L, submissions.get(0).getId());
@@ -515,7 +523,7 @@ public class SubmissionServiceTest {
     SubmissionFilter filter = new SubmissionFilter();
     filter.sortOrders = Arrays.asList(submission.samples.any().status.asc());
 
-    List<Submission> submissions = submissionService.all(filter);
+    List<Submission> submissions = service.all(filter);
 
     verify(authorizationService).checkUserRole();
     assertEquals((Long) 33L, submissions.get(0).getId());
@@ -531,7 +539,7 @@ public class SubmissionServiceTest {
     SubmissionFilter filter = new SubmissionFilter();
     filter.sortOrders = Arrays.asList(submission.samples.any().status.desc());
 
-    List<Submission> submissions = submissionService.all(filter);
+    List<Submission> submissions = service.all(filter);
 
     verify(authorizationService).checkUserRole();
     assertEquals((Long) 1L, submissions.get(0).getId());
@@ -545,7 +553,7 @@ public class SubmissionServiceTest {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    List<Submission> submissions = submissionService.all(null);
+    List<Submission> submissions = service.all(null);
 
     verify(authorizationService).checkUserRole();
     assertTrue(find(submissions, 32).isPresent());
@@ -559,11 +567,12 @@ public class SubmissionServiceTest {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
     SubmissionFilter filter = mock(SubmissionFilter.class);
+    when(filter.predicate()).thenReturn(submission.isNotNull());
 
-    int count = submissionService.count(filter);
+    int count = service.count(filter);
 
     verify(authorizationService).checkUserRole();
-    verify(filter).addCountConditions(any());
+    verify(filter).predicate();
     assertEquals(3, count);
   }
 
@@ -575,7 +584,7 @@ public class SubmissionServiceTest {
     SubmissionFilter filter = new SubmissionFilter();
     filter.experimentContains = "exp";
 
-    int count = submissionService.count(filter);
+    int count = service.count(filter);
 
     verify(authorizationService).checkUserRole();
     assertEquals(1, count);
@@ -590,7 +599,7 @@ public class SubmissionServiceTest {
     filter.offset = 2;
     filter.limit = 2;
 
-    int count = submissionService.count(filter);
+    int count = service.count(filter);
 
     verify(authorizationService).checkUserRole();
     assertEquals(15, count);
@@ -607,7 +616,7 @@ public class SubmissionServiceTest {
     filter.offset = 2;
     filter.limit = 3;
 
-    int count = submissionService.count(filter);
+    int count = service.count(filter);
 
     verify(authorizationService).checkUserRole();
     assertEquals(10, count);
@@ -619,7 +628,7 @@ public class SubmissionServiceTest {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    int count = submissionService.count(null);
+    int count = service.count(null);
 
     verify(authorizationService).checkUserRole();
     assertEquals(3, count);
@@ -629,8 +638,8 @@ public class SubmissionServiceTest {
     Submission submission = new Submission();
     submission.setService(service);
     submission.setSubmissionDate(Instant.now().minus(2, ChronoUnit.DAYS));
-    submission.setUser(entityManager.find(User.class, 3L));
-    submission.setLaboratory(entityManager.find(Laboratory.class, 2L));
+    submission.setUser(userRepository.findOne(3L));
+    submission.setLaboratory(laboratoryRepository.findOne(2L));
     SubmissionSample sample1 = new SubmissionSample(1L, "first sample");
     sample1.setQuantity("15 ug");
     sample1.setVolume("10 ul");
@@ -699,7 +708,7 @@ public class SubmissionServiceTest {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     MessageResource resources =
         new MessageResource(SubmissionService.class.getName() + "_Print", locale);
@@ -791,7 +800,7 @@ public class SubmissionServiceTest {
     submission.setSubmissionDate(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"submissionDate\""));
   }
 
@@ -801,7 +810,7 @@ public class SubmissionServiceTest {
     submission.setLaboratory(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"laboratory-name\""));
     assertFalse(content.contains("class=\"laboratory-director\""));
   }
@@ -812,7 +821,7 @@ public class SubmissionServiceTest {
     submission.setUser(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"user-name\""));
     assertFalse(content.contains("class=\"user-phone\""));
     assertFalse(content.contains("class=\"user-email\""));
@@ -824,7 +833,7 @@ public class SubmissionServiceTest {
     Locale locale = Locale.getDefault();
     submission.getUser().getPhoneNumbers().clear();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"user-phone\""));
   }
 
@@ -834,7 +843,7 @@ public class SubmissionServiceTest {
     Locale locale = Locale.getDefault();
     submission.setExperiment(null);
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"experiment\""));
     assertFalse(content.contains("null"));
   }
@@ -845,7 +854,7 @@ public class SubmissionServiceTest {
     Locale locale = Locale.getDefault();
     submission.setGoal(null);
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"goal\""));
   }
 
@@ -855,7 +864,7 @@ public class SubmissionServiceTest {
     submission.setProtein(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"protein\""));
     assertFalse(content.contains("null"));
   }
@@ -866,7 +875,7 @@ public class SubmissionServiceTest {
     submission.getSamples().forEach(sample -> sample.setMolecularWeight(null));
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"sample-molecularWeight\""));
     assertFalse(content.contains("null"));
   }
@@ -877,7 +886,7 @@ public class SubmissionServiceTest {
     submission.setPostTranslationModification(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"postTranslationModification\""));
     assertFalse(content.contains("null"));
   }
@@ -888,7 +897,7 @@ public class SubmissionServiceTest {
     submission.getSamples().forEach(sample -> sample.setQuantity(null));
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"sample-quantity\""));
   }
 
@@ -898,7 +907,7 @@ public class SubmissionServiceTest {
     submission.getSamples().forEach(sample -> sample.setVolume(null));
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"sample-volume\""));
   }
 
@@ -908,7 +917,7 @@ public class SubmissionServiceTest {
     submission.getSamples().forEach(sample -> sample.setType(SampleType.DRY));
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"sample-volume\""));
   }
 
@@ -918,7 +927,7 @@ public class SubmissionServiceTest {
     submission.getSamples().forEach(sample -> sample.setType(SampleType.BIOID_BEADS));
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"sample-volume\""));
   }
 
@@ -928,7 +937,7 @@ public class SubmissionServiceTest {
     submission.setProteolyticDigestionMethod(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"proteolyticDigestionMethod\""));
     assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
     assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
@@ -940,7 +949,7 @@ public class SubmissionServiceTest {
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.DIGESTED);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
     assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
     assertTrue(content.contains("class=\"usedProteolyticDigestionMethod\""));
@@ -954,7 +963,7 @@ public class SubmissionServiceTest {
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.OTHER);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
     assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
     assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
@@ -968,7 +977,7 @@ public class SubmissionServiceTest {
     submission.setProteinContent(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"proteinContent\""));
   }
 
@@ -978,7 +987,7 @@ public class SubmissionServiceTest {
     submission.setMassDetectionInstrument(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"massDetectionInstrument\""));
     assertTrue(
         content.contains(MassDetectionInstrument.getNullLabel(locale).replaceAll("'", "&#39;")));
@@ -990,7 +999,7 @@ public class SubmissionServiceTest {
     submission.setProteinIdentification(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"proteinIdentification\""));
     assertFalse(content.contains("class=\"proteinIdentificationLink\""));
   }
@@ -1001,7 +1010,7 @@ public class SubmissionServiceTest {
     submission.setProteinIdentification(ProteinIdentification.OTHER);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"proteinIdentification\""));
     assertTrue(content.contains("class=\"proteinIdentificationLink\""));
     assertTrue(content.contains(submission.getProteinIdentificationLink()));
@@ -1014,7 +1023,7 @@ public class SubmissionServiceTest {
     submission.setProteinIdentificationLink(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"proteinIdentification\""));
     assertTrue(content.contains("class=\"proteinIdentificationLink\""));
     assertFalse(content.contains("null"));
@@ -1026,7 +1035,7 @@ public class SubmissionServiceTest {
     submission.setQuantification(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"quantification\""));
     assertFalse(content.contains("class=\"quantificationComment\""));
   }
@@ -1037,7 +1046,7 @@ public class SubmissionServiceTest {
     submission.setQuantification(Quantification.SILAC);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     MessageResource resources =
         new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"quantification\""));
@@ -1053,7 +1062,7 @@ public class SubmissionServiceTest {
     submission.setQuantificationComment(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     MessageResource resources =
         new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"quantification\""));
@@ -1068,7 +1077,7 @@ public class SubmissionServiceTest {
     submission.setQuantification(Quantification.TMT);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     MessageResource resources =
         new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"quantification\""));
@@ -1084,7 +1093,7 @@ public class SubmissionServiceTest {
     submission.setQuantificationComment(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     MessageResource resources =
         new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"quantification\""));
@@ -1099,7 +1108,7 @@ public class SubmissionServiceTest {
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     MessageResource resources =
         new MessageResource(SubmissionService.class.getName() + "_Print", locale);
@@ -1197,7 +1206,7 @@ public class SubmissionServiceTest {
     submission.setSeparation(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertFalse(content.contains("class=\"separation\""));
   }
@@ -1209,7 +1218,7 @@ public class SubmissionServiceTest {
     submission.setThickness(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertFalse(content.contains("class=\"thickness\""));
   }
@@ -1221,7 +1230,7 @@ public class SubmissionServiceTest {
     submission.setColoration(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertFalse(content.contains("class=\"coloration\""));
   }
@@ -1233,7 +1242,7 @@ public class SubmissionServiceTest {
     submission.setColoration(GelColoration.OTHER);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertTrue(content.contains("class=\"coloration\""));
     assertTrue(content.contains("class=\"otherColoration\""));
@@ -1248,7 +1257,7 @@ public class SubmissionServiceTest {
     submission.setOtherColoration(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertTrue(content.contains("class=\"coloration\""));
     assertTrue(content.contains("class=\"otherColoration\""));
@@ -1262,7 +1271,7 @@ public class SubmissionServiceTest {
     submission.setDevelopmentTime(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertFalse(content.contains("class=\"developmentTime\""));
   }
@@ -1274,7 +1283,7 @@ public class SubmissionServiceTest {
     submission.setWeightMarkerQuantity(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertFalse(content.contains("class=\"weightMarkerQuantity\""));
   }
@@ -1286,7 +1295,7 @@ public class SubmissionServiceTest {
     submission.setProteinQuantity(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertFalse(content.contains("class=\"proteinQuantity\""));
   }
@@ -1296,7 +1305,7 @@ public class SubmissionServiceTest {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     MessageResource resources =
         new MessageResource(SubmissionService.class.getName() + "_Print", locale);
@@ -1386,7 +1395,7 @@ public class SubmissionServiceTest {
     submission.setSolutionSolvent(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"solutionSolvent\""));
   }
 
@@ -1396,7 +1405,7 @@ public class SubmissionServiceTest {
     submission.setFormula(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"formula\""));
   }
 
@@ -1406,7 +1415,7 @@ public class SubmissionServiceTest {
     submission.setMonoisotopicMass(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"monoisotopicMass\""));
   }
 
@@ -1416,7 +1425,7 @@ public class SubmissionServiceTest {
     submission.setAverageMass(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"averageMass\""));
   }
 
@@ -1426,7 +1435,7 @@ public class SubmissionServiceTest {
     submission.setToxicity(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"toxicity\""));
   }
 
@@ -1436,7 +1445,7 @@ public class SubmissionServiceTest {
     submission.setLightSensitive(false);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"lightSensitive\""));
   }
 
@@ -1446,7 +1455,7 @@ public class SubmissionServiceTest {
     submission.setStorageTemperature(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"storageTemperature\""));
   }
 
@@ -1456,7 +1465,7 @@ public class SubmissionServiceTest {
     submission.setHighResolution(false);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     MessageResource resources =
         new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"highResolution\""));
@@ -1469,7 +1478,7 @@ public class SubmissionServiceTest {
     submission.setSolvents(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"solvent\""));
   }
 
@@ -1480,7 +1489,7 @@ public class SubmissionServiceTest {
     submission.getSolvents().add(ssolvent);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"solvent\""));
     assertFalse(content.contains(Solvent.OTHER.getLabel(locale)));
     for (Solvent solvent : Solvent.values()) {
@@ -1496,7 +1505,7 @@ public class SubmissionServiceTest {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     MessageResource resources =
         new MessageResource(SubmissionService.class.getName() + "_Print", locale);
@@ -1589,7 +1598,7 @@ public class SubmissionServiceTest {
     submission.setInjectionType(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertFalse(content.contains("class=\"injectionType\""));
   }
@@ -1600,7 +1609,7 @@ public class SubmissionServiceTest {
     submission.setSource(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertFalse(content.contains("class=\"source\""));
   }
@@ -1618,7 +1627,7 @@ public class SubmissionServiceTest {
     plate.getWells().get(36).setBanned(true);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
 
     assertFalse(content.contains("??"));
     assertTrue(content.contains("class=\"submission-plate\""));
@@ -1636,7 +1645,7 @@ public class SubmissionServiceTest {
 
   @Test
   public void print_NullSubmission() throws Exception {
-    assertEquals("", submissionService.print(null, Locale.getDefault()));
+    assertEquals("", service.print(null, Locale.getDefault()));
   }
 
   @Test
@@ -1645,7 +1654,7 @@ public class SubmissionServiceTest {
     submission.setService(null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertEquals("", content);
   }
 
@@ -1655,7 +1664,7 @@ public class SubmissionServiceTest {
     submission.getSamples().clear();
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertEquals("", content);
   }
 
@@ -1665,7 +1674,7 @@ public class SubmissionServiceTest {
     submission.getSamples().set(0, null);
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertEquals("", content);
   }
 
@@ -1675,15 +1684,15 @@ public class SubmissionServiceTest {
     submission.getSamples().forEach(sample -> sample.setType(null));
     Locale locale = Locale.getDefault();
 
-    String content = submissionService.print(submission, locale);
+    String content = service.print(submission, locale);
     assertEquals("", content);
   }
 
   @Test
   public void print_NullLocale() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 1L);
+    Submission submission = repository.findOne(1L);
 
-    assertEquals("", submissionService.print(submission, null));
+    assertEquals("", service.print(submission, null));
   }
 
   @Test
@@ -1744,15 +1753,14 @@ public class SubmissionServiceTest {
     files.add(gelImage);
     submission.setFiles(files);
 
-    submissionService.insert(submission);
+    service.insert(submission);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
+    submission = repository.findOne(submission.getId());
     assertEquals(user, submission.getUser());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
@@ -1887,15 +1895,14 @@ public class SubmissionServiceTest {
     files.add(file);
     submission.setFiles(files);
 
-    submissionService.insert(submission);
+    service.insert(submission);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
+    submission = repository.findOne(submission.getId());
     assertEquals(user, submission.getUser());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
@@ -2040,15 +2047,14 @@ public class SubmissionServiceTest {
     files.add(file);
     submission.setFiles(files);
 
-    submissionService.insert(submission);
+    service.insert(submission);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
+    submission = repository.findOne(submission.getId());
     assertEquals(user, submission.getUser());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
@@ -2182,15 +2188,14 @@ public class SubmissionServiceTest {
     files.add(structure);
     submission.setFiles(files);
 
-    submissionService.insert(submission);
+    service.insert(submission);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
+    submission = repository.findOne(submission.getId());
     assertEquals(user, submission.getUser());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertNotNull(submission.getSubmissionDate());
@@ -2309,9 +2314,9 @@ public class SubmissionServiceTest {
     files.add(file);
     submission.setFiles(files);
 
-    submissionService.insert(submission);
+    service.insert(submission);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(any(Submission.class));
     verify(activityService).insert(activity);
@@ -2335,7 +2340,7 @@ public class SubmissionServiceTest {
 
   @Test
   public void update() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 36L);
+    Submission submission = repository.findOne(36L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
@@ -2348,14 +2353,13 @@ public class SubmissionServiceTest {
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionService.update(submission, null);
+    service.update(submission, null);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
+    submission = repository.findOne(submission.getId());
     assertEquals((Long) 10L, submission.getUser().getId());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
@@ -2417,7 +2421,7 @@ public class SubmissionServiceTest {
 
   @Test
   public void update_Sample() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 36L);
+    Submission submission = repository.findOne(36L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sample -> {
       entityManager.detach(sample);
@@ -2431,14 +2435,13 @@ public class SubmissionServiceTest {
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionService.update(submission, null);
+    service.update(submission, null);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
+    submission = repository.findOne(submission.getId());
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -2510,7 +2513,7 @@ public class SubmissionServiceTest {
     sample.setStandards(standards);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
-    Submission submission = entityManager.find(Submission.class, 36L);
+    Submission submission = repository.findOne(36L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
@@ -2518,14 +2521,13 @@ public class SubmissionServiceTest {
     });
     submission.setSamples(samples);
 
-    submissionService.update(submission, null);
+    service.update(submission, null);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
+    submission = repository.findOne(submission.getId());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
@@ -2554,8 +2556,8 @@ public class SubmissionServiceTest {
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
     assertEquals(1, tube.getVersion());
-    assertNull(entityManager.find(SubmissionSample.class, 447L));
-    assertNull(entityManager.find(Tube.class, 9L));
+    assertNull(sampleRepository.findOne(447L));
+    assertNull(tubeRepository.findOne(9L));
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -2603,7 +2605,7 @@ public class SubmissionServiceTest {
     sample.setStandards(standards);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
-    Submission submission = entityManager.find(Submission.class, 36L);
+    Submission submission = repository.findOne(36L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
@@ -2611,14 +2613,13 @@ public class SubmissionServiceTest {
     });
     submission.setSamples(samples);
 
-    submissionService.update(submission, null);
+    service.update(submission, null);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
+    submission = repository.findOne(submission.getId());
     assertEquals((Long) 10L, submission.getUser().getId());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     samples = submission.getSamples();
@@ -2652,8 +2653,8 @@ public class SubmissionServiceTest {
     assertEquals(0, well.getColumn());
     assertEquals(false, well.isBanned());
     assertEquals(1, well.getVersion());
-    assertNull(entityManager.find(SubmissionSample.class, 447L));
-    assertNull(entityManager.find(Tube.class, 9L));
+    assertNull(sampleRepository.findOne(447L));
+    assertNull(tubeRepository.findOne(9L));
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -2662,47 +2663,47 @@ public class SubmissionServiceTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void update_UpdateUser() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 36L);
+    Submission submission = repository.findOne(36L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
       entityManager.detach(sa.getOriginalContainer());
     });
-    User user = entityManager.find(User.class, 4L);
+    User user = userRepository.findOne(4L);
     submission.setUser(user);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionService.update(submission, null);
+    service.update(submission, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void update_Received() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 149L);
+    Submission submission = repository.findOne(149L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
       entityManager.detach(sa.getOriginalContainer());
     });
 
-    submissionService.update(submission, null);
+    service.update(submission, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void update_AfterReceived() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 147L);
+    Submission submission = repository.findOne(147L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
       entityManager.detach(sa.getOriginalContainer());
     });
 
-    submissionService.update(submission, null);
+    service.update(submission, null);
   }
 
   @Test
   public void update_Email() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 36L);
+    Submission submission = repository.findOne(36L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
@@ -2713,9 +2714,9 @@ public class SubmissionServiceTest {
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionService.update(submission, null);
+    service.update(submission, null);
 
-    entityManager.flush();
+    repository.flush();
     // Validate email that is sent to proteomic users.
     verify(emailService, atLeastOnce()).htmlEmail();
     verify(emailService, atLeastOnce()).send(email);
@@ -2735,7 +2736,7 @@ public class SubmissionServiceTest {
 
   @Test
   public void update_Admin() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 1L);
+    Submission submission = repository.findOne(1L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
@@ -2778,7 +2779,7 @@ public class SubmissionServiceTest {
     gelImage.setContent(imageContent);
     files.add(gelImage);
     submission.setFiles(files);
-    User user = entityManager.find(User.class, 4L);
+    User user = userRepository.findOne(4L);
     submission.setUser(user);
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
@@ -2786,14 +2787,13 @@ public class SubmissionServiceTest {
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionService.update(submission, "unit_test");
+    service.update(submission, "unit_test");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
     verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
-    submission = entityManager.find(Submission.class, 1L);
-    entityManager.refresh(submission);
+    submission = repository.findOne(1L);
     verify(activityService).insert(activity);
     assertEquals((Long) 1L, submission.getId());
     assertEquals(user, submission.getUser());
@@ -2858,7 +2858,7 @@ public class SubmissionServiceTest {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    Submission submission = entityManager.find(Submission.class, 147L);
+    Submission submission = repository.findOne(147L);
     entityManager.detach(submission);
     submission.getSamples().forEach(sa -> {
       entityManager.detach(sa);
@@ -2869,14 +2869,13 @@ public class SubmissionServiceTest {
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
-    submissionService.update(submission, "unit_test");
+    service.update(submission, "unit_test");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkSubmissionWritePermission(submission);
     verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
-    submission = entityManager.find(Submission.class, submission.getId());
-    entityManager.refresh(submission);
+    submission = repository.findOne(submission.getId());
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(3, samples.size());
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
@@ -2915,21 +2914,21 @@ public class SubmissionServiceTest {
 
   @Test
   public void hide() throws Exception {
-    Submission submission1 = entityManager.find(Submission.class, 147L);
+    Submission submission1 = repository.findOne(147L);
     entityManager.detach(submission1);
-    Submission submission2 = entityManager.find(Submission.class, 148L);
+    Submission submission2 = repository.findOne(148L);
     entityManager.detach(submission2);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
-    submissionService.hide(Arrays.asList(submission1, submission2));
+    service.hide(Arrays.asList(submission1, submission2));
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(activityService, times(2)).insert(activity);
-    submission1 = entityManager.find(Submission.class, submission1.getId());
+    submission1 = repository.findOne(submission1.getId());
     verify(submissionActivityService).update(submission1, null);
     assertTrue(submission1.isHidden());
-    submission2 = entityManager.find(Submission.class, submission2.getId());
+    submission2 = repository.findOne(submission2.getId());
     verify(submissionActivityService).update(submission2, null);
     assertTrue(submission2.isHidden());
   }
@@ -2937,22 +2936,22 @@ public class SubmissionServiceTest {
   @Test
   @SuppressWarnings("unchecked")
   public void show() throws Exception {
-    Submission submission1 = entityManager.find(Submission.class, 36L);
+    Submission submission1 = repository.findOne(36L);
     entityManager.detach(submission1);
-    Submission submission2 = entityManager.find(Submission.class, 148L);
+    Submission submission2 = repository.findOne(148L);
     entityManager.detach(submission2);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
 
-    submissionService.show(Arrays.asList(submission1, submission2));
+    service.show(Arrays.asList(submission1, submission2));
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(activityService, times(1)).insert(activity);
-    submission1 = entityManager.find(Submission.class, submission1.getId());
+    submission1 = repository.findOne(submission1.getId());
     verify(submissionActivityService).update(submission1, null);
     assertFalse(submission1.isHidden());
-    submission2 = entityManager.find(Submission.class, submission2.getId());
+    submission2 = repository.findOne(submission2.getId());
     verify(submissionActivityService).update(submission2, null);
     assertFalse(submission2.isHidden());
   }
