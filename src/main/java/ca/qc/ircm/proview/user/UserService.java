@@ -463,6 +463,7 @@ public class UserService {
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
       user.setActive(true);
+      repository.save(user);
     }
 
     cacheFlusher.flushShiroCache();
@@ -489,6 +490,7 @@ public class UserService {
     for (User user : users) {
       user = repository.findOne(user.getId());
       user.setActive(false);
+      repository.save(user);
     }
 
     cacheFlusher.flushShiroCache();
@@ -527,6 +529,7 @@ public class UserService {
     }
     user.setActive(true);
     updateDirectorName(laboratory, null);
+    laboratoryRepository.save(laboratory);
 
     cacheFlusher.flushShiroCache();
   }
@@ -560,6 +563,7 @@ public class UserService {
       laboratory.getManagers().remove(manager);
     }
     updateDirectorName(laboratory, null);
+    laboratoryRepository.save(laboratory);
 
     cacheFlusher.flushShiroCache();
   }

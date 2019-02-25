@@ -37,6 +37,7 @@ import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.HashedPassword;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
@@ -48,8 +49,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,11 +66,9 @@ import org.thymeleaf.util.StringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class UserServiceTest {
+public class UserServiceTest extends AbstractServiceTestCase {
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
   private UserService service;
   @Inject
@@ -739,6 +736,7 @@ public class UserServiceTest {
   @Test
   public void update() throws Throwable {
     User user = repository.findOne(12L);
+    detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
     user.setLocale(Locale.US);
@@ -804,6 +802,7 @@ public class UserServiceTest {
   public void update_Manager() throws Throwable {
     when(authorizationService.hasManagerRole()).thenReturn(true);
     User user = repository.findOne(3L);
+    detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
     user.setLocale(Locale.US);
@@ -868,6 +867,7 @@ public class UserServiceTest {
   @Test
   public void updatePassword() throws Throwable {
     User user = repository.findOne(4L);
+    detach(user);
 
     service.update(user, "unit_test_password");
 
@@ -884,6 +884,7 @@ public class UserServiceTest {
   public void update_Lab() throws Throwable {
     when(authorizationService.hasManagerRole()).thenReturn(true);
     User user = repository.findOne(3L);
+    detach(user);
 
     user.setEmail("unit_test@ircm.qc.ca");
     user.getLaboratory().setName("lab test");
@@ -904,6 +905,7 @@ public class UserServiceTest {
   @Test
   public void validate() throws Throwable {
     User user = repository.findOne(7L);
+    detach(user);
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     Collection<User> users = new LinkedList<>();
@@ -947,6 +949,7 @@ public class UserServiceTest {
     updateLocale.setLocale(Locale.CANADA);
     repository.save(updateLocale);
     User user = repository.findOne(7L);
+    detach(user);
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     Collection<User> users = new LinkedList<>();
@@ -978,6 +981,7 @@ public class UserServiceTest {
   @Test
   public void activate() throws Throwable {
     User user = repository.findOne(12L);
+    detach(user);
     assertEquals(false, user.isActive());
     Collection<User> users = new LinkedList<>();
     users.add(user);
@@ -996,6 +1000,7 @@ public class UserServiceTest {
   @Test
   public void deactivate() throws Throwable {
     User user = repository.findOne(10L);
+    detach(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
@@ -1013,6 +1018,7 @@ public class UserServiceTest {
   @Test
   public void deactivate_Manager() throws Throwable {
     User user = repository.findOne(3L);
+    detach(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
@@ -1030,6 +1036,7 @@ public class UserServiceTest {
   @Test
   public void deactivate_Admin() throws Throwable {
     User user = repository.findOne(4L);
+    detach(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
@@ -1047,6 +1054,7 @@ public class UserServiceTest {
   @Test(expected = IllegalArgumentException.class)
   public void deactivate_Robot() throws Throwable {
     User user = repository.findOne(1L);
+    detach(user);
     assertEquals(true, user.isActive());
 
     Collection<User> users = new LinkedList<>();
@@ -1058,6 +1066,7 @@ public class UserServiceTest {
   public void addManagerAdmin() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(1L);
     User user = repository.findOne(5L);
+    detach(laboratory, user);
 
     service.addManager(laboratory, user);
 
@@ -1066,13 +1075,14 @@ public class UserServiceTest {
     verify(cacheFlusher).flushShiroCache();
     laboratory = laboratoryRepository.findOne(1L);
     List<User> testManagers = laboratory.getManagers();
-    assertEquals(true, testManagers.contains(user));
+    assertTrue(find(testManagers, user.getId()).isPresent());
   }
 
   @Test
   public void addManager() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(10L);
+    detach(laboratory, user);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
 
@@ -1090,6 +1100,7 @@ public class UserServiceTest {
   public void addManager_InactivatedUser() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(12L);
+    detach(laboratory, user);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
     assertEquals(false, user.isActive());
@@ -1109,6 +1120,7 @@ public class UserServiceTest {
   public void addManager_AlreadyManager() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(3L);
+    detach(laboratory, user);
     List<User> managers = laboratory.getManagers();
     assertTrue(find(managers, user.getId()).isPresent());
 
@@ -1125,6 +1137,7 @@ public class UserServiceTest {
   public void addManager_WrongLaboratory() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(2L);
+    detach(laboratory, user);
 
     service.addManager(laboratory, user);
   }
@@ -1133,6 +1146,7 @@ public class UserServiceTest {
   public void addManager_Invalid() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(7L);
+    detach(laboratory, user);
 
     service.addManager(laboratory, user);
   }
@@ -1143,6 +1157,7 @@ public class UserServiceTest {
     laboratory.setDirector("Test");
     laboratoryRepository.save(laboratory);
     User user = repository.findOne(10L);
+    detach(laboratory, user);
 
     service.addManager(laboratory, user);
 
@@ -1155,6 +1170,7 @@ public class UserServiceTest {
   public void removeManagerAdmin() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(1L);
     User user = repository.findOne(2L);
+    detach(laboratory, user);
 
     service.removeManager(laboratory, user);
 
@@ -1170,6 +1186,7 @@ public class UserServiceTest {
   public void removeManager_UnmanagedLaboratory() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(3L);
     User user = repository.findOne(6L);
+    detach(laboratory, user);
 
     try {
       service.removeManager(laboratory, user);
@@ -1183,6 +1200,7 @@ public class UserServiceTest {
   public void removeManager() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(27L);
+    detach(laboratory, user);
     List<User> managers = laboratory.getManagers();
     assertTrue(find(managers, user.getId()).isPresent());
 
@@ -1200,6 +1218,7 @@ public class UserServiceTest {
   public void removeManager_AlreadyNotManager() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(10L);
+    detach(laboratory, user);
     List<User> managers = laboratory.getManagers();
     assertEquals(false, managers.contains(user));
 
@@ -1216,6 +1235,7 @@ public class UserServiceTest {
   public void removeManager_WrongLaboratory() throws Exception {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     User user = repository.findOne(2L);
+    detach(laboratory, user);
 
     service.removeManager(laboratory, user);
   }
@@ -1226,6 +1246,7 @@ public class UserServiceTest {
     laboratory.setDirector("Test");
     laboratoryRepository.saveAndFlush(laboratory);
     User user = repository.findOne(27L);
+    detach(laboratory, user);
 
     service.removeManager(laboratory, user);
 
@@ -1237,6 +1258,7 @@ public class UserServiceTest {
   @Test
   public void deleteValid() throws Throwable {
     User user = repository.findOne(5L);
+    detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
@@ -1252,6 +1274,7 @@ public class UserServiceTest {
   @Test
   public void delete() throws Throwable {
     User user = repository.findOne(7L);
+    detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
@@ -1267,6 +1290,7 @@ public class UserServiceTest {
   @Test
   public void delete_NewLaboratory() throws Throwable {
     User user = repository.findOne(6L);
+    detach(user);
     assertNotNull(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
