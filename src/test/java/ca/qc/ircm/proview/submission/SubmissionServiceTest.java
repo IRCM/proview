@@ -55,6 +55,7 @@ import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
@@ -84,8 +85,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,7 +97,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionServiceTest {
+public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Inject
   private SubmissionService service;
   @Inject
@@ -111,8 +110,6 @@ public class SubmissionServiceTest {
   private LaboratoryRepository laboratoryRepository;
   @Inject
   private TubeRepository tubeRepository;
-  @PersistenceContext
-  private EntityManager entityManager;
   @MockBean
   private SubmissionActivityService submissionActivityService;
   @MockBean
@@ -2341,10 +2338,10 @@ public class SubmissionServiceTest {
   @Test
   public void update() throws Exception {
     Submission submission = repository.findOne(36L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
+      detach(sa);
+      detach(sa.getOriginalContainer());
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
@@ -2422,10 +2419,10 @@ public class SubmissionServiceTest {
   @Test
   public void update_Sample() throws Exception {
     Submission submission = repository.findOne(36L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sample -> {
-      entityManager.detach(sample);
-      entityManager.detach(sample.getOriginalContainer());
+      detach(sample);
+      detach(sample.getOriginalContainer());
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
@@ -2514,10 +2511,10 @@ public class SubmissionServiceTest {
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
     Submission submission = repository.findOne(36L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
+      detach(sa);
+      detach(sa.getOriginalContainer());
     });
     submission.setSamples(samples);
 
@@ -2606,10 +2603,10 @@ public class SubmissionServiceTest {
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
     Submission submission = repository.findOne(36L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
+      detach(sa);
+      detach(sa.getOriginalContainer());
     });
     submission.setSamples(samples);
 
@@ -2664,10 +2661,10 @@ public class SubmissionServiceTest {
   @Test(expected = IllegalArgumentException.class)
   public void update_UpdateUser() throws Exception {
     Submission submission = repository.findOne(36L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
+      detach(sa);
+      detach(sa.getOriginalContainer());
     });
     User user = userRepository.findOne(4L);
     submission.setUser(user);
@@ -2680,10 +2677,10 @@ public class SubmissionServiceTest {
   @Test(expected = IllegalArgumentException.class)
   public void update_Received() throws Exception {
     Submission submission = repository.findOne(149L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
+      detach(sa);
+      detach(sa.getOriginalContainer());
     });
 
     service.update(submission, null);
@@ -2692,10 +2689,10 @@ public class SubmissionServiceTest {
   @Test(expected = IllegalArgumentException.class)
   public void update_AfterReceived() throws Exception {
     Submission submission = repository.findOne(147L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
+      detach(sa);
+      detach(sa.getOriginalContainer());
     });
 
     service.update(submission, null);
@@ -2704,10 +2701,10 @@ public class SubmissionServiceTest {
   @Test
   public void update_Email() throws Exception {
     Submission submission = repository.findOne(36L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
+      detach(sa);
+      detach(sa.getOriginalContainer());
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
@@ -2737,10 +2734,10 @@ public class SubmissionServiceTest {
   @Test
   public void update_Admin() throws Exception {
     Submission submission = repository.findOne(1L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
+      detach(sa);
+      detach(sa.getOriginalContainer());
     });
     submission.setService(Service.LC_MS_MS);
     submission.setTaxonomy("human");
@@ -2859,10 +2856,10 @@ public class SubmissionServiceTest {
     standards.add(standard);
     sample.setStandards(standards);
     Submission submission = repository.findOne(147L);
-    entityManager.detach(submission);
+    detach(submission);
     submission.getSamples().forEach(sa -> {
-      entityManager.detach(sa);
-      entityManager.detach(sa.getOriginalContainer());
+      detach(sa);
+      detach(sa.getOriginalContainer());
     });
     submission.getSamples().add(sample);
     when(authorizationService.hasAdminRole()).thenReturn(true);
@@ -2915,9 +2912,9 @@ public class SubmissionServiceTest {
   @Test
   public void hide() throws Exception {
     Submission submission1 = repository.findOne(147L);
-    entityManager.detach(submission1);
+    detach(submission1);
     Submission submission2 = repository.findOne(148L);
-    entityManager.detach(submission2);
+    detach(submission2);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
     service.hide(Arrays.asList(submission1, submission2));
@@ -2937,9 +2934,9 @@ public class SubmissionServiceTest {
   @SuppressWarnings("unchecked")
   public void show() throws Exception {
     Submission submission1 = repository.findOne(36L);
-    entityManager.detach(submission1);
+    detach(submission1);
     Submission submission2 = repository.findOne(148L);
-    entityManager.detach(submission2);
+    detach(submission2);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
 
