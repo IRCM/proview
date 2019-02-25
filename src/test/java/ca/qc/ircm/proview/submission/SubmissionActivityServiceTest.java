@@ -40,6 +40,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -55,26 +56,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionActivityServiceTest {
+public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QPlate qplate = QPlate.plate;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
+  @Inject
   private SubmissionActivityService submissionActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private SubmissionRepository repository;
+  @MockBean
   private SampleActivityService sampleActivityService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -83,8 +84,6 @@ public class SubmissionActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    submissionActivityService =
-        new SubmissionActivityService(entityManager, sampleActivityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(sampleActivityService.update(any(), any())).thenReturn(Optional.empty());
@@ -108,8 +107,8 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void update() {
-    Submission newSubmission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(newSubmission);
+    Submission newSubmission = repository.findOne(1L);
+    detach(newSubmission);
     final User oldUser = new User(3L);
     final Laboratory oldLaboratory = new Laboratory(2L);
     User newUser = new User(4L);
@@ -600,8 +599,8 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void update_ChangeSamples() {
-    Submission submission = entityManager.find(Submission.class, 147L);
-    entityManager.detach(submission);
+    Submission submission = repository.findOne(147L);
+    detach(submission);
     submission.getSamples().remove(1);
     submission.getSamples().add(new SubmissionSample(640L, "new_sample"));
     Activity sampleUpdate = new Activity();
@@ -643,14 +642,14 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void update_PlateName() {
-    Submission submission = entityManager.find(Submission.class, 163L);
-    entityManager.detach(submission);
+    Submission submission = repository.findOne(163L);
+    detach(submission);
     submission.getSamples().forEach(sample -> {
-      entityManager.detach(sample);
-      entityManager.detach(sample.getOriginalContainer());
+      detach(sample);
+      detach(sample.getOriginalContainer());
     });
     Plate plate = ((Well) submission.getSamples().get(0).getOriginalContainer()).getPlate();
-    entityManager.detach(plate);
+    detach(plate);
     plate.setName("mynewplatename");
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
@@ -676,12 +675,12 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void update_AddSolvent() throws Throwable {
-    Submission submission = entityManager.find(Submission.class, 33L);
-    entityManager.detach(submission);
+    Submission submission = repository.findOne(33L);
     Solvent solvent = Solvent.OTHER;
     submission.getSolvents().add(solvent);
     submission.setOtherSolvent("ch3oh");
-    entityManager.flush();
+    repository.saveAndFlush(submission);
+    detach(submission);
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
@@ -714,11 +713,11 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void update_RemoveSolvent() throws Throwable {
-    Submission submission = entityManager.find(Submission.class, 33L);
-    entityManager.detach(submission);
+    Submission submission = repository.findOne(33L);
     Solvent solvent = Solvent.METHANOL;
     submission.getSolvents().remove(solvent);
-    entityManager.flush();
+    repository.saveAndFlush(submission);
+    detach(submission);
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
@@ -743,8 +742,8 @@ public class SubmissionActivityServiceTest {
 
   @Test
   public void update_NoChange() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    entityManager.detach(submission);
+    Submission submission = repository.findOne(1L);
+    detach(submission);
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 

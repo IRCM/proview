@@ -24,6 +24,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.QPlate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Sample;
@@ -42,8 +43,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,21 +54,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class SubmissionActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QPlate qplate = QPlate.plate;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
   private SampleActivityService sampleActivityService;
+  @Inject
+  private SubmissionRepository repository;
+  @Inject
+  private PlateRepository plateRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected SubmissionActivityService() {
-  }
-
-  protected SubmissionActivityService(EntityManager entityManager,
-      SampleActivityService sampleActivityService, AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.sampleActivityService = sampleActivityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -106,7 +100,7 @@ public class SubmissionActivityService {
   public Optional<Activity> update(final Submission submission, final String explanation) {
     final User user = authorizationService.getCurrentUser();
 
-    final Submission oldSubmission = entityManager.find(Submission.class, submission.getId());
+    final Submission oldSubmission = repository.findOne(submission.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     class SubmissionUpdateActivityBuilder extends UpdateActivityBuilder {
@@ -280,7 +274,7 @@ public class SubmissionActivityService {
             .map(ua -> new UpdateActivityBuilder(ua)).collect(Collectors.toList())));
         if (sample.getOriginalContainer() instanceof Well) {
           Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
-          Plate oldPlate = entityManager.find(Plate.class, plate.getId());
+          Plate oldPlate = plateRepository.findOne(plate.getId());
           updateBuilders.add(plateUpdate(plate).column(qname(qplate.name))
               .oldValue(oldPlate.getName()).newValue(plate.getName()));
         }
