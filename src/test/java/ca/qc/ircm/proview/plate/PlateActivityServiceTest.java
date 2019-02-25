@@ -27,6 +27,7 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.time.TimeConverter;
@@ -37,21 +38,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class PlateActivityServiceTest {
+public class PlateActivityServiceTest extends AbstractServiceTestCase {
+  @Inject
   private PlateActivityService plateActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private PlateRepository repository;
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -60,7 +61,6 @@ public class PlateActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    plateActivityService = new PlateActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -83,8 +83,8 @@ public class PlateActivityServiceTest {
 
   @Test
   public void update() {
-    Plate plate = entityManager.find(Plate.class, 26L);
-    entityManager.detach(plate);
+    Plate plate = repository.findOne(26L);
+    detach(plate);
     plate.setName("unit_test");
     plate.setColumnCount(13);
     plate.setRowCount(9);
@@ -148,8 +148,8 @@ public class PlateActivityServiceTest {
 
   @Test
   public void update_NoChanges() {
-    Plate plate = entityManager.find(Plate.class, 26L);
-    entityManager.detach(plate);
+    Plate plate = repository.findOne(26L);
+    detach(plate);
 
     Optional<Activity> optionalActivity = plateActivityService.update(plate);
 
