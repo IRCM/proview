@@ -30,43 +30,33 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ProtocolServiceTest {
-  private ProtocolService protocolService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private ProtocolService service;
+  @Inject
+  private ProtocolRepository repository;
+  @MockBean
   private ProtocolActivityService protocolActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
 
-  @Before
-  public void beforeTest() {
-    protocolService = new ProtocolService(entityManager, queryFactory, protocolActivityService,
-        activityService, authorizationService);
-  }
-
   @Test
   public void get_DigestionProtocol() throws Throwable {
-    Protocol protocol = protocolService.get(1L);
+    Protocol protocol = service.get(1L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 1L, protocol.getId());
@@ -76,7 +66,7 @@ public class ProtocolServiceTest {
 
   @Test
   public void get_EnrichmentProtocol() throws Throwable {
-    Protocol protocol = protocolService.get(2L);
+    Protocol protocol = service.get(2L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, protocol.getId());
@@ -86,29 +76,29 @@ public class ProtocolServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Protocol protocol = protocolService.get(null);
+    Protocol protocol = service.get(null);
 
     assertNull(protocol);
   }
 
   @Test
   public void all_Digestion() throws Throwable {
-    List<Protocol> protocols = protocolService.all(DIGESTION);
+    List<Protocol> protocols = service.all(DIGESTION);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, protocols.size());
-    assertEquals(true, protocols.contains(protocolService.get(1L)));
-    assertEquals(true, protocols.contains(protocolService.get(3L)));
+    assertEquals(true, protocols.contains(service.get(1L)));
+    assertEquals(true, protocols.contains(service.get(3L)));
   }
 
   @Test
   public void all_Enrichment() throws Throwable {
-    List<Protocol> protocols = protocolService.all(ENRICHMENT);
+    List<Protocol> protocols = service.all(ENRICHMENT);
 
     verify(authorizationService).checkAdminRole();
     assertEquals(2, protocols.size());
-    assertEquals(true, protocols.contains(protocolService.get(2L)));
-    assertEquals(true, protocols.contains(protocolService.get(4L)));
+    assertEquals(true, protocols.contains(service.get(2L)));
+    assertEquals(true, protocols.contains(service.get(4L)));
   }
 
   @Test
@@ -118,12 +108,12 @@ public class ProtocolServiceTest {
     protocol.setType(DIGESTION);
     when(protocolActivityService.insert(any(Protocol.class))).thenReturn(activity);
 
-    protocolService.insert(protocol);
+    service.insert(protocol);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     assertNotNull(protocol.getId());
-    protocol = protocolService.get(protocol.getId());
+    protocol = service.get(protocol.getId());
     assertEquals("unit_test_protocol", protocol.getName());
     assertEquals(Protocol.Type.DIGESTION, protocol.getType());
     verify(protocolActivityService).insert(protocol);

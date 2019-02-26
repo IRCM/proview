@@ -17,17 +17,11 @@
 
 package ca.qc.ircm.proview.treatment;
 
-import static ca.qc.ircm.proview.treatment.QProtocol.protocol;
-
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,10 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProtocolService {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
+  private ProtocolRepository repository;
   @Inject
   private ProtocolActivityService protocolActivityService;
   @Inject
@@ -49,16 +41,6 @@ public class ProtocolService {
   private AuthorizationService authorizationService;
 
   protected ProtocolService() {
-  }
-
-  protected ProtocolService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      ProtocolActivityService protocolActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.protocolActivityService = protocolActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -74,7 +56,7 @@ public class ProtocolService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Protocol.class, id);
+    return repository.findOne(id);
   }
 
   /**
@@ -87,10 +69,7 @@ public class ProtocolService {
   public List<Protocol> all(Protocol.Type type) {
     authorizationService.checkAdminRole();
 
-    JPAQuery<Protocol> query = queryFactory.select(protocol);
-    query.from(protocol);
-    query.where(protocol.type.eq(type));
-    return query.fetch();
+    return repository.findByType(type);
   }
 
   /**
@@ -102,8 +81,7 @@ public class ProtocolService {
   public void insert(Protocol protocol) {
     authorizationService.checkAdminRole();
 
-    entityManager.persist(protocol);
-    entityManager.flush();
+    repository.saveAndFlush(protocol);
 
     // Log insertion of protocol.
     Activity activity = protocolActivityService.insert(protocol);
