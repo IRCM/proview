@@ -34,21 +34,26 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.WellRepository;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolRepository;
 import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,31 +63,39 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class DigestionServiceTest {
-  private DigestionService digestionService;
-  @PersistenceContext
-  private EntityManager entityManager;
+public class DigestionServiceTest extends AbstractServiceTestCase {
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private DigestionService service;
+  @Inject
+  private DigestionRepository repository;
+  @Inject
+  private ProtocolRepository protocolRepository;
+  @Inject
+  private SubmissionRepository submissionRepository;
+  @Inject
+  private SubmissionSampleRepository submissionSampleRepository;
+  @Inject
+  private TubeRepository tubeRepository;
+  @Inject
+  private WellRepository wellRepository;
+  @MockBean
   private ProtocolService protocolService;
-  @Mock
+  @MockBean
   private DigestionActivityService digestionActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -95,15 +108,13 @@ public class DigestionServiceTest {
    */
   @Before
   public void beforeTest() {
-    digestionService = new DigestionService(entityManager, queryFactory, protocolService,
-        digestionActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
   @Test
   public void get() {
-    Digestion digestion = digestionService.get(6L);
+    Digestion digestion = service.get(6L);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(digestion);
@@ -127,7 +138,7 @@ public class DigestionServiceTest {
 
   @Test
   public void get_Null() {
-    Digestion digestion = digestionService.get(null);
+    Digestion digestion = service.get(null);
 
     assertNull(digestion);
   }
@@ -135,9 +146,9 @@ public class DigestionServiceTest {
   @Test
   public void insert_Tube() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    entityManager.detach(sample);
+    digestion.setProtocol(protocolRepository.findOne(1L));
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
+    detach(sample);
     Tube tube = new Tube(1L);
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample = new TreatedSample();
@@ -148,14 +159,14 @@ public class DigestionServiceTest {
     digestion.setTreatedSamples(treatedSamples);
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
-    digestionService.insert(digestion);
+    service.insert(digestion);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).insert(eq(digestion));
     verify(activityService).insert(activity);
     assertNotNull(digestion.getId());
-    digestion = entityManager.find(Digestion.class, digestion.getId());
+    digestion = repository.findOne(digestion.getId());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionExplanation());
     assertEquals(user, digestion.getUser());
@@ -170,16 +181,16 @@ public class DigestionServiceTest {
     assertEquals((Long) 1L, treatedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
-    sample = entityManager.find(SubmissionSample.class, 1L);
+    sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
   }
 
   @Test
   public void insert_Well() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    entityManager.detach(sample);
+    digestion.setProtocol(protocolRepository.findOne(1L));
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
+    detach(sample);
     Well well = new Well(128L);
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample = new TreatedSample();
@@ -190,14 +201,14 @@ public class DigestionServiceTest {
     digestion.setTreatedSamples(treatedSamples);
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
-    digestionService.insert(digestion);
+    service.insert(digestion);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).insert(eq(digestion));
     verify(activityService).insert(activity);
     assertNotNull(digestion.getId());
-    digestion = digestionService.get(digestion.getId());
+    digestion = service.get(digestion.getId());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionExplanation());
     assertEquals(user, digestion.getUser());
@@ -212,20 +223,17 @@ public class DigestionServiceTest {
     assertEquals((Long) 1L, treatedSample.getSample().getId());
     assertEquals(SampleContainerType.WELL, treatedSample.getContainer().getType());
     assertEquals((Long) 128L, treatedSample.getContainer().getId());
-    sample = entityManager.find(SubmissionSample.class, 1L);
+    sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
   }
 
   @Test
   public void insert_SamplesFromMultipleUser() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
-    Tube tube1 = entityManager.find(Tube.class, 3L);
-    Tube tube2 = entityManager.find(Tube.class, 8L);
-    entityManager.detach(tube1);
-    entityManager.detach(tube1.getSample());
-    entityManager.detach(tube2);
-    entityManager.detach(tube2.getSample());
+    digestion.setProtocol(protocolRepository.findOne(1L));
+    Tube tube1 = tubeRepository.findOne(3L);
+    Tube tube2 = tubeRepository.findOne(8L);
+    detach(tube1, tube1.getSample(), tube2, tube2.getSample());
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample1 = new TreatedSample();
     treatedSample1.setComment("unit test");
@@ -241,7 +249,7 @@ public class DigestionServiceTest {
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
     try {
-      digestionService.insert(digestion);
+      service.insert(digestion);
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -251,13 +259,10 @@ public class DigestionServiceTest {
   @Test
   public void insert_SamplesFromOneUserAndControl() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
-    Tube tube1 = entityManager.find(Tube.class, 3L);
-    Tube tube2 = entityManager.find(Tube.class, 4L);
-    entityManager.detach(tube1);
-    entityManager.detach(tube1.getSample());
-    entityManager.detach(tube2);
-    entityManager.detach(tube2.getSample());
+    digestion.setProtocol(protocolRepository.findOne(1L));
+    Tube tube1 = tubeRepository.findOne(3L);
+    Tube tube2 = tubeRepository.findOne(4L);
+    detach(tube1, tube1.getSample(), tube2, tube2.getSample());
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample1 = new TreatedSample();
     treatedSample1.setComment("unit test");
@@ -273,7 +278,7 @@ public class DigestionServiceTest {
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
     try {
-      digestionService.insert(digestion);
+      service.insert(digestion);
     } catch (IllegalArgumentException e) {
       fail("IllegalArgumentException not expected");
     }
@@ -285,8 +290,8 @@ public class DigestionServiceTest {
     Protocol protocol = new Protocol(null, "test protocol");
     protocol.setType(Protocol.Type.DIGESTION);
     digestion.setProtocol(protocol);
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    entityManager.detach(sample);
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
+    detach(sample);
     Tube tube = new Tube(1L);
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample = new TreatedSample();
@@ -296,20 +301,20 @@ public class DigestionServiceTest {
     treatedSamples.add(treatedSample);
     digestion.setTreatedSamples(treatedSamples);
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, Protocol.class));
+      protocolRepository.save(i.getArgumentAt(0, Protocol.class));
       return null;
     }).when(protocolService).insert(any());
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
-    digestionService.insert(digestion);
+    service.insert(digestion);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(protocolService).insert(eq(protocol));
     verify(digestionActivityService).insert(eq(digestion));
     verify(activityService).insert(activity);
     assertNotNull(digestion.getId());
-    digestion = entityManager.find(Digestion.class, digestion.getId());
+    digestion = repository.findOne(digestion.getId());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionExplanation());
     assertEquals(user, digestion.getUser());
@@ -325,17 +330,17 @@ public class DigestionServiceTest {
     assertEquals((Long) 1L, treatedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
-    sample = entityManager.find(SubmissionSample.class, 1L);
+    sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void insert_WrongProtocolType() {
     Digestion digestion = new Digestion();
-    Protocol protocol = entityManager.find(Protocol.class, 4L);
+    Protocol protocol = protocolRepository.findOne(4L);
     digestion.setProtocol(protocol);
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    entityManager.detach(sample);
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
+    detach(sample);
     Tube tube = new Tube(1L);
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample = new TreatedSample();
@@ -345,12 +350,12 @@ public class DigestionServiceTest {
     treatedSamples.add(treatedSample);
     digestion.setTreatedSamples(treatedSamples);
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, Protocol.class));
+      protocolRepository.save(i.getArgumentAt(0, Protocol.class));
       return null;
     }).when(protocolService).insert(any());
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
-    digestionService.insert(digestion);
+    service.insert(digestion);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -358,8 +363,8 @@ public class DigestionServiceTest {
     Digestion digestion = new Digestion();
     Protocol protocol = new Protocol(null, "test protocol");
     digestion.setProtocol(protocol);
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    entityManager.detach(sample);
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
+    detach(sample);
     Tube tube = new Tube(1L);
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample = new TreatedSample();
@@ -369,21 +374,20 @@ public class DigestionServiceTest {
     treatedSamples.add(treatedSample);
     digestion.setTreatedSamples(treatedSamples);
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, Protocol.class));
+      protocolRepository.save(i.getArgumentAt(0, Protocol.class));
       return null;
     }).when(protocolService).insert(any());
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
-    digestionService.insert(digestion);
+    service.insert(digestion);
   }
 
   @Test
   public void insert_SubmissionDigestionDate_NotUpdated() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 559L);
-    entityManager.detach(sample);
-    entityManager.detach(sample.getSubmission());
+    digestion.setProtocol(protocolRepository.findOne(1L));
+    SubmissionSample sample = submissionSampleRepository.findOne(559L);
+    detach(sample, sample.getSubmission());
     Tube tube = new Tube(11L);
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample = new TreatedSample();
@@ -394,20 +398,19 @@ public class DigestionServiceTest {
     digestion.setTreatedSamples(treatedSamples);
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
-    digestionService.insert(digestion);
+    service.insert(digestion);
 
-    entityManager.flush();
-    Submission submission = entityManager.find(Submission.class, 147L);
+    repository.flush();
+    Submission submission = submissionRepository.findOne(147L);
     assertEquals(LocalDate.of(2014, 10, 8), submission.getDigestionDate());
   }
 
   @Test
   public void insert_SubmissionDigestionDate_UpdatedNull() {
     Digestion digestion = new Digestion();
-    digestion.setProtocol(entityManager.find(Protocol.class, 1L));
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 442L);
-    entityManager.detach(sample);
-    entityManager.detach(sample.getSubmission());
+    digestion.setProtocol(protocolRepository.findOne(1L));
+    SubmissionSample sample = submissionSampleRepository.findOne(442L);
+    detach(sample, sample.getSubmission());
     Tube tube = new Tube(2L);
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample = new TreatedSample();
@@ -418,32 +421,32 @@ public class DigestionServiceTest {
     digestion.setTreatedSamples(treatedSamples);
     when(digestionActivityService.insert(any())).thenReturn(activity);
 
-    digestionService.insert(digestion);
+    service.insert(digestion);
 
-    entityManager.flush();
-    Submission submission = entityManager.find(Submission.class, 32L);
+    repository.flush();
+    Submission submission = submissionRepository.findOne(32L);
     assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getDigestionDate()));
     assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getDigestionDate()));
   }
 
   @Test
   public void update() {
-    Digestion digestion = entityManager.find(Digestion.class, 195L);
-    entityManager.detach(digestion);
-    digestion.getTreatedSamples().stream().forEach(ts -> entityManager.detach(ts));
-    digestion.setProtocol(entityManager.find(Protocol.class, 3L));
+    Digestion digestion = repository.findOne(195L);
+    detach(digestion);
+    digestion.getTreatedSamples().stream().forEach(ts -> detach(ts));
+    digestion.setProtocol(protocolRepository.findOne(3L));
     digestion.getTreatedSamples().get(0).setComment("test update");
     digestion.getTreatedSamples().get(0).setContainer(new Well(248L));
     digestion.getTreatedSamples().get(0).setSample(new Control(444L));
     when(digestionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    digestionService.update(digestion, "test explanation");
+    service.update(digestion, "test explanation");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).update(eq(digestion), eq("test explanation"));
     verify(activityService).insert(activity);
-    digestion = entityManager.find(Digestion.class, 195L);
+    digestion = repository.findOne(195L);
     assertNotNull(digestion);
     assertEquals((Long) 3L, digestion.getProtocol().getId());
     assertEquals((Long) 248L, digestion.getTreatedSamples().get(0).getContainer().getId());
@@ -453,72 +456,72 @@ public class DigestionServiceTest {
 
   @Test
   public void update_NewProtocol() {
-    Digestion digestion = entityManager.find(Digestion.class, 195L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(195L);
+    detach(digestion);
     Protocol protocol = new Protocol(null, "test protocol");
     protocol.setType(Protocol.Type.DIGESTION);
     digestion.setProtocol(protocol);
     when(digestionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, Protocol.class));
+      protocolRepository.save(i.getArgumentAt(0, Protocol.class));
       return null;
     }).when(protocolService).insert(any());
 
-    digestionService.update(digestion, "test explanation");
+    service.update(digestion, "test explanation");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(protocolService).insert(eq(protocol));
     verify(digestionActivityService).update(eq(digestion), eq("test explanation"));
     verify(activityService).insert(activity);
-    digestion = entityManager.find(Digestion.class, 195L);
+    digestion = repository.findOne(195L);
     assertNotNull(digestion);
     assertNotNull(digestion.getProtocol().getId());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void update_RemoveTreatedSample() {
-    Digestion digestion = entityManager.find(Digestion.class, 195L);
-    entityManager.detach(digestion);
-    digestion.getTreatedSamples().stream().forEach(ts -> entityManager.detach(ts));
+    Digestion digestion = repository.findOne(195L);
+    detach(digestion);
+    digestion.getTreatedSamples().stream().forEach(ts -> detach(ts));
     digestion.getTreatedSamples().remove(1);
     when(digestionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    digestionService.update(digestion, "test explanation");
+    service.update(digestion, "test explanation");
   }
 
   @Test
   public void update_NoActivity() {
-    Digestion digestion = entityManager.find(Digestion.class, 195L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(195L);
+    detach(digestion);
     when(digestionActivityService.update(any(), any())).thenReturn(Optional.empty());
 
-    digestionService.update(digestion, "test explanation");
+    service.update(digestion, "test explanation");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).update(eq(digestion), eq("test explanation"));
     verify(activityService, never()).insert(any());
-    digestion = entityManager.find(Digestion.class, 195L);
+    digestion = repository.findOne(195L);
     assertNotNull(digestion);
     assertEquals((Long) 1L, digestion.getProtocol().getId());
   }
 
   @Test
   public void undo_NoBan() {
-    Digestion digestion = entityManager.find(Digestion.class, 195L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(195L);
+    detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undo(digestion, "fail unit test", false);
+    service.undo(digestion, "fail unit test", false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
-    digestion = digestionService.get(digestion.getId());
+    digestion = service.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
@@ -529,25 +532,25 @@ public class DigestionServiceTest {
 
   @Test
   public void undo_Ban() {
-    Digestion digestion = entityManager.find(Digestion.class, 195L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(195L);
+    detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undo(digestion, "fail unit test", true);
+    service.undo(digestion, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
-    digestion = digestionService.get(digestion.getId());
+    digestion = service.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
-    Well well = entityManager.find(Well.class, 224L);
+    Well well = wellRepository.findOne(224L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 236L);
+    well = wellRepository.findOne(236L);
     assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -558,29 +561,29 @@ public class DigestionServiceTest {
 
   @Test
   public void undo_Ban_Transfer() {
-    Digestion digestion = entityManager.find(Digestion.class, 196L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(196L);
+    detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undo(digestion, "fail unit test", true);
+    service.undo(digestion, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
-    Digestion test = digestionService.get(digestion.getId());
+    Digestion test = service.get(digestion.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals("fail unit test", test.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 13L);
+    Tube tube = tubeRepository.findOne(13L);
     assertEquals(true, tube.isBanned());
-    tube = entityManager.find(Tube.class, 14L);
+    tube = tubeRepository.findOne(14L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 320L);
+    Well well = wellRepository.findOne(320L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 332L);
+    well = wellRepository.findOne(332L);
     assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -593,33 +596,33 @@ public class DigestionServiceTest {
 
   @Test
   public void undo_Ban_Fractionation() {
-    Digestion digestion = entityManager.find(Digestion.class, 197L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(197L);
+    detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undo(digestion, "fail unit test", true);
+    service.undo(digestion, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
-    Digestion test = digestionService.get(digestion.getId());
+    Digestion test = service.get(digestion.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals("fail unit test", test.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 15L);
+    Tube tube = tubeRepository.findOne(15L);
     assertEquals(true, tube.isBanned());
-    tube = entityManager.find(Tube.class, 16L);
+    tube = tubeRepository.findOne(16L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 322L);
+    Well well = wellRepository.findOne(322L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 334L);
+    well = wellRepository.findOne(334L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 346L);
+    well = wellRepository.findOne(346L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 358L);
+    well = wellRepository.findOne(358L);
     assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -634,38 +637,38 @@ public class DigestionServiceTest {
 
   @Test
   public void undo_Ban_Transfer_Fractionation() {
-    Digestion digestion = entityManager.find(Digestion.class, 198L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(198L);
+    detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undo(digestion, "fail unit test", true);
+    service.undo(digestion, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
     // Test that digestion failed.
-    digestion = digestionService.get(digestion.getId());
+    digestion = service.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 17L);
+    Tube tube = tubeRepository.findOne(17L);
     assertEquals(true, tube.isBanned());
-    tube = entityManager.find(Tube.class, 18L);
+    tube = tubeRepository.findOne(18L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 321L);
+    Well well = wellRepository.findOne(321L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 333L);
+    well = wellRepository.findOne(333L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 416L);
+    well = wellRepository.findOne(416L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 428L);
+    well = wellRepository.findOne(428L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 440L);
+    well = wellRepository.findOne(440L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 452L);
+    well = wellRepository.findOne(452L);
     assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -682,42 +685,42 @@ public class DigestionServiceTest {
 
   @Test
   public void undo_Ban_Fractionation_Transfer() {
-    Digestion digestion = entityManager.find(Digestion.class, 199L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(199L);
+    detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    digestionService.undo(digestion, "fail unit test", true);
+    service.undo(digestion, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(activity);
     // Test that digestion failed.
-    digestion = digestionService.get(digestion.getId());
+    digestion = service.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 19L);
+    Tube tube = tubeRepository.findOne(19L);
     assertEquals(true, tube.isBanned());
-    tube = entityManager.find(Tube.class, 20L);
+    tube = tubeRepository.findOne(20L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 323L);
+    Well well = wellRepository.findOne(323L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 335L);
+    well = wellRepository.findOne(335L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 347L);
+    well = wellRepository.findOne(347L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 359L);
+    well = wellRepository.findOne(359L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 417L);
+    well = wellRepository.findOne(417L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 429L);
+    well = wellRepository.findOne(429L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 441L);
+    well = wellRepository.findOne(441L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 453L);
+    well = wellRepository.findOne(453L);
     assertEquals(true, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
@@ -736,26 +739,26 @@ public class DigestionServiceTest {
 
   @Test
   public void undo_NotBanErroneousTransfer() {
-    Digestion digestion = entityManager.find(Digestion.class, 321L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(321L);
+    detach(digestion);
     when(digestionActivityService.undoFailed(any(Digestion.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
     // Digestion failed.
-    digestionService.undo(digestion, "fail unit test", true);
+    service.undo(digestion, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(digestionActivityService).undoFailed(eq(digestion), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    digestion = digestionService.get(digestion.getId());
+    digestion = service.get(digestion.getId());
     assertNotNull(digestion);
     assertEquals(true, digestion.isDeleted());
     assertEquals("fail unit test", digestion.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 2279L);
+    Tube tube = tubeRepository.findOne(2279L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 1570L);
+    Well well = wellRepository.findOne(1570L);
     assertEquals(false, well.isBanned());
     // Test log.
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();

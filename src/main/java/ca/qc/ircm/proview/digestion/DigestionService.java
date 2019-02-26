@@ -22,16 +22,18 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -39,8 +41,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +50,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class DigestionService extends BaseTreatmentService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private DigestionRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SubmissionRepository submissionRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private ProtocolService protocolService;
   @Inject
@@ -62,17 +68,6 @@ public class DigestionService extends BaseTreatmentService {
   private AuthorizationService authorizationService;
 
   protected DigestionService() {
-  }
-
-  protected DigestionService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      ProtocolService protocolService, DigestionActivityService digestionActivityService,
-      ActivityService activityService, AuthorizationService authorizationService) {
-    super(queryFactory);
-    this.entityManager = entityManager;
-    this.protocolService = protocolService;
-    this.digestionActivityService = digestionActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -88,7 +83,7 @@ public class DigestionService extends BaseTreatmentService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Digestion.class, id);
+    return repository.findOne(id);
   }
 
   /**
@@ -115,21 +110,21 @@ public class DigestionService extends BaseTreatmentService {
     if (digestion.getProtocol().getId() == null) {
       protocolService.insert(digestion.getProtocol());
     }
-    entityManager.persist(digestion);
+    repository.save(digestion);
     digestion.getTreatedSamples().stream().map(ts -> ts.getSample())
         .filter(sample -> sample instanceof SubmissionSample)
         .map(sample -> (SubmissionSample) sample).forEach(sample -> {
           sample.setStatus(SampleStatus.DIGESTED);
-          entityManager.merge(sample);
+          sampleRepository.save(sample);
           Submission submission = sample.getSubmission();
           if (submission.getDigestionDate() == null) {
             submission.setDigestionDate(toLocalDate(insertTime));
-            entityManager.merge(submission);
+            submissionRepository.save(submission);
           }
         });
 
     // Log insertion of digestion.
-    entityManager.flush();
+    repository.flush();
     Activity activity = digestionActivityService.insert(digestion);
     activityService.insert(activity);
   }
@@ -145,7 +140,7 @@ public class DigestionService extends BaseTreatmentService {
   public void update(Digestion digestion, String explanation) {
     authorizationService.checkAdminRole();
 
-    Digestion old = entityManager.find(Digestion.class, digestion.getId());
+    Digestion old = repository.findOne(digestion.getId());
     Set<Long> treatedSampleIds =
         digestion.getTreatedSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
     if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
@@ -163,7 +158,7 @@ public class DigestionService extends BaseTreatmentService {
       activityService.insert(activity.get());
     }
 
-    entityManager.merge(digestion);
+    repository.save(digestion);
   }
 
   /**
@@ -200,9 +195,9 @@ public class DigestionService extends BaseTreatmentService {
         digestionActivityService.undoFailed(digestion, explanation, bannedContainers);
     activityService.insert(activity);
 
-    entityManager.merge(digestion);
+    repository.save(digestion);
     for (SampleContainer container : bannedContainers) {
-      entityManager.merge(container);
+      sampleContainerRepository.save(container);
     }
   }
 }
