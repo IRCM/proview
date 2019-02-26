@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.sample.Control;
+import ca.qc.ircm.proview.sample.ControlRepository;
 import ca.qc.ircm.proview.sample.ControlType;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
@@ -39,8 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,8 +50,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 @WithSubject(userId = 1)
 public class ControlViewTest extends ControlViewPageObject {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private ControlRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
   private final String name = "ADH_test";
@@ -191,7 +191,7 @@ public class ControlViewTest extends ControlViewPageObject {
     Matcher matcher = Pattern.compile(viewUrl(ControlView.VIEW_NAME) + "/(\\d+)").matcher(url);
     assertTrue(matcher.matches());
     Long id = Long.valueOf(matcher.group(1));
-    Control control = entityManager.find(Control.class, id);
+    Control control = repository.findOne(id);
     assertEquals(name, control.getName());
     assertEquals(type, control.getType());
     assertEquals(quantity, control.getQuantity());
