@@ -29,36 +29,33 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.CloseWindowOnViewChange.CloseWindowOnViewChangeListener;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.navigator.Navigator;
-import com.vaadin.ui.UI;
 import java.util.Locale;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionWindowPresenterTest {
+public class SubmissionWindowPresenterTest extends AbstractComponentTestCase {
+  @Inject
   private SubmissionWindowPresenter presenter;
+  @Inject
+  private SubmissionRepository repository;
+  @MockBean
+  private AuthorizationService authorizationService;
   @Mock
   private SubmissionWindow window;
   @Mock
   private SubmissionForm submissionForm;
-  @Mock
-  private AuthorizationService authorizationService;
-  @Mock
-  private UI ui;
-  @Mock
-  private Navigator navigator;
-  @PersistenceContext
-  private EntityManager entityManager;
   private SubmissionWindowDesign design = new SubmissionWindowDesign();
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SubmissionWindow.class, locale);
@@ -69,14 +66,13 @@ public class SubmissionWindowPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionWindowPresenter(authorizationService);
     window.submissionForm = submissionForm;
     window.design = design;
     when(window.getLocale()).thenReturn(locale);
     when(window.getResources()).thenReturn(resources);
     when(window.getUI()).thenReturn(ui);
     when(ui.getNavigator()).thenReturn(navigator);
-    submission = entityManager.find(Submission.class, 1L);
+    submission = repository.findOne(1L);
   }
 
   @Test

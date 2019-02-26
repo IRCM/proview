@@ -47,13 +47,9 @@ public class SubmissionWindowPresenter {
   protected SubmissionWindowPresenter() {
   }
 
-  protected SubmissionWindowPresenter(AuthorizationService authorizationService) {
-    this.authorizationService = authorizationService;
-  }
-
   /**
    * Initializes presenter.
-   * 
+   *
    * @param window
    *          window
    */
