@@ -49,6 +49,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
@@ -63,9 +64,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Provider;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,24 +72,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ValidateViewPresenterTest {
+  @Inject
   private ValidateViewPresenter presenter;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private UserRepository repository;
+  @MockBean
+  private UserService userService;
+  @MockBean
+  private AuthorizationService authorizationService;
+  @MockBean
+  private UserWindow userWindow;
   @Mock
   private ValidateView view;
-  @Mock
-  private UserService userService;
-  @Mock
-  private AuthorizationService authorizationService;
-  @Mock
-  private Provider<UserWindow> userWindowProvider;
-  @Mock
-  private UserWindow userWindow;
   @Captor
   private ArgumentCaptor<Collection<User>> usersCaptor;
   @Captor
@@ -110,20 +109,17 @@ public class ValidateViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new ValidateViewPresenter(userService, authorizationService, userWindowProvider,
-        applicationName);
-    signedUser = entityManager.find(User.class, 1L);
+    signedUser = repository.findOne(1L);
     when(authorizationService.getCurrentUser()).thenReturn(signedUser);
     usersToValidate = new ArrayList<>();
-    usersToValidate.add(entityManager.find(User.class, 4L));
-    usersToValidate.add(entityManager.find(User.class, 5L));
-    usersToValidate.add(entityManager.find(User.class, 10L));
+    usersToValidate.add(repository.findOne(4L));
+    usersToValidate.add(repository.findOne(5L));
+    usersToValidate.add(repository.findOne(10L));
     when(userService.all(any())).thenReturn(usersToValidate);
     design = new ValidateViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    when(userWindowProvider.get()).thenReturn(userWindow);
   }
 
   @Test
@@ -255,7 +251,6 @@ public class ValidateViewPresenterTest {
 
     button.click();
 
-    verify(userWindowProvider).get();
     verify(userWindow).setValue(user);
     verify(userWindow).center();
     verify(view).addWindow(userWindow);
