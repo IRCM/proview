@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -50,7 +51,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionSampleServiceTest {
+public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Inject
   private SubmissionSampleService service;
   @Inject
@@ -183,8 +184,10 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus() throws Throwable {
     SubmissionSample sample1 = repository.findOne(443L);
+    detach(sample1);
     sample1.setStatus(SampleStatus.DIGESTED);
     SubmissionSample sample2 = repository.findOne(445L);
+    detach(sample2);
     sample2.setStatus(SampleStatus.RECEIVED);
     Collection<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample1);
@@ -212,7 +215,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_Name() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
-    entityManager.detach(sample);
+    detach(sample);
     final String name = sample.getName();
     sample.setName("unit_test");
     sample.setStatus(SampleStatus.DIGESTED);
@@ -233,6 +236,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_Received_SampleDeliveryDate_UpdatedNull() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
+    detach(sample);
     sample.setStatus(SampleStatus.RECEIVED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
@@ -248,6 +252,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_Received_SampleDeliveryDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(559L);
+    detach(sample);
     sample.setStatus(SampleStatus.RECEIVED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
@@ -261,6 +266,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_Digested_SampleDeliveryDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
+    detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
@@ -274,6 +280,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_Digested_SubmissionDigestionDate_UpdatedNull() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
+    detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
@@ -288,6 +295,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_Digested_SubmissionDigestionDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(559L);
+    detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
@@ -301,6 +309,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_Analysed_SubmissionDigestionDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
+    detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
@@ -314,6 +323,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_Analysed_SubmissionAnalysisDate_UpdatedNull() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
+    detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
@@ -328,6 +338,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_Analysed_SubmissionAnalysisDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(621L);
+    detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
@@ -341,6 +352,7 @@ public class SubmissionSampleServiceTest {
   @Test
   public void updateStatus_DataAnalysiss_SubmissionAnalysisDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
+    detach(sample);
     sample.setStatus(SampleStatus.DATA_ANALYSIS);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 

@@ -30,6 +30,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class ControlServiceTest {
+public class ControlServiceTest extends AbstractServiceTestCase {
   @Inject
   private ControlService service;
   @Inject
@@ -203,6 +204,7 @@ public class ControlServiceTest {
   @Test
   public void update() {
     Control control = repository.findOne(444L);
+    detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
     control.setType(SampleType.SOLUTION);
@@ -244,6 +246,7 @@ public class ControlServiceTest {
     standard.setQuantity("3 μg");
     standard.setComment("some_comment");
     Control control = repository.findOne(444L);
+    detach(control);
     control.getStandards().add(standard);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -275,6 +278,7 @@ public class ControlServiceTest {
   @Test
   public void update_UpdateStandard() {
     Control control = repository.findOne(448L);
+    detach(control);
     // Change standard.
     Standard standard = control.getStandards().get(0);
     standard.setName("new_standard_name");
@@ -310,6 +314,7 @@ public class ControlServiceTest {
   @Test
   public void update_RemoveStandard() {
     Control control = repository.findOne(448L);
+    detach(control);
     control.getStandards().remove(0);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
         .thenReturn(optionalActivity);

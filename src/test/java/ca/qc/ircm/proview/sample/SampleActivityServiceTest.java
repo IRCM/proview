@@ -27,6 +27,7 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.user.User;
@@ -35,23 +36,25 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SampleActivityServiceTest {
+public class SampleActivityServiceTest extends AbstractServiceTestCase {
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
   private static final QSubmission qsubmission = QSubmission.submission;
+  @Inject
   private SampleActivityService sampleActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private SubmissionSampleRepository submissionSampleRepository;
+  @Inject
+  private ControlRepository controlRepository;
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -60,7 +63,6 @@ public class SampleActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    sampleActivityService = new SampleActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -87,11 +89,11 @@ public class SampleActivityServiceTest {
 
   @Test
   public void updateStatus() {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 584L);
-    entityManager.detach(sample);
+    SubmissionSample sample = submissionSampleRepository.findOne(584L);
+    detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     Submission submission = sample.getSubmission();
-    entityManager.detach(submission);
+    detach(submission);
     LocalDate sampleDeliveryDate = LocalDate.now().minusDays(2);
     LocalDate digestionDate = LocalDate.now();
     LocalDate analysisDate = LocalDate.now().plusDays(1);
@@ -147,8 +149,8 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_SubmissionSample() {
-    SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 442L);
-    entityManager.detach(submissionSample);
+    SubmissionSample submissionSample = submissionSampleRepository.findOne(442L);
+    detach(submissionSample);
     submissionSample.setName("new_solution_tag_0001");
     submissionSample.setType(SampleType.DRY);
     submissionSample.setQuantity("12 pmol");
@@ -220,8 +222,8 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_SubmissionSample_AddContaminants() {
-    SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 442L);
-    entityManager.detach(submissionSample);
+    SubmissionSample submissionSample = submissionSampleRepository.findOne(442L);
+    detach(submissionSample);
     Contaminant contaminant = new Contaminant();
     contaminant.setId(57894121L);
     contaminant.setName("my_new_contaminant");
@@ -250,10 +252,10 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_SubmissionSample_UpdateContaminants() {
-    SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 447L);
-    entityManager.detach(submissionSample);
+    SubmissionSample submissionSample = submissionSampleRepository.findOne(447L);
+    detach(submissionSample);
     for (Contaminant contaminant : submissionSample.getContaminants()) {
-      entityManager.detach(contaminant);
+      detach(contaminant);
     }
     Contaminant contaminant = submissionSample.getContaminants().get(0);
     contaminant.setName("new_contaminant_name");
@@ -300,8 +302,8 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_SubmissionSample_RemoveContaminant() {
-    SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 447L);
-    entityManager.detach(submissionSample);
+    SubmissionSample submissionSample = submissionSampleRepository.findOne(447L);
+    detach(submissionSample);
     final Contaminant contaminant = submissionSample.getContaminants().get(0);
     submissionSample.getContaminants().remove(0);
 
@@ -326,8 +328,8 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_SubmissionSample_AddStandard() {
-    SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 442L);
-    entityManager.detach(submissionSample);
+    SubmissionSample submissionSample = submissionSampleRepository.findOne(442L);
+    detach(submissionSample);
     Standard standard = new Standard();
     standard.setId(57894121L);
     standard.setName("my_new_standard");
@@ -356,10 +358,10 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_SubmissionSample_UpdateStandard() {
-    SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 447L);
-    entityManager.detach(submissionSample);
+    SubmissionSample submissionSample = submissionSampleRepository.findOne(447L);
+    detach(submissionSample);
     for (Standard standard : submissionSample.getStandards()) {
-      entityManager.detach(standard);
+      detach(standard);
     }
     Standard standard = submissionSample.getStandards().get(0);
     standard.setName("new_standard_name");
@@ -406,8 +408,8 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_SubmissionSample_RemoveStandard() {
-    SubmissionSample submissionSample = entityManager.find(SubmissionSample.class, 447L);
-    entityManager.detach(submissionSample);
+    SubmissionSample submissionSample = submissionSampleRepository.findOne(447L);
+    detach(submissionSample);
     final Standard standard = submissionSample.getStandards().get(0);
     submissionSample.getStandards().remove(0);
 
@@ -432,8 +434,8 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_Control() {
-    Control control = entityManager.find(Control.class, 444L);
-    entityManager.detach(control);
+    Control control = controlRepository.findOne(444L);
+    detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
     control.setType(SampleType.SOLUTION);
@@ -495,8 +497,8 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_Control_AddStandard() {
-    Control control = entityManager.find(Control.class, 444L);
-    entityManager.detach(control);
+    Control control = controlRepository.findOne(444L);
+    detach(control);
     Standard standard = new Standard();
     standard.setId(57894121L);
     standard.setName("my_new_standard");
@@ -524,10 +526,10 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_Control_UpdateStandard() {
-    Control control = entityManager.find(Control.class, 448L);
-    entityManager.detach(control);
+    Control control = controlRepository.findOne(448L);
+    detach(control);
     for (Standard standard : control.getStandards()) {
-      entityManager.detach(standard);
+      detach(standard);
     }
     Standard standard = control.getStandards().get(0);
     standard.setName("new_standard_name");
@@ -573,8 +575,8 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_Control_RemoveStandard() {
-    Control control = entityManager.find(Control.class, 448L);
-    entityManager.detach(control);
+    Control control = controlRepository.findOne(448L);
+    detach(control);
     final Standard standard = control.getStandards().get(0);
     control.getStandards().remove(0);
 
@@ -598,10 +600,10 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_Submission_SampleDeliveryAndDigestionDateAndAnalysisDate() {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 584L);
+    SubmissionSample sample = submissionSampleRepository.findOne(584L);
     Submission submission = sample.getSubmission();
-    entityManager.detach(sample);
-    entityManager.detach(submission);
+    detach(sample);
+    detach(submission);
     sample.setStatus(SampleStatus.ANALYSED);
     LocalDate sampleDeliveryDate = LocalDate.now().minusDays(2);
     LocalDate digestionDate = LocalDate.now();
@@ -634,8 +636,8 @@ public class SampleActivityServiceTest {
 
   @Test
   public void update_NoChange() {
-    Control control = entityManager.find(Control.class, 448L);
-    entityManager.detach(control);
+    Control control = controlRepository.findOne(448L);
+    detach(control);
 
     Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
 

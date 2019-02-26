@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,18 +46,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class SampleActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SampleRepository repository;
+  @Inject
+  private SubmissionSampleRepository submissionSampleRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected SampleActivityService() {
-  }
-
-  protected SampleActivityService(EntityManager entityManager,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -94,7 +88,7 @@ public class SampleActivityService {
   public Optional<Activity> updateStatus(final SubmissionSample sample) {
     User user = authorizationService.getCurrentUser();
 
-    final SubmissionSample oldSample = entityManager.find(SubmissionSample.class, sample.getId());
+    final SubmissionSample oldSample = submissionSampleRepository.findOne(sample.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     Submission oldSubmission = oldSample.getSubmission();
@@ -144,7 +138,7 @@ public class SampleActivityService {
   public Optional<Activity> update(final Sample newSample, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
-    final Sample oldSample = entityManager.find(Sample.class, newSample.getId());
+    final Sample oldSample = repository.findOne(newSample.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
 

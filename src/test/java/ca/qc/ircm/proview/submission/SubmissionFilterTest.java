@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
 import static ca.qc.ircm.proview.sample.SampleStatus.WAITING;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
@@ -41,6 +42,7 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import com.google.common.collect.Range;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -72,6 +74,567 @@ public class SubmissionFilterTest {
   @Before
   public void beforeTest() throws Throwable {
     filter = new SubmissionFilter();
+  }
+
+  @Test
+  public void predicate_ExperimentContains() throws Exception {
+    filter.experimentContains = "test";
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.experiment.contains("test"));
+  }
+
+  @Test
+  public void predicate_UserContains() throws Exception {
+    filter.userContains = "test";
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.user.email.contains("test").or(submission.user.name.contains("test")));
+  }
+
+  @Test
+  public void predicate_DirectorContains() throws Exception {
+    filter.directorContains = "test";
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.laboratory.director.contains("test"));
+  }
+
+  @Test
+  public void predicate_Service() throws Exception {
+    filter.service = Service.LC_MS_MS;
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.service.eq(Service.LC_MS_MS));
+  }
+
+  @Test
+  public void predicate_AnySampleNameContains() throws Exception {
+    filter.anySampleNameContains = "test";
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.samples.any().name.contains("test"));
+  }
+
+  @Test
+  public void predicate_AnySampleStatus() throws Exception {
+    filter.anySampleStatus = SampleStatus.RECEIVED;
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.samples.any().status.eq(SampleStatus.RECEIVED));
+  }
+
+  @Test
+  public void predicate_Instrument() throws Exception {
+    filter.instrument = MassDetectionInstrument.LTQ_ORBI_TRAP;
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.massDetectionInstrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
+  }
+
+  @Test
+  public void predicate_InstrumentForceNull() throws Exception {
+    filter.instrument = MassDetectionInstrument.NULL;
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.massDetectionInstrument.isNull());
+  }
+
+  @Test
+  public void predicate_DateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dateRange = Range.open(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.submissionDate.goe(toInstant(start.plusDays(1)))
+        .and(submission.submissionDate.before(toInstant(end))));
+  }
+
+  @Test
+  public void predicate_DateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dateRange = Range.closed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.submissionDate.goe(toInstant(start))
+        .and(submission.submissionDate.before(toInstant(end.plusDays(1)))));
+  }
+
+  @Test
+  public void predicate_DateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dateRange = Range.openClosed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.submissionDate.goe(toInstant(start.plusDays(1)))
+        .and(submission.submissionDate.before(toInstant(end.plusDays(1)))));
+  }
+
+  @Test
+  public void predicate_DateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dateRange = Range.closedOpen(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.submissionDate.goe(toInstant(start))
+        .and(submission.submissionDate.before(toInstant(end))));
+  }
+
+  @Test
+  public void predicate_DateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.dateRange = Range.atLeast(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.submissionDate.goe(toInstant(start)));
+  }
+
+  @Test
+  public void predicate_DateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.dateRange = Range.greaterThan(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.submissionDate.goe(toInstant(start.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_DateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.dateRange = Range.atMost(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.submissionDate.before(toInstant(end.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_DateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.dateRange = Range.lessThan(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.submissionDate.before(toInstant(end)));
+  }
+
+  @Test
+  public void predicate_SampleDeliveryDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.open(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.sampleDeliveryDate.goe(start.plusDays(1))
+        .and(submission.sampleDeliveryDate.before(end)));
+  }
+
+  @Test
+  public void predicate_SampleDeliveryDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.closed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.sampleDeliveryDate.goe(start)
+        .and(submission.sampleDeliveryDate.before(end.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_SampleDeliveryDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.openClosed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.sampleDeliveryDate.goe(start.plusDays(1))
+        .and(submission.sampleDeliveryDate.before(end.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_SampleDeliveryDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.closedOpen(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.sampleDeliveryDate.goe(start).and(submission.sampleDeliveryDate.before(end)));
+  }
+
+  @Test
+  public void predicate_SampleDeliveryDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.sampleDeliveryDateRange = Range.atLeast(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.sampleDeliveryDate.goe(start));
+  }
+
+  @Test
+  public void predicate_SampleDeliveryDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.sampleDeliveryDateRange = Range.greaterThan(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.sampleDeliveryDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void predicate_SampleDeliveryDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.atMost(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.sampleDeliveryDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void predicate_SampleDeliveryDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.sampleDeliveryDateRange = Range.lessThan(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.sampleDeliveryDate.before(end));
+  }
+
+  @Test
+  public void predicate_DigestionDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.digestionDateRange = Range.open(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.digestionDate.goe(start.plusDays(1)).and(submission.digestionDate.before(end)));
+  }
+
+  @Test
+  public void predicate_DigestionDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.digestionDateRange = Range.closed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.digestionDate.goe(start).and(submission.digestionDate.before(end.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_DigestionDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.digestionDateRange = Range.openClosed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.digestionDate.goe(start.plusDays(1))
+        .and(submission.digestionDate.before(end.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_DigestionDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.digestionDateRange = Range.closedOpen(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.digestionDate.goe(start).and(submission.digestionDate.before(end)));
+  }
+
+  @Test
+  public void predicate_DigestionDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.digestionDateRange = Range.atLeast(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.digestionDate.goe(start));
+  }
+
+  @Test
+  public void predicate_DigestionDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.digestionDateRange = Range.greaterThan(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.digestionDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void predicate_DigestionDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.digestionDateRange = Range.atMost(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.digestionDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void predicate_DigestionDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.digestionDateRange = Range.lessThan(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.digestionDate.before(end));
+  }
+
+  @Test
+  public void predicate_AnalysisDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.open(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.analysisDate.goe(start.plusDays(1)).and(submission.analysisDate.before(end)));
+  }
+
+  @Test
+  public void predicate_AnalysisDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.closed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.analysisDate.goe(start).and(submission.analysisDate.before(end.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_AnalysisDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.openClosed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.analysisDate.goe(start.plusDays(1))
+        .and(submission.analysisDate.before(end.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_AnalysisDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.closedOpen(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.analysisDate.goe(start).and(submission.analysisDate.before(end)));
+  }
+
+  @Test
+  public void predicate_AnalysisDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.analysisDateRange = Range.atLeast(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.analysisDate.goe(start));
+  }
+
+  @Test
+  public void predicate_AnalysisDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.analysisDateRange = Range.greaterThan(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.analysisDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void predicate_AnalysisDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.atMost(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.analysisDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void predicate_AnalysisDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.analysisDateRange = Range.lessThan(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.analysisDate.before(end));
+  }
+
+  @Test
+  public void predicate_DataAvailableDateRange_OpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.open(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.dataAvailableDate.goe(start.plusDays(1))
+        .and(submission.dataAvailableDate.before(end)));
+  }
+
+  @Test
+  public void predicate_DataAvailableDateRange_ClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.closed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.dataAvailableDate.goe(start)
+        .and(submission.dataAvailableDate.before(end.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_DataAvailableDateRange_OpenClosedRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.openClosed(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.dataAvailableDate.goe(start.plusDays(1))
+        .and(submission.dataAvailableDate.before(end.plusDays(1))));
+  }
+
+  @Test
+  public void predicate_DataAvailableDateRange_ClosedOpenRange() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.closedOpen(start, end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate,
+        submission.dataAvailableDate.goe(start).and(submission.dataAvailableDate.before(end)));
+  }
+
+  @Test
+  public void predicate_DataAvailableDateRange_AtLeast() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.dataAvailableDateRange = Range.atLeast(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.dataAvailableDate.goe(start));
+  }
+
+  @Test
+  public void predicate_DataAvailableDateRange_GreaterThan() throws Exception {
+    LocalDate start = LocalDate.now().minusDays(10);
+    filter.dataAvailableDateRange = Range.greaterThan(start);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.dataAvailableDate.goe(start.plusDays(1)));
+  }
+
+  @Test
+  public void predicate_DataAvailableDateRange_AtMost() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.atMost(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.dataAvailableDate.before(end.plusDays(1)));
+  }
+
+  @Test
+  public void predicate_DataAvailableDateRange_LessThan() throws Exception {
+    LocalDate end = LocalDate.now();
+    filter.dataAvailableDateRange = Range.lessThan(end);
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.dataAvailableDate.before(end));
+  }
+
+  @Test
+  public void predicate_Results_True() throws Exception {
+    filter.results = true;
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.samples.any().status.in(SampleStatus.analysedStatuses()));
+  }
+
+  @Test
+  public void predicate_Results_False() throws Exception {
+    filter.results = false;
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
+  }
+
+  @Test
+  public void predicate_Hidden_True() throws Exception {
+    filter.hidden = true;
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.hidden.eq(true));
+  }
+
+  @Test
+  public void predicate_Hidden_False() throws Exception {
+    filter.hidden = false;
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.hidden.eq(false));
+  }
+
+  @Test
+  public void predicate_AnySampleNameContainsAndAnySampleStatus() throws Exception {
+    filter.anySampleNameContains = "test";
+    filter.anySampleStatus = SampleStatus.RECEIVED;
+
+    Predicate predicate = filter.predicate();
+
+    assertEquals(predicate, submission.samples.any().name.contains("test")
+        .and(submission.samples.any().status.eq(SampleStatus.RECEIVED)));
   }
 
   @Test

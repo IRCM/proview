@@ -31,8 +31,6 @@ import java.util.LinkedList;
 import java.util.Optional;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -47,18 +45,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlateActivityService {
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(PlateActivityService.class);
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private PlateRepository repository;
+  @Inject
+  private WellRepository wellRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected PlateActivityService() {
-  }
-
-  protected PlateActivityService(EntityManager entityManager,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -93,7 +87,7 @@ public class PlateActivityService {
   public Optional<Activity> update(final Plate plate) {
     User user = authorizationService.getCurrentUser();
 
-    Plate oldPlate = entityManager.find(Plate.class, plate.getId());
+    Plate oldPlate = repository.findOne(plate.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     updateBuilders.add(updateActivity(plate).column("name").oldValue(oldPlate.getName())
@@ -161,7 +155,7 @@ public class PlateActivityService {
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     for (Well well : wells) {
-      Well oldWell = entityManager.find(Well.class, well.getId());
+      Well oldWell = wellRepository.findOne(well.getId());
       updateBuilders.add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 
@@ -201,7 +195,7 @@ public class PlateActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     for (Well well : wells) {
       assert well.getPlate().equals(plate);
-      Well oldWell = entityManager.find(Well.class, well.getId());
+      Well oldWell = wellRepository.findOne(well.getId());
       updateBuilders.add(new ActivateSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 

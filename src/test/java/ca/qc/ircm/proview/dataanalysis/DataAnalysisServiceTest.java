@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -50,7 +51,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class DataAnalysisServiceTest {
+public class DataAnalysisServiceTest extends AbstractServiceTestCase {
   @Inject
   private DataAnalysisService service;
   @Inject
@@ -179,6 +180,7 @@ public class DataAnalysisServiceTest {
     SubmissionSample sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     DataAnalysis dataAnalysis = service.get(3L);
+    detach(dataAnalysis);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456", dataAnalysis.getProtein());
@@ -230,6 +232,7 @@ public class DataAnalysisServiceTest {
     SubmissionSample sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     DataAnalysis dataAnalysis = service.get(3L);
+    detach(dataAnalysis);
     assertEquals((Long) 3L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456", dataAnalysis.getProtein());
@@ -280,6 +283,7 @@ public class DataAnalysisServiceTest {
     SubmissionSample sample = submissionSampleRepository.findOne(442L);
     assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
     DataAnalysis dataAnalysis = service.get(4L);
+    detach(dataAnalysis);
     assertEquals((Long) 4L, dataAnalysis.getId());
     assertEquals(sample.getId(), dataAnalysis.getSample().getId());
     assertEquals("123456, 58774", dataAnalysis.getProtein());
