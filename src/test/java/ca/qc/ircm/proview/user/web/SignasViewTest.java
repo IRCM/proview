@@ -32,8 +32,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.WindowElement;
 import java.util.List;
 import java.util.Locale;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -47,8 +45,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SignasViewTest extends SignasPageObject {
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SignasViewTest.class);
-  @PersistenceContext
-  private EntityManager entityManager;
   @Value("${spring.application.name}")
   private String applicationName;
 
