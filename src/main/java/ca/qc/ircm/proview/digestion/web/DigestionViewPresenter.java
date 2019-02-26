@@ -106,15 +106,6 @@ public class DigestionViewPresenter implements BinderValidator {
   protected DigestionViewPresenter() {
   }
 
-  protected DigestionViewPresenter(DigestionService digestionService,
-      ProtocolService protocolService, SampleContainerService sampleContainerService,
-      String applicationName) {
-    this.digestionService = digestionService;
-    this.protocolService = protocolService;
-    this.sampleContainerService = sampleContainerService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *

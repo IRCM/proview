@@ -60,12 +60,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.digestion.Digestion;
+import ca.qc.ircm.proview.digestion.DigestionRepository;
 import ca.qc.ircm.proview.digestion.DigestionService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolRepository;
 import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
@@ -86,8 +90,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,26 +97,32 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DigestionViewPresenterTest {
+  @Inject
   private DigestionViewPresenter presenter;
+  @Inject
+  private DigestionRepository repository;
+  @Inject
+  private ProtocolRepository protocolRepository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
+  @MockBean
+  private DigestionService digestionService;
+  @MockBean
+  private ProtocolService protocolService;
+  @MockBean
+  private SampleContainerService sampleContainerService;
   @Mock
   private DigestionView view;
-  @Mock
-  private DigestionService digestionService;
-  @Mock
-  private ProtocolService protocolService;
-  @Mock
-  private SampleContainerService sampleContainerService;
   @Captor
   private ArgumentCaptor<Digestion> digestionCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Inject
-  private ProtocolService realProtocolService;
   @Value("${spring.application.name}")
   private String applicationName;
   private DigestionViewDesign design = new DigestionViewDesign();
@@ -132,16 +140,14 @@ public class DigestionViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new DigestionViewPresenter(digestionService, protocolService,
-        sampleContainerService, applicationName);
     design = new DigestionViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(entityManager.find(Sample.class, 559L));
-    samples.add(entityManager.find(Sample.class, 560L));
-    samples.add(entityManager.find(Sample.class, 444L));
+    samples.add(sampleRepository.findOne(559L));
+    samples.add(sampleRepository.findOne(560L));
+    samples.add(sampleRepository.findOne(444L));
     containers = samples.stream().flatMap(sample -> {
       Tube tube1 = new Tube(sample.getId(), sample.getName());
       tube1.setSample(sample);
@@ -149,7 +155,7 @@ public class DigestionViewPresenterTest {
       tube2.setSample(sample);
       return Arrays.asList(tube1, tube2).stream();
     }).collect(Collectors.toList());
-    protocols = realProtocolService.all(Protocol.Type.DIGESTION);
+    protocols = protocolRepository.findByType(Protocol.Type.DIGESTION);
     comments = IntStream.range(0, containers.size()).mapToObj(i -> "comment" + i)
         .collect(Collectors.toList());
     when(protocolService.all(any())).thenReturn(new ArrayList<>(protocols));
@@ -443,13 +449,11 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void save_Update() {
-    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
-        sampleContainerService, applicationName);
-    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    Digestion digestion = repository.findOne(6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
-    design.protocol.setValue(entityManager.find(Protocol.class, 3L));
+    design.protocol.setValue(protocolRepository.findOne(3L));
     setFields();
     design.explanation.setValue("test explanation");
 
@@ -476,9 +480,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void remove_NoExplanation() {
-    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
-        sampleContainerService, applicationName);
-    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    Digestion digestion = repository.findOne(6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
@@ -493,13 +495,11 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void remove() {
-    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
-        sampleContainerService, applicationName);
-    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    Digestion digestion = repository.findOne(6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
-    design.protocol.setValue(entityManager.find(Protocol.class, 3L));
+    design.protocol.setValue(protocolRepository.findOne(3L));
     setFields();
     design.explanation.setValue("test explanation");
 
@@ -516,13 +516,11 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void remove_BanContainers() {
-    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
-        sampleContainerService, applicationName);
-    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    Digestion digestion = repository.findOne(6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
-    design.protocol.setValue(entityManager.find(Protocol.class, 3L));
+    design.protocol.setValue(protocolRepository.findOne(3L));
     setFields();
     design.explanation.setValue("test explanation");
     design.banContainers.setValue(true);
@@ -590,9 +588,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void enter_Digestion() {
-    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
-        sampleContainerService, applicationName);
-    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    Digestion digestion = repository.findOne(6L);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
     presenter.enter("6");
@@ -618,9 +614,7 @@ public class DigestionViewPresenterTest {
 
   @Test
   public void enter_DigestionDeleted() {
-    presenter = new DigestionViewPresenter(digestionService, realProtocolService,
-        sampleContainerService, applicationName);
-    Digestion digestion = entityManager.find(Digestion.class, 6L);
+    Digestion digestion = repository.findOne(6L);
     digestion.setDeleted(true);
     when(digestionService.get(any())).thenReturn(digestion);
     presenter.init(view);
@@ -669,11 +663,11 @@ public class DigestionViewPresenterTest {
   public void enter_Containers() {
     when(sampleContainerService.get(any())).thenAnswer(i -> {
       Long id = i.getArgumentAt(0, Long.class);
-      return id != null ? entityManager.find(SampleContainer.class, id) : null;
+      return id != null ? sampleContainerRepository.findOne(id) : null;
     });
     List<SampleContainer> containers = new ArrayList<>();
-    containers.add(entityManager.find(SampleContainer.class, 11L));
-    containers.add(entityManager.find(SampleContainer.class, 12L));
+    containers.add(sampleContainerRepository.findOne(11L));
+    containers.add(sampleContainerRepository.findOne(12L));
     presenter.init(view);
     presenter.enter("containers/11,12");
 
