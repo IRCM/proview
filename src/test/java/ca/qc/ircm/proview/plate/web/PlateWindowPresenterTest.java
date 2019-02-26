@@ -29,43 +29,40 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.PlateService;
+import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.CloseWindowOnViewChange.CloseWindowOnViewChangeListener;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.server.StreamResource;
-import com.vaadin.ui.UI;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class PlateWindowPresenterTest {
+public class PlateWindowPresenterTest extends AbstractComponentTestCase {
+  @Inject
   private PlateWindowPresenter presenter;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private PlateRepository repository;
+  @MockBean
+  private PlateService plateService;
   @Mock
   private PlateWindow view;
   @Mock
   private PlateComponent plateComponent;
-  @Mock
-  private PlateService plateService;
-  @Mock
-  private UI ui;
-  @Mock
-  private Navigator navigator;
   private PlateWindowDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(PlateWindow.class, locale);
@@ -76,14 +73,12 @@ public class PlateWindowPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new PlateWindowPresenter(plateService);
     design = new PlateWindowDesign();
     view.design = design;
     view.plateComponent = plateComponent;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getUI()).thenReturn(ui);
-    when(ui.getNavigator()).thenReturn(navigator);
     platePrint = RandomStringUtils.randomAlphanumeric(1000);
     when(plateService.print(any(), any())).thenReturn(platePrint);
   }
@@ -121,7 +116,7 @@ public class PlateWindowPresenterTest {
 
   @Test
   public void setValue() {
-    Plate plate = entityManager.find(Plate.class, 26L);
+    Plate plate = repository.findOne(26L);
     presenter.init(view);
     presenter.setValue(plate);
 
@@ -132,7 +127,7 @@ public class PlateWindowPresenterTest {
 
   @Test
   public void print() throws Throwable {
-    Plate plate = entityManager.find(Plate.class, 26L);
+    Plate plate = repository.findOne(26L);
     presenter.init(view);
     presenter.setValue(plate);
 

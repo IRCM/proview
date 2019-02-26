@@ -55,13 +55,9 @@ public class PlateWindowPresenter {
   protected PlateWindowPresenter() {
   }
 
-  protected PlateWindowPresenter(PlateService plateService) {
-    this.plateService = plateService;
-  }
-
   /**
    * Initializes presenter.
-   * 
+   *
    * @param view
    *          view
    */
