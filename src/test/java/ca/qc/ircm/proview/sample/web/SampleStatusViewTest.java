@@ -26,14 +26,14 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.NotificationElement;
 import java.util.Locale;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,8 +43,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 @WithSubject(userId = 1)
 public class SampleStatusViewTest extends SampleStatusPageObject {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SubmissionRepository submissionRepository;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -124,9 +124,9 @@ public class SampleStatusViewTest extends SampleStatusPageObject {
     assertNotNull(notification.getCaption());
     assertEquals(resources(SampleStatusView.class).message(SAVE + ".done", 2),
         notification.getCaption());
-    Submission submission = entityManager.find(Submission.class, 32L);
+    Submission submission = submissionRepository.findOne(32L);
     assertEquals(SampleStatus.ANALYSED, submission.getSamples().get(0).getStatus());
-    submission = entityManager.find(Submission.class, 147L);
+    submission = submissionRepository.findOne(147L);
     assertEquals(SampleStatus.CANCELLED, submission.getSamples().get(0).getStatus());
   }
 }
