@@ -41,10 +41,6 @@ public class PlatesViewPresenter {
   protected PlatesViewPresenter() {
   }
 
-  protected PlatesViewPresenter(String applicationName) {
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *
