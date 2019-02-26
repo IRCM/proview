@@ -58,7 +58,7 @@ public class SolubilisationService extends BaseTreatmentService {
   protected SolubilisationService(EntityManager entityManager, JPAQueryFactory queryFactory,
       SolubilisationActivityService solubilisationActivityService, ActivityService activityService,
       AuthorizationService authorizationService) {
-    super(entityManager, queryFactory);
+    super(queryFactory);
     this.entityManager = entityManager;
     this.solubilisationActivityService = solubilisationActivityService;
     this.activityService = activityService;

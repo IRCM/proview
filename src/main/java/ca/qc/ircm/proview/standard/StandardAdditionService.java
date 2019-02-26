@@ -58,7 +58,7 @@ public class StandardAdditionService extends BaseTreatmentService {
   protected StandardAdditionService(EntityManager entityManager, JPAQueryFactory queryFactory,
       StandardAdditionActivityService standardAdditionActivityService,
       ActivityService activityService, AuthorizationService authorizationService) {
-    super(entityManager, queryFactory);
+    super(queryFactory);
     this.entityManager = entityManager;
     this.standardAdditionActivityService = standardAdditionActivityService;
     this.activityService = activityService;

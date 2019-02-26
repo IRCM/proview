@@ -65,7 +65,7 @@ public class FractionationService extends BaseTreatmentService {
   protected FractionationService(EntityManager entityManager, JPAQueryFactory queryFactory,
       FractionationActivityService fractionationActivityService, ActivityService activityService,
       AuthorizationService authorizationService) {
-    super(entityManager, queryFactory);
+    super(queryFactory);
     this.entityManager = entityManager;
     this.queryFactory = queryFactory;
     this.fractionationActivityService = fractionationActivityService;

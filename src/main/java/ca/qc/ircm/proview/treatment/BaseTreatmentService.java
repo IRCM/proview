@@ -32,23 +32,18 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 /**
  * Make some methods available to log treatment service.
  */
 public abstract class BaseTreatmentService {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
   private JPAQueryFactory queryFactory;
 
   protected BaseTreatmentService() {
   }
 
-  protected BaseTreatmentService(EntityManager entityManager, JPAQueryFactory queryFactory) {
-    this.entityManager = entityManager;
+  protected BaseTreatmentService(JPAQueryFactory queryFactory) {
     this.queryFactory = queryFactory;
   }
 

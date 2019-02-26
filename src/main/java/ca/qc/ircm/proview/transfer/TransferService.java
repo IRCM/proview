@@ -67,7 +67,7 @@ public class TransferService extends BaseTreatmentService {
   protected TransferService(EntityManager entityManager, JPAQueryFactory queryFactory,
       TransferActivityService transferActivityService, ActivityService activityService,
       PlateService plateService, AuthorizationService authorizationService) {
-    super(entityManager, queryFactory);
+    super(queryFactory);
     this.entityManager = entityManager;
     this.transferActivityService = transferActivityService;
     this.activityService = activityService;

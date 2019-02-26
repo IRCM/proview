@@ -58,7 +58,7 @@ public class DilutionService extends BaseTreatmentService {
   protected DilutionService(EntityManager entityManager, JPAQueryFactory queryFactory,
       DilutionActivityService dilutionActivityService, ActivityService activityService,
       AuthorizationService authorizationService) {
-    super(entityManager, queryFactory);
+    super(queryFactory);
     this.entityManager = entityManager;
     this.dilutionActivityService = dilutionActivityService;
     this.activityService = activityService;

@@ -67,7 +67,7 @@ public class DigestionService extends BaseTreatmentService {
   protected DigestionService(EntityManager entityManager, JPAQueryFactory queryFactory,
       ProtocolService protocolService, DigestionActivityService digestionActivityService,
       ActivityService activityService, AuthorizationService authorizationService) {
-    super(entityManager, queryFactory);
+    super(queryFactory);
     this.entityManager = entityManager;
     this.protocolService = protocolService;
     this.digestionActivityService = digestionActivityService;

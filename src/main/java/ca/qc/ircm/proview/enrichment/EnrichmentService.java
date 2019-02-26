@@ -63,7 +63,7 @@ public class EnrichmentService extends BaseTreatmentService {
   protected EnrichmentService(EntityManager entityManager, JPAQueryFactory queryFactory,
       ProtocolService protocolService, EnrichmentActivityService enrichmentActivityService,
       ActivityService activityService, AuthorizationService authorizationService) {
-    super(entityManager, queryFactory);
+    super(queryFactory);
     this.entityManager = entityManager;
     this.protocolService = protocolService;
     this.enrichmentActivityService = enrichmentActivityService;
