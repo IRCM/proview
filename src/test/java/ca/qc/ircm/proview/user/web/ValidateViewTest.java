@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,16 +28,15 @@ import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.testbench.elements.WindowElement;
 import com.vaadin.ui.Notification;
 import java.util.List;
 import java.util.Locale;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -52,16 +50,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ValidateViewTest extends ValidatePageObject {
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewTest.class);
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private UserRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
 
   private User getUser(String email) {
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.email.eq(email));
-    return query.fetchOne();
+    return repository.findByEmail(email);
   }
 
   @Test
