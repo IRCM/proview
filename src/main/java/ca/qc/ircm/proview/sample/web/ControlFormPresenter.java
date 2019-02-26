@@ -74,10 +74,6 @@ public class ControlFormPresenter implements BinderValidator {
   protected ControlFormPresenter() {
   }
 
-  protected ControlFormPresenter(ControlService controlService) {
-    this.controlService = controlService;
-  }
-
   /**
    * Called by view when view is initialized.
    *

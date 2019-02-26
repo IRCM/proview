@@ -47,6 +47,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Control;
+import ca.qc.ircm.proview.sample.ControlRepository;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.ControlType;
 import ca.qc.ircm.proview.sample.SampleType;
@@ -59,32 +60,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ControlFormPresenterTest {
+  @Inject
   private ControlFormPresenter presenter;
+  @Inject
+  private ControlRepository repository;
+  @MockBean
+  private ControlService controlService;
   @Mock
   private ControlForm view;
-  @Mock
-  private ControlService controlService;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   @Captor
   private ArgumentCaptor<Boolean> booleanCaptor;
   @Captor
   private ArgumentCaptor<Control> controlCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
   private ControlFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(ControlForm.class, locale);
@@ -108,7 +110,6 @@ public class ControlFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new ControlFormPresenter(controlService);
     design = new ControlFormDesign();
     view.design = design;
     view.standardsForm = mock(StandardsForm.class);
@@ -233,7 +234,7 @@ public class ControlFormPresenterTest {
   public void readOnly_True_Update() {
     presenter.init(view);
     presenter.setReadOnly(true);
-    Control control = entityManager.find(Control.class, 444L);
+    Control control = repository.findOne(444L);
     presenter.setValue(control);
 
     assertTrue(design.nameField.isReadOnly());
@@ -282,7 +283,7 @@ public class ControlFormPresenterTest {
   @Test
   public void readOnly_False_Update() {
     presenter.init(view);
-    Control control = entityManager.find(Control.class, 444L);
+    Control control = repository.findOne(444L);
     presenter.setValue(control);
 
     assertFalse(design.nameField.isReadOnly());
@@ -330,7 +331,7 @@ public class ControlFormPresenterTest {
   @Test
   public void save_NameExists() {
     presenter.init(view);
-    final Control control = entityManager.find(Control.class, 444L);
+    final Control control = repository.findOne(444L);
     presenter.setValue(control);
     when(controlService.exists(any())).thenReturn(true);
     when(controlService.get(any())).thenReturn(control);
@@ -360,7 +361,7 @@ public class ControlFormPresenterTest {
 
   @Test
   public void save_MissingExplanation() throws Throwable {
-    Control control = entityManager.find(Control.class, 444L);
+    Control control = repository.findOne(444L);
     presenter.init(view);
     presenter.setValue(control);
     setFields();
@@ -403,7 +404,7 @@ public class ControlFormPresenterTest {
 
   @Test
   public void save_Update() {
-    Control control = entityManager.find(Control.class, 444L);
+    Control control = repository.findOne(444L);
     presenter.init(view);
     presenter.setValue(control);
     setFields();
@@ -434,7 +435,7 @@ public class ControlFormPresenterTest {
 
   @Test
   public void setBean_Standards() {
-    final Control control = entityManager.find(Control.class, 444L);
+    final Control control = repository.findOne(444L);
     Standard standard = new Standard();
     standard.setName("std1");
     standard.setQuantity("1 ug");
