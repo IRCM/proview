@@ -27,11 +27,10 @@ import ca.qc.ircm.proview.security.PasswordVersion;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.junit.Test;
@@ -42,8 +41,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 public class ForgotPasswordViewTest extends ForgotPasswordPageObject {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private UserRepository userRepository;
   @Inject
   private SecurityConfiguration securityConfiguration;
   @Value("${spring.application.name}")
@@ -94,7 +93,7 @@ public class ForgotPasswordViewTest extends ForgotPasswordPageObject {
     clickSave();
 
     assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
-    User user = entityManager.find(User.class, 10L);
+    User user = userRepository.findOne(10L);
     PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
     assertNotNull(user.getSalt());
     SimpleHash hash = new SimpleHash(passwordVersion.getAlgorithm(), password,
