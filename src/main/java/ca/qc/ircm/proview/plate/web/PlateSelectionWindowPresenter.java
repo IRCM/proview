@@ -58,11 +58,6 @@ public class PlateSelectionWindowPresenter {
     binder.setBean(new Plate());
   }
 
-  protected PlateSelectionWindowPresenter(PlateService plateService) {
-    this();
-    this.plateService = plateService;
-  }
-
   /**
    * Initializes presenter.
    *

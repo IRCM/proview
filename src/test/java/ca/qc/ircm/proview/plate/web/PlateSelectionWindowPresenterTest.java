@@ -34,6 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -46,26 +47,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PlateSelectionWindowPresenterTest extends AbstractComponentTestCase {
+  @Inject
   private PlateSelectionWindowPresenter presenter;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private PlateRepository repository;
+  @MockBean
+  private PlateService plateService;
   @Mock
   private PlateSelectionWindow window;
-  @Mock
-  private PlateService plateService;
   @Mock
   private Plate plate;
   @Captor
@@ -84,18 +86,16 @@ public class PlateSelectionWindowPresenterTest extends AbstractComponentTestCase
    */
   @Before
   public void beforeTest() {
-    presenter = new PlateSelectionWindowPresenter(plateService);
     design = new PlateSelectionWindowDesign();
     window.design = design;
     when(window.getLocale()).thenReturn(locale);
     when(window.getResources()).thenReturn(resources);
     when(window.getGeneralResources()).thenReturn(generalResources);
     when(window.getUI()).thenReturn(ui);
-    //when(window.getParent()).thenReturn(ui);
     window.platesSelection = mock(PlatesSelectionComponent.class);
-    plates.add(entityManager.find(Plate.class, 26L));
-    plates.add(entityManager.find(Plate.class, 107L));
-    plates.add(entityManager.find(Plate.class, 123L));
+    plates.add(repository.findOne(26L));
+    plates.add(repository.findOne(107L));
+    plates.add(repository.findOne(123L));
     when(plateService.all(any())).thenReturn(new ArrayList<>(plates));
   }
 
