@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.web.RegisterViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,13 +33,10 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import ca.qc.ircm.proview.user.UserRepository;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -53,13 +49,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 public class RegisterViewTest extends RegisterPageObject {
   @Inject
+  private UserRepository repository;
+  @Inject
   private SecurityConfiguration securityConfiguration;
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Inject
-  private JPAQueryFactory jpaQueryFactory;
   @Value("${spring.application.name}")
   private String applicationName;
   private String email = "unit.test@ircm.qc.ca";
@@ -78,10 +72,7 @@ public class RegisterViewTest extends RegisterPageObject {
   private String phoneExtension = "234";
 
   private User getUser(String email) {
-    JPAQuery<User> query = jpaQueryFactory.select(user);
-    query.from(user);
-    query.where(user.email.eq(email));
-    return query.fetchOne();
+    return repository.findByEmail(email);
   }
 
   @Test
@@ -271,7 +262,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertNotNull(user.getId());
     assertEquals(email, user.getEmail());
     assertEquals(name, user.getName());
-    User admin = entityManager.find(User.class, SecurityUtils.getSubject().getPrincipal());
+    User admin = repository.findOne((Long) SecurityUtils.getSubject().getPrincipal());
     Laboratory laboratory = user.getLaboratory();
     assertEquals(admin.getLaboratory().getId(), laboratory.getId());
     PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
