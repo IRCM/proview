@@ -31,6 +31,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.treatment.TreatedSample;
@@ -41,21 +42,21 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class DilutionActivityServiceTest {
+public class DilutionActivityServiceTest extends AbstractServiceTestCase {
+  @Inject
   private DilutionActivityService dilutionActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private DilutionRepository repository;
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -64,7 +65,6 @@ public class DilutionActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    dilutionActivityService = new DilutionActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -97,9 +97,9 @@ public class DilutionActivityServiceTest {
 
   @Test
   public void update() {
-    Dilution dilution = entityManager.find(Dilution.class, 210L);
-    entityManager.detach(dilution);
-    dilution.getTreatedSamples().forEach(ts -> entityManager.detach(ts));
+    Dilution dilution = repository.findOne(210L);
+    detach(dilution);
+    dilution.getTreatedSamples().forEach(ts -> detach(ts));
     dilution.getTreatedSamples().get(0).setContainer(new Well(248L));
     dilution.getTreatedSamples().get(0).setSample(new Control(444L));
     dilution.getTreatedSamples().get(0).setSourceVolume(3.5);
@@ -181,8 +181,8 @@ public class DilutionActivityServiceTest {
 
   @Test
   public void update_NoChanges() {
-    Dilution dilution = entityManager.find(Dilution.class, 4L);
-    entityManager.detach(dilution);
+    Dilution dilution = repository.findOne(4L);
+    detach(dilution);
 
     Optional<Activity> optionalActivity =
         dilutionActivityService.update(dilution, "test explanation");
