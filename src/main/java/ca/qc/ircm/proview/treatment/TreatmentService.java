@@ -17,18 +17,15 @@
 
 package ca.qc.ircm.proview.treatment;
 
-import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.google.common.collect.Lists;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,21 +35,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TreatmentService {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
+  private TreatmentRepository repository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected TreatmentService() {
-  }
-
-  protected TreatmentService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -68,7 +56,7 @@ public class TreatmentService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Treatment.class, id);
+    return repository.findOne(id);
   }
 
   /**
@@ -84,11 +72,8 @@ public class TreatmentService {
     }
     authorizationService.checkAdminRole();
 
-    JPAQuery<Treatment> query = queryFactory.select(treatment);
-    query.from(treatment, treatedSample);
-    query.where(treatedSample.in(treatment.treatedSamples));
-    query.where(treatedSample.sample.in(submission.getSamples()));
-    query.where(treatment.deleted.eq(false));
-    return query.distinct().fetch();
+    BooleanExpression predicate = treatment.treatedSamples.any().sample.in(submission.getSamples())
+        .and(treatment.deleted.eq(false));
+    return Lists.newArrayList(repository.findAll(predicate));
   }
 }

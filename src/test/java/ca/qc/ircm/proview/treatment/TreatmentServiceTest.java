@@ -29,35 +29,26 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class TreatmentServiceTest {
-  private TreatmentService treatmentService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private TreatmentService treatmentService;
+  @Inject
+  private SubmissionRepository submissionRepository;
+  @MockBean
   private AuthorizationService authorizationService;
-
-  @Before
-  public void beforeTest() {
-    treatmentService = new TreatmentService(entityManager, queryFactory, authorizationService);
-  }
 
   @Test
   public void get_Solubilisation() throws Throwable {
@@ -122,7 +113,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void all_147() {
-    Submission submission = entityManager.find(Submission.class, 147L);
+    Submission submission = submissionRepository.findOne(147L);
 
     List<Treatment> treatments = treatmentService.all(submission);
 
@@ -134,7 +125,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void all_149() {
-    Submission submission = entityManager.find(Submission.class, 149L);
+    Submission submission = submissionRepository.findOne(149L);
 
     List<Treatment> treatments = treatmentService.all(submission);
 
