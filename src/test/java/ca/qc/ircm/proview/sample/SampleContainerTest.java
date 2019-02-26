@@ -17,32 +17,32 @@
 
 package ca.qc.ircm.proview.sample;
 
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import javax.persistence.EntityManager;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SampleContainerTest {
-  @PersistenceContext
-  private EntityManager entityManager;
+public class SampleContainerTest extends AbstractServiceTestCase {
+  @Inject
+  private SampleContainerRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
 
-  @Test(expected = OptimisticLockException.class)
+  @Test(expected = JpaOptimisticLockingFailureException.class)
   public void update_FailVersion() throws Throwable {
-    final Sample sample1 = entityManager.find(Sample.class, 442L);
-    final Sample sample2 = entityManager.find(Sample.class, 443L);
-    SampleContainer sampleContainer1 = entityManager.find(SampleContainer.class, 130L);
-    entityManager.detach(sampleContainer1);
-    SampleContainer sampleContainer2 = entityManager.find(SampleContainer.class, 130L);
-    entityManager.detach(sampleContainer2);
+    final Sample sample1 = sampleRepository.findOne(442L);
+    final Sample sample2 = sampleRepository.findOne(443L);
+    SampleContainer sampleContainer1 = repository.findOne(130L);
+    SampleContainer sampleContainer2 = repository.findOne(130L);
+    detach(sampleContainer1, sampleContainer2);
     sampleContainer1.setSample(sample1);
     sampleContainer2.setSample(sample2);
-    entityManager.merge(sampleContainer1);
-    entityManager.flush();
-    entityManager.merge(sampleContainer2);
+    repository.saveAndFlush(sampleContainer1);
+    repository.save(sampleContainer2);
   }
 }
