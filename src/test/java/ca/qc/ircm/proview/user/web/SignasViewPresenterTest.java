@@ -40,6 +40,7 @@ import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.proview.web.MainView;
@@ -60,9 +61,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Provider;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,24 +69,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SignasViewPresenterTest {
+  @Inject
   private SignasViewPresenter presenter;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private UserRepository repository;
+  @MockBean
+  private UserService userService;
+  @MockBean
+  private AuthenticationService authenticationService;
+  @MockBean
+  private UserWindow userWindow;
   @Mock
   private SignasView view;
-  @Mock
-  private UserService userService;
-  @Mock
-  private AuthenticationService authenticationService;
-  @Mock
-  private Provider<UserWindow> userWindowProvider;
-  @Mock
-  private UserWindow userWindow;
   @Mock
   private DataProvider<User, Void> usersProvider;
   @Captor
@@ -108,19 +107,16 @@ public class SignasViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SignasViewPresenter(userService, authenticationService, userWindowProvider,
-        applicationName);
     users = new ArrayList<>();
-    users.add(entityManager.find(User.class, 4L));
-    users.add(entityManager.find(User.class, 5L));
-    users.add(entityManager.find(User.class, 10L));
-    users.add(entityManager.find(User.class, 11L));
+    users.add(repository.findOne(4L));
+    users.add(repository.findOne(5L));
+    users.add(repository.findOne(10L));
+    users.add(repository.findOne(11L));
     when(userService.all(any())).thenReturn(users);
     design = new SignasViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    when(userWindowProvider.get()).thenReturn(userWindow);
     presenter.init(view);
   }
 
@@ -290,7 +286,6 @@ public class SignasViewPresenterTest {
 
     button.click();
 
-    verify(userWindowProvider).get();
     verify(userWindow).setValue(user);
     verify(userWindow).center();
     verify(view).addWindow(userWindow);

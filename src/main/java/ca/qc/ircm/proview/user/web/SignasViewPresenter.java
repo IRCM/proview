@@ -41,7 +41,6 @@ import com.vaadin.ui.renderers.ComponentRenderer;
 import java.text.Collator;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,20 +72,11 @@ public class SignasViewPresenter {
   @Inject
   private AuthenticationService authenticationService;
   @Inject
-  private Provider<UserWindow> userWindowProvider;
+  private UserWindow userWindow;
   @Value("${spring.application.name}")
   private String applicationName;
 
   public SignasViewPresenter() {
-  }
-
-  protected SignasViewPresenter(UserService userService,
-      AuthenticationService authenticationService, Provider<UserWindow> userWindowProvider,
-      String applicationName) {
-    this.userService = userService;
-    this.authenticationService = authenticationService;
-    this.userWindowProvider = userWindowProvider;
-    this.applicationName = applicationName;
   }
 
   /**
@@ -186,10 +176,11 @@ public class SignasViewPresenter {
   }
 
   private void viewUser(User user) {
-    UserWindow userWindow = userWindowProvider.get();
     userWindow.center();
-    userWindow.setValue(user);
-    view.addWindow(userWindow);
+    if (!userWindow.isAttached()) {
+      userWindow.setValue(user);
+      view.addWindow(userWindow);
+    }
   }
 
   private void signasUser(User user) {
