@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.sample.ProteinIdentification.REFSEQ;
 import static ca.qc.ircm.proview.sample.ProteinIdentification.UNIPROT;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.WELL;
 import static ca.qc.ircm.proview.sample.SampleType.AGAROSE_BEADS;
 import static ca.qc.ircm.proview.sample.SampleType.BIOID_BEADS;
@@ -150,6 +149,7 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.sample.web.ContaminantsForm;
 import ca.qc.ircm.proview.sample.web.StandardsForm;
@@ -160,17 +160,18 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.data.ValueContext;
 import com.vaadin.data.converter.AbstractStringToNumberConverter;
 import com.vaadin.data.converter.StringToDoubleConverter;
@@ -204,9 +205,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -219,30 +217,32 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionFormPresenterTest {
-  private SubmissionFormPresenter presenter;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private SubmissionFormPresenter presenter;
+  @Inject
+  private SubmissionRepository repository;
+  @Inject
+  private SubmissionSampleRepository sampleRepository;
+  @Inject
+  private UserRepository userRepository;
+  @MockBean
   private SubmissionService submissionService;
-  @Mock
+  @MockBean
   private SubmissionSampleService submissionSampleService;
-  @Mock
+  @MockBean
   private PlateService plateService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
+  @MockBean
+  private GuidelinesWindow guidelinesWindow;
   @Mock
   private SubmissionForm view;
-  @Mock
-  private Provider<GuidelinesWindow> guidelinesWindowProvider;
-  @Mock
-  private GuidelinesWindow guidelinesWindow;
   @Mock
   private DefaultMultiFileUpload filesUploader;
   @Captor
@@ -342,8 +342,6 @@ public class SubmissionFormPresenterTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    presenter = new SubmissionFormPresenter(submissionService, submissionSampleService,
-        plateService, authorizationService, guidelinesWindowProvider);
     design = new SubmissionFormDesign();
     view.design = design;
     view.plateComponent = mock(PlateComponent.class);
@@ -357,7 +355,6 @@ public class SubmissionFormPresenterTest {
     when(view.standardsForm.validate()).thenReturn(true);
     when(view.contaminantsForm.validate()).thenReturn(true);
     when(view.gelForm.validate()).thenReturn(true);
-    when(guidelinesWindowProvider.get()).thenReturn(guidelinesWindow);
     when(plateService.nameAvailable(any())).thenReturn(true);
     plate = new Plate();
     plate.initWells();
@@ -531,7 +528,7 @@ public class SubmissionFormPresenterTest {
     submission.setQuantificationComment(quantificationComment);
     submission.setComment(comment);
     submission.setSubmissionDate(Instant.now());
-    User user = entityManager.find(User.class, 3L);
+    User user = userRepository.findOne(3L);
     submission.setUser(user);
     submission.setLaboratory(user.getLaboratory());
     List<SubmissionSample> samples = new ArrayList<>();
@@ -633,8 +630,7 @@ public class SubmissionFormPresenterTest {
   public void samplesGrid() {
     presenter.init(view);
 
-    List<SubmissionSample> samples =
-        queryFactory.select(submissionSample).from(submissionSample).fetch();
+    List<SubmissionSample> samples = sampleRepository.findAll();
     assertEquals(4, design.samples.getColumns().size());
     assertEquals(SAMPLE_NAME, design.samples.getColumns().get(0).getId());
     assertTrue(containsInstanceOf(design.samples.getColumn(SAMPLE_NAME).getExtensions(),
@@ -2935,7 +2931,6 @@ public class SubmissionFormPresenterTest {
 
     design.guidelines.click();
 
-    verify(guidelinesWindowProvider).get();
     verify(guidelinesWindow).center();
     verify(view).addWindow(guidelinesWindow);
   }
@@ -3530,7 +3525,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_ExistsPlateName_Update() throws Throwable {
-    Submission submission = entityManager.find(Submission.class, 163L);
+    Submission submission = repository.findOne(163L);
     final Plate plate = ((Well) submission.getSamples().get(0).getOriginalContainer()).getPlate();
     presenter.init(view);
     presenter.setValue(submission);
@@ -4403,7 +4398,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_MissingExplanation() throws Throwable {
-    Submission submission = entityManager.find(Submission.class, 164L);
+    Submission submission = repository.findOne(164L);
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
@@ -5824,7 +5819,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_Update() throws Throwable {
-    Submission submission = entityManager.find(Submission.class, 36L);
+    Submission submission = repository.findOne(36L);
     presenter.init(view);
     presenter.setValue(submission);
     design.service.setValue(LC_MS_MS);
@@ -5962,7 +5957,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_UpdateNoChange() throws Throwable {
-    Submission database = entityManager.find(Submission.class, 36L);
+    Submission database = repository.findOne(36L);
     database.setProteinIdentification(REFSEQ);
     when(submissionSampleService.exists(any())).thenReturn(true);
     when(submissionService.get(any())).thenReturn(database);
@@ -6080,7 +6075,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_AdminUpdate() throws Throwable {
-    Submission submission = entityManager.find(Submission.class, 147L);
+    Submission submission = repository.findOne(147L);
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
@@ -6222,7 +6217,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_AdminUpdateError() throws Throwable {
-    Submission submission = entityManager.find(Submission.class, 147L);
+    Submission submission = repository.findOne(147L);
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);

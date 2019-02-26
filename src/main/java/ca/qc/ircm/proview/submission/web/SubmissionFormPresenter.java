@@ -157,7 +157,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -254,20 +253,9 @@ public class SubmissionFormPresenter implements BinderValidator {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
-  private Provider<GuidelinesWindow> guidelinesWindowProvider;
+  private GuidelinesWindow guidelinesWindow;
 
   protected SubmissionFormPresenter() {
-  }
-
-  protected SubmissionFormPresenter(SubmissionService submissionService,
-      SubmissionSampleService submissionSampleService, PlateService plateService,
-      AuthorizationService authorizationService,
-      Provider<GuidelinesWindow> guidelinesWindowProvider) {
-    this.submissionService = submissionService;
-    this.submissionSampleService = submissionSampleService;
-    this.plateService = plateService;
-    this.authorizationService = authorizationService;
-    this.guidelinesWindowProvider = guidelinesWindowProvider;
   }
 
   /**
@@ -299,9 +287,10 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.guidelines.addStyleName(GUIDELINES);
     design.guidelines.setCaption(resources.message(GUIDELINES));
     design.guidelines.addClickListener(e -> {
-      GuidelinesWindow window = guidelinesWindowProvider.get();
-      window.center();
-      view.addWindow(window);
+      if (!guidelinesWindow.isAttached()) {
+        guidelinesWindow.center();
+        view.addWindow(guidelinesWindow);
+      }
     });
     design.servicePanel.addStyleName(SERVICE_PANEL);
     design.servicePanel.addStyleName(REQUIRED);
