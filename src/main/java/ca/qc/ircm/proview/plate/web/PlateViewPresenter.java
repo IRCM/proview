@@ -58,11 +58,6 @@ public class PlateViewPresenter {
   protected PlateViewPresenter() {
   }
 
-  protected PlateViewPresenter(PlateService plateService, String applicationName) {
-    this.plateService = plateService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *

@@ -31,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -44,8 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.junit.Before;
@@ -53,22 +52,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PlateViewPresenterTest {
+  @Inject
   private PlateViewPresenter presenter;
+  @Inject
+  private PlateRepository repository;
+  @MockBean
+  private PlateService plateService;
   @Mock
   private PlateView view;
   @Mock
-  private PlateService plateService;
-  @Mock
   private PlateComponent plateComponent;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Inject
-  private PlateService realPlateService;
   @Value("${spring.application.name}")
   private String applicationName;
   private PlateViewDesign design;
@@ -84,7 +83,6 @@ public class PlateViewPresenterTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    presenter = new PlateViewPresenter(plateService, applicationName);
     design = new PlateViewDesign();
     view.design = design;
     view.plateComponent = plateComponent;
@@ -92,10 +90,10 @@ public class PlateViewPresenterTest {
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
     when(plateService.get(any(Long.class)))
-        .thenAnswer(i -> realPlateService.get(i.getArgumentAt(0, Long.class)));
+        .thenAnswer(i -> repository.findOne(i.getArgumentAt(0, Long.class)));
     plates = new ArrayList<>();
-    plates.add(realPlateService.get(26L));
-    plates.add(realPlateService.get(107L));
+    plates.add(repository.findOne(26L));
+    plates.add(repository.findOne(107L));
     when(plateService.all(any())).thenReturn(plates);
     platePrint = RandomStringUtils.randomAlphanumeric(1000);
     when(plateService.print(any(), any())).thenReturn(platePrint);
@@ -117,7 +115,7 @@ public class PlateViewPresenterTest {
     presenter.init(view);
     presenter.enter("26");
 
-    Plate plate = realPlateService.get(26L);
+    Plate plate = repository.findOne(26L);
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
     assertEquals(plate.getName(), design.plateComponentPanel.getCaption());
@@ -158,7 +156,7 @@ public class PlateViewPresenterTest {
   public void print_Plate() throws Throwable {
     presenter.init(view);
     presenter.enter("26");
-    final Plate plate = entityManager.find(Plate.class, 26L);
+    final Plate plate = repository.findOne(26L);
 
     verify(plateService).print(plate, locale);
     assertEquals(1, design.print.getExtensions().size());
@@ -177,7 +175,7 @@ public class PlateViewPresenterTest {
 
   @Test
   public void print_UpdatePlate() throws Throwable {
-    Plate plate = entityManager.find(Plate.class, 26L);
+    Plate plate = repository.findOne(26L);
     presenter.init(view);
     presenter.enter("26");
 
@@ -211,7 +209,7 @@ public class PlateViewPresenterTest {
     presenter.init(view);
     presenter.enter("26");
 
-    Plate plate = realPlateService.get(26L);
+    Plate plate = repository.findOne(26L);
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(plate.getName(), design.plateComponentPanel.getCaption());
     verify(plateComponent).setValue(plate);
