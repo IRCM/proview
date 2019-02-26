@@ -79,12 +79,6 @@ public class SampleSelectionFormPresenter {
   protected SampleSelectionFormPresenter() {
   }
 
-  protected SampleSelectionFormPresenter(SampleContainerService sampleContainerService,
-      ControlService controlService) {
-    this.sampleContainerService = sampleContainerService;
-    this.controlService = controlService;
-  }
-
   /**
    * Initializes presenter.
    *

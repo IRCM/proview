@@ -41,11 +41,13 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Control;
+import ca.qc.ircm.proview.sample.ControlRepository;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.SaveListener;
@@ -61,34 +63,37 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SampleSelectionFormPresenterTest {
+  @Inject
   private SampleSelectionFormPresenter presenter;
+  @Inject
+  private SubmissionSampleRepository repository;
+  @Inject
+  private ControlRepository controlRepository;
+  @MockBean
+  private SampleContainerService sampleContainerService;
+  @MockBean
+  private ControlService controlService;
   @Mock
   private SampleSelectionForm view;
-  @Mock
-  private SampleContainerService sampleContainerService;
-  @Mock
-  private ControlService controlService;
   @Mock
   private SaveListener<List<Sample>> saveListener;
   @Mock
   private Registration registration;
   @Captor
   private ArgumentCaptor<List<Sample>> samplesCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
   private SampleSelectionFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SampleSelectionForm.class, locale);
@@ -102,21 +107,17 @@ public class SampleSelectionFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SampleSelectionFormPresenter(sampleContainerService, controlService);
     design = new SampleSelectionFormDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     allSamples = new ArrayList<>();
-    allSamples
-        .addAll(entityManager.find(SubmissionSample.class, 442L).getSubmission().getSamples());
-    allSamples
-        .addAll(entityManager.find(SubmissionSample.class, 627L).getSubmission().getSamples());
+    allSamples.addAll(repository.findOne(442L).getSubmission().getSamples());
+    allSamples.addAll(repository.findOne(627L).getSubmission().getSamples());
     selectedSamples = new ArrayList<>();
-    selectedSamples.add(entityManager.find(SubmissionSample.class, 442L));
-    selectedSamples.add(entityManager.find(SubmissionSample.class, 627L));
-    selectedSamples.add(entityManager.find(Control.class, 444L));
-    selectedSamples.stream().forEach(sample -> entityManager.detach(sample));
+    selectedSamples.add(repository.findOne(442L));
+    selectedSamples.add(repository.findOne(627L));
+    selectedSamples.add(controlRepository.findOne(444L));
     Well well = new Well(1, 2);
     well.setPlate(new Plate(10L, "test_plate"));
     lastContainers = new ArrayList<>();
@@ -125,8 +126,8 @@ public class SampleSelectionFormPresenterTest {
     when(sampleContainerService.last(selectedSamples.get(0))).thenReturn(lastContainers.get(0));
     when(sampleContainerService.last(selectedSamples.get(1))).thenReturn(lastContainers.get(1));
     allControls = new ArrayList<>();
-    allControls.add(entityManager.find(Control.class, 444L));
-    allControls.add(entityManager.find(Control.class, 448L));
+    allControls.add(controlRepository.findOne(444L));
+    allControls.add(controlRepository.findOne(448L));
   }
 
   private List<SubmissionSample> selectedSubmissionSamples() {
