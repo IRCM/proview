@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.digestion.Digestion;
+import ca.qc.ircm.proview.digestion.DigestionRepository;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
@@ -35,8 +36,7 @@ import com.vaadin.ui.Notification;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,8 +46,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 @WithSubject
 public class DigestionViewTest extends DigestionViewPageObject {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private DigestionRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -155,7 +155,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(DigestionView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(DigestionView.VIEW_NAME).length() + 1));
-    Digestion savedDigestion = entityManager.find(Digestion.class, id);
+    Digestion savedDigestion = repository.findOne(id);
     assertEquals((Long) 1L, savedDigestion.getProtocol().getId());
     assertEquals(3, savedDigestion.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedDigestion.getTreatedSamples(), 559);
@@ -189,7 +189,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(DigestionView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(DigestionView.VIEW_NAME).length() + 1));
-    Digestion savedDigestion = entityManager.find(Digestion.class, id);
+    Digestion savedDigestion = repository.findOne(id);
     assertEquals((Long) 1L, savedDigestion.getProtocol().getId());
     assertEquals(3, savedDigestion.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedDigestion.getTreatedSamples(), 559);
@@ -222,7 +222,7 @@ public class DigestionViewTest extends DigestionViewPageObject {
     clickSave();
 
     assertEquals(viewUrl(DigestionView.VIEW_NAME, "195"), getDriver().getCurrentUrl());
-    Digestion savedDigestion = entityManager.find(Digestion.class, 195L);
+    Digestion savedDigestion = repository.findOne(195L);
     assertEquals((Long) 3L, savedDigestion.getProtocol().getId());
     assertEquals(2, savedDigestion.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedDigestion.getTreatedSamples(), 559);
