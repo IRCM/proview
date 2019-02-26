@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SampleContainerTest extends AbstractServiceTestCase {
+public class SampleContainerVersionTest extends AbstractServiceTestCase {
   @Inject
   private SampleContainerRepository repository;
   @Inject
