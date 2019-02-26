@@ -48,10 +48,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -68,8 +71,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,19 +79,25 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.vaadin.dialogs.ConfirmDialog;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SampleStatusViewPresenterTest {
+public class SampleStatusViewPresenterTest extends AbstractComponentTestCase {
+  @Inject
   private SampleStatusViewPresenter presenter;
+  @Inject
+  private SubmissionSampleRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @MockBean
+  private SampleService sampleService;
+  @MockBean
+  private SubmissionSampleService submissionSampleService;
   @Mock
   private SampleStatusView view;
-  @Mock
-  private SampleService sampleService;
-  @Mock
-  private SubmissionSampleService submissionSampleService;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   @Captor
@@ -98,8 +106,6 @@ public class SampleStatusViewPresenterTest {
   private ArgumentCaptor<Collection<SubmissionSample>> samplesCaptor;
   @Captor
   private ArgumentCaptor<ConfirmDialog.Listener> confirmDialogListenerCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Value("${spring.application.name}")
   private String applicationName;
   private SampleStatusViewDesign design;
@@ -121,12 +127,12 @@ public class SampleStatusViewPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(entityManager.find(SubmissionSample.class, 442L));
-    samples.add(entityManager.find(SubmissionSample.class, 559L));
-    samples.forEach(s -> entityManager.detach(s));
+    samples.add(repository.findOne(442L));
+    samples.add(repository.findOne(559L));
+    samples.forEach(s -> detach(s));
     when(view.savedSamples()).thenReturn(new ArrayList<>(samples));
     when(submissionSampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(SubmissionSample.class, i.getArguments()[0]));
+        .thenAnswer(i -> repository.findOne((Long) i.getArguments()[0]));
   }
 
   @Test
@@ -453,7 +459,7 @@ public class SampleStatusViewPresenterTest {
   @Test
   public void enter_InvalidId() {
     when(sampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
     presenter.init(view);
 
     presenter.enter("a");
@@ -465,7 +471,7 @@ public class SampleStatusViewPresenterTest {
   @Test
   public void enter_NotExists() {
     when(sampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
     presenter.init(view);
 
     presenter.enter("2");
@@ -477,7 +483,7 @@ public class SampleStatusViewPresenterTest {
   @Test
   public void enter_EmptyId() {
     when(sampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
     presenter.init(view);
 
     presenter.enter("32,");
@@ -488,11 +494,11 @@ public class SampleStatusViewPresenterTest {
 
   @Test
   public void enter_Sample() {
-    Sample sample = entityManager.find(Sample.class, 445L);
+    Sample sample = sampleRepository.findOne(445L);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample);
     when(sampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
     presenter.init(view);
 
     presenter.enter("445");
@@ -510,13 +516,13 @@ public class SampleStatusViewPresenterTest {
 
   @Test
   public void enter_MultipleSamples() {
-    Sample sample1 = entityManager.find(Sample.class, 445L);
-    Sample sample2 = entityManager.find(Sample.class, 446L);
+    Sample sample1 = sampleRepository.findOne(445L);
+    Sample sample2 = sampleRepository.findOne(446L);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample1);
     samples.add(sample2);
     when(sampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
     presenter.init(view);
 
     presenter.enter("445,446");
@@ -535,11 +541,11 @@ public class SampleStatusViewPresenterTest {
 
   @Test
   public void enter_SampleWithControl() {
-    Sample sample1 = entityManager.find(Sample.class, 445L);
+    Sample sample1 = sampleRepository.findOne(445L);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample1);
     when(sampleService.get(any()))
-        .thenAnswer(i -> entityManager.find(Sample.class, i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
     presenter.init(view);
 
     presenter.enter("445,444");

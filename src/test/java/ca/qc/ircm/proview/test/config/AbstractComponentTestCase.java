@@ -23,6 +23,8 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.UI;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.mockito.Mock;
 
@@ -38,6 +40,8 @@ public abstract class AbstractComponentTestCase {
   protected VaadinSession vaadinSession;
   @Mock
   protected Navigator navigator;
+  @PersistenceContext
+  private EntityManager entityManager;
 
   /**
    * Mock UI for tests.
@@ -48,5 +52,11 @@ public abstract class AbstractComponentTestCase {
     when(ui.getSession()).thenReturn(vaadinSession);
     when(ui.getNavigator()).thenReturn(navigator);
     when(vaadinSession.hasLock()).thenReturn(true);
+  }
+
+  protected void detach(Object... entities) {
+    for (Object entity : entities) {
+      entityManager.detach(entity);
+    }
   }
 }
