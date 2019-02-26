@@ -60,7 +60,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,22 +90,13 @@ public class PlatesSelectionComponentPresenter {
   @Inject
   private PlateService plateService;
   @Inject
-  private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
+  private LocalDateFilterComponent insertDateFilter;
   @Inject
-  private Provider<PlateWindow> plateWindowProvider;
+  private PlateWindow plateWindow;
   @Value("${spring.application.name}")
   private String applicationName;
 
   protected PlatesSelectionComponentPresenter() {
-  }
-
-  protected PlatesSelectionComponentPresenter(PlateService plateService,
-      Provider<LocalDateFilterComponent> localDateFilterComponentProvider,
-      Provider<PlateWindow> plateWindowProvider, String applicationName) {
-    this.plateService = plateService;
-    this.localDateFilterComponentProvider = localDateFilterComponentProvider;
-    this.plateWindowProvider = plateWindowProvider;
-    this.applicationName = applicationName;
   }
 
   /**
@@ -186,7 +176,7 @@ public class PlatesSelectionComponentPresenter {
     }).setId(LAST_TREATMENT).setCaption(resources.message(LAST_TREATMENT)).setSortable(false);
     component.plates.addColumn(plate -> dateFormatter.format(toLocalDate(plate.getInsertTime())))
         .setId(INSERT_TIME).setCaption(resources.message(INSERT_TIME));
-    filterRow.getCell(INSERT_TIME).setComponent(instantFilter(e -> {
+    filterRow.getCell(INSERT_TIME).setComponent(instantFilter(insertDateFilter, e -> {
       filter.insertTimeRange = e.getSavedObject();
       component.plates.getDataProvider().refreshAll();
     }));
@@ -216,10 +206,11 @@ public class PlatesSelectionComponentPresenter {
     button.addStyleName(NAME);
     button.setCaption(plate.getName());
     button.addClickListener(e -> {
-      PlateWindow plateWindow = plateWindowProvider.get();
       plateWindow.setValue(plate);
-      plateWindow.center();
-      component.addWindow(plateWindow);
+      if (!plateWindow.isAttached()) {
+        plateWindow.center();
+        component.addWindow(plateWindow);
+      }
     });
     return button;
   }
@@ -234,8 +225,8 @@ public class PlatesSelectionComponentPresenter {
     return filter;
   }
 
-  private Component instantFilter(SaveListener<Range<LocalDate>> listener) {
-    LocalDateFilterComponent filter = localDateFilterComponentProvider.get();
+  private Component instantFilter(LocalDateFilterComponent filter,
+      SaveListener<Range<LocalDate>> listener) {
     filter.addStyleName(ValoTheme.BUTTON_TINY);
     filter.addSaveListener(listener);
     return filter;

@@ -50,6 +50,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateFilter;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -83,9 +84,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.inject.Provider;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,28 +92,26 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PlatesSelectionComponentPresenterTest extends AbstractComponentTestCase {
+  @Inject
   private PlatesSelectionComponentPresenter presenter;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private PlateRepository repository;
+  @MockBean
+  private PlateService plateService;
+  @MockBean
+  private LocalDateFilterComponent insertDateFilter;
+  @MockBean
+  private PlateWindow plateWindow;
   @Mock
   private PlatesSelectionComponent component;
   @Mock
-  private PlateService plateService;
-  @Mock
-  private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
-  @Mock
-  private Provider<PlateWindow> plateWindowProvider;
-  @Mock
-  private PlateWindow plateWindow;
-  @Mock
   private ListDataProvider<Plate> platesDataProvider;
-  @Mock
-  private LocalDateFilterComponent localDateFilterComponent;
   @Captor
   private ArgumentCaptor<PlateFilter> filterCaptor;
   @Captor
@@ -133,25 +130,21 @@ public class PlatesSelectionComponentPresenterTest extends AbstractComponentTest
    */
   @Before
   public void beforeTest() {
-    presenter = new PlatesSelectionComponentPresenter(plateService,
-        localDateFilterComponentProvider, plateWindowProvider, applicationName);
     when(component.getLocale()).thenReturn(locale);
     when(component.getResources()).thenReturn(resources);
     when(component.getGeneralResources()).thenReturn(generalResources);
     component.plates = new Grid<>();
     component.plates.setParent(ui);
-    plates.add(entityManager.find(Plate.class, 26L));
-    plates.add(entityManager.find(Plate.class, 107L));
-    plates.add(entityManager.find(Plate.class, 123L));
+    plates.add(repository.findOne(26L));
+    plates.add(repository.findOne(107L));
+    plates.add(repository.findOne(123L));
     IntStream.range(0, plates.size() - 1).forEach(
         i -> lastTreatmentOrAnalysisDate.put(plates.get(i), Instant.now().minusSeconds(i * 2)));
     when(plateService.all(any())).thenReturn(new ArrayList<>(plates));
     when(plateService.lastTreatmentOrAnalysisDate(any()))
         .thenAnswer(i -> lastTreatmentOrAnalysisDate.get(i.getArgumentAt(0, Plate.class)));
     when(plateService.get(any()))
-        .thenAnswer(i -> entityManager.find(Plate.class, i.getArgumentAt(0, Long.class)));
-    when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
-    when(plateWindowProvider.get()).thenReturn(plateWindow);
+        .thenAnswer(i -> repository.findOne(i.getArgumentAt(0, Long.class)));
   }
 
   @Test
@@ -404,8 +397,7 @@ public class PlatesSelectionComponentPresenterTest extends AbstractComponentTest
     presenter.init(component);
     component.plates.setDataProvider(platesDataProvider);
     HeaderRow filterRow = component.plates.getHeaderRow(1);
-    verify(localDateFilterComponentProvider).get();
-    verify(localDateFilterComponent).addSaveListener(localDateRangeSaveListenerCaptor.capture());
+    verify(insertDateFilter).addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(INSERT_TIME);
     assertTrue(cell.getComponent() instanceof LocalDateFilterComponent);
 
@@ -448,7 +440,6 @@ public class PlatesSelectionComponentPresenterTest extends AbstractComponentTest
     Button button = (Button) component.plates.getColumn(NAME).getValueProvider().apply(plate);
     button.click();
 
-    verify(plateWindowProvider).get();
     verify(plateWindow).setValue(plate);
     verify(component).addWindow(plateWindow);
   }
