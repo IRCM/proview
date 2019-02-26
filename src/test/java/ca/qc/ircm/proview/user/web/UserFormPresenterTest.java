@@ -70,6 +70,7 @@ import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.RegisterUserWebContext;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -82,28 +83,31 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Locale;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UserFormPresenterTest {
+  @Inject
   private UserFormPresenter presenter;
+  @Inject
+  private UserRepository repository;
+  @MockBean
+  private UserService userService;
+  @MockBean
+  private AuthorizationService authorizationService;
+  @MockBean
+  private DefaultAddressConfiguration defaultAddressConfiguration;
   @Mock
   private UserForm view;
-  @Mock
-  private UserService userService;
-  @Mock
-  private AuthorizationService authorizationService;
-  @Mock
-  private DefaultAddressConfiguration defaultAddressConfiguration;
   @Mock
   private SaveListener<User> listener;
   @Captor
@@ -114,8 +118,6 @@ public class UserFormPresenterTest {
   private ArgumentCaptor<User> userCaptor;
   @Captor
   private ArgumentCaptor<RegisterUserWebContext> registerUserWebContextCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
   private UserFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(UserForm.class, locale);
@@ -151,8 +153,6 @@ public class UserFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter =
-        new UserFormPresenter(userService, authorizationService, defaultAddressConfiguration);
     design = new UserFormDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
@@ -164,9 +164,9 @@ public class UserFormPresenterTest {
     when(defaultAddressConfiguration.getCountry()).thenReturn(defaultCountry);
     when(defaultAddressConfiguration.getPostalCode()).thenReturn(defaultPostalCode);
     presenter.init(view);
-    user = entityManager.find(User.class, 10L);
+    user = repository.findOne(10L);
     when(userService.isManager(any())).thenReturn(true);
-    currentUser = entityManager.find(User.class, 1L);
+    currentUser = repository.findOne(1L);
     when(authorizationService.getCurrentUser()).thenReturn(currentUser);
   }
 
@@ -309,10 +309,8 @@ public class UserFormPresenterTest {
     assertEquals(resources.message(CLEAR_ADDRESS), design.clearAddressButton.getCaption());
     assertEquals(resources.message(PHONE_NUMBERS), design.phoneNumbersPanel.getCaption());
     assertEquals(1, design.phoneNumbersLayout.getComponentCount());
-    assertEquals(resources.message(property(PHONE, PHONE_TYPE)),
-        typeField(0).getCaption());
-    assertEquals(resources.message(property(PHONE, PHONE_NUMBER)),
-        numberField(0).getCaption());
+    assertEquals(resources.message(property(PHONE, PHONE_TYPE)), typeField(0).getCaption());
+    assertEquals(resources.message(property(PHONE, PHONE_NUMBER)), numberField(0).getCaption());
     assertEquals(resources.message(property(PHONE, PHONE_NUMBER, PLACEHOLDER)),
         numberField(0).getPlaceholder());
     assertEquals(resources.message(property(PHONE, PHONE_EXTENSION)),
@@ -1345,8 +1343,7 @@ public class UserFormPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(
-        errorMessage(resources.message(property(PHONE, PHONE_NUMBER, "invalid"))),
+    assertEquals(errorMessage(resources.message(property(PHONE, PHONE_NUMBER, "invalid"))),
         numberField(0).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1360,8 +1357,7 @@ public class UserFormPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(
-        errorMessage(resources.message(property(PHONE, PHONE_EXTENSION, "invalid"))),
+    assertEquals(errorMessage(resources.message(property(PHONE, PHONE_EXTENSION, "invalid"))),
         extensionField(0).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1403,8 +1399,7 @@ public class UserFormPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(
-        errorMessage(resources.message(property(PHONE, PHONE_NUMBER, "invalid"))),
+    assertEquals(errorMessage(resources.message(property(PHONE, PHONE_NUMBER, "invalid"))),
         numberField(1).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }
@@ -1418,8 +1413,7 @@ public class UserFormPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(
-        errorMessage(resources.message(property(PHONE, PHONE_EXTENSION, "invalid"))),
+    assertEquals(errorMessage(resources.message(property(PHONE, PHONE_EXTENSION, "invalid"))),
         extensionField(1).getErrorMessage().getFormattedHtmlMessage());
     verify(userService, never()).register(any(), any(), any(), any());
   }

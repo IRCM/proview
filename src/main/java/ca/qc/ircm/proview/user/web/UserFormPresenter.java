@@ -111,13 +111,6 @@ public class UserFormPresenter implements BinderValidator {
   protected UserFormPresenter() {
   }
 
-  protected UserFormPresenter(UserService userService, AuthorizationService authorizationService,
-      DefaultAddressConfiguration defaultAddressConfiguration) {
-    this.userService = userService;
-    this.authorizationService = authorizationService;
-    this.defaultAddressConfiguration = defaultAddressConfiguration;
-  }
-
   /**
    * Initializes presenter.
    *
