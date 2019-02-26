@@ -38,8 +38,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,8 +64,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   private Activity activity;
   @Captor
   private ArgumentCaptor<SubmissionSample> sampleCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
   private Optional<Activity> optionalActivity;
 
   /**
