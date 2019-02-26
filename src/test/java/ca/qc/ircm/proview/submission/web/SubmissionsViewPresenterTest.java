@@ -106,6 +106,7 @@ import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -119,7 +120,6 @@ import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
 import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Range;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.SelectionModel;
@@ -156,8 +156,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -173,10 +171,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @Inject
   private SubmissionsViewPresenter presenter;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
+  private SubmissionRepository repository;
   @MockBean
   private SubmissionService submissionService;
   @MockBean
@@ -236,7 +232,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
-    submissions = queryFactory.select(submission).from(submission).fetch();
+    submissions = repository.findAll();
     when(submissionService.all(any())).thenReturn(submissions);
     when(submissionService.count(any())).thenReturn(submissions.size());
     when(userPreferenceService.get(any(), any(), any())).thenAnswer(i -> i.getArguments()[2]);
@@ -300,7 +296,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     for (Column<Submission, ?> column : design.submissionsGrid.getColumns()) {
       assertEquals(resources.message(column.getId()), column.getCaption());
     }
-    Submission manyStatuses = entityManager.find(Submission.class, 153L);
+    Submission manyStatuses = repository.findOne(153L);
     assertEquals(statusesValue(manyStatuses),
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(manyStatuses));
     assertEquals(resources.message(ADD_SUBMISSION), design.addSubmission.getCaption());
@@ -562,8 +558,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertFalse(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isSortable());
     assertEquals(Boolean.compare(true, false),
         design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getComparator(SortDirection.ASCENDING)
-            .compare(entityManager.find(Submission.class, 156L),
-                entityManager.find(Submission.class, 161L)));
+            .compare(repository.findOne(156L), repository.findOne(161L)));
     assertEquals(TREATMENTS, columns.get(14).getId());
     assertTrue(containsInstanceOf(design.submissionsGrid.getColumn(TREATMENTS).getExtensions(),
         ComponentRenderer.class));
