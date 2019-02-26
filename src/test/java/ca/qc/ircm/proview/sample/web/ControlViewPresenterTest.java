@@ -29,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Control;
+import ca.qc.ircm.proview.sample.ControlRepository;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -38,8 +39,7 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Locale;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,28 +47,30 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ControlViewPresenterTest {
+  @Inject
   private ControlViewPresenter presenter;
+  @Inject
+  private ControlRepository repository;
+  @MockBean
+  private ControlService controlService;
+  @MockBean
+  private AuthorizationService authorizationService;
   @Mock
   private ControlView view;
   @Mock
   private ControlForm form;
-  @Mock
-  private ControlService controlService;
-  @Mock
-  private AuthorizationService authorizationService;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   @Captor
   private ArgumentCaptor<Control> controlCaptor;
   @Captor
   private ArgumentCaptor<SaveListener<Control>> listenerCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Value("${spring.application.name}")
   private String applicationName;
   private ControlViewDesign design;
@@ -82,7 +84,6 @@ public class ControlViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new ControlViewPresenter(controlService, authorizationService, applicationName);
     design = new ControlViewDesign();
     view.design = design;
     view.form = form;
@@ -130,7 +131,7 @@ public class ControlViewPresenterTest {
 
   @Test
   public void enter_Control_ReadOnly() {
-    final Control control = entityManager.find(Control.class, 444L);
+    final Control control = repository.findOne(444L);
     when(controlService.get(444L)).thenReturn(control);
 
     presenter.init(view);
@@ -144,7 +145,7 @@ public class ControlViewPresenterTest {
   @Test
   public void enter_Control() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
-    final Control control = entityManager.find(Control.class, 444L);
+    final Control control = repository.findOne(444L);
     when(controlService.get(444L)).thenReturn(control);
 
     presenter.init(view);

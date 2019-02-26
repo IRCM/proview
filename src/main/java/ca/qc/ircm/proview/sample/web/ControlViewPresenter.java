@@ -54,13 +54,6 @@ public class ControlViewPresenter implements BinderValidator, SaveListener<Contr
   protected ControlViewPresenter() {
   }
 
-  protected ControlViewPresenter(ControlService controlService,
-      AuthorizationService authorizationService, String applicationName) {
-    this.controlService = controlService;
-    this.authorizationService = authorizationService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Called by view when view is initialized.
    *
