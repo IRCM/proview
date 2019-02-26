@@ -20,11 +20,11 @@ package ca.qc.ircm.proview.dilution;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -32,8 +32,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +41,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class DilutionService extends BaseTreatmentService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private DilutionRepository repository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private DilutionActivityService dilutionActivityService;
   @Inject
@@ -53,16 +53,6 @@ public class DilutionService extends BaseTreatmentService {
   private AuthorizationService authorizationService;
 
   protected DilutionService() {
-  }
-
-  protected DilutionService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      DilutionActivityService dilutionActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
-    super(queryFactory);
-    this.entityManager = entityManager;
-    this.dilutionActivityService = dilutionActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -78,7 +68,7 @@ public class DilutionService extends BaseTreatmentService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Dilution.class, id);
+    return repository.findOne(id);
   }
 
   /**
@@ -96,10 +86,9 @@ public class DilutionService extends BaseTreatmentService {
     dilution.setInsertTime(Instant.now());
     dilution.setUser(user);
 
-    entityManager.persist(dilution);
+    repository.saveAndFlush(dilution);
 
     // Log insertion of dilution.
-    entityManager.flush();
     Activity activity = dilutionActivityService.insert(dilution);
     activityService.insert(activity);
   }
@@ -115,7 +104,7 @@ public class DilutionService extends BaseTreatmentService {
   public void update(Dilution dilution, String explanation) {
     authorizationService.checkAdminRole();
 
-    Dilution old = entityManager.find(Dilution.class, dilution.getId());
+    Dilution old = repository.findOne(dilution.getId());
     Set<Long> treatedSampleIds =
         dilution.getTreatedSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
     if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
@@ -129,7 +118,7 @@ public class DilutionService extends BaseTreatmentService {
       activityService.insert(activity.get());
     }
 
-    entityManager.merge(dilution);
+    repository.save(dilution);
   }
 
   /**
@@ -165,9 +154,9 @@ public class DilutionService extends BaseTreatmentService {
     Activity activity = dilutionActivityService.undoFailed(dilution, explanation, bannedContainers);
     activityService.insert(activity);
 
-    entityManager.merge(dilution);
+    repository.save(dilution);
     for (SampleContainer container : bannedContainers) {
-      entityManager.merge(container);
+      sampleContainerRepository.save(container);
     }
   }
 }
