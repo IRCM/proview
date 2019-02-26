@@ -88,11 +88,6 @@ public class ContainerSelectionFormPresenter {
   protected ContainerSelectionFormPresenter() {
   }
 
-  protected ContainerSelectionFormPresenter(TubeService tubeService, PlateService plateService) {
-    this.tubeService = tubeService;
-    this.plateService = plateService;
-  }
-
   /**
    * Initializes presenter.
    *

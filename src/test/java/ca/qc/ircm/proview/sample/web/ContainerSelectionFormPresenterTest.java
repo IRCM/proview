@@ -47,15 +47,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.WellLocation;
-import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.plate.web.PlateComponent;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
-import ca.qc.ircm.proview.sample.SampleService;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
@@ -79,36 +79,35 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ContainerSelectionFormPresenterTest {
+  @Inject
   private ContainerSelectionFormPresenter presenter;
-  @Mock
-  private ContainerSelectionForm view;
-  @Mock
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private PlateRepository plateRepository;
+  @MockBean
   private TubeService tubeService;
-  @Mock
-  private WellService wellService;
-  @Mock
+  @MockBean
   private PlateService plateService;
   @Mock
-  private SampleService sampleService;
+  private ContainerSelectionForm view;
   @Captor
   private ArgumentCaptor<List<SampleContainer>> containersCaptor;
   @Captor
   private ArgumentCaptor<List<Well>> wellsCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
   private ContainerSelectionFormDesign design = new ContainerSelectionFormDesign();
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(ContainerSelectionForm.class, locale);
@@ -124,19 +123,18 @@ public class ContainerSelectionFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new ContainerSelectionFormPresenter(tubeService, plateService);
     view.design = design;
     view.plateComponent = mock(PlateComponent.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(entityManager.find(Sample.class, 559L));
-    samples.add(entityManager.find(Sample.class, 560L));
-    samples.add(entityManager.find(Sample.class, 444L));
+    samples.add(sampleRepository.findOne(559L));
+    samples.add(sampleRepository.findOne(560L));
+    samples.add(sampleRepository.findOne(444L));
     samples.forEach(s -> sourceTubes.put(s, generateTubes(s, 3)));
     when(tubeService.all(any())).thenAnswer(i -> sourceTubes.get(i.getArguments()[0]));
-    sourcePlates.add(entityManager.find(Plate.class, 26L));
-    sourcePlates.add(entityManager.find(Plate.class, 107L));
+    sourcePlates.add(plateRepository.findOne(26L));
+    sourcePlates.add(plateRepository.findOne(107L));
     sourcePlates.stream().flatMap(plate -> plate.getWells().stream())
         .forEach(well -> well.setSample(null));
     when(plateService.all(any())).thenReturn(new ArrayList<>(sourcePlates));
@@ -150,10 +148,6 @@ public class ContainerSelectionFormPresenterTest {
       wells.stream().forEach(well -> well.setSample(sample));
       wellsMap.put(sourcePlates.get(1), wells);
       sourceWells.put(sample, wellsMap);
-    });
-    when(sampleService.get(any())).thenAnswer(i -> {
-      Long id = i.getArgumentAt(0, Long.class);
-      return id != null ? entityManager.find(Sample.class, id) : null;
     });
   }
 
