@@ -36,9 +36,11 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolRepository;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.tube.Tube;
@@ -50,23 +52,25 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class DigestionActivityServiceTest {
+public class DigestionActivityServiceTest extends AbstractServiceTestCase {
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
+  @Inject
   private DigestionActivityService digestionActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private DigestionRepository repository;
+  @Inject
+  private ProtocolRepository protocolRepository;
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -75,7 +79,6 @@ public class DigestionActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    digestionActivityService = new DigestionActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -130,10 +133,10 @@ public class DigestionActivityServiceTest {
 
   @Test
   public void update() {
-    Digestion digestion = entityManager.find(Digestion.class, 195L);
-    entityManager.detach(digestion);
-    digestion.getTreatedSamples().forEach(ts -> entityManager.detach(ts));
-    digestion.setProtocol(entityManager.find(Protocol.class, 3L));
+    Digestion digestion = repository.findOne(195L);
+    detach(digestion);
+    digestion.getTreatedSamples().forEach(ts -> detach(ts));
+    digestion.setProtocol(protocolRepository.findOne(3L));
     digestion.getTreatedSamples().get(0).setContainer(new Well(248L));
     digestion.getTreatedSamples().get(0).setSample(new Control(444L));
     digestion.getTreatedSamples().get(0).setComment("test");
@@ -196,8 +199,8 @@ public class DigestionActivityServiceTest {
 
   @Test
   public void update_NoChanges() {
-    Digestion digestion = entityManager.find(Digestion.class, 6L);
-    entityManager.detach(digestion);
+    Digestion digestion = repository.findOne(6L);
+    detach(digestion);
 
     Optional<Activity> optionalActivity =
         digestionActivityService.update(digestion, "test explanation");
