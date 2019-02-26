@@ -45,34 +45,29 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
+import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.UI;
 import java.util.ArrayList;
 import java.util.Collection;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SavedSamplesComponentTest {
+public class SavedSamplesComponentTest extends AbstractComponentTestCase {
   private SavedSamplesComponent component;
-  @Mock
-  private UI ui;
-  @Mock
-  private ConnectorTracker connectorTracker;
-  @Mock
-  private VaadinSession session;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SampleRepository repository;
+  @Inject
+  private SubmissionSampleRepository submissionSampleRepository;
   private Collection<Sample> samples = new ArrayList<>();
   private Sample sample1;
   private Sample sample2;
@@ -82,9 +77,6 @@ public class SavedSamplesComponentTest {
    */
   @Before
   public void beforeTest() {
-    when(ui.getConnectorTracker()).thenReturn(connectorTracker);
-    when(ui.getSession()).thenReturn(session);
-    when(session.hasLock()).thenReturn(true);
     component = new TestComponent();
     samples.add(sample1);
     samples.add(sample2);
@@ -95,12 +87,12 @@ public class SavedSamplesComponentTest {
     component.saveSamples(samples);
 
     verify(ui, atLeastOnce()).getSession();
-    verify(session).setAttribute(SAVED_SAMPLES, samples);
+    verify(vaadinSession).setAttribute(SAVED_SAMPLES, samples);
   }
 
   @Test
   public void savedSamples() {
-    when(session.getAttribute(any(String.class))).thenReturn(samples);
+    when(vaadinSession.getAttribute(any(String.class))).thenReturn(samples);
 
     Collection<Sample> samples = component.savedSamples();
 
@@ -108,23 +100,23 @@ public class SavedSamplesComponentTest {
     assertTrue(this.samples.containsAll(samples));
     assertTrue(samples.containsAll(this.samples));
     verify(ui, atLeastOnce()).getSession();
-    verify(session).getAttribute(SAVED_SAMPLES);
+    verify(vaadinSession).getAttribute(SAVED_SAMPLES);
   }
 
   @Test
   public void savedSamples_Null() {
-    when(session.getAttribute(any(String.class))).thenReturn(null);
+    when(vaadinSession.getAttribute(any(String.class))).thenReturn(null);
 
     Collection<Sample> samples = component.savedSamples();
 
     assertTrue(samples.isEmpty());
     verify(ui, atLeastOnce()).getSession();
-    verify(session).getAttribute(SAVED_SAMPLES);
+    verify(vaadinSession).getAttribute(SAVED_SAMPLES);
   }
 
   @Test
   public void savedSamples_ModifyList() {
-    when(session.getAttribute(any(String.class))).thenReturn(samples);
+    when(vaadinSession.getAttribute(any(String.class))).thenReturn(samples);
     final int size = samples.size();
     Collection<Sample> samples = component.savedSamples();
     samples.remove(samples.iterator().next());
@@ -137,11 +129,11 @@ public class SavedSamplesComponentTest {
   @Test
   public void savedSampleFromMultipleUsers_True() {
     Collection<Sample> samples = new ArrayList<>();
-    samples.add(entityManager.find(Sample.class, 442L));
-    samples.add(entityManager.find(Sample.class, 443L));
-    samples.add(entityManager.find(Sample.class, 444L));
-    samples.add(entityManager.find(Sample.class, 446L));
-    when(session.getAttribute(any(String.class))).thenReturn(samples);
+    samples.add(repository.findOne(442L));
+    samples.add(repository.findOne(443L));
+    samples.add(repository.findOne(444L));
+    samples.add(repository.findOne(446L));
+    when(vaadinSession.getAttribute(any(String.class))).thenReturn(samples);
 
     boolean multipleUsers = component.savedSampleFromMultipleUsers();
 
@@ -151,10 +143,10 @@ public class SavedSamplesComponentTest {
   @Test
   public void savedSampleFromMultipleUsers_False() {
     Collection<Sample> samples = new ArrayList<>();
-    samples.add(entityManager.find(Sample.class, 442L));
-    samples.add(entityManager.find(Sample.class, 443L));
-    samples.add(entityManager.find(Sample.class, 444L));
-    when(session.getAttribute(any(String.class))).thenReturn(samples);
+    samples.add(repository.findOne(442L));
+    samples.add(repository.findOne(443L));
+    samples.add(repository.findOne(444L));
+    when(vaadinSession.getAttribute(any(String.class))).thenReturn(samples);
 
     boolean multipleUsers = component.savedSampleFromMultipleUsers();
 
@@ -164,13 +156,13 @@ public class SavedSamplesComponentTest {
   @Test
   public void savedSampleFromMultipleUsers_FalseDueToNullUser() {
     Collection<Sample> samples = new ArrayList<>();
-    samples.add(entityManager.find(Sample.class, 442L));
-    samples.add(entityManager.find(Sample.class, 443L));
-    samples.add(entityManager.find(Sample.class, 444L));
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 446L);
+    samples.add(repository.findOne(442L));
+    samples.add(repository.findOne(443L));
+    samples.add(repository.findOne(444L));
+    SubmissionSample sample = submissionSampleRepository.findOne(446L);
     sample.getSubmission().setUser(null);
     samples.add(sample);
-    when(session.getAttribute(any(String.class))).thenReturn(samples);
+    when(vaadinSession.getAttribute(any(String.class))).thenReturn(samples);
 
     boolean multipleUsers = component.savedSampleFromMultipleUsers();
 
@@ -180,7 +172,7 @@ public class SavedSamplesComponentTest {
   @Test
   public void savedSampleFromMultipleUsers_Emtpy() {
     Collection<Sample> samples = new ArrayList<>();
-    when(session.getAttribute(any(String.class))).thenReturn(samples);
+    when(vaadinSession.getAttribute(any(String.class))).thenReturn(samples);
 
     boolean multipleUsers = component.savedSampleFromMultipleUsers();
 
