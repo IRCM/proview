@@ -106,13 +106,6 @@ public class DilutionViewPresenter implements BinderValidator {
   protected DilutionViewPresenter() {
   }
 
-  protected DilutionViewPresenter(DilutionService dilutionService,
-      SampleContainerService sampleContainerService, String applicationName) {
-    this.dilutionService = dilutionService;
-    this.sampleContainerService = sampleContainerService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *

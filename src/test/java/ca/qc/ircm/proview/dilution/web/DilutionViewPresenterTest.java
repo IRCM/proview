@@ -63,10 +63,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.dilution.Dilution;
+import ca.qc.ircm.proview.dilution.DilutionRepository;
 import ca.qc.ircm.proview.dilution.DilutionService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
@@ -86,8 +89,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,22 +97,28 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class DilutionViewPresenterTest {
+  @Inject
   private DilutionViewPresenter presenter;
+  @Inject
+  private DilutionRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
+  @MockBean
+  private DilutionService dilutionService;
+  @MockBean
+  private SampleContainerService sampleContainerService;
   @Mock
   private DilutionView view;
-  @Mock
-  private DilutionService dilutionService;
-  @Mock
-  private SampleContainerService sampleContainerService;
   @Captor
   private ArgumentCaptor<Dilution> dilutionCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Value("${spring.application.name}")
   private String applicationName;
   private DilutionViewDesign design = new DilutionViewDesign();
@@ -130,15 +138,14 @@ public class DilutionViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
     design = new DilutionViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(entityManager.find(Sample.class, 559L));
-    samples.add(entityManager.find(Sample.class, 560L));
-    samples.add(entityManager.find(Sample.class, 444L));
+    samples.add(sampleRepository.findOne(559L));
+    samples.add(sampleRepository.findOne(560L));
+    samples.add(sampleRepository.findOne(444L));
     containers = samples.stream().flatMap(sample -> {
       Tube tube1 = new Tube(sample.getId(), sample.getName());
       tube1.setSample(sample);
@@ -649,8 +656,7 @@ public class DilutionViewPresenterTest {
 
   @Test
   public void save_Update() {
-    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
-    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    Dilution dilution = repository.findOne(4L);
     when(dilutionService.get(any())).thenReturn(dilution);
     presenter.init(view);
     presenter.enter("4");
@@ -682,8 +688,7 @@ public class DilutionViewPresenterTest {
 
   @Test
   public void remove_NoExplanation() {
-    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
-    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    Dilution dilution = repository.findOne(4L);
     when(dilutionService.get(any())).thenReturn(dilution);
     presenter.init(view);
     presenter.enter("4");
@@ -698,8 +703,7 @@ public class DilutionViewPresenterTest {
 
   @Test
   public void remove() {
-    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
-    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    Dilution dilution = repository.findOne(4L);
     when(dilutionService.get(any())).thenReturn(dilution);
     presenter.init(view);
     presenter.enter("4");
@@ -719,8 +723,7 @@ public class DilutionViewPresenterTest {
 
   @Test
   public void remove_BanContainers() {
-    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
-    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    Dilution dilution = repository.findOne(4L);
     when(dilutionService.get(any())).thenReturn(dilution);
     presenter.init(view);
     presenter.enter("4");
@@ -803,8 +806,7 @@ public class DilutionViewPresenterTest {
 
   @Test
   public void enter_Dilution() {
-    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
-    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    Dilution dilution = repository.findOne(4L);
     when(dilutionService.get(any())).thenReturn(dilution);
     presenter.init(view);
     presenter.enter("4");
@@ -834,8 +836,7 @@ public class DilutionViewPresenterTest {
 
   @Test
   public void enter_DilutionDeleted() {
-    presenter = new DilutionViewPresenter(dilutionService, sampleContainerService, applicationName);
-    Dilution dilution = entityManager.find(Dilution.class, 4L);
+    Dilution dilution = repository.findOne(4L);
     dilution.setDeleted(true);
     when(dilutionService.get(any())).thenReturn(dilution);
     presenter.init(view);
@@ -889,11 +890,11 @@ public class DilutionViewPresenterTest {
   public void enter_Containers() {
     when(sampleContainerService.get(any())).thenAnswer(i -> {
       Long id = i.getArgumentAt(0, Long.class);
-      return id != null ? entityManager.find(SampleContainer.class, id) : null;
+      return id != null ? sampleContainerRepository.findOne(id) : null;
     });
     List<SampleContainer> containers = new ArrayList<>();
-    containers.add(entityManager.find(SampleContainer.class, 11L));
-    containers.add(entityManager.find(SampleContainer.class, 12L));
+    containers.add(sampleContainerRepository.findOne(11L));
+    containers.add(sampleContainerRepository.findOne(12L));
     presenter.init(view);
     presenter.enter("containers/11,12");
 
