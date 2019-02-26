@@ -156,7 +156,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.Before;
@@ -166,58 +165,44 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
+  @Inject
   private SubmissionsViewPresenter presenter;
   @PersistenceContext
   private EntityManager entityManager;
   @Inject
   private JPAQueryFactory queryFactory;
-  @Mock
+  @MockBean
   private SubmissionService submissionService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
-  @Mock
+  @MockBean
   private UserPreferenceService userPreferenceService;
-  @Mock
-  private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
-  @Mock
-  private Provider<SubmissionWindow> submissionWindowProvider;
-  @Mock
-  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
-  @Mock
-  private Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider;
-  @Mock
-  private Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider;
-  @Mock
-  private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
-  @Mock
-  private Provider<ContainerSelectionWindow> containerSelectionWindowProvider;
-  @Mock
-  private Provider<HelpWindow> helpWindowProvider;
+  @MockBean
+  private LocalDateFilterComponent localDateFilterComponent;
+  @MockBean
+  private SubmissionWindow submissionWindow;
+  @MockBean
+  private SubmissionAnalysesWindow submissionAnalysesWindow;
+  @MockBean
+  private SubmissionTreatmentsWindow submissionTreatmentsWindow;
+  @MockBean
+  private SubmissionHistoryWindow submissionHistoryWindow;
+  @MockBean
+  private SampleSelectionWindow sampleSelectionWindow;
+  @MockBean
+  private ContainerSelectionWindow containerSelectionWindow;
+  @MockBean
+  private HelpWindow helpWindow;
   @Mock
   private SubmissionsView view;
   @Mock
-  private SubmissionWindow submissionWindow;
-  @Mock
-  private SubmissionAnalysesWindow submissionAnalysesWindow;
-  @Mock
-  private SubmissionTreatmentsWindow submissionTreatmentsWindow;
-  @Mock
-  private SubmissionHistoryWindow submissionHistoryWindow;
-  @Mock
-  private SampleSelectionWindow sampleSelectionWindow;
-  @Mock
-  private ContainerSelectionWindow containerSelectionWindow;
-  @Mock
-  private HelpWindow helpWindow;
-  @Mock
   private ListDataProvider<Submission> submissionsDataProvider;
-  @Mock
-  private LocalDateFilterComponent localDateFilterComponent;
   @Mock
   private Registration registration;
   @Captor
@@ -246,11 +231,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionsViewPresenter(submissionService, authorizationService,
-        userPreferenceService, localDateFilterComponentProvider, submissionWindowProvider,
-        submissionAnalysesWindowProvider, submissionTreatmentsWindowProvider,
-        submissionHistoryWindowProvider, sampleSelectionWindowProvider,
-        containerSelectionWindowProvider, helpWindowProvider, applicationName);
     design = new SubmissionsViewDesign();
     design.setParent(ui);
     view.design = design;
@@ -260,14 +240,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     when(submissionService.all(any())).thenReturn(submissions);
     when(submissionService.count(any())).thenReturn(submissions.size());
     when(userPreferenceService.get(any(), any(), any())).thenAnswer(i -> i.getArguments()[2]);
-    when(localDateFilterComponentProvider.get()).thenReturn(localDateFilterComponent);
-    when(submissionWindowProvider.get()).thenReturn(submissionWindow);
-    when(submissionAnalysesWindowProvider.get()).thenReturn(submissionAnalysesWindow);
-    when(submissionTreatmentsWindowProvider.get()).thenReturn(submissionTreatmentsWindow);
-    when(submissionHistoryWindowProvider.get()).thenReturn(submissionHistoryWindow);
-    when(sampleSelectionWindowProvider.get()).thenReturn(sampleSelectionWindow);
-    when(containerSelectionWindowProvider.get()).thenReturn(containerSelectionWindow);
-    when(helpWindowProvider.get()).thenReturn(helpWindow);
   }
 
   private String statusesValue(Submission submission) {
@@ -1511,7 +1483,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     design.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
 
-    verify(localDateFilterComponentProvider, atLeastOnce()).get();
     verify(localDateFilterComponent, atLeastOnce())
         .addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(SAMPLE_DELIVERY_DATE);
@@ -1533,7 +1504,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     design.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
 
-    verify(localDateFilterComponentProvider, atLeast(2)).get();
     verify(localDateFilterComponent, atLeast(2))
         .addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DIGESTION_DATE);
@@ -1555,7 +1525,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     design.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
 
-    verify(localDateFilterComponentProvider, atLeast(3)).get();
     verify(localDateFilterComponent, atLeast(3))
         .addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(ANALYSIS_DATE);
@@ -1577,7 +1546,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     design.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
 
-    verify(localDateFilterComponentProvider, atLeast(4)).get();
     verify(localDateFilterComponent, atLeast(4))
         .addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DATA_AVAILABLE_DATE);
@@ -1670,7 +1638,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     design.submissionsGrid.setDataProvider(submissionsDataProvider);
     HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
 
-    verify(localDateFilterComponentProvider, atLeastOnce()).get();
     verify(localDateFilterComponent, atLeastOnce())
         .addSaveListener(localDateRangeSaveListenerCaptor.capture());
     HeaderCell cell = filterRow.getCell(DATE);
@@ -2114,7 +2081,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     button.click();
 
-    verify(submissionWindowProvider).get();
     verify(submissionWindow).setValue(submission);
     verify(submissionWindow).center();
     verify(view).addWindow(submissionWindow);
@@ -2129,7 +2095,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     button.click();
 
-    verify(submissionAnalysesWindowProvider).get();
     verify(submissionAnalysesWindow).setValue(submission);
     verify(submissionAnalysesWindow).center();
     verify(view).addWindow(submissionAnalysesWindow);
@@ -2144,7 +2109,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     button.click();
 
-    verify(submissionTreatmentsWindowProvider).get();
     verify(submissionTreatmentsWindow).setValue(submission);
     verify(submissionTreatmentsWindow).center();
     verify(view).addWindow(submissionTreatmentsWindow);
@@ -2159,7 +2123,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     button.click();
 
-    verify(submissionHistoryWindowProvider).get();
     verify(submissionHistoryWindow).setValue(submission);
     verify(submissionHistoryWindow).center();
     verify(view).addWindow(submissionHistoryWindow);
@@ -2188,7 +2151,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     design.selectSamplesButton.click();
 
-    verify(sampleSelectionWindowProvider).get();
     verify(sampleSelectionWindow).setItems(samplesListCaptor.capture());
     verify(sampleSelectionWindow).addSaveListener(samplesSaveListenerCaptor.capture());
     List<Sample> samples = samplesListCaptor.getValue();
@@ -2214,7 +2176,8 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     design.selectContainers.click();
 
-    verify(containerSelectionWindowProvider, never()).get();
+    verify(containerSelectionWindow, never()).setSamples(any());
+    verify(containerSelectionWindow, never()).addSaveListener(any());
     view.showError(resources.message(SELECT_CONTAINERS_NO_SAMPLES));
   }
 
@@ -2228,7 +2191,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     design.selectContainers.click();
 
-    verify(containerSelectionWindowProvider).get();
     verify(containerSelectionWindow).setSamples(new ArrayList<>(submission1.getSamples()));
     verify(containerSelectionWindow).addSaveListener(containersSaveListenerCaptor.capture());
     verify(view).addWindow(containerSelectionWindow);
@@ -2260,7 +2222,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
     assertTrue(samples.containsAll(submission1.getSamples()));
     assertTrue(samples.containsAll(submission2.getSamples()));
-    verify(containerSelectionWindowProvider).get();
     verify(containerSelectionWindow).setSamples(new ArrayList<>(submission1.getSamples()));
     verify(containerSelectionWindow).addSaveListener(containersSaveListenerCaptor.capture());
     verify(view).addWindow(containerSelectionWindow);

@@ -97,7 +97,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -172,49 +171,33 @@ public class SubmissionsViewPresenter {
   @Inject
   private UserPreferenceService userPreferenceService;
   @Inject
-  private Provider<LocalDateFilterComponent> localDateFilterComponentProvider;
+  private LocalDateFilterComponent dateFilter;
   @Inject
-  private Provider<SubmissionWindow> submissionWindowProvider;
+  private LocalDateFilterComponent sampleDeliveryDateFilter;
   @Inject
-  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
+  private LocalDateFilterComponent digestionDateFilter;
   @Inject
-  private Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider;
+  private LocalDateFilterComponent analysisDateFilter;
   @Inject
-  private Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider;
+  private LocalDateFilterComponent dataAvailableDateFilter;
   @Inject
-  private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
+  private SubmissionWindow submissionWindow;
   @Inject
-  private Provider<ContainerSelectionWindow> containerSelectionWindowProvider;
+  private SubmissionAnalysesWindow submissionAnalysesWindow;
   @Inject
-  private Provider<HelpWindow> helpWindowProvider;
+  private SubmissionTreatmentsWindow submissionTreatmentsWindow;
+  @Inject
+  private SubmissionHistoryWindow submissionHistoryWindow;
+  @Inject
+  private SampleSelectionWindow sampleSelectionWindow;
+  @Inject
+  private ContainerSelectionWindow containerSelectionWindow;
+  @Inject
+  private HelpWindow helpWindow;
   @Value("${spring.application.name}")
   private String applicationName;
 
   protected SubmissionsViewPresenter() {
-  }
-
-  protected SubmissionsViewPresenter(SubmissionService submissionService,
-      AuthorizationService authorizationService, UserPreferenceService userPreferenceService,
-      Provider<LocalDateFilterComponent> localDateFilterComponentProvider,
-      Provider<SubmissionWindow> submissionWindowProvider,
-      Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider,
-      Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider,
-      Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider,
-      Provider<SampleSelectionWindow> sampleSelectionWindowProvider,
-      Provider<ContainerSelectionWindow> containerSelectionWindowProvider,
-      Provider<HelpWindow> helpWindowProvider, String applicationName) {
-    this.submissionService = submissionService;
-    this.authorizationService = authorizationService;
-    this.userPreferenceService = userPreferenceService;
-    this.localDateFilterComponentProvider = localDateFilterComponentProvider;
-    this.submissionWindowProvider = submissionWindowProvider;
-    this.submissionAnalysesWindowProvider = submissionAnalysesWindowProvider;
-    this.submissionTreatmentsWindowProvider = submissionTreatmentsWindowProvider;
-    this.submissionHistoryWindowProvider = submissionHistoryWindowProvider;
-    this.sampleSelectionWindowProvider = sampleSelectionWindowProvider;
-    this.containerSelectionWindowProvider = containerSelectionWindowProvider;
-    this.helpWindowProvider = helpWindowProvider;
-    this.applicationName = applicationName;
   }
 
   /**
@@ -228,6 +211,8 @@ public class SubmissionsViewPresenter {
     this.view = view;
     design = view.design;
     filter = new SubmissionFilter();
+    sampleSelectionWindow.setModal(true);
+    containerSelectionWindow.setModal(true);
     prepareComponents();
   }
 
@@ -239,10 +224,11 @@ public class SubmissionsViewPresenter {
     design.help.addStyleName(HELP);
     design.help.setCaption(resources.message(HELP));
     design.help.addClickListener(e -> {
-      HelpWindow helpWindow = helpWindowProvider.get();
       helpWindow.setHelp(resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()),
           ContentMode.HTML);
-      view.addWindow(helpWindow);
+      if (!helpWindow.isAttached()) {
+        view.addWindow(helpWindow);
+      }
     });
     prepareSumissionsGrid();
     design.addSubmission.addStyleName(ADD_SUBMISSION);
@@ -488,19 +474,19 @@ public class SubmissionsViewPresenter {
       filter.service = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }, Service.values(), service -> service.getLabel(locale)));
-    filterRow.getCell(SAMPLE_DELIVERY_DATE).setComponent(dateFilter(e -> {
+    filterRow.getCell(SAMPLE_DELIVERY_DATE).setComponent(dateFilter(sampleDeliveryDateFilter, e -> {
       filter.sampleDeliveryDateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
-    filterRow.getCell(DIGESTION_DATE).setComponent(dateFilter(e -> {
+    filterRow.getCell(DIGESTION_DATE).setComponent(dateFilter(digestionDateFilter, e -> {
       filter.digestionDateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
-    filterRow.getCell(ANALYSIS_DATE).setComponent(dateFilter(e -> {
+    filterRow.getCell(ANALYSIS_DATE).setComponent(dateFilter(analysisDateFilter, e -> {
       filter.analysisDateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
-    filterRow.getCell(DATA_AVAILABLE_DATE).setComponent(dateFilter(e -> {
+    filterRow.getCell(DATA_AVAILABLE_DATE).setComponent(dateFilter(dataAvailableDateFilter, e -> {
       filter.dataAvailableDateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
@@ -517,7 +503,7 @@ public class SubmissionsViewPresenter {
       filter.anySampleStatus = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
     }, SampleStatus.values(), status -> status.getLabel(locale)));
-    filterRow.getCell(DATE).setComponent(dateFilter(e -> {
+    filterRow.getCell(DATE).setComponent(dateFilter(dateFilter, e -> {
       filter.dateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
@@ -702,8 +688,8 @@ public class SubmissionsViewPresenter {
     return filter;
   }
 
-  private Component dateFilter(SaveListener<Range<LocalDate>> listener) {
-    LocalDateFilterComponent filter = localDateFilterComponentProvider.get();
+  private Component dateFilter(LocalDateFilterComponent filter,
+      SaveListener<Range<LocalDate>> listener) {
     filter.addStyleName(ValoTheme.BUTTON_TINY);
     filter.addSaveListener(listener);
     return filter;
@@ -740,31 +726,35 @@ public class SubmissionsViewPresenter {
   }
 
   private void viewSubmission(Submission submission) {
-    SubmissionWindow window = submissionWindowProvider.get();
-    window.setValue(submission);
-    window.center();
-    view.addWindow(window);
+    submissionWindow.setValue(submission);
+    if (!submissionWindow.isAttached()) {
+      submissionWindow.center();
+      view.addWindow(submissionWindow);
+    }
   }
 
   private void viewSubmissionResults(Submission submission) {
-    SubmissionAnalysesWindow window = submissionAnalysesWindowProvider.get();
-    window.setValue(submission);
-    window.center();
-    view.addWindow(window);
+    submissionAnalysesWindow.setValue(submission);
+    if (!submissionAnalysesWindow.isAttached()) {
+      submissionAnalysesWindow.center();
+      view.addWindow(submissionAnalysesWindow);
+    }
   }
 
   private void viewSubmissionTreatments(Submission submission) {
-    SubmissionTreatmentsWindow window = submissionTreatmentsWindowProvider.get();
-    window.setValue(submission);
-    window.center();
-    view.addWindow(window);
+    submissionTreatmentsWindow.setValue(submission);
+    if (!submissionTreatmentsWindow.isAttached()) {
+      submissionTreatmentsWindow.center();
+      view.addWindow(submissionTreatmentsWindow);
+    }
   }
 
   private void viewSubmissionHistory(Submission submission) {
-    SubmissionHistoryWindow window = submissionHistoryWindowProvider.get();
-    window.setValue(submission);
-    window.center();
-    view.addWindow(window);
+    submissionHistoryWindow.setValue(submission);
+    if (!submissionHistoryWindow.isAttached()) {
+      submissionHistoryWindow.center();
+      view.addWindow(submissionHistoryWindow);
+    }
   }
 
   private void addSubmission() {
@@ -772,8 +762,7 @@ public class SubmissionsViewPresenter {
   }
 
   private void selectSamples() {
-    SampleSelectionWindow window = sampleSelectionWindowProvider.get();
-    view.addWindow(window);
+    view.addWindow(sampleSelectionWindow);
     List<Sample> samples;
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
       samples = design.submissionsGrid.getSelectedItems().stream()
@@ -781,9 +770,9 @@ public class SubmissionsViewPresenter {
     } else {
       samples = view.savedSamples();
     }
-    window.setItems(samples);
-    window.center();
-    window.addSaveListener(e -> {
+    sampleSelectionWindow.setItems(samples);
+    sampleSelectionWindow.center();
+    sampleSelectionWindow.addSaveListener(e -> {
       MessageResource resources = view.getResources();
       List<Sample> selectedSamples = e.getSavedObject();
       design.submissionsGrid.deselectAll();
@@ -810,12 +799,11 @@ public class SubmissionsViewPresenter {
       MessageResource resources = view.getResources();
       view.showError(resources.message(SELECT_CONTAINERS_NO_SAMPLES));
     } else {
-      ContainerSelectionWindow window = containerSelectionWindowProvider.get();
-      view.addWindow(window);
+      view.addWindow(containerSelectionWindow);
       List<Sample> samples = view.savedSamples();
-      window.setSamples(samples);
-      window.center();
-      window.addSaveListener(e -> {
+      containerSelectionWindow.setSamples(samples);
+      containerSelectionWindow.center();
+      containerSelectionWindow.addSaveListener(e -> {
         MessageResource resources = view.getResources();
         List<SampleContainer> selectedContainers = e.getSavedObject();
         view.saveContainers(selectedContainers);
