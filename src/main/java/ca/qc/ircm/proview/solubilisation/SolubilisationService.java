@@ -20,11 +20,11 @@ package ca.qc.ircm.proview.solubilisation;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -32,8 +32,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +41,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SolubilisationService extends BaseTreatmentService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SolubilisationRepository repository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private SolubilisationActivityService solubilisationActivityService;
   @Inject
@@ -53,16 +53,6 @@ public class SolubilisationService extends BaseTreatmentService {
   private AuthorizationService authorizationService;
 
   protected SolubilisationService() {
-  }
-
-  protected SolubilisationService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      SolubilisationActivityService solubilisationActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
-    super(queryFactory);
-    this.entityManager = entityManager;
-    this.solubilisationActivityService = solubilisationActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -78,7 +68,7 @@ public class SolubilisationService extends BaseTreatmentService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Solubilisation.class, id);
+    return repository.findOne(id);
   }
 
   /**
@@ -96,10 +86,9 @@ public class SolubilisationService extends BaseTreatmentService {
     solubilisation.setInsertTime(Instant.now());
     solubilisation.setUser(user);
 
-    entityManager.persist(solubilisation);
+    repository.saveAndFlush(solubilisation);
 
     // Log insertion of solubilisation.
-    entityManager.flush();
     Activity activity = solubilisationActivityService.insert(solubilisation);
     activityService.insert(activity);
   }
@@ -115,7 +104,7 @@ public class SolubilisationService extends BaseTreatmentService {
   public void update(Solubilisation solubilisation, String explanation) {
     authorizationService.checkAdminRole();
 
-    Solubilisation old = entityManager.find(Solubilisation.class, solubilisation.getId());
+    Solubilisation old = repository.findOne(solubilisation.getId());
     Set<Long> treatedSampleIds = solubilisation.getTreatedSamples().stream().map(ts -> ts.getId())
         .collect(Collectors.toSet());
     if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
@@ -129,7 +118,7 @@ public class SolubilisationService extends BaseTreatmentService {
       activityService.insert(activity.get());
     }
 
-    entityManager.merge(solubilisation);
+    repository.save(solubilisation);
   }
 
   /**
@@ -167,9 +156,9 @@ public class SolubilisationService extends BaseTreatmentService {
         solubilisationActivityService.undoFailed(solubilisation, explanation, bannedContainers);
     activityService.insert(activity);
 
-    entityManager.merge(solubilisation);
+    repository.save(solubilisation);
     for (SampleContainer container : bannedContainers) {
-      entityManager.merge(container);
+      sampleContainerRepository.save(container);
     }
   }
 }

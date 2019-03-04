@@ -31,6 +31,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.treatment.TreatedSample;
@@ -41,21 +42,21 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SolubilisationActivityServiceTest {
-  private SolubilisationActivityService solubilisationActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+public class SolubilisationActivityServiceTest extends AbstractServiceTestCase {
+  @Inject
+  private SolubilisationActivityService service;
+  @Inject
+  private SolubilisationRepository repository;
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -64,8 +65,6 @@ public class SolubilisationActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    solubilisationActivityService =
-        new SolubilisationActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -85,7 +84,7 @@ public class SolubilisationActivityServiceTest {
     solubilisation.setId(123456L);
     solubilisation.setTreatedSamples(treatedSamples);
 
-    Activity activity = solubilisationActivityService.insert(solubilisation);
+    Activity activity = service.insert(solubilisation);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -97,9 +96,9 @@ public class SolubilisationActivityServiceTest {
 
   @Test
   public void update() {
-    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 236L);
-    entityManager.detach(solubilisation);
-    solubilisation.getTreatedSamples().forEach(ts -> entityManager.detach(ts));
+    Solubilisation solubilisation = repository.findOne(236L);
+    detach(solubilisation);
+    solubilisation.getTreatedSamples().forEach(ts -> detach(ts));
     solubilisation.getTreatedSamples().get(0).setContainer(new Well(248L));
     solubilisation.getTreatedSamples().get(0).setSample(new Control(444L));
     solubilisation.getTreatedSamples().get(0).setSolvent("ch3oh");
@@ -111,8 +110,7 @@ public class SolubilisationActivityServiceTest {
     newSolubilisedSample.setSample(new SubmissionSample(562L));
     solubilisation.getTreatedSamples().add(newSolubilisedSample);
 
-    Optional<Activity> optionalActivity =
-        solubilisationActivityService.update(solubilisation, "test explanation");
+    Optional<Activity> optionalActivity = service.update(solubilisation, "test explanation");
 
     assertTrue(optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -172,11 +170,10 @@ public class SolubilisationActivityServiceTest {
 
   @Test
   public void update_NoChanges() {
-    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 1L);
-    entityManager.detach(solubilisation);
+    Solubilisation solubilisation = repository.findOne(1L);
+    detach(solubilisation);
 
-    Optional<Activity> optionalActivity =
-        solubilisationActivityService.update(solubilisation, "test explanation");
+    Optional<Activity> optionalActivity = service.update(solubilisation, "test explanation");
 
     assertFalse(optionalActivity.isPresent());
   }
@@ -185,7 +182,7 @@ public class SolubilisationActivityServiceTest {
   public void undoErroneous() {
     Solubilisation solubilisation = new Solubilisation(1L);
 
-    Activity activity = solubilisationActivityService.undoErroneous(solubilisation, "unit_test");
+    Activity activity = service.undoErroneous(solubilisation, "unit_test");
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -199,7 +196,7 @@ public class SolubilisationActivityServiceTest {
   public void undoFailed_NoBan() {
     Solubilisation solubilisation = new Solubilisation(1L);
 
-    Activity activity = solubilisationActivityService.undoFailed(solubilisation, "unit_test", null);
+    Activity activity = service.undoFailed(solubilisation, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -218,8 +215,7 @@ public class SolubilisationActivityServiceTest {
     bannedContainers.add(sourceTube);
     bannedContainers.add(well);
 
-    Activity activity =
-        solubilisationActivityService.undoFailed(solubilisation, "unit_test", bannedContainers);
+    Activity activity = service.undoFailed(solubilisation, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());

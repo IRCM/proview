@@ -23,6 +23,7 @@ import ca.qc.ircm.proview.history.BanSampleContainerUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
@@ -34,8 +35,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,18 +45,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SolubilisationActivityService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SolubilisationRepository repository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected SolubilisationActivityService() {
-  }
-
-  protected SolubilisationActivityService(EntityManager entityManager,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -93,12 +88,11 @@ public class SolubilisationActivityService {
   @CheckReturnValue
   public Optional<Activity> update(Solubilisation solubilisation, String explanation) {
     User user = authorizationService.getCurrentUser();
-    final Solubilisation oldSolubilisation =
-        entityManager.find(Solubilisation.class, solubilisation.getId());
+    final Solubilisation oldSolubilisation = repository.findOne(solubilisation.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
-    Map<Long, TreatedSample> oldTreatedSampleIds = oldSolubilisation.getTreatedSamples()
-        .stream().collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
+    Map<Long, TreatedSample> oldTreatedSampleIds = oldSolubilisation.getTreatedSamples().stream()
+        .collect(Collectors.toMap(ts -> ts.getId(), ts -> ts));
     solubilisation.getTreatedSamples().stream()
         .filter(ts -> !oldTreatedSampleIds.containsKey(ts.getId()))
         .forEach(ts -> updateBuilders.add(treatedSampleAction(ts, ActionType.INSERT)));
@@ -186,7 +180,7 @@ public class SolubilisationActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     if (bannedContainers != null) {
       for (SampleContainer container : bannedContainers) {
-        SampleContainer oldContainer = entityManager.find(SampleContainer.class, container.getId());
+        SampleContainer oldContainer = sampleContainerRepository.findOne(container.getId());
         updateBuilders
             .add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldContainer));
       }
