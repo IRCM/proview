@@ -153,17 +153,6 @@ public class TransferViewPresenter implements BinderValidator {
   protected TransferViewPresenter() {
   }
 
-  protected TransferViewPresenter(TransferService transferService, TubeService tubeService,
-      WellService wellService, PlateService plateService,
-      SampleContainerService sampleContainerService, String applicationName) {
-    this.transferService = transferService;
-    this.tubeService = tubeService;
-    this.wellService = wellService;
-    this.plateService = plateService;
-    this.sampleContainerService = sampleContainerService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *

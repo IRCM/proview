@@ -78,6 +78,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateFilter;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.plate.WellComparator;
@@ -86,11 +87,14 @@ import ca.qc.ircm.proview.plate.WellService;
 import ca.qc.ircm.proview.plate.web.PlateComponent;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
+import ca.qc.ircm.proview.transfer.TransferRepository;
 import ca.qc.ircm.proview.transfer.TransferService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
@@ -116,32 +120,31 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class TransferViewPresenterTest {
+  @Inject
   private TransferViewPresenter presenter;
-  @Mock
+  @MockBean
   private TransferView view;
-  @Mock
+  @MockBean
   private TransferService transferService;
-  @Mock
+  @MockBean
   private TubeService tubeService;
-  @Mock
+  @MockBean
   private WellService wellService;
-  @Mock
+  @MockBean
   private PlateService plateService;
-  @Mock
+  @MockBean
   private SampleContainerService sampleContainerService;
   @Captor
   private ArgumentCaptor<Collection<Well>> wellsCaptor;
@@ -149,14 +152,14 @@ public class TransferViewPresenterTest {
   private ArgumentCaptor<Transfer> transferCaptor;
   @Captor
   private ArgumentCaptor<PlateFilter> plateFilterCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private TubeService realTubeService;
+  private TransferRepository repository;
   @Inject
-  private WellService realWellService;
+  private SampleRepository sampleRepository;
   @Inject
-  private PlateService realPlateService;
+  private SampleContainerRepository sampleContainerRepository;
+  @Inject
+  private PlateRepository plateRepository;
   @Value("${spring.application.name}")
   private String applicationName;
   private TransferViewDesign design;
@@ -174,23 +177,21 @@ public class TransferViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new TransferViewPresenter(transferService, tubeService, wellService, plateService,
-        sampleContainerService, applicationName);
     design = new TransferViewDesign();
     view.design = design;
     view.destinationPlateForm = mock(PlateComponent.class);
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(entityManager.find(Sample.class, 559L));
-    samples.add(entityManager.find(Sample.class, 560L));
-    samples.add(entityManager.find(Sample.class, 444L));
+    samples.add(sampleRepository.findOne(559L));
+    samples.add(sampleRepository.findOne(560L));
+    samples.add(sampleRepository.findOne(444L));
     sourceTubes = samples.stream().map(sample -> {
       Tube tube = new Tube(sample.getId(), sample.getName());
       tube.setSample(sample);
       return tube;
     }).collect(Collectors.toList());
-    Plate sourcePlate = entityManager.find(Plate.class, 26L);
+    Plate sourcePlate = plateRepository.findOne(26L);
     IntStream.range(0, samples.size()).forEach(i -> {
       Sample sample = samples.get(i);
       List<Well> wells = Arrays.asList(sourcePlate.well(i, 0));
@@ -198,8 +199,8 @@ public class TransferViewPresenterTest {
       sourceWells.addAll(wells);
     });
     when(view.savedContainers()).thenReturn(new ArrayList<>(sourceWells));
-    destinationPlates.add(entityManager.find(Plate.class, 26L));
-    destinationPlates.add(entityManager.find(Plate.class, 107L));
+    destinationPlates.add(plateRepository.findOne(26L));
+    destinationPlates.add(plateRepository.findOne(107L));
     when(plateService.all(any())).thenReturn(new ArrayList<>(destinationPlates));
     when(tubeService.nameAvailable(any())).thenReturn(true);
   }
@@ -460,9 +461,7 @@ public class TransferViewPresenterTest {
 
   @Test
   public void transfers_Transfer() {
-    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
-        realPlateService, sampleContainerService, applicationName);
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    Transfer transfer = repository.findOne(3L);
     when(transferService.get(any())).thenReturn(transfer);
     presenter.init(view);
     presenter.enter("3");
@@ -954,7 +953,7 @@ public class TransferViewPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void test_PlateToNewPlate_MultipleWellPerSample() {
-    Plate sourcePlate = entityManager.find(Plate.class, 26L);
+    Plate sourcePlate = plateRepository.findOne(26L);
     sourceWells.clear();
     IntStream.range(0, samples.size()).forEach(i -> {
       Sample sample = samples.get(i);
@@ -1019,7 +1018,7 @@ public class TransferViewPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void test_PlateToExistingPlate_MultipleWellPerSample() {
-    Plate sourcePlate = entityManager.find(Plate.class, 26L);
+    Plate sourcePlate = plateRepository.findOne(26L);
     sourceWells.clear();
     IntStream.range(0, samples.size()).forEach(i -> {
       Sample sample = samples.get(i);
@@ -1680,7 +1679,7 @@ public class TransferViewPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void save_PlateToTube_MultipleWellPerSample() {
-    Plate sourcePlate = entityManager.find(Plate.class, 26L);
+    Plate sourcePlate = plateRepository.findOne(26L);
     sourceWells.clear();
     IntStream.range(0, samples.size()).forEach(i -> {
       Sample sample = samples.get(i);
@@ -1733,7 +1732,7 @@ public class TransferViewPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void save_PlateToNewPlate_MultipleWellPerSample() {
-    Plate sourcePlate = entityManager.find(Plate.class, 26L);
+    Plate sourcePlate = plateRepository.findOne(26L);
     sourceWells.clear();
     IntStream.range(0, samples.size()).forEach(i -> {
       Sample sample = samples.get(i);
@@ -1791,7 +1790,7 @@ public class TransferViewPresenterTest {
   @Test
   @SuppressWarnings("unchecked")
   public void save_PlateToExistingPlate_MultipleWellPerSample() {
-    Plate sourcePlate = entityManager.find(Plate.class, 26L);
+    Plate sourcePlate = plateRepository.findOne(26L);
     sourceWells.clear();
     IntStream.range(0, samples.size()).forEach(i -> {
       Sample sample = samples.get(i);
@@ -1882,9 +1881,7 @@ public class TransferViewPresenterTest {
 
   @Test
   public void remove_NoExplanation() {
-    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
-        realPlateService, sampleContainerService, applicationName);
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    Transfer transfer = repository.findOne(3L);
     when(transferService.get(any())).thenReturn(transfer);
     presenter.init(view);
     presenter.enter("3");
@@ -1899,9 +1896,7 @@ public class TransferViewPresenterTest {
 
   @Test
   public void remove() {
-    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
-        realPlateService, sampleContainerService, applicationName);
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    Transfer transfer = repository.findOne(3L);
     when(transferService.get(any())).thenReturn(transfer);
     presenter.init(view);
     presenter.enter("3");
@@ -1921,9 +1916,7 @@ public class TransferViewPresenterTest {
 
   @Test
   public void remove_BanContainers() {
-    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
-        realPlateService, sampleContainerService, applicationName);
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    Transfer transfer = repository.findOne(3L);
     when(transferService.get(any())).thenReturn(transfer);
     presenter.init(view);
     presenter.enter("3");
@@ -1944,9 +1937,7 @@ public class TransferViewPresenterTest {
 
   @Test
   public void remove_Nothing() {
-    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
-        realPlateService, sampleContainerService, applicationName);
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    Transfer transfer = repository.findOne(3L);
     when(transferService.get(any())).thenReturn(transfer);
     presenter.init(view);
     presenter.enter("3");
@@ -2002,9 +1993,7 @@ public class TransferViewPresenterTest {
 
   @Test
   public void enter_Transfer() {
-    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
-        realPlateService, sampleContainerService, applicationName);
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    Transfer transfer = repository.findOne(3L);
     when(transferService.get(any())).thenReturn(transfer);
     presenter.init(view);
     presenter.enter("3");
@@ -2026,11 +2015,9 @@ public class TransferViewPresenterTest {
 
   @Test
   public void enter_Transfer_SourceMultipleDestination() {
-    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
-        realPlateService, sampleContainerService, applicationName);
-    Transfer transfer = entityManager.find(Transfer.class, 303L);
+    Transfer transfer = repository.findOne(303L);
     transfer.getTreatedSamples()
-        .forEach(ts -> ts.setContainer(entityManager.find(SampleContainer.class, 1475L)));
+        .forEach(ts -> ts.setContainer(sampleContainerRepository.findOne(1475L)));
     when(transferService.get(any())).thenReturn(transfer);
     presenter.init(view);
     presenter.enter("303");
@@ -2052,9 +2039,7 @@ public class TransferViewPresenterTest {
 
   @Test
   public void enter_TransferDeleted() {
-    presenter = new TransferViewPresenter(transferService, realTubeService, realWellService,
-        realPlateService, sampleContainerService, applicationName);
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
+    Transfer transfer = repository.findOne(3L);
     transfer.setDeleted(true);
     when(transferService.get(any())).thenReturn(transfer);
     presenter.init(view);
@@ -2100,11 +2085,11 @@ public class TransferViewPresenterTest {
   public void enter_Containers() {
     when(sampleContainerService.get(any())).thenAnswer(i -> {
       Long id = i.getArgumentAt(0, Long.class);
-      return id != null ? entityManager.find(SampleContainer.class, id) : null;
+      return id != null ? sampleContainerRepository.findOne(id) : null;
     });
     List<SampleContainer> containers = new ArrayList<>();
-    containers.add(entityManager.find(SampleContainer.class, 11L));
-    containers.add(entityManager.find(SampleContainer.class, 12L));
+    containers.add(sampleContainerRepository.findOne(11L));
+    containers.add(sampleContainerRepository.findOne(12L));
     presenter.init(view);
     presenter.enter("containers/11,12");
 
