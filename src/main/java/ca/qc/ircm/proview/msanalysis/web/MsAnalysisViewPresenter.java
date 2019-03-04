@@ -122,13 +122,6 @@ public class MsAnalysisViewPresenter implements BinderValidator {
   protected MsAnalysisViewPresenter() {
   }
 
-  protected MsAnalysisViewPresenter(MsAnalysisService msAnalysisService,
-      SampleContainerService sampleContainerService, String applicationName) {
-    this.msAnalysisService = msAnalysisService;
-    this.sampleContainerService = sampleContainerService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *

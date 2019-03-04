@@ -27,6 +27,7 @@ import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
@@ -39,8 +40,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,8 +50,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 @WithSubject
 public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private MsAnalysisRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -173,7 +173,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(MsAnalysisView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(MsAnalysisView.VIEW_NAME).length() + 1));
-    MsAnalysis savedMsAnalysis = entityManager.find(MsAnalysis.class, id);
+    MsAnalysis savedMsAnalysis = repository.findOne(id);
     assertEquals(MassDetectionInstrument.VELOS, savedMsAnalysis.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, savedMsAnalysis.getSource());
     assertEquals(4, savedMsAnalysis.getAcquisitions().size());
@@ -237,7 +237,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(MsAnalysisView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(MsAnalysisView.VIEW_NAME).length() + 1));
-    MsAnalysis savedMsAnalysis = entityManager.find(MsAnalysis.class, id);
+    MsAnalysis savedMsAnalysis = repository.findOne(id);
     assertEquals(MassDetectionInstrument.VELOS, savedMsAnalysis.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, savedMsAnalysis.getSource());
     assertEquals(4, savedMsAnalysis.getAcquisitions().size());
@@ -297,7 +297,7 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
     clickSave();
 
     assertEquals(viewUrl(MsAnalysisView.VIEW_NAME, "14"), getDriver().getCurrentUrl());
-    MsAnalysis savedMsAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    MsAnalysis savedMsAnalysis = repository.findOne(14L);
     assertEquals(MassDetectionInstrument.ORBITRAP_FUSION,
         savedMsAnalysis.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.LDTD, savedMsAnalysis.getSource());

@@ -75,10 +75,13 @@ import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.VaadinTestUtils;
 import ca.qc.ircm.proview.tube.Tube;
@@ -104,8 +107,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -113,22 +115,28 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class MsAnalysisViewPresenterTest {
+  @Inject
   private MsAnalysisViewPresenter presenter;
   @Mock
   private MsAnalysisView view;
-  @Mock
+  @MockBean
   private MsAnalysisService msAnalysisService;
-  @Mock
+  @MockBean
   private SampleContainerService sampleContainerService;
   @Captor
   private ArgumentCaptor<MsAnalysis> msAnalysisCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private MsAnalysisRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Value("${spring.application.name}")
   private String applicationName;
   private MsAnalysisViewDesign design;
@@ -147,16 +155,14 @@ public class MsAnalysisViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter =
-        new MsAnalysisViewPresenter(msAnalysisService, sampleContainerService, applicationName);
     design = new MsAnalysisViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(entityManager.find(Sample.class, 559L));
-    samples.add(entityManager.find(Sample.class, 560L));
-    samples.add(entityManager.find(Sample.class, 444L));
+    samples.add(sampleRepository.findOne(559L));
+    samples.add(sampleRepository.findOne(560L));
+    samples.add(sampleRepository.findOne(444L));
     containers = samples.stream().flatMap(sample -> {
       Tube tube1 = new Tube(sample.getId(), sample.getName());
       tube1.setSample(sample);
@@ -944,7 +950,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void save_Update() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    MsAnalysis msAnalysis = repository.findOne(14L);
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
     presenter.init(view);
     presenter.enter("14");
@@ -980,7 +986,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void save_Update_IllegalArgumentException() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    MsAnalysis msAnalysis = repository.findOne(14L);
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
     doThrow(new IllegalArgumentException()).when(msAnalysisService).update(any(), any());
     presenter.init(view);
@@ -998,7 +1004,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void remove_NoExplanation() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    MsAnalysis msAnalysis = repository.findOne(14L);
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
     presenter.init(view);
     presenter.enter("14");
@@ -1013,7 +1019,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void remove() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    MsAnalysis msAnalysis = repository.findOne(14L);
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
     presenter.init(view);
     presenter.enter("14");
@@ -1033,7 +1039,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void remove_BanContainers() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    MsAnalysis msAnalysis = repository.findOne(14L);
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
     presenter.init(view);
     presenter.enter("14");
@@ -1136,7 +1142,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void enter_MsAnalysis() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    MsAnalysis msAnalysis = repository.findOne(14L);
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
     presenter.init(view);
     presenter.enter("14");
@@ -1185,7 +1191,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void enter_MsAnalysisMultipleAcquisitionPerSample() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    MsAnalysis msAnalysis = repository.findOne(14L);
     msAnalysis.getAcquisitions().get(0).setNumberOfAcquisition(2);
     Acquisition newAcquisition = new Acquisition();
     newAcquisition.setMsAnalysis(msAnalysis);
@@ -1246,7 +1252,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void enter_MsAnalysisDeleted() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    MsAnalysis msAnalysis = repository.findOne(14L);
     msAnalysis.setDeleted(true);
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
     presenter.init(view);
@@ -1316,11 +1322,11 @@ public class MsAnalysisViewPresenterTest {
   public void enter_Containers() {
     when(sampleContainerService.get(any())).thenAnswer(i -> {
       Long id = i.getArgumentAt(0, Long.class);
-      return id != null ? entityManager.find(SampleContainer.class, id) : null;
+      return id != null ? sampleContainerRepository.findOne(id) : null;
     });
     List<SampleContainer> containers = new ArrayList<>();
-    containers.add(entityManager.find(SampleContainer.class, 11L));
-    containers.add(entityManager.find(SampleContainer.class, 12L));
+    containers.add(sampleContainerRepository.findOne(11L));
+    containers.add(sampleContainerRepository.findOne(12L));
     presenter.init(view);
     presenter.enter("containers/11,12");
 
