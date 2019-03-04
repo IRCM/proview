@@ -34,11 +34,13 @@ import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -47,6 +49,7 @@ import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.treatment.Protocol;
@@ -59,8 +62,8 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.google.common.collect.Lists;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -68,35 +71,33 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ActivityServiceTest {
-  private ActivityService activityService;
-  @PersistenceContext
-  private EntityManager entityManager;
+  private static final QActivity qactivity = QActivity.activity;
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private ActivityService activityService;
+  @Inject
+  private ActivityRepository repository;
+  @Inject
+  private SubmissionRepository submissionRepository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private PlateRepository plateRepository;
+  @MockBean
   private AuthorizationService authorizationService;
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(ActivityService.class, locale);
 
-  @Before
-  public void beforeTest() {
-    activityService = new ActivityService(entityManager, queryFactory, authorizationService);
-  }
-
   @Test
   public void record_DataAnalysis() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5566L);
+    Activity activity = repository.findOne(5566L);
 
     Object object = activityService.record(activity);
 
@@ -108,7 +109,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Digestion() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5639L);
+    Activity activity = repository.findOne(5639L);
 
     Object object = activityService.record(activity);
 
@@ -120,7 +121,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Dilution() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5680L);
+    Activity activity = repository.findOne(5680L);
 
     Object object = activityService.record(activity);
 
@@ -132,7 +133,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Enrichment() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5719L);
+    Activity activity = repository.findOne(5719L);
 
     Object object = activityService.record(activity);
 
@@ -144,7 +145,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Fractionation() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5659L);
+    Activity activity = repository.findOne(5659L);
 
     Object object = activityService.record(activity);
 
@@ -170,7 +171,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_MsAnalysis() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5828L);
+    Activity activity = repository.findOne(5828L);
 
     Object object = activityService.record(activity);
 
@@ -182,7 +183,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Plate() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5559L);
+    Activity activity = repository.findOne(5559L);
 
     Object object = activityService.record(activity);
 
@@ -236,7 +237,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Sample() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5635L);
+    Activity activity = repository.findOne(5635L);
 
     Object object = activityService.record(activity);
 
@@ -290,7 +291,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Solubilisation() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5763L);
+    Activity activity = repository.findOne(5763L);
 
     Object object = activityService.record(activity);
 
@@ -302,7 +303,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_StandardAddition() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5796L);
+    Activity activity = repository.findOne(5796L);
 
     Object object = activityService.record(activity);
 
@@ -314,7 +315,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Submission() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5543L);
+    Activity activity = repository.findOne(5543L);
 
     Object object = activityService.record(activity);
 
@@ -340,7 +341,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Protocol() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5545L);
+    Activity activity = repository.findOne(5545L);
 
     Object object = activityService.record(activity);
 
@@ -380,7 +381,7 @@ public class ActivityServiceTest {
 
   @Test
   public void record_Transfer() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5657L);
+    Activity activity = repository.findOne(5657L);
 
     Object object = activityService.record(activity);
 
@@ -481,14 +482,14 @@ public class ActivityServiceTest {
 
   @Test
   public void record_TableNameNull() throws Exception {
-    Activity activity = entityManager.find(Activity.class, 5566L);
+    Activity activity = repository.findOne(5566L);
     activity.setTableName(null);
     assertNull(activityService.record(activity));
   }
 
   @Test
   public void all_Submission() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 1L);
+    Submission submission = submissionRepository.findOne(1L);
 
     List<Activity> activities = activityService.all(submission);
 
@@ -507,7 +508,7 @@ public class ActivityServiceTest {
 
   @Test
   public void all_Submission_147() throws Exception {
-    Submission submission = entityManager.find(Submission.class, 147L);
+    Submission submission = submissionRepository.findOne(147L);
 
     List<Activity> activities = activityService.all(submission);
 
@@ -680,8 +681,8 @@ public class ActivityServiceTest {
 
   @Test
   public void description_Insert() {
-    Submission submission = entityManager.find(Submission.class, 1L);
-    Activity activity = entityManager.find(Activity.class, 5543L);
+    Submission submission = submissionRepository.findOne(1L);
+    Activity activity = repository.findOne(5543L);
 
     String description = activityService.description(activity, locale);
 
@@ -692,8 +693,8 @@ public class ActivityServiceTest {
 
   @Test
   public void description_Update() {
-    Submission submission = entityManager.find(Submission.class, 163L);
-    Activity activity = entityManager.find(Activity.class, 5936L);
+    Submission submission = submissionRepository.findOne(163L);
+    Activity activity = repository.findOne(5936L);
 
     String description = activityService.description(activity, locale);
 
@@ -706,11 +707,11 @@ public class ActivityServiceTest {
       UpdateActivity update = activity.getUpdates().get(i);
       String name = null;
       if (update.getTableName().equals(Submission.TABLE_NAME)) {
-        name = entityManager.find(Submission.class, update.getRecordId()).getName();
+        name = submissionRepository.findOne(update.getRecordId()).getName();
       } else if (update.getTableName().equals(Sample.TABLE_NAME)) {
-        name = entityManager.find(Sample.class, update.getRecordId()).getName();
+        name = sampleRepository.findOne(update.getRecordId()).getName();
       } else if (update.getTableName().equals(Plate.TABLE_NAME)) {
-        name = entityManager.find(Plate.class, update.getRecordId()).getName();
+        name = plateRepository.findOne(update.getRecordId()).getName();
       }
       assertEquals(
           resources.message("update", update.getActionType().ordinal(), update.getTableName(), name,
@@ -732,13 +733,10 @@ public class ActivityServiceTest {
 
     activityService.insert(activity);
 
-    entityManager.flush();
-    JPAQuery<Activity> query = queryFactory.select(QActivity.activity);
-    query.from(QActivity.activity);
-    query.where(QActivity.activity.actionType.eq(ActionType.INSERT));
-    query.where(QActivity.activity.tableName.eq("sample"));
-    query.where(QActivity.activity.recordId.eq(45L));
-    List<Activity> activities = query.fetch();
+    repository.flush();
+    BooleanExpression predicate = qactivity.actionType.eq(ActionType.INSERT)
+        .and(qactivity.tableName.eq(Sample.TABLE_NAME)).and(qactivity.recordId.eq(45L));
+    List<Activity> activities = Lists.newArrayList(repository.findAll(predicate));
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -787,13 +785,10 @@ public class ActivityServiceTest {
 
     activityService.insert(activity);
 
-    entityManager.flush();
-    JPAQuery<Activity> query = queryFactory.select(QActivity.activity);
-    query.from(QActivity.activity);
-    query.where(QActivity.activity.actionType.eq(ActionType.INSERT));
-    query.where(QActivity.activity.tableName.eq("sample"));
-    query.where(QActivity.activity.recordId.eq(45L));
-    List<Activity> activities = query.fetch();
+    repository.flush();
+    BooleanExpression predicate = qactivity.actionType.eq(ActionType.INSERT)
+        .and(qactivity.tableName.eq(Sample.TABLE_NAME)).and(qactivity.recordId.eq(45L));
+    List<Activity> activities = Lists.newArrayList(repository.findAll(predicate));
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());

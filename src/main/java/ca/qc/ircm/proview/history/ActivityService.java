@@ -71,8 +71,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,21 +80,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ActivityService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private ActivityRepository repository;
   @Inject
   private JPAQueryFactory queryFactory;
   @Inject
   private AuthorizationService authorizationService;
 
   protected ActivityService() {
-  }
-
-  protected ActivityService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -441,6 +432,6 @@ public class ActivityService {
   public void insert(Activity activity) {
     activity.setTimestamp(Instant.now());
 
-    entityManager.persist(activity);
+    repository.save(activity);
   }
 }
