@@ -24,6 +24,7 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import java.util.ArrayList;
@@ -32,8 +33,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,18 +43,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class DataAnalysisActivityService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private DataAnalysisRepository repository;
+  @Inject
+  private SubmissionSampleRepository sampleRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected DataAnalysisActivityService() {
-  }
-
-  protected DataAnalysisActivityService(EntityManager entityManager,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -70,8 +65,7 @@ public class DataAnalysisActivityService {
     final User user = authorizationService.getCurrentUser();
 
     // Get old sample outside of transaction.
-    SubmissionSample oldSample =
-        entityManager.find(SubmissionSample.class, dataAnalysis.getSample().getId());
+    SubmissionSample oldSample = sampleRepository.findOne(dataAnalysis.getSample().getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     updateBuilders.add(new SampleStatusUpdateActivityBuilder().oldSample(oldSample)
@@ -109,7 +103,7 @@ public class DataAnalysisActivityService {
     User user = authorizationService.getCurrentUser();
 
     // Get old data analysis outside of transaction.
-    DataAnalysis oldDataAnalysis = entityManager.find(DataAnalysis.class, dataAnalysis.getId());
+    DataAnalysis oldDataAnalysis = repository.findOne(dataAnalysis.getId());
 
     class DataAnalysisUpdateBuilder extends UpdateActivityBuilder {
       {

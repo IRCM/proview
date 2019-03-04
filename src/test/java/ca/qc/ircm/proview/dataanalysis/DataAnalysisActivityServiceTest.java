@@ -28,37 +28,28 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.user.User;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class DataAnalysisActivityServiceTest {
-  private DataAnalysisActivityService dataAnalysisActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+public class DataAnalysisActivityServiceTest extends AbstractServiceTestCase {
+  @Inject
+  private DataAnalysisActivityService service;
+  @Inject
+  private DataAnalysisRepository repository;
+  @MockBean
   private AuthorizationService authorizationService;
-
-  /**
-   * Before test.
-   */
-  @Before
-  public void beforeTest() {
-    dataAnalysisActivityService =
-        new DataAnalysisActivityService(entityManager, authorizationService);
-  }
 
   @Test
   public void insert() {
@@ -73,7 +64,7 @@ public class DataAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity = dataAnalysisActivityService.insert(dataAnalysis);
+    Activity activity = service.insert(dataAnalysis);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -95,9 +86,8 @@ public class DataAnalysisActivityServiceTest {
 
   @Test
   public void update() {
-    DataAnalysis dataAnalysis = entityManager.find(DataAnalysis.class, 4L);
-    entityManager.detach(dataAnalysis);
-    entityManager.detach(dataAnalysis.getSample());
+    DataAnalysis dataAnalysis = repository.findOne(4L);
+    detach(dataAnalysis, dataAnalysis.getSample());
     dataAnalysis.setScore("90.0");
     dataAnalysis.setStatus(DataAnalysisStatus.ANALYSED);
     dataAnalysis.setWorkTime(2.0);
@@ -105,8 +95,7 @@ public class DataAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Optional<Activity> optionalActivity =
-        dataAnalysisActivityService.update(dataAnalysis, "unit_test");
+    Optional<Activity> optionalActivity = service.update(dataAnalysis, "unit_test");
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(true, optionalActivity.isPresent());
@@ -154,9 +143,8 @@ public class DataAnalysisActivityServiceTest {
 
   @Test
   public void update_AlreadyAnalysedData() {
-    DataAnalysis dataAnalysis = entityManager.find(DataAnalysis.class, 3L);
-    entityManager.detach(dataAnalysis);
-    entityManager.detach(dataAnalysis.getSample());
+    DataAnalysis dataAnalysis = repository.findOne(3L);
+    detach(dataAnalysis, dataAnalysis.getSample());
     dataAnalysis.setScore(null);
     dataAnalysis.setStatus(DataAnalysisStatus.TO_DO);
     dataAnalysis.setWorkTime(null);
@@ -164,8 +152,7 @@ public class DataAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Optional<Activity> optionalActivity =
-        dataAnalysisActivityService.update(dataAnalysis, "unit_test");
+    Optional<Activity> optionalActivity = service.update(dataAnalysis, "unit_test");
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(true, optionalActivity.isPresent());
@@ -213,14 +200,12 @@ public class DataAnalysisActivityServiceTest {
 
   @Test
   public void update_NoChange() {
-    DataAnalysis dataAnalysis = entityManager.find(DataAnalysis.class, 4L);
-    entityManager.detach(dataAnalysis);
-    entityManager.detach(dataAnalysis.getSample());
+    DataAnalysis dataAnalysis = repository.findOne(4L);
+    detach(dataAnalysis, dataAnalysis.getSample());
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Optional<Activity> optionalActivity =
-        dataAnalysisActivityService.update(dataAnalysis, "unit_test");
+    Optional<Activity> optionalActivity = service.update(dataAnalysis, "unit_test");
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(false, optionalActivity.isPresent());
