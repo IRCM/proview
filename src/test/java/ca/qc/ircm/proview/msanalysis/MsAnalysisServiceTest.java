@@ -36,16 +36,20 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.WellRepository;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import ca.qc.ircm.proview.tube.TubeRepository;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,29 +59,34 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class MsAnalysisServiceTest {
-  private MsAnalysisService msAnalysisService;
-  @PersistenceContext
-  private EntityManager entityManager;
+public class MsAnalysisServiceTest extends AbstractServiceTestCase {
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private MsAnalysisService service;
+  @Inject
+  private MsAnalysisRepository repository;
+  @Inject
+  private SubmissionRepository submissionRepository;
+  @Inject
+  private SubmissionSampleRepository submissionSampleRepository;
+  @Inject
+  private TubeRepository tubeRepository;
+  @Inject
+  private WellRepository wellRepository;
+  @MockBean
   private MsAnalysisActivityService msAnalysisActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -86,18 +95,9 @@ public class MsAnalysisServiceTest {
   @Captor
   private ArgumentCaptor<Collection<SampleContainer>> sampleContainersCaptor;
 
-  /**
-   * Before test.
-   */
-  @Before
-  public void beforeTest() {
-    msAnalysisService = new MsAnalysisService(entityManager, queryFactory,
-        msAnalysisActivityService, activityService, authorizationService);
-  }
-
   @Test
   public void get() {
-    MsAnalysis msAnalysis = msAnalysisService.get(1L);
+    MsAnalysis msAnalysis = service.get(1L);
 
     verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
     assertNotNull(msAnalysis);
@@ -113,7 +113,7 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void get_Null() {
-    MsAnalysis msAnalysis = msAnalysisService.get((Long) null);
+    MsAnalysis msAnalysis = service.get((Long) null);
 
     assertNull(msAnalysis);
   }
@@ -122,7 +122,7 @@ public class MsAnalysisServiceTest {
   public void all_Submission() {
     Submission submission = new Submission(155L);
 
-    List<MsAnalysis> msAnalyses = msAnalysisService.all(submission);
+    List<MsAnalysis> msAnalyses = service.all(submission);
 
     verify(authorizationService).checkSubmissionReadPermission(submission);
     assertEquals(1, msAnalyses.size());
@@ -131,17 +131,16 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void all_SubmissionNull() {
-    List<MsAnalysis> msAnalyses = msAnalysisService.all((Submission) null);
+    List<MsAnalysis> msAnalyses = service.all((Submission) null);
 
     assertEquals(0, msAnalyses.size());
   }
 
   @Test
   public void insert() {
-    Tube tube = entityManager.find(Tube.class, 3L);
-    entityManager.detach(tube);
+    Tube tube = tubeRepository.findOne(3L);
     SubmissionSample sample = (SubmissionSample) tube.getSample();
-    entityManager.detach(sample);
+    detach(tube, sample);
     MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
@@ -157,15 +156,14 @@ public class MsAnalysisServiceTest {
     msAnalysis.setAcquisitions(acquisitions);
     when(msAnalysisActivityService.insert(any())).thenReturn(activity);
 
-    msAnalysisService.insert(msAnalysis);
+    service.insert(msAnalysis);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(msAnalysisActivityService).insert(eq(msAnalysis));
     verify(activityService).insert(activity);
     assertNotNull(msAnalysis.getId());
-    msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
-    entityManager.refresh(msAnalysis);
+    msAnalysis = repository.findOne(msAnalysis.getId());
     assertEquals(LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
     assertEquals(LDTD, msAnalysis.getSource());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -181,14 +179,14 @@ public class MsAnalysisServiceTest {
     assertEquals("unit_test_sample_list", acquisition.getSampleListName());
     assertEquals("XL_20100614_COU_09", acquisition.getAcquisitionFile());
     assertEquals("unit_test_comment", acquisition.getComment());
-    SubmissionSample sampleStatus = entityManager.find(SubmissionSample.class, sample.getId());
+    SubmissionSample sampleStatus = submissionSampleRepository.findOne(sample.getId());
     assertEquals(SampleStatus.ANALYSED, sampleStatus.getStatus());
   }
 
   @Test
   public void insert_SamplesFromMultipleUser() {
-    final SubmissionSample sample1 = entityManager.find(SubmissionSample.class, 443L);
-    final SubmissionSample sample2 = entityManager.find(SubmissionSample.class, 446L);
+    final SubmissionSample sample1 = submissionSampleRepository.findOne(443L);
+    final SubmissionSample sample2 = submissionSampleRepository.findOne(446L);
     final MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
@@ -216,7 +214,7 @@ public class MsAnalysisServiceTest {
     msAnalysis.setAcquisitions(acquisitions);
 
     try {
-      msAnalysisService.insert(msAnalysis);
+      service.insert(msAnalysis);
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -225,14 +223,11 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void insert_SamplesFromOneUserAndControl() {
-    Tube tube1 = entityManager.find(Tube.class, 3L);
-    entityManager.detach(tube1);
+    Tube tube1 = tubeRepository.findOne(3L);
     SubmissionSample sample1 = (SubmissionSample) tube1.getSample();
-    entityManager.detach(sample1);
-    Tube tube2 = entityManager.find(Tube.class, 4L);
-    entityManager.detach(tube2);
+    Tube tube2 = tubeRepository.findOne(4L);
     Control sample2 = (Control) tube2.getSample();
-    entityManager.detach(sample2);
+    detach(tube1, sample1, tube2, sample2);
     final MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
@@ -256,7 +251,7 @@ public class MsAnalysisServiceTest {
     msAnalysis.setAcquisitions(acquisitions);
 
     try {
-      msAnalysisService.insert(msAnalysis);
+      service.insert(msAnalysis);
     } catch (IllegalArgumentException e) {
       fail("IllegalArgumentException not expected");
     }
@@ -264,10 +259,9 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void insert_SubmissionAnalysisDate_NotUpdated() {
-    Tube tube = entityManager.find(Tube.class, 1L);
-    entityManager.detach(tube);
+    Tube tube = tubeRepository.findOne(1L);
     SubmissionSample sample = (SubmissionSample) tube.getSample();
-    entityManager.detach(sample);
+    detach(tube, sample);
     MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
@@ -283,19 +277,18 @@ public class MsAnalysisServiceTest {
     msAnalysis.setAcquisitions(acquisitions);
     when(msAnalysisActivityService.insert(any())).thenReturn(activity);
 
-    msAnalysisService.insert(msAnalysis);
+    service.insert(msAnalysis);
 
-    entityManager.flush();
-    Submission submission = entityManager.find(Submission.class, 1L);
+    repository.flush();
+    Submission submission = submissionRepository.findOne(1L);
     assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
   }
 
   @Test
   public void insert_SubmissionAnalysisDate_UpdatedNull() {
-    Tube tube = entityManager.find(Tube.class, 3L);
-    entityManager.detach(tube);
+    Tube tube = tubeRepository.findOne(3L);
     SubmissionSample sample = (SubmissionSample) tube.getSample();
-    entityManager.detach(sample);
+    detach(tube, sample);
     MsAnalysis msAnalysis = new MsAnalysis();
     msAnalysis.setMassDetectionInstrument(LTQ_ORBI_TRAP);
     msAnalysis.setSource(LDTD);
@@ -311,19 +304,19 @@ public class MsAnalysisServiceTest {
     msAnalysis.setAcquisitions(acquisitions);
     when(msAnalysisActivityService.insert(any())).thenReturn(activity);
 
-    msAnalysisService.insert(msAnalysis);
+    service.insert(msAnalysis);
 
-    entityManager.flush();
-    Submission submission = entityManager.find(Submission.class, 33L);
+    repository.flush();
+    Submission submission = submissionRepository.findOne(33L);
     assertTrue(LocalDate.now().minusDays(1).isBefore(submission.getAnalysisDate()));
     assertTrue(LocalDate.now().plusDays(1).isAfter(submission.getAnalysisDate()));
   }
 
   @Test
   public void update() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
-    entityManager.detach(msAnalysis);
-    msAnalysis.getAcquisitions().stream().forEach(ts -> entityManager.detach(ts));
+    MsAnalysis msAnalysis = repository.findOne(14L);
+    detach(msAnalysis);
+    msAnalysis.getAcquisitions().stream().forEach(ts -> detach(ts));
     msAnalysis.setMassDetectionInstrument(MassDetectionInstrument.ORBITRAP_FUSION);
     msAnalysis.setSource(MassDetectionInstrumentSource.ESI);
     msAnalysis.getAcquisitions().get(0).setSampleListName("new_sample_list");
@@ -342,13 +335,13 @@ public class MsAnalysisServiceTest {
     msAnalysis.getAcquisitions().add(acquisition);
     when(msAnalysisActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    msAnalysisService.update(msAnalysis, "test explanation");
+    service.update(msAnalysis, "test explanation");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(msAnalysisActivityService).update(eq(msAnalysis), eq("test explanation"));
     verify(activityService).insert(activity);
-    msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    msAnalysis = repository.findOne(14L);
     assertNotNull(msAnalysis);
     assertEquals(MassDetectionInstrument.ORBITRAP_FUSION, msAnalysis.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, msAnalysis.getSource());
@@ -372,46 +365,46 @@ public class MsAnalysisServiceTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void update_RemoveAcquisition() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
-    entityManager.detach(msAnalysis);
-    msAnalysis.getAcquisitions().stream().forEach(ts -> entityManager.detach(ts));
+    MsAnalysis msAnalysis = repository.findOne(14L);
+    detach(msAnalysis);
+    msAnalysis.getAcquisitions().stream().forEach(ts -> detach(ts));
     msAnalysis.getAcquisitions().remove(1);
 
-    msAnalysisService.update(msAnalysis, "test explanation");
+    service.update(msAnalysis, "test explanation");
   }
 
   @Test
   public void update_NoActivity() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
-    entityManager.detach(msAnalysis);
+    MsAnalysis msAnalysis = repository.findOne(14L);
+    detach(msAnalysis);
     when(msAnalysisActivityService.update(any(), any())).thenReturn(Optional.empty());
 
-    msAnalysisService.update(msAnalysis, "test explanation");
+    service.update(msAnalysis, "test explanation");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(msAnalysisActivityService).update(eq(msAnalysis), eq("test explanation"));
     verify(activityService, never()).insert(any());
-    msAnalysis = entityManager.find(MsAnalysis.class, 14L);
+    msAnalysis = repository.findOne(14L);
     assertNotNull(msAnalysis);
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
   }
 
   @Test
   public void undo_NoBan() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 12L);
-    entityManager.detach(msAnalysis);
+    MsAnalysis msAnalysis = repository.findOne(12L);
+    detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undo(msAnalysis, "fail unit test", false);
+    service.undo(msAnalysis, "fail unit test", false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(msAnalysisActivityService).undoFailed(eq(msAnalysis), eq("fail unit test"),
         sampleContainersCaptor.capture());
     verify(activityService).insert(activity);
-    msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+    msAnalysis = repository.findOne(msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
@@ -421,23 +414,23 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void undo_Ban() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 12L);
-    entityManager.detach(msAnalysis);
+    MsAnalysis msAnalysis = repository.findOne(12L);
+    detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undo(msAnalysis, "fail unit test", true);
+    service.undo(msAnalysis, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(msAnalysisActivityService).undoFailed(eq(msAnalysis), eq("fail unit test"),
         sampleContainersCaptor.capture());
     verify(activityService).insert(activity);
-    msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+    msAnalysis = repository.findOne(msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 2L);
+    Tube tube = tubeRepository.findOne(2L);
     assertEquals(true, tube.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(1, bannedContainers.size());
@@ -446,25 +439,25 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void undo_Ban_Transfer() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 22L);
-    entityManager.detach(msAnalysis);
+    MsAnalysis msAnalysis = repository.findOne(22L);
+    detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undo(msAnalysis, "fail unit test", true);
+    service.undo(msAnalysis, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(msAnalysisActivityService).undoFailed(eq(msAnalysis), eq("fail unit test"),
         sampleContainersCaptor.capture());
     verify(activityService).insert(activity);
-    msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+    msAnalysis = repository.findOne(msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 85L);
+    Tube tube = tubeRepository.findOne(85L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 1472L);
+    Well well = wellRepository.findOne(1472L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
@@ -474,27 +467,27 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void undo_Ban_Fractionation() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 23L);
-    entityManager.detach(msAnalysis);
+    MsAnalysis msAnalysis = repository.findOne(23L);
+    detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undo(msAnalysis, "fail unit test", true);
+    service.undo(msAnalysis, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(msAnalysisActivityService).undoFailed(eq(msAnalysis), eq("fail unit test"),
         sampleContainersCaptor.capture());
     verify(activityService).insert(activity);
-    msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+    msAnalysis = repository.findOne(msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 86L);
+    Tube tube = tubeRepository.findOne(86L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 1473L);
+    Well well = wellRepository.findOne(1473L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1485L);
+    well = wellRepository.findOne(1485L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(3, bannedContainers.size());
@@ -505,29 +498,29 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void undo_Ban_Transfer_Fractionation() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 24L);
-    entityManager.detach(msAnalysis);
+    MsAnalysis msAnalysis = repository.findOne(24L);
+    detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undo(msAnalysis, "fail unit test", true);
+    service.undo(msAnalysis, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(msAnalysisActivityService).undoFailed(eq(msAnalysis), eq("fail unit test"),
         sampleContainersCaptor.capture());
     verify(activityService).insert(activity);
-    msAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+    msAnalysis = repository.findOne(msAnalysis.getId());
     assertNotNull(msAnalysis);
     assertEquals(true, msAnalysis.isDeleted());
     assertEquals("fail unit test", msAnalysis.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 87L);
+    Tube tube = tubeRepository.findOne(87L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 1474L);
+    Well well = wellRepository.findOne(1474L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1568L);
+    well = wellRepository.findOne(1568L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1580L);
+    well = wellRepository.findOne(1580L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
@@ -539,30 +532,30 @@ public class MsAnalysisServiceTest {
 
   @Test
   public void undo_Ban_Fractionation_Transfer() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 25L);
-    entityManager.detach(msAnalysis);
+    MsAnalysis msAnalysis = repository.findOne(25L);
+    detach(msAnalysis);
     when(msAnalysisActivityService.undoFailed(any(MsAnalysis.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    msAnalysisService.undo(msAnalysis, "fail unit test", true);
+    service.undo(msAnalysis, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(msAnalysisActivityService).undoFailed(eq(msAnalysis), eq("fail unit test"),
         sampleContainersCaptor.capture());
     verify(activityService).insert(activity);
-    MsAnalysis test = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+    MsAnalysis test = repository.findOne(msAnalysis.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals("fail unit test", test.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 88L);
+    Tube tube = tubeRepository.findOne(88L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 1475L);
+    Well well = wellRepository.findOne(1475L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1487L);
+    well = wellRepository.findOne(1487L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1569L);
+    well = wellRepository.findOne(1569L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1581L);
+    well = wellRepository.findOne(1581L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = sampleContainersCaptor.getValue();
     assertEquals(5, bannedContainers.size());

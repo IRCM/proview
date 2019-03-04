@@ -26,10 +26,13 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -45,8 +48,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,8 +57,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MsAnalysisService extends BaseTreatmentService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private MsAnalysisRepository repository;
+  @Inject
+  private SubmissionRepository submissionRepository;
+  @Inject
+  private SubmissionSampleRepository sampleRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private JPAQueryFactory queryFactory;
   @Inject
@@ -68,17 +75,6 @@ public class MsAnalysisService extends BaseTreatmentService {
   private AuthorizationService authorizationService;
 
   protected MsAnalysisService() {
-  }
-
-  protected MsAnalysisService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      MsAnalysisActivityService msAnalysisActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
-    super(queryFactory);
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.msAnalysisActivityService = msAnalysisActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -93,7 +89,7 @@ public class MsAnalysisService extends BaseTreatmentService {
       return null;
     }
 
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, id);
+    MsAnalysis msAnalysis = repository.findOne(id);
     authorizationService.checkMsAnalysisReadPermission(msAnalysis);
     return msAnalysis;
   }
@@ -139,7 +135,7 @@ public class MsAnalysisService extends BaseTreatmentService {
     Instant insertTime = Instant.now();
     msAnalysis.setInsertTime(insertTime);
     setPositions(msAnalysis.getAcquisitions());
-    entityManager.persist(msAnalysis);
+    repository.save(msAnalysis);
 
     // Set status of submission samples to analysed.
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
@@ -149,19 +145,19 @@ public class MsAnalysisService extends BaseTreatmentService {
         Submission submission = submissionSample.getSubmission();
         if (submission.getAnalysisDate() == null) {
           submission.setAnalysisDate(toLocalDate(insertTime));
-          entityManager.merge(submission);
+          submissionRepository.save(submission);
         }
       }
     }
 
-    entityManager.flush();
+    repository.flush();
     // Log insertion of MS analysis.
     Activity activity = msAnalysisActivityService.insert(msAnalysis);
     activityService.insert(activity);
 
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
       if (acquisition.getSample() instanceof SubmissionSample) {
-        entityManager.merge(acquisition.getSample());
+        sampleRepository.save((SubmissionSample) acquisition.getSample());
       }
     }
     return msAnalysis;
@@ -219,7 +215,7 @@ public class MsAnalysisService extends BaseTreatmentService {
   public void update(MsAnalysis msAnalysis, String explanation) {
     authorizationService.checkAdminRole();
 
-    MsAnalysis old = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+    MsAnalysis old = repository.findOne(msAnalysis.getId());
     Set<Long> acquisitionsIds =
         msAnalysis.getAcquisitions().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
     if (old.getAcquisitions().stream().filter(ts -> !acquisitionsIds.contains(ts.getId())).findAny()
@@ -235,7 +231,7 @@ public class MsAnalysisService extends BaseTreatmentService {
       activityService.insert(activity.get());
     }
 
-    entityManager.merge(msAnalysis);
+    repository.save(msAnalysis);
   }
 
   /**
@@ -274,9 +270,9 @@ public class MsAnalysisService extends BaseTreatmentService {
         msAnalysisActivityService.undoFailed(msAnalysis, explanation, bannedContainers);
     activityService.insert(activity);
 
-    entityManager.merge(msAnalysis);
+    repository.save(msAnalysis);
     for (SampleContainer container : bannedContainers) {
-      entityManager.merge(container);
+      sampleContainerRepository.save(container);
     }
   }
 }

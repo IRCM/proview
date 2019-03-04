@@ -27,6 +27,8 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.QSubmission;
@@ -42,8 +44,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,18 +55,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class MsAnalysisActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private MsAnalysisRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected MsAnalysisActivityService() {
-  }
-
-  protected MsAnalysisActivityService(EntityManager entityManager,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -84,7 +82,7 @@ public class MsAnalysisActivityService {
     Set<Long> submissionIds = new HashSet<>();
     for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
       Sample newSample = acquisition.getSample();
-      Sample oldSample = entityManager.find(Sample.class, acquisition.getSample().getId());
+      Sample oldSample = sampleRepository.findOne(acquisition.getSample().getId());
       if (newSample instanceof SubmissionSample) {
         SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
         SubmissionSample oldSubmissionSample = (SubmissionSample) oldSample;
@@ -134,7 +132,7 @@ public class MsAnalysisActivityService {
   @CheckReturnValue
   public Optional<Activity> update(MsAnalysis msAnalysis, String explanation) {
     User user = authorizationService.getCurrentUser();
-    final MsAnalysis oldMsAnalysis = entityManager.find(MsAnalysis.class, msAnalysis.getId());
+    final MsAnalysis oldMsAnalysis = repository.findOne(msAnalysis.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     updateBuilders.add(msAnalysisUpdate(msAnalysis).column("massDetectionInstrument")
@@ -234,7 +232,7 @@ public class MsAnalysisActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     if (bannedContainers != null) {
       for (SampleContainer container : bannedContainers) {
-        SampleContainer oldContainer = entityManager.find(SampleContainer.class, container.getId());
+        SampleContainer oldContainer = sampleContainerRepository.findOne(container.getId());
         updateBuilders
             .add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldContainer));
       }

@@ -37,6 +37,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.tube.Tube;
@@ -48,32 +49,23 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.junit.Before;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class MsAnalysisActivityServiceTest {
+public class MsAnalysisActivityServiceTest extends AbstractServiceTestCase {
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
-  private MsAnalysisActivityService msAnalysisActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private MsAnalysisActivityService service;
+  @Inject
+  private MsAnalysisRepository repository;
+  @MockBean
   private AuthorizationService authorizationService;
-
-  /**
-   * Before test.
-   */
-  @Before
-  public void beforeTest() {
-    msAnalysisActivityService = new MsAnalysisActivityService(entityManager, authorizationService);
-  }
 
   @Test
   public void insert() {
@@ -100,7 +92,7 @@ public class MsAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity = msAnalysisActivityService.insert(msAnalysis);
+    Activity activity = service.insert(msAnalysis);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -131,9 +123,9 @@ public class MsAnalysisActivityServiceTest {
 
   @Test
   public void update() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 14L);
-    entityManager.detach(msAnalysis);
-    msAnalysis.getAcquisitions().forEach(ac -> entityManager.detach(ac));
+    MsAnalysis msAnalysis = repository.findOne(14L);
+    detach(msAnalysis);
+    msAnalysis.getAcquisitions().forEach(ac -> detach(ac));
     msAnalysis.setMassDetectionInstrument(MassDetectionInstrument.ORBITRAP_FUSION);
     msAnalysis.setSource(MassDetectionInstrumentSource.ESI);
     msAnalysis.getAcquisitions().get(0).setContainer(new Tube(8L));
@@ -149,8 +141,7 @@ public class MsAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Optional<Activity> optionalActivity =
-        msAnalysisActivityService.update(msAnalysis, "test explanation");
+    Optional<Activity> optionalActivity = service.update(msAnalysis, "test explanation");
 
     assertTrue(optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -226,11 +217,10 @@ public class MsAnalysisActivityServiceTest {
 
   @Test
   public void update_NoChanges() {
-    MsAnalysis msAnalysis = entityManager.find(MsAnalysis.class, 1L);
-    entityManager.detach(msAnalysis);
+    MsAnalysis msAnalysis = repository.findOne(1L);
+    detach(msAnalysis);
 
-    Optional<Activity> optionalActivity =
-        msAnalysisActivityService.update(msAnalysis, "test explanation");
+    Optional<Activity> optionalActivity = service.update(msAnalysis, "test explanation");
 
     assertFalse(optionalActivity.isPresent());
   }
@@ -241,7 +231,7 @@ public class MsAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity = msAnalysisActivityService.undoErroneous(msAnalysis, "unit_test");
+    Activity activity = service.undoErroneous(msAnalysis, "unit_test");
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.DELETE, activity.getActionType());
@@ -258,7 +248,7 @@ public class MsAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity = msAnalysisActivityService.undoFailed(msAnalysis, "unit_test", null);
+    Activity activity = service.undoFailed(msAnalysis, "unit_test", null);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.DELETE, activity.getActionType());
@@ -280,8 +270,7 @@ public class MsAnalysisActivityServiceTest {
     User user = new User(1L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    Activity activity =
-        msAnalysisActivityService.undoFailed(msAnalysis, "unit_test", bannedContainers);
+    Activity activity = service.undoFailed(msAnalysis, "unit_test", bannedContainers);
 
     verify(authorizationService, atLeastOnce()).getCurrentUser();
     assertEquals(ActionType.DELETE, activity.getActionType());
