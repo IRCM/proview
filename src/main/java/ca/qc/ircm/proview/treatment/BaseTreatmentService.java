@@ -17,18 +17,17 @@
 
 package ca.qc.ircm.proview.treatment;
 
-import static ca.qc.ircm.proview.fractionation.QFractionation.fractionation;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
-import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
-import static ca.qc.ircm.proview.transfer.QTransfer.transfer;
 import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
-import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 
+import ca.qc.ircm.proview.fractionation.Fractionation;
+import ca.qc.ircm.proview.msanalysis.AcquisitionRepository;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.google.common.collect.Lists;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
@@ -38,13 +37,17 @@ import javax.inject.Inject;
  */
 public abstract class BaseTreatmentService {
   @Inject
-  private JPAQueryFactory queryFactory;
+  private TreatedSampleRepository treatedSampleRepository;
+  @Inject
+  private AcquisitionRepository acquisitionRepository;
 
   protected BaseTreatmentService() {
   }
 
-  protected BaseTreatmentService(JPAQueryFactory queryFactory) {
-    this.queryFactory = queryFactory;
+  protected BaseTreatmentService(TreatedSampleRepository treatedSampleRepository,
+      AcquisitionRepository acquisitionRepository) {
+    this.treatedSampleRepository = treatedSampleRepository;
+    this.acquisitionRepository = acquisitionRepository;
   }
 
   protected void chechSameUserForAllSamples(Treatment treatment) throws IllegalArgumentException {
@@ -67,21 +70,15 @@ public abstract class BaseTreatmentService {
   }
 
   private boolean containerUsedByTreatment(SampleContainer source) {
-    JPAQuery<Long> query = queryFactory.select(treatment.id);
-    query.from(treatment, treatedSample);
-    query.where(treatedSample.in(treatment.treatedSamples));
-    query.where(treatedSample.container.eq(source));
-    query.where(treatment.deleted.eq(false));
-    return query.fetchCount() > 0;
+    BooleanExpression predicate =
+        treatedSample.container.eq(source).and(treatedSample.treatment.deleted.eq(false));
+    return treatedSampleRepository.count(predicate) > 0;
   }
 
   private boolean containerUsedByAnalysis(SampleContainer source) {
-    JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
-    query.from(msAnalysis, acquisition);
-    query.where(acquisition.in(msAnalysis.acquisitions));
-    query.where(acquisition.container.eq(source));
-    query.where(msAnalysis.deleted.eq(false));
-    return query.fetchCount() > 0;
+    BooleanExpression predicate =
+        acquisition.container.eq(source).and(acquisition.msAnalysis.deleted.eq(false));
+    return acquisitionRepository.count(predicate) > 0;
   }
 
   protected void banDestinations(SampleContainer source,
@@ -118,18 +115,14 @@ public abstract class BaseTreatmentService {
   }
 
   private List<TreatedSample> selectTransfersBySource(SampleContainer source) {
-    JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
-    query.from(transfer, treatedSample);
-    query.where(treatedSample.in(transfer.treatedSamples));
-    query.where(treatedSample.container.eq(source));
-    return query.fetch();
+    BooleanExpression predicate =
+        treatedSample.container.eq(source).and(treatedSample.treatment.instanceOf(Transfer.class));
+    return Lists.newArrayList(treatedSampleRepository.findAll(predicate));
   }
 
   private List<TreatedSample> selectFractionationsBySource(SampleContainer source) {
-    JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
-    query.from(fractionation, treatedSample);
-    query.where(treatedSample.in(fractionation.treatedSamples));
-    query.where(treatedSample.container.eq(source));
-    return query.fetch();
+    BooleanExpression predicate = treatedSample.container.eq(source)
+        .and(treatedSample.treatment.instanceOf(Fractionation.class));
+    return Lists.newArrayList(treatedSampleRepository.findAll(predicate));
   }
 }
