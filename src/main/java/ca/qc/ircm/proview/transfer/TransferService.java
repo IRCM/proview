@@ -23,20 +23,18 @@ import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -50,8 +48,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class TransferService extends BaseTreatmentService {
   @SuppressWarnings("unused")
   private static final Logger loggger = LoggerFactory.getLogger(TransferService.class);
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private TransferRepository repository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private TransferActivityService transferActivityService;
   @Inject
@@ -62,17 +62,6 @@ public class TransferService extends BaseTreatmentService {
   private AuthorizationService authorizationService;
 
   protected TransferService() {
-  }
-
-  protected TransferService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      TransferActivityService transferActivityService, ActivityService activityService,
-      PlateService plateService, AuthorizationService authorizationService) {
-    super(queryFactory);
-    this.entityManager = entityManager;
-    this.transferActivityService = transferActivityService;
-    this.activityService = activityService;
-    this.plateService = plateService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -88,7 +77,7 @@ public class TransferService extends BaseTreatmentService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Transfer.class, id);
+    return repository.findOne(id);
   }
 
   /**
@@ -113,7 +102,7 @@ public class TransferService extends BaseTreatmentService {
     // Insert destination tubes.
     for (TreatedSample treatedSample : transfer.getTreatedSamples()) {
       if (treatedSample.getDestinationContainer() instanceof Tube) {
-        entityManager.persist(treatedSample.getDestinationContainer());
+        sampleContainerRepository.save(treatedSample.getDestinationContainer());
       }
     }
     // Insert destination plates.
@@ -129,17 +118,16 @@ public class TransferService extends BaseTreatmentService {
       }
     }
     for (TreatedSample treatedSample : transfer.getTreatedSamples()) {
-      entityManager.merge(treatedSample.getDestinationContainer());
+      sampleContainerRepository.save(treatedSample.getDestinationContainer());
     }
 
     // Insert transfer.
     transfer.setInsertTime(now);
     transfer.setUser(user);
 
-    entityManager.persist(transfer);
+    repository.saveAndFlush(transfer);
 
     // Log insertion of transfer.
-    entityManager.flush();
     Activity activity = transferActivityService.insert(transfer);
     activityService.insert(activity);
   }
@@ -209,9 +197,9 @@ public class TransferService extends BaseTreatmentService {
         transferActivityService.undo(transfer, failedDescription, samplesRemoved, bannedContainers);
     activityService.insert(activity);
 
-    entityManager.merge(transfer);
+    repository.save(transfer);
     for (SampleContainer container : bannedContainers) {
-      entityManager.merge(container);
+      sampleContainerRepository.save(container);
     }
   }
 }

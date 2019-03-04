@@ -37,21 +37,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class TransferActivityServiceTest {
-  private TransferActivityService transferActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private TransferActivityService service;
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -60,7 +58,6 @@ public class TransferActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    transferActivityService = new TransferActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -83,7 +80,7 @@ public class TransferActivityServiceTest {
     transfer.setId(123456L);
     transfer.setTreatedSamples(treatedSamples);
 
-    Activity activity = transferActivityService.insert(transfer);
+    Activity activity = service.insert(transfer);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -115,7 +112,7 @@ public class TransferActivityServiceTest {
     transfer.setId(123456L);
     transfer.setTreatedSamples(treatedSamples);
 
-    Activity activity = transferActivityService.insert(transfer);
+    Activity activity = service.insert(transfer);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -141,7 +138,7 @@ public class TransferActivityServiceTest {
     Collection<SampleContainer> samplesRemoved = new ArrayList<>();
     samplesRemoved.add(destinationTube);
 
-    Activity activity = transferActivityService.undo(transfer, "unit_test", samplesRemoved, null);
+    Activity activity = service.undo(transfer, "unit_test", samplesRemoved, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -164,7 +161,7 @@ public class TransferActivityServiceTest {
     Collection<SampleContainer> samplesRemoved = new ArrayList<>();
     samplesRemoved.add(destinationWell);
 
-    Activity activity = transferActivityService.undo(transfer, "unit_test", samplesRemoved, null);
+    Activity activity = service.undo(transfer, "unit_test", samplesRemoved, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -187,7 +184,7 @@ public class TransferActivityServiceTest {
   public void undo_NoBan_Tube() {
     Transfer transfer = new Transfer(3L);
 
-    Activity activity = transferActivityService.undo(transfer, "unit_test", null, null);
+    Activity activity = service.undo(transfer, "unit_test", null, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -201,7 +198,7 @@ public class TransferActivityServiceTest {
   public void undo_NoBan_Well() {
     Transfer transfer = new Transfer(9L);
 
-    Activity activity = transferActivityService.undo(transfer, "unit_test", null, null);
+    Activity activity = service.undo(transfer, "unit_test", null, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -218,7 +215,7 @@ public class TransferActivityServiceTest {
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationTube);
 
-    Activity activity = transferActivityService.undo(transfer, "unit_test", null, bannedContainers);
+    Activity activity = service.undo(transfer, "unit_test", null, bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -244,7 +241,7 @@ public class TransferActivityServiceTest {
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationWell);
 
-    Activity activity = transferActivityService.undo(transfer, "unit_test", null, bannedContainers);
+    Activity activity = service.undo(transfer, "unit_test", null, bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());

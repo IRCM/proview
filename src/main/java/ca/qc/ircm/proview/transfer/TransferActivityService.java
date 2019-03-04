@@ -25,6 +25,7 @@ import ca.qc.ircm.proview.history.RemoveSampleFromSampleContainerUpdateActivityB
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
@@ -33,8 +34,6 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,18 +44,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class TransferActivityService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected TransferActivityService() {
-  }
-
-  protected TransferActivityService(EntityManager entityManager,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -117,7 +110,7 @@ public class TransferActivityService {
     // Log update for removed samples.
     if (samplesRemoved != null) {
       for (SampleContainer container : samplesRemoved) {
-        SampleContainer oldContainer = entityManager.find(SampleContainer.class, container.getId());
+        SampleContainer oldContainer = sampleContainerRepository.findOne(container.getId());
         updateBuilders.add(
             new RemoveSampleFromSampleContainerUpdateActivityBuilder().oldContainer(oldContainer));
       }
@@ -126,7 +119,7 @@ public class TransferActivityService {
     // Log update for banned containers.
     if (bannedContainers != null) {
       for (SampleContainer container : bannedContainers) {
-        SampleContainer oldContainer = entityManager.find(SampleContainer.class, container.getId());
+        SampleContainer oldContainer = sampleContainerRepository.findOne(container.getId());
         updateBuilders
             .add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldContainer));
       }

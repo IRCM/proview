@@ -34,19 +34,22 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.PlateService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.WellRepository;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -54,31 +57,35 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class TransferServiceTest {
-  private TransferService transferService;
-  @PersistenceContext
-  private EntityManager entityManager;
+public class TransferServiceTest extends AbstractServiceTestCase {
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private TransferService transferService;
+  @Inject
+  private TransferRepository repository;
+  @Inject
+  private PlateRepository plateRepository;
+  @Inject
+  private WellRepository wellRepository;
+  @Inject
+  private TubeRepository tubeRepository;
+  @MockBean
   private TransferActivityService transferActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private PlateService plateService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -91,8 +98,6 @@ public class TransferServiceTest {
    */
   @Before
   public void beforeTest() {
-    transferService = new TransferService(entityManager, queryFactory, transferActivityService,
-        activityService, plateService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -147,7 +152,7 @@ public class TransferServiceTest {
 
     transferService.insert(transfer);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
@@ -178,8 +183,8 @@ public class TransferServiceTest {
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Tube sourceTube = new Tube(1L);
-    Well destinationWell = entityManager.find(Well.class, 134L);
-    entityManager.detach(destinationWell);
+    Well destinationWell = wellRepository.findOne(134L);
+    detach(destinationWell);
     TreatedSample treatedSample = new TreatedSample();
     treatedSample.setSample(sample);
     treatedSample.setContainer(sourceTube);
@@ -191,7 +196,7 @@ public class TransferServiceTest {
 
     transferService.insert(transfer);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
@@ -207,7 +212,7 @@ public class TransferServiceTest {
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, treatedSample.getDestinationContainer().getType());
     assertEquals((Long) 134L, treatedSample.getDestinationContainer().getId());
-    destinationWell = entityManager.find(Well.class, 134L);
+    destinationWell = wellRepository.findOne(134L);
     assertEquals(sample.getId(), destinationWell.getSample().getId());
     assertEquals(2, destinationWell.getVersion());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -237,14 +242,14 @@ public class TransferServiceTest {
       plate.setInsertTime(Instant.now());
       plate.initWells();
       plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
-      entityManager.persist(plate);
-      entityManager.flush();
+      plateRepository.save(plate);
+      repository.flush();
       return null;
     }).when(plateService).insert(any());
 
     transferService.insert(transfer);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
@@ -261,8 +266,7 @@ public class TransferServiceTest {
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, treatedSample.getDestinationContainer().getType());
     assertNotNull(treatedSample.getDestinationContainer().getId());
-    destinationWell =
-        entityManager.find(Well.class, treatedSample.getDestinationContainer().getId());
+    destinationWell = wellRepository.findOne(treatedSample.getDestinationContainer().getId());
     assertEquals(sample.getId(), destinationWell.getSample().getId());
     assertTrue(destinationWell.getVersion() >= 1);
     assertNotNull(destinationWell.getPlate().getId());
@@ -292,7 +296,7 @@ public class TransferServiceTest {
 
     transferService.insert(transfer);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
@@ -307,8 +311,7 @@ public class TransferServiceTest {
     assertEquals(SampleContainerType.WELL, treatedSample.getContainer().getType());
     assertEquals((Long) 128L, treatedSample.getContainer().getId());
     assertEquals(SampleContainerType.TUBE, treatedSample.getDestinationContainer().getType());
-    destinationTube =
-        entityManager.find(Tube.class, treatedSample.getDestinationContainer().getId());
+    destinationTube = tubeRepository.findOne(treatedSample.getDestinationContainer().getId());
     assertEquals(sample.getId(), destinationTube.getSample().getId());
     assertEquals(1, destinationTube.getVersion());
     assertNotNull(destinationTube.getId());
@@ -324,8 +327,8 @@ public class TransferServiceTest {
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     Well sourceWell = new Well(128L);
-    Well destinationWell = entityManager.find(Well.class, 134L);
-    entityManager.detach(destinationWell);
+    Well destinationWell = wellRepository.findOne(134L);
+    detach(destinationWell);
     TreatedSample treatedSample = new TreatedSample();
     treatedSample.setSample(sample);
     treatedSample.setContainer(sourceWell);
@@ -337,7 +340,7 @@ public class TransferServiceTest {
 
     transferService.insert(transfer);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
@@ -353,7 +356,7 @@ public class TransferServiceTest {
     assertEquals((Long) 128L, treatedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, treatedSample.getDestinationContainer().getType());
     assertEquals((Long) 134L, treatedSample.getDestinationContainer().getId());
-    destinationWell = entityManager.find(Well.class, 134L);
+    destinationWell = wellRepository.findOne(134L);
     assertEquals(sample.getId(), destinationWell.getSample().getId());
     assertEquals(2, destinationWell.getVersion());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -383,14 +386,14 @@ public class TransferServiceTest {
       plate.setInsertTime(Instant.now());
       plate.initWells();
       plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
-      entityManager.persist(plate);
-      entityManager.flush();
+      plateRepository.save(plate);
+      repository.flush();
       return null;
     }).when(plateService).insert(any());
 
     transferService.insert(transfer);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).insert(eq(transfer));
     verify(activityService).insert(eq(activity));
@@ -407,8 +410,7 @@ public class TransferServiceTest {
     assertEquals((Long) 128L, treatedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, treatedSample.getDestinationContainer().getType());
     assertNotNull(treatedSample.getDestinationContainer().getId());
-    destinationWell =
-        entityManager.find(Well.class, treatedSample.getDestinationContainer().getId());
+    destinationWell = wellRepository.findOne(treatedSample.getDestinationContainer().getId());
     assertEquals(sample.getId(), destinationWell.getSample().getId());
     assertTrue(destinationWell.getVersion() >= 1);
     destinationWell = (Well) treatedSample.getDestinationContainer();
@@ -424,8 +426,8 @@ public class TransferServiceTest {
   @Test
   public void insert_SamplesFromMultipleUser() {
     final List<TreatedSample> treatedSamples = new ArrayList<>();
-    final Tube tube1 = entityManager.find(Tube.class, 3L);
-    final Tube tube2 = entityManager.find(Tube.class, 8L);
+    final Tube tube1 = tubeRepository.findOne(3L);
+    final Tube tube2 = tubeRepository.findOne(8L);
     Tube destinationTube1 = new Tube();
     destinationTube1.setName("unit_test_tube_" + tube1.getSample().getName());
     TreatedSample treatedSample1 = new TreatedSample();
@@ -455,8 +457,8 @@ public class TransferServiceTest {
   @Test
   public void insert_SamplesFromOneUserAndControl() {
     final List<TreatedSample> treatedSamples = new ArrayList<>();
-    final Tube tube1 = entityManager.find(Tube.class, 3L);
-    final Tube tube2 = entityManager.find(Tube.class, 4L);
+    final Tube tube1 = tubeRepository.findOne(3L);
+    final Tube tube2 = tubeRepository.findOne(4L);
     Tube destinationTube1 = new Tube();
     destinationTube1.setName("unit_test_tube_" + tube1.getSample().getName());
     TreatedSample treatedSample1 = new TreatedSample();
@@ -484,15 +486,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_RemoveSamplesTubeDestination() throws Throwable {
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(3L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "undo unit test", true, false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("undo unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -501,9 +503,9 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("undo unit test", transfer.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 1L);
+    Tube sourceTube = tubeRepository.findOne(1L);
     assertEquals((Long) 1L, sourceTube.getSample().getId());
-    Tube destinationTube = entityManager.find(Tube.class, 7L);
+    Tube destinationTube = tubeRepository.findOne(7L);
     assertNull(destinationTube.getSample());
     assertEquals(2, destinationTube.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -515,15 +517,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_RemoveSamplesWellDestination() throws Throwable {
-    Transfer transfer = entityManager.find(Transfer.class, 253L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(253L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "undo unit test", true, false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("undo unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -532,13 +534,13 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("undo unit test", transfer.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 53L);
+    Tube sourceTube = tubeRepository.findOne(53L);
     assertEquals((Long) 601L, sourceTube.getSample().getId());
-    sourceTube = entityManager.find(Tube.class, 54L);
+    sourceTube = tubeRepository.findOne(54L);
     assertEquals((Long) 602L, sourceTube.getSample().getId());
-    Well destinationWell = entityManager.find(Well.class, 998L);
+    Well destinationWell = wellRepository.findOne(998L);
     assertNull(destinationWell.getSample());
-    destinationWell = entityManager.find(Well.class, 1010L);
+    destinationWell = wellRepository.findOne(1010L);
     assertNull(destinationWell.getSample());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -551,8 +553,8 @@ public class TransferServiceTest {
 
   @Test
   public void undo_RemoveSamplesUsedContainer_TubeDestination_Dilution() throws Throwable {
-    Transfer transfer = entityManager.find(Transfer.class, 259L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(259L);
+    detach(transfer);
 
     try {
       transferService.undo(transfer, "undo unit test", true, false);
@@ -565,8 +567,8 @@ public class TransferServiceTest {
 
   @Test
   public void undo_RemoveSamplesUsedContainer_TubeDestination_MsAnalysis() throws Throwable {
-    Transfer transfer = entityManager.find(Transfer.class, 260L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(260L);
+    detach(transfer);
 
     try {
       transferService.undo(transfer, "undo unit test", true, false);
@@ -579,8 +581,8 @@ public class TransferServiceTest {
 
   @Test
   public void undo_RemoveSamplesUsedContainer_WellDestination_Enrichment() throws Throwable {
-    Transfer transfer = entityManager.find(Transfer.class, 261L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(261L);
+    detach(transfer);
 
     try {
       transferService.undo(transfer, "undo unit test", true, false);
@@ -593,8 +595,8 @@ public class TransferServiceTest {
 
   @Test
   public void undo_RemoveSamplesUsedContainer_WellDestination_MsAnalysis() throws Throwable {
-    Transfer transfer = entityManager.find(Transfer.class, 262L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(262L);
+    detach(transfer);
 
     try {
       transferService.undo(transfer, "undo unit test", true, false);
@@ -607,15 +609,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_NoBan_TubeDestination() {
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(3L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -624,7 +626,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Tube destinationTube = entityManager.find(Tube.class, 7L);
+    Tube destinationTube = tubeRepository.findOne(7L);
     assertEquals(false, destinationTube.isBanned());
     assertEquals(1, destinationTube.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -635,15 +637,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_NoBan_WellDestination() {
-    Transfer transfer = entityManager.find(Transfer.class, 253L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(253L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -652,10 +654,10 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Well destinationWell = entityManager.find(Well.class, 998L);
+    Well destinationWell = wellRepository.findOne(998L);
     assertEquals(false, destinationWell.isBanned());
     assertEquals(2, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1010L);
+    destinationWell = wellRepository.findOne(1010L);
     assertEquals(false, destinationWell.isBanned());
     assertEquals(2, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -666,15 +668,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_TubeDestination() {
-    Transfer transfer = entityManager.find(Transfer.class, 3L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(3L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -683,7 +685,7 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Tube destinationTube = entityManager.find(Tube.class, 7L);
+    Tube destinationTube = tubeRepository.findOne(7L);
     assertEquals(true, destinationTube.isBanned());
     assertEquals(2, destinationTube.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -695,15 +697,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_WellDestination() {
-    Transfer transfer = entityManager.find(Transfer.class, 253L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(253L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -712,10 +714,10 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Well destinationWell = entityManager.find(Well.class, 998L);
+    Well destinationWell = wellRepository.findOne(998L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1010L);
+    destinationWell = wellRepository.findOne(1010L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -728,15 +730,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_TubeDestination_Transfer() {
-    Transfer transfer = entityManager.find(Transfer.class, 265L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(265L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -745,12 +747,12 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 67L);
+    Tube sourceTube = tubeRepository.findOne(67L);
     assertEquals(false, sourceTube.isBanned());
-    Tube destinationTube = entityManager.find(Tube.class, 75L);
+    Tube destinationTube = tubeRepository.findOne(75L);
     assertEquals(true, destinationTube.isBanned());
     assertEquals(2, destinationTube.getVersion());
-    Well destinationWell = entityManager.find(Well.class, 1208L);
+    Well destinationWell = wellRepository.findOne(1208L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -764,15 +766,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_WellDestination_Transfer() {
-    Transfer transfer = entityManager.find(Transfer.class, 269L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(269L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -781,12 +783,12 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 68L);
+    Tube sourceTube = tubeRepository.findOne(68L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationWell = entityManager.find(Well.class, 1184L);
+    Well destinationWell = wellRepository.findOne(1184L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1160L);
+    destinationWell = wellRepository.findOne(1160L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -800,15 +802,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_TubeDestination_Fractionation() {
-    Transfer transfer = entityManager.find(Transfer.class, 266L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(266L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -817,15 +819,15 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 69L);
+    Tube sourceTube = tubeRepository.findOne(69L);
     assertEquals(false, sourceTube.isBanned());
-    Tube destinationTube = entityManager.find(Tube.class, 76L);
+    Tube destinationTube = tubeRepository.findOne(76L);
     assertEquals(true, destinationTube.isBanned());
     assertEquals(2, destinationTube.getVersion());
-    Well destinationWell = entityManager.find(Well.class, 1188L);
+    Well destinationWell = wellRepository.findOne(1188L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1200L);
+    destinationWell = wellRepository.findOne(1200L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -840,15 +842,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_WellDestination_Fractionation() {
-    Transfer transfer = entityManager.find(Transfer.class, 270L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(270L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -857,15 +859,15 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 70L);
+    Tube sourceTube = tubeRepository.findOne(70L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationWell = entityManager.find(Well.class, 1185L);
+    Well destinationWell = wellRepository.findOne(1185L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1161L);
+    destinationWell = wellRepository.findOne(1161L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1173L);
+    destinationWell = wellRepository.findOne(1173L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -880,15 +882,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_TubeDestination_Transfer_Fractionation() {
-    Transfer transfer = entityManager.find(Transfer.class, 267L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(267L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -897,18 +899,18 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 71L);
+    Tube sourceTube = tubeRepository.findOne(71L);
     assertEquals(false, sourceTube.isBanned());
-    Tube destinationTube = entityManager.find(Tube.class, 77L);
+    Tube destinationTube = tubeRepository.findOne(77L);
     assertEquals(true, destinationTube.isBanned());
     assertEquals(2, destinationTube.getVersion());
-    Well destinationWell = entityManager.find(Well.class, 1189L);
+    Well destinationWell = wellRepository.findOne(1189L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1163L);
+    destinationWell = wellRepository.findOne(1163L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1175L);
+    destinationWell = wellRepository.findOne(1175L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -924,15 +926,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_WellDestination_Transfer_Fractionation() {
-    Transfer transfer = entityManager.find(Transfer.class, 271L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(271L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -941,18 +943,18 @@ public class TransferServiceTest {
     assertNotNull(transfer);
     assertEquals(true, transfer.isDeleted());
     assertEquals("fail unit test", transfer.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 72L);
+    Tube sourceTube = tubeRepository.findOne(72L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationWell = entityManager.find(Well.class, 1186L);
+    Well destinationWell = wellRepository.findOne(1186L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1162L);
+    destinationWell = wellRepository.findOne(1162L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1190L);
+    destinationWell = wellRepository.findOne(1190L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1202L);
+    destinationWell = wellRepository.findOne(1202L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -968,15 +970,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_TubeDestination_Fractionation_Transfer() {
-    Transfer transfer = entityManager.find(Transfer.class, 268L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(268L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
@@ -985,21 +987,21 @@ public class TransferServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals("fail unit test", test.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 73L);
+    Tube sourceTube = tubeRepository.findOne(73L);
     assertEquals(false, sourceTube.isBanned());
-    Tube destinationTube = entityManager.find(Tube.class, 78L);
+    Tube destinationTube = tubeRepository.findOne(78L);
     assertEquals(true, destinationTube.isBanned());
     assertEquals(2, destinationTube.getVersion());
-    Well destinationWell = entityManager.find(Well.class, 1191L);
+    Well destinationWell = wellRepository.findOne(1191L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1203L);
+    destinationWell = wellRepository.findOne(1203L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1165L);
+    destinationWell = wellRepository.findOne(1165L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1177L);
+    destinationWell = wellRepository.findOne(1177L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -1016,15 +1018,15 @@ public class TransferServiceTest {
 
   @Test
   public void undo_Ban_WellDestination_Fractionation_Transfer() {
-    Transfer transfer = entityManager.find(Transfer.class, 272L);
-    entityManager.detach(transfer);
+    Transfer transfer = repository.findOne(272L);
+    detach(transfer);
     when(transferActivityService.undo(any(Transfer.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     transferService.undo(transfer, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(transferActivityService).undo(eq(transfer), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
@@ -1032,18 +1034,18 @@ public class TransferServiceTest {
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals("fail unit test", test.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 74L);
+    Tube sourceTube = tubeRepository.findOne(74L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationWell = entityManager.find(Well.class, 1164L);
+    Well destinationWell = wellRepository.findOne(1164L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1176L);
+    destinationWell = wellRepository.findOne(1176L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1192L);
+    destinationWell = wellRepository.findOne(1192L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1204L);
+    destinationWell = wellRepository.findOne(1204L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
