@@ -32,18 +32,20 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.WellRepository;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -52,29 +54,31 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class StandardAdditionServiceTest {
-  private StandardAdditionService standardAdditionService;
-  @PersistenceContext
-  private EntityManager entityManager;
+public class StandardAdditionServiceTest extends AbstractServiceTestCase {
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private StandardAdditionService service;
+  @Inject
+  private StandardAdditionRepository repository;
+  @Inject
+  private TubeRepository tubeRepository;
+  @Inject
+  private WellRepository wellRepository;
+  @MockBean
   private StandardAdditionActivityService standardAdditionActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -87,15 +91,13 @@ public class StandardAdditionServiceTest {
    */
   @Before
   public void beforeTest() {
-    standardAdditionService = new StandardAdditionService(entityManager, queryFactory,
-        standardAdditionActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
   @Test
   public void get() {
-    StandardAddition standardAddition = standardAdditionService.get(5L);
+    StandardAddition standardAddition = service.get(5L);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(standardAddition);
@@ -121,7 +123,7 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void get_Null() {
-    StandardAddition standardAddition = standardAdditionService.get(null);
+    StandardAddition standardAddition = service.get(null);
 
     assertNull(standardAddition);
   }
@@ -142,13 +144,13 @@ public class StandardAdditionServiceTest {
     standardAddition.setTreatedSamples(treatedSamples);
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
-    standardAdditionService.insert(standardAddition);
+    service.insert(standardAddition);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).insert(eq(standardAddition));
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionService.get(standardAddition.getId());
+    standardAddition = service.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionExplanation());
@@ -183,13 +185,13 @@ public class StandardAdditionServiceTest {
     standardAddition.setTreatedSamples(treatedSamples);
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
-    standardAdditionService.insert(standardAddition);
+    service.insert(standardAddition);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).insert(eq(standardAddition));
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionService.get(standardAddition.getId());
+    standardAddition = service.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionExplanation());
@@ -211,8 +213,8 @@ public class StandardAdditionServiceTest {
   @Test
   public void insert_SamplesFromMultipleUser() {
     final List<TreatedSample> treatedSamples = new ArrayList<>();
-    final Tube tube1 = entityManager.find(Tube.class, 3L);
-    final Tube tube2 = entityManager.find(Tube.class, 8L);
+    final Tube tube1 = tubeRepository.findOne(3L);
+    final Tube tube2 = tubeRepository.findOne(8L);
     TreatedSample treatedSample1 = new TreatedSample();
     treatedSample1.setComment("unit test");
     treatedSample1.setSample(tube1.getSample());
@@ -232,7 +234,7 @@ public class StandardAdditionServiceTest {
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
     try {
-      standardAdditionService.insert(standardAddition);
+      service.insert(standardAddition);
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -242,8 +244,8 @@ public class StandardAdditionServiceTest {
   @Test
   public void insert_SamplesFromOneUserAndControl() {
     final List<TreatedSample> treatedSamples = new ArrayList<>();
-    final Tube tube1 = entityManager.find(Tube.class, 3L);
-    final Tube tube2 = entityManager.find(Tube.class, 4L);
+    final Tube tube1 = tubeRepository.findOne(3L);
+    final Tube tube2 = tubeRepository.findOne(4L);
     TreatedSample treatedSample1 = new TreatedSample();
     treatedSample1.setComment("unit test");
     treatedSample1.setSample(tube1.getSample());
@@ -263,7 +265,7 @@ public class StandardAdditionServiceTest {
     when(standardAdditionActivityService.insert(any(StandardAddition.class))).thenReturn(activity);
 
     try {
-      standardAdditionService.insert(standardAddition);
+      service.insert(standardAddition);
     } catch (IllegalArgumentException e) {
       fail("IllegalArgumentException not expected");
     }
@@ -271,9 +273,9 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void update() {
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 248L);
-    entityManager.detach(standardAddition);
-    standardAddition.getTreatedSamples().stream().forEach(ts -> entityManager.detach(ts));
+    StandardAddition standardAddition = repository.findOne(248L);
+    detach(standardAddition);
+    standardAddition.getTreatedSamples().stream().forEach(ts -> detach(ts));
     standardAddition.getTreatedSamples().get(0).setName("std1");
     standardAddition.getTreatedSamples().get(0).setQuantity("10 μg");
     standardAddition.getTreatedSamples().get(0).setComment("test update");
@@ -281,13 +283,13 @@ public class StandardAdditionServiceTest {
     standardAddition.getTreatedSamples().get(0).setSample(new Control(444L));
     when(standardAdditionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    standardAdditionService.update(standardAddition, "test explanation");
+    service.update(standardAddition, "test explanation");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).update(eq(standardAddition), eq("test explanation"));
     verify(activityService).insert(activity);
-    standardAddition = entityManager.find(StandardAddition.class, 248L);
+    standardAddition = repository.findOne(248L);
     assertNotNull(standardAddition);
     assertEquals((Long) 248L, standardAddition.getTreatedSamples().get(0).getContainer().getId());
     assertEquals((Long) 444L, standardAddition.getTreatedSamples().get(0).getSample().getId());
@@ -298,30 +300,30 @@ public class StandardAdditionServiceTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void update_RemoveTreatedSample() {
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 248L);
-    entityManager.detach(standardAddition);
-    standardAddition.getTreatedSamples().stream().forEach(ts -> entityManager.detach(ts));
+    StandardAddition standardAddition = repository.findOne(248L);
+    detach(standardAddition);
+    standardAddition.getTreatedSamples().stream().forEach(ts -> detach(ts));
     standardAddition.getTreatedSamples().remove(1);
     when(standardAdditionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    standardAdditionService.update(standardAddition, "test explanation");
+    service.update(standardAddition, "test explanation");
   }
 
   @Test
   public void undo_NoBan() {
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 5L);
-    entityManager.detach(standardAddition);
+    StandardAddition standardAddition = repository.findOne(5L);
+    detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undo(standardAddition, "fail unit test", false);
+    service.undo(standardAddition, "fail unit test", false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionService.get(standardAddition.getId());
+    standardAddition = service.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
@@ -331,25 +333,25 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void undo_Ban() {
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 248L);
-    entityManager.detach(standardAddition);
+    StandardAddition standardAddition = repository.findOne(248L);
+    detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undo(standardAddition, "fail unit test", true);
+    service.undo(standardAddition, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionService.get(standardAddition.getId());
+    standardAddition = service.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
-    Well well = entityManager.find(Well.class, 997L);
+    Well well = wellRepository.findOne(997L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1009L);
+    well = wellRepository.findOne(1009L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
@@ -359,29 +361,29 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void undo_Ban_Transfer() {
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 249L);
-    entityManager.detach(standardAddition);
+    StandardAddition standardAddition = repository.findOne(249L);
+    detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undo(standardAddition, "fail unit test", true);
+    service.undo(standardAddition, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionService.get(standardAddition.getId());
+    standardAddition = service.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 53L);
+    Tube tube = tubeRepository.findOne(53L);
     assertEquals(true, tube.isBanned());
-    tube = entityManager.find(Tube.class, 54L);
+    tube = tubeRepository.findOne(54L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 998L);
+    Well well = wellRepository.findOne(998L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1010L);
+    well = wellRepository.findOne(1010L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
@@ -393,33 +395,33 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void undo_Ban_Fractionation() {
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 250L);
-    entityManager.detach(standardAddition);
+    StandardAddition standardAddition = repository.findOne(250L);
+    detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undo(standardAddition, "fail unit test", true);
+    service.undo(standardAddition, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    StandardAddition test = standardAdditionService.get(standardAddition.getId());
+    StandardAddition test = service.get(standardAddition.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals("fail unit test", test.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 55L);
+    Tube tube = tubeRepository.findOne(55L);
     assertEquals(true, tube.isBanned());
-    tube = entityManager.find(Tube.class, 56L);
+    tube = tubeRepository.findOne(56L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 999L);
+    Well well = wellRepository.findOne(999L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1011L);
+    well = wellRepository.findOne(1011L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1023L);
+    well = wellRepository.findOne(1023L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1035L);
+    well = wellRepository.findOne(1035L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
@@ -433,37 +435,37 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void undo_Ban_Transfer_Fractionation() {
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 251L);
-    entityManager.detach(standardAddition);
+    StandardAddition standardAddition = repository.findOne(251L);
+    detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undo(standardAddition, "fail unit test", true);
+    service.undo(standardAddition, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionService.get(standardAddition.getId());
+    standardAddition = service.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 57L);
+    Tube tube = tubeRepository.findOne(57L);
     assertEquals(true, tube.isBanned());
-    tube = entityManager.find(Tube.class, 58L);
+    tube = tubeRepository.findOne(58L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 1000L);
+    Well well = wellRepository.findOne(1000L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1012L);
+    well = wellRepository.findOne(1012L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1090L);
+    well = wellRepository.findOne(1090L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1102L);
+    well = wellRepository.findOne(1102L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1114L);
+    well = wellRepository.findOne(1114L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1126L);
+    well = wellRepository.findOne(1126L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
@@ -479,41 +481,41 @@ public class StandardAdditionServiceTest {
 
   @Test
   public void undo_Ban_Fractionation_Transfer() {
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 252L);
-    entityManager.detach(standardAddition);
+    StandardAddition standardAddition = repository.findOne(252L);
+    detach(standardAddition);
     when(standardAdditionActivityService.undoFailed(any(StandardAddition.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    standardAdditionService.undo(standardAddition, "fail unit test", true);
+    service.undo(standardAddition, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(standardAdditionActivityService).undoFailed(eq(standardAddition), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    standardAddition = standardAdditionService.get(standardAddition.getId());
+    standardAddition = service.get(standardAddition.getId());
     assertNotNull(standardAddition);
     assertEquals(true, standardAddition.isDeleted());
     assertEquals("fail unit test", standardAddition.getDeletionExplanation());
-    Tube tube = entityManager.find(Tube.class, 60L);
+    Tube tube = tubeRepository.findOne(60L);
     assertEquals(true, tube.isBanned());
-    tube = entityManager.find(Tube.class, 59L);
+    tube = tubeRepository.findOne(59L);
     assertEquals(true, tube.isBanned());
-    Well well = entityManager.find(Well.class, 1001L);
+    Well well = wellRepository.findOne(1001L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1013L);
+    well = wellRepository.findOne(1013L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1025L);
+    well = wellRepository.findOne(1025L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1037L);
+    well = wellRepository.findOne(1037L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1091L);
+    well = wellRepository.findOne(1091L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1103L);
+    well = wellRepository.findOne(1103L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1115L);
+    well = wellRepository.findOne(1115L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 1127L);
+    well = wellRepository.findOne(1127L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());

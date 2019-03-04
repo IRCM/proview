@@ -20,11 +20,11 @@ package ca.qc.ircm.proview.standard;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -32,8 +32,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,26 +41,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class StandardAdditionService extends BaseTreatmentService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private StandardAdditionRepository repository;
   @Inject
   private StandardAdditionActivityService standardAdditionActivityService;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private ActivityService activityService;
   @Inject
   private AuthorizationService authorizationService;
 
   protected StandardAdditionService() {
-  }
-
-  protected StandardAdditionService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      StandardAdditionActivityService standardAdditionActivityService,
-      ActivityService activityService, AuthorizationService authorizationService) {
-    super(queryFactory);
-    this.entityManager = entityManager;
-    this.standardAdditionActivityService = standardAdditionActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -78,7 +68,7 @@ public class StandardAdditionService extends BaseTreatmentService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(StandardAddition.class, id);
+    return repository.findOne(id);
   }
 
   /**
@@ -97,10 +87,9 @@ public class StandardAdditionService extends BaseTreatmentService {
     standardAddition.setUser(user);
 
     // Insert standard addition.
-    entityManager.persist(standardAddition);
+    repository.saveAndFlush(standardAddition);
 
     // Log insertion of addition of standards.
-    entityManager.flush();
     Activity activity = standardAdditionActivityService.insert(standardAddition);
     activityService.insert(activity);
   }
@@ -116,7 +105,7 @@ public class StandardAdditionService extends BaseTreatmentService {
   public void update(StandardAddition standardAddition, String explanation) {
     authorizationService.checkAdminRole();
 
-    StandardAddition old = entityManager.find(StandardAddition.class, standardAddition.getId());
+    StandardAddition old = repository.findOne(standardAddition.getId());
     Set<Long> treatedSampleIds = standardAddition.getTreatedSamples().stream().map(ts -> ts.getId())
         .collect(Collectors.toSet());
     if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
@@ -131,7 +120,7 @@ public class StandardAdditionService extends BaseTreatmentService {
       activityService.insert(activity.get());
     }
 
-    entityManager.merge(standardAddition);
+    repository.save(standardAddition);
   }
 
   /**
@@ -169,9 +158,9 @@ public class StandardAdditionService extends BaseTreatmentService {
         standardAdditionActivityService.undoFailed(standardAddition, explanation, bannedContainers);
     activityService.insert(activity);
 
-    entityManager.merge(standardAddition);
+    repository.save(standardAddition);
     for (SampleContainer container : bannedContainers) {
-      entityManager.merge(container);
+      sampleContainerRepository.save(container);
     }
   }
 }
