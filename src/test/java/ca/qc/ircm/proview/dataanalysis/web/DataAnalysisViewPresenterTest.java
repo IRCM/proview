@@ -52,9 +52,12 @@ import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisService;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisType;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -69,8 +72,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,22 +80,26 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class DataAnalysisViewPresenterTest {
+public class DataAnalysisViewPresenterTest extends AbstractComponentTestCase {
+  @Inject
   private DataAnalysisViewPresenter presenter;
   @Mock
   private DataAnalysisView view;
-  @Mock
+  @MockBean
   private DataAnalysisService dataAnalysisService;
-  @Mock
+  @MockBean
   private SampleService sampleService;
   @Captor
   private ArgumentCaptor<Collection<DataAnalysis>> dataAnalysesCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SubmissionSampleRepository submissionSampleRepository;
   @Value("${spring.application.name}")
   private String applicationName;
   private DataAnalysisViewDesign design;
@@ -122,12 +128,12 @@ public class DataAnalysisViewPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(entityManager.find(SubmissionSample.class, 442L));
-    samples.add(entityManager.find(SubmissionSample.class, 443L));
-    samples.forEach(s -> entityManager.detach(s));
+    samples.add(submissionSampleRepository.findOne(442L));
+    samples.add(submissionSampleRepository.findOne(443L));
+    samples.forEach(s -> detach(s));
     when(view.savedSamples()).thenReturn(new ArrayList<>(samples));
     when(sampleService.get(any()))
-        .thenAnswer(i -> i != null ? entityManager.find(Sample.class, i.getArguments()[0]) : null);
+        .thenAnswer(i -> i != null ? sampleRepository.findOne((Long) i.getArguments()[0]) : null);
   }
 
   @SuppressWarnings("unchecked")
@@ -418,7 +424,7 @@ public class DataAnalysisViewPresenterTest {
 
   @Test
   public void enter_Sample() {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 445L);
+    SubmissionSample sample = submissionSampleRepository.findOne(445L);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample);
     presenter.init(view);
@@ -435,8 +441,8 @@ public class DataAnalysisViewPresenterTest {
 
   @Test
   public void enter_Samples() {
-    Sample sample1 = entityManager.find(Sample.class, 445L);
-    Sample sample2 = entityManager.find(Sample.class, 446L);
+    Sample sample1 = sampleRepository.findOne(445L);
+    Sample sample2 = sampleRepository.findOne(446L);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample1);
     samples.add(sample2);
@@ -477,7 +483,7 @@ public class DataAnalysisViewPresenterTest {
 
   @Test
   public void enter_EmptyId() {
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 445L);
+    SubmissionSample sample = submissionSampleRepository.findOne(445L);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample);
     presenter.init(view);
@@ -490,7 +496,7 @@ public class DataAnalysisViewPresenterTest {
 
   @Test
   public void enter_SampleWithControl() {
-    Sample sample1 = entityManager.find(Sample.class, 445L);
+    Sample sample1 = sampleRepository.findOne(445L);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample1);
     presenter.init(view);
