@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.enrichment.web;
 
-import static ca.qc.ircm.proview.enrichment.QEnrichment.enrichment;
 import static ca.qc.ircm.proview.enrichment.web.EnrichmentViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,21 +24,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.enrichment.Enrichment;
+import ca.qc.ircm.proview.enrichment.EnrichmentRepository;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,10 +46,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 @WithSubject
 public class EnrichmentViewTest extends EnrichmentViewPageObject {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory jpaQueryFactory;
+  private EnrichmentRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -160,8 +155,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(EnrichmentView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(EnrichmentView.VIEW_NAME).length() + 1));
-    Enrichment savedEnrichment =
-        jpaQueryFactory.select(enrichment).from(enrichment).where(enrichment.id.eq(id)).fetchOne();
+    Enrichment savedEnrichment = repository.findOne(id);
     assertEquals((Long) 2L, savedEnrichment.getProtocol().getId());
     assertEquals(3, savedEnrichment.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedEnrichment.getTreatedSamples(), 559);
@@ -195,8 +189,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(EnrichmentView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(EnrichmentView.VIEW_NAME).length() + 1));
-    Enrichment savedEnrichment =
-        jpaQueryFactory.select(enrichment).from(enrichment).where(enrichment.id.eq(id)).fetchOne();
+    Enrichment savedEnrichment = repository.findOne(id);
     assertEquals((Long) 2L, savedEnrichment.getProtocol().getId());
     assertEquals(3, savedEnrichment.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedEnrichment.getTreatedSamples(), 559);
@@ -229,7 +222,7 @@ public class EnrichmentViewTest extends EnrichmentViewPageObject {
     clickSave();
 
     assertEquals(viewUrl(EnrichmentView.VIEW_NAME, "223"), getDriver().getCurrentUrl());
-    Enrichment savedEnrichment = entityManager.find(Enrichment.class, 223L);
+    Enrichment savedEnrichment = repository.findOne(223L);
     assertEquals((Long) 4L, savedEnrichment.getProtocol().getId());
     assertEquals(2, savedEnrichment.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedEnrichment.getTreatedSamples(), 579);

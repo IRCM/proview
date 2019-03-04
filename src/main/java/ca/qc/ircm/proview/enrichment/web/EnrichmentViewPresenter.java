@@ -106,15 +106,6 @@ public class EnrichmentViewPresenter implements BinderValidator {
   protected EnrichmentViewPresenter() {
   }
 
-  protected EnrichmentViewPresenter(EnrichmentService enrichmentService,
-      ProtocolService protocolService, SampleContainerService sampleContainerService,
-      String applicationName) {
-    this.enrichmentService = enrichmentService;
-    this.protocolService = protocolService;
-    this.sampleContainerService = sampleContainerService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *
