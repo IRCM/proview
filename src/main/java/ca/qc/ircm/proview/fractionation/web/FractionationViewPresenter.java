@@ -70,12 +70,6 @@ public class FractionationViewPresenter implements BinderValidator {
   protected FractionationViewPresenter() {
   }
 
-  protected FractionationViewPresenter(FractionationService fractionationService,
-      String applicationName) {
-    this.fractionationService = fractionationService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *

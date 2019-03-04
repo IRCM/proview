@@ -40,6 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.fractionation.Fractionation;
+import ca.qc.ircm.proview.fractionation.FractionationRepository;
 import ca.qc.ircm.proview.fractionation.FractionationService;
 import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -52,25 +53,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class FractionationViewPresenterTest {
+  @Inject
   private FractionationViewPresenter presenter;
   @Mock
   private FractionationView view;
-  @Mock
+  @MockBean
   private FractionationService fractionationService;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private FractionationRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
   private FractionationViewDesign design;
@@ -84,7 +86,6 @@ public class FractionationViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new FractionationViewPresenter(fractionationService, applicationName);
     design = new FractionationViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
@@ -107,7 +108,7 @@ public class FractionationViewPresenterTest {
 
   @Test
   public void captions() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 203L);
+    Fractionation fractionation = repository.findOne(203L);
     when(fractionationService.get(any())).thenReturn(fractionation);
     presenter.init(view);
     presenter.enter("203");
@@ -121,7 +122,7 @@ public class FractionationViewPresenterTest {
 
   @Test
   public void fractions() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 203L);
+    Fractionation fractionation = repository.findOne(203L);
     when(fractionationService.get(any())).thenReturn(fractionation);
     presenter.init(view);
     presenter.enter("203");
@@ -171,7 +172,7 @@ public class FractionationViewPresenterTest {
 
   @Test
   public void fractions_PiType() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 203L);
+    Fractionation fractionation = repository.findOne(203L);
     fractionation.setFractionationType(FractionationType.PI);
     when(fractionationService.get(any())).thenReturn(fractionation);
     presenter.init(view);
@@ -194,7 +195,7 @@ public class FractionationViewPresenterTest {
 
   @Test
   public void enter_Fractionation() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 203L);
+    Fractionation fractionation = repository.findOne(203L);
     when(fractionationService.get(any())).thenReturn(fractionation);
     presenter.init(view);
     presenter.enter("203");
@@ -210,7 +211,7 @@ public class FractionationViewPresenterTest {
 
   @Test
   public void enter_FractionationDeleted() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 203L);
+    Fractionation fractionation = repository.findOne(203L);
     fractionation.setDeleted(true);
     when(fractionationService.get(any())).thenReturn(fractionation);
     presenter.init(view);
