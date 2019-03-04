@@ -23,12 +23,15 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
+import ca.qc.ircm.proview.treatment.TreatedSampleRepository;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
@@ -37,8 +40,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +49,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class FractionationService extends BaseTreatmentService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private FractionationRepository repository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
+  @Inject
+  private TreatedSampleRepository treatedSampleRepository;
   @Inject
   private JPAQueryFactory queryFactory;
   @Inject
@@ -60,17 +65,6 @@ public class FractionationService extends BaseTreatmentService {
   private AuthorizationService authorizationService;
 
   protected FractionationService() {
-  }
-
-  protected FractionationService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      FractionationActivityService fractionationActivityService, ActivityService activityService,
-      AuthorizationService authorizationService) {
-    super(queryFactory);
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
-    this.fractionationActivityService = fractionationActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -86,7 +80,7 @@ public class FractionationService extends BaseTreatmentService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Fractionation.class, id);
+    return repository.findOne(id);
   }
 
   /**
@@ -110,20 +104,16 @@ public class FractionationService extends BaseTreatmentService {
   private TreatedSample searchFration(SampleContainer container) {
     TreatedSample fd = null;
     {
-      JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
-      query.from(treatedSample);
-      query.where(treatedSample.destinationContainer.eq(container));
-      query.where(treatedSample.treatment.instanceOf(Fractionation.class));
-      fd = query.fetchOne();
+      BooleanExpression predicate = treatedSample.destinationContainer.eq(container)
+          .and(treatedSample.treatment.instanceOf(Fractionation.class));
+      fd = treatedSampleRepository.findOne(predicate);
     }
     if (fd != null) {
       return fd;
     } else {
-      JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
-      query.from(treatedSample);
-      query.where(treatedSample.destinationContainer.eq(container));
-      query.where(treatedSample.treatment.instanceOf(Transfer.class));
-      TreatedSample st = query.fetchOne();
+      BooleanExpression predicate = treatedSample.destinationContainer.eq(container)
+          .and(treatedSample.treatment.instanceOf(Transfer.class));
+      TreatedSample st = treatedSampleRepository.findOne(predicate);
       if (st != null) {
         return searchFration(st.getContainer());
       } else {
@@ -165,7 +155,7 @@ public class FractionationService extends BaseTreatmentService {
     for (TreatedSample detail : fractionation.getTreatedSamples()) {
       if (detail.getDestinationContainer() instanceof Tube) {
         detail.getDestinationContainer().setTimestamp(Instant.now());
-        entityManager.persist(detail.getDestinationContainer());
+        sampleContainerRepository.save(detail.getDestinationContainer());
       }
     }
 
@@ -185,19 +175,18 @@ public class FractionationService extends BaseTreatmentService {
       detail.setPosition(position);
       positions.put(sample, position + 1);
     }
-    entityManager.persist(fractionation);
+    repository.saveAndFlush(fractionation);
     // Link container to sample and treatment sample.
     for (TreatedSample detail : fractionation.getTreatedSamples()) {
       detail.getDestinationContainer().setTimestamp(Instant.now());
     }
 
     // Log insertion of fractionation.
-    entityManager.flush();
     Activity activity = fractionationActivityService.insert(fractionation);
     activityService.insert(activity);
 
     for (TreatedSample detail : fractionation.getTreatedSamples()) {
-      entityManager.merge(detail.getDestinationContainer());
+      sampleContainerRepository.save(detail.getDestinationContainer());
     }
   }
 
@@ -270,9 +259,9 @@ public class FractionationService extends BaseTreatmentService {
         samplesRemoved, bannedContainers);
     activityService.insert(activity);
 
-    entityManager.merge(fractionation);
+    repository.save(fractionation);
     for (SampleContainer container : bannedContainers) {
-      entityManager.merge(container);
+      sampleContainerRepository.save(container);
     }
   }
 }

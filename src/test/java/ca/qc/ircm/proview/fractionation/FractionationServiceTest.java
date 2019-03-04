@@ -33,17 +33,19 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.WellRepository;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -51,29 +53,31 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class FractionationServiceTest {
-  private FractionationService fractionationService;
-  @PersistenceContext
-  private EntityManager entityManager;
+public class FractionationServiceTest extends AbstractServiceTestCase {
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private FractionationService service;
+  @Inject
+  private FractionationRepository repository;
+  @Inject
+  private WellRepository wellRepository;
+  @Inject
+  private TubeRepository tubeRepository;
+  @MockBean
   private FractionationActivityService fractionationActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -86,15 +90,13 @@ public class FractionationServiceTest {
    */
   @Before
   public void beforeTest() {
-    fractionationService = new FractionationService(entityManager, queryFactory,
-        fractionationActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
   @Test
   public void get() {
-    Fractionation fractionation = fractionationService.get(2L);
+    Fractionation fractionation = service.get(2L);
 
     verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, fractionation.getId());
@@ -121,7 +123,7 @@ public class FractionationServiceTest {
 
   @Test
   public void get_Null() {
-    Fractionation fractionation = fractionationService.get(null);
+    Fractionation fractionation = service.get(null);
 
     assertNull(fractionation);
   }
@@ -132,7 +134,7 @@ public class FractionationServiceTest {
     Tube tube = new Tube(6L);
     tube.setSample(sample);
 
-    TreatedSample detail = fractionationService.search(tube);
+    TreatedSample detail = service.search(tube);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNotNull(detail);
@@ -146,7 +148,7 @@ public class FractionationServiceTest {
     Tube tube = new Tube(1L);
     tube.setSample(sample);
 
-    TreatedSample detail = fractionationService.search(tube);
+    TreatedSample detail = service.search(tube);
 
     verify(authorizationService).checkSampleReadPermission(sample);
     assertNull(detail);
@@ -154,7 +156,7 @@ public class FractionationServiceTest {
 
   @Test
   public void search_Null() {
-    TreatedSample detail = fractionationService.search(null);
+    TreatedSample detail = service.search(null);
 
     assertNull(detail);
   }
@@ -177,7 +179,7 @@ public class FractionationServiceTest {
     fractionation.setTreatedSamples(fractions);
 
     try {
-      fractionationService.insert(fractionation);
+      service.insert(fractionation);
       fail("Expected IllegalArgumentException to be thrown");
     } catch (IllegalArgumentException e) {
       // Ignore.
@@ -189,10 +191,9 @@ public class FractionationServiceTest {
     final List<TreatedSample> fractions = new ArrayList<>();
     Sample sample = new SubmissionSample(1L);
     final Tube sourceTube = new Tube(1L);
-    Well destinationWell1 = entityManager.find(Well.class, 134L);
-    entityManager.detach(destinationWell1);
-    Well destinationWell2 = entityManager.find(Well.class, 135L);
-    entityManager.detach(destinationWell2);
+    Well destinationWell1 = wellRepository.findOne(134L);
+    Well destinationWell2 = wellRepository.findOne(135L);
+    detach(destinationWell1, destinationWell2);
     destinationWell1.setSample(sample);
     destinationWell2.setSample(sample);
     TreatedSample treatedSample = new TreatedSample();
@@ -211,13 +212,13 @@ public class FractionationServiceTest {
     fractionation.setTreatedSamples(fractions);
     when(fractionationActivityService.insert(any(Fractionation.class))).thenReturn(activity);
 
-    fractionationService.insert(fractionation);
+    service.insert(fractionation);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).insert(eq(fractionation));
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationService.get(fractionation.getId());
+    fractionation = service.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(false, fractionation.isDeleted());
     assertEquals(null, fractionation.getDeletionExplanation());
@@ -233,7 +234,7 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, treatedSample.getDestinationContainer().getType());
     assertEquals((Long) 134L, treatedSample.getDestinationContainer().getId());
-    destinationWell1 = entityManager.find(Well.class, 134L);
+    destinationWell1 = wellRepository.findOne(134L);
     assertEquals(2, destinationWell1.getVersion());
     assertEquals((Integer) 1, treatedSample.getNumber());
     assertEquals((Integer) 3, treatedSample.getPosition());
@@ -243,7 +244,7 @@ public class FractionationServiceTest {
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
     assertEquals(SampleContainerType.WELL, treatedSample.getDestinationContainer().getType());
     assertEquals((Long) 135L, treatedSample.getDestinationContainer().getId());
-    destinationWell1 = entityManager.find(Well.class, 135L);
+    destinationWell1 = wellRepository.findOne(135L);
     assertEquals(2, destinationWell1.getVersion());
     assertEquals((Integer) 2, treatedSample.getNumber());
     assertEquals((Integer) 4, treatedSample.getPosition());
@@ -256,8 +257,8 @@ public class FractionationServiceTest {
     Fractionation fractionation = new Fractionation();
     fractionation.setFractionationType(FractionationType.MUDPIT);
     final List<TreatedSample> fractions = new ArrayList<>();
-    final Tube tube1 = entityManager.find(Tube.class, 3L);
-    final Tube tube2 = entityManager.find(Tube.class, 8L);
+    final Tube tube1 = tubeRepository.findOne(3L);
+    final Tube tube2 = tubeRepository.findOne(8L);
     Well destinationWell1 = new Well(134L);
     TreatedSample fraction1 = new TreatedSample();
     fraction1.setSample(tube1.getSample());
@@ -273,7 +274,7 @@ public class FractionationServiceTest {
     fractionation.setTreatedSamples(fractions);
 
     try {
-      fractionationService.insert(fractionation);
+      service.insert(fractionation);
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -285,17 +286,17 @@ public class FractionationServiceTest {
     Fractionation fractionation = new Fractionation();
     fractionation.setFractionationType(FractionationType.MUDPIT);
     final List<TreatedSample> fractions = new ArrayList<>();
-    final Tube tube1 = entityManager.find(Tube.class, 3L);
-    final Tube tube2 = entityManager.find(Tube.class, 4L);
-    Well destinationWell1 = entityManager.find(Well.class, 134L);
-    entityManager.detach(destinationWell1);
+    final Tube tube1 = tubeRepository.findOne(3L);
+    final Tube tube2 = tubeRepository.findOne(4L);
+    Well destinationWell1 = wellRepository.findOne(134L);
+    detach(destinationWell1);
     TreatedSample fraction1 = new TreatedSample();
     fraction1.setSample(tube1.getSample());
     fraction1.setContainer(tube1);
     fraction1.setDestinationContainer(destinationWell1);
     fractions.add(fraction1);
-    Well destinationWell2 = entityManager.find(Well.class, 135L);
-    entityManager.detach(destinationWell2);
+    Well destinationWell2 = wellRepository.findOne(135L);
+    detach(destinationWell2);
     TreatedSample fraction2 = new TreatedSample();
     fraction2.setSample(tube2.getSample());
     fraction2.setContainer(tube2);
@@ -304,7 +305,7 @@ public class FractionationServiceTest {
     fractionation.setTreatedSamples(fractions);
 
     try {
-      fractionationService.insert(fractionation);
+      service.insert(fractionation);
     } catch (IllegalArgumentException e) {
       fail("IllegalArgumentException not expected");
     }
@@ -312,26 +313,26 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_RemoveSamplesWellDestination() throws Throwable {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(8L);
+    detach(fractionation);
     when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
-    fractionationService.undo(fractionation, "undo unit test", true, false);
+    service.undo(fractionation, "undo unit test", true, false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).undo(eq(fractionation), eq("undo unit test"),
         containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationService.get(fractionation.getId());
+    fractionation = service.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals("undo unit test", fractionation.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 1L);
+    Tube sourceTube = tubeRepository.findOne(1L);
     assertEquals((Long) 1L, sourceTube.getSample().getId());
-    Well destinationWell = entityManager.find(Well.class, 128L);
+    Well destinationWell = wellRepository.findOne(128L);
     assertNull(destinationWell.getSample());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -343,11 +344,11 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_RemoveSamplesUsedContainer_WellDestination_Enrichment() throws Throwable {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 285L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(285L);
+    detach(fractionation);
 
     try {
-      fractionationService.undo(fractionation, "undo unit test", true, false);
+      service.undo(fractionation, "undo unit test", true, false);
       fail("Expected IllegalArgumentException to be thrown");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -357,11 +358,11 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_RemoveSamplesUsedContainer_WellDestination_MsAnalysis() throws Throwable {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 286L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(286L);
+    detach(fractionation);
 
     try {
-      fractionationService.undo(fractionation, "undo unit test", true, false);
+      service.undo(fractionation, "undo unit test", true, false);
       fail("Expected IllegalArgumentException to be thrown");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -371,24 +372,24 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_NoBan_Well() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(8L);
+    detach(fractionation);
     when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
-    fractionationService.undo(fractionation, "fail unit test", false, false);
+    service.undo(fractionation, "fail unit test", false, false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationService.get(fractionation.getId());
+    fractionation = service.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals("fail unit test", fractionation.getDeletionExplanation());
-    Well destinationWell = entityManager.find(Well.class, 128L);
+    Well destinationWell = wellRepository.findOne(128L);
     assertFalse(destinationWell.isBanned());
     assertEquals(2, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -399,26 +400,26 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_Ban_WellDestination() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(8L);
+    detach(fractionation);
     when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
-    fractionationService.undo(fractionation, "fail unit test", false, true);
+    service.undo(fractionation, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    Fractionation test = fractionationService.get(fractionation.getId());
+    Fractionation test = service.get(fractionation.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals("fail unit test", test.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 1L);
+    Tube sourceTube = tubeRepository.findOne(1L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationWell = entityManager.find(Well.class, 128L);
+    Well destinationWell = wellRepository.findOne(128L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -431,35 +432,35 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_Ban_WellDestination_Transfer() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 288L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(288L);
+    detach(fractionation);
     when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
-    fractionationService.undo(fractionation, "fail unit test", false, true);
+    service.undo(fractionation, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationService.get(fractionation.getId());
+    fractionation = service.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals("fail unit test", fractionation.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 81L);
+    Tube sourceTube = tubeRepository.findOne(81L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationWell = entityManager.find(Well.class, 1282L);
+    Well destinationWell = wellRepository.findOne(1282L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1294L);
+    destinationWell = wellRepository.findOne(1294L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1376L);
+    destinationWell = wellRepository.findOne(1376L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1388L);
+    destinationWell = wellRepository.findOne(1388L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -475,40 +476,40 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_Ban_WellDestination_Fractionation() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 289L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(289L);
+    detach(fractionation);
     when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
-    fractionationService.undo(fractionation, "fail unit test", false, true);
+    service.undo(fractionation, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationService.get(fractionation.getId());
+    fractionation = service.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals("fail unit test", fractionation.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 82L);
+    Tube sourceTube = tubeRepository.findOne(82L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationWell = entityManager.find(Well.class, 1283L);
+    Well destinationWell = wellRepository.findOne(1283L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1295L);
+    destinationWell = wellRepository.findOne(1295L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1378L);
+    destinationWell = wellRepository.findOne(1378L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1390L);
+    destinationWell = wellRepository.findOne(1390L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1402L);
+    destinationWell = wellRepository.findOne(1402L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1414L);
+    destinationWell = wellRepository.findOne(1414L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -526,46 +527,46 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_Ban_WellDestination_Transfer_Fractionation() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 290L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(290L);
+    detach(fractionation);
     when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
-    fractionationService.undo(fractionation, "fail unit test", false, true);
+    service.undo(fractionation, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    fractionation = fractionationService.get(fractionation.getId());
+    fractionation = service.get(fractionation.getId());
     assertNotNull(fractionation);
     assertEquals(true, fractionation.isDeleted());
     assertEquals("fail unit test", fractionation.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 83L);
+    Tube sourceTube = tubeRepository.findOne(83L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationWell = entityManager.find(Well.class, 1284L);
+    Well destinationWell = wellRepository.findOne(1284L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1296L);
+    destinationWell = wellRepository.findOne(1296L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1377L);
+    destinationWell = wellRepository.findOne(1377L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1389L);
+    destinationWell = wellRepository.findOne(1389L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1328L);
+    destinationWell = wellRepository.findOne(1328L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1340L);
+    destinationWell = wellRepository.findOne(1340L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1352L);
+    destinationWell = wellRepository.findOne(1352L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1364L);
+    destinationWell = wellRepository.findOne(1364L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -585,52 +586,52 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_Ban_WellDestination_Fractionation_Transfer() {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 291L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(291L);
+    detach(fractionation);
     when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
-    fractionationService.undo(fractionation, "fail unit test", false, true);
+    service.undo(fractionation, "fail unit test", false, true);
 
-    entityManager.flush();
+    repository.flush();
     verify(fractionationActivityService).undo(eq(fractionation), eq("fail unit test"),
         containersCaptor.capture(), containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    Fractionation test = fractionationService.get(fractionation.getId());
+    Fractionation test = service.get(fractionation.getId());
     assertNotNull(test);
     assertEquals(true, test.isDeleted());
     assertEquals("fail unit test", test.getDeletionExplanation());
-    Tube sourceTube = entityManager.find(Tube.class, 84L);
+    Tube sourceTube = tubeRepository.findOne(84L);
     assertEquals(false, sourceTube.isBanned());
-    Well destinationWell = entityManager.find(Well.class, 1285L);
+    Well destinationWell = wellRepository.findOne(1285L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1297L);
+    destinationWell = wellRepository.findOne(1297L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1379L);
+    destinationWell = wellRepository.findOne(1379L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1391L);
+    destinationWell = wellRepository.findOne(1391L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1403L);
+    destinationWell = wellRepository.findOne(1403L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1415L);
+    destinationWell = wellRepository.findOne(1415L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1329L);
+    destinationWell = wellRepository.findOne(1329L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1341L);
+    destinationWell = wellRepository.findOne(1341L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1353L);
+    destinationWell = wellRepository.findOne(1353L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
-    destinationWell = entityManager.find(Well.class, 1365L);
+    destinationWell = wellRepository.findOne(1365L);
     assertEquals(true, destinationWell.isBanned());
     assertEquals(3, destinationWell.getVersion());
     Collection<SampleContainer> samplesRemoved = containersCaptor.getAllValues().get(0);
@@ -652,14 +653,14 @@ public class FractionationServiceTest {
 
   @Test
   public void undo_RemoveSamplesAndBanContainers() throws Throwable {
-    Fractionation fractionation = entityManager.find(Fractionation.class, 8L);
-    entityManager.detach(fractionation);
+    Fractionation fractionation = repository.findOne(8L);
+    detach(fractionation);
     when(fractionationActivityService.undo(any(Fractionation.class), any(String.class),
         anyCollectionOf(SampleContainer.class), anyCollectionOf(SampleContainer.class)))
             .thenReturn(activity);
 
     try {
-      fractionationService.undo(fractionation, "undo unit test", true, true);
+      service.undo(fractionation, "undo unit test", true, true);
       fail("Expected IllegalArgumentException to be thrown");
     } catch (IllegalArgumentException e) {
       // Success.

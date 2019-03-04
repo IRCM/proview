@@ -37,21 +37,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class FractionationActivityServiceTest {
-  private FractionationActivityService fractionationActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+  @Inject
+  private FractionationActivityService service;
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -60,8 +58,6 @@ public class FractionationActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    fractionationActivityService =
-        new FractionationActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -86,7 +82,7 @@ public class FractionationActivityServiceTest {
     fractionation.setFractionationType(FractionationType.MUDPIT);
     fractionation.setTreatedSamples(details);
 
-    Activity activity = fractionationActivityService.insert(fractionation);
+    Activity activity = service.insert(fractionation);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -120,7 +116,7 @@ public class FractionationActivityServiceTest {
     fractionation.setFractionationType(FractionationType.MUDPIT);
     fractionation.setTreatedSamples(details);
 
-    Activity activity = fractionationActivityService.insert(fractionation);
+    Activity activity = service.insert(fractionation);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -146,8 +142,7 @@ public class FractionationActivityServiceTest {
     Collection<SampleContainer> samplesRemoved = new ArrayList<>();
     samplesRemoved.add(destinationTube);
 
-    Activity activity =
-        fractionationActivityService.undo(fractionation, "unit_test", samplesRemoved, null);
+    Activity activity = service.undo(fractionation, "unit_test", samplesRemoved, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -171,8 +166,7 @@ public class FractionationActivityServiceTest {
     Collection<SampleContainer> samplesRemoved = new ArrayList<>();
     samplesRemoved.add(destinationWell);
 
-    Activity activity =
-        fractionationActivityService.undo(fractionation, "unit_test", samplesRemoved, null);
+    Activity activity = service.undo(fractionation, "unit_test", samplesRemoved, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -195,7 +189,7 @@ public class FractionationActivityServiceTest {
   public void undo_NoBan_Tube() {
     Fractionation fractionation = new Fractionation(2L);
 
-    Activity activity = fractionationActivityService.undo(fractionation, "unit_test", null, null);
+    Activity activity = service.undo(fractionation, "unit_test", null, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -209,7 +203,7 @@ public class FractionationActivityServiceTest {
   public void undo_NoBan_Well() {
     Fractionation fractionation = new Fractionation(8L);
 
-    Activity activity = fractionationActivityService.undo(fractionation, "unit_test", null, null);
+    Activity activity = service.undo(fractionation, "unit_test", null, null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -226,8 +220,7 @@ public class FractionationActivityServiceTest {
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationTube);
 
-    Activity activity =
-        fractionationActivityService.undo(fractionation, "unit_test", null, bannedContainers);
+    Activity activity = service.undo(fractionation, "unit_test", null, bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -253,8 +246,7 @@ public class FractionationActivityServiceTest {
     Collection<SampleContainer> bannedContainers = new ArrayList<>();
     bannedContainers.add(destinationWell);
 
-    Activity activity =
-        fractionationActivityService.undo(fractionation, "unit_test", null, bannedContainers);
+    Activity activity = service.undo(fractionation, "unit_test", null, bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
