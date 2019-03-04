@@ -63,8 +63,11 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
+import ca.qc.ircm.proview.solubilisation.SolubilisationRepository;
 import ca.qc.ircm.proview.solubilisation.SolubilisationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatedSample;
@@ -85,8 +88,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,22 +96,28 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SolubilisationViewPresenterTest {
+  @Inject
   private SolubilisationViewPresenter presenter;
   @Mock
   private SolubilisationView view;
-  @Mock
+  @MockBean
   private SolubilisationService solubilisationService;
-  @Mock
+  @MockBean
   private SampleContainerService sampleContainerService;
   @Captor
   private ArgumentCaptor<Solubilisation> solubilisationCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SolubilisationRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Value("${spring.application.name}")
   private String applicationName;
   private SolubilisationViewDesign design = new SolubilisationViewDesign();
@@ -128,16 +136,14 @@ public class SolubilisationViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SolubilisationViewPresenter(solubilisationService, sampleContainerService,
-        applicationName);
     design = new SolubilisationViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(entityManager.find(Sample.class, 559L));
-    samples.add(entityManager.find(Sample.class, 560L));
-    samples.add(entityManager.find(Sample.class, 444L));
+    samples.add(sampleRepository.findOne(559L));
+    samples.add(sampleRepository.findOne(560L));
+    samples.add(sampleRepository.findOne(444L));
     containers = samples.stream().flatMap(sample -> {
       Tube tube1 = new Tube(sample.getId(), sample.getName());
       tube1.setSample(sample);
@@ -566,9 +572,7 @@ public class SolubilisationViewPresenterTest {
 
   @Test
   public void save_Update() {
-    presenter = new SolubilisationViewPresenter(solubilisationService, sampleContainerService,
-        applicationName);
-    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 1L);
+    Solubilisation solubilisation = repository.findOne(1L);
     when(solubilisationService.get(any())).thenReturn(solubilisation);
     presenter.init(view);
     presenter.enter("1");
@@ -600,9 +604,7 @@ public class SolubilisationViewPresenterTest {
 
   @Test
   public void remove_NoExplanation() {
-    presenter = new SolubilisationViewPresenter(solubilisationService, sampleContainerService,
-        applicationName);
-    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 4L);
+    Solubilisation solubilisation = repository.findOne(4L);
     when(solubilisationService.get(any())).thenReturn(solubilisation);
     presenter.init(view);
     presenter.enter("4");
@@ -617,9 +619,7 @@ public class SolubilisationViewPresenterTest {
 
   @Test
   public void remove() {
-    presenter = new SolubilisationViewPresenter(solubilisationService, sampleContainerService,
-        applicationName);
-    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 1L);
+    Solubilisation solubilisation = repository.findOne(1L);
     when(solubilisationService.get(any())).thenReturn(solubilisation);
     presenter.init(view);
     presenter.enter("1");
@@ -640,9 +640,7 @@ public class SolubilisationViewPresenterTest {
 
   @Test
   public void remove_BanContainers() {
-    presenter = new SolubilisationViewPresenter(solubilisationService, sampleContainerService,
-        applicationName);
-    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 1L);
+    Solubilisation solubilisation = repository.findOne(1L);
     when(solubilisationService.get(any())).thenReturn(solubilisation);
     presenter.init(view);
     presenter.enter("1");
@@ -724,9 +722,7 @@ public class SolubilisationViewPresenterTest {
 
   @Test
   public void enter_Solubilisation() {
-    presenter = new SolubilisationViewPresenter(solubilisationService, sampleContainerService,
-        applicationName);
-    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 1L);
+    Solubilisation solubilisation = repository.findOne(1L);
     when(solubilisationService.get(any())).thenReturn(solubilisation);
     presenter.init(view);
     presenter.enter("1");
@@ -755,9 +751,7 @@ public class SolubilisationViewPresenterTest {
 
   @Test
   public void enter_SolubilisationDeleted() {
-    presenter = new SolubilisationViewPresenter(solubilisationService, sampleContainerService,
-        applicationName);
-    Solubilisation solubilisation = entityManager.find(Solubilisation.class, 1L);
+    Solubilisation solubilisation = repository.findOne(1L);
     solubilisation.setDeleted(true);
     when(solubilisationService.get(any())).thenReturn(solubilisation);
     presenter.init(view);
@@ -810,11 +804,11 @@ public class SolubilisationViewPresenterTest {
   public void enter_Containers() {
     when(sampleContainerService.get(any())).thenAnswer(i -> {
       Long id = i.getArgumentAt(0, Long.class);
-      return id != null ? entityManager.find(SampleContainer.class, id) : null;
+      return id != null ? sampleContainerRepository.findOne(id) : null;
     });
     List<SampleContainer> containers = new ArrayList<>();
-    containers.add(entityManager.find(SampleContainer.class, 11L));
-    containers.add(entityManager.find(SampleContainer.class, 12L));
+    containers.add(sampleContainerRepository.findOne(11L));
+    containers.add(sampleContainerRepository.findOne(12L));
     presenter.init(view);
     presenter.enter("containers/11,12");
 

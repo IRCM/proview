@@ -104,13 +104,6 @@ public class SolubilisationViewPresenter implements BinderValidator {
   protected SolubilisationViewPresenter() {
   }
 
-  protected SolubilisationViewPresenter(SolubilisationService solubilisationService,
-      SampleContainerService sampleContainerService, String applicationName) {
-    this.solubilisationService = solubilisationService;
-    this.sampleContainerService = sampleContainerService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *

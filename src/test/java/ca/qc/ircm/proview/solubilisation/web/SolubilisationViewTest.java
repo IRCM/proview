@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.solubilisation.web;
 
-import static ca.qc.ircm.proview.solubilisation.QSolubilisation.solubilisation;
 import static ca.qc.ircm.proview.solubilisation.web.SolubilisationViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,20 +25,18 @@ import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
+import ca.qc.ircm.proview.solubilisation.SolubilisationRepository;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,10 +46,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 @WithSubject
 public class SolubilisationViewTest extends SolubilisationViewPageObject {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory jpaQueryFactory;
+  private SolubilisationRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -161,8 +156,7 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(SolubilisationView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(SolubilisationView.VIEW_NAME).length() + 1));
-    Solubilisation savedSolubilisation = jpaQueryFactory.select(solubilisation).from(solubilisation)
-        .where(solubilisation.id.eq(id)).fetchOne();
+    Solubilisation savedSolubilisation = repository.findOne(id);
     assertEquals(3, savedSolubilisation.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedSolubilisation.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
@@ -206,8 +200,7 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(SolubilisationView.VIEW_NAME)));
     long id = Long.parseLong(
         getDriver().getCurrentUrl().substring(viewUrl(SolubilisationView.VIEW_NAME).length() + 1));
-    Solubilisation savedSolubilisation = jpaQueryFactory.select(solubilisation).from(solubilisation)
-        .where(solubilisation.id.eq(id)).fetchOne();
+    Solubilisation savedSolubilisation = repository.findOne(id);
     assertEquals(3, savedSolubilisation.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedSolubilisation.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
@@ -249,7 +242,7 @@ public class SolubilisationViewTest extends SolubilisationViewPageObject {
     clickSave();
 
     assertEquals(viewUrl(SolubilisationView.VIEW_NAME, "236"), getDriver().getCurrentUrl());
-    Solubilisation savedSolubilisation = entityManager.find(Solubilisation.class, 236L);
+    Solubilisation savedSolubilisation = repository.findOne(236L);
     assertEquals(2, savedSolubilisation.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedSolubilisation.getTreatedSamples(), 589);
     assertTrue(opTs.isPresent());
