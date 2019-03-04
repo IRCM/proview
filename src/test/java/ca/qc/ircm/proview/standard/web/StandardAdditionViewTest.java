@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.standard.web;
 
-import static ca.qc.ircm.proview.standard.QStandardAddition.standardAddition;
 import static ca.qc.ircm.proview.standard.web.StandardAdditionViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,20 +25,18 @@ import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.standard.StandardAddition;
+import ca.qc.ircm.proview.standard.StandardAdditionRepository;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,10 +46,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 @WithSubject
 public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory jpaQueryFactory;
+  private StandardAdditionRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -161,8 +156,7 @@ public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(StandardAdditionView.VIEW_NAME)));
     long id = Long.parseLong(getDriver().getCurrentUrl()
         .substring(viewUrl(StandardAdditionView.VIEW_NAME).length() + 1));
-    StandardAddition savedStandardAddition = jpaQueryFactory.select(standardAddition)
-        .from(standardAddition).where(standardAddition.id.eq(id)).fetchOne();
+    StandardAddition savedStandardAddition = repository.findOne(id);
     assertEquals(3, savedStandardAddition.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedStandardAddition.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
@@ -206,8 +200,7 @@ public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(StandardAdditionView.VIEW_NAME)));
     long id = Long.parseLong(getDriver().getCurrentUrl()
         .substring(viewUrl(StandardAdditionView.VIEW_NAME).length() + 1));
-    StandardAddition savedStandardAddition = jpaQueryFactory.select(standardAddition)
-        .from(standardAddition).where(standardAddition.id.eq(id)).fetchOne();
+    StandardAddition savedStandardAddition = repository.findOne(id);
     assertEquals(3, savedStandardAddition.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedStandardAddition.getTreatedSamples(), 559);
     assertTrue(opTs.isPresent());
@@ -249,7 +242,7 @@ public class StandardAdditionViewTest extends StandardAdditionViewPageObject {
     clickSave();
 
     assertEquals(viewUrl(StandardAdditionView.VIEW_NAME, "248"), getDriver().getCurrentUrl());
-    StandardAddition savedStandardAddition = entityManager.find(StandardAddition.class, 248L);
+    StandardAddition savedStandardAddition = repository.findOne(248L);
     assertEquals(2, savedStandardAddition.getTreatedSamples().size());
     Optional<TreatedSample> opTs = find(savedStandardAddition.getTreatedSamples(), 599);
     assertTrue(opTs.isPresent());

@@ -102,13 +102,6 @@ public class StandardAdditionViewPresenter implements BinderValidator {
   protected StandardAdditionViewPresenter() {
   }
 
-  protected StandardAdditionViewPresenter(StandardAdditionService standardAdditionService,
-      SampleContainerService sampleContainerService, String applicationName) {
-    this.standardAdditionService = standardAdditionService;
-    this.sampleContainerService = sampleContainerService;
-    this.applicationName = applicationName;
-  }
-
   /**
    * Initializes presenter.
    *

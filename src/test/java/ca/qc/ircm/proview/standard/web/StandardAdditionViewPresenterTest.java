@@ -61,8 +61,11 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.sample.SampleContainerService;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.standard.StandardAddition;
+import ca.qc.ircm.proview.standard.StandardAdditionRepository;
 import ca.qc.ircm.proview.standard.StandardAdditionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatedSample;
@@ -83,8 +86,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,22 +94,28 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class StandardAdditionViewPresenterTest {
+  @Inject
   private StandardAdditionViewPresenter presenter;
   @Mock
   private StandardAdditionView view;
-  @Mock
+  @MockBean
   private StandardAdditionService standardAdditionService;
-  @Mock
+  @MockBean
   private SampleContainerService sampleContainerService;
   @Captor
   private ArgumentCaptor<StandardAddition> standardAdditionCaptor;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private StandardAdditionRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Value("${spring.application.name}")
   private String applicationName;
   private StandardAdditionViewDesign design = new StandardAdditionViewDesign();
@@ -126,16 +134,14 @@ public class StandardAdditionViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new StandardAdditionViewPresenter(standardAdditionService, sampleContainerService,
-        applicationName);
     design = new StandardAdditionViewDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(entityManager.find(Sample.class, 559L));
-    samples.add(entityManager.find(Sample.class, 560L));
-    samples.add(entityManager.find(Sample.class, 444L));
+    samples.add(sampleRepository.findOne(559L));
+    samples.add(sampleRepository.findOne(560L));
+    samples.add(sampleRepository.findOne(444L));
     containers = samples.stream().flatMap(sample -> {
       Tube tube1 = new Tube(sample.getId(), sample.getName());
       tube1.setSample(sample);
@@ -527,9 +533,7 @@ public class StandardAdditionViewPresenterTest {
 
   @Test
   public void save_Update() {
-    presenter = new StandardAdditionViewPresenter(standardAdditionService, sampleContainerService,
-        applicationName);
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 5L);
+    StandardAddition standardAddition = repository.findOne(5L);
     when(standardAdditionService.get(any())).thenReturn(standardAddition);
     presenter.init(view);
     presenter.enter("5");
@@ -562,9 +566,7 @@ public class StandardAdditionViewPresenterTest {
 
   @Test
   public void remove_NoExplanation() {
-    presenter = new StandardAdditionViewPresenter(standardAdditionService, sampleContainerService,
-        applicationName);
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 5L);
+    StandardAddition standardAddition = repository.findOne(5L);
     when(standardAdditionService.get(any())).thenReturn(standardAddition);
     presenter.init(view);
     presenter.enter("5");
@@ -579,9 +581,7 @@ public class StandardAdditionViewPresenterTest {
 
   @Test
   public void remove() {
-    presenter = new StandardAdditionViewPresenter(standardAdditionService, sampleContainerService,
-        applicationName);
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 5L);
+    StandardAddition standardAddition = repository.findOne(5L);
     when(standardAdditionService.get(any())).thenReturn(standardAddition);
     presenter.init(view);
     presenter.enter("5");
@@ -602,9 +602,7 @@ public class StandardAdditionViewPresenterTest {
 
   @Test
   public void remove_BanContainers() {
-    presenter = new StandardAdditionViewPresenter(standardAdditionService, sampleContainerService,
-        applicationName);
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 5L);
+    StandardAddition standardAddition = repository.findOne(5L);
     when(standardAdditionService.get(any())).thenReturn(standardAddition);
     presenter.init(view);
     presenter.enter("5");
@@ -684,9 +682,7 @@ public class StandardAdditionViewPresenterTest {
 
   @Test
   public void enter_StandardAddition() {
-    presenter = new StandardAdditionViewPresenter(standardAdditionService, sampleContainerService,
-        applicationName);
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 5L);
+    StandardAddition standardAddition = repository.findOne(5L);
     when(standardAdditionService.get(any())).thenReturn(standardAddition);
     presenter.init(view);
     presenter.enter("5");
@@ -714,9 +710,7 @@ public class StandardAdditionViewPresenterTest {
 
   @Test
   public void enter_StandardAdditionDeleted() {
-    presenter = new StandardAdditionViewPresenter(standardAdditionService, sampleContainerService,
-        applicationName);
-    StandardAddition standardAddition = entityManager.find(StandardAddition.class, 5L);
+    StandardAddition standardAddition = repository.findOne(5L);
     standardAddition.setDeleted(true);
     when(standardAdditionService.get(any())).thenReturn(standardAddition);
     presenter.init(view);
@@ -768,11 +762,11 @@ public class StandardAdditionViewPresenterTest {
   public void enter_Containers() {
     when(sampleContainerService.get(any())).thenAnswer(i -> {
       Long id = i.getArgumentAt(0, Long.class);
-      return id != null ? entityManager.find(SampleContainer.class, id) : null;
+      return id != null ? sampleContainerRepository.findOne(id) : null;
     });
     List<SampleContainer> containers = new ArrayList<>();
-    containers.add(entityManager.find(SampleContainer.class, 11L));
-    containers.add(entityManager.find(SampleContainer.class, 12L));
+    containers.add(sampleContainerRepository.findOne(11L));
+    containers.add(sampleContainerRepository.findOne(12L));
     presenter.init(view);
     presenter.enter("containers/11,12");
 
