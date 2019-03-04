@@ -99,13 +99,6 @@ public class SubmissionAnalysesFormPresenter {
   protected SubmissionAnalysesFormPresenter() {
   }
 
-  protected SubmissionAnalysesFormPresenter(MsAnalysisService msAnalysisService,
-      DataAnalysisService dataAnalysisService, AuthorizationService authorizationService) {
-    this.msAnalysisService = msAnalysisService;
-    this.dataAnalysisService = dataAnalysisService;
-    this.authorizationService = authorizationService;
-  }
-
   /**
    * Initializes presenter.
    *

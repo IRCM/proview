@@ -49,14 +49,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
+import ca.qc.ircm.proview.dataanalysis.DataAnalysisRepository;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisService;
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisStatus;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -80,29 +83,34 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SubmissionAnalysesFormPresenterTest {
+  @Inject
   private SubmissionAnalysesFormPresenter presenter;
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private SubmissionRepository repository;
+  @Inject
+  private MsAnalysisRepository msAnalysisRepository;
+  @Inject
+  private DataAnalysisRepository dataAnalysisRepository;
   @Mock
   private SubmissionAnalysesForm view;
-  @Mock
+  @MockBean
   private MsAnalysisService msAnalysisService;
-  @Mock
+  @MockBean
   private DataAnalysisService dataAnalysisService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private UI ui;
@@ -126,19 +134,17 @@ public class SubmissionAnalysesFormPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SubmissionAnalysesFormPresenter(msAnalysisService, dataAnalysisService,
-        authorizationService);
     design = new SubmissionAnalysesFormDesign();
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    submission = entityManager.find(Submission.class, 1L);
-    analyses.add(entityManager.find(MsAnalysis.class, 20L));
-    analyses.add(entityManager.find(MsAnalysis.class, 21L));
+    submission = repository.findOne(1L);
+    analyses.add(msAnalysisRepository.findOne(20L));
+    analyses.add(msAnalysisRepository.findOne(21L));
     when(msAnalysisService.all(any(Submission.class))).thenReturn(analyses);
-    dataAnalyses.add(entityManager.find(DataAnalysis.class, 3L));
-    dataAnalyses.add(entityManager.find(DataAnalysis.class, 4L));
+    dataAnalyses.add(dataAnalysisRepository.findOne(3L));
+    dataAnalyses.add(dataAnalysisRepository.findOne(4L));
     when(dataAnalysisService.all(any(Submission.class))).thenReturn(dataAnalyses);
     when(view.getUI()).thenReturn(ui);
     when(view.getParent()).thenReturn(ui);
