@@ -20,6 +20,8 @@ package ca.qc.ircm.proview.enrichment;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -27,7 +29,6 @@ import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -35,8 +36,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,8 +45,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class EnrichmentService extends BaseTreatmentService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private EnrichmentRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private ProtocolService protocolService;
   @Inject
@@ -58,17 +61,6 @@ public class EnrichmentService extends BaseTreatmentService {
   private AuthorizationService authorizationService;
 
   protected EnrichmentService() {
-  }
-
-  protected EnrichmentService(EntityManager entityManager, JPAQueryFactory queryFactory,
-      ProtocolService protocolService, EnrichmentActivityService enrichmentActivityService,
-      ActivityService activityService, AuthorizationService authorizationService) {
-    super(queryFactory);
-    this.entityManager = entityManager;
-    this.protocolService = protocolService;
-    this.enrichmentActivityService = enrichmentActivityService;
-    this.activityService = activityService;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -84,7 +76,7 @@ public class EnrichmentService extends BaseTreatmentService {
     }
     authorizationService.checkAdminRole();
 
-    return entityManager.find(Enrichment.class, id);
+    return repository.findOne(id);
   }
 
   /**
@@ -105,16 +97,16 @@ public class EnrichmentService extends BaseTreatmentService {
     if (enrichment.getProtocol().getId() == null) {
       protocolService.insert(enrichment.getProtocol());
     }
-    entityManager.persist(enrichment);
+    repository.save(enrichment);
     enrichment.getTreatedSamples().stream().map(ts -> ts.getSample())
         .filter(sample -> sample instanceof SubmissionSample)
         .map(sample -> (SubmissionSample) sample).forEach(sample -> {
           sample.setStatus(SampleStatus.ENRICHED);
-          entityManager.merge(sample);
+          sampleRepository.save(sample);
         });
 
     // Log insertion of enrichment.
-    entityManager.flush();
+    repository.flush();
     Activity activity = enrichmentActivityService.insert(enrichment);
     activityService.insert(activity);
   }
@@ -130,7 +122,7 @@ public class EnrichmentService extends BaseTreatmentService {
   public void update(Enrichment enrichment, String explanation) {
     authorizationService.checkAdminRole();
 
-    Enrichment old = entityManager.find(Enrichment.class, enrichment.getId());
+    Enrichment old = repository.findOne(enrichment.getId());
     Set<Long> treatedSampleIds =
         enrichment.getTreatedSamples().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
     if (old.getTreatedSamples().stream().filter(ts -> !treatedSampleIds.contains(ts.getId()))
@@ -148,7 +140,7 @@ public class EnrichmentService extends BaseTreatmentService {
       activityService.insert(activity.get());
     }
 
-    entityManager.merge(enrichment);
+    repository.save(enrichment);
   }
 
   /**
@@ -185,9 +177,9 @@ public class EnrichmentService extends BaseTreatmentService {
         enrichmentActivityService.undoFailed(enrichment, explanation, bannedContainers);
     activityService.insert(activity);
 
-    entityManager.merge(enrichment);
+    repository.save(enrichment);
     for (SampleContainer container : bannedContainers) {
-      entityManager.merge(container);
+      sampleContainerRepository.save(container);
     }
   }
 }

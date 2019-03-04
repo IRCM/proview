@@ -25,6 +25,8 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.sample.SampleContainerRepository;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
@@ -37,8 +39,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,18 +49,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class EnrichmentActivityService {
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private EnrichmentRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SampleContainerRepository sampleContainerRepository;
   @Inject
   private AuthorizationService authorizationService;
 
   protected EnrichmentActivityService() {
-  }
-
-  protected EnrichmentActivityService(EntityManager entityManager,
-      AuthorizationService authorizationService) {
-    this.entityManager = entityManager;
-    this.authorizationService = authorizationService;
   }
 
   /**
@@ -77,7 +75,7 @@ public class EnrichmentActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     for (TreatedSample ts : enrichment.getTreatedSamples()) {
       Sample newSample = ts.getSample();
-      Sample oldSample = entityManager.find(Sample.class, ts.getSample().getId());
+      Sample oldSample = sampleRepository.findOne(ts.getSample().getId());
       if (newSample instanceof SubmissionSample) {
         SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
         SubmissionSample oldSubmissionSample = (SubmissionSample) oldSample;
@@ -116,7 +114,7 @@ public class EnrichmentActivityService {
   @CheckReturnValue
   public Optional<Activity> update(Enrichment enrichment, String explanation) {
     User user = authorizationService.getCurrentUser();
-    final Enrichment oldEnrichment = entityManager.find(Enrichment.class, enrichment.getId());
+    final Enrichment oldEnrichment = repository.findOne(enrichment.getId());
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     updateBuilders.add(enrichmentUpdate(enrichment).column("protocol")
@@ -209,7 +207,7 @@ public class EnrichmentActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     if (bannedContainers != null) {
       for (SampleContainer container : bannedContainers) {
-        SampleContainer oldContainer = entityManager.find(SampleContainer.class, container.getId());
+        SampleContainer oldContainer = sampleContainerRepository.findOne(container.getId());
         updateBuilders
             .add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldContainer));
       }

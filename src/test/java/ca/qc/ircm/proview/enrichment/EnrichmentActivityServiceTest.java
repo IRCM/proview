@@ -31,9 +31,11 @@ import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
 import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolRepository;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -42,21 +44,23 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class EnrichmentActivityServiceTest {
-  private EnrichmentActivityService enrichmentActivityService;
-  @PersistenceContext
-  private EntityManager entityManager;
-  @Mock
+public class EnrichmentActivityServiceTest extends AbstractServiceTestCase {
+  @Inject
+  private EnrichmentActivityService service;
+  @Inject
+  private EnrichmentRepository repository;
+  @Inject
+  private ProtocolRepository protocolRepository;
+  @MockBean
   private AuthorizationService authorizationService;
   private User user;
 
@@ -65,7 +69,6 @@ public class EnrichmentActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    enrichmentActivityService = new EnrichmentActivityService(entityManager, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
@@ -86,7 +89,7 @@ public class EnrichmentActivityServiceTest {
     enrichment.setProtocol(protocol);
     enrichment.setTreatedSamples(treatedSamples);
 
-    Activity activity = enrichmentActivityService.insert(enrichment);
+    Activity activity = service.insert(enrichment);
 
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -107,10 +110,10 @@ public class EnrichmentActivityServiceTest {
 
   @Test
   public void update() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
-    entityManager.detach(enrichment);
-    enrichment.getTreatedSamples().forEach(ts -> entityManager.detach(ts));
-    enrichment.setProtocol(entityManager.find(Protocol.class, 4L));
+    Enrichment enrichment = repository.findOne(223L);
+    detach(enrichment);
+    enrichment.getTreatedSamples().forEach(ts -> detach(ts));
+    enrichment.setProtocol(protocolRepository.findOne(4L));
     enrichment.getTreatedSamples().get(0).setContainer(new Well(248L));
     enrichment.getTreatedSamples().get(0).setSample(new Control(444L));
     enrichment.getTreatedSamples().get(0).setComment("test");
@@ -120,8 +123,7 @@ public class EnrichmentActivityServiceTest {
     newTreatedSample.setSample(new SubmissionSample(562L));
     enrichment.getTreatedSamples().add(newTreatedSample);
 
-    Optional<Activity> optionalActivity =
-        enrichmentActivityService.update(enrichment, "test explanation");
+    Optional<Activity> optionalActivity = service.update(enrichment, "test explanation");
 
     assertTrue(optionalActivity.isPresent());
     Activity activity = optionalActivity.get();
@@ -173,11 +175,10 @@ public class EnrichmentActivityServiceTest {
 
   @Test
   public void update_NoChanges() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 7L);
-    entityManager.detach(enrichment);
+    Enrichment enrichment = repository.findOne(7L);
+    detach(enrichment);
 
-    Optional<Activity> optionalActivity =
-        enrichmentActivityService.update(enrichment, "test explanation");
+    Optional<Activity> optionalActivity = service.update(enrichment, "test explanation");
 
     assertFalse(optionalActivity.isPresent());
   }
@@ -186,7 +187,7 @@ public class EnrichmentActivityServiceTest {
   public void undoErroneous() {
     Enrichment enrichment = new Enrichment(7L);
 
-    Activity activity = enrichmentActivityService.undoErroneous(enrichment, "unit_test");
+    Activity activity = service.undoErroneous(enrichment, "unit_test");
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -200,7 +201,7 @@ public class EnrichmentActivityServiceTest {
   public void undoFailed_NoBan() {
     Enrichment enrichment = new Enrichment(7L);
 
-    Activity activity = enrichmentActivityService.undoFailed(enrichment, "unit_test", null);
+    Activity activity = service.undoFailed(enrichment, "unit_test", null);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
@@ -219,8 +220,7 @@ public class EnrichmentActivityServiceTest {
     bannedContainers.add(sourceTube);
     bannedContainers.add(well);
 
-    Activity activity =
-        enrichmentActivityService.undoFailed(enrichment, "unit_test", bannedContainers);
+    Activity activity = service.undoFailed(enrichment, "unit_test", bannedContainers);
 
     assertEquals(ActionType.DELETE, activity.getActionType());
     assertEquals("treatment", activity.getTableName());

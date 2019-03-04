@@ -34,21 +34,25 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.plate.Well;
+import ca.qc.ircm.proview.plate.WellRepository;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Protocol;
+import ca.qc.ircm.proview.treatment.ProtocolRepository;
 import ca.qc.ircm.proview.treatment.ProtocolService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -57,31 +61,37 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class EnrichmentServiceTest {
-  private EnrichmentService enrichmentService;
-  @PersistenceContext
-  private EntityManager entityManager;
+public class EnrichmentServiceTest extends AbstractServiceTestCase {
   @Inject
-  private JPAQueryFactory queryFactory;
-  @Mock
+  private EnrichmentService service;
+  @Inject
+  private EnrichmentRepository repository;
+  @Inject
+  private ProtocolRepository protocolRepository;
+  @Inject
+  private SubmissionSampleRepository submissionSampleRepository;
+  @Inject
+  private TubeRepository tubeRepository;
+  @Inject
+  private WellRepository wellRepository;
+  @MockBean
   private ProtocolService protocolService;
-  @Mock
+  @MockBean
   private EnrichmentActivityService enrichmentActivityService;
-  @Mock
+  @MockBean
   private ActivityService activityService;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
@@ -94,15 +104,13 @@ public class EnrichmentServiceTest {
    */
   @Before
   public void beforeTest() {
-    enrichmentService = new EnrichmentService(entityManager, queryFactory, protocolService,
-        enrichmentActivityService, activityService, authorizationService);
     user = new User(4L, "sylvain.tessier@ircm.qc.ca");
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
   @Test
   public void get() {
-    Enrichment enrichment = enrichmentService.get(7L);
+    Enrichment enrichment = service.get(7L);
 
     verify(authorizationService).checkAdminRole();
     assertNotNull(enrichment);
@@ -127,7 +135,7 @@ public class EnrichmentServiceTest {
 
   @Test
   public void get_Null() {
-    Enrichment enrichment = enrichmentService.get(null);
+    Enrichment enrichment = service.get(null);
 
     assertNull(enrichment);
   }
@@ -137,8 +145,8 @@ public class EnrichmentServiceTest {
     Enrichment enrichment = new Enrichment();
     enrichment.setProtocol(new Protocol(2L));
     final List<TreatedSample> treatedSamples = new ArrayList<>();
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    entityManager.detach(sample);
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
+    detach(sample);
     Tube tube = new Tube(1L);
     TreatedSample treatedSample = new TreatedSample();
     treatedSample.setComment("unit test");
@@ -148,14 +156,14 @@ public class EnrichmentServiceTest {
     enrichment.setTreatedSamples(treatedSamples);
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
-    enrichmentService.insert(enrichment);
+    service.insert(enrichment);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).insert(eq(enrichment));
     verify(activityService).insert(eq(activity));
     assertNotNull(enrichment.getId());
-    enrichment = enrichmentService.get(enrichment.getId());
+    enrichment = service.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionExplanation());
     assertEquals(user, enrichment.getUser());
@@ -170,7 +178,7 @@ public class EnrichmentServiceTest {
     assertEquals((Long) 1L, treatedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
-    sample = entityManager.find(SubmissionSample.class, 1L);
+    sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.ENRICHED, sample.getStatus());
   }
 
@@ -179,8 +187,8 @@ public class EnrichmentServiceTest {
     Enrichment enrichment = new Enrichment();
     enrichment.setProtocol(new Protocol(2L));
     final List<TreatedSample> treatedSamples = new ArrayList<>();
-    SubmissionSample sample = entityManager.find(SubmissionSample.class, 1L);
-    entityManager.detach(sample);
+    SubmissionSample sample = submissionSampleRepository.findOne(1L);
+    detach(sample);
     Well well = new Well(128L);
     TreatedSample treatedSample = new TreatedSample();
     treatedSample.setComment("unit test");
@@ -190,14 +198,14 @@ public class EnrichmentServiceTest {
     enrichment.setTreatedSamples(treatedSamples);
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
-    enrichmentService.insert(enrichment);
+    service.insert(enrichment);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).insert(eq(enrichment));
     verify(activityService).insert(eq(activity));
     assertNotNull(enrichment.getId());
-    enrichment = enrichmentService.get(enrichment.getId());
+    enrichment = service.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionExplanation());
     assertEquals(user, enrichment.getUser());
@@ -212,7 +220,7 @@ public class EnrichmentServiceTest {
     assertEquals((Long) 1L, treatedSample.getSample().getId());
     assertEquals(SampleContainerType.WELL, treatedSample.getContainer().getType());
     assertEquals((Long) 128L, treatedSample.getContainer().getId());
-    sample = entityManager.find(SubmissionSample.class, 1L);
+    sample = submissionSampleRepository.findOne(1L);
     assertEquals(SampleStatus.ENRICHED, sample.getStatus());
   }
 
@@ -220,12 +228,9 @@ public class EnrichmentServiceTest {
   public void insert_SamplesFromMultipleUser() {
     Enrichment enrichment = new Enrichment();
     enrichment.setProtocol(new Protocol(2L));
-    Tube tube1 = entityManager.find(Tube.class, 3L);
-    Tube tube2 = entityManager.find(Tube.class, 8L);
-    entityManager.detach(tube1);
-    entityManager.detach(tube1.getSample());
-    entityManager.detach(tube2);
-    entityManager.detach(tube2.getSample());
+    Tube tube1 = tubeRepository.findOne(3L);
+    Tube tube2 = tubeRepository.findOne(8L);
+    detach(tube1, tube1.getSample(), tube2, tube2.getSample());
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample1 = new TreatedSample();
     treatedSample1.setComment("unit test");
@@ -241,7 +246,7 @@ public class EnrichmentServiceTest {
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
     try {
-      enrichmentService.insert(enrichment);
+      service.insert(enrichment);
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // Success.
@@ -252,12 +257,9 @@ public class EnrichmentServiceTest {
   public void insert_SamplesFromOneUserAndControl() {
     Enrichment enrichment = new Enrichment();
     enrichment.setProtocol(new Protocol(2L));
-    Tube tube1 = entityManager.find(Tube.class, 3L);
-    Tube tube2 = entityManager.find(Tube.class, 4L);
-    entityManager.detach(tube1);
-    entityManager.detach(tube1.getSample());
-    entityManager.detach(tube2);
-    entityManager.detach(tube2.getSample());
+    Tube tube1 = tubeRepository.findOne(3L);
+    Tube tube2 = tubeRepository.findOne(4L);
+    detach(tube1, tube1.getSample(), tube2, tube2.getSample());
     final List<TreatedSample> treatedSamples = new ArrayList<>();
     TreatedSample treatedSample1 = new TreatedSample();
     treatedSample1.setComment("unit test");
@@ -273,7 +275,7 @@ public class EnrichmentServiceTest {
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
     try {
-      enrichmentService.insert(enrichment);
+      service.insert(enrichment);
     } catch (IllegalArgumentException e) {
       fail("IllegalArgumentException not expected");
     }
@@ -295,20 +297,20 @@ public class EnrichmentServiceTest {
     treatedSamples.add(treatedSample);
     enrichment.setTreatedSamples(treatedSamples);
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, Protocol.class));
+      protocolRepository.save(i.getArgumentAt(0, Protocol.class));
       return null;
     }).when(protocolService).insert(any());
     when(enrichmentActivityService.insert(any(Enrichment.class))).thenReturn(activity);
 
-    enrichmentService.insert(enrichment);
+    service.insert(enrichment);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(protocolService).insert(eq(protocol));
     verify(enrichmentActivityService).insert(eq(enrichment));
     verify(activityService).insert(eq(activity));
     assertNotNull(enrichment.getId());
-    enrichment = enrichmentService.get(enrichment.getId());
+    enrichment = service.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionExplanation());
     assertEquals(user, enrichment.getUser());
@@ -328,22 +330,22 @@ public class EnrichmentServiceTest {
 
   @Test
   public void update() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
-    entityManager.detach(enrichment);
-    enrichment.getTreatedSamples().stream().forEach(ts -> entityManager.detach(ts));
-    enrichment.setProtocol(entityManager.find(Protocol.class, 4L));
+    Enrichment enrichment = repository.findOne(223L);
+    detach(enrichment);
+    enrichment.getTreatedSamples().stream().forEach(ts -> detach(ts));
+    enrichment.setProtocol(protocolRepository.findOne(4L));
     enrichment.getTreatedSamples().get(0).setComment("test update");
     enrichment.getTreatedSamples().get(0).setContainer(new Well(248L));
     enrichment.getTreatedSamples().get(0).setSample(new Control(444L));
     when(enrichmentActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    enrichmentService.update(enrichment, "test explanation");
+    service.update(enrichment, "test explanation");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).update(eq(enrichment), eq("test explanation"));
     verify(activityService).insert(activity);
-    enrichment = entityManager.find(Enrichment.class, 223L);
+    enrichment = repository.findOne(223L);
     assertNotNull(enrichment);
     assertEquals((Long) 4L, enrichment.getProtocol().getId());
     assertEquals((Long) 248L, enrichment.getTreatedSamples().get(0).getContainer().getId());
@@ -353,72 +355,72 @@ public class EnrichmentServiceTest {
 
   @Test
   public void update_NewProtocol() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
-    entityManager.detach(enrichment);
+    Enrichment enrichment = repository.findOne(223L);
+    detach(enrichment);
     Protocol protocol = new Protocol(null, "test protocol");
     protocol.setType(Protocol.Type.ENRICHMENT);
     enrichment.setProtocol(protocol);
     when(enrichmentActivityService.update(any(), any())).thenReturn(Optional.of(activity));
     doAnswer(i -> {
-      entityManager.persist(i.getArgumentAt(0, Protocol.class));
+      protocolRepository.save(i.getArgumentAt(0, Protocol.class));
       return null;
     }).when(protocolService).insert(any());
 
-    enrichmentService.update(enrichment, "test explanation");
+    service.update(enrichment, "test explanation");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(protocolService).insert(eq(protocol));
     verify(enrichmentActivityService).update(eq(enrichment), eq("test explanation"));
     verify(activityService).insert(activity);
-    enrichment = entityManager.find(Enrichment.class, 223L);
+    enrichment = repository.findOne(223L);
     assertNotNull(enrichment);
     assertNotNull(enrichment.getProtocol().getId());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void update_RemoveTreatedSample() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
-    entityManager.detach(enrichment);
-    enrichment.getTreatedSamples().stream().forEach(ts -> entityManager.detach(ts));
+    Enrichment enrichment = repository.findOne(223L);
+    detach(enrichment);
+    enrichment.getTreatedSamples().stream().forEach(ts -> detach(ts));
     enrichment.getTreatedSamples().remove(1);
     when(enrichmentActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    enrichmentService.update(enrichment, "test explanation");
+    service.update(enrichment, "test explanation");
   }
 
   @Test
   public void update_NoActivity() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
-    entityManager.detach(enrichment);
+    Enrichment enrichment = repository.findOne(223L);
+    detach(enrichment);
     when(enrichmentActivityService.update(any(), any())).thenReturn(Optional.empty());
 
-    enrichmentService.update(enrichment, "test explanation");
+    service.update(enrichment, "test explanation");
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).update(eq(enrichment), eq("test explanation"));
     verify(activityService, never()).insert(any());
-    enrichment = entityManager.find(Enrichment.class, 223L);
+    enrichment = repository.findOne(223L);
     assertNotNull(enrichment);
     assertEquals((Long) 2L, enrichment.getProtocol().getId());
   }
 
   @Test
   public void undo_NoBan() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
-    entityManager.detach(enrichment);
+    Enrichment enrichment = repository.findOne(223L);
+    detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undo(enrichment, "fail unit test", false);
+    service.undo(enrichment, "fail unit test", false);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentService.get(enrichment.getId());
+    enrichment = service.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
@@ -428,25 +430,25 @@ public class EnrichmentServiceTest {
 
   @Test
   public void undo_Ban() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 223L);
-    entityManager.detach(enrichment);
+    Enrichment enrichment = repository.findOne(223L);
+    detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undo(enrichment, "fail unit test", true);
+    service.undo(enrichment, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentService.get(enrichment.getId());
+    enrichment = service.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
-    Well well = entityManager.find(Well.class, 800L);
+    Well well = wellRepository.findOne(800L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 812L);
+    well = wellRepository.findOne(812L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(2, bannedContainers.size());
@@ -456,29 +458,29 @@ public class EnrichmentServiceTest {
 
   @Test
   public void undo_Ban_Transfer() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 225L);
-    entityManager.detach(enrichment);
+    Enrichment enrichment = repository.findOne(225L);
+    detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undo(enrichment, "fail unit test", true);
+    service.undo(enrichment, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentService.get(enrichment.getId());
+    enrichment = service.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
-    Well well = entityManager.find(Well.class, 801L);
+    Well well = wellRepository.findOne(801L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 813L);
+    well = wellRepository.findOne(813L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 896L);
+    well = wellRepository.findOne(896L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 908L);
+    well = wellRepository.findOne(908L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(4, bannedContainers.size());
@@ -490,33 +492,33 @@ public class EnrichmentServiceTest {
 
   @Test
   public void undo_Ban_Fractionation() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 226L);
-    entityManager.detach(enrichment);
+    Enrichment enrichment = repository.findOne(226L);
+    detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undo(enrichment, "fail unit test", true);
+    service.undo(enrichment, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentService.get(enrichment.getId());
+    enrichment = service.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
-    Well well = entityManager.find(Well.class, 825L);
+    Well well = wellRepository.findOne(825L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 837L);
+    well = wellRepository.findOne(837L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 897L);
+    well = wellRepository.findOne(897L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 909L);
+    well = wellRepository.findOne(909L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 921L);
+    well = wellRepository.findOne(921L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 933L);
+    well = wellRepository.findOne(933L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(6, bannedContainers.size());
@@ -530,36 +532,36 @@ public class EnrichmentServiceTest {
 
   @Test
   public void undo_Ban_Transfer_Fractionation() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 227L);
-    entityManager.detach(enrichment);
+    Enrichment enrichment = repository.findOne(227L);
+    detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undo(enrichment, "fail unit test", true);
+    service.undo(enrichment, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentService.get(enrichment.getId());
+    enrichment = service.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
-    Well well = entityManager.find(Well.class, 849L);
+    Well well = wellRepository.findOne(849L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 861L);
+    well = wellRepository.findOne(861L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 898L);
+    well = wellRepository.findOne(898L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 910L);
+    well = wellRepository.findOne(910L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 803L);
+    well = wellRepository.findOne(803L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 815L);
+    well = wellRepository.findOne(815L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 827L);
+    well = wellRepository.findOne(827L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 839L);
+    well = wellRepository.findOne(839L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(8, bannedContainers.size());
@@ -575,40 +577,40 @@ public class EnrichmentServiceTest {
 
   @Test
   public void undo_Ban_Fractionation_Transfer() {
-    Enrichment enrichment = entityManager.find(Enrichment.class, 228L);
-    entityManager.detach(enrichment);
+    Enrichment enrichment = repository.findOne(228L);
+    detach(enrichment);
     when(enrichmentActivityService.undoFailed(any(Enrichment.class), any(String.class),
         anyCollectionOf(SampleContainer.class))).thenReturn(activity);
 
-    enrichmentService.undo(enrichment, "fail unit test", true);
+    service.undo(enrichment, "fail unit test", true);
 
-    entityManager.flush();
+    repository.flush();
     verify(enrichmentActivityService).undoFailed(eq(enrichment), eq("fail unit test"),
         containersCaptor.capture());
     verify(activityService).insert(eq(activity));
-    enrichment = enrichmentService.get(enrichment.getId());
+    enrichment = service.get(enrichment.getId());
     assertNotNull(enrichment);
     assertEquals(true, enrichment.isDeleted());
     assertEquals("fail unit test", enrichment.getDeletionExplanation());
-    Well well = entityManager.find(Well.class, 873L);
+    Well well = wellRepository.findOne(873L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 885L);
+    well = wellRepository.findOne(885L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 899L);
+    well = wellRepository.findOne(899L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 911L);
+    well = wellRepository.findOne(911L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 923L);
+    well = wellRepository.findOne(923L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 935L);
+    well = wellRepository.findOne(935L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 802L);
+    well = wellRepository.findOne(802L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 814L);
+    well = wellRepository.findOne(814L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 826L);
+    well = wellRepository.findOne(826L);
     assertEquals(true, well.isBanned());
-    well = entityManager.find(Well.class, 838L);
+    well = wellRepository.findOne(838L);
     assertEquals(true, well.isBanned());
     Collection<SampleContainer> bannedContainers = containersCaptor.getValue();
     assertEquals(10, bannedContainers.size());
