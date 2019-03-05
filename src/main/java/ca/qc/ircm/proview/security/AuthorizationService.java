@@ -33,17 +33,19 @@ import ca.qc.ircm.proview.msanalysis.QAcquisition;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Service;
@@ -58,17 +60,16 @@ public class AuthorizationService {
   private static final String ADMIN = UserRole.ADMIN.name();
   private static final String MANAGER = UserRole.MANAGER.name();
   private static final String USER = UserRole.USER.name();
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private UserRepository repository;
+  @Inject
+  private SampleRepository sampleRepository;
+  @Inject
+  private SubmissionRepository submissionRepository;
   @Inject
   private JPAQueryFactory queryFactory;
 
   protected AuthorizationService() {
-  }
-
-  protected AuthorizationService(EntityManager entityManager, JPAQueryFactory queryFactory) {
-    this.entityManager = entityManager;
-    this.queryFactory = queryFactory;
   }
 
   private Subject getSubject() {
@@ -80,7 +81,7 @@ public class AuthorizationService {
       return null;
     }
 
-    return entityManager.find(User.class, id);
+    return repository.findOne(id);
   }
 
   private Sample getSample(Long id) {
@@ -88,7 +89,7 @@ public class AuthorizationService {
       return null;
     }
 
-    return entityManager.find(Sample.class, id);
+    return sampleRepository.findOne(id);
   }
 
   private Submission getSubmission(Long id) {
@@ -96,7 +97,7 @@ public class AuthorizationService {
       return null;
     }
 
-    return entityManager.find(Submission.class, id);
+    return submissionRepository.findOne(id);
   }
 
   /**
@@ -414,12 +415,9 @@ public class AuthorizationService {
   }
 
   private boolean submissionAfterApproved(Submission submissionParam) {
-    JPAQuery<Long> query = queryFactory.select(submission.id);
-    query.from(submission);
-    query.join(submission.samples, submissionSample);
-    query.where(submission.id.eq(submissionParam.getId()));
-    query.where(submissionSample.status.gt(SampleStatus.WAITING));
-    return query.fetchCount() > 0;
+    BooleanExpression predicate = submission.id.eq(submissionParam.getId())
+        .and(submission.samples.any().status.gt(SampleStatus.WAITING));
+    return submissionRepository.count(predicate) > 0;
   }
 
   /**

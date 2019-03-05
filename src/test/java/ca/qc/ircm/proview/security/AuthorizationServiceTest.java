@@ -41,11 +41,8 @@ import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Locale;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.Permission;
@@ -58,11 +55,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class AuthorizationServiceTest {
-  private AuthorizationService authorizationService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private JPAQueryFactory queryFactory;
+  private AuthorizationService authorizationService;
   private Subject subject;
 
   /**
@@ -70,7 +64,6 @@ public class AuthorizationServiceTest {
    */
   @Before
   public void beforeTest() {
-    authorizationService = new AuthorizationService(entityManager, queryFactory);
     subject = SecurityUtils.getSubject();
   }
 
