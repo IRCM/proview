@@ -32,12 +32,10 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import java.time.Instant;
-import java.util.Collections;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -62,7 +60,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -71,49 +69,43 @@ public class AuthenticationServiceTest {
   private static final String USER = UserRole.USER.name();
   private static final String MANAGER = UserRole.MANAGER.name();
   private static final String ADMIN = UserRole.ADMIN.name();
-  private AuthenticationService authenticationService;
-  @PersistenceContext
-  private EntityManager entityManager;
   @Inject
-  private SecurityConfiguration realSecurityConfiguration;
-  @Mock
+  private AuthenticationService service;
+  @Inject
+  private UserRepository repository;
+  @Inject
   private SecurityConfiguration securityConfiguration;
-  @Mock
+  @MockBean
   private LdapConfiguration ldapConfiguration;
-  @Mock
+  @MockBean
   private LdapService ldapService;
   @Captor
   private ArgumentCaptor<PrincipalCollection> principalCollectionCaptor;
   @Captor
   private ArgumentCaptor<AuthenticationToken> tokenCaptor;
-  private String realmName = "proviewRealm";
-  private Subject subject;
+  private String realmName;
   private PasswordVersion passwordVersion;
-  private int maximumSignAttemps = 3;
-  private long maximumSignAttempsDelay = 300000;
-  private int disableSignAttemps = 15;
+  private int maximumSignAttemps;
+  private long maximumSignAttempsDelay;
+  private int disableSignAttemps;
+  private Subject subject;
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() {
-    authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, ldapService);
-    passwordVersion = realSecurityConfiguration.getPasswordVersion();
-    when(securityConfiguration.getPasswordVersions())
-        .thenReturn(Collections.nCopies(1, passwordVersion));
-    when(securityConfiguration.getPasswordVersion()).thenReturn(passwordVersion);
-    when(securityConfiguration.realmName()).thenReturn(realmName);
-    when(securityConfiguration.maximumSignAttemps()).thenReturn(maximumSignAttemps);
-    when(securityConfiguration.maximumSignAttempsDelay()).thenReturn(maximumSignAttempsDelay);
-    when(securityConfiguration.disableSignAttemps()).thenReturn(disableSignAttemps);
+    passwordVersion = securityConfiguration.getPasswordVersion();
+    realmName = securityConfiguration.realmName();
+    maximumSignAttemps = securityConfiguration.maximumSignAttemps();
+    maximumSignAttempsDelay = securityConfiguration.maximumSignAttempsDelay();
+    disableSignAttemps = securityConfiguration.disableSignAttemps();
     subject = SecurityUtils.getSubject();
   }
 
   @Test
   public void sign() throws Throwable {
-    authenticationService.sign("christian.poitras@ircm.qc.ca", "password", false);
+    service.sign("christian.poitras@ircm.qc.ca", "password", false);
 
     verify(subject).login(tokenCaptor.capture());
     assertEquals(true, tokenCaptor.getValue() instanceof UsernamePasswordToken);
@@ -125,7 +117,7 @@ public class AuthenticationServiceTest {
 
   @Test
   public void sign_Remember() throws Throwable {
-    authenticationService.sign("christian.poitras@ircm.qc.ca", "password", true);
+    service.sign("christian.poitras@ircm.qc.ca", "password", true);
 
     verify(subject).login(tokenCaptor.capture());
     assertEquals(true, tokenCaptor.getValue() instanceof UsernamePasswordToken);
@@ -140,7 +132,7 @@ public class AuthenticationServiceTest {
     doThrow(new AuthenticationException("test")).when(subject).login(tokenCaptor.capture());
 
     try {
-      authenticationService.sign("christian.poitras@ircm.qc.ca", "password", true);
+      service.sign("christian.poitras@ircm.qc.ca", "password", true);
       fail("Expected AuthenticationException");
     } catch (AuthenticationException e) {
       // Ignore.
@@ -157,7 +149,7 @@ public class AuthenticationServiceTest {
   @Test
   public void sign_NullUsername() throws Throwable {
     try {
-      authenticationService.sign(null, "password", false);
+      service.sign(null, "password", false);
       fail("Expected AuthenticationException");
     } catch (AuthenticationException e) {
       // Ignore.
@@ -167,7 +159,7 @@ public class AuthenticationServiceTest {
   @Test
   public void sign_NullPassword() throws Throwable {
     try {
-      authenticationService.sign("christian.poitras@ircm.qc.ca", null, false);
+      service.sign("christian.poitras@ircm.qc.ca", null, false);
       fail("Expected AuthenticationException");
     } catch (AuthenticationException e) {
       // Ignore.
@@ -176,7 +168,7 @@ public class AuthenticationServiceTest {
 
   @Test
   public void signout() throws Throwable {
-    authenticationService.signout();
+    service.signout();
 
     verify(subject).logout();
   }
@@ -185,7 +177,7 @@ public class AuthenticationServiceTest {
   public void runAs() throws Throwable {
     User user = new User(3L);
 
-    authenticationService.runAs(user);
+    service.runAs(user);
 
     verify(subject).checkRole(UserRole.ADMIN.name());
     verify(subject).runAs(principalCollectionCaptor.capture());
@@ -201,7 +193,7 @@ public class AuthenticationServiceTest {
     user.setAdmin(true);
 
     try {
-      authenticationService.runAs(user);
+      service.runAs(user);
       fail("Expected AuthorizationException");
     } catch (AuthorizationException e) {
       // Ignore.
@@ -211,7 +203,7 @@ public class AuthenticationServiceTest {
   @Test
   public void runAs_Null() throws Throwable {
     try {
-      authenticationService.runAs(null);
+      service.runAs(null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Ignore.
@@ -222,7 +214,7 @@ public class AuthenticationServiceTest {
   public void stopRunAs() throws Throwable {
     when(subject.releaseRunAs()).thenReturn(new SimplePrincipalCollection(2L, realmName));
 
-    Long userId = authenticationService.stopRunAs();
+    Long userId = service.stopRunAs();
 
     verify(subject).releaseRunAs();
     assertEquals((Long) 2L, userId);
@@ -233,7 +225,7 @@ public class AuthenticationServiceTest {
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
 
-    AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
+    AuthenticationInfo authentication = service.getAuthenticationInfo(token);
 
     assertEquals(2L, authentication.getPrincipals().getPrimaryPrincipal());
     assertEquals(1, authentication.getPrincipals().fromRealm(realmName).size());
@@ -246,7 +238,7 @@ public class AuthenticationServiceTest {
         "d04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d"
             + "58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d",
         saltedAuthentication.getCredentialsSalt().toHex());
-    User user = entityManager.find(User.class, 2L);
+    User user = repository.findOne(2L);
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
@@ -258,7 +250,7 @@ public class AuthenticationServiceTest {
     UsernamePasswordToken token =
         new UsernamePasswordToken("benoit.coulombe@ircm.qc.ca", "password");
 
-    AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
+    AuthenticationInfo authentication = service.getAuthenticationInfo(token);
 
     assertEquals(3L, authentication.getPrincipals().getPrimaryPrincipal());
     assertEquals(1, authentication.getPrincipals().fromRealm(realmName).size());
@@ -271,7 +263,7 @@ public class AuthenticationServiceTest {
         "4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8ab57cde3f"
             + "c86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535",
         saltedAuthentication.getCredentialsSalt().toHex());
-    User user = entityManager.find(User.class, 3L);
+    User user = repository.findOne(3L);
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
@@ -283,28 +275,28 @@ public class AuthenticationServiceTest {
     UsernamePasswordToken token =
         new UsernamePasswordToken("francois.robert@ircm.qc.ca", "password");
 
-    authenticationService.getAuthenticationInfo(token);
+    service.getAuthenticationInfo(token);
   }
 
   @Test(expected = DisabledAccountException.class)
   public void getAuthenticationInfo_Inactive() throws Throwable {
     UsernamePasswordToken token = new UsernamePasswordToken("james.johnson@ircm.qc.ca", "password");
 
-    authenticationService.getAuthenticationInfo(token);
+    service.getAuthenticationInfo(token);
   }
 
   @Test(expected = UnknownAccountException.class)
   public void getAuthenticationInfo_NotExists() throws Throwable {
     UsernamePasswordToken token = new UsernamePasswordToken("non.user@ircm.qc.ca", "password");
 
-    authenticationService.getAuthenticationInfo(token);
+    service.getAuthenticationInfo(token);
   }
 
   @Test(expected = UnknownAccountException.class)
   public void getAuthenticationInfo_NullUsername() throws Throwable {
     UsernamePasswordToken token = new UsernamePasswordToken(null, "password");
 
-    authenticationService.getAuthenticationInfo(token);
+    service.getAuthenticationInfo(token);
   }
 
   @Test(expected = UnknownAccountException.class)
@@ -312,7 +304,7 @@ public class AuthenticationServiceTest {
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", (String) null);
 
-    authenticationService.getAuthenticationInfo(token);
+    service.getAuthenticationInfo(token);
   }
 
   @Test
@@ -321,13 +313,13 @@ public class AuthenticationServiceTest {
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password2");
 
     try {
-      authenticationService.getAuthenticationInfo(token);
+      service.getAuthenticationInfo(token);
       fail("Expected IncorrectCredentialsException");
     } catch (IncorrectCredentialsException e) {
       // Success.
     }
 
-    User user = entityManager.find(User.class, 2L);
+    User user = repository.findOne(2L);
     assertEquals(1, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
@@ -338,12 +330,12 @@ public class AuthenticationServiceTest {
   public void getAuthenticationInfo_NotTooManyAttempts() throws Throwable {
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
-    User user = entityManager.find(User.class, 2L);
+    User user = repository.findOne(2L);
     user.setSignAttempts(maximumSignAttemps - 1);
     Instant lastSignAttempt = Instant.now();
     user.setLastSignAttempt(lastSignAttempt);
 
-    authenticationService.getAuthenticationInfo(token);
+    service.getAuthenticationInfo(token);
 
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
@@ -355,13 +347,13 @@ public class AuthenticationServiceTest {
   public void getAuthenticationInfo_TooManyAttempts() throws Throwable {
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
-    User user = entityManager.find(User.class, 2L);
+    User user = repository.findOne(2L);
     user.setSignAttempts(maximumSignAttemps);
     Instant lastSignAttempt = Instant.now();
     user.setLastSignAttempt(lastSignAttempt);
 
     try {
-      authenticationService.getAuthenticationInfo(token);
+      service.getAuthenticationInfo(token);
       fail("Expected ExcessiveAttemptsException");
     } catch (ExcessiveAttemptsException e) {
       // Success.
@@ -376,11 +368,11 @@ public class AuthenticationServiceTest {
   public void getAuthenticationInfo_CanAttemptAgain_Success() throws Throwable {
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password");
-    User user = entityManager.find(User.class, 2L);
+    User user = repository.findOne(2L);
     user.setSignAttempts(maximumSignAttemps);
     user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
 
-    authenticationService.getAuthenticationInfo(token);
+    service.getAuthenticationInfo(token);
 
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
@@ -392,13 +384,13 @@ public class AuthenticationServiceTest {
   public void getAuthenticationInfo_CanAttemptAgain_Fail() throws Throwable {
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "wrong");
-    User user = entityManager.find(User.class, 2L);
+    User user = repository.findOne(2L);
     user.setSignAttempts(maximumSignAttemps);
     user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
     doThrow(new AuthenticationException("test")).when(subject).login(tokenCaptor.capture());
 
     try {
-      authenticationService.getAuthenticationInfo(token);
+      service.getAuthenticationInfo(token);
       fail("Expected IncorrectCredentialsException");
     } catch (IncorrectCredentialsException e) {
       // Success.
@@ -414,13 +406,13 @@ public class AuthenticationServiceTest {
   public void getAuthenticationInfo_CanAttemptAgain_Disable() throws Throwable {
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "wrong");
-    User user = entityManager.find(User.class, 2L);
+    User user = repository.findOne(2L);
     user.setSignAttempts(disableSignAttemps - 1);
     user.setLastSignAttempt(Instant.now().minusMillis(maximumSignAttempsDelay).minusMillis(10));
     doThrow(new AuthenticationException("test")).when(subject).login(tokenCaptor.capture());
 
     try {
-      authenticationService.getAuthenticationInfo(token);
+      service.getAuthenticationInfo(token);
       fail("Expected IncorrectCredentialsException");
     } catch (IncorrectCredentialsException e) {
       // Success.
@@ -435,15 +427,13 @@ public class AuthenticationServiceTest {
 
   @Test
   public void getAuthenticationInfo_Ldap() throws Throwable {
-    authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, ldapService);
     when(ldapConfiguration.enabled()).thenReturn(true);
     when(ldapService.getUsername(any())).thenReturn("poitrasc");
     when(ldapService.isPasswordValid(any(), any())).thenReturn(true);
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password2");
 
-    AuthenticationInfo authentication = authenticationService.getAuthenticationInfo(token);
+    AuthenticationInfo authentication = service.getAuthenticationInfo(token);
 
     verify(ldapService).getUsername("christian.poitras@ircm.qc.ca");
     verify(ldapService).isPasswordValid("poitrasc", "password2");
@@ -458,7 +448,7 @@ public class AuthenticationServiceTest {
         "d04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d"
             + "58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d",
         saltedAuthentication.getCredentialsSalt().toHex());
-    User user = entityManager.find(User.class, 2L);
+    User user = repository.findOne(2L);
     assertEquals(0, user.getSignAttempts());
     assertTrue(Instant.now().minusMillis(5000).isBefore(user.getLastSignAttempt()));
     assertTrue(Instant.now().plusMillis(5000).isAfter(user.getLastSignAttempt()));
@@ -466,42 +456,38 @@ public class AuthenticationServiceTest {
 
   @Test(expected = IncorrectCredentialsException.class)
   public void getAuthenticationInfo_LdapAndLocalInvalid() throws Throwable {
-    authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, ldapService);
     when(ldapConfiguration.enabled()).thenReturn(true);
     when(ldapService.getUsername(any())).thenReturn("poitrasc");
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password2");
 
-    authenticationService.getAuthenticationInfo(token);
+    service.getAuthenticationInfo(token);
   }
 
   @Test(expected = IncorrectCredentialsException.class)
   public void getAuthenticationInfo_LdapNotExists() throws Throwable {
-    authenticationService = new AuthenticationService(entityManager, securityConfiguration,
-        ldapConfiguration, ldapService);
     when(ldapConfiguration.enabled()).thenReturn(true);
     UsernamePasswordToken token =
         new UsernamePasswordToken("christian.poitras@ircm.qc.ca", "password2");
 
-    authenticationService.getAuthenticationInfo(token);
+    service.getAuthenticationInfo(token);
   }
 
   @Test
   public void isRobot() throws Throwable {
-    assertEquals(true, authenticationService.isRobot(1L));
-    assertEquals(false, authenticationService.isRobot(2L));
+    assertEquals(true, service.isRobot(1L));
+    assertEquals(false, service.isRobot(2L));
   }
 
   @Test
   public void isRobot_Null() throws Throwable {
-    assertEquals(false, authenticationService.isRobot(null));
+    assertEquals(false, service.isRobot(null));
   }
 
   @Test
   public void getAuthorizationInfo_3() {
     AuthorizationInfo authorization =
-        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(3L, realmName));
+        service.getAuthorizationInfo(new SimplePrincipalCollection(3L, realmName));
 
     assertEquals(true, authorization.getRoles().contains(USER));
     assertEquals(true, authorization.getRoles().contains(MANAGER));
@@ -533,7 +519,7 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthorizationInfo_2() {
     AuthorizationInfo authorization =
-        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(2L, realmName));
+        service.getAuthorizationInfo(new SimplePrincipalCollection(2L, realmName));
 
     assertEquals(true, authorization.getRoles().contains(USER));
     assertEquals(true, authorization.getRoles().contains(MANAGER));
@@ -565,7 +551,7 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthorizationInfo_5() {
     AuthorizationInfo authorization =
-        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(5L, realmName));
+        service.getAuthorizationInfo(new SimplePrincipalCollection(5L, realmName));
 
     assertEquals(true, authorization.getRoles().contains(USER));
     assertEquals(false, authorization.getRoles().contains(MANAGER));
@@ -597,7 +583,7 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthorizationInfo_Invalid() {
     AuthorizationInfo authorization =
-        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(6L, realmName));
+        service.getAuthorizationInfo(new SimplePrincipalCollection(6L, realmName));
 
     assertEquals(false, authorization.getRoles().contains(USER));
     assertEquals(false, authorization.getRoles().contains(MANAGER));
@@ -629,7 +615,7 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthorizationInfo_Inactive() {
     AuthorizationInfo authorization =
-        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(12L, realmName));
+        service.getAuthorizationInfo(new SimplePrincipalCollection(12L, realmName));
 
     assertEquals(false, authorization.getRoles().contains(USER));
     assertEquals(false, authorization.getRoles().contains(MANAGER));
@@ -661,7 +647,7 @@ public class AuthenticationServiceTest {
   @Test
   public void getAuthorizationInfo_1() {
     AuthorizationInfo authorization =
-        authenticationService.getAuthorizationInfo(new SimplePrincipalCollection(1L, realmName));
+        service.getAuthorizationInfo(new SimplePrincipalCollection(1L, realmName));
 
     assertEquals(true, authorization.getRoles().contains(USER));
     assertEquals(true, authorization.getRoles().contains(MANAGER));
@@ -672,7 +658,7 @@ public class AuthenticationServiceTest {
 
   @Test
   public void getAuthorizationInfo_Null() {
-    AuthorizationInfo authorization = authenticationService.getAuthorizationInfo(null);
+    AuthorizationInfo authorization = service.getAuthorizationInfo(null);
     assertNull(authorization.getRoles());
     assertNull(authorization.getStringPermissions());
     assertNull(authorization.getObjectPermissions());
@@ -689,14 +675,14 @@ public class AuthenticationServiceTest {
 
   @Test
   public void hashPassword() throws Throwable {
-    HashedPassword hashedPassword = authenticationService.hashPassword("password");
+    HashedPassword hashedPassword = service.hashPassword("password");
     assertNotNull(hashedPassword.getPassword());
     assertNotNull(hashedPassword.getSalt());
     SimpleHash hash = new SimpleHash(passwordVersion.getAlgorithm(), "password",
         Hex.decode(hashedPassword.getSalt().toCharArray()), passwordVersion.getIterations());
     assertEquals(hash.toHex(), hashedPassword.getPassword());
 
-    hashedPassword = authenticationService.hashPassword("unit_test");
+    hashedPassword = service.hashPassword("unit_test");
     assertNotNull(hashedPassword.getPassword());
     assertNotNull(hashedPassword.getSalt());
     hash = new SimpleHash(passwordVersion.getAlgorithm(), "unit_test",
@@ -706,6 +692,6 @@ public class AuthenticationServiceTest {
 
   @Test
   public void hashPassword_Null() throws Throwable {
-    assertNull(authenticationService.hashPassword(null));
+    assertNull(service.hashPassword(null));
   }
 }

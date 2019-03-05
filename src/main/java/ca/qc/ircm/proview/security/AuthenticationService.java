@@ -17,18 +17,14 @@
 
 package ca.qc.ircm.proview.security;
 
-import static ca.qc.ircm.proview.user.QUser.user;
-
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
-import com.querydsl.jpa.impl.JPAQuery;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -62,8 +58,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthenticationService {
   private static final long ROBOT_ID = 1L;
   private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
-  @PersistenceContext
-  private EntityManager entityManager;
+  @Inject
+  private UserRepository repository;
   @Inject
   private SecurityConfiguration securityConfiguration;
   @Inject
@@ -78,15 +74,6 @@ public class AuthenticationService {
   protected AuthenticationService() {
   }
 
-  protected AuthenticationService(EntityManager entityManager,
-      SecurityConfiguration securityConfiguration, LdapConfiguration ldapConfiguration,
-      LdapService ldapService) {
-    this.entityManager = entityManager;
-    this.securityConfiguration = securityConfiguration;
-    this.ldapConfiguration = ldapConfiguration;
-    this.ldapService = ldapService;
-  }
-
   private Subject getSubject() {
     return SecurityUtils.getSubject();
   }
@@ -96,7 +83,7 @@ public class AuthenticationService {
       return null;
     }
 
-    return entityManager.find(User.class, id);
+    return repository.findOne(id);
   }
 
   private User getUser(String email) {
@@ -104,10 +91,7 @@ public class AuthenticationService {
       return null;
     }
 
-    JPAQuery<User> query = new JPAQuery<>(entityManager);
-    query.from(user);
-    query.where(user.email.eq(email));
-    return query.fetchOne();
+    return repository.findByEmail(email);
   }
 
   /**
@@ -252,7 +236,7 @@ public class AuthenticationService {
   private void resetSignAttemps(User user) {
     user.setSignAttempts(0);
     user.setLastSignAttempt(Instant.now());
-    entityManager.merge(user);
+    repository.save(user);
   }
 
   private void incrementSignAttemps(User user) {
@@ -261,7 +245,7 @@ public class AuthenticationService {
     if (user.getSignAttempts() >= securityConfiguration.disableSignAttemps()) {
       user.setActive(false);
     }
-    entityManager.merge(user);
+    repository.save(user);
   }
 
   private AuthenticationInfo authenticationInfo(User user) {
