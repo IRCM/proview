@@ -679,7 +679,6 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     Solvent solvent = Solvent.OTHER;
     submission.getSolvents().add(solvent);
     submission.setOtherSolvent("ch3oh");
-    repository.saveAndFlush(submission);
     detach(submission);
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
@@ -716,7 +715,6 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     Submission submission = repository.findOne(33L);
     Solvent solvent = Solvent.METHANOL;
     submission.getSolvents().remove(solvent);
-    repository.saveAndFlush(submission);
     detach(submission);
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
