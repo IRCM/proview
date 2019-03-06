@@ -1794,7 +1794,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
     assertNull(submission.getDataAvailableDate());
-    assertEquals(1, submission.getVersion());
+    assertEquals(0, submission.getVersion());
     samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -1806,7 +1806,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("unit_test_gel_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
-    assertEquals(1, tube.getVersion());
+    assertEquals(0, tube.getVersion());
     files = submission.getFiles();
     assertEquals(2, files.size());
     file = findFile(files, "my_file.docx").get();
@@ -1928,7 +1928,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
     assertNull(submission.getDataAvailableDate());
-    assertEquals(1, submission.getVersion());
+    assertEquals(0, submission.getVersion());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = submission.getSamples().get(0);
@@ -1955,7 +1955,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("unit_test_eluate_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
-    assertEquals(1, tube.getVersion());
+    assertEquals(0, tube.getVersion());
     assertEquals("unit_test_eluate_02", submission.getSamples().get(1).getName());
     files = submission.getFiles();
     assertEquals(1, files.size());
@@ -2080,7 +2080,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
     assertNull(submission.getDataAvailableDate());
-    assertEquals(1, submission.getVersion());
+    assertEquals(0, submission.getVersion());
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     SubmissionSample submissionSample = submission.getSamples().get(0);
@@ -2111,14 +2111,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       if (plateWell != well.getPlate().well(0, 0) && plateWell != well.getPlate().well(1, 0)) {
         assertNull(plateWell.getSample());
       }
-      assertEquals(1, plateWell.getVersion());
+      assertEquals(0, plateWell.getVersion());
     }
     assertEquals(submissionSample, well.getSample());
     assertEquals(sample2, well.getPlate().well(1, 0).getSample());
     assertEquals(0, well.getRow());
     assertEquals(0, well.getColumn());
     assertEquals(false, well.isBanned());
-    assertEquals(1, well.getVersion());
+    assertEquals(0, well.getVersion());
     assertEquals("unit_test_eluate_02", submission.getSamples().get(1).getName());
     files = submission.getFiles();
     assertEquals(1, files.size());
@@ -2223,7 +2223,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
     assertNull(submission.getDataAvailableDate());
-    assertEquals(1, submission.getVersion());
+    assertEquals(0, submission.getVersion());
     samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -2234,7 +2234,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("unit_test_molecule_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
-    assertEquals(1, tube.getVersion());
+    assertEquals(0, tube.getVersion());
     files = submission.getFiles();
     assertEquals(2, files.size());
     file = findFile(files, "my_file.docx").get();
@@ -2552,7 +2552,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("unit_test_eluate_01", tube.getName());
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
-    assertEquals(1, tube.getVersion());
+    assertEquals(0, tube.getVersion());
     assertNull(sampleRepository.findOne(447L));
     assertNull(tubeRepository.findOne(9L));
 
@@ -2649,7 +2649,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(0, well.getRow());
     assertEquals(0, well.getColumn());
     assertEquals(false, well.isBanned());
-    assertEquals(1, well.getVersion());
+    assertEquals(0, well.getVersion());
     assertNull(sampleRepository.findOne(447L));
     assertNull(tubeRepository.findOne(9L));
 
