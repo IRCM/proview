@@ -124,7 +124,7 @@ public class User implements Data, Named, Serializable {
    * User's laboratory.
    */
   @ManyToOne
-  @JoinTable(name = "laboratoryuser")
+  @JoinTable(name = "laboratoryuser", joinColumns = @JoinColumn(name = "user_id"))
   private Laboratory laboratory;
   /**
    * Address.
