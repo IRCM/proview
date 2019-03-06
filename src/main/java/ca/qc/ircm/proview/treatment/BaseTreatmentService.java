@@ -20,11 +20,9 @@ package ca.qc.ircm.proview.treatment;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.treatment.QTreatedSample.treatedSample;
 
-import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.msanalysis.AcquisitionRepository;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.user.User;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -97,32 +95,11 @@ public abstract class BaseTreatmentService {
         }
       }
     }
-
-    // Ban destinations for fractionation
-    List<TreatedSample> fractions = selectFractionationsBySource(source);
-    for (TreatedSample treatedSample : fractions) {
-      SampleContainer destination = treatedSample.getDestinationContainer();
-      if (destination.getSample() != null
-          && source.getSample().getId().equals(destination.getSample().getId())) {
-        // Failsafe: skip if destination is already in containers.
-        if (bannedContainers.add(destination)) {
-          destination.setBanned(true);
-
-          this.banDestinations(destination, bannedContainers);
-        }
-      }
-    }
   }
 
   private List<TreatedSample> selectTransfersBySource(SampleContainer source) {
     BooleanExpression predicate =
-        treatedSample.container.eq(source).and(treatedSample.treatment.instanceOf(Transfer.class));
-    return Lists.newArrayList(treatedSampleRepository.findAll(predicate));
-  }
-
-  private List<TreatedSample> selectFractionationsBySource(SampleContainer source) {
-    BooleanExpression predicate = treatedSample.container.eq(source)
-        .and(treatedSample.treatment.instanceOf(Fractionation.class));
+        treatedSample.container.eq(source).and(treatedSample.destinationContainer.isNotNull());
     return Lists.newArrayList(treatedSampleRepository.findAll(predicate));
   }
 }

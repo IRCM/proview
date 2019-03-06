@@ -198,8 +198,8 @@ public class TransferService extends BaseTreatmentService {
     activityService.insert(activity);
 
     repository.save(transfer);
-    for (SampleContainer container : bannedContainers) {
-      sampleContainerRepository.save(container);
+    for (TreatedSample treatedSample : transfer.getTreatedSamples()) {
+      sampleContainerRepository.save(treatedSample.getDestinationContainer());
     }
   }
 }
