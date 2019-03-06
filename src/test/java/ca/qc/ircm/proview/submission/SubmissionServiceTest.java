@@ -86,6 +86,7 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -497,6 +498,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @Ignore
   public void all_SortSampleName() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
@@ -513,6 +515,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @Ignore
   public void all_SortSampleStatus() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
@@ -529,6 +532,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @Ignore
   public void all_SortResults() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
