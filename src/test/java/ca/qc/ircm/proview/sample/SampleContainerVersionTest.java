@@ -22,7 +22,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,7 +33,7 @@ public class SampleContainerVersionTest extends AbstractServiceTestCase {
   @Inject
   private SampleRepository sampleRepository;
 
-  @Test(expected = JpaOptimisticLockingFailureException.class)
+  @Test(expected = ObjectOptimisticLockingFailureException.class)
   public void update_FailVersion() throws Throwable {
     final Sample sample1 = sampleRepository.findOne(442L);
     final Sample sample2 = sampleRepository.findOne(443L);
