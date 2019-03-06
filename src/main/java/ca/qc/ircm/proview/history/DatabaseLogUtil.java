@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.history;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Utilities for database log.
@@ -28,7 +29,7 @@ public class DatabaseLogUtil {
    * A boolean values as it is represented in the database.
    */
   public static enum DatabaseBoolean {
-    FALSE("0"), TRUE("1");
+  FALSE("0"), TRUE("1");
     public final String databaseValue;
 
     DatabaseBoolean(String databaseValue) {
@@ -70,6 +71,9 @@ public class DatabaseLogUtil {
     if (first != null && second != null) {
       if (first.getClass().isArray() && second.getClass().isArray()) {
         same |= Arrays.equals((Object[]) first, (Object[]) second);
+      } else if (first instanceof Collection && second instanceof Collection) {
+        same |= Arrays.equals(((Collection<?>) first).toArray(new Object[0]),
+            ((Collection<?>) second).toArray(new Object[0]));
       } else {
         same |= first.equals(second);
       }
