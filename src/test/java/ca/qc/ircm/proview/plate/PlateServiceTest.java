@@ -570,7 +570,10 @@ public class PlateServiceTest extends AbstractServiceTestCase {
       assertEquals(true, well.isBanned());
     }
     Collection<Well> loggedWells = wellsCaptor.getValue();
-    assertEquals(bannedWells, loggedWells);
+    assertEquals(bannedWells.size(), loggedWells.size());
+    for (Well banned : bannedWells) {
+      assertTrue(find(loggedWells, banned.getId()).isPresent());
+    }
   }
 
   @Test
