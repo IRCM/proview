@@ -259,8 +259,8 @@ public class FractionationService extends BaseTreatmentService {
     activityService.insert(activity);
 
     repository.save(fractionation);
-    for (SampleContainer container : bannedContainers) {
-      sampleContainerRepository.save(container);
+    for (TreatedSample treatedSample : fractionation.getTreatedSamples()) {
+      sampleContainerRepository.save(treatedSample.getDestinationContainer());
     }
   }
 }
