@@ -46,7 +46,7 @@ public class ProtocolActivityServiceTest {
   @Before
   public void beforeTest() {
     protocolActivityService = new ProtocolActivityService(authorizationService);
-    user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 

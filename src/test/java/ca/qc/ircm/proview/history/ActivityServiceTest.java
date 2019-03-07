@@ -722,7 +722,7 @@ public class ActivityServiceTest {
 
   @Test
   public void insertLogWithoutUpdates() throws Exception {
-    User user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    User user = new User(4L);
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
     activity.setRecordId(45L);
@@ -757,7 +757,7 @@ public class ActivityServiceTest {
 
   @Test
   public void insertLogWithUpdates() throws Exception {
-    final User user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    final User user = new User(4L);
     final List<UpdateActivity> updateActivities = new LinkedList<>();
     UpdateActivity updateActivity = new UpdateActivity();
     updateActivity.setTableName("contaminant");
