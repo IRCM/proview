@@ -438,9 +438,9 @@ VALUES (282,225,581,801,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
 VALUES (283,225,582,813,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
-VALUES (284,226,583,825,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+VALUES (284,226,583,825,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
-VALUES (285,226,584,837,3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+VALUES (285,226,584,837,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
 VALUES (286,227,585,849,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
