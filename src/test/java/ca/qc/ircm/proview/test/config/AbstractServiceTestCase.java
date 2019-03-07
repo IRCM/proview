@@ -32,4 +32,10 @@ public abstract class AbstractServiceTestCase {
       entityManager.detach(entity);
     }
   }
+
+  protected void refresh(Object... entities) {
+    for (Object entity : entities) {
+      entityManager.refresh(entity);
+    }
+  }
 }

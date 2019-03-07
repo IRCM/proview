@@ -36,6 +36,12 @@ spring:
 #     url: jdbc:mysql://localhost/test
 #     username: dbuser
 #     password: dbpass
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate.enable_lazy_load_no_trans : true
   http:
     multipart:
       enabled: false
@@ -118,6 +124,8 @@ logging:
 ---
 spring:
   profiles: test
+  datasource:
+    url: jdbc:h2:file:./target/test-database;IGNORECASE=TRUE;DB_CLOSE_ON_EXIT=FALSE
   ldap:
     embedded:
       base-dn: dc=mycompany,dc=com
@@ -154,6 +162,8 @@ logging:
 ---
 spring:
   profiles: integration-test
+  datasource:
+    url: jdbc:h2:file:./target/test-database;IGNORECASE=TRUE;DB_CLOSE_ON_EXIT=FALSE
 
 main:
   serverUrl: http://localhost:${local.server.port}

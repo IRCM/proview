@@ -50,6 +50,7 @@ import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.treatment.Protocol;
@@ -78,7 +79,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class ActivityServiceTest {
+public class ActivityServiceTest extends AbstractServiceTestCase {
   private static final QActivity qactivity = QActivity.activity;
   @Inject
   private ActivityService activityService;
@@ -739,6 +740,7 @@ public class ActivityServiceTest {
     List<Activity> activities = Lists.newArrayList(repository.findAll(predicate));
     assertFalse(activities.isEmpty());
     activity = activities.get(activities.size() - 1);
+    refresh(activity);
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 45L, activity.getRecordId());

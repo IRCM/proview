@@ -438,9 +438,9 @@ VALUES (282,225,581,801,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
 VALUES (283,225,582,813,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
-VALUES (284,226,583,825,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+VALUES (284,226,583,825,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
-VALUES (285,226,584,837,3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+VALUES (285,226,584,837,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
 VALUES (286,227,585,849,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO treatedsample (id,treatment_id,sample_id,container_id,listindex,destinationcontainer_id,comment,sourcevolume,solvent,solventvolume,name,quantity,position,number,piinterval)
@@ -806,7 +806,7 @@ VALUES (24,'NSI','VELOS','2014-10-22 09:50:16',0,NULL,NULL);
 INSERT INTO msanalysis (id,source,massdetectioninstrument,inserttime,deleted,deletiontype,deletionexplanation)
 VALUES (25,'NSI','VELOS','2014-10-22 09:50:43',0,NULL,NULL);
 INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
-VALUES (1,1,1,1,1,'XL_20100614_02','XL_20100614_COU_09',1,1,NULL);
+VALUES (1,1,1,1,1,'XL_20100614_02','XL_20100614_COU_09',1,0,NULL);
 INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)
 VALUES (409,12,442,2,1,'XL_20111014_01','XL_20111014_COU_01',1,0,'after ADH');
 INSERT INTO acquisition (id,msanalysis_id,sample_id,container_id,numberofacquisition,samplelistname,acquisitionfile,position,listindex,comment)

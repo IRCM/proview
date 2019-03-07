@@ -347,12 +347,11 @@ public class SubmissionsViewPresenter {
             submission.getSamples().get(0).getName(), submission.getSamples().size()))
         .setId(SAMPLE_NAME).setCaption(resources.message(SAMPLE_NAME))
         .setDescriptionGenerator(submission -> submission.getSamples().stream()
-            .map(sample -> sample.getName()).sorted(collator).collect(Collectors.joining("\n")));
-    columnProperties.put(SAMPLE_NAME, submission.samples.any().name);
+            .map(sample -> sample.getName()).sorted(collator).collect(Collectors.joining("\n")))
+        .setSortable(false);
     design.submissionsGrid.addColumn(submission -> statusesLabel(submission)).setId(SAMPLE_STATUSES)
         .setCaption(resources.message(SAMPLE_STATUSES))
-        .setDescriptionGenerator(submission -> statusesDescription(submission));
-    columnProperties.put(SAMPLE_STATUSES, submission.samples.any().status);
+        .setDescriptionGenerator(submission -> statusesDescription(submission)).setSortable(false);
     design.submissionsGrid
         .addColumn(submission -> dateFormatter.format(submission.getSubmissionDate())).setId(DATE)
         .setCaption(resources.message(DATE));

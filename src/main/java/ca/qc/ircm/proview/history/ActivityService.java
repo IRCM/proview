@@ -348,10 +348,9 @@ public class ActivityService {
     query.from(activity);
     query.leftJoin(activity.updates, updateActivity).fetch();
     query.from(treatment);
-    query.where(activity.recordId.eq(treatment.id));
-    query.join(treatedSample);
-    query.where(treatedSample.in(treatment.treatedSamples));
+    query.join(treatment.treatedSamples, treatedSample);
     query.from(well);
+    query.where(activity.recordId.eq(treatment.id));
     query.where(well.eq(treatedSample.container).or(well.eq(treatedSample.destinationContainer)));
     query.where(activity.tableName.eq("treatment"));
     query.where(well.plate.eq(plate));

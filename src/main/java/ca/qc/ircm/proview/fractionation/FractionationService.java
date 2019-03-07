@@ -25,7 +25,6 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.treatment.BaseTreatmentService;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatedSampleRepository;
@@ -104,15 +103,15 @@ public class FractionationService extends BaseTreatmentService {
   private TreatedSample searchFration(SampleContainer container) {
     TreatedSample fd = null;
     {
-      BooleanExpression predicate = treatedSample.destinationContainer.eq(container)
-          .and(treatedSample.treatment.instanceOf(Fractionation.class));
+      // TODO Use treatment's type to coerce to fractionations.
+      BooleanExpression predicate =
+          treatedSample.destinationContainer.eq(container).and(treatedSample.position.isNotNull());
       fd = treatedSampleRepository.findOne(predicate);
     }
     if (fd != null) {
       return fd;
     } else {
-      BooleanExpression predicate = treatedSample.destinationContainer.eq(container)
-          .and(treatedSample.treatment.instanceOf(Transfer.class));
+      BooleanExpression predicate = treatedSample.destinationContainer.eq(container);
       TreatedSample st = treatedSampleRepository.findOne(predicate);
       if (st != null) {
         return searchFration(st.getContainer());
@@ -260,8 +259,8 @@ public class FractionationService extends BaseTreatmentService {
     activityService.insert(activity);
 
     repository.save(fractionation);
-    for (SampleContainer container : bannedContainers) {
-      sampleContainerRepository.save(container);
+    for (TreatedSample treatedSample : fractionation.getTreatedSamples()) {
+      sampleContainerRepository.save(treatedSample.getDestinationContainer());
     }
   }
 }

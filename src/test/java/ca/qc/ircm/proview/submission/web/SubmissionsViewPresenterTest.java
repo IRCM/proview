@@ -157,6 +157,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -506,7 +507,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
               .apply(submission));
     }
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isSortable());
+    assertFalse(design.submissionsGrid.getColumn(SAMPLE_NAME).isSortable());
     assertEquals(SAMPLE_STATUSES, columns.get(11).getId());
     assertEquals(resources.message(SAMPLE_STATUSES),
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getCaption());
@@ -523,7 +524,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
               .apply(submission));
     }
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isSortable());
+    assertFalse(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isSortable());
     assertEquals(DATE, columns.get(12).getId());
     assertEquals(resources.message(DATE), design.submissionsGrid.getColumn(DATE).getCaption());
     final DateTimeFormatter instantFormatter =
@@ -1248,6 +1249,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
+  @Ignore
   @SuppressWarnings("unchecked")
   public void sort_SampleNameAsc() {
     presenter.init(view);
@@ -1265,6 +1267,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
+  @Ignore
   @SuppressWarnings("unchecked")
   public void sort_SampleNameDesc() {
     presenter.init(view);
@@ -1282,6 +1285,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
+  @Ignore
   @SuppressWarnings("unchecked")
   public void sort_SampleStatusAsc() {
     presenter.init(view);
@@ -1299,6 +1303,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
+  @Ignore
   @SuppressWarnings("unchecked")
   public void sort_SampleStatusDesc() {
     presenter.init(view);

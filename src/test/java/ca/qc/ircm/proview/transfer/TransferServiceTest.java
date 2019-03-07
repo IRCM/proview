@@ -173,7 +173,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleContainerType.TUBE, treatedSample.getDestinationContainer().getType());
     assertNotNull(destinationTube.getId());
     assertEquals(destinationTube.getId(), treatedSample.getDestinationContainer().getId());
-    assertEquals(1, treatedSample.getDestinationContainer().getVersion());
+    assertEquals(0, treatedSample.getDestinationContainer().getVersion());
     assertTrue(before.isBefore(treatedSample.getDestinationContainer().getTimestamp()));
     assertTrue(after.isAfter(treatedSample.getDestinationContainer().getTimestamp()));
   }
@@ -268,7 +268,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertNotNull(treatedSample.getDestinationContainer().getId());
     destinationWell = wellRepository.findOne(treatedSample.getDestinationContainer().getId());
     assertEquals(sample.getId(), destinationWell.getSample().getId());
-    assertTrue(destinationWell.getVersion() >= 1);
+    assertTrue(destinationWell.getVersion() >= 0);
     assertNotNull(destinationWell.getPlate().getId());
     assertEquals("test_plate", destinationWell.getPlate().getName());
     assertFalse(destinationWell.getPlate().isSubmission());
@@ -313,7 +313,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleContainerType.TUBE, treatedSample.getDestinationContainer().getType());
     destinationTube = tubeRepository.findOne(treatedSample.getDestinationContainer().getId());
     assertEquals(sample.getId(), destinationTube.getSample().getId());
-    assertEquals(1, destinationTube.getVersion());
+    assertEquals(0, destinationTube.getVersion());
     assertNotNull(destinationTube.getId());
     assertEquals(destinationTube.getId(), treatedSample.getDestinationContainer().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -412,7 +412,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertNotNull(treatedSample.getDestinationContainer().getId());
     destinationWell = wellRepository.findOne(treatedSample.getDestinationContainer().getId());
     assertEquals(sample.getId(), destinationWell.getSample().getId());
-    assertTrue(destinationWell.getVersion() >= 1);
+    assertTrue(destinationWell.getVersion() >= 0);
     destinationWell = (Well) treatedSample.getDestinationContainer();
     assertNotNull(destinationWell.getPlate().getId());
     assertEquals("test_plate", destinationWell.getPlate().getName());

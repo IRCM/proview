@@ -288,8 +288,8 @@ public class EnrichmentServiceTest extends AbstractServiceTestCase {
     protocol.setType(Protocol.Type.ENRICHMENT);
     enrichment.setProtocol(protocol);
     final List<TreatedSample> treatedSamples = new ArrayList<>();
-    Sample sample = new SubmissionSample(1L);
-    Tube tube = new Tube(1L);
+    Tube tube = tubeRepository.findOne(1L);
+    Sample sample = tube.getSample();
     TreatedSample treatedSample = new TreatedSample();
     treatedSample.setComment("unit test");
     treatedSample.setSample(sample);
