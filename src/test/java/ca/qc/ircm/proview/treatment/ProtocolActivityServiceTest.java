@@ -46,7 +46,7 @@ public class ProtocolActivityServiceTest {
   @Before
   public void beforeTest() {
     protocolActivityService = new ProtocolActivityService(authorizationService);
-    user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
@@ -63,7 +63,7 @@ public class ProtocolActivityServiceTest {
     assertEquals("protocol", activity.getTableName());
     assertEquals(protocol.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 }

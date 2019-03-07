@@ -98,7 +98,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
    */
   @Before
   public void beforeTest() {
-    user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
@@ -164,7 +164,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertTrue(before.isBefore(transfer.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(after.isAfter(transfer.getInsertTime()));
-    assertEquals(user, transfer.getUser());
+    assertEquals(user.getId(), transfer.getUser().getId());
     assertEquals(1, transfer.getTreatedSamples().size());
     treatedSample = transfer.getTreatedSamples().get(0);
     assertEquals((Long) 1L, treatedSample.getSample().getId());
@@ -204,7 +204,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionExplanation());
-    assertEquals(user, transfer.getUser());
+    assertEquals(user.getId(), transfer.getUser().getId());
     assertEquals(1, transfer.getTreatedSamples().size());
     treatedSample = transfer.getTreatedSamples().get(0);
     assertEquals((Long) 1L, treatedSample.getSample().getId());
@@ -258,7 +258,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionExplanation());
-    assertEquals(user, transfer.getUser());
+    assertEquals(user.getId(), transfer.getUser().getId());
     assertEquals(1, transfer.getTreatedSamples().size());
     treatedSample = transfer.getTreatedSamples().get(0);
     assertEquals((Long) 1L, treatedSample.getSample().getId());
@@ -304,7 +304,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionExplanation());
-    assertEquals(user, transfer.getUser());
+    assertEquals(user.getId(), transfer.getUser().getId());
     assertEquals(1, transfer.getTreatedSamples().size());
     treatedSample = transfer.getTreatedSamples().get(0);
     assertEquals((Long) 1L, treatedSample.getSample().getId());
@@ -348,7 +348,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionExplanation());
-    assertEquals(user, transfer.getUser());
+    assertEquals(user.getId(), transfer.getUser().getId());
     assertEquals(1, transfer.getTreatedSamples().size());
     treatedSample = transfer.getTreatedSamples().get(0);
     assertEquals((Long) 1L, treatedSample.getSample().getId());
@@ -402,7 +402,7 @@ public class TransferServiceTest extends AbstractServiceTestCase {
     assertNotNull(transfer);
     assertEquals(false, transfer.isDeleted());
     assertEquals(null, transfer.getDeletionExplanation());
-    assertEquals(user, transfer.getUser());
+    assertEquals(user.getId(), transfer.getUser().getId());
     assertEquals(1, transfer.getTreatedSamples().size());
     treatedSample = transfer.getTreatedSamples().get(0);
     assertEquals((Long) 1L, treatedSample.getSample().getId());

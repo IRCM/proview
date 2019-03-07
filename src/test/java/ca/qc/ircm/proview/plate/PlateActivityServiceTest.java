@@ -61,7 +61,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
    */
   @Before
   public void beforeTest() {
-    user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
@@ -77,7 +77,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -100,7 +100,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(Plate.TABLE_NAME, activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameUpdate = new UpdateActivity();
     nameUpdate.setTableName(Plate.TABLE_NAME);
@@ -173,7 +173,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     for (Well banned : bans) {
       UpdateActivity banActivity = new UpdateActivity();
@@ -233,7 +233,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     for (Well activated : wells) {
       UpdateActivity activateActivity = new UpdateActivity();

@@ -90,7 +90,7 @@ public class FractionationServiceTest extends AbstractServiceTestCase {
    */
   @Before
   public void beforeTest() {
-    user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
@@ -222,7 +222,7 @@ public class FractionationServiceTest extends AbstractServiceTestCase {
     assertNotNull(fractionation);
     assertEquals(false, fractionation.isDeleted());
     assertEquals(null, fractionation.getDeletionExplanation());
-    assertEquals(user, fractionation.getUser());
+    assertEquals(user.getId(), fractionation.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(fractionation.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();

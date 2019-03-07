@@ -90,7 +90,7 @@ public class DilutionServiceTest extends AbstractServiceTestCase {
    */
   @Before
   public void beforeTest() {
-    user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
@@ -152,7 +152,7 @@ public class DilutionServiceTest extends AbstractServiceTestCase {
     dilution = dilutionService.get(dilution.getId());
     assertEquals(false, dilution.isDeleted());
     assertEquals(null, dilution.getDeletionExplanation());
-    assertEquals(user, dilution.getUser());
+    assertEquals(user.getId(), dilution.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(dilution.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -195,7 +195,7 @@ public class DilutionServiceTest extends AbstractServiceTestCase {
     dilution = dilutionService.get(dilution.getId());
     assertEquals(false, dilution.isDeleted());
     assertEquals(null, dilution.getDeletionExplanation());
-    assertEquals(user, dilution.getUser());
+    assertEquals(user.getId(), dilution.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(dilution.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();

@@ -58,7 +58,7 @@ public class FractionationActivityServiceTest {
    */
   @Before
   public void beforeTest() {
-    user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
@@ -88,7 +88,7 @@ public class FractionationActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity tubeSampleActivity = new UpdateActivity();
     tubeSampleActivity.setActionType(ActionType.INSERT);
@@ -122,7 +122,7 @@ public class FractionationActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity wellSampleActivity = new UpdateActivity();
     wellSampleActivity.setActionType(ActionType.UPDATE);
@@ -148,7 +148,7 @@ public class FractionationActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity deleteTubeActivity = new UpdateActivity();
     deleteTubeActivity.setActionType(ActionType.DELETE);
@@ -172,7 +172,7 @@ public class FractionationActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateWellActivity = new UpdateActivity();
     updateWellActivity.setActionType(ActionType.UPDATE);
@@ -195,7 +195,7 @@ public class FractionationActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -209,7 +209,7 @@ public class FractionationActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -226,7 +226,7 @@ public class FractionationActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateTubeActivity = new UpdateActivity();
     updateTubeActivity.setActionType(ActionType.UPDATE);
@@ -252,7 +252,7 @@ public class FractionationActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(fractionation.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateWellActivity = new UpdateActivity();
     updateWellActivity.setActionType(ActionType.UPDATE);

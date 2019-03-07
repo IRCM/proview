@@ -69,7 +69,7 @@ public class EnrichmentActivityServiceTest extends AbstractServiceTestCase {
    */
   @Before
   public void beforeTest() {
-    user = new User(4L, "sylvain.tessier@ircm.qc.ca");
+    user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
@@ -95,7 +95,7 @@ public class EnrichmentActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("treatment", activity.getTableName());
     assertEquals(enrichment.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity sampleStatusActivity = new UpdateActivity();
     sampleStatusActivity.setActionType(ActionType.UPDATE);
@@ -131,7 +131,7 @@ public class EnrichmentActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("treatment", activity.getTableName());
     assertEquals(enrichment.getId(), activity.getRecordId());
     assertEquals("test explanation", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity protocolActivity = new UpdateActivity();
     protocolActivity.setActionType(ActionType.UPDATE);
@@ -193,7 +193,7 @@ public class EnrichmentActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("treatment", activity.getTableName());
     assertEquals(enrichment.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -207,7 +207,7 @@ public class EnrichmentActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("treatment", activity.getTableName());
     assertEquals(enrichment.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -226,7 +226,7 @@ public class EnrichmentActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("treatment", activity.getTableName());
     assertEquals(enrichment.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity bannedTubeActivity = new UpdateActivity();
     bannedTubeActivity.setActionType(ActionType.UPDATE);
