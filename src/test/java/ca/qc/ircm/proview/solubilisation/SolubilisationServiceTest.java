@@ -154,7 +154,7 @@ public class SolubilisationServiceTest extends AbstractServiceTestCase {
     solubilisation = service.get(solubilisation.getId());
     assertEquals(false, solubilisation.isDeleted());
     assertEquals(null, solubilisation.getDeletionExplanation());
-    assertEquals(user, solubilisation.getUser());
+    assertEquals(user.getId(), solubilisation.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(solubilisation.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -195,7 +195,7 @@ public class SolubilisationServiceTest extends AbstractServiceTestCase {
     solubilisation = service.get(solubilisation.getId());
     assertEquals(false, solubilisation.isDeleted());
     assertEquals(null, solubilisation.getDeletionExplanation());
-    assertEquals(user, solubilisation.getUser());
+    assertEquals(user.getId(), solubilisation.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(solubilisation.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();

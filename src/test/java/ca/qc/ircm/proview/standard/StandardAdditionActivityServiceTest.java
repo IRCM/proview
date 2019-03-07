@@ -90,7 +90,7 @@ public class StandardAdditionActivityServiceTest extends AbstractServiceTestCase
     assertEquals("treatment", activity.getTableName());
     assertEquals(standardAddition.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -119,7 +119,7 @@ public class StandardAdditionActivityServiceTest extends AbstractServiceTestCase
     assertEquals("treatment", activity.getTableName());
     assertEquals(standardAddition.getId(), activity.getRecordId());
     assertEquals("test explanation", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity newTreatedSampleActivity = new UpdateActivity();
     newTreatedSampleActivity.setActionType(ActionType.INSERT);
@@ -191,7 +191,7 @@ public class StandardAdditionActivityServiceTest extends AbstractServiceTestCase
     assertEquals("treatment", activity.getTableName());
     assertEquals(standardAddition.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -206,7 +206,7 @@ public class StandardAdditionActivityServiceTest extends AbstractServiceTestCase
     assertEquals("treatment", activity.getTableName());
     assertEquals(standardAddition.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -226,7 +226,7 @@ public class StandardAdditionActivityServiceTest extends AbstractServiceTestCase
     assertEquals("treatment", activity.getTableName());
     assertEquals(standardAddition.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity bannedTubeActivity = new UpdateActivity();
     bannedTubeActivity.setActionType(ActionType.UPDATE);

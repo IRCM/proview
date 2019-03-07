@@ -154,7 +154,7 @@ public class StandardAdditionServiceTest extends AbstractServiceTestCase {
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionExplanation());
-    assertEquals(user, standardAddition.getUser());
+    assertEquals(user.getId(), standardAddition.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(standardAddition.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -195,7 +195,7 @@ public class StandardAdditionServiceTest extends AbstractServiceTestCase {
     assertNotNull(standardAddition);
     assertEquals(false, standardAddition.isDeleted());
     assertEquals(null, standardAddition.getDeletionExplanation());
-    assertEquals(user, standardAddition.getUser());
+    assertEquals(user.getId(), standardAddition.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(standardAddition.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();

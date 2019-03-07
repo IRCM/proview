@@ -149,7 +149,7 @@ public class MsAnalysisActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("msanalysis", activity.getTableName());
     assertEquals(msAnalysis.getId(), activity.getRecordId());
     assertEquals("test explanation", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity massDetectionInstrumentActivity = new UpdateActivity();
     massDetectionInstrumentActivity.setActionType(ActionType.UPDATE);

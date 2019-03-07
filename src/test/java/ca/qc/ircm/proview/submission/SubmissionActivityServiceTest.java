@@ -101,7 +101,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -177,7 +177,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(newSubmission.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity serviceActivity = new UpdateActivity();
     serviceActivity.setActionType(ActionType.UPDATE);
@@ -624,7 +624,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeSampleActivity = new UpdateActivity();
     removeSampleActivity.setActionType(ActionType.DELETE);
@@ -660,7 +660,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity plateNameActivity = new UpdateActivity();
     plateNameActivity.setActionType(ActionType.UPDATE);
@@ -689,7 +689,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity otherSolventActivity = new UpdateActivity();
     otherSolventActivity.setActionType(ActionType.UPDATE);
@@ -725,7 +725,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity removeSolventActivity = new UpdateActivity();
     removeSolventActivity.setActionType(ActionType.UPDATE);

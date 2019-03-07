@@ -1758,7 +1758,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
     submission = repository.findOne(submission.getId());
-    assertEquals(user, submission.getUser());
+    assertEquals(user.getId(), submission.getUser().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
     assertEquals("experiment", submission.getExperiment());
@@ -1900,7 +1900,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
     submission = repository.findOne(submission.getId());
-    assertEquals(user, submission.getUser());
+    assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
@@ -2052,7 +2052,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
     submission = repository.findOne(submission.getId());
-    assertEquals(user, submission.getUser());
+    assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
@@ -2193,7 +2193,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
     submission = repository.findOne(submission.getId());
-    assertEquals(user, submission.getUser());
+    assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertNotNull(submission.getSubmissionDate());
     assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
@@ -2793,7 +2793,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission = repository.findOne(1L);
     verify(activityService).insert(activity);
     assertEquals((Long) 1L, submission.getId());
-    assertEquals(user, submission.getUser());
+    assertEquals(user.getId(), submission.getUser().getId());
     assertEquals(user.getLaboratory().getId(), submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
@@ -2827,7 +2827,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
     assertEquals((Long) 1L, submissionLogged.getId());
-    assertEquals(user, submissionLogged.getUser());
+    assertEquals(user.getId(), submissionLogged.getUser().getId());
     assertEquals(user.getLaboratory().getId(), submissionLogged.getLaboratory().getId());
     assertEquals(newInstant, submissionLogged.getSubmissionDate());
   }

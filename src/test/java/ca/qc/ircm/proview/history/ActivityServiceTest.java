@@ -752,7 +752,7 @@ public class ActivityServiceTest {
     assertTrue(activity.getTimestamp().isBefore(afterInsert)
         || activity.getTimestamp().equals(afterInsert));
     assertEquals(true, activity.getUpdates().isEmpty());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
   }
 
   @Test
@@ -803,7 +803,7 @@ public class ActivityServiceTest {
         LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(activity.getTimestamp().isBefore(afterInsert)
         || activity.getTimestamp().equals(afterInsert));
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     assertEquals(2, activity.getUpdates().size());
     updateActivity = activity.getUpdates().get(0);
     assertEquals(ActionType.INSERT, updateActivity.getActionType());

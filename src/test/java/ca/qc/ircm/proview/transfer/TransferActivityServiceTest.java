@@ -86,7 +86,7 @@ public class TransferActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity insertTubeActivity = new UpdateActivity();
     insertTubeActivity.setActionType(ActionType.INSERT);
@@ -118,7 +118,7 @@ public class TransferActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateWellActivity = new UpdateActivity();
     updateWellActivity.setActionType(ActionType.UPDATE);
@@ -144,7 +144,7 @@ public class TransferActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity deleteTubeActivity = new UpdateActivity();
     deleteTubeActivity.setActionType(ActionType.DELETE);
@@ -167,7 +167,7 @@ public class TransferActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateWellActivity = new UpdateActivity();
     updateWellActivity.setActionType(ActionType.UPDATE);
@@ -190,7 +190,7 @@ public class TransferActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -204,7 +204,7 @@ public class TransferActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
 
@@ -221,7 +221,7 @@ public class TransferActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateTubeActivity = new UpdateActivity();
     updateTubeActivity.setActionType(ActionType.UPDATE);
@@ -247,7 +247,7 @@ public class TransferActivityServiceTest {
     assertEquals("treatment", activity.getTableName());
     assertEquals(transfer.getId(), activity.getRecordId());
     assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user, activity.getUser());
+    assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expecteds = new HashSet<>();
     UpdateActivity updateWellActivity = new UpdateActivity();
     updateWellActivity.setActionType(ActionType.UPDATE);

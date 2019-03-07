@@ -166,7 +166,7 @@ public class EnrichmentServiceTest extends AbstractServiceTestCase {
     enrichment = service.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionExplanation());
-    assertEquals(user, enrichment.getUser());
+    assertEquals(user.getId(), enrichment.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(enrichment.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -208,7 +208,7 @@ public class EnrichmentServiceTest extends AbstractServiceTestCase {
     enrichment = service.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionExplanation());
-    assertEquals(user, enrichment.getUser());
+    assertEquals(user.getId(), enrichment.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(enrichment.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -313,7 +313,7 @@ public class EnrichmentServiceTest extends AbstractServiceTestCase {
     enrichment = service.get(enrichment.getId());
     assertEquals(false, enrichment.isDeleted());
     assertEquals(null, enrichment.getDeletionExplanation());
-    assertEquals(user, enrichment.getUser());
+    assertEquals(user.getId(), enrichment.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(enrichment.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();

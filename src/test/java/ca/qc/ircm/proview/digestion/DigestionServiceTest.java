@@ -169,7 +169,7 @@ public class DigestionServiceTest extends AbstractServiceTestCase {
     digestion = repository.findOne(digestion.getId());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionExplanation());
-    assertEquals(user, digestion.getUser());
+    assertEquals(user.getId(), digestion.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(digestion.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -211,7 +211,7 @@ public class DigestionServiceTest extends AbstractServiceTestCase {
     digestion = service.get(digestion.getId());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionExplanation());
-    assertEquals(user, digestion.getUser());
+    assertEquals(user.getId(), digestion.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(digestion.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
@@ -317,7 +317,7 @@ public class DigestionServiceTest extends AbstractServiceTestCase {
     digestion = repository.findOne(digestion.getId());
     assertEquals(false, digestion.isDeleted());
     assertEquals(null, digestion.getDeletionExplanation());
-    assertEquals(user, digestion.getUser());
+    assertEquals(user.getId(), digestion.getUser().getId());
     Instant before = LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
     assertTrue(before.isBefore(digestion.getInsertTime()));
     Instant after = LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
