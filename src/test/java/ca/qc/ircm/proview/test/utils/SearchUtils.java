@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public class SearchUtils {
@@ -46,5 +47,19 @@ public class SearchUtils {
   public static <V, R extends V> Optional<R> findInstanceOf(Collection<V> values, Class<R> clazz) {
     return values.stream().filter(extension -> clazz.isInstance(extension))
         .map(extension -> (R) extension).findAny();
+  }
+
+  /**
+   * Returns last element of a list.
+   * 
+   * @param elements
+   *          list
+   * @return last element of a list
+   */
+  public static <E> Optional<E> last(List<E> elements) {
+    if (elements.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(elements.get(elements.size() - 1));
   }
 }

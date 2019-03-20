@@ -21,6 +21,9 @@ import com.vaadin.ui.declarative.Design;
 public class SubmissionViewDesign extends VerticalLayout {
   protected Label headerLabel;
   protected Button help;
+  protected Label sampleTypeWarning;
+  protected Label inactiveWarning;
+  protected Button guidelines;
   protected VerticalLayout submissionFormLayout;
 
   public SubmissionViewDesign() {

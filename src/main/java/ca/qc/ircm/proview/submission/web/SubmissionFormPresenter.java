@@ -82,7 +82,6 @@ import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.Named;
-import ca.qc.ircm.proview.files.web.GuidelinesWindow;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -171,9 +170,6 @@ import org.springframework.stereotype.Controller;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionFormPresenter implements BinderValidator {
   public static final String STYLE = "submission-form";
-  public static final String SAMPLE_TYPE_WARNING = "sampleTypeWarning";
-  public static final String INACTIVE_WARNING = "inactive";
-  public static final String GUIDELINES = "guidelines";
   public static final String SERVICE_PANEL = "servicePanel";
   public static final String SERVICE = "service";
   public static final String SAMPLES_PANEL = "samplesPanel";
@@ -252,8 +248,6 @@ public class SubmissionFormPresenter implements BinderValidator {
   private PlateService plateService;
   @Inject
   private AuthorizationService authorizationService;
-  @Inject
-  private GuidelinesWindow guidelinesWindow;
 
   protected SubmissionFormPresenter() {
   }
@@ -280,18 +274,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     final Locale locale = view.getLocale();
     final MessageResource resources = view.getResources();
     final MessageResource generalResources = view.getGeneralResources();
-    design.sampleTypeWarning.addStyleName(SAMPLE_TYPE_WARNING);
-    design.sampleTypeWarning.setValue(resources.message(SAMPLE_TYPE_WARNING));
-    design.inactiveWarning.addStyleName(INACTIVE_WARNING);
-    design.inactiveWarning.setValue(resources.message(INACTIVE_WARNING));
-    design.guidelines.addStyleName(GUIDELINES);
-    design.guidelines.setCaption(resources.message(GUIDELINES));
-    design.guidelines.addClickListener(e -> {
-      if (!guidelinesWindow.isAttached()) {
-        guidelinesWindow.center();
-        view.addWindow(guidelinesWindow);
-      }
-    });
     design.servicePanel.addStyleName(SERVICE_PANEL);
     design.servicePanel.addStyleName(REQUIRED);
     design.servicePanel.setCaption(resources.message(SERVICE));
@@ -858,8 +840,6 @@ public class SubmissionFormPresenter implements BinderValidator {
     if (type == null) {
       return;
     }
-    design.sampleTypeWarning.setVisible(!readOnly);
-    design.inactiveWarning.setVisible(!readOnly);
     design.solutionSolvent.setVisible(service == SMALL_MOLECULE && type.isSolution());
     design.sampleName.setVisible(service == SMALL_MOLECULE);
     design.formula.setVisible(service == SMALL_MOLECULE);

@@ -69,8 +69,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UP
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILE_FILENAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GUIDELINES;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
@@ -92,7 +90,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_N
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NUMBER_PROTEIN;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME_BEADS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
@@ -132,7 +129,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.files.web.GuidelinesWindow;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -239,8 +235,6 @@ public class SubmissionFormPresenterTest {
   private PlateService plateService;
   @MockBean
   private AuthorizationService authorizationService;
-  @MockBean
-  private GuidelinesWindow guidelinesWindow;
   @Mock
   private SubmissionForm view;
   @Mock
@@ -1102,10 +1096,6 @@ public class SubmissionFormPresenterTest {
     presenter.init(view);
 
     verify(view).addStyleName(STYLE);
-    assertTrue(design.sampleTypeWarning.getStyleName().contains(SAMPLE_TYPE_WARNING));
-    assertTrue(design.inactiveWarning.getStyleName().contains(INACTIVE_WARNING));
-    assertTrue(design.guidelines.getStyleName().contains(ValoTheme.BUTTON_FRIENDLY));
-    assertTrue(design.guidelines.getStyleName().contains(GUIDELINES));
     assertTrue(design.servicePanel.getStyleName().contains(SERVICE_PANEL));
     assertTrue(design.servicePanel.getStyleName().contains(REQUIRED));
     assertTrue(design.service.getStyleName().contains(SERVICE));
@@ -1182,9 +1172,6 @@ public class SubmissionFormPresenterTest {
   public void captions() {
     presenter.init(view);
 
-    assertEquals(resources.message(SAMPLE_TYPE_WARNING), design.sampleTypeWarning.getValue());
-    assertEquals(resources.message(INACTIVE_WARNING), design.inactiveWarning.getValue());
-    assertEquals(resources.message(GUIDELINES), design.guidelines.getCaption());
     assertEquals(resources.message(SERVICE), design.servicePanel.getCaption());
     assertEquals(null, design.service.getCaption());
     for (Service service : Service.availables()) {
@@ -1553,8 +1540,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -1617,8 +1602,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(type);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -1687,8 +1670,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -1751,8 +1732,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(BIOID_BEADS);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -1821,8 +1800,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -1885,8 +1862,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(MAGNETIC_BEADS);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -1955,8 +1930,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2019,8 +1992,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(AGAROSE_BEADS);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2125,8 +2096,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2189,8 +2158,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(DRY);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2259,8 +2226,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2323,8 +2288,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(LC_MS_MS);
     design.sampleType.setValue(GEL);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2393,8 +2356,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertTrue(design.solutionSolvent.isVisible());
@@ -2457,8 +2418,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(SMALL_MOLECULE);
     design.sampleType.setValue(type);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertTrue(design.solutionSolvent.isVisible());
@@ -2537,8 +2496,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2601,8 +2558,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(SMALL_MOLECULE);
     design.sampleType.setValue(DRY);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2669,8 +2624,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2733,8 +2686,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(INTACT_PROTEIN);
     design.sampleType.setValue(type);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2803,8 +2754,6 @@ public class SubmissionFormPresenterTest {
     presenter.setReadOnly(true);
     presenter.setValue(submission);
 
-    assertFalse(design.sampleTypeWarning.isVisible());
-    assertFalse(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2867,8 +2816,6 @@ public class SubmissionFormPresenterTest {
     design.service.setValue(INTACT_PROTEIN);
     design.sampleType.setValue(DRY);
 
-    assertTrue(design.sampleTypeWarning.isVisible());
-    assertTrue(design.inactiveWarning.isVisible());
     assertTrue(design.service.isVisible());
     assertTrue(design.sampleType.isVisible());
     assertFalse(design.solutionSolvent.isVisible());
@@ -2923,16 +2870,6 @@ public class SubmissionFormPresenterTest {
     assertFalse(design.print.isVisible());
     assertFalse(design.structureFile.isVisible());
     assertFalse(design.gelImageFile.isVisible());
-  }
-
-  @Test
-  public void guidelines() throws Throwable {
-    presenter.init(view);
-
-    design.guidelines.click();
-
-    verify(guidelinesWindow).center();
-    verify(view).addWindow(guidelinesWindow);
   }
 
   @Test

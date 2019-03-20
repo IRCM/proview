@@ -8,7 +8,7 @@
   <meta name="package-mapping" content="ca_qc_ircm_proview_submission_web:ca.qc.ircm.proview.submission.web">
  </head>
  <body>
-  <vaadin-vertical-layout>
+  <vaadin-vertical-layout value="">
    <vaadin-horizontal-layout>
     <vaadin-label style-name="h1" plain-text _id="headerLabel">
       Submission of samples 
@@ -17,6 +17,15 @@
       Help 
     </vaadin-button>
    </vaadin-horizontal-layout>
+   <vaadin-label width="1000px" plain-text _id="sampleTypeWarning">
+     Before filling this form, make sure all samples are of the same type. 
+   </vaadin-label>
+   <vaadin-label width="1000px" plain-text _id="inactiveWarning">
+     If browser is inactive for more than 30 minutes, submission data may be lost. 
+   </vaadin-label>
+   <vaadin-button style-name="friendly" plain-text _id="guidelines">
+     Guidelines 
+   </vaadin-button>
    <vaadin-vertical-layout spacing="false" margin="false" _id="submissionFormLayout"></vaadin-vertical-layout>
   </vaadin-vertical-layout>
  </body>

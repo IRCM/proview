@@ -61,8 +61,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_PA
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.FILES_UPLOADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_IMAGE_FILE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GEL_PANEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.GUIDELINES;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INACTIVE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_DIGESTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.OTHER_SOLVENT_NOTE;
@@ -78,7 +76,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_C
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_TYPE_WARNING;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAMPLE_VOLUME;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SAVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
@@ -86,9 +83,12 @@ import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICES
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STANDARDS_CONTAINER;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STRUCTURE_FILE;
-import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.STYLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.USED_DIGESTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.HEADER_STYLE;
+import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.INACTIVE_WARNING;
+import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.SAMPLE_TYPE_WARNING;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.last;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -139,8 +139,7 @@ public abstract class SubmissionViewPageObject extends AbstractTestBenchTestCase
   }
 
   protected ButtonElement guidelines() {
-    return wrap(ButtonElement.class,
-        findElement(className(STYLE)).findElement(className(GUIDELINES)));
+    return wrap(ButtonElement.class, last(findElements(className(GUIDELINES))).get());
   }
 
   protected void clickGuidelines() {
