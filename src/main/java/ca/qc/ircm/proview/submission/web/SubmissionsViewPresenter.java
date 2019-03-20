@@ -725,6 +725,7 @@ public class SubmissionsViewPresenter {
   }
 
   private void viewSubmission(Submission submission) {
+    submission = submissionService.get(submission.getId());
     submissionWindow.setValue(submission);
     if (!submissionWindow.isAttached()) {
       submissionWindow.center();
