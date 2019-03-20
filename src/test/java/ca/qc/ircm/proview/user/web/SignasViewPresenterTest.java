@@ -49,14 +49,16 @@ import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.GridSortOrder;
+import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderCell;
 import com.vaadin.ui.components.grid.HeaderRow;
+import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -128,21 +130,9 @@ public class SignasViewPresenterTest {
     assertEquals(ORGANIZATION, design.usersGrid.getColumns().get(3).getId());
     assertEquals(SIGN_AS, design.usersGrid.getColumns().get(4).getId());
     assertEquals(resources.message(EMAIL), design.usersGrid.getColumn(EMAIL).getCaption());
-    assertTrue(containsInstanceOf(design.usersGrid.getColumn(EMAIL).getExtensions(),
-        ComponentRenderer.class));
-    Collator collator = Collator.getInstance(locale);
-    List<User> expectedSortedUsers = new ArrayList<>(users);
-    List<User> sortedUsers = new ArrayList<>(users);
-    expectedSortedUsers.sort((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
-    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.ASCENDING));
-    assertEquals(expectedSortedUsers, sortedUsers);
-    expectedSortedUsers.sort((u1, u2) -> -collator.compare(u1.getEmail(), u2.getEmail()));
-    sortedUsers.sort(design.usersGrid.getColumn(EMAIL).getComparator(SortDirection.DESCENDING));
-    assertEquals(expectedSortedUsers, sortedUsers);
     for (User user : users) {
-      Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
-      assertEquals(user.getEmail(), button.getCaption());
-      assertTrue(button.getStyleName().contains(EMAIL));
+      assertEquals(user.getEmail(),
+          design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user));
     }
     assertEquals(resources.message(NAME), design.usersGrid.getColumn(NAME).getCaption());
     for (User user : users) {
@@ -280,11 +270,18 @@ public class SignasViewPresenterTest {
   }
 
   @Test
-  public void viewUser() {
+  @SuppressWarnings("unchecked")
+  public void viewUser_DoubleClick() {
+    Grid.ItemClick<User> event = mock(Grid.ItemClick.class);
+    MouseEventDetails details = mock(MouseEventDetails.class);
     final User user = users.get(0);
-    Button button = (Button) design.usersGrid.getColumn(EMAIL).getValueProvider().apply(user);
+    when(event.getItem()).thenReturn(user);
+    when(event.getMouseEventDetails()).thenReturn(details);
+    when(details.isDoubleClick()).thenReturn(true);
+    Collection<?> listeners = design.usersGrid.getListeners(Grid.ItemClick.class);
+    ItemClickListener<User> listener = (ItemClickListener<User>) listeners.iterator().next();
 
-    button.click();
+    listener.itemClick(event);
 
     verify(userWindow).setValue(user);
     verify(userWindow).center();

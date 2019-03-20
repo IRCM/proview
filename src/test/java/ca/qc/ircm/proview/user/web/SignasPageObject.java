@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
@@ -29,6 +28,7 @@ import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
+import com.vaadin.testbench.elements.GridElement.GridRowElement;
 import com.vaadin.testbench.elements.LabelElement;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,10 +64,8 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
   protected void clickViewUser(String email) {
     GridElement usersGrid = usersGrid();
     usersGridRows(email).forEach(row -> {
-      usersGrid.getCell(row, EMAIL_COLUMN);
-      ButtonElement button =
-          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(EMAIL)));
-      button.click();
+      GridRowElement gridRow = usersGrid.getRow(row);
+      gridRow.doubleClick();
     });
   }
 

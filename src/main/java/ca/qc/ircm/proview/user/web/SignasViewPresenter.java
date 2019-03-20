@@ -38,7 +38,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
-import java.text.Collator;
 import java.util.List;
 import javax.inject.Inject;
 import org.slf4j.Logger;
@@ -104,11 +103,13 @@ public class SignasViewPresenter {
 
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
-    final Collator collator = Collator.getInstance(view.getLocale());
+    design.usersGrid.addItemClickListener(e -> {
+      if (e.getMouseEventDetails().isDoubleClick()) {
+        viewUser(e.getItem());
+      }
+    });
     design.usersGrid.setDataProvider(searchUsers());
-    design.usersGrid.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
-        .setCaption(resources.message(EMAIL))
-        .setComparator((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
+    design.usersGrid.addColumn(User::getEmail).setId(EMAIL).setCaption(resources.message(EMAIL));
     design.usersGrid.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
     design.usersGrid.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
         .setCaption(resources.message(LABORATORY_NAME));
@@ -156,14 +157,6 @@ public class SignasViewPresenter {
     usersProvider = DataProvider.ofCollection(users);
     usersProvider.setFilter(this.filter);
     return usersProvider;
-  }
-
-  private Button viewButton(User user) {
-    Button button = new Button();
-    button.addStyleName(EMAIL);
-    button.setCaption(user.getEmail());
-    button.addClickListener(event -> viewUser(user));
-    return button;
   }
 
   private Button signasButton(User user) {
