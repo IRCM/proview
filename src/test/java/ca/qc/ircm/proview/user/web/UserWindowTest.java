@@ -18,16 +18,13 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.UserWindow.TITLE;
-import static ca.qc.ircm.proview.user.web.UserWindow.UPDATE;
 import static ca.qc.ircm.proview.user.web.UserWindow.WINDOW_STYLE;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.WindowElement;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,8 +51,5 @@ public class UserWindowTest extends UsersPageObject {
     WindowElement userWindow = wrap(WindowElement.class, findElement(className(WINDOW_STYLE)));
     assertTrue(resources(UserWindow.class).message(TITLE, name).contains(userWindow.getCaption()));
     assertNotNull(userWindow.findElement(className(UserFormPresenter.USER)));
-    ButtonElement updateButton = wrap(ButtonElement.class, findElement(className(UPDATE)));
-    updateButton.click();
-    assertEquals(viewUrl(UserView.VIEW_NAME, "10"), getDriver().getCurrentUrl());
   }
 }
