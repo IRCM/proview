@@ -47,6 +47,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserRepository;
@@ -55,11 +56,13 @@ import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.SelectionModel;
 import com.vaadin.data.provider.GridSortOrder;
+import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -90,6 +93,10 @@ public class ValidateViewPresenterTest {
   private UserWindow userWindow;
   @Mock
   private ValidateView view;
+  @Mock
+  private Grid.ItemClick<User> clickItemEvent;
+  @Mock
+  private MouseEventDetails mouseEventDetails;
   @Captor
   private ArgumentCaptor<Collection<User>> usersCaptor;
   @Captor
@@ -120,6 +127,7 @@ public class ValidateViewPresenterTest {
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(clickItemEvent.getMouseEventDetails()).thenReturn(mouseEventDetails);
   }
 
   @Test
@@ -128,24 +136,18 @@ public class ValidateViewPresenterTest {
 
     assertEquals(6, design.users.getColumns().size());
     assertEquals(EMAIL, design.users.getColumns().get(0).getId());
-    assertTrue(containsInstanceOf(design.users.getColumns().get(0).getExtensions(),
-        ComponentRenderer.class));
     assertEquals(resources.message(EMAIL), design.users.getColumn(EMAIL).getCaption());
-    assertTrue(
-        containsInstanceOf(design.users.getColumn(EMAIL).getExtensions(), ComponentRenderer.class));
-    Collator collator = Collator.getInstance(locale);
+    NormalizedComparator comparator = new NormalizedComparator();
     List<User> expectedSortedUsers = new ArrayList<>(usersToValidate);
     List<User> sortedUsers = new ArrayList<>(usersToValidate);
-    expectedSortedUsers.sort((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
+    expectedSortedUsers.sort((u1, u2) -> comparator.compare(u1.getEmail(), u2.getEmail()));
     sortedUsers.sort(design.users.getColumn(EMAIL).getComparator(SortDirection.ASCENDING));
     assertEquals(expectedSortedUsers, sortedUsers);
-    expectedSortedUsers.sort((u1, u2) -> -collator.compare(u1.getEmail(), u2.getEmail()));
+    expectedSortedUsers.sort((u1, u2) -> -comparator.compare(u1.getEmail(), u2.getEmail()));
     sortedUsers.sort(design.users.getColumn(EMAIL).getComparator(SortDirection.DESCENDING));
     assertEquals(expectedSortedUsers, sortedUsers);
     for (User user : usersToValidate) {
-      Button button = (Button) design.users.getColumn(EMAIL).getValueProvider().apply(user);
-      assertEquals(user.getEmail(), button.getCaption());
-      assertTrue(user.getEmail(), button.getStyleName().contains(EMAIL));
+      assertEquals(user.getEmail(), design.users.getColumn(EMAIL).getValueProvider().apply(user));
     }
     assertEquals(NAME, design.users.getColumns().get(1).getId());
     assertEquals(resources.message(NAME), design.users.getColumn(NAME).getCaption());
@@ -244,12 +246,16 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void viewUser() {
     presenter.init(view);
     final User user = usersToValidate.get(0);
-    Button button = (Button) design.users.getColumn(EMAIL).getValueProvider().apply(user);
+    ItemClickListener<User> listener =
+        (ItemClickListener<User>) design.users.getListeners(Grid.ItemClick.class).iterator().next();
+    when(clickItemEvent.getItem()).thenReturn(user);
+    when(mouseEventDetails.isDoubleClick()).thenReturn(true);
 
-    button.click();
+    listener.itemClick(clickItemEvent);
 
     verify(userWindow).setValue(user);
     verify(userWindow).center();

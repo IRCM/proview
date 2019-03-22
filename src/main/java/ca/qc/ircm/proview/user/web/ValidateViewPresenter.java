@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
@@ -35,7 +36,6 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.ComponentRenderer;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -111,11 +111,15 @@ public class ValidateViewPresenter {
 
   private void prepareUsersGrid() {
     MessageResource resources = view.getResources();
-    final Collator collator = Collator.getInstance(view.getLocale());
+    final NormalizedComparator comparator = new NormalizedComparator();
     design.users.setItems(searchUsers());
-    design.users.addColumn(user -> viewButton(user), new ComponentRenderer()).setId(EMAIL)
-        .setCaption(resources.message(EMAIL))
-        .setComparator((u1, u2) -> collator.compare(u1.getEmail(), u2.getEmail()));
+    design.users.addItemClickListener(e -> {
+      if (e.getMouseEventDetails().isDoubleClick()) {
+        view(e.getItem());
+      }
+    });
+    design.users.addColumn(User::getEmail).setId(EMAIL).setCaption(resources.message(EMAIL))
+        .setComparator((u1, u2) -> comparator.compare(u1.getEmail(), u2.getEmail()));
     design.users.addColumn(User::getName).setId(NAME).setCaption(resources.message(NAME));
     design.users.addColumn(user -> user.getLaboratory().getName()).setId(LABORATORY_NAME)
         .setCaption(resources.message(LABORATORY_NAME));
@@ -138,14 +142,6 @@ public class ValidateViewPresenter {
       filter.laboratory = authorizationService.getCurrentUser().getLaboratory();
     }
     return userService.all(filter);
-  }
-
-  private Button viewButton(User user) {
-    Button button = new Button();
-    button.addStyleName(EMAIL);
-    button.setCaption(user.getEmail());
-    button.addClickListener(event -> view(user));
-    return button;
   }
 
   private Button validateButton(User user) {
