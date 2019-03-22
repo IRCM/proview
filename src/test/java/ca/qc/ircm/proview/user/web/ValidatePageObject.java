@@ -54,7 +54,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   }
 
   protected GridElement usersGrid() {
-    return wrap(GridElement.class, findElement(className(USERS)));
+    return wrap(GridElement.class, mainContent().findElement(className(USERS)));
   }
 
   private IntStream usersGridRows(String email) {

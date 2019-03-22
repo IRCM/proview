@@ -25,16 +25,16 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 
 /**
- * User access view.
+ * Users view.
  */
-@SpringView(name = AccessView.VIEW_NAME)
+@SpringView(name = UsersView.VIEW_NAME)
 @RolesAllowed({ "ADMIN", "MANAGER" })
-public class AccessView extends CustomComponent implements BaseView {
-  public static final String VIEW_NAME = "user/access";
+public class UsersView extends CustomComponent implements BaseView {
+  public static final String VIEW_NAME = "users";
   private static final long serialVersionUID = -1897739429426168438L;
-  protected AccessViewDesign design = new AccessViewDesign();
+  protected UsersViewDesign design = new UsersViewDesign();
   @Inject
-  private transient AccessViewPresenter presenter;
+  private transient UsersViewPresenter presenter;
 
   @PostConstruct
   public void init() {

@@ -285,6 +285,27 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  public void hasInvalid_True() throws Throwable {
+    boolean hasInvalid = service.hasInvalid(laboratoryRepository.findOne(3L));
+
+    assertEquals(true, hasInvalid);
+  }
+
+  @Test
+  public void hasInvalid_False() throws Throwable {
+    boolean hasInvalid = service.hasInvalid(laboratoryRepository.findOne(4L));
+
+    assertEquals(false, hasInvalid);
+  }
+
+  @Test
+  public void hasInvalid_AnyLaboratory() throws Throwable {
+    boolean hasInvalid = service.hasInvalid(null);
+
+    assertEquals(true, hasInvalid);
+  }
+
+  @Test
   public void all_InvalidInLaboratory() throws Throwable {
     Laboratory laboratory = laboratoryRepository.findOne(2L);
     UserFilter parameters = new UserFilter();
@@ -903,7 +924,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void validate() throws Throwable {
+  public void validate_Many() throws Throwable {
     User user = repository.findOne(7L);
     detach(user);
     assertEquals(false, user.isActive());
@@ -944,7 +965,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void validate_EnglishEmail() throws Throwable {
+  public void validate_Many_EnglishEmail() throws Throwable {
     User updateLocale = repository.findOne(7L);
     updateLocale.setLocale(Locale.CANADA);
     repository.save(updateLocale);
@@ -983,6 +1004,23 @@ public class UserServiceTest extends AbstractServiceTestCase {
     User user = repository.findOne(12L);
     detach(user);
     assertEquals(false, user.isActive());
+
+    service.activate(user);
+
+    repository.flush();
+    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(cacheFlusher).flushShiroCache();
+    user = repository.findOne(12L);
+    assertEquals(true, user.isActive());
+    assertEquals(true, user.isValid());
+    assertEquals(false, user.isAdmin());
+  }
+
+  @Test
+  public void activate_Many() throws Throwable {
+    User user = repository.findOne(12L);
+    detach(user);
+    assertEquals(false, user.isActive());
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
@@ -999,6 +1037,22 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void deactivate() throws Throwable {
+    User user = repository.findOne(10L);
+    detach(user);
+
+    service.deactivate(user);
+
+    repository.flush();
+    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(cacheFlusher).flushShiroCache();
+    user = repository.findOne(10L);
+    assertEquals(false, user.isActive());
+    assertEquals(true, user.isValid());
+    assertEquals(false, user.isAdmin());
+  }
+
+  @Test
+  public void deactivate_Many() throws Throwable {
     User user = repository.findOne(10L);
     detach(user);
     Collection<User> users = new LinkedList<>();
@@ -1019,6 +1073,47 @@ public class UserServiceTest extends AbstractServiceTestCase {
   public void deactivate_Manager() throws Throwable {
     User user = repository.findOne(3L);
     detach(user);
+
+    service.deactivate(user);
+
+    repository.flush();
+    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(cacheFlusher).flushShiroCache();
+    user = repository.findOne(3L);
+    assertEquals(false, user.isActive());
+    assertEquals(true, user.isValid());
+    assertEquals(false, user.isAdmin());
+  }
+
+  @Test
+  public void deactivate_Admin() throws Throwable {
+    User user = repository.findOne(4L);
+    detach(user);
+
+    service.deactivate(user);
+
+    repository.flush();
+    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(cacheFlusher).flushShiroCache();
+    user = repository.findOne(4L);
+    assertEquals(false, user.isActive());
+    assertEquals(true, user.isValid());
+    assertEquals(true, user.isAdmin());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void deactivate_Robot() throws Throwable {
+    User user = repository.findOne(1L);
+    detach(user);
+    assertEquals(true, user.isActive());
+
+    service.deactivate(user);
+  }
+
+  @Test
+  public void deactivate_ManyManager() throws Throwable {
+    User user = repository.findOne(3L);
+    detach(user);
     Collection<User> users = new LinkedList<>();
     users.add(user);
 
@@ -1034,7 +1129,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void deactivate_Admin() throws Throwable {
+  public void deactivate_ManyAdmin() throws Throwable {
     User user = repository.findOne(4L);
     detach(user);
     Collection<User> users = new LinkedList<>();
@@ -1052,7 +1147,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void deactivate_Robot() throws Throwable {
+  public void deactivate_ManyRobot() throws Throwable {
     User user = repository.findOne(1L);
     detach(user);
     assertEquals(true, user.isActive());

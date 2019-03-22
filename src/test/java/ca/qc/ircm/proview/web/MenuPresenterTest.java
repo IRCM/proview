@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.MenuPresenter.ACCESS;
 import static ca.qc.ircm.proview.web.MenuPresenter.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTACT;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTROL;
@@ -26,21 +25,18 @@ import static ca.qc.ircm.proview.web.MenuPresenter.DILUTION;
 import static ca.qc.ircm.proview.web.MenuPresenter.ENRICHMENT;
 import static ca.qc.ircm.proview.web.MenuPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
-import static ca.qc.ircm.proview.web.MenuPresenter.MANAGER;
 import static ca.qc.ircm.proview.web.MenuPresenter.MS_ANALYSIS;
 import static ca.qc.ircm.proview.web.MenuPresenter.PLATE;
 import static ca.qc.ircm.proview.web.MenuPresenter.PROFILE;
-import static ca.qc.ircm.proview.web.MenuPresenter.REGISTER;
 import static ca.qc.ircm.proview.web.MenuPresenter.SIGNIN;
 import static ca.qc.ircm.proview.web.MenuPresenter.SIGNOUT;
-import static ca.qc.ircm.proview.web.MenuPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.web.MenuPresenter.SOLUBILISATION;
 import static ca.qc.ircm.proview.web.MenuPresenter.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.web.MenuPresenter.STOP_SIGN_AS;
 import static ca.qc.ircm.proview.web.MenuPresenter.SUBMISSION;
 import static ca.qc.ircm.proview.web.MenuPresenter.TRANSFER;
 import static ca.qc.ircm.proview.web.MenuPresenter.TREATMENT;
-import static ca.qc.ircm.proview.web.MenuPresenter.VALIDATE_USERS;
+import static ca.qc.ircm.proview.web.MenuPresenter.USERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -61,13 +57,10 @@ import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.transfer.web.TransferView;
-import ca.qc.ircm.proview.user.web.AccessView;
-import ca.qc.ircm.proview.user.web.RegisterView;
-import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.SigninView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
-import ca.qc.ircm.proview.user.web.ValidateView;
+import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
@@ -155,15 +148,11 @@ public class MenuPresenterTest {
     assertTrue(view.menu.getItems().get(5).getStyleName().contains(PROFILE));
     assertTrue(view.menu.getItems().get(6).getStyleName().contains(SIGNOUT));
     assertTrue(view.menu.getItems().get(7).getStyleName().contains(CHANGE_LANGUAGE));
-    assertTrue(view.menu.getItems().get(8).getStyleName().contains(MANAGER));
-    assertTrue(item(MANAGER).getChildren().get(0).getStyleName().contains(VALIDATE_USERS));
-    assertTrue(item(MANAGER).getChildren().get(1).getStyleName().contains(ACCESS));
-    assertTrue(item(MANAGER).getChildren().get(2).getStyleName().contains(SIGN_AS));
-    assertTrue(item(MANAGER).getChildren().get(3).getStyleName().contains(REGISTER));
-    assertTrue(item(MANAGER).getChildren().get(4).getStyleName().contains(STOP_SIGN_AS));
+    assertTrue(view.menu.getItems().get(8).getStyleName().contains(USERS));
     assertTrue(view.menu.getItems().get(9).getStyleName().contains(CONTACT));
     assertTrue(view.menu.getItems().get(10).getStyleName().contains(GUIDELINES));
     assertTrue(view.menu.getItems().get(11).getStyleName().contains(SIGNIN));
+    assertTrue(view.menu.getItems().get(12).getStyleName().contains(STOP_SIGN_AS));
   }
 
   @Test
@@ -185,15 +174,11 @@ public class MenuPresenterTest {
     assertFalse(item(PROFILE).isVisible());
     assertFalse(item(SIGNOUT).isVisible());
     assertTrue(item(CHANGE_LANGUAGE).isVisible());
-    assertFalse(item(MANAGER).isVisible());
-    assertFalse(item(VALIDATE_USERS).isVisible());
-    assertFalse(item(ACCESS).isVisible());
-    assertFalse(item(SIGN_AS).isVisible());
-    assertFalse(item(REGISTER).isVisible());
-    assertFalse(item(STOP_SIGN_AS).isVisible());
+    assertFalse(item(USERS).isVisible());
     assertTrue(item(CONTACT).isVisible());
     assertFalse(item(GUIDELINES).isVisible());
     assertTrue(item(SIGNIN).isVisible());
+    assertFalse(item(STOP_SIGN_AS).isVisible());
   }
 
   @Test
@@ -217,15 +202,11 @@ public class MenuPresenterTest {
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
     assertTrue(item(CHANGE_LANGUAGE).isVisible());
-    assertFalse(item(MANAGER).isVisible());
-    assertFalse(item(VALIDATE_USERS).isVisible());
-    assertFalse(item(ACCESS).isVisible());
-    assertFalse(item(SIGN_AS).isVisible());
-    assertFalse(item(REGISTER).isVisible());
-    assertFalse(item(STOP_SIGN_AS).isVisible());
+    assertFalse(item(USERS).isVisible());
     assertTrue(item(CONTACT).isVisible());
     assertTrue(item(GUIDELINES).isVisible());
     assertFalse(item(SIGNIN).isVisible());
+    assertFalse(item(STOP_SIGN_AS).isVisible());
   }
 
   @Test
@@ -250,15 +231,11 @@ public class MenuPresenterTest {
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
     assertTrue(item(CHANGE_LANGUAGE).isVisible());
-    assertTrue(item(MANAGER).isVisible());
-    assertTrue(item(VALIDATE_USERS).isVisible());
-    assertTrue(item(ACCESS).isVisible());
-    assertFalse(item(SIGN_AS).isVisible());
-    assertFalse(item(REGISTER).isVisible());
-    assertFalse(item(STOP_SIGN_AS).isVisible());
+    assertTrue(item(USERS).isVisible());
     assertTrue(item(CONTACT).isVisible());
     assertTrue(item(GUIDELINES).isVisible());
     assertFalse(item(SIGNIN).isVisible());
+    assertFalse(item(STOP_SIGN_AS).isVisible());
   }
 
   @Test
@@ -283,15 +260,11 @@ public class MenuPresenterTest {
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
     assertTrue(item(CHANGE_LANGUAGE).isVisible());
-    assertTrue(item(MANAGER).isVisible());
-    assertTrue(item(VALIDATE_USERS).isVisible());
-    assertTrue(item(ACCESS).isVisible());
-    assertTrue(item(SIGN_AS).isVisible());
-    assertTrue(item(REGISTER).isVisible());
-    assertFalse(item(STOP_SIGN_AS).isVisible());
+    assertTrue(item(USERS).isVisible());
     assertTrue(item(CONTACT).isVisible());
     assertTrue(item(GUIDELINES).isVisible());
     assertFalse(item(SIGNIN).isVisible());
+    assertFalse(item(STOP_SIGN_AS).isVisible());
   }
 
   @Test
@@ -316,15 +289,11 @@ public class MenuPresenterTest {
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
     assertTrue(item(CHANGE_LANGUAGE).isVisible());
-    assertTrue(item(MANAGER).isVisible());
-    assertFalse(item(VALIDATE_USERS).isVisible());
-    assertFalse(item(ACCESS).isVisible());
-    assertFalse(item(SIGN_AS).isVisible());
-    assertFalse(item(REGISTER).isVisible());
-    assertTrue(item(STOP_SIGN_AS).isVisible());
+    assertFalse(item(USERS).isVisible());
     assertTrue(item(CONTACT).isVisible());
     assertTrue(item(GUIDELINES).isVisible());
     assertFalse(item(SIGNIN).isVisible());
+    assertTrue(item(STOP_SIGN_AS).isVisible());
   }
 
   @Test
@@ -346,15 +315,11 @@ public class MenuPresenterTest {
     assertEquals(resources.message(PROFILE), item(PROFILE).getText());
     assertEquals(resources.message(SIGNOUT), item(SIGNOUT).getText());
     assertEquals(resources.message(CHANGE_LANGUAGE), item(CHANGE_LANGUAGE).getText());
-    assertEquals(resources.message(MANAGER), item(MANAGER).getText());
-    assertEquals(resources.message(VALIDATE_USERS), item(VALIDATE_USERS).getText());
-    assertEquals(resources.message(ACCESS), item(ACCESS).getText());
-    assertEquals(resources.message(SIGN_AS), item(SIGN_AS).getText());
-    assertEquals(resources.message(REGISTER), item(REGISTER).getText());
-    assertEquals(resources.message(STOP_SIGN_AS), item(STOP_SIGN_AS).getText());
+    assertEquals(resources.message(USERS), item(USERS).getText());
     assertEquals(resources.message(CONTACT), item(CONTACT).getText());
     assertEquals(resources.message(GUIDELINES), item(GUIDELINES).getText());
     assertEquals(resources.message(SIGNIN), item(SIGNIN).getText());
+    assertEquals(resources.message(STOP_SIGN_AS), item(STOP_SIGN_AS).getText());
   }
 
   @Test
@@ -499,49 +464,12 @@ public class MenuPresenterTest {
   }
 
   @Test
-  public void validateUsers() throws Throwable {
+  public void users() throws Throwable {
     presenter.init(view);
 
-    item(VALIDATE_USERS).getCommand().menuSelected(item(VALIDATE_USERS));
+    item(USERS).getCommand().menuSelected(item(USERS));
 
-    verify(view).navigateTo(ValidateView.VIEW_NAME);
-  }
-
-  @Test
-  public void access() throws Throwable {
-    presenter.init(view);
-
-    item(ACCESS).getCommand().menuSelected(item(ACCESS));
-
-    verify(view).navigateTo(AccessView.VIEW_NAME);
-  }
-
-  @Test
-  public void signas() throws Throwable {
-    presenter.init(view);
-
-    item(SIGN_AS).getCommand().menuSelected(item(SIGN_AS));
-
-    verify(view).navigateTo(SignasView.VIEW_NAME);
-  }
-
-  @Test
-  public void register() throws Throwable {
-    presenter.init(view);
-
-    item(REGISTER).getCommand().menuSelected(item(REGISTER));
-
-    verify(view).navigateTo(RegisterView.VIEW_NAME);
-  }
-
-  @Test
-  public void stopSignas() throws Throwable {
-    presenter.init(view);
-
-    item(STOP_SIGN_AS).getCommand().menuSelected(item(STOP_SIGN_AS));
-
-    verify(authenticationService).stopRunAs();
-    verify(view).navigateTo(MainView.VIEW_NAME);
+    verify(view).navigateTo(UsersView.VIEW_NAME);
   }
 
   @Test
@@ -569,5 +497,15 @@ public class MenuPresenterTest {
     item(SIGNIN).getCommand().menuSelected(item(SIGNIN));
 
     verify(view).navigateTo(SigninView.VIEW_NAME);
+  }
+
+  @Test
+  public void stopSignas() throws Throwable {
+    presenter.init(view);
+
+    item(STOP_SIGN_AS).getCommand().menuSelected(item(STOP_SIGN_AS));
+
+    verify(authenticationService).stopRunAs();
+    verify(view).navigateTo(MainView.VIEW_NAME);
   }
 }

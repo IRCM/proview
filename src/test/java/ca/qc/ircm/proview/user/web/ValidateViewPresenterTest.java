@@ -282,6 +282,7 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void removeOne() {
     presenter.init(view);
     final User user = usersToValidate.get(0);
@@ -295,7 +296,7 @@ public class ValidateViewPresenterTest {
     button.click();
 
     verify(userService).delete(usersCaptor.capture());
-    verify(userService, never()).validate(any(), any());
+    verify(userService, never()).validate(any(Collection.class), any());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(1, users.size());
     assertTrue(find(users, user.getId()).isPresent());
@@ -337,18 +338,20 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void validateMany_NoSelection() {
     presenter.init(view);
     when(userService.all(any())).thenReturn(new ArrayList<>());
 
     design.validateSelected.click();
 
-    verify(userService, never()).validate(any(), any());
+    verify(userService, never()).validate(any(Collection.class), any());
     verify(userService, never()).delete(any());
     verify(view).showError(resources.message(NO_SELECTION));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void removeMany() {
     presenter.init(view);
     final User user1 = usersToValidate.get(0);
@@ -364,7 +367,7 @@ public class ValidateViewPresenterTest {
     design.removeSelected.click();
 
     verify(userService).delete(usersCaptor.capture());
-    verify(userService, never()).validate(any(), any());
+    verify(userService, never()).validate(any(Collection.class), any());
     Collection<User> users = usersCaptor.getValue();
     assertEquals(3, users.size());
     assertTrue(find(users, user1.getId()).isPresent());
@@ -379,13 +382,14 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void removeMany_NoSelection() {
     presenter.init(view);
     when(userService.all(any())).thenReturn(new ArrayList<>());
 
     design.removeSelected.click();
 
-    verify(userService, never()).validate(any(), any());
+    verify(userService, never()).validate(any(Collection.class), any());
     verify(userService, never()).delete(any());
     verify(view).showError(resources.message(NO_SELECTION));
   }

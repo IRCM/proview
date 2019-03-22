@@ -19,20 +19,20 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.testbench.elements.WindowElement;
-import com.vaadin.ui.Notification;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -46,9 +46,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithSubject
-public class AccessViewTest extends AccessPageObject {
+public class UsersViewTest extends UsersPageObject {
   @SuppressWarnings("unused")
-  private static final Logger logger = LoggerFactory.getLogger(AccessViewTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(UsersViewTest.class);
   @Inject
   private UserRepository repository;
   @Value("${spring.application.name}")
@@ -87,7 +87,7 @@ public class AccessViewTest extends AccessPageObject {
   public void security_Manager() throws Throwable {
     open();
 
-    assertTrue(resources(AccessView.class).message(TITLE, applicationName)
+    assertTrue(resources(UsersView.class).message(TITLE, applicationName)
         .contains(getDriver().getTitle()));
   }
 
@@ -95,7 +95,7 @@ public class AccessViewTest extends AccessPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(AccessView.class).message(TITLE, applicationName)
+    assertTrue(resources(UsersView.class).message(TITLE, applicationName)
         .contains(getDriver().getTitle()));
   }
 
@@ -105,9 +105,18 @@ public class AccessViewTest extends AccessPageObject {
 
     assertTrue(optional(() -> headerLabel()).isPresent());
     assertTrue(optional(() -> usersGrid()).isPresent());
-    assertTrue(optional(() -> activateButton()).isPresent());
-    assertTrue(optional(() -> deactivateButton()).isPresent());
-    assertTrue(optional(() -> clearButton()).isPresent());
+    assertTrue(optional(() -> validationButton()).isPresent());
+    assertTrue(optional(() -> addButton()).isPresent());
+    assertTrue(optional(() -> switchUserButton()).isPresent());
+  }
+
+  @Test
+  public void validation() throws Throwable {
+    open();
+
+    clickValidation();
+
+    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
@@ -130,7 +139,7 @@ public class AccessViewTest extends AccessPageObject {
     String email = "christopher.anderson@ircm.qc.ca";
     String name = "Christopher Anderson";
 
-    clickViewUser(email);
+    viewUser(email);
 
     assertNotNull(findElement(className(UserWindow.WINDOW_STYLE)));
     WindowElement userWindow =
@@ -143,68 +152,41 @@ public class AccessViewTest extends AccessPageObject {
   @Test
   public void activate() throws Throwable {
     open();
-    String[] emails = { "christopher.anderson@ircm.qc.ca", "robert.williams@ircm.qc.ca" };
-    selectUsers(emails);
+    String email = "robert.williams@ircm.qc.ca";
 
-    clickActivate();
+    clickActive(email);
 
-    assertEquals(viewUrl(AccessView.VIEW_NAME), getDriver().getCurrentUrl());
-    for (int i = 0; i < emails.length; i++) {
-      User user = getUser(emails[i]);
-      assertNotNull(user);
-      assertEquals(emails[i], user.getEmail());
-      assertEquals(true, user.isActive());
-    }
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals("tray_notification", notification.getType());
-    assertNotNull(notification.getCaption());
-    for (int i = 0; i < emails.length; i++) {
-      assertTrue(notification.getCaption().contains(emails[i]));
-    }
-  }
-
-  @Test
-  public void activate_Error() throws Throwable {
-    open();
-
-    clickActivate();
-
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
-    assertNotNull(notification.getCaption());
+    assertTrue(getUser(email).isActive());
   }
 
   @Test
   public void deactivate() throws Throwable {
     open();
-    String[] emails = { "christopher.anderson@ircm.qc.ca", "robert.williams@ircm.qc.ca" };
-    selectUsers(emails);
+    String email = "christopher.anderson@ircm.qc.ca";
 
-    clickDeactivate();
+    clickActive(email);
 
-    assertEquals(viewUrl(AccessView.VIEW_NAME), getDriver().getCurrentUrl());
-    for (int i = 0; i < emails.length; i++) {
-      User user = getUser(emails[i]);
-      assertNotNull(user);
-      assertEquals(emails[i], user.getEmail());
-      assertEquals(false, user.isActive());
-    }
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals("tray_notification", notification.getType());
-    assertNotNull(notification.getCaption());
-    for (int i = 0; i < emails.length; i++) {
-      assertTrue(notification.getCaption().contains(emails[i]));
-    }
+    assertFalse(getUser(email).isActive());
   }
 
   @Test
-  public void deactivate_Error() throws Throwable {
+  public void add() throws Throwable {
     open();
 
-    clickDeactivate();
+    clickAdd();
 
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
-    assertNotNull(notification.getCaption());
+    assertEquals(viewUrl(RegisterView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  public void signas() throws Throwable {
+    open();
+    String email = "christopher.anderson@ircm.qc.ca";
+    select(email);
+
+    clickSwitchUser();
+
+    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertTrue(optional(() -> stopSignasMenuItem()).isPresent());
   }
 }

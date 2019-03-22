@@ -30,13 +30,10 @@ import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
 import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.transfer.web.TransferView;
-import ca.qc.ircm.proview.user.web.AccessView;
-import ca.qc.ircm.proview.user.web.RegisterView;
-import ca.qc.ircm.proview.user.web.SignasView;
 import ca.qc.ircm.proview.user.web.SigninView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
-import ca.qc.ircm.proview.user.web.ValidateView;
+import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.UI;
@@ -69,15 +66,11 @@ public class MenuPresenter {
   public static final String PROFILE = "profile";
   public static final String SIGNOUT = "signout";
   public static final String CHANGE_LANGUAGE = "changeLanguage";
-  public static final String MANAGER = "manager";
-  public static final String VALIDATE_USERS = "validateUsers";
-  public static final String ACCESS = "access";
-  public static final String SIGN_AS = "signas";
-  public static final String REGISTER = "register";
-  public static final String STOP_SIGN_AS = "stopSignas";
+  public static final String USERS = "users";
   public static final String CONTACT = "contact";
   public static final String GUIDELINES = "guidelines";
   public static final String SIGNIN = "signin";
+  public static final String STOP_SIGN_AS = "stopSignas";
   private static final Logger logger = LoggerFactory.getLogger(MenuPresenter.class);
   private Menu view;
   private MenuItem home;
@@ -95,11 +88,7 @@ public class MenuPresenter {
   private MenuItem profile;
   private MenuItem signout;
   private MenuItem changeLanguage;
-  private MenuItem manager;
-  private MenuItem validateUsers;
-  private MenuItem access;
-  private MenuItem signas;
-  private MenuItem register;
+  private MenuItem users;
   private MenuItem stopSignas;
   private MenuItem contact;
   private MenuItem guidelines;
@@ -178,26 +167,9 @@ public class MenuPresenter {
     changeLanguage =
         view.menu.addItem(resources.message(CHANGE_LANGUAGE), item -> changeLanguage());
     changeLanguage.setStyleName(CHANGE_LANGUAGE);
-    manager = view.menu.addItem(resources.message(MANAGER), null);
-    manager.setStyleName(MANAGER);
-    manager.setVisible(false);
-    validateUsers = manager.addItem(resources.message(VALIDATE_USERS),
-        item -> changeView(ValidateView.VIEW_NAME));
-    validateUsers.setStyleName(VALIDATE_USERS);
-    validateUsers.setVisible(false);
-    access = manager.addItem(resources.message(ACCESS), item -> changeView(AccessView.VIEW_NAME));
-    access.setStyleName(ACCESS);
-    access.setVisible(false);
-    signas = manager.addItem(resources.message(SIGN_AS), item -> changeView(SignasView.VIEW_NAME));
-    signas.setStyleName(SIGN_AS);
-    signas.setVisible(false);
-    register =
-        manager.addItem(resources.message(REGISTER), item -> changeView(RegisterView.VIEW_NAME));
-    register.setStyleName(REGISTER);
-    register.setVisible(false);
-    stopSignas = manager.addItem(resources.message(STOP_SIGN_AS), item -> stopSignas());
-    stopSignas.setStyleName(STOP_SIGN_AS);
-    stopSignas.setVisible(false);
+    users = view.menu.addItem(resources.message(USERS), item -> changeView(UsersView.VIEW_NAME));
+    users.setStyleName(USERS);
+    users.setVisible(false);
     contact =
         view.menu.addItem(resources.message(CONTACT), item -> changeView(ContactView.VIEW_NAME));
     contact.setStyleName(CONTACT);
@@ -208,6 +180,9 @@ public class MenuPresenter {
     signin = view.menu.addItem(resources.message(SIGNIN), item -> changeView(SigninView.VIEW_NAME));
     signin.setStyleName(SIGNIN);
     signin.setVisible(false);
+    stopSignas = view.menu.addItem(resources.message(STOP_SIGN_AS), item -> stopSignas());
+    stopSignas.setStyleName(STOP_SIGN_AS);
+    stopSignas.setVisible(false);
   }
 
   private void updateVisible() {
@@ -224,16 +199,10 @@ public class MenuPresenter {
     plate.setVisible(authorizationService.hasAdminRole());
     profile.setVisible(authorizationService.isUser());
     signout.setVisible(authorizationService.isUser());
-    manager.setVisible(authorizationService.isRunAs() || authorizationService.hasManagerRole()
-        || authorizationService.hasAdminRole());
-    validateUsers
-        .setVisible(authorizationService.hasManagerRole() || authorizationService.hasAdminRole());
-    access.setVisible(authorizationService.hasManagerRole() || authorizationService.hasAdminRole());
-    signas.setVisible(authorizationService.hasAdminRole());
-    register.setVisible(authorizationService.hasAdminRole());
-    stopSignas.setVisible(authorizationService.isRunAs());
+    users.setVisible(authorizationService.hasManagerRole() || authorizationService.hasAdminRole());
     guidelines.setVisible(authorizationService.hasUserRole());
     signin.setVisible(!authorizationService.isUser());
+    stopSignas.setVisible(authorizationService.isRunAs());
   }
 
   private void changeView(String viewName) {

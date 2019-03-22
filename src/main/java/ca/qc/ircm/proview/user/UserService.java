@@ -150,6 +150,24 @@ public class UserService {
   }
 
   /**
+   * Returns true if laboratory contains an invalid user, false otherwise. <br>
+   * If laboratory is null, returns true if any user is invalid, false otherwise.
+   *
+   * @param laboratory
+   *          laboratory
+   * @return true if laboratory contains an invalid user, false otherwise
+   */
+  public boolean hasInvalid(Laboratory laboratory) {
+    if (laboratory == null) {
+      authorizationService.checkAdminRole();
+      return repository.countByValidFalse() > 0;
+    } else {
+      authorizationService.checkLaboratoryManagerPermission(laboratory);
+      return repository.countByValidFalseAndLaboratory(laboratory) > 0;
+    }
+  }
+
+  /**
    * Returns all users that match parameters.
    * <p>
    * Only admin users can search users without a laboratory.
@@ -452,7 +470,25 @@ public class UserService {
   }
 
   /**
-   * Allow users to use program.
+   * Allows user to use program.
+   *
+   * @param user
+   *          user
+   */
+  public void activate(User user) {
+    user = repository.findOne(user.getId());
+    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
+
+    user.setActive(true);
+    repository.save(user);
+
+    cacheFlusher.flushShiroCache();
+
+    logger.info("User {} was activated", user);
+  }
+
+  /**
+   * Allows users to use program.
    *
    * @param users
    *          users
@@ -472,7 +508,28 @@ public class UserService {
   }
 
   /**
-   * Block users from using program.
+   * Prevents user to use program.
+   *
+   * @param user
+   *          user
+   */
+  public void deactivate(User user) {
+    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
+    if (user.getId() == ROBOT_ID) {
+      throw new IllegalArgumentException("Robot cannot be deactivated");
+    }
+
+    user = repository.findOne(user.getId());
+    user.setActive(false);
+    repository.save(user);
+
+    cacheFlusher.flushShiroCache();
+
+    logger.info("User {} was deactivate", user);
+  }
+
+  /**
+   * Blocks users from using program.
    *
    * @param users
    *          users

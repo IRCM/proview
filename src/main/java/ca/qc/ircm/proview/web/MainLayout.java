@@ -33,6 +33,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MainLayout extends CustomComponent {
+  public static final String MAIN_CONTENT = "mainContent";
   private static final long serialVersionUID = -3818536803897529844L;
   @Inject
   protected Menu menu;
@@ -56,6 +57,7 @@ public class MainLayout extends CustomComponent {
     setSizeFull();
     setCompositionRoot(design);
     design.menuLayout.addComponent(menu);
+    design.content.setId(MAIN_CONTENT);
   }
 
   @Override

@@ -19,8 +19,10 @@ package ca.qc.ircm.proview.test.config;
 
 import static ca.qc.ircm.proview.test.config.SeleniumDriverTypePredicate.actualDriver;
 import static ca.qc.ircm.proview.test.config.SeleniumDriverTypePredicate.isPhantomjsDriver;
+import static ca.qc.ircm.proview.web.MainLayout.MAIN_CONTENT;
 import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
 import static org.openqa.selenium.By.className;
+import static org.openqa.selenium.By.id;
 
 import ca.qc.ircm.proview.web.Menu;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -87,6 +89,10 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
 
   protected MessageResource resources(Class<?> baseClass) {
     return new MessageResource(baseClass, currentLocale());
+  }
+
+  protected WebElement mainContent() {
+    return findElement(id(MAIN_CONTENT));
   }
 
   protected <T> Optional<T> optional(Supplier<T> supplier) {

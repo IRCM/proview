@@ -17,10 +17,11 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.HEADER;
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.SIGN_AS;
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.web.MenuPresenter.MANAGER;
+import static ca.qc.ircm.proview.user.web.UsersViewPresenter.ADD;
+import static ca.qc.ircm.proview.user.web.UsersViewPresenter.HEADER;
+import static ca.qc.ircm.proview.user.web.UsersViewPresenter.SWITCH_USER;
+import static ca.qc.ircm.proview.user.web.UsersViewPresenter.USERS;
+import static ca.qc.ircm.proview.user.web.UsersViewPresenter.VALIDATION;
 import static ca.qc.ircm.proview.web.MenuPresenter.STOP_SIGN_AS;
 import static org.openqa.selenium.By.className;
 
@@ -34,49 +35,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.openqa.selenium.WebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public abstract class SignasPageObject extends AbstractTestBenchTestCase {
-  @SuppressWarnings("unused")
-  private static final Logger logger = LoggerFactory.getLogger(SignasPageObject.class);
+public abstract class UsersPageObject extends AbstractTestBenchTestCase {
   private static final int EMAIL_COLUMN = 0;
-  private static final int SIGN_AS_COLUMN = 4;
+  private static final int ACTIVE_COLUMN = 4;
 
   protected void open() {
-    openView(SignasView.VIEW_NAME);
+    openView(UsersView.VIEW_NAME);
   }
 
   protected LabelElement headerLabel() {
     return wrap(LabelElement.class, findElement(className(HEADER)));
   }
 
+  protected ButtonElement validationButton() {
+    return wrap(ButtonElement.class, findElement(className(VALIDATION)));
+  }
+
+  protected void clickValidation() {
+    validationButton().click();
+  }
+
   protected GridElement usersGrid() {
-    return wrap(GridElement.class, findElement(className(USERS_GRID)));
+    return wrap(GridElement.class, mainContent().findElement(className(USERS)));
   }
 
   private IntStream usersGridRows(String email) {
     GridElement usersGrid = usersGrid();
     return IntStream.range(0, (int) usersGrid.getRowCount())
         .filter(row -> email.equals(usersGrid.getCell(row, EMAIL_COLUMN).getText()));
-  }
-
-  protected void clickViewUser(String email) {
-    GridElement usersGrid = usersGrid();
-    usersGridRows(email).forEach(row -> {
-      GridRowElement gridRow = usersGrid.getRow(row);
-      gridRow.doubleClick();
-    });
-  }
-
-  protected void clickSignas(String email) {
-    GridElement usersGrid = usersGrid();
-    usersGridRows(email).findFirst().ifPresent(row -> {
-      usersGrid.getCell(row, SIGN_AS_COLUMN);
-      ButtonElement button =
-          wrap(ButtonElement.class, usersGrid.getRow(row).findElement(className(SIGN_AS)));
-      button.click();
-    });
   }
 
   protected List<String> getUserEmails() {
@@ -89,16 +76,46 @@ public abstract class SignasPageObject extends AbstractTestBenchTestCase {
     return selectedFiles;
   }
 
+  protected void select(String email) {
+    GridElement usersGrid = usersGrid();
+    usersGridRows(email).forEach(row -> {
+      usersGrid.getRow(row).click();
+    });
+  }
+
+  protected void viewUser(String email) {
+    GridElement usersGrid = usersGrid();
+    usersGridRows(email).forEach(row -> {
+      GridRowElement gridRow = usersGrid.getRow(row);
+      gridRow.doubleClick();
+    });
+  }
+
+  protected void clickActive(String email) {
+    GridElement usersGrid = usersGrid();
+    usersGridRows(email).forEach(row -> {
+      usersGrid.getCell(row, ACTIVE_COLUMN).$(ButtonElement.class).first().click();
+    });
+  }
+
+  protected ButtonElement addButton() {
+    return wrap(ButtonElement.class, findElement(className(ADD)));
+  }
+
+  protected void clickAdd() {
+    addButton().click();
+  }
+
+  protected ButtonElement switchUserButton() {
+    return wrap(ButtonElement.class, findElement(className(SWITCH_USER)));
+  }
+
+  protected void clickSwitchUser() {
+    switchUserButton().click();
+  }
+
   private WebElement menuItemByStyle(String className) {
     return findElement(className("v-menubar-menuitem-" + className));
-  }
-
-  protected WebElement managerMenuItem() {
-    return menuItemByStyle(MANAGER);
-  }
-
-  protected void clickManager() {
-    managerMenuItem().click();
   }
 
   protected WebElement stopSignasMenuItem() {

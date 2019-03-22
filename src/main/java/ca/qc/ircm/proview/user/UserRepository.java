@@ -8,4 +8,8 @@ import org.springframework.data.querydsl.QueryDslPredicateExecutor;
  */
 public interface UserRepository extends JpaRepository<User, Long>, QueryDslPredicateExecutor<User> {
   User findByEmail(String email);
+
+  long countByValidFalse();
+
+  long countByValidFalseAndLaboratory(Laboratory laboratory);
 }

@@ -85,11 +85,7 @@ public class MenuTest extends MenuPageObject {
     clickStopSignas();
 
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
-    assertTrue(optional(() -> managerMenuItem()).isPresent());
-    clickManager();
-    assertTrue(optional(() -> validateUsersMenuItem()).isPresent());
-    assertTrue(optional(() -> accessMenuItem()).isPresent());
-    assertTrue(optional(() -> signasMenuItem()).isPresent());
+    assertTrue(optional(() -> usersMenuItem()).isPresent());
     assertFalse(optional(() -> stopSignasMenuItem()).isPresent());
   }
 }

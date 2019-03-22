@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.user.web.SignasViewPresenter.USERS_GRID;
-import static ca.qc.ircm.proview.web.MenuPresenter.ACCESS;
 import static ca.qc.ircm.proview.web.MenuPresenter.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTACT;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTROL;
@@ -27,26 +25,23 @@ import static ca.qc.ircm.proview.web.MenuPresenter.DILUTION;
 import static ca.qc.ircm.proview.web.MenuPresenter.ENRICHMENT;
 import static ca.qc.ircm.proview.web.MenuPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
-import static ca.qc.ircm.proview.web.MenuPresenter.MANAGER;
 import static ca.qc.ircm.proview.web.MenuPresenter.MS_ANALYSIS;
 import static ca.qc.ircm.proview.web.MenuPresenter.PLATE;
 import static ca.qc.ircm.proview.web.MenuPresenter.PROFILE;
-import static ca.qc.ircm.proview.web.MenuPresenter.REGISTER;
 import static ca.qc.ircm.proview.web.MenuPresenter.SIGNIN;
 import static ca.qc.ircm.proview.web.MenuPresenter.SIGNOUT;
-import static ca.qc.ircm.proview.web.MenuPresenter.SIGN_AS;
 import static ca.qc.ircm.proview.web.MenuPresenter.SOLUBILISATION;
 import static ca.qc.ircm.proview.web.MenuPresenter.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.web.MenuPresenter.STOP_SIGN_AS;
 import static ca.qc.ircm.proview.web.MenuPresenter.SUBMISSION;
 import static ca.qc.ircm.proview.web.MenuPresenter.TRANSFER;
 import static ca.qc.ircm.proview.web.MenuPresenter.TREATMENT;
-import static ca.qc.ircm.proview.web.MenuPresenter.VALIDATE_USERS;
+import static ca.qc.ircm.proview.web.MenuPresenter.USERS;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.user.web.SignasView;
-import ca.qc.ircm.proview.user.web.SignasViewPresenter;
+import ca.qc.ircm.proview.user.web.UsersView;
+import ca.qc.ircm.proview.user.web.UsersViewPresenter;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.MenuBarElement;
@@ -55,7 +50,6 @@ import org.openqa.selenium.WebElement;
 
 public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   private static final int EMAIL_COLUMN = 0;
-  private static final int SIGN_AS_COLUMN = 4;
 
   private WebElement menuItemByStyle(String className) {
     return findElement(className("v-menubar-menuitem-" + className));
@@ -185,57 +179,12 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
     changeLanguageMenuItem().click();
   }
 
-  protected WebElement managerMenuItem() {
-    return menuItemByStyle(MANAGER);
+  protected WebElement usersMenuItem() {
+    return menuItemByStyle(USERS);
   }
 
   protected void clickManager() {
-    managerMenuItem().click();
-  }
-
-  protected WebElement validateUsersMenuItem() {
-    return menuItemByStyle(VALIDATE_USERS);
-  }
-
-  protected void clickValidateUsers() {
-    managerMenuItem().click();
-    validateUsersMenuItem().click();
-  }
-
-  protected WebElement accessMenuItem() {
-    return menuItemByStyle(ACCESS);
-  }
-
-  protected void clickAccess() {
-    managerMenuItem().click();
-    accessMenuItem().click();
-  }
-
-  protected WebElement signasMenuItem() {
-    return menuItemByStyle(SIGN_AS);
-  }
-
-  protected void clickSignas() {
-    managerMenuItem().click();
-    signasMenuItem().click();
-  }
-
-  protected WebElement registerMenuItem() {
-    return menuItemByStyle(REGISTER);
-  }
-
-  protected void clickRegister() {
-    managerMenuItem().click();
-    registerMenuItem().click();
-  }
-
-  protected WebElement stopSignasMenuItem() {
-    return menuItemByStyle(STOP_SIGN_AS);
-  }
-
-  protected void clickStopSignas() {
-    managerMenuItem().click();
-    stopSignasMenuItem().click();
+    usersMenuItem().click();
   }
 
   protected WebElement contactMenuItem() {
@@ -263,14 +212,24 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
   }
 
   protected void signas(String email) {
-    openView(SignasView.VIEW_NAME);
-    GridElement usersGrid = wrap(GridElement.class, findElement(className(USERS_GRID)));
+    openView(UsersView.VIEW_NAME);
+    GridElement usersGrid =
+        wrap(GridElement.class, mainContent().findElement(className(UsersViewPresenter.USERS)));
     IntStream.range(0, (int) usersGrid.getRowCount())
         .filter(row -> email.equals(usersGrid.getCell(row, EMAIL_COLUMN).getText())).findFirst()
         .ifPresent(row -> {
-          ButtonElement button = wrap(ButtonElement.class, usersGrid.getCell(row, SIGN_AS_COLUMN)
-              .findElement(className(SignasViewPresenter.SIGN_AS)));
-          button.click();
+          usersGrid.getRow(row).click();
         });
+    ButtonElement button =
+        wrap(ButtonElement.class, findElement(className(UsersViewPresenter.SWITCH_USER)));
+    button.click();
+  }
+
+  protected WebElement stopSignasMenuItem() {
+    return menuItemByStyle(STOP_SIGN_AS);
+  }
+
+  protected void clickStopSignas() {
+    stopSignasMenuItem().click();
   }
 }

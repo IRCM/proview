@@ -38,9 +38,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithSubject
-public class UserWindowTest extends AccessPageObject {
+public class UserWindowTest extends UsersPageObject {
   @SuppressWarnings("unused")
-  private static final Logger logger = LoggerFactory.getLogger(AccessViewTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(UserWindowTest.class);
 
   @Test
   public void updateUser() throws Throwable {
@@ -48,7 +48,7 @@ public class UserWindowTest extends AccessPageObject {
     String email = "christopher.anderson@ircm.qc.ca";
     String name = "Christopher Anderson";
 
-    clickViewUser(email);
+    viewUser(email);
 
     assertNotNull(findElement(className(WINDOW_STYLE)));
     WindowElement userWindow = wrap(WindowElement.class, findElement(className(WINDOW_STYLE)));
