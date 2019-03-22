@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE_SELECTED;
@@ -30,6 +29,7 @@ import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
+import com.vaadin.testbench.elements.GridElement.GridRowElement;
 import com.vaadin.testbench.elements.LabelElement;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,16 +60,14 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   private IntStream usersGridRows(String email) {
     GridElement usersGrid = usersGrid();
     return IntStream.range(0, (int) usersGrid.getRowCount())
-        .filter(row -> email.equals(wrap(ButtonElement.class,
-            usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL))).getCaption()));
+        .filter(row -> email.equals(usersGrid.getCell(row, EMAIL_COLUMN).getText()));
   }
 
-  protected void clickViewUser(String email) {
+  protected void viewUser(String email) {
     GridElement usersGrid = usersGrid();
     usersGridRows(email).forEach(row -> {
-      ButtonElement button = wrap(ButtonElement.class,
-          usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
-      button.click();
+      GridRowElement gridRow = usersGrid.getRow(row);
+      gridRow.doubleClick();
     });
   }
 
@@ -107,9 +105,7 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
     GridElement usersGrid = usersGrid();
     List<String> emails = new ArrayList<>();
     IntStream.range(0, (int) usersGrid.getRowCount()).forEach(row -> {
-      ButtonElement button = wrap(ButtonElement.class,
-          usersGrid.getCell(row, EMAIL_COLUMN).findElement(className(EMAIL)));
-      emails.add(button.getCaption());
+      emails.add(usersGrid.getCell(row, EMAIL_COLUMN).getText());
     });
     return emails;
   }

@@ -127,7 +127,7 @@ public class ValidateViewTest extends ValidatePageObject {
     String email = "francois.robert@ircm.qc.ca";
     String name = "François Robert";
 
-    clickViewUser(email);
+    viewUser(email);
 
     assertNotNull(findElement(className(UserWindow.WINDOW_STYLE)));
     WindowElement userWindow =
