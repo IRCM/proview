@@ -17,11 +17,13 @@
 
 package ca.qc.ircm.proview.treatment;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.user.User;
 import java.io.Serializable;
 import java.time.Instant;
@@ -30,6 +32,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -79,6 +82,12 @@ public abstract class Treatment implements Data, Serializable {
   @ManyToOne
   @JoinColumn
   private Protocol protocol;
+  /**
+   * How samples where split.
+   */
+  @Column(nullable = false)
+  @Enumerated(STRING)
+  private FractionationType fractionationType;
   /**
    * User who made the treatment.
    */
@@ -171,5 +180,13 @@ public abstract class Treatment implements Data, Serializable {
 
   public void setProtocol(Protocol protocol) {
     this.protocol = protocol;
+  }
+
+  public FractionationType getFractionationType() {
+    return fractionationType;
+  }
+
+  public void setFractionationType(FractionationType fractionationType) {
+    this.fractionationType = fractionationType;
   }
 }
