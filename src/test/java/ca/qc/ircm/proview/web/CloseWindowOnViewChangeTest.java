@@ -22,8 +22,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.digestion.web.DigestionView;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
@@ -111,7 +110,7 @@ public class CloseWindowOnViewChangeTest {
 
     verify(navigator).addViewChangeListener(listenerCaptor.capture());
     assertTrue(listenerCaptor.getValue().beforeViewChange(new ViewChangeEvent(navigator,
-        new DigestionView(), new DilutionView(), DilutionView.VIEW_NAME, "")));
+        new SubmissionsView(), new ContactView(), ContactView.VIEW_NAME, "")));
     verify(registration).remove();
     verify(window).close();
     verify(ui).removeExtension(closeWindow);

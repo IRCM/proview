@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.treatment.web;
 
-import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.TITLE;
+import static ca.qc.ircm.proview.treatment.web.TreatmentViewPresenter.TITLE;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;

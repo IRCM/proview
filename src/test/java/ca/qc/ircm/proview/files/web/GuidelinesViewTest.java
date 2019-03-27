@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.files.web;
 
-import static ca.qc.ircm.proview.digestion.web.DigestionViewPresenter.TITLE;
+import static ca.qc.ircm.proview.files.web.GuidelinesViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
