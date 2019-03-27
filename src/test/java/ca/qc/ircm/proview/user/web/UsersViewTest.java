@@ -152,7 +152,7 @@ public class UsersViewTest extends UsersPageObject {
   @Test
   public void activate() throws Throwable {
     open();
-    String email = "robert.williams@ircm.qc.ca";
+    String email = "james.johnson@ircm.qc.ca";
 
     clickActive(email);
 
