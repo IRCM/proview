@@ -1784,6 +1784,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     verify(submissionService).update(submission, null);
     assertEquals(date, submission.getSampleDeliveryDate());
+    assertEquals("yyyy-MM-dd", field.getDateFormat());
   }
 
   @Test
@@ -1829,6 +1830,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     verify(submissionService).update(submission, null);
     assertEquals(date, submission.getDigestionDate());
+    assertEquals("yyyy-MM-dd", field.getDateFormat());
   }
 
   @Test
@@ -1876,6 +1878,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     verify(submissionService).update(submission, null);
     assertEquals(date, submission.getAnalysisDate());
+    assertEquals("yyyy-MM-dd", field.getDateFormat());
   }
 
   @Test
@@ -1923,6 +1926,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     verify(submissionService).update(submission, null);
     assertEquals(date, submission.getDataAvailableDate());
+    assertEquals("yyyy-MM-dd", field.getDateFormat());
   }
 
   @Test

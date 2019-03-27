@@ -493,14 +493,14 @@ public class SubmissionsViewPresenter {
     Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
     design.submissionsGrid.getEditor().setBinder(binder);
     design.submissionsGrid.getColumn(SAMPLE_DELIVERY_DATE)
-        .setEditorBinding(binder.forField(new DateField()).bind(SAMPLE_DELIVERY_DATE));
+        .setEditorBinding(binder.forField(dateField()).bind(SAMPLE_DELIVERY_DATE));
     if (authorizationService.hasAdminRole()) {
       design.submissionsGrid.getColumn(DIGESTION_DATE)
-          .setEditorBinding(binder.forField(new DateField()).bind(DIGESTION_DATE));
+          .setEditorBinding(binder.forField(dateField()).bind(DIGESTION_DATE));
       design.submissionsGrid.getColumn(ANALYSIS_DATE)
-          .setEditorBinding(binder.forField(new DateField()).bind(ANALYSIS_DATE));
+          .setEditorBinding(binder.forField(dateField()).bind(ANALYSIS_DATE));
       design.submissionsGrid.getColumn(DATA_AVAILABLE_DATE)
-          .setEditorBinding(binder.forField(new DateField()).bind(DATA_AVAILABLE_DATE));
+          .setEditorBinding(binder.forField(dateField()).bind(DATA_AVAILABLE_DATE));
       ComboBox<MassDetectionInstrument> instrumentField = new ComboBox<>();
       instrumentField.setEmptySelectionCaption(MassDetectionInstrument.getNullLabel(locale));
       instrumentField.setItems(MassDetectionInstrument.platformChoices());
@@ -571,6 +571,12 @@ public class SubmissionsViewPresenter {
           formatter.format(date)));
     }
     return label;
+  }
+
+  private DateField dateField() {
+    DateField dateField = new DateField();
+    dateField.setDateFormat("yyyy-MM-dd");
+    return dateField;
   }
 
   private String statusesLabel(Submission submission) {
