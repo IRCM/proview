@@ -20,22 +20,16 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
-import ca.qc.ircm.proview.digestion.web.DigestionView;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
-import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
-import ca.qc.ircm.proview.fractionation.web.FractionationView;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SampleProperties;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleProperties;
-import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
-import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionProperties;
-import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentProperties;
 import ca.qc.ircm.proview.treatment.TreatmentService;
+import ca.qc.ircm.proview.treatment.web.TreatmentView;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.Button;
@@ -152,31 +146,7 @@ public class SubmissionTreatmentsFormPresenter implements BinderValidator {
   }
 
   private void viewTreatment(Treatment treatment) {
-    switch (treatment.getType()) {
-      case DIGESTION:
-        view.navigateTo(DigestionView.VIEW_NAME, String.valueOf(treatment.getId()));
-        break;
-      case DILUTION:
-        view.navigateTo(DilutionView.VIEW_NAME, String.valueOf(treatment.getId()));
-        break;
-      case ENRICHMENT:
-        view.navigateTo(EnrichmentView.VIEW_NAME, String.valueOf(treatment.getId()));
-        break;
-      case FRACTIONATION:
-        view.navigateTo(FractionationView.VIEW_NAME, String.valueOf(treatment.getId()));
-        break;
-      case STANDARD_ADDITION:
-        view.navigateTo(StandardAdditionView.VIEW_NAME, String.valueOf(treatment.getId()));
-        break;
-      case SOLUBILISATION:
-        view.navigateTo(SolubilisationView.VIEW_NAME, String.valueOf(treatment.getId()));
-        break;
-      case TRANSFER:
-        view.navigateTo(TransferView.VIEW_NAME, String.valueOf(treatment.getId()));
-        break;
-      default:
-        throw new AssertionError("No view for " + treatment.getType() + " yet");
-    }
+    view.navigateTo(TreatmentView.VIEW_NAME, String.valueOf(treatment.getId()));
   }
 
   private void updateSubmission() {

@@ -44,13 +44,9 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisRepository;
 import ca.qc.ircm.proview.digestion.DigestionRepository;
-import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.DilutionRepository;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.EnrichmentRepository;
-import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.fractionation.FractionationRepository;
-import ca.qc.ircm.proview.fractionation.web.FractionationView;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityRepository;
@@ -66,14 +62,12 @@ import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleView;
 import ca.qc.ircm.proview.solubilisation.SolubilisationRepository;
-import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
 import ca.qc.ircm.proview.standard.StandardAdditionRepository;
-import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.TransferRepository;
-import ca.qc.ircm.proview.transfer.web.TransferView;
+import ca.qc.ircm.proview.treatment.web.TreatmentView;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -376,7 +370,7 @@ public class SubmissionHistoryFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(DigestionView.VIEW_NAME, "195");
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, "195");
   }
 
   @Test
@@ -390,7 +384,7 @@ public class SubmissionHistoryFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(DilutionView.VIEW_NAME, "210");
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, "210");
   }
 
   @Test
@@ -404,7 +398,7 @@ public class SubmissionHistoryFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(EnrichmentView.VIEW_NAME, "225");
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, "225");
   }
 
   @Test
@@ -418,7 +412,7 @@ public class SubmissionHistoryFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(FractionationView.VIEW_NAME, "203");
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, "203");
   }
 
   @Test
@@ -432,7 +426,7 @@ public class SubmissionHistoryFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(SolubilisationView.VIEW_NAME, "236");
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, "236");
   }
 
   @Test
@@ -446,7 +440,7 @@ public class SubmissionHistoryFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(StandardAdditionView.VIEW_NAME, "248");
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, "248");
   }
 
   @Test
@@ -460,7 +454,7 @@ public class SubmissionHistoryFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(TransferView.VIEW_NAME, "201");
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, "201");
   }
 
   @Test

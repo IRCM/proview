@@ -36,14 +36,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.digestion.Digestion;
-import ca.qc.ircm.proview.digestion.web.DigestionView;
 import ca.qc.ircm.proview.dilution.Dilution;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
 import ca.qc.ircm.proview.enrichment.Enrichment;
-import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.fractionation.FractionationType;
-import ca.qc.ircm.proview.fractionation.web.FractionationView;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
@@ -52,17 +48,15 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.solubilisation.Solubilisation;
-import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
 import ca.qc.ircm.proview.standard.StandardAddition;
-import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.transfer.Transfer;
-import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentService;
+import ca.qc.ircm.proview.treatment.web.TreatmentView;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.utils.MessageResource;
@@ -509,7 +503,7 @@ public class SubmissionTreatmentsFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(DigestionView.VIEW_NAME, String.valueOf(tubeDigestion.getId()));
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, String.valueOf(tubeDigestion.getId()));
   }
 
   @Test
@@ -521,7 +515,7 @@ public class SubmissionTreatmentsFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(DilutionView.VIEW_NAME, String.valueOf(tubeDilution.getId()));
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, String.valueOf(tubeDilution.getId()));
   }
 
   @Test
@@ -533,7 +527,7 @@ public class SubmissionTreatmentsFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(EnrichmentView.VIEW_NAME, String.valueOf(tubeEnrichment.getId()));
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, String.valueOf(tubeEnrichment.getId()));
   }
 
   @Test
@@ -545,7 +539,7 @@ public class SubmissionTreatmentsFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(FractionationView.VIEW_NAME, String.valueOf(tubeFractionation.getId()));
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, String.valueOf(tubeFractionation.getId()));
   }
 
   @Test
@@ -557,8 +551,7 @@ public class SubmissionTreatmentsFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(SolubilisationView.VIEW_NAME,
-        String.valueOf(tubeSolubilisation.getId()));
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, String.valueOf(tubeSolubilisation.getId()));
   }
 
   @Test
@@ -570,8 +563,7 @@ public class SubmissionTreatmentsFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(StandardAdditionView.VIEW_NAME,
-        String.valueOf(tubeStandardAddition.getId()));
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, String.valueOf(tubeStandardAddition.getId()));
   }
 
   @Test
@@ -583,6 +575,6 @@ public class SubmissionTreatmentsFormPresenterTest {
 
     button.click();
 
-    verify(view).navigateTo(TransferView.VIEW_NAME, String.valueOf(tubeTransfer.getId()));
+    verify(view).navigateTo(TreatmentView.VIEW_NAME, String.valueOf(tubeTransfer.getId()));
   }
 }

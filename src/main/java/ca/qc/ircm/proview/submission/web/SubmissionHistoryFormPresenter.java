@@ -28,14 +28,6 @@ import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
-import ca.qc.ircm.proview.digestion.Digestion;
-import ca.qc.ircm.proview.digestion.web.DigestionView;
-import ca.qc.ircm.proview.dilution.Dilution;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
-import ca.qc.ircm.proview.enrichment.Enrichment;
-import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
-import ca.qc.ircm.proview.fractionation.Fractionation;
-import ca.qc.ircm.proview.fractionation.web.FractionationView;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
@@ -45,13 +37,9 @@ import ca.qc.ircm.proview.plate.web.PlateView;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.web.SampleView;
-import ca.qc.ircm.proview.solubilisation.Solubilisation;
-import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
-import ca.qc.ircm.proview.standard.StandardAddition;
-import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.transfer.Transfer;
-import ca.qc.ircm.proview.transfer.web.TransferView;
+import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.web.TreatmentView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
@@ -181,20 +169,8 @@ public class SubmissionHistoryFormPresenter {
       view.navigateTo(SampleView.VIEW_NAME, Objects.toString(ac.getRecordId()));
     } else if (record instanceof Plate) {
       view.navigateTo(PlateView.VIEW_NAME, Objects.toString(ac.getRecordId()));
-    } else if (record instanceof Digestion) {
-      view.navigateTo(DigestionView.VIEW_NAME, Objects.toString(ac.getRecordId()));
-    } else if (record instanceof Dilution) {
-      view.navigateTo(DilutionView.VIEW_NAME, Objects.toString(ac.getRecordId()));
-    } else if (record instanceof Enrichment) {
-      view.navigateTo(EnrichmentView.VIEW_NAME, Objects.toString(ac.getRecordId()));
-    } else if (record instanceof Fractionation) {
-      view.navigateTo(FractionationView.VIEW_NAME, Objects.toString(ac.getRecordId()));
-    } else if (record instanceof Solubilisation) {
-      view.navigateTo(SolubilisationView.VIEW_NAME, Objects.toString(ac.getRecordId()));
-    } else if (record instanceof StandardAddition) {
-      view.navigateTo(StandardAdditionView.VIEW_NAME, Objects.toString(ac.getRecordId()));
-    } else if (record instanceof Transfer) {
-      view.navigateTo(TransferView.VIEW_NAME, Objects.toString(ac.getRecordId()));
+    } else if (record instanceof Treatment) {
+      view.navigateTo(TreatmentView.VIEW_NAME, Objects.toString(ac.getRecordId()));
     } else if (record instanceof MsAnalysis) {
       view.navigateTo(MsAnalysisView.VIEW_NAME, Objects.toString(ac.getRecordId()));
     } else if (record instanceof DataAnalysis) {
