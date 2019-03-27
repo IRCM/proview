@@ -43,10 +43,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.dataanalysis.DataAnalysisRepository;
-import ca.qc.ircm.proview.digestion.DigestionRepository;
-import ca.qc.ircm.proview.dilution.DilutionRepository;
-import ca.qc.ircm.proview.enrichment.EnrichmentRepository;
-import ca.qc.ircm.proview.fractionation.FractionationRepository;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityRepository;
@@ -61,12 +57,10 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleView;
-import ca.qc.ircm.proview.solubilisation.SolubilisationRepository;
-import ca.qc.ircm.proview.standard.StandardAdditionRepository;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.transfer.TransferRepository;
+import ca.qc.ircm.proview.treatment.TreatmentRepository;
 import ca.qc.ircm.proview.treatment.web.TreatmentView;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
@@ -111,19 +105,7 @@ public class SubmissionHistoryFormPresenterTest {
   @Inject
   private SampleRepository sampleRepository;
   @Inject
-  private DigestionRepository digestionRepository;
-  @Inject
-  private DilutionRepository dilutionRepository;
-  @Inject
-  private EnrichmentRepository enrichmentRepository;
-  @Inject
-  private FractionationRepository fractionationRepository;
-  @Inject
-  private SolubilisationRepository solubilisationRepository;
-  @Inject
-  private StandardAdditionRepository standardAdditionRepository;
-  @Inject
-  private TransferRepository transferRepository;
+  private TreatmentRepository treatmentRepository;
   @Inject
   private MsAnalysisRepository msAnalysisRepository;
   @Inject
@@ -363,7 +345,7 @@ public class SubmissionHistoryFormPresenterTest {
   public void view_Digestion() {
     Activity activity = repository.findOne(5639L);
     when(activityService.all(any(Submission.class))).thenReturn(Arrays.asList(activity));
-    when(activityService.record(any())).thenAnswer(i -> digestionRepository.findOne(195L));
+    when(activityService.record(any())).thenAnswer(i -> treatmentRepository.findOne(195L));
     presenter.init(view);
     presenter.setValue(submission);
     Button button = (Button) design.activities.getColumn(VIEW).getValueProvider().apply(activity);
@@ -377,7 +359,7 @@ public class SubmissionHistoryFormPresenterTest {
   public void view_Dilution() {
     Activity activity = repository.findOne(5680L);
     when(activityService.all(any(Submission.class))).thenReturn(Arrays.asList(activity));
-    when(activityService.record(any())).thenAnswer(i -> dilutionRepository.findOne(210L));
+    when(activityService.record(any())).thenAnswer(i -> treatmentRepository.findOne(210L));
     presenter.init(view);
     presenter.setValue(submission);
     Button button = (Button) design.activities.getColumn(VIEW).getValueProvider().apply(activity);
@@ -391,7 +373,7 @@ public class SubmissionHistoryFormPresenterTest {
   public void view_Enrichment() {
     Activity activity = repository.findOne(5719L);
     when(activityService.all(any(Submission.class))).thenReturn(Arrays.asList(activity));
-    when(activityService.record(any())).thenAnswer(i -> enrichmentRepository.findOne(225L));
+    when(activityService.record(any())).thenAnswer(i -> treatmentRepository.findOne(225L));
     presenter.init(view);
     presenter.setValue(submission);
     Button button = (Button) design.activities.getColumn(VIEW).getValueProvider().apply(activity);
@@ -405,7 +387,7 @@ public class SubmissionHistoryFormPresenterTest {
   public void view_Fractionation() {
     Activity activity = repository.findOne(5659L);
     when(activityService.all(any(Submission.class))).thenReturn(Arrays.asList(activity));
-    when(activityService.record(any())).thenAnswer(i -> fractionationRepository.findOne(203L));
+    when(activityService.record(any())).thenAnswer(i -> treatmentRepository.findOne(203L));
     presenter.init(view);
     presenter.setValue(submission);
     Button button = (Button) design.activities.getColumn(VIEW).getValueProvider().apply(activity);
@@ -419,7 +401,7 @@ public class SubmissionHistoryFormPresenterTest {
   public void view_Solubilisation() {
     Activity activity = repository.findOne(5763L);
     when(activityService.all(any(Submission.class))).thenReturn(Arrays.asList(activity));
-    when(activityService.record(any())).thenAnswer(i -> solubilisationRepository.findOne(236L));
+    when(activityService.record(any())).thenAnswer(i -> treatmentRepository.findOne(236L));
     presenter.init(view);
     presenter.setValue(submission);
     Button button = (Button) design.activities.getColumn(VIEW).getValueProvider().apply(activity);
@@ -433,7 +415,7 @@ public class SubmissionHistoryFormPresenterTest {
   public void view_StandardAddition() {
     Activity activity = repository.findOne(5796L);
     when(activityService.all(any(Submission.class))).thenReturn(Arrays.asList(activity));
-    when(activityService.record(any())).thenAnswer(i -> standardAdditionRepository.findOne(248L));
+    when(activityService.record(any())).thenAnswer(i -> treatmentRepository.findOne(248L));
     presenter.init(view);
     presenter.setValue(submission);
     Button button = (Button) design.activities.getColumn(VIEW).getValueProvider().apply(activity);
@@ -447,7 +429,7 @@ public class SubmissionHistoryFormPresenterTest {
   public void view_Transfer() {
     Activity activity = repository.findOne(5657L);
     when(activityService.all(any(Submission.class))).thenReturn(Arrays.asList(activity));
-    when(activityService.record(any())).thenAnswer(i -> transferRepository.findOne(201L));
+    when(activityService.record(any())).thenAnswer(i -> treatmentRepository.findOne(201L));
     presenter.init(view);
     presenter.setValue(submission);
     Button button = (Button) design.activities.getColumn(VIEW).getValueProvider().apply(activity);
