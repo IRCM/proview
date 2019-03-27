@@ -19,9 +19,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIGESTION;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DILUTION;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ENRICHMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
@@ -32,10 +29,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_CONTAINERS_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SOLUBILISATION;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TRANSFER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static org.openqa.selenium.By.className;
@@ -167,54 +161,6 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickUpdateStatusButton() {
     updateStatusButton().click();
-  }
-
-  protected ButtonElement transferButton() {
-    return wrap(ButtonElement.class, findElement(className(TRANSFER)));
-  }
-
-  protected void clickTransferButton() {
-    transferButton().click();
-  }
-
-  protected ButtonElement digestionButton() {
-    return wrap(ButtonElement.class, findElement(className(DIGESTION)));
-  }
-
-  protected void clickDigestionButton() {
-    digestionButton().click();
-  }
-
-  protected ButtonElement enrichmentButton() {
-    return wrap(ButtonElement.class, findElement(className(ENRICHMENT)));
-  }
-
-  protected void clickEnrichmentButton() {
-    enrichmentButton().click();
-  }
-
-  protected ButtonElement solubilisationButton() {
-    return wrap(ButtonElement.class, findElement(className(SOLUBILISATION)));
-  }
-
-  protected void clickSolubilisationButton() {
-    solubilisationButton().click();
-  }
-
-  protected ButtonElement dilutionButton() {
-    return wrap(ButtonElement.class, findElement(className(DILUTION)));
-  }
-
-  protected void clickDilutionButton() {
-    dilutionButton().click();
-  }
-
-  protected ButtonElement standardAdditionButton() {
-    return wrap(ButtonElement.class, findElement(className(STANDARD_ADDITION)));
-  }
-
-  protected void clickStandardAdditionButton() {
-    standardAdditionButton().click();
   }
 
   protected ButtonElement msAnalysisButton() {

@@ -17,19 +17,13 @@
 
 package ca.qc.ircm.proview.web;
 
-import ca.qc.ircm.proview.digestion.web.DigestionView;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
-import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.plate.web.PlatesView;
 import ca.qc.ircm.proview.sample.web.ControlView;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
-import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
-import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.web.SigninView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
@@ -53,13 +47,6 @@ import org.springframework.stereotype.Controller;
 public class MenuPresenter {
   public static final String HOME = "home";
   public static final String SUBMISSION = "submission";
-  public static final String TREATMENT = "treatment";
-  public static final String TRANSFER = "transfer";
-  public static final String DIGESTION = "digestion";
-  public static final String ENRICHMENT = "enrichment";
-  public static final String SOLUBILISATION = "solubilisation";
-  public static final String DILUTION = "dilution";
-  public static final String STANDARD_ADDITION = "standardAddition";
   public static final String MS_ANALYSIS = "msAnalysis";
   public static final String CONTROL = "control";
   public static final String PLATE = "plate";
@@ -75,13 +62,6 @@ public class MenuPresenter {
   private Menu view;
   private MenuItem home;
   private MenuItem submission;
-  private MenuItem treatment;
-  private MenuItem transfer;
-  private MenuItem digestion;
-  private MenuItem enrichment;
-  private MenuItem solubilisation;
-  private MenuItem dilution;
-  private MenuItem standardAddition;
   private MenuItem msAnalysis;
   private MenuItem control;
   private MenuItem plate;
@@ -127,28 +107,7 @@ public class MenuPresenter {
         item -> changeView(SubmissionView.VIEW_NAME));
     submission.setStyleName(SUBMISSION);
     submission.setVisible(false);
-    treatment = view.menu.addItem(resources.message(TREATMENT), null);
-    treatment.setStyleName(TREATMENT);
-    treatment.setVisible(false);
-    transfer =
-        treatment.addItem(resources.message(TRANSFER), item -> changeView(TransferView.VIEW_NAME));
-    transfer.setStyleName(TRANSFER);
-    digestion = treatment.addItem(resources.message(DIGESTION),
-        item -> changeView(DigestionView.VIEW_NAME));
-    digestion.setStyleName(DIGESTION);
-    enrichment = treatment.addItem(resources.message(ENRICHMENT),
-        item -> changeView(EnrichmentView.VIEW_NAME));
-    enrichment.setStyleName(ENRICHMENT);
-    solubilisation = treatment.addItem(resources.message(SOLUBILISATION),
-        item -> changeView(SolubilisationView.VIEW_NAME));
-    solubilisation.setStyleName(SOLUBILISATION);
-    dilution =
-        treatment.addItem(resources.message(DILUTION), item -> changeView(DilutionView.VIEW_NAME));
-    dilution.setStyleName(DILUTION);
-    standardAddition = treatment.addItem(resources.message(STANDARD_ADDITION),
-        item -> changeView(StandardAdditionView.VIEW_NAME));
-    standardAddition.setStyleName(STANDARD_ADDITION);
-    msAnalysis = treatment.addItem(resources.message(MS_ANALYSIS),
+    msAnalysis = view.menu.addItem(resources.message(MS_ANALYSIS),
         item -> changeView(MsAnalysisView.VIEW_NAME));
     msAnalysis.setStyleName(MS_ANALYSIS);
     control =
@@ -187,13 +146,6 @@ public class MenuPresenter {
 
   private void updateVisible() {
     submission.setVisible(authorizationService.hasUserRole());
-    treatment.setVisible(authorizationService.hasAdminRole());
-    transfer.setVisible(authorizationService.hasAdminRole());
-    digestion.setVisible(authorizationService.hasAdminRole());
-    enrichment.setVisible(authorizationService.hasAdminRole());
-    solubilisation.setVisible(authorizationService.hasAdminRole());
-    dilution.setVisible(authorizationService.hasAdminRole());
-    standardAddition.setVisible(authorizationService.hasAdminRole());
     msAnalysis.setVisible(authorizationService.hasAdminRole());
     control.setVisible(authorizationService.hasAdminRole());
     plate.setVisible(authorizationService.hasAdminRole());

@@ -25,7 +25,6 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>proview</jta-data-source>
     <class>ca.qc.ircm.proview.dataanalysis.DataAnalysis</class>
-    <class>ca.qc.ircm.proview.digestion.Digestion</class>
     <class>ca.qc.ircm.proview.dilution.Dilution</class>
     <class>ca.qc.ircm.proview.enrichment.Enrichment</class>
     <class>ca.qc.ircm.proview.fractionation.Fractionation</class>

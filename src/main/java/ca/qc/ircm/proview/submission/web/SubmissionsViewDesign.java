@@ -34,13 +34,6 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected Button updateStatusButton;
   protected Button hide;
   protected Button show;
-  protected HorizontalLayout treatmentButtons;
-  protected Button transfer;
-  protected Button digestion;
-  protected Button enrichment;
-  protected Button solubilisation;
-  protected Button dilution;
-  protected Button standardAddition;
   protected HorizontalLayout analysisButtons;
   protected Button msAnalysis;
   protected Button dataAnalysis;

@@ -29,9 +29,6 @@ import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
-import ca.qc.ircm.proview.digestion.web.DigestionView;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
-import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.persistence.QueryDsl;
@@ -43,14 +40,11 @@ import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
-import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionProperties;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.HelpWindow;
@@ -146,12 +140,6 @@ public class SubmissionsViewPresenter {
   public static final String HIDE_DONE = "hide.done";
   public static final String SHOW = "show";
   public static final String SHOW_DONE = "show.done";
-  public static final String TRANSFER = "transfer";
-  public static final String DIGESTION = "digestion";
-  public static final String ENRICHMENT = "enrichment";
-  public static final String SOLUBILISATION = "solubilisation";
-  public static final String DILUTION = "dilution";
-  public static final String STANDARD_ADDITION = "standardAddition";
   public static final String MS_ANALYSIS = "msAnalysis";
   public static final String DATA_ANALYSIS = "dataAnalysis";
   public static final String DATA_ANALYSIS_DESCRIPTION = property(DATA_ANALYSIS, "description");
@@ -261,25 +249,6 @@ public class SubmissionsViewPresenter {
     design.show.setCaption(resources.message(SHOW));
     design.show.setVisible(authorizationService.hasAdminRole());
     design.show.addClickListener(e -> show());
-    design.treatmentButtons.setVisible(authorizationService.hasAdminRole());
-    design.transfer.addStyleName(TRANSFER);
-    design.transfer.setCaption(resources.message(TRANSFER));
-    design.transfer.addClickListener(e -> transfer());
-    design.digestion.addStyleName(DIGESTION);
-    design.digestion.setCaption(resources.message(DIGESTION));
-    design.digestion.addClickListener(e -> digestion());
-    design.enrichment.addStyleName(ENRICHMENT);
-    design.enrichment.setCaption(resources.message(ENRICHMENT));
-    design.enrichment.addClickListener(e -> enrichment());
-    design.solubilisation.addStyleName(SOLUBILISATION);
-    design.solubilisation.setCaption(resources.message(SOLUBILISATION));
-    design.solubilisation.addClickListener(e -> solubilisation());
-    design.dilution.addStyleName(DILUTION);
-    design.dilution.setCaption(resources.message(DILUTION));
-    design.dilution.addClickListener(e -> dilution());
-    design.standardAddition.addStyleName(STANDARD_ADDITION);
-    design.standardAddition.setCaption(resources.message(STANDARD_ADDITION));
-    design.standardAddition.addClickListener(e -> standardAddition());
     design.msAnalysis.addStyleName(MS_ANALYSIS);
     design.msAnalysis.setCaption(resources.message(MS_ANALYSIS));
     design.msAnalysis.addClickListener(e -> msAnalysis());
@@ -846,60 +815,6 @@ public class SubmissionsViewPresenter {
       String error = resources.message(SELECTION_EMPTY);
       logger.debug("Validation error: {}", error);
       view.showError(error);
-    }
-  }
-
-  private void transfer() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(TransferView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void digestion() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(DigestionView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void enrichment() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(EnrichmentView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void solubilisation() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(SolubilisationView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void dilution() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(DilutionView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void standardAddition() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(StandardAdditionView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
     }
   }
 
