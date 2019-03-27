@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.fractionation;
+package ca.qc.ircm.proview.treatment;
 
-import static ca.qc.ircm.proview.fractionation.FractionationType.MUDPIT;
-import static ca.qc.ircm.proview.fractionation.FractionationType.PI;
+import static ca.qc.ircm.proview.treatment.FractionationType.MUDPIT;
+import static ca.qc.ircm.proview.treatment.FractionationType.PI;
 import static org.junit.Assert.assertEquals;
 
+import ca.qc.ircm.proview.treatment.FractionationType;
 import java.util.Locale;
 import org.junit.Test;
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.fractionation;
+package ca.qc.ircm.proview.treatment;
 
 import ca.qc.ircm.utils.MessageResource;
 import java.util.Locale;

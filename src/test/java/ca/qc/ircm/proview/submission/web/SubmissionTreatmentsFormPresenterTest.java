@@ -28,6 +28,13 @@ import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresente
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TREATMENT_TIME;
 import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.TREATMENT_TYPE;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
+import static ca.qc.ircm.proview.treatment.TreatmentType.DIGESTION;
+import static ca.qc.ircm.proview.treatment.TreatmentType.DILUTION;
+import static ca.qc.ircm.proview.treatment.TreatmentType.ENRICHMENT;
+import static ca.qc.ircm.proview.treatment.TreatmentType.FRACTIONATION;
+import static ca.qc.ircm.proview.treatment.TreatmentType.SOLUBILISATION;
+import static ca.qc.ircm.proview.treatment.TreatmentType.STANDARD_ADDITION;
+import static ca.qc.ircm.proview.treatment.TreatmentType.TRANSFER;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -35,11 +42,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.digestion.Digestion;
-import ca.qc.ircm.proview.dilution.Dilution;
-import ca.qc.ircm.proview.enrichment.Enrichment;
-import ca.qc.ircm.proview.fractionation.Fractionation;
-import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.Well;
@@ -47,11 +49,9 @@ import ca.qc.ircm.proview.sample.SampleContainerService;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.solubilisation.Solubilisation;
-import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.transfer.Transfer;
+import ca.qc.ircm.proview.treatment.FractionationType;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -100,35 +100,35 @@ public class SubmissionTreatmentsFormPresenterTest {
   private Submission submission;
   private Tube tube1;
   private Tube tube2;
-  private Solubilisation tubeSolubilisation;
+  private Treatment tubeSolubilisation;
   private TreatedSample tubeSolubilisedSample;
-  private Solubilisation plateSolubilisation;
+  private Treatment plateSolubilisation;
   private TreatedSample plateSolubilisedSample;
-  private Digestion tubeDigestion;
+  private Treatment tubeDigestion;
   private TreatedSample tubeDigestedSample;
   private TreatedSample tubeDigestedSample2;
-  private Digestion plateDigestion;
+  private Treatment plateDigestion;
   private TreatedSample plateDigestedSample;
-  private StandardAddition tubeStandardAddition;
+  private Treatment tubeStandardAddition;
   private TreatedSample tubeAddedStandard;
-  private StandardAddition plateStandardAddition;
+  private Treatment plateStandardAddition;
   private TreatedSample plateAddedStandard;
-  private Enrichment tubeEnrichment;
+  private Treatment tubeEnrichment;
   private TreatedSample tubeEnrichedSample;
-  private Enrichment plateEnrichment;
+  private Treatment plateEnrichment;
   private TreatedSample plateEnrichedSample;
-  private Dilution tubeDilution;
+  private Treatment tubeDilution;
   private TreatedSample tubeDilutedSample;
-  private Dilution plateDilution;
+  private Treatment plateDilution;
   private TreatedSample plateDilutedSample;
-  private Fractionation tubeFractionation;
+  private Treatment tubeFractionation;
   private TreatedSample tubeFractionatedSample;
   private TreatedSample tubeFractionatedSample2;
-  private Fractionation plateFractionation;
+  private Treatment plateFractionation;
   private TreatedSample plateFractionatedSample;
-  private Transfer tubeTransfer;
+  private Treatment tubeTransfer;
   private TreatedSample tubeTransferedSample;
-  private Transfer plateTransfer;
+  private Treatment plateTransfer;
   private TreatedSample plateTransferedSample;
 
   /**
@@ -168,7 +168,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     tube2.setName("tube_name");
     sample2.setOriginalContainer(tube1);
     submission.setSamples(Arrays.asList(sample1, sample2));
-    tubeSolubilisation = new Solubilisation(1L);
+    tubeSolubilisation = new Treatment(1L);
+    tubeSolubilisation.setType(SOLUBILISATION);
     tubeSolubilisation
         .setInsertTime(Instant.now().minus(tubeSolubilisation.getId(), ChronoUnit.HOURS));
     tubeSolubilisedSample = new TreatedSample();
@@ -180,7 +181,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeSolubilisedSample.setContainer(new Tube());
     ((Tube) tubeSolubilisedSample.getContainer()).setName("tube_1");
     tubeSolubilisation.setTreatedSamples(Arrays.asList(tubeSolubilisedSample));
-    plateSolubilisation = new Solubilisation(2L);
+    plateSolubilisation = new Treatment(2L);
+    plateSolubilisation.setType(SOLUBILISATION);
     plateSolubilisation
         .setInsertTime(Instant.now().minus(plateSolubilisation.getId(), ChronoUnit.HOURS));
     plateSolubilisedSample = new TreatedSample();
@@ -193,7 +195,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateSolubilisedSample.getContainer()).setPlate(new Plate());
     ((Well) plateSolubilisedSample.getContainer()).getPlate().setName("plate_1");
     plateSolubilisation.setTreatedSamples(Arrays.asList(plateSolubilisedSample));
-    tubeDigestion = new Digestion(3L);
+    tubeDigestion = new Treatment(3L);
+    tubeDigestion.setType(DIGESTION);
     tubeDigestion.setProtocol(new Protocol());
     tubeDigestion.getProtocol().setName("digestion_protocol_1");
     tubeDigestion.setInsertTime(Instant.now().minus(tubeDigestion.getId(), ChronoUnit.HOURS));
@@ -210,7 +213,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeDigestedSample2.setContainer(new Tube());
     ((Tube) tubeDigestedSample2.getContainer()).setName("tube_2");
     tubeDigestion.setTreatedSamples(Arrays.asList(tubeDigestedSample, tubeDigestedSample2));
-    plateDigestion = new Digestion(4L);
+    plateDigestion = new Treatment(4L);
+    plateDigestion.setType(DIGESTION);
     plateDigestion.setProtocol(new Protocol());
     plateDigestion.getProtocol().setName("digestion_protocol_2");
     plateDigestion.setInsertTime(Instant.now().minus(plateDigestion.getId(), ChronoUnit.HOURS));
@@ -222,7 +226,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateDigestedSample.getContainer()).setPlate(new Plate());
     ((Well) plateDigestedSample.getContainer()).getPlate().setName("plate_1");
     plateDigestion.setTreatedSamples(Arrays.asList(plateDigestedSample));
-    tubeStandardAddition = new StandardAddition(5L);
+    tubeStandardAddition = new Treatment(5L);
+    tubeStandardAddition.setType(STANDARD_ADDITION);
     tubeStandardAddition
         .setInsertTime(Instant.now().minus(tubeStandardAddition.getId(), ChronoUnit.HOURS));
     tubeAddedStandard = new TreatedSample();
@@ -234,7 +239,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeAddedStandard.setContainer(new Tube());
     ((Tube) tubeAddedStandard.getContainer()).setName("tube_1");
     tubeStandardAddition.setTreatedSamples(Arrays.asList(tubeAddedStandard));
-    plateStandardAddition = new StandardAddition(6L);
+    plateStandardAddition = new Treatment(6L);
+    plateStandardAddition.setType(STANDARD_ADDITION);
     plateStandardAddition
         .setInsertTime(Instant.now().minus(plateStandardAddition.getId(), ChronoUnit.HOURS));
     plateAddedStandard = new TreatedSample();
@@ -247,7 +253,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateAddedStandard.getContainer()).setPlate(new Plate());
     ((Well) plateAddedStandard.getContainer()).getPlate().setName("plate_1");
     plateStandardAddition.setTreatedSamples(Arrays.asList(plateAddedStandard));
-    tubeEnrichment = new Enrichment(7L);
+    tubeEnrichment = new Treatment(7L);
+    tubeEnrichment.setType(ENRICHMENT);
     tubeEnrichment.setProtocol(new Protocol());
     tubeEnrichment.getProtocol().setName("enrichment_protocol_1");
     tubeEnrichment.setInsertTime(Instant.now().minus(tubeEnrichment.getId(), ChronoUnit.HOURS));
@@ -258,7 +265,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeEnrichedSample.setContainer(new Tube());
     ((Tube) tubeEnrichedSample.getContainer()).setName("tube_1");
     tubeEnrichment.setTreatedSamples(Arrays.asList(tubeEnrichedSample));
-    plateEnrichment = new Enrichment(8L);
+    plateEnrichment = new Treatment(8L);
+    plateEnrichment.setType(ENRICHMENT);
     plateEnrichment.setProtocol(new Protocol());
     plateEnrichment.getProtocol().setName("enrichment_protocol_2");
     plateEnrichment.setInsertTime(Instant.now().minus(plateEnrichment.getId(), ChronoUnit.HOURS));
@@ -270,7 +278,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateEnrichedSample.getContainer()).setPlate(new Plate());
     ((Well) plateEnrichedSample.getContainer()).getPlate().setName("plate_1");
     plateEnrichment.setTreatedSamples(Arrays.asList(plateEnrichedSample));
-    tubeDilution = new Dilution(9L);
+    tubeDilution = new Treatment(9L);
+    tubeDilution.setType(DILUTION);
     tubeDilution.setInsertTime(Instant.now().minus(tubeDilution.getId(), ChronoUnit.HOURS));
     tubeDilutedSample = new TreatedSample();
     tubeDilutedSample.setTreatment(tubeDilution);
@@ -282,7 +291,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     tubeDilutedSample.setContainer(new Tube());
     ((Tube) tubeDilutedSample.getContainer()).setName("tube_1");
     tubeDilution.setTreatedSamples(Arrays.asList(tubeDilutedSample));
-    plateDilution = new Dilution(10L);
+    plateDilution = new Treatment(10L);
+    plateDilution.setType(DILUTION);
     plateDilution.setInsertTime(Instant.now().minus(plateDilution.getId(), ChronoUnit.HOURS));
     plateDilutedSample = new TreatedSample();
     plateDilutedSample.setTreatment(plateDilution);
@@ -295,7 +305,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateDilutedSample.getContainer()).setPlate(new Plate());
     ((Well) plateDilutedSample.getContainer()).getPlate().setName("plate_1");
     plateDilution.setTreatedSamples(Arrays.asList(plateDilutedSample));
-    tubeFractionation = new Fractionation(11L);
+    tubeFractionation = new Treatment(11L);
+    tubeFractionation.setType(FRACTIONATION);
     tubeFractionation.setFractionationType(FractionationType.MUDPIT);
     tubeFractionation
         .setInsertTime(Instant.now().minus(tubeFractionation.getId(), ChronoUnit.HOURS));
@@ -321,7 +332,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Tube) tubeFractionatedSample2.getDestinationContainer()).setName("destination_tube_1");
     tubeFractionation
         .setTreatedSamples(Arrays.asList(tubeFractionatedSample, tubeFractionatedSample2));
-    plateFractionation = new Fractionation(12L);
+    plateFractionation = new Treatment(12L);
+    plateFractionation.setType(FRACTIONATION);
     plateFractionation.setFractionationType(FractionationType.PI);
     plateFractionation
         .setInsertTime(Instant.now().minus(plateFractionation.getId(), ChronoUnit.HOURS));
@@ -338,7 +350,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Well) plateFractionatedSample.getDestinationContainer()).setPlate(new Plate());
     ((Well) plateFractionatedSample.getDestinationContainer()).getPlate().setName("plate_2");
     plateFractionation.setTreatedSamples(Arrays.asList(plateFractionatedSample));
-    tubeTransfer = new Transfer(13L);
+    tubeTransfer = new Treatment(13L);
+    tubeTransfer.setType(TRANSFER);
     tubeTransfer.setInsertTime(Instant.now().minus(tubeTransfer.getId(), ChronoUnit.HOURS));
     tubeTransferedSample = new TreatedSample();
     tubeTransferedSample.setTreatment(tubeTransfer);
@@ -349,7 +362,8 @@ public class SubmissionTreatmentsFormPresenterTest {
     ((Tube) tubeTransferedSample.getContainer()).setName("tube_1");
     ((Tube) tubeTransferedSample.getDestinationContainer()).setName("destination_tube_1");
     tubeTransfer.setTreatedSamples(Arrays.asList(tubeTransferedSample));
-    plateTransfer = new Transfer(14L);
+    plateTransfer = new Treatment(14L);
+    plateTransfer.setType(TRANSFER);
     plateTransfer.setInsertTime(Instant.now().minus(plateTransfer.getId(), ChronoUnit.HOURS));
     plateTransferedSample = new TreatedSample();
     plateTransferedSample.setTreatment(plateTransfer);

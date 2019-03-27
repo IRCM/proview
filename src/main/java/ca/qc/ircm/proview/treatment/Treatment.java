@@ -19,23 +19,19 @@ package ca.qc.ircm.proview.treatment;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
-import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.user.User;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -47,10 +43,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = Treatment.TABLE_NAME)
-@Inheritance(strategy = SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
 @GeneratePropertyNames
-public abstract class Treatment implements Data, Serializable {
+public class Treatment implements Data, Serializable {
   /**
    * Type of errors that forces Digestion to be deleted.
    */
@@ -76,6 +70,12 @@ public abstract class Treatment implements Data, Serializable {
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
+  /**
+   * Type of treatment.
+   */
+  @Column(nullable = false)
+  @Enumerated(STRING)
+  private TreatmentType type;
   /**
    * Protocol used for treatment, if any.
    */
@@ -123,8 +123,6 @@ public abstract class Treatment implements Data, Serializable {
     this.id = id;
   }
 
-  public abstract TreatmentType getType();
-
   @Override
   public Long getId() {
     return id;
@@ -132,6 +130,14 @@ public abstract class Treatment implements Data, Serializable {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public TreatmentType getType() {
+    return type;
+  }
+
+  public void setType(TreatmentType type) {
+    this.type = type;
   }
 
   public boolean isDeleted() {

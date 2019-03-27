@@ -39,7 +39,7 @@ import static ca.qc.ircm.proview.treatment.TreatmentType.TRANSFER;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
-import ca.qc.ircm.proview.fractionation.FractionationType;
+import ca.qc.ircm.proview.treatment.FractionationType;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.utils.MessageResource;
