@@ -2244,9 +2244,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     design.hide.click();
 
-    verify(submissionService).hide(submissionsCaptor.capture());
-    assertEquals(1, submissionsCaptor.getValue().size());
-    assertTrue(find(submissionsCaptor.getValue(), submissions.get(0).getId()).isPresent());
+    verify(submissionService).hide(submissions.get(0));
     verify(view).showTrayNotification(resources.message(HIDE_DONE, submissions.get(0).getName()));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
@@ -2270,9 +2268,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     design.show.click();
 
-    verify(submissionService).show(submissionsCaptor.capture());
-    assertEquals(1, submissionsCaptor.getValue().size());
-    assertTrue(find(submissionsCaptor.getValue(), submissions.get(0).getId()).isPresent());
+    verify(submissionService).show(submissions.get(0));
     verify(view).showTrayNotification(resources.message(SHOW_DONE, submissions.get(0).getName()));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }

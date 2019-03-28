@@ -789,7 +789,7 @@ public class SubmissionsViewPresenter {
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
       Submission submission = design.submissionsGrid.getSelectedItems().iterator().next();
       logger.debug("Hide submission {}", submission);
-      submissionService.hide(Collections.nCopies(1, submission));
+      submissionService.hide(submission);
       view.showTrayNotification(resources.message(HIDE_DONE, submission.getName()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     } else {
@@ -804,7 +804,7 @@ public class SubmissionsViewPresenter {
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
       Submission submission = design.submissionsGrid.getSelectedItems().iterator().next();
       logger.debug("Hide submission {}", submission);
-      submissionService.show(Collections.nCopies(1, submission));
+      submissionService.show(submission);
       view.showTrayNotification(resources.message(SHOW_DONE, submission.getName()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     } else {

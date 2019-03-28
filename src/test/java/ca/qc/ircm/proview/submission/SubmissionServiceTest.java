@@ -32,7 +32,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -2915,45 +2914,35 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void hide() throws Exception {
-    Submission submission1 = repository.findOne(147L);
-    detach(submission1);
-    Submission submission2 = repository.findOne(148L);
-    detach(submission2);
+    Submission submission = repository.findOne(147L);
+    detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
-    service.hide(Arrays.asList(submission1, submission2));
+    service.hide(submission);
 
     repository.flush();
     verify(authorizationService).checkAdminRole();
-    verify(activityService, times(2)).insert(activity);
-    submission1 = repository.findOne(submission1.getId());
-    verify(submissionActivityService).update(submission1, null);
-    assertTrue(submission1.isHidden());
-    submission2 = repository.findOne(submission2.getId());
-    verify(submissionActivityService).update(submission2, null);
-    assertTrue(submission2.isHidden());
+    verify(activityService).insert(activity);
+    submission = repository.findOne(submission.getId());
+    verify(submissionActivityService).update(submission, null);
+    assertTrue(submission.isHidden());
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void show() throws Exception {
-    Submission submission1 = repository.findOne(36L);
-    detach(submission1);
-    Submission submission2 = repository.findOne(148L);
-    detach(submission2);
+    Submission submission = repository.findOne(36L);
+    detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
 
-    service.show(Arrays.asList(submission1, submission2));
+    service.show(submission);
 
     repository.flush();
     verify(authorizationService).checkAdminRole();
-    verify(activityService, times(1)).insert(activity);
-    submission1 = repository.findOne(submission1.getId());
-    verify(submissionActivityService).update(submission1, null);
-    assertFalse(submission1.isHidden());
-    submission2 = repository.findOne(submission2.getId());
-    verify(submissionActivityService).update(submission2, null);
-    assertFalse(submission2.isHidden());
+    verify(activityService).insert(activity);
+    submission = repository.findOne(submission.getId());
+    verify(submissionActivityService).update(submission, null);
+    assertFalse(submission.isHidden());
   }
 }

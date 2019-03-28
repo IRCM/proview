@@ -46,7 +46,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -480,44 +479,40 @@ public class SubmissionService {
   }
 
   /**
-   * Hide submissions.
+   * Hide submission.
    *
-   * @param submissions
-   *          submissions
+   * @param submission
+   *          submission
    */
-  public void hide(Collection<Submission> submissions) {
+  public void hide(Submission submission) {
     authorizationService.checkAdminRole();
 
-    for (Submission submission : submissions) {
-      submission = repository.findOne(submission.getId());
-      submission.setHidden(true);
-      repository.save(submission);
+    submission = repository.findOne(submission.getId());
+    submission.setHidden(true);
+    repository.save(submission);
 
-      Optional<Activity> activity = submissionActivityService.update(submission, null);
-      if (activity.isPresent()) {
-        activityService.insert(activity.get());
-      }
+    Optional<Activity> activity = submissionActivityService.update(submission, null);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
     }
   }
 
   /**
-   * Make submissions visible, if they are hidden.
+   * Make submission visible, if it is hidden.
    *
-   * @param submissions
-   *          submissions
+   * @param submission
+   *          submission
    */
-  public void show(Collection<Submission> submissions) {
+  public void show(Submission submission) {
     authorizationService.checkAdminRole();
 
-    for (Submission submission : submissions) {
-      submission = repository.findOne(submission.getId());
-      submission.setHidden(false);
-      repository.save(submission);
+    submission = repository.findOne(submission.getId());
+    submission.setHidden(false);
+    repository.save(submission);
 
-      Optional<Activity> activity = submissionActivityService.update(submission, null);
-      if (activity.isPresent()) {
-        activityService.insert(activity.get());
-      }
+    Optional<Activity> activity = submissionActivityService.update(submission, null);
+    if (activity.isPresent()) {
+      activityService.insert(activity.get());
     }
   }
 }
