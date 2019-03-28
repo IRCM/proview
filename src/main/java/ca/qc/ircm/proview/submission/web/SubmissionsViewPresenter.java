@@ -34,7 +34,6 @@ import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleProperties;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
@@ -125,8 +124,6 @@ public class SubmissionsViewPresenter {
   public static final String HISTORY = "history";
   public static final String ALL = "all";
   public static final String ADD_SUBMISSION = "addSubmission";
-  public static final String SELECT_SAMPLES = "selectSamples";
-  public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
   public static final String SELECTION_EMPTY = "selection.empty";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final String HIDE = "hide";
@@ -168,8 +165,6 @@ public class SubmissionsViewPresenter {
   @Inject
   private SubmissionHistoryWindow submissionHistoryWindow;
   @Inject
-  private SampleSelectionWindow sampleSelectionWindow;
-  @Inject
   private HelpWindow helpWindow;
   @Value("${spring.application.name}")
   private String applicationName;
@@ -188,7 +183,6 @@ public class SubmissionsViewPresenter {
     this.view = view;
     design = view.design;
     filter = new SubmissionFilter();
-    sampleSelectionWindow.setModal(true);
     prepareComponents();
   }
 
@@ -211,13 +205,6 @@ public class SubmissionsViewPresenter {
     design.addSubmission.setCaption(resources.message(ADD_SUBMISSION));
     design.addSubmission.setVisible(!authorizationService.hasAdminRole());
     design.addSubmission.addClickListener(e -> addSubmission());
-    design.sampleSelectionLayout.setVisible(authorizationService.hasAdminRole());
-    design.selectSamplesButton.addStyleName(SELECT_SAMPLES);
-    design.selectSamplesButton.setCaption(resources.message(SELECT_SAMPLES));
-    design.selectSamplesButton.addClickListener(e -> selectSamples());
-    design.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
-    design.selectedSamplesLabel
-        .setValue(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
     design.updateStatusButton.addStyleName(UPDATE_STATUS);
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
@@ -710,35 +697,11 @@ public class SubmissionsViewPresenter {
     view.navigateTo(SubmissionView.VIEW_NAME);
   }
 
-  private void selectSamples() {
-    view.addWindow(sampleSelectionWindow);
-    List<Sample> samples;
-    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      samples = design.submissionsGrid.getSelectedItems().stream()
-          .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
-    } else {
-      samples = view.savedSamples();
-    }
-    sampleSelectionWindow.setItems(samples);
-    sampleSelectionWindow.center();
-    sampleSelectionWindow.addSaveListener(e -> {
-      MessageResource resources = view.getResources();
-      List<Sample> selectedSamples = e.getSavedObject();
-      design.submissionsGrid.deselectAll();
-      view.saveSamples(selectedSamples);
-      design.selectedSamplesLabel
-          .setValue(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
-      logger.debug("Selected samples {}", selectedSamples);
-    });
-  }
-
   private void saveSelectedSamples() {
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      MessageResource resources = view.getResources();
       List<Sample> samples = design.submissionsGrid.getSelectedItems().stream()
           .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
       view.saveSamples(samples);
-      design.selectedSamplesLabel.setValue(resources.message(SELECT_SAMPLES_LABEL, samples.size()));
     }
   }
 

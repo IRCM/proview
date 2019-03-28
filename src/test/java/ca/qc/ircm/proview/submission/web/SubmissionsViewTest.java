@@ -29,8 +29,6 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
-import ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter;
-import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -97,8 +95,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> help()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertTrue(optional(() -> addSubmissionButton()).isPresent());
-    assertFalse(optional(() -> selectSamplesButton()).isPresent());
-    assertFalse(optional(() -> selectedSamplesLabel()).isPresent());
     assertFalse(optional(() -> updateStatusButton()).isPresent());
     assertTrue(optional(() -> dataAnalysisButton()).isPresent());
   }
@@ -112,8 +108,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> help()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertFalse(optional(() -> addSubmissionButton()).isPresent());
-    assertTrue(optional(() -> selectSamplesButton()).isPresent());
-    assertTrue(optional(() -> selectedSamplesLabel()).isPresent());
     assertTrue(optional(() -> updateStatusButton()).isPresent());
     assertFalse(optional(() -> dataAnalysisButton()).isPresent());
   }
@@ -202,24 +196,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     clickAddSubmissionButton();
 
     assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject
-  public void selectSamples() throws Throwable {
-    admin = true;
-    open();
-
-    clickSelectSamplesButton();
-
-    assertNotNull(findElement(className(SampleSelectionWindow.WINDOW_STYLE)));
-    WindowElement sampleSelectionWindow =
-        wrap(WindowElement.class, findElement(className(SampleSelectionWindow.WINDOW_STYLE)));
-    assertTrue(resources(SampleSelectionWindow.class).message(SampleSelectionWindow.TITLE)
-        .contains(sampleSelectionWindow.getCaption()));
-    assertTrue(optional(
-        () -> sampleSelectionWindow.findElement(className(SampleSelectionFormPresenter.SAMPLES)))
-            .isPresent());
   }
 
   @Test

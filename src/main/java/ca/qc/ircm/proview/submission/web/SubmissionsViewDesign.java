@@ -25,9 +25,6 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected Button help;
   protected Grid<ca.qc.ircm.proview.submission.Submission> submissionsGrid;
   protected Button addSubmission;
-  protected HorizontalLayout sampleSelectionLayout;
-  protected Button selectSamplesButton;
-  protected Label selectedSamplesLabel;
   protected Button updateStatusButton;
   protected Button hide;
   protected Button show;
