@@ -35,7 +35,6 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected Button hide;
   protected Button show;
   protected HorizontalLayout analysisButtons;
-  protected Button msAnalysis;
   protected Button dataAnalysis;
 
   public SubmissionsViewDesign() {

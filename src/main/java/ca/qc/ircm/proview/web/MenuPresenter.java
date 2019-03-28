@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
-import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.plate.web.PlatesView;
 import ca.qc.ircm.proview.sample.web.ControlView;
 import ca.qc.ircm.proview.security.AuthenticationService;
@@ -47,7 +46,6 @@ import org.springframework.stereotype.Controller;
 public class MenuPresenter {
   public static final String HOME = "home";
   public static final String SUBMISSION = "submission";
-  public static final String MS_ANALYSIS = "msAnalysis";
   public static final String CONTROL = "control";
   public static final String PLATE = "plate";
   public static final String PROFILE = "profile";
@@ -62,7 +60,6 @@ public class MenuPresenter {
   private Menu view;
   private MenuItem home;
   private MenuItem submission;
-  private MenuItem msAnalysis;
   private MenuItem control;
   private MenuItem plate;
   private MenuItem profile;
@@ -107,9 +104,6 @@ public class MenuPresenter {
         item -> changeView(SubmissionView.VIEW_NAME));
     submission.setStyleName(SUBMISSION);
     submission.setVisible(false);
-    msAnalysis = view.menu.addItem(resources.message(MS_ANALYSIS),
-        item -> changeView(MsAnalysisView.VIEW_NAME));
-    msAnalysis.setStyleName(MS_ANALYSIS);
     control =
         view.menu.addItem(resources.message(CONTROL), item -> changeView(ControlView.VIEW_NAME));
     control.setStyleName(CONTROL);
@@ -146,7 +140,6 @@ public class MenuPresenter {
 
   private void updateVisible() {
     submission.setVisible(authorizationService.hasUserRole());
-    msAnalysis.setVisible(authorizationService.hasAdminRole());
     control.setVisible(authorizationService.hasAdminRole());
     plate.setVisible(authorizationService.hasAdminRole());
     profile.setVisible(authorizationService.isUser());

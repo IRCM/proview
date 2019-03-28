@@ -40,8 +40,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HIDE_DO
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.MS_ANALYSIS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.NO_CONTAINERS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.NO_SELECTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
@@ -83,7 +81,6 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -264,7 +261,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
     assertTrue(design.hide.getStyleName().contains(HIDE));
     assertTrue(design.show.getStyleName().contains(SHOW));
-    assertTrue(design.msAnalysis.getStyleName().contains(MS_ANALYSIS));
     assertTrue(design.dataAnalysis.getStyleName().contains(DATA_ANALYSIS));
   }
 
@@ -292,7 +288,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(resources.message(UPDATE_STATUS), design.updateStatusButton.getCaption());
     assertEquals(resources.message(HIDE), design.hide.getCaption());
     assertEquals(resources.message(SHOW), design.show.getCaption());
-    assertEquals(resources.message(MS_ANALYSIS), design.msAnalysis.getCaption());
     assertEquals(resources.message(DATA_ANALYSIS), design.dataAnalysis.getCaption());
     assertEquals(resources.message(DATA_ANALYSIS_DESCRIPTION),
         design.dataAnalysis.getDescription());
@@ -1685,7 +1680,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertFalse(design.sampleSelectionLayout.isVisible());
     assertFalse(design.containerSelectionLayout.isVisible());
     assertFalse(design.updateStatusButton.isVisible());
-    assertFalse(design.msAnalysis.isVisible());
     assertTrue(design.dataAnalysis.isVisible());
   }
 
@@ -1701,7 +1695,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.updateStatusButton.isVisible());
     assertTrue(design.hide.isVisible());
     assertTrue(design.show.isVisible());
-    assertTrue(design.msAnalysis.isVisible());
     assertFalse(design.dataAnalysis.isVisible());
   }
 
@@ -2307,31 +2300,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     verify(submissionService, never()).show(any());
     verify(view).showError(resources.message(SELECTION_EMPTY));
-  }
-
-  @Test
-  public void msAnalysis() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-    List<SampleContainer> containers = Arrays.asList(new Tube(), new Tube());
-    when(view.savedContainers()).thenReturn(containers);
-
-    design.msAnalysis.click();
-
-    verify(view, never()).saveSamples(any());
-    verify(view, never()).saveContainers(any());
-    verify(view).navigateTo(MsAnalysisView.VIEW_NAME);
-  }
-
-  @Test
-  public void msAnalysis_NoContainers() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-
-    design.msAnalysis.click();
-
-    verify(view).showError(resources.message(NO_CONTAINERS));
-    verify(view, never()).navigateTo(MsAnalysisView.VIEW_NAME);
   }
 
   @Test

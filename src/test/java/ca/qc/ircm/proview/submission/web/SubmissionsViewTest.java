@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
-import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.sample.web.ContainerSelectionFormPresenter;
 import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter;
@@ -105,7 +104,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertFalse(optional(() -> selectContainersButton()).isPresent());
     assertFalse(optional(() -> selectedContainersLabel()).isPresent());
     assertFalse(optional(() -> updateStatusButton()).isPresent());
-    assertFalse(optional(() -> msAnalysisButton()).isPresent());
     assertTrue(optional(() -> dataAnalysisButton()).isPresent());
   }
 
@@ -123,7 +121,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> selectContainersButton()).isPresent());
     assertTrue(optional(() -> selectedContainersLabel()).isPresent());
     assertTrue(optional(() -> updateStatusButton()).isPresent());
-    assertTrue(optional(() -> msAnalysisButton()).isPresent());
     assertFalse(optional(() -> dataAnalysisButton()).isPresent());
   }
 
@@ -262,22 +259,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     clickUpdateStatusButton();
 
     assertEquals(viewUrl(SampleStatusView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject
-  public void msAnalysis() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(5);
-    clickSelectContainersButton();
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
-
-    clickMsAnalysisButton();
-
-    assertEquals(viewUrl(MsAnalysisView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test

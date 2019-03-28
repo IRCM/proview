@@ -30,7 +30,6 @@ import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
 import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -140,7 +139,6 @@ public class SubmissionsViewPresenter {
   public static final String HIDE_DONE = "hide.done";
   public static final String SHOW = "show";
   public static final String SHOW_DONE = "show.done";
-  public static final String MS_ANALYSIS = "msAnalysis";
   public static final String DATA_ANALYSIS = "dataAnalysis";
   public static final String DATA_ANALYSIS_DESCRIPTION = property(DATA_ANALYSIS, "description");
   public static final String NO_SELECTION = "noSelection";
@@ -249,10 +247,6 @@ public class SubmissionsViewPresenter {
     design.show.setCaption(resources.message(SHOW));
     design.show.setVisible(authorizationService.hasAdminRole());
     design.show.addClickListener(e -> show());
-    design.msAnalysis.addStyleName(MS_ANALYSIS);
-    design.msAnalysis.setCaption(resources.message(MS_ANALYSIS));
-    design.msAnalysis.addClickListener(e -> msAnalysis());
-    design.msAnalysis.setVisible(authorizationService.hasAdminRole());
     design.dataAnalysis.addStyleName(DATA_ANALYSIS);
     design.dataAnalysis.setCaption(resources.message(DATA_ANALYSIS));
     design.dataAnalysis.setDescription(resources.message(DATA_ANALYSIS_DESCRIPTION));
@@ -821,15 +815,6 @@ public class SubmissionsViewPresenter {
       String error = resources.message(SELECTION_EMPTY);
       logger.debug("Validation error: {}", error);
       view.showError(error);
-    }
-  }
-
-  private void msAnalysis() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(MsAnalysisView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
     }
   }
 

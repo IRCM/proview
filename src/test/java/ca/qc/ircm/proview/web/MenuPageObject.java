@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.web.MenuPresenter.CONTACT;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTROL;
 import static ca.qc.ircm.proview.web.MenuPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
-import static ca.qc.ircm.proview.web.MenuPresenter.MS_ANALYSIS;
 import static ca.qc.ircm.proview.web.MenuPresenter.PLATE;
 import static ca.qc.ircm.proview.web.MenuPresenter.PROFILE;
 import static ca.qc.ircm.proview.web.MenuPresenter.SIGNIN;
@@ -66,14 +65,6 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
 
   protected void clickSubmission() {
     submissionMenuItem().click();
-  }
-
-  protected WebElement msAnalysisMenuItem() {
-    return menuItemByStyle(MS_ANALYSIS);
-  }
-
-  protected void clickMsAnalysis() {
-    msAnalysisMenuItem().click();
   }
 
   protected WebElement plateMenuItem() {
