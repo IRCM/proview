@@ -46,9 +46,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES_SEPARATOR;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECTION_EMPTY;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_CONTAINERS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_CONTAINERS_LABEL;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_CONTAINERS_NO_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECT_SAMPLES_LABEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SERVICE;
@@ -85,7 +82,6 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -178,8 +174,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @MockBean
   private SampleSelectionWindow sampleSelectionWindow;
   @MockBean
-  private ContainerSelectionWindow containerSelectionWindow;
-  @MockBean
   private HelpWindow helpWindow;
   @Mock
   private SubmissionsView view;
@@ -256,8 +250,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.addSubmission.getStyleName().contains(ADD_SUBMISSION));
     assertTrue(design.selectSamplesButton.getStyleName().contains(SELECT_SAMPLES));
     assertTrue(design.selectedSamplesLabel.getStyleName().contains(SELECT_SAMPLES_LABEL));
-    assertTrue(design.selectContainers.getStyleName().contains(SELECT_CONTAINERS));
-    assertTrue(design.selectedContainersLabel.getStyleName().contains(SELECT_CONTAINERS_LABEL));
     assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
     assertTrue(design.hide.getStyleName().contains(HIDE));
     assertTrue(design.show.getStyleName().contains(SHOW));
@@ -282,9 +274,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(resources.message(SELECT_SAMPLES), design.selectSamplesButton.getCaption());
     assertEquals(resources.message(SELECT_SAMPLES_LABEL, 0),
         design.selectedSamplesLabel.getValue());
-    assertEquals(resources.message(SELECT_CONTAINERS), design.selectContainers.getCaption());
-    assertEquals(resources.message(SELECT_CONTAINERS_LABEL, 0),
-        design.selectedContainersLabel.getValue());
     assertEquals(resources.message(UPDATE_STATUS), design.updateStatusButton.getCaption());
     assertEquals(resources.message(HIDE), design.hide.getCaption());
     assertEquals(resources.message(SHOW), design.show.getCaption());
@@ -1678,7 +1667,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Single);
     assertTrue(design.addSubmission.isVisible());
     assertFalse(design.sampleSelectionLayout.isVisible());
-    assertFalse(design.containerSelectionLayout.isVisible());
     assertFalse(design.updateStatusButton.isVisible());
     assertTrue(design.dataAnalysis.isVisible());
   }
@@ -1691,7 +1679,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Single);
     assertFalse(design.addSubmission.isVisible());
     assertTrue(design.sampleSelectionLayout.isVisible());
-    assertTrue(design.containerSelectionLayout.isVisible());
     assertTrue(design.updateStatusButton.isVisible());
     assertTrue(design.hide.isVisible());
     assertTrue(design.show.isVisible());
@@ -2142,72 +2129,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
-  public void selectContainers_NoSamples() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-
-    design.selectContainers.click();
-
-    verify(containerSelectionWindow, never()).setSamples(any());
-    verify(containerSelectionWindow, never()).addSaveListener(any());
-    view.showError(resources.message(SELECT_CONTAINERS_NO_SAMPLES));
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void selectContainers() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    final Submission submission1 = find(submissions, 32L).orElse(null);
-    when(view.savedSamples()).thenReturn(new ArrayList<>(submission1.getSamples()));
-    presenter.init(view);
-
-    design.selectContainers.click();
-
-    verify(containerSelectionWindow).setSamples(new ArrayList<>(submission1.getSamples()));
-    verify(containerSelectionWindow).addSaveListener(containersSaveListenerCaptor.capture());
-    verify(view).addWindow(containerSelectionWindow);
-    SaveEvent<List<SampleContainer>> saveEvent = mock(SaveEvent.class);
-    List<SampleContainer> containers = Arrays.asList(new Tube(), new Tube());
-    when(saveEvent.getSavedObject()).thenReturn(containers);
-    containersSaveListenerCaptor.getValue().saved(saveEvent);
-    verify(saveEvent).getSavedObject();
-    verify(view).saveContainers(containers);
-    assertEquals(resources.message(SELECT_CONTAINERS_LABEL, containers.size()),
-        design.selectedContainersLabel.getValue());
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void selectContainers_Selection() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-    final Submission submission1 = find(submissions, 32L).orElse(null);
-    final Submission submission2 = find(submissions, 156L).orElse(null);
-    design.submissionsGrid.select(submission2);
-    when(view.savedSamples()).thenReturn(new ArrayList<>(submission1.getSamples()));
-
-    design.selectContainers.click();
-
-    verify(view).saveSamples(samplesCaptor.capture());
-    Collection<Sample> samples = samplesCaptor.getValue();
-    assertEquals(submission2.getSamples().size(), samples.size());
-    assertTrue(samples.containsAll(submission2.getSamples()));
-    verify(containerSelectionWindow).setSamples(new ArrayList<>(submission1.getSamples()));
-    verify(containerSelectionWindow).addSaveListener(containersSaveListenerCaptor.capture());
-    verify(view).addWindow(containerSelectionWindow);
-    SaveEvent<List<SampleContainer>> saveEvent = mock(SaveEvent.class);
-    List<SampleContainer> containers = Arrays.asList(new Tube(), new Tube());
-    when(saveEvent.getSavedObject()).thenReturn(containers);
-    containersSaveListenerCaptor.getValue().saved(saveEvent);
-    verify(saveEvent).getSavedObject();
-    verify(view).saveContainers(containers);
-    assertEquals(resources.message(SELECT_SAMPLES_LABEL, submission2.getSamples().size()),
-        design.selectedSamplesLabel.getValue());
-    assertEquals(resources.message(SELECT_CONTAINERS_LABEL, containers.size()),
-        design.selectedContainersLabel.getValue());
-  }
-
-  @Test
   public void updateStatus() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
@@ -2315,7 +2236,5 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     assertEquals(resources.message(SELECT_SAMPLES_LABEL, 1),
         design.selectedSamplesLabel.getValue());
-    assertEquals(resources.message(SELECT_CONTAINERS_LABEL, 2),
-        design.selectedContainersLabel.getValue());
   }
 }

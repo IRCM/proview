@@ -28,9 +28,6 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected HorizontalLayout sampleSelectionLayout;
   protected Button selectSamplesButton;
   protected Label selectedSamplesLabel;
-  protected HorizontalLayout containerSelectionLayout;
-  protected Button selectContainers;
-  protected Label selectedContainersLabel;
   protected Button updateStatusButton;
   protected Button hide;
   protected Button show;

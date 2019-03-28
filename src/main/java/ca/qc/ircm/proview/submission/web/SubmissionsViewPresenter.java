@@ -32,10 +32,8 @@ import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleProperties;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -129,9 +127,6 @@ public class SubmissionsViewPresenter {
   public static final String ADD_SUBMISSION = "addSubmission";
   public static final String SELECT_SAMPLES = "selectSamples";
   public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
-  public static final String SELECT_CONTAINERS = "selectContainers";
-  public static final String SELECT_CONTAINERS_NO_SAMPLES = "selectContainers.noSamples";
-  public static final String SELECT_CONTAINERS_LABEL = "selectContainersLabel";
   public static final String SELECTION_EMPTY = "selection.empty";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final String HIDE = "hide";
@@ -141,7 +136,6 @@ public class SubmissionsViewPresenter {
   public static final String DATA_ANALYSIS = "dataAnalysis";
   public static final String DATA_ANALYSIS_DESCRIPTION = property(DATA_ANALYSIS, "description");
   public static final String NO_SELECTION = "noSelection";
-  public static final String NO_CONTAINERS = "noContainers";
   public static final String CONDITION_FALSE = "condition-false";
   public static final String COLUMN_ORDER = "columnOrder";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
@@ -176,8 +170,6 @@ public class SubmissionsViewPresenter {
   @Inject
   private SampleSelectionWindow sampleSelectionWindow;
   @Inject
-  private ContainerSelectionWindow containerSelectionWindow;
-  @Inject
   private HelpWindow helpWindow;
   @Value("${spring.application.name}")
   private String applicationName;
@@ -197,7 +189,6 @@ public class SubmissionsViewPresenter {
     design = view.design;
     filter = new SubmissionFilter();
     sampleSelectionWindow.setModal(true);
-    containerSelectionWindow.setModal(true);
     prepareComponents();
   }
 
@@ -227,13 +218,6 @@ public class SubmissionsViewPresenter {
     design.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
     design.selectedSamplesLabel
         .setValue(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
-    design.containerSelectionLayout.setVisible(authorizationService.hasAdminRole());
-    design.selectContainers.addStyleName(SELECT_CONTAINERS);
-    design.selectContainers.setCaption(resources.message(SELECT_CONTAINERS));
-    design.selectContainers.addClickListener(e -> selectContainers());
-    design.selectedContainersLabel.addStyleName(SELECT_CONTAINERS_LABEL);
-    design.selectedContainersLabel
-        .setValue(resources.message(SELECT_CONTAINERS_LABEL, view.savedContainers().size()));
     design.updateStatusButton.addStyleName(UPDATE_STATUS);
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
@@ -755,27 +739,6 @@ public class SubmissionsViewPresenter {
           .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
       view.saveSamples(samples);
       design.selectedSamplesLabel.setValue(resources.message(SELECT_SAMPLES_LABEL, samples.size()));
-    }
-  }
-
-  private void selectContainers() {
-    saveSelectedSamples();
-    if (view.savedSamples().isEmpty()) {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(SELECT_CONTAINERS_NO_SAMPLES));
-    } else {
-      view.addWindow(containerSelectionWindow);
-      List<Sample> samples = view.savedSamples();
-      containerSelectionWindow.setSamples(samples);
-      containerSelectionWindow.center();
-      containerSelectionWindow.addSaveListener(e -> {
-        MessageResource resources = view.getResources();
-        List<SampleContainer> selectedContainers = e.getSavedObject();
-        view.saveContainers(selectedContainers);
-        design.selectedContainersLabel
-            .setValue(resources.message(SELECT_CONTAINERS_LABEL, selectedContainers.size()));
-        logger.debug("Selected containers {}", selectedContainers);
-      });
     }
   }
 

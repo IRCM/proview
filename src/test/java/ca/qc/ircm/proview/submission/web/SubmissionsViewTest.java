@@ -29,8 +29,6 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
-import ca.qc.ircm.proview.sample.web.ContainerSelectionFormPresenter;
-import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter;
 import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
@@ -101,8 +99,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> addSubmissionButton()).isPresent());
     assertFalse(optional(() -> selectSamplesButton()).isPresent());
     assertFalse(optional(() -> selectedSamplesLabel()).isPresent());
-    assertFalse(optional(() -> selectContainersButton()).isPresent());
-    assertFalse(optional(() -> selectedContainersLabel()).isPresent());
     assertFalse(optional(() -> updateStatusButton()).isPresent());
     assertTrue(optional(() -> dataAnalysisButton()).isPresent());
   }
@@ -118,8 +114,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertFalse(optional(() -> addSubmissionButton()).isPresent());
     assertTrue(optional(() -> selectSamplesButton()).isPresent());
     assertTrue(optional(() -> selectedSamplesLabel()).isPresent());
-    assertTrue(optional(() -> selectContainersButton()).isPresent());
-    assertTrue(optional(() -> selectedContainersLabel()).isPresent());
     assertTrue(optional(() -> updateStatusButton()).isPresent());
     assertFalse(optional(() -> dataAnalysisButton()).isPresent());
   }
@@ -225,26 +219,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
         .contains(sampleSelectionWindow.getCaption()));
     assertTrue(optional(
         () -> sampleSelectionWindow.findElement(className(SampleSelectionFormPresenter.SAMPLES)))
-            .isPresent());
-  }
-
-  @Test
-  @WithSubject
-  public void selectContainers() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(3);
-    selectSubmission(5);
-
-    clickSelectContainersButton();
-
-    assertNotNull(findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    assertTrue(resources(ContainerSelectionWindow.class).message(ContainerSelectionWindow.TITLE)
-        .contains(containerSelectionWindow.getCaption()));
-    assertTrue(optional(
-        () -> containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.TYPE)))
             .isPresent());
   }
 
