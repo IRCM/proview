@@ -203,7 +203,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
   public void updateStatus() throws Throwable {
     admin = true;
     open();
-    selectSubmission(3);
     selectSubmission(5);
 
     clickUpdateStatusButton();

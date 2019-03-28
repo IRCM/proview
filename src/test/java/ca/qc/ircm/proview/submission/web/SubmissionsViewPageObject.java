@@ -83,7 +83,7 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   }
 
   protected void selectSubmission(int row) {
-    submissionsGrid().getCell(row, 0).click();
+    submissionsGrid().getCell(row, 1).click();
   }
 
   protected void clickViewSubmissionByRow(int row) {
