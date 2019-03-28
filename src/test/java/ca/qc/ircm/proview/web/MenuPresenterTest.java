@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.web.MenuPresenter.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTACT;
-import static ca.qc.ircm.proview.web.MenuPresenter.CONTROL;
 import static ca.qc.ircm.proview.web.MenuPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
 import static ca.qc.ircm.proview.web.MenuPresenter.PLATE;
@@ -37,7 +36,6 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.plate.web.PlatesView;
-import ca.qc.ircm.proview.sample.web.ControlView;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
@@ -120,16 +118,15 @@ public class MenuPresenterTest {
 
     assertTrue(view.menu.getItems().get(0).getStyleName().contains(HOME));
     assertTrue(view.menu.getItems().get(1).getStyleName().contains(SUBMISSION));
-    assertTrue(view.menu.getItems().get(2).getStyleName().contains(CONTROL));
-    assertTrue(view.menu.getItems().get(3).getStyleName().contains(PLATE));
-    assertTrue(view.menu.getItems().get(4).getStyleName().contains(PROFILE));
-    assertTrue(view.menu.getItems().get(5).getStyleName().contains(SIGNOUT));
-    assertTrue(view.menu.getItems().get(6).getStyleName().contains(CHANGE_LANGUAGE));
-    assertTrue(view.menu.getItems().get(7).getStyleName().contains(USERS));
-    assertTrue(view.menu.getItems().get(8).getStyleName().contains(CONTACT));
-    assertTrue(view.menu.getItems().get(9).getStyleName().contains(GUIDELINES));
-    assertTrue(view.menu.getItems().get(10).getStyleName().contains(SIGNIN));
-    assertTrue(view.menu.getItems().get(11).getStyleName().contains(STOP_SIGN_AS));
+    assertTrue(view.menu.getItems().get(2).getStyleName().contains(PLATE));
+    assertTrue(view.menu.getItems().get(3).getStyleName().contains(PROFILE));
+    assertTrue(view.menu.getItems().get(4).getStyleName().contains(SIGNOUT));
+    assertTrue(view.menu.getItems().get(5).getStyleName().contains(CHANGE_LANGUAGE));
+    assertTrue(view.menu.getItems().get(6).getStyleName().contains(USERS));
+    assertTrue(view.menu.getItems().get(7).getStyleName().contains(CONTACT));
+    assertTrue(view.menu.getItems().get(8).getStyleName().contains(GUIDELINES));
+    assertTrue(view.menu.getItems().get(9).getStyleName().contains(SIGNIN));
+    assertTrue(view.menu.getItems().get(10).getStyleName().contains(STOP_SIGN_AS));
   }
 
   @Test
@@ -138,7 +135,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertFalse(item(SUBMISSION).isVisible());
-    assertFalse(item(CONTROL).isVisible());
     assertFalse(item(PLATE).isVisible());
     assertFalse(item(PROFILE).isVisible());
     assertFalse(item(SIGNOUT).isVisible());
@@ -158,7 +154,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertTrue(item(SUBMISSION).isVisible());
-    assertFalse(item(CONTROL).isVisible());
     assertFalse(item(PLATE).isVisible());
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
@@ -179,7 +174,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertTrue(item(SUBMISSION).isVisible());
-    assertFalse(item(CONTROL).isVisible());
     assertFalse(item(PLATE).isVisible());
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
@@ -200,7 +194,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertTrue(item(SUBMISSION).isVisible());
-    assertTrue(item(CONTROL).isVisible());
     assertTrue(item(PLATE).isVisible());
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
@@ -221,7 +214,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertTrue(item(SUBMISSION).isVisible());
-    assertFalse(item(CONTROL).isVisible());
     assertFalse(item(PLATE).isVisible());
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
@@ -239,7 +231,6 @@ public class MenuPresenterTest {
 
     assertEquals(resources.message(HOME), item(HOME).getText());
     assertEquals(resources.message(SUBMISSION), item(SUBMISSION).getText());
-    assertEquals(resources.message(CONTROL), item(CONTROL).getText());
     assertEquals(resources.message(PLATE), item(PLATE).getText());
     assertEquals(resources.message(PROFILE), item(PROFILE).getText());
     assertEquals(resources.message(SIGNOUT), item(SIGNOUT).getText());
@@ -267,15 +258,6 @@ public class MenuPresenterTest {
     item(SUBMISSION).getCommand().menuSelected(item(SUBMISSION));
 
     verify(view).navigateTo(SubmissionView.VIEW_NAME);
-  }
-
-  @Test
-  public void control() throws Throwable {
-    presenter.init(view);
-
-    item(CONTROL).getCommand().menuSelected(item(CONTROL));
-
-    verify(view).navigateTo(ControlView.VIEW_NAME);
   }
 
   @Test

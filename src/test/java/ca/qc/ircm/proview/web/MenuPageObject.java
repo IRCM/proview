@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.web.MenuPresenter.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTACT;
-import static ca.qc.ircm.proview.web.MenuPresenter.CONTROL;
 import static ca.qc.ircm.proview.web.MenuPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
 import static ca.qc.ircm.proview.web.MenuPresenter.PLATE;
@@ -73,14 +72,6 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
 
   protected void clickPlate() {
     plateMenuItem().click();
-  }
-
-  protected WebElement controlMenuItem() {
-    return menuItemByStyle(CONTROL);
-  }
-
-  protected void clickControl() {
-    controlMenuItem().click();
   }
 
   protected WebElement profileMenuItem() {
