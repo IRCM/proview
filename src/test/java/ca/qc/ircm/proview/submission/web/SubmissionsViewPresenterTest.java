@@ -1688,7 +1688,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
 
-    assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Multi);
+    assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Single);
     assertFalse(design.addSubmission.isVisible());
     assertTrue(design.sampleSelectionLayout.isVisible());
     assertTrue(design.containerSelectionLayout.isVisible());
@@ -2127,8 +2127,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     verify(sampleSelectionWindow).setItems(samplesListCaptor.capture());
     verify(sampleSelectionWindow).addSaveListener(samplesSaveListenerCaptor.capture());
     List<Sample> samples = samplesListCaptor.getValue();
-    assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
-    assertTrue(samples.containsAll(submission1.getSamples()));
+    assertEquals(submission2.getSamples().size(), samples.size());
     assertTrue(samples.containsAll(submission2.getSamples()));
     verify(view).addWindow(sampleSelectionWindow);
     SaveEvent<List<Sample>> saveEvent = mock(SaveEvent.class);
@@ -2184,7 +2183,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     presenter.init(view);
     final Submission submission1 = find(submissions, 32L).orElse(null);
     final Submission submission2 = find(submissions, 156L).orElse(null);
-    design.submissionsGrid.select(submission1);
     design.submissionsGrid.select(submission2);
     when(view.savedSamples()).thenReturn(new ArrayList<>(submission1.getSamples()));
 
@@ -2192,8 +2190,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     verify(view).saveSamples(samplesCaptor.capture());
     Collection<Sample> samples = samplesCaptor.getValue();
-    assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
-    assertTrue(samples.containsAll(submission1.getSamples()));
+    assertEquals(submission2.getSamples().size(), samples.size());
     assertTrue(samples.containsAll(submission2.getSamples()));
     verify(containerSelectionWindow).setSamples(new ArrayList<>(submission1.getSamples()));
     verify(containerSelectionWindow).addSaveListener(containersSaveListenerCaptor.capture());
@@ -2204,9 +2201,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     containersSaveListenerCaptor.getValue().saved(saveEvent);
     verify(saveEvent).getSavedObject();
     verify(view).saveContainers(containers);
-    assertEquals(
-        resources.message(SELECT_SAMPLES_LABEL,
-            submission1.getSamples().size() + submission2.getSamples().size()),
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, submission2.getSamples().size()),
         design.selectedSamplesLabel.getValue());
     assertEquals(resources.message(SELECT_CONTAINERS_LABEL, containers.size()),
         design.selectedContainersLabel.getValue());
@@ -2227,21 +2222,16 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   public void updateStatus_Selection() {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
-    final Submission submission1 = find(submissions, 32L).orElse(null);
-    final Submission submission2 = find(submissions, 156L).orElse(null);
-    design.submissionsGrid.select(submission1);
-    design.submissionsGrid.select(submission2);
+    final Submission submission = find(submissions, 32L).orElse(null);
+    design.submissionsGrid.select(submission);
 
     design.updateStatusButton.click();
 
     verify(view).saveSamples(samplesCaptor.capture());
     Collection<Sample> samples = samplesCaptor.getValue();
-    assertEquals(submission1.getSamples().size() + submission2.getSamples().size(), samples.size());
-    assertTrue(samples.containsAll(submission1.getSamples()));
-    assertTrue(samples.containsAll(submission2.getSamples()));
-    assertEquals(
-        resources.message(SELECT_SAMPLES_LABEL,
-            submission1.getSamples().size() + submission2.getSamples().size()),
+    assertEquals(submission.getSamples().size(), samples.size());
+    assertTrue(samples.containsAll(submission.getSamples()));
+    assertEquals(resources.message(SELECT_SAMPLES_LABEL, submission.getSamples().size()),
         design.selectedSamplesLabel.getValue());
     verify(view).navigateTo(SampleStatusView.VIEW_NAME);
   }
@@ -2251,15 +2241,13 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     design.submissionsGrid.select(submissions.get(0));
-    design.submissionsGrid.select(submissions.get(1));
 
     design.hide.click();
 
     verify(submissionService).hide(submissionsCaptor.capture());
-    assertEquals(2, submissionsCaptor.getValue().size());
+    assertEquals(1, submissionsCaptor.getValue().size());
     assertTrue(find(submissionsCaptor.getValue(), submissions.get(0).getId()).isPresent());
-    assertTrue(find(submissionsCaptor.getValue(), submissions.get(1).getId()).isPresent());
-    verify(view).showTrayNotification(resources.message(HIDE_DONE, 2));
+    verify(view).showTrayNotification(resources.message(HIDE_DONE, submissions.get(0).getName()));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -2279,15 +2267,13 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     when(authorizationService.hasAdminRole()).thenReturn(true);
     presenter.init(view);
     design.submissionsGrid.select(submissions.get(0));
-    design.submissionsGrid.select(submissions.get(1));
 
     design.show.click();
 
     verify(submissionService).show(submissionsCaptor.capture());
-    assertEquals(2, submissionsCaptor.getValue().size());
+    assertEquals(1, submissionsCaptor.getValue().size());
     assertTrue(find(submissionsCaptor.getValue(), submissions.get(0).getId()).isPresent());
-    assertTrue(find(submissionsCaptor.getValue(), submissions.get(1).getId()).isPresent());
-    verify(view).showTrayNotification(resources.message(SHOW_DONE, 2));
+    verify(view).showTrayNotification(resources.message(SHOW_DONE, submissions.get(0).getName()));
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 

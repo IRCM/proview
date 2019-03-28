@@ -32,7 +32,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISS
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static org.openqa.selenium.By.className;
-import static org.openqa.selenium.By.tagName;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
@@ -40,11 +39,11 @@ import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.LabelElement;
 
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
-  private static final int EXPERIMENT_COLUMN = 1;
-  private static final int USER_COLUMN = 2;
-  private static final int LINKED_TO_RESULTS_COLUMN = 12;
-  private static final int TREATMENTS_COLUMN = 13;
-  private static final int HISTORY_COLUMN = 14;
+  private static final int EXPERIMENT_COLUMN = 0;
+  private static final int USER_COLUMN = 1;
+  private static final int LINKED_TO_RESULTS_COLUMN = 11;
+  private static final int TREATMENTS_COLUMN = 12;
+  private static final int HISTORY_COLUMN = 13;
 
   protected void open() {
     openView(SubmissionsView.VIEW_NAME);
@@ -60,9 +59,6 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     }
     if (!isAdmin() && column >= USER_COLUMN) {
       column--; // User column is hidden.
-    }
-    if (!isAdmin()) {
-      column--; // Select column is hidden.
     }
     return column;
   }
@@ -91,11 +87,7 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   }
 
   protected void selectSubmission(int row) {
-    if (isAdmin()) {
-      submissionsGrid().getCell(row, 0).findElement(tagName("input")).click();
-    } else {
-      submissionsGrid().getCell(row, 1).click();
-    }
+    submissionsGrid().getCell(row, 0).click();
   }
 
   protected void clickViewSubmissionByRow(int row) {

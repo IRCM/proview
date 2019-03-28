@@ -69,7 +69,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.ItemCaptionGenerator;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -416,9 +415,6 @@ public class SubmissionsViewPresenter {
           .getColumns().stream().map(col -> col.getId()).toArray(String[]::new));
     });
     design.submissionsGrid.setFrozenColumnCount(1);
-    if (authorizationService.hasAdminRole()) {
-      design.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
-    }
     HeaderRow filterRow = design.submissionsGrid.appendHeaderRow();
     filterRow.getCell(EXPERIMENT).setComponent(textFilter(e -> {
       filter.experimentContains = e.getValue();
@@ -791,10 +787,10 @@ public class SubmissionsViewPresenter {
   private void hide() {
     MessageResource resources = view.getResources();
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
-      logger.debug("Hide submissions {}", submissions);
-      submissionService.hide(submissions);
-      view.showTrayNotification(resources.message(HIDE_DONE, submissions.size()));
+      Submission submission = design.submissionsGrid.getSelectedItems().iterator().next();
+      logger.debug("Hide submission {}", submission);
+      submissionService.hide(Collections.nCopies(1, submission));
+      view.showTrayNotification(resources.message(HIDE_DONE, submission.getName()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     } else {
       String error = resources.message(SELECTION_EMPTY);
@@ -806,10 +802,10 @@ public class SubmissionsViewPresenter {
   private void show() {
     MessageResource resources = view.getResources();
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
-      logger.debug("Hide submissions {}", submissions);
-      submissionService.show(submissions);
-      view.showTrayNotification(resources.message(SHOW_DONE, submissions.size()));
+      Submission submission = design.submissionsGrid.getSelectedItems().iterator().next();
+      logger.debug("Hide submission {}", submission);
+      submissionService.show(Collections.nCopies(1, submission));
+      view.showTrayNotification(resources.message(SHOW_DONE, submission.getName()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     } else {
       String error = resources.message(SELECTION_EMPTY);
