@@ -60,6 +60,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,7 +93,7 @@ public class PlatesSelectionComponentPresenter {
   @Inject
   private LocalDateFilterComponent insertDateFilter;
   @Inject
-  private PlateWindow plateWindow;
+  private Provider<PlateWindow> plateWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -206,11 +207,10 @@ public class PlatesSelectionComponentPresenter {
     button.addStyleName(NAME);
     button.setCaption(plate.getName());
     button.addClickListener(e -> {
+      PlateWindow plateWindow = plateWindowProvider.get();
       plateWindow.setValue(plate);
-      if (!plateWindow.isAttached()) {
-        plateWindow.center();
-        component.addWindow(plateWindow);
-      }
+      plateWindow.center();
+      component.addWindow(plateWindow);
     });
     return button;
   }

@@ -50,6 +50,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -79,7 +80,7 @@ public class SubmissionHistoryFormPresenter {
   @Inject
   private SampleContainerService sampleContainerService;
   @Inject
-  private SubmissionAnalysesWindow submissionAnalysesWindow;
+  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
 
   protected SubmissionHistoryFormPresenter() {
   }
@@ -174,6 +175,7 @@ public class SubmissionHistoryFormPresenter {
     } else if (record instanceof MsAnalysis) {
       view.navigateTo(MsAnalysisView.VIEW_NAME, Objects.toString(ac.getRecordId()));
     } else if (record instanceof DataAnalysis) {
+      SubmissionAnalysesWindow submissionAnalysesWindow = submissionAnalysesWindowProvider.get();
       submissionAnalysesWindow.setValue(submission);
       if (!submissionAnalysesWindow.isAttached()) {
         submissionAnalysesWindow.center();

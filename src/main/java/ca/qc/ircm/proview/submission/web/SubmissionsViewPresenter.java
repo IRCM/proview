@@ -86,6 +86,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -157,15 +158,15 @@ public class SubmissionsViewPresenter {
   @Inject
   private LocalDateFilterComponent dataAvailableDateFilter;
   @Inject
-  private SubmissionWindow submissionWindow;
+  private Provider<SubmissionWindow> submissionWindowProvider;
   @Inject
-  private SubmissionAnalysesWindow submissionAnalysesWindow;
+  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
   @Inject
-  private SubmissionTreatmentsWindow submissionTreatmentsWindow;
+  private Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider;
   @Inject
-  private SubmissionHistoryWindow submissionHistoryWindow;
+  private Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider;
   @Inject
-  private HelpWindow helpWindow;
+  private Provider<HelpWindow> helpWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -194,11 +195,10 @@ public class SubmissionsViewPresenter {
     design.help.addStyleName(HELP);
     design.help.setCaption(resources.message(HELP));
     design.help.addClickListener(e -> {
+      HelpWindow helpWindow = helpWindowProvider.get();
       helpWindow.setHelp(resources.message(SUBMISSIONS_DESCRIPTION, VaadinIcons.MENU.getHtml()),
           ContentMode.HTML);
-      if (!helpWindow.isAttached()) {
-        view.addWindow(helpWindow);
-      }
+      view.addWindow(helpWindow);
     });
     prepareSumissionsGrid();
     design.addSubmission.addStyleName(ADD_SUBMISSION);
@@ -662,35 +662,32 @@ public class SubmissionsViewPresenter {
 
   private void viewSubmission(Submission submission) {
     submission = submissionService.get(submission.getId());
+    SubmissionWindow submissionWindow = submissionWindowProvider.get();
     submissionWindow.setValue(submission);
-    if (!submissionWindow.isAttached()) {
-      submissionWindow.center();
-      view.addWindow(submissionWindow);
-    }
+    submissionWindow.center();
+    view.addWindow(submissionWindow);
   }
 
   private void viewSubmissionResults(Submission submission) {
+    SubmissionAnalysesWindow submissionAnalysesWindow = submissionAnalysesWindowProvider.get();
     submissionAnalysesWindow.setValue(submission);
-    if (!submissionAnalysesWindow.isAttached()) {
-      submissionAnalysesWindow.center();
-      view.addWindow(submissionAnalysesWindow);
-    }
+    submissionAnalysesWindow.center();
+    view.addWindow(submissionAnalysesWindow);
   }
 
   private void viewSubmissionTreatments(Submission submission) {
+    SubmissionTreatmentsWindow submissionTreatmentsWindow =
+        submissionTreatmentsWindowProvider.get();
     submissionTreatmentsWindow.setValue(submission);
-    if (!submissionTreatmentsWindow.isAttached()) {
-      submissionTreatmentsWindow.center();
-      view.addWindow(submissionTreatmentsWindow);
-    }
+    submissionTreatmentsWindow.center();
+    view.addWindow(submissionTreatmentsWindow);
   }
 
   private void viewSubmissionHistory(Submission submission) {
+    SubmissionHistoryWindow submissionHistoryWindow = submissionHistoryWindowProvider.get();
     submissionHistoryWindow.setValue(submission);
-    if (!submissionHistoryWindow.isAttached()) {
-      submissionHistoryWindow.center();
-      view.addWindow(submissionHistoryWindow);
-    }
+    submissionHistoryWindow.center();
+    view.addWindow(submissionHistoryWindow);
   }
 
   private void addSubmission() {
