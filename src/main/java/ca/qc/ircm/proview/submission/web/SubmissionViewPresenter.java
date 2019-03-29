@@ -28,6 +28,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.ContentMode;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,9 +59,9 @@ public class SubmissionViewPresenter {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
-  private GuidelinesWindow guidelinesWindow;
+  private Provider<GuidelinesWindow> guidelinesWindowProvider;
   @Inject
-  private HelpWindow helpWindow;
+  private Provider<HelpWindow> helpWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -89,11 +90,10 @@ public class SubmissionViewPresenter {
     design.help.addStyleName(HELP);
     design.help.setCaption(resources.message(HELP));
     design.help.addClickListener(e -> {
+      HelpWindow helpWindow = helpWindowProvider.get();
       helpWindow.setHelp(resources.message(SUBMISSION_DESCRIPTION, VaadinIcons.MENU.getHtml()),
           ContentMode.HTML);
-      if (!helpWindow.isAttached()) {
-        view.addWindow(helpWindow);
-      }
+      view.addWindow(helpWindow);
     });
     design.sampleTypeWarning.addStyleName(SAMPLE_TYPE_WARNING);
     design.sampleTypeWarning.setValue(resources.message(SAMPLE_TYPE_WARNING));
@@ -102,10 +102,9 @@ public class SubmissionViewPresenter {
     design.guidelines.addStyleName(GUIDELINES);
     design.guidelines.setCaption(resources.message(GUIDELINES));
     design.guidelines.addClickListener(e -> {
-      if (!guidelinesWindow.isAttached()) {
-        guidelinesWindow.center();
-        view.addWindow(guidelinesWindow);
-      }
+      GuidelinesWindow guidelinesWindow = guidelinesWindowProvider.get();
+      guidelinesWindow.center();
+      view.addWindow(guidelinesWindow);
     });
   }
 
