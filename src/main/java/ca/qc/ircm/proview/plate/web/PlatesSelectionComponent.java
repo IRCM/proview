@@ -55,6 +55,7 @@ public class PlatesSelectionComponent extends CustomComponent implements BaseVie
   @PostConstruct
   public void init() {
     setCompositionRoot(plates);
+    plates.setSizeFull();
   }
 
   @Override
