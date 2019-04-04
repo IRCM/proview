@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.security;
 
-import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.plate.QWell.well;
@@ -27,7 +26,6 @@ import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 
-import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.QAcquisition;
 import ca.qc.ircm.proview.plate.Plate;
@@ -518,57 +516,6 @@ public class AuthorizationService {
         permitted |= laboratoryManagerByMsAnalysis(msAnalysis);
         if (!permitted) {
           getSubject().checkPermission("msAnalysis:read:" + msAnalysis.getId());
-        }
-      }
-    }
-  }
-
-  private boolean sampleOwnerByDataAnalysis(DataAnalysis dataAnalysisParam) {
-    User user = getCurrentUser();
-    if (user == null) {
-      return false;
-    }
-
-    JPAQuery<Long> query = queryFactory.select(dataAnalysis.id);
-    query.from(dataAnalysis);
-    query.join(dataAnalysis.sample, submissionSample);
-    query.join(submissionSample.submission, submission);
-    query.where(dataAnalysis.eq(dataAnalysisParam));
-    query.where(submission.user.eq(user));
-    return query.fetchCount() > 0;
-  }
-
-  private boolean laboratoryManagerByDataAnalysis(DataAnalysis dataAnalysisParam) {
-    User user = getCurrentUser();
-    if (user == null) {
-      return false;
-    }
-
-    JPAQuery<Long> query = queryFactory.select(dataAnalysis.id);
-    query.from(dataAnalysis);
-    query.join(dataAnalysis.sample, submissionSample);
-    query.join(submissionSample.submission, submission);
-    query.join(submission.laboratory, laboratory);
-    query.where(dataAnalysis.eq(dataAnalysisParam));
-    query.where(laboratory.managers.contains(user));
-    return query.fetchCount() > 0;
-  }
-
-  /**
-   * Checks that current user can read data analysis.
-   *
-   * @param dataAnalysis
-   *          data analysis
-   */
-  public void checkDataAnalysisReadPermission(DataAnalysis dataAnalysis) {
-    if (dataAnalysis != null) {
-      getSubject().checkRole(USER);
-      if (!getSubject().hasRole(ADMIN)) {
-        boolean permitted = false;
-        permitted |= sampleOwnerByDataAnalysis(dataAnalysis);
-        permitted |= laboratoryManagerByDataAnalysis(dataAnalysis);
-        if (!permitted) {
-          getSubject().checkPermission("dataAnalysis:read:" + dataAnalysis.getId());
         }
       }
     }
