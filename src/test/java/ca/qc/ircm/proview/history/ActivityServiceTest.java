@@ -26,7 +26,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
@@ -88,18 +87,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   private AuthorizationService authorizationService;
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(ActivityService.class, locale);
-
-  @Test
-  public void record_DataAnalysis() throws Exception {
-    Activity activity = repository.findOne(5566L);
-
-    Object object = activityService.record(activity);
-
-    verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof DataAnalysis);
-    DataAnalysis dataAnalysis = (DataAnalysis) object;
-    assertEquals((Long) 5L, dataAnalysis.getId());
-  }
 
   @Test
   public void record_Digestion() throws Exception {
@@ -476,7 +463,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_TableNameNull() throws Exception {
-    Activity activity = repository.findOne(5566L);
+    Activity activity = repository.findOne(5650L);
     activity.setTableName(null);
     assertNull(activityService.record(activity));
   }
@@ -488,12 +475,10 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     List<Activity> activities = activityService.all(submission);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(9, activities.size());
+    assertEquals(7, activities.size());
     assertTrue(find(activities, 5543).isPresent());
     assertTrue(find(activities, 5544).isPresent());
     assertTrue(find(activities, 5550).isPresent());
-    assertTrue(find(activities, 5552).isPresent());
-    assertTrue(find(activities, 5553).isPresent());
     assertTrue(find(activities, 5557).isPresent());
     assertTrue(find(activities, 5558).isPresent());
     assertTrue(find(activities, 5569).isPresent());
