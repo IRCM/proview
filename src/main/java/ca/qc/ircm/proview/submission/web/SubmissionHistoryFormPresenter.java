@@ -27,7 +27,6 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
-import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
@@ -50,7 +49,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -79,8 +77,6 @@ public class SubmissionHistoryFormPresenter {
   private ActivityService activityService;
   @Inject
   private SampleContainerService sampleContainerService;
-  @Inject
-  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
 
   protected SubmissionHistoryFormPresenter() {
   }
@@ -174,13 +170,6 @@ public class SubmissionHistoryFormPresenter {
       view.navigateTo(TreatmentView.VIEW_NAME, Objects.toString(ac.getRecordId()));
     } else if (record instanceof MsAnalysis) {
       view.navigateTo(MsAnalysisView.VIEW_NAME, Objects.toString(ac.getRecordId()));
-    } else if (record instanceof DataAnalysis) {
-      SubmissionAnalysesWindow submissionAnalysesWindow = submissionAnalysesWindowProvider.get();
-      submissionAnalysesWindow.setValue(submission);
-      if (!submissionAnalysesWindow.isAttached()) {
-        submissionAnalysesWindow.center();
-        view.addWindow(submissionAnalysesWindow);
-      }
     } else {
       view.showWarning(resources.message(VIEW_ERROR, record.getClass().getSimpleName()));
     }

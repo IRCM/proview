@@ -42,7 +42,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.dataanalysis.DataAnalysisRepository;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityRepository;
@@ -96,8 +95,6 @@ public class SubmissionHistoryFormPresenterTest {
   private ActivityService activityService;
   @MockBean
   private SampleContainerService sampleContainerService;
-  @MockBean
-  private SubmissionAnalysesWindow submissionAnalysesWindow;
   @Inject
   private ActivityRepository repository;
   @Inject
@@ -108,8 +105,6 @@ public class SubmissionHistoryFormPresenterTest {
   private TreatmentRepository treatmentRepository;
   @Inject
   private MsAnalysisRepository msAnalysisRepository;
-  @Inject
-  private DataAnalysisRepository dataAnalysisRepository;
   private SubmissionHistoryFormDesign design;
   private Locale locale = Locale.FRENCH;
   private MessageResource resources = new MessageResource(SubmissionHistoryForm.class, locale);
@@ -451,21 +446,5 @@ public class SubmissionHistoryFormPresenterTest {
     button.click();
 
     verify(view).navigateTo(MsAnalysisView.VIEW_NAME, "19");
-  }
-
-  @Test
-  public void view_DataAnalysis() {
-    Activity activity = repository.findOne(5566L);
-    when(activityService.all(any(Submission.class))).thenReturn(Arrays.asList(activity));
-    when(activityService.record(any())).thenAnswer(i -> dataAnalysisRepository.findOne(5L));
-    presenter.init(view);
-    presenter.setValue(submission);
-    Button button = (Button) design.activities.getColumn(VIEW).getValueProvider().apply(activity);
-
-    button.click();
-
-    verify(submissionAnalysesWindow).setValue(submission);
-    verify(submissionAnalysesWindow).center();
-    verify(view).addWindow(submissionAnalysesWindow);
   }
 }
