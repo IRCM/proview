@@ -24,7 +24,6 @@
   <persistence-unit name="proview" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>proview</jta-data-source>
-    <class>ca.qc.ircm.proview.dataanalysis.DataAnalysis</class>
     <class>ca.qc.ircm.proview.history.Activity</class>
     <class>ca.qc.ircm.proview.history.UpdateActivity</class>
     <class>ca.qc.ircm.proview.msanalysis.Acquisition</class>
