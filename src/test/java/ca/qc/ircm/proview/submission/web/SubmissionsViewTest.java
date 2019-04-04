@@ -28,7 +28,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
-import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -96,7 +95,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertTrue(optional(() -> addSubmissionButton()).isPresent());
     assertFalse(optional(() -> updateStatusButton()).isPresent());
-    assertTrue(optional(() -> dataAnalysisButton()).isPresent());
   }
 
   @Test
@@ -109,7 +107,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertFalse(optional(() -> addSubmissionButton()).isPresent());
     assertTrue(optional(() -> updateStatusButton()).isPresent());
-    assertFalse(optional(() -> dataAnalysisButton()).isPresent());
   }
 
   @Test
@@ -190,15 +187,5 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     clickUpdateStatusButton();
 
     assertEquals(viewUrl(SampleStatusView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  public void dataAnalysis() throws Throwable {
-    open();
-    selectSubmission(5);
-
-    clickDataAnalysisButton();
-
-    assertEquals(viewUrl(DataAnalysisView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

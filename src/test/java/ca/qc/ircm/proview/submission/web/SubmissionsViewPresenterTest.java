@@ -26,8 +26,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUB
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ALL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS_DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIRECTOR;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPECTED_DATE;
@@ -40,7 +38,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HIDE_DO
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.NO_SELECTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES;
@@ -73,7 +70,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -242,7 +238,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
     assertTrue(design.hide.getStyleName().contains(HIDE));
     assertTrue(design.show.getStyleName().contains(SHOW));
-    assertTrue(design.dataAnalysis.getStyleName().contains(DATA_ANALYSIS));
   }
 
   @Test
@@ -263,9 +258,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(resources.message(UPDATE_STATUS), design.updateStatusButton.getCaption());
     assertEquals(resources.message(HIDE), design.hide.getCaption());
     assertEquals(resources.message(SHOW), design.show.getCaption());
-    assertEquals(resources.message(DATA_ANALYSIS), design.dataAnalysis.getCaption());
-    assertEquals(resources.message(DATA_ANALYSIS_DESCRIPTION),
-        design.dataAnalysis.getDescription());
   }
 
   @Test
@@ -1624,7 +1616,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Single);
     assertTrue(design.addSubmission.isVisible());
     assertFalse(design.updateStatusButton.isVisible());
-    assertTrue(design.dataAnalysis.isVisible());
   }
 
   @Test
@@ -1637,7 +1628,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.updateStatusButton.isVisible());
     assertTrue(design.hide.isVisible());
     assertTrue(design.show.isVisible());
-    assertFalse(design.dataAnalysis.isVisible());
   }
 
   @Test
@@ -2111,27 +2101,5 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
     verify(submissionService, never()).show(any());
     verify(view).showError(resources.message(SELECTION_EMPTY));
-  }
-
-  @Test
-  public void dataAnalysis() {
-    presenter.init(view);
-    Submission submission = submissions.get(0);
-    design.submissionsGrid.select(submission);
-
-    design.dataAnalysis.click();
-
-    verify(view).saveSamples(submission.getSamples());
-    verify(view).navigateTo(DataAnalysisView.VIEW_NAME);
-  }
-
-  @Test
-  public void dataAnalysis_NoSelection() {
-    presenter.init(view);
-
-    design.dataAnalysis.click();
-
-    verify(view).showError(resources.message(NO_SELECTION));
-    verify(view, never()).navigateTo(DataAnalysisView.VIEW_NAME);
   }
 }

@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
@@ -116,13 +115,5 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
 
   protected void clickUpdateStatusButton() {
     updateStatusButton().click();
-  }
-
-  protected ButtonElement dataAnalysisButton() {
-    return wrap(ButtonElement.class, findElement(className(DATA_ANALYSIS)));
-  }
-
-  protected void clickDataAnalysisButton() {
-    dataAnalysisButton().click();
   }
 }
