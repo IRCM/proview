@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TREATMENTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
 import static org.openqa.selenium.By.className;
 
@@ -38,7 +37,6 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
   private static final int EXPERIMENT_COLUMN = 0;
   private static final int USER_COLUMN = 1;
   private static final int LINKED_TO_RESULTS_COLUMN = 11;
-  private static final int TREATMENTS_COLUMN = 12;
   private static final int HISTORY_COLUMN = 13;
 
   protected void open() {
@@ -96,12 +94,6 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     GridElement submissionsGrid = submissionsGrid();
     submissionsGrid.getCell(row, gridColumnIndex(LINKED_TO_RESULTS_COLUMN));
     submissionsGrid.getRow(row).findElement(className(LINKED_TO_RESULTS)).click();
-  }
-
-  protected void clickViewSubmissionTreatmentsByRow(int row) {
-    GridElement submissionsGrid = submissionsGrid();
-    submissionsGrid.getCell(row, gridColumnIndex(TREATMENTS_COLUMN));
-    submissionsGrid.getRow(row).findElement(className(TREATMENTS)).click();
   }
 
   protected void clickViewSubmissionHistoryByRow(int row) {

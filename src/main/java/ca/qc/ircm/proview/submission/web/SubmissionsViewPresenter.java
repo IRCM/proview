@@ -119,7 +119,6 @@ public class SubmissionsViewPresenter {
   public static final String SAMPLE_STATUSES_SEPARATOR = property(SAMPLE_STATUSES, "separator");
   public static final String DATE = property(SUBMISSION, SUBMISSION_DATE);
   public static final String LINKED_TO_RESULTS = "results";
-  public static final String TREATMENTS = "treatments";
   public static final String HIDDEN = property(SUBMISSION, SubmissionProperties.HIDDEN);
   public static final String HIDDEN_STYLE = styleName(SUBMISSION, SubmissionProperties.HIDDEN);
   public static final String HISTORY = "history";
@@ -161,8 +160,6 @@ public class SubmissionsViewPresenter {
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Inject
   private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
-  @Inject
-  private Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider;
   @Inject
   private Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider;
   @Inject
@@ -295,9 +292,6 @@ public class SubmissionsViewPresenter {
         .setComparator((s1, s2) -> Boolean.compare(linkedToResults(s1), linkedToResults(s2)))
         .setSortable(false);
     design.submissionsGrid
-        .addColumn(submission -> viewTreatmentsButton(submission), new ComponentRenderer())
-        .setId(TREATMENTS).setCaption(resources.message(TREATMENTS)).setSortable(false);
-    design.submissionsGrid
         .addColumn(
             submission -> submission.isHidden() ? resources.message(property(HIDDEN, true)) : "")
         .setId(HIDDEN).setCaption(resources.message(HIDDEN));
@@ -354,9 +348,6 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
         .setHidden(userPreferenceService.get(this, LINKED_TO_RESULTS, false));
     if (authorizationService.hasAdminRole()) {
-      design.submissionsGrid.getColumn(TREATMENTS).setHidable(true);
-      design.submissionsGrid.getColumn(TREATMENTS)
-          .setHidden(userPreferenceService.get(this, TREATMENTS, false));
       design.submissionsGrid.getColumn(HIDDEN).setHidable(true);
       design.submissionsGrid.getColumn(HIDDEN)
           .setHidden(userPreferenceService.get(this, HIDDEN, false));
@@ -364,7 +355,6 @@ public class SubmissionsViewPresenter {
       design.submissionsGrid.getColumn(HISTORY)
           .setHidden(userPreferenceService.get(this, HISTORY, false));
     } else {
-      design.submissionsGrid.getColumn(TREATMENTS).setHidden(true);
       design.submissionsGrid.getColumn(HIDDEN).setHidden(true);
       design.submissionsGrid.getColumn(HISTORY).setHidden(true);
     }
@@ -577,15 +567,6 @@ public class SubmissionsViewPresenter {
         .count() > 0;
   }
 
-  private Button viewTreatmentsButton(Submission submission) {
-    MessageResource resources = view.getResources();
-    Button button = new Button();
-    button.addStyleName(TREATMENTS);
-    button.setCaption(resources.message(TREATMENTS));
-    button.addClickListener(e -> viewSubmissionTreatments(submission));
-    return button;
-  }
-
   private Button viewHistoryButton(Submission submission) {
     MessageResource resources = view.getResources();
     Button button = new Button();
@@ -673,14 +654,6 @@ public class SubmissionsViewPresenter {
     submissionAnalysesWindow.setValue(submission);
     submissionAnalysesWindow.center();
     view.addWindow(submissionAnalysesWindow);
-  }
-
-  private void viewSubmissionTreatments(Submission submission) {
-    SubmissionTreatmentsWindow submissionTreatmentsWindow =
-        submissionTreatmentsWindowProvider.get();
-    submissionTreatmentsWindow.setValue(submission);
-    submissionTreatmentsWindow.center();
-    view.addWindow(submissionTreatmentsWindow);
   }
 
   private void viewSubmissionHistory(Submission submission) {
