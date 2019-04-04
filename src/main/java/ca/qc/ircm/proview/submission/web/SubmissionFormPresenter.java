@@ -157,6 +157,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -253,7 +254,7 @@ public class SubmissionFormPresenter implements BinderValidator {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
-  private GuidelinesWindow guidelinesWindow;
+  private Provider<GuidelinesWindow> guidelinesWindowProvider;
 
   protected SubmissionFormPresenter() {
   }
@@ -287,10 +288,9 @@ public class SubmissionFormPresenter implements BinderValidator {
     design.guidelines.addStyleName(GUIDELINES);
     design.guidelines.setCaption(resources.message(GUIDELINES));
     design.guidelines.addClickListener(e -> {
-      if (!guidelinesWindow.isAttached()) {
-        guidelinesWindow.center();
-        view.addWindow(guidelinesWindow);
-      }
+      GuidelinesWindow guidelinesWindow = guidelinesWindowProvider.get();
+      guidelinesWindow.center();
+      view.addWindow(guidelinesWindow);
     });
     design.servicePanel.addStyleName(SERVICE_PANEL);
     design.servicePanel.addStyleName(REQUIRED);
