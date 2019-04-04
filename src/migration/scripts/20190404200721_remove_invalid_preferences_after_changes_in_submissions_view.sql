@@ -3,10 +3,7 @@
 
 DELETE FROM preference
 WHERE referer = 'ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter'
-AND name = 'columnOrder';
-DELETE FROM preference
-WHERE referer = 'ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter'
-AND name = 'treatments';
+AND name IN ('columnOrder','treatments','results');
 
 -- //@UNDO
 -- SQL to undo the change goes here.

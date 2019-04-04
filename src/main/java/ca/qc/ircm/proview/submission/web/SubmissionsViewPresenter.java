@@ -116,7 +116,6 @@ public class SubmissionsViewPresenter {
   public static final String SAMPLE_STATUSES = "statuses";
   public static final String SAMPLE_STATUSES_SEPARATOR = property(SAMPLE_STATUSES, "separator");
   public static final String DATE = property(SUBMISSION, SUBMISSION_DATE);
-  public static final String LINKED_TO_RESULTS = "results";
   public static final String HIDDEN = property(SUBMISSION, SubmissionProperties.HIDDEN);
   public static final String HIDDEN_STYLE = styleName(SUBMISSION, SubmissionProperties.HIDDEN);
   public static final String HISTORY = "history";
@@ -154,8 +153,6 @@ public class SubmissionsViewPresenter {
   private LocalDateFilterComponent dataAvailableDateFilter;
   @Inject
   private Provider<SubmissionWindow> submissionWindowProvider;
-  @Inject
-  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
   @Inject
   private Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider;
   @Inject
@@ -278,11 +275,6 @@ public class SubmissionsViewPresenter {
         .setCaption(resources.message(DATE));
     columnProperties.put(DATE, submission.submissionDate);
     design.submissionsGrid
-        .addColumn(submission -> viewResultsButton(submission), new ComponentRenderer())
-        .setId(LINKED_TO_RESULTS).setCaption(resources.message(LINKED_TO_RESULTS))
-        .setComparator((s1, s2) -> Boolean.compare(linkedToResults(s1), linkedToResults(s2)))
-        .setSortable(false);
-    design.submissionsGrid
         .addColumn(
             submission -> submission.isHidden() ? resources.message(property(HIDDEN, true)) : "")
         .setId(HIDDEN).setCaption(resources.message(HIDDEN));
@@ -335,9 +327,6 @@ public class SubmissionsViewPresenter {
         .setHidden(userPreferenceService.get(this, SAMPLE_STATUSES, false));
     design.submissionsGrid.getColumn(DATE).setHidable(true);
     design.submissionsGrid.getColumn(DATE).setHidden(userPreferenceService.get(this, DATE, false));
-    design.submissionsGrid.getColumn(LINKED_TO_RESULTS).setHidable(true);
-    design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
-        .setHidden(userPreferenceService.get(this, LINKED_TO_RESULTS, false));
     if (authorizationService.hasAdminRole()) {
       design.submissionsGrid.getColumn(HIDDEN).setHidable(true);
       design.submissionsGrid.getColumn(HIDDEN)
@@ -417,11 +406,6 @@ public class SubmissionsViewPresenter {
       filter.dateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
-    filterRow.getCell(LINKED_TO_RESULTS).setComponent(comboBoxFilter(e -> {
-      filter.results = e.getValue();
-      design.submissionsGrid.getDataProvider().refreshAll();
-    }, new Boolean[] { true, false },
-        value -> resources.message(property(LINKED_TO_RESULTS, value))));
     filterRow.getCell(HIDDEN).setComponent(comboBoxFilter(e -> {
       filter.hidden = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
@@ -536,28 +520,6 @@ public class SubmissionsViewPresenter {
         .collect(Collectors.joining("\n"));
   }
 
-  private Button viewResultsButton(Submission submission) {
-    MessageResource resources = view.getResources();
-    boolean results = linkedToResults(submission);
-    Button button = new Button();
-    button.addStyleName(LINKED_TO_RESULTS);
-    button.setCaption(resources.message(property(LINKED_TO_RESULTS, results)));
-    if (results) {
-      button.addClickListener(e -> viewSubmissionResults(submission));
-    } else {
-      button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-      button.addStyleName(CONDITION_FALSE);
-    }
-    return button;
-  }
-
-  private boolean linkedToResults(Submission submission) {
-    return submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
-        .filter(sample -> SampleStatus.ANALYSED.equals(sample.getStatus())
-            || SampleStatus.DATA_ANALYSIS.equals(sample.getStatus()))
-        .count() > 0;
-  }
-
   private Button viewHistoryButton(Submission submission) {
     MessageResource resources = view.getResources();
     Button button = new Button();
@@ -638,13 +600,6 @@ public class SubmissionsViewPresenter {
     submissionWindow.setValue(submission);
     submissionWindow.center();
     view.addWindow(submissionWindow);
-  }
-
-  private void viewSubmissionResults(Submission submission) {
-    SubmissionAnalysesWindow submissionAnalysesWindow = submissionAnalysesWindowProvider.get();
-    submissionAnalysesWindow.setValue(submission);
-    submissionAnalysesWindow.center();
-    view.addWindow(submissionAnalysesWindow);
   }
 
   private void viewSubmissionHistory(Submission submission) {

@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUBMISSION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ALL;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.COLUMN_ORDER;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.CONDITION_FALSE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.DIRECTOR;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPECTED_DATE;
@@ -37,7 +36,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HIDE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HIDE_DONE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.INSTRUMENT;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.LINKED_TO_RESULTS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES;
@@ -74,7 +72,6 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
@@ -157,8 +154,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @MockBean
   private SubmissionWindow submissionWindow;
   @MockBean
-  private SubmissionAnalysesWindow submissionAnalysesWindow;
-  @MockBean
   private SubmissionHistoryWindow submissionHistoryWindow;
   @MockBean
   private HelpWindow helpWindow;
@@ -231,9 +226,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     Button designButton =
         (Button) design.submissionsGrid.getColumn(EXPERIMENT).getValueProvider().apply(submission);
     assertTrue(designButton.getStyleName().contains(EXPERIMENT));
-    Button designResultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
-        .getValueProvider().apply(submission);
-    assertTrue(designResultsButton.getStyleName().contains(LINKED_TO_RESULTS));
     assertTrue(design.addSubmission.getStyleName().contains(ADD_SUBMISSION));
     assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
     assertTrue(design.hide.getStyleName().contains(HIDE));
@@ -473,32 +465,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     }
     assertTrue(design.submissionsGrid.getColumn(DATE).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DATE).isSortable());
-    assertEquals(LINKED_TO_RESULTS, columns.get(13).getId());
-    assertTrue(
-        containsInstanceOf(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getExtensions(),
-            ComponentRenderer.class));
-    assertEquals(resources.message(LINKED_TO_RESULTS),
-        design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getCaption());
-    for (Submission submission : submissions) {
-      boolean results =
-          submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
-              .filter(sample -> SampleStatus.ANALYSED.equals(sample.getStatus())
-                  || SampleStatus.DATA_ANALYSIS.equals(sample.getStatus()))
-              .count() > 0;
-      Button resultsButton = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
-          .getValueProvider().apply(submission);
-      assertEquals(resources.message(LINKED_TO_RESULTS + "." + results),
-          resultsButton.getCaption());
-      assertTrue(resultsButton.getStyleName().contains(LINKED_TO_RESULTS));
-      assertEquals(!results, resultsButton.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
-      assertEquals(!results, resultsButton.getStyleName().contains(CONDITION_FALSE));
-    }
-    assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
-    assertFalse(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isSortable());
-    assertEquals(Boolean.compare(true, false),
-        design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getComparator(SortDirection.ASCENDING)
-            .compare(repository.findOne(156L), repository.findOne(161L)));
-    assertEquals(HIDDEN, columns.get(14).getId());
+    assertEquals(HIDDEN, columns.get(13).getId());
     assertEquals(resources.message(HIDDEN), design.submissionsGrid.getColumn(HIDDEN).getCaption());
     for (Submission submission : submissions) {
       assertEquals(submission.isHidden() ? resources.message(property(HIDDEN, true)) : "",
@@ -507,7 +474,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertFalse(design.submissionsGrid.getColumn(HIDDEN).isHidable());
     assertTrue(design.submissionsGrid.getColumn(HIDDEN).isHidden());
     assertTrue(design.submissionsGrid.getColumn(HIDDEN).isSortable());
-    assertEquals(HISTORY, columns.get(15).getId());
+    assertEquals(HISTORY, columns.get(14).getId());
     assertTrue(containsInstanceOf(design.submissionsGrid.getColumn(HISTORY).getExtensions(),
         ComponentRenderer.class));
     assertEquals(resources.message(HISTORY),
@@ -558,7 +525,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DATE).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
     assertFalse(design.submissionsGrid.getColumn(HIDDEN).isHidable());
     assertTrue(design.submissionsGrid.getColumn(HIDDEN).isHidden());
     assertFalse(design.submissionsGrid.getColumn(HISTORY).isHidable());
@@ -591,7 +557,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_NAME).isHidable());
     assertTrue(design.submissionsGrid.getColumn(SAMPLE_STATUSES).isHidable());
     assertTrue(design.submissionsGrid.getColumn(DATE).isHidable());
-    assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
     assertTrue(design.submissionsGrid.getColumn(HIDDEN).isHidable());
     assertFalse(design.submissionsGrid.getColumn(HIDDEN).isHidden());
     assertTrue(design.submissionsGrid.getColumn(HISTORY).isHidable());
@@ -639,9 +604,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.submissionsGrid.getColumn(DATE).isHidable());
     assertFalse(design.submissionsGrid.getColumn(DATE).isHidden());
     verify(userPreferenceService).get(presenter, DATE, false);
-    assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
-    assertFalse(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidden());
-    verify(userPreferenceService).get(presenter, LINKED_TO_RESULTS, false);
     assertFalse(design.submissionsGrid.getColumn(HIDDEN).isHidable());
     assertTrue(design.submissionsGrid.getColumn(HIDDEN).isHidden());
     assertFalse(design.submissionsGrid.getColumn(HISTORY).isHidable());
@@ -692,9 +654,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.submissionsGrid.getColumn(DATE).isHidable());
     assertFalse(design.submissionsGrid.getColumn(DATE).isHidden());
     verify(userPreferenceService).get(presenter, DATE, false);
-    assertTrue(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidable());
-    assertFalse(design.submissionsGrid.getColumn(LINKED_TO_RESULTS).isHidden());
-    verify(userPreferenceService).get(presenter, LINKED_TO_RESULTS, false);
     assertTrue(design.submissionsGrid.getColumn(HIDDEN).isHidable());
     assertFalse(design.submissionsGrid.getColumn(HIDDEN).isHidden());
     verify(userPreferenceService).get(presenter, HIDDEN, false);
@@ -715,7 +674,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   public void submissionsGrid_ColumnOrder() {
     String[] columnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, SAMPLE_DELIVERY_DATE,
         DIGESTION_DATE, ANALYSIS_DATE, DATA_AVAILABLE_DATE, INSTRUMENT, SAMPLE_NAME, SAMPLE_COUNT,
-        SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, HIDDEN, HISTORY };
+        SAMPLE_STATUSES, DATE, HIDDEN, HISTORY };
     when(userPreferenceService.get(any(), eq(COLUMN_ORDER), any())).thenReturn(columnOrder);
     presenter.init(view);
 
@@ -732,12 +691,11 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(SAMPLE_COUNT, design.submissionsGrid.getColumns().get(10).getId());
     assertEquals(SAMPLE_STATUSES, design.submissionsGrid.getColumns().get(11).getId());
     assertEquals(DATE, design.submissionsGrid.getColumns().get(12).getId());
-    assertEquals(LINKED_TO_RESULTS, design.submissionsGrid.getColumns().get(13).getId());
-    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(14).getId());
-    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(15).getId());
+    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(13).getId());
+    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(14).getId());
     String[] defaultColumnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE,
         SAMPLE_DELIVERY_DATE, DIGESTION_DATE, ANALYSIS_DATE, DATA_AVAILABLE_DATE, INSTRUMENT,
-        SAMPLE_COUNT, SAMPLE_NAME, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, HIDDEN, HISTORY };
+        SAMPLE_COUNT, SAMPLE_NAME, SAMPLE_STATUSES, DATE, HIDDEN, HISTORY };
     verify(userPreferenceService).get(presenter, COLUMN_ORDER, defaultColumnOrder);
   }
 
@@ -745,7 +703,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   public void submissionsGrid_ColumnOrder_MissingHidden() {
     String[] columnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, SAMPLE_DELIVERY_DATE,
         DIGESTION_DATE, ANALYSIS_DATE, DATA_AVAILABLE_DATE, INSTRUMENT, SAMPLE_NAME, SAMPLE_COUNT,
-        SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, HISTORY };
+        SAMPLE_STATUSES, DATE, HISTORY };
     when(userPreferenceService.get(any(), eq(COLUMN_ORDER), any())).thenReturn(columnOrder);
     presenter.init(view);
 
@@ -762,12 +720,11 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(SAMPLE_COUNT, design.submissionsGrid.getColumns().get(10).getId());
     assertEquals(SAMPLE_STATUSES, design.submissionsGrid.getColumns().get(11).getId());
     assertEquals(DATE, design.submissionsGrid.getColumns().get(12).getId());
-    assertEquals(LINKED_TO_RESULTS, design.submissionsGrid.getColumns().get(13).getId());
-    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(14).getId());
-    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(15).getId());
+    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(13).getId());
+    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(14).getId());
     String[] defaultColumnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE,
         SAMPLE_DELIVERY_DATE, DIGESTION_DATE, ANALYSIS_DATE, DATA_AVAILABLE_DATE, INSTRUMENT,
-        SAMPLE_COUNT, SAMPLE_NAME, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, HIDDEN, HISTORY };
+        SAMPLE_COUNT, SAMPLE_NAME, SAMPLE_STATUSES, DATE, HIDDEN, HISTORY };
     verify(userPreferenceService).get(presenter, COLUMN_ORDER, defaultColumnOrder);
   }
 
@@ -775,7 +732,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   public void submissionsGrid_ColumnOrder_InvalidColumn() {
     String[] columnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE, "invalid_column",
         SAMPLE_DELIVERY_DATE, ANALYSIS_DATE, DATA_AVAILABLE_DATE, INSTRUMENT, SAMPLE_NAME,
-        SAMPLE_COUNT, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, HIDDEN, HISTORY };
+        SAMPLE_COUNT, SAMPLE_STATUSES, DATE, HIDDEN, HISTORY };
     when(userPreferenceService.get(any(), eq(COLUMN_ORDER), any())).thenReturn(columnOrder);
     presenter.init(view);
 
@@ -792,12 +749,11 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(SAMPLE_NAME, design.submissionsGrid.getColumns().get(10).getId());
     assertEquals(SAMPLE_STATUSES, design.submissionsGrid.getColumns().get(11).getId());
     assertEquals(DATE, design.submissionsGrid.getColumns().get(12).getId());
-    assertEquals(LINKED_TO_RESULTS, design.submissionsGrid.getColumns().get(13).getId());
-    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(14).getId());
-    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(15).getId());
+    assertEquals(HIDDEN, design.submissionsGrid.getColumns().get(13).getId());
+    assertEquals(HISTORY, design.submissionsGrid.getColumns().get(14).getId());
     String[] defaultColumnOrder = new String[] { EXPERIMENT, USER, DIRECTOR, SERVICE,
         SAMPLE_DELIVERY_DATE, DIGESTION_DATE, ANALYSIS_DATE, DATA_AVAILABLE_DATE, INSTRUMENT,
-        SAMPLE_COUNT, SAMPLE_NAME, SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, HIDDEN, HISTORY };
+        SAMPLE_COUNT, SAMPLE_NAME, SAMPLE_STATUSES, DATE, HIDDEN, HISTORY };
     verify(userPreferenceService).get(presenter, COLUMN_ORDER, defaultColumnOrder);
   }
 
@@ -806,7 +762,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     presenter.init(view);
     design.submissionsGrid.setColumnOrder(EXPERIMENT, USER, DIRECTOR, SERVICE, SAMPLE_DELIVERY_DATE,
         DIGESTION_DATE, ANALYSIS_DATE, DATA_AVAILABLE_DATE, INSTRUMENT, SAMPLE_NAME, SAMPLE_COUNT,
-        SAMPLE_STATUSES, DATE, LINKED_TO_RESULTS, HIDDEN, HISTORY);
+        SAMPLE_STATUSES, DATE, HIDDEN, HISTORY);
 
     String[] columnOrder =
         design.submissionsGrid.getColumns().stream().map(col -> col.getId()).toArray(String[]::new);
@@ -1563,30 +1519,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void resultsFilter() {
-    presenter.init(view);
-    design.submissionsGrid.setDataProvider(submissionsDataProvider);
-    HeaderRow filterRow = design.submissionsGrid.getHeaderRow(1);
-    HeaderCell cell = filterRow.getCell(LINKED_TO_RESULTS);
-    ComboBox<Boolean> comboBox = (ComboBox<Boolean>) cell.getComponent();
-    assertEquals(resources.message(ALL), comboBox.getEmptySelectionCaption());
-    assertEquals(resources.message(ALL), comboBox.getPlaceholder());
-    List<Boolean> values = items(comboBox);
-    for (Boolean value : values) {
-      assertEquals(resources.message(property(LINKED_TO_RESULTS, value)),
-          comboBox.getItemCaptionGenerator().apply(value));
-    }
-    Boolean filterValue = true;
-
-    comboBox.setValue(filterValue);
-
-    verify(submissionsDataProvider).refreshAll();
-    SubmissionFilter filter = presenter.getFilter();
-    assertEquals(filterValue, filter.results);
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
   public void hiddenFilter() {
     presenter.init(view);
     design.submissionsGrid.setDataProvider(submissionsDataProvider);
@@ -1641,59 +1573,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
         gridSubmissions.stream().map(s -> s.getId()).collect(Collectors.toSet());
     assertTrue(expectedSubmissionIds.containsAll(submissionIds));
     assertTrue(submissionIds.containsAll(expectedSubmissionIds));
-  }
-
-  @Test
-  public void containerProperties_Analysed() {
-    presenter.init(view);
-    final Submission submission = submissions.get(0);
-    final SubmissionSample sample = submission.getSamples().get(0);
-
-    Button button =
-        (Button) design.submissionsGrid.getColumn(EXPERIMENT).getValueProvider().apply(submission);
-    assertEquals(submission.getExperiment(), button.getCaption());
-    assertEquals(submission.getSamples().size(),
-        design.submissionsGrid.getColumn(SAMPLE_COUNT).getValueProvider().apply(submission));
-    assertEquals(submission.getSamples().get(0).getName(),
-        design.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
-    assertEquals(sample.getStatus().getLabel(locale),
-        design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(submission));
-    final DateTimeFormatter dateFormatter =
-        DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
-    assertEquals(dateFormatter.format(submission.getSubmissionDate()),
-        design.submissionsGrid.getColumn(DATE).getValueProvider().apply(submission));
-    button = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getValueProvider()
-        .apply(submission);
-    assertEquals(resources.message(LINKED_TO_RESULTS + "." + true), button.getCaption());
-    assertFalse(button.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
-    assertFalse(button.getStyleName().contains(CONDITION_FALSE));
-  }
-
-  @Test
-  public void containerProperties_NotAnalysed() {
-    presenter.init(view);
-    final Submission submission = submissions.get(6);
-    final SubmissionSample sample = submission.getSamples().get(0);
-
-    Button button =
-        (Button) design.submissionsGrid.getColumn(EXPERIMENT).getValueProvider().apply(submission);
-    assertEquals(submission.getExperiment(), button.getCaption());
-    assertEquals(submission.getSamples().size(),
-        design.submissionsGrid.getColumn(SAMPLE_COUNT).getValueProvider().apply(submission));
-    assertEquals(
-        resources.message(SAMPLE_NAME + ".value", sample.getName(), submission.getSamples().size()),
-        design.submissionsGrid.getColumn(SAMPLE_NAME).getValueProvider().apply(submission));
-    assertEquals(statusesValue(submission),
-        design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(submission));
-    final DateTimeFormatter dateFormatter =
-        DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault());
-    assertEquals(dateFormatter.format(submission.getSubmissionDate()),
-        design.submissionsGrid.getColumn(DATE).getValueProvider().apply(submission));
-    button = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getValueProvider()
-        .apply(submission);
-    assertEquals(resources.message(LINKED_TO_RESULTS + "." + false), button.getCaption());
-    assertTrue(button.getStyleName().contains(ValoTheme.BUTTON_BORDERLESS));
-    assertTrue(button.getStyleName().contains(CONDITION_FALSE));
   }
 
   @Test
@@ -1989,20 +1868,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     verify(submissionWindow).setValue(submission);
     verify(submissionWindow).center();
     verify(view).addWindow(submissionWindow);
-  }
-
-  @Test
-  public void viewResults() {
-    presenter.init(view);
-    final Submission submission = submissions.get(0);
-    Button button = (Button) design.submissionsGrid.getColumn(LINKED_TO_RESULTS).getValueProvider()
-        .apply(submission);
-
-    button.click();
-
-    verify(submissionAnalysesWindow).setValue(submission);
-    verify(submissionAnalysesWindow).center();
-    verify(view).addWindow(submissionAnalysesWindow);
   }
 
   @Test

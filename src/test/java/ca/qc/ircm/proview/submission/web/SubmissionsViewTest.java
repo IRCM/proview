@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
@@ -132,22 +131,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
         resources(SubmissionWindow.class).message(SubmissionWindowPresenter.TITLE, experiment)
             .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(SERVICE))).isPresent());
-  }
-
-  @Test
-  public void viewSubmissionResults() throws Throwable {
-    open();
-
-    clickViewSubmissionResultsByRow(4);
-
-    assertNotNull(findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
-    WindowElement submissionWindow =
-        wrap(WindowElement.class, findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
-    String experiment = experimentByRow(4);
-    assertTrue(resources(SubmissionAnalysesWindow.class)
-        .message(SubmissionAnalysesWindow.TITLE, experiment)
-        .contains(submissionWindow.getCaption()));
-    assertTrue(optional(() -> submissionWindow.findElement(className(ANALYSIS))).isPresent());
   }
 
   @Test
