@@ -277,7 +277,7 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid
         .addColumn(
             submission -> submission.isHidden() ? resources.message(property(HIDDEN, true)) : "")
-        .setId(HIDDEN).setCaption(resources.message(HIDDEN));
+        .setId(HIDDEN).setCaption(resources.message(HIDDEN)).setWidth(100);
     columnProperties.put(HIDDEN, submission.hidden);
     design.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
