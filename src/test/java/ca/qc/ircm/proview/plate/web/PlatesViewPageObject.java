@@ -18,8 +18,8 @@
 package ca.qc.ircm.proview.plate.web;
 
 import static ca.qc.ircm.proview.plate.PlateProperties.NAME;
-import static ca.qc.ircm.proview.plate.web.PlatesSelectionComponentPresenter.PLATES;
 import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.HEADER;
+import static ca.qc.ircm.proview.plate.web.PlatesViewPresenter.PLATES;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
