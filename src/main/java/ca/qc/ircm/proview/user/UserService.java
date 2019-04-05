@@ -31,7 +31,6 @@ import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -484,26 +483,6 @@ public class UserService {
   }
 
   /**
-   * Allows users to use program.
-   *
-   * @param users
-   *          users
-   */
-  public void activate(Collection<User> users) {
-    for (User user : users) {
-      user = repository.findOne(user.getId());
-      authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
-
-      user.setActive(true);
-      repository.save(user);
-    }
-
-    cacheFlusher.flushShiroCache();
-
-    logger.info("Users {} were activated", users);
-  }
-
-  /**
    * Prevents user to use program.
    *
    * @param user
@@ -522,33 +501,6 @@ public class UserService {
     cacheFlusher.flushShiroCache();
 
     logger.info("User {} was deactivate", user);
-  }
-
-  /**
-   * Blocks users from using program.
-   *
-   * @param users
-   *          users
-   * @throws DeactivateManagerException
-   *           managers cannot be deactivated
-   */
-  public void deactivate(Collection<User> users) throws DeactivateManagerException {
-    for (User user : users) {
-      authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
-      if (user.getId() == ROBOT_ID) {
-        throw new IllegalArgumentException("Robot cannot be deactivated");
-      }
-    }
-
-    for (User user : users) {
-      user = repository.findOne(user.getId());
-      user.setActive(false);
-      repository.save(user);
-    }
-
-    cacheFlusher.flushShiroCache();
-
-    logger.info("Users {} were deactivate", users);
   }
 
   /**

@@ -44,7 +44,6 @@ import ca.qc.ircm.utils.MessageResource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -1013,48 +1012,11 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void activate_Many() throws Throwable {
-    User user = repository.findOne(12L);
-    detach(user);
-    assertEquals(false, user.isActive());
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
-
-    service.activate(users);
-
-    repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(cacheFlusher).flushShiroCache();
-    user = repository.findOne(12L);
-    assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
-  }
-
-  @Test
   public void deactivate() throws Throwable {
     User user = repository.findOne(10L);
     detach(user);
 
     service.deactivate(user);
-
-    repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(cacheFlusher).flushShiroCache();
-    user = repository.findOne(10L);
-    assertEquals(false, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
-  }
-
-  @Test
-  public void deactivate_Many() throws Throwable {
-    User user = repository.findOne(10L);
-    detach(user);
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
-
-    service.deactivate(users);
 
     repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
@@ -1104,53 +1066,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
 
     service.deactivate(user);
-  }
-
-  @Test
-  public void deactivate_ManyManager() throws Throwable {
-    User user = repository.findOne(3L);
-    detach(user);
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
-
-    service.deactivate(users);
-
-    repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(cacheFlusher).flushShiroCache();
-    user = repository.findOne(3L);
-    assertEquals(false, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
-  }
-
-  @Test
-  public void deactivate_ManyAdmin() throws Throwable {
-    User user = repository.findOne(4L);
-    detach(user);
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
-
-    service.deactivate(users);
-
-    repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(cacheFlusher).flushShiroCache();
-    user = repository.findOne(4L);
-    assertEquals(false, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(true, user.isAdmin());
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void deactivate_ManyRobot() throws Throwable {
-    User user = repository.findOne(1L);
-    detach(user);
-    assertEquals(true, user.isActive());
-
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
-    service.deactivate(users);
   }
 
   @Test
