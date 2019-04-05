@@ -66,7 +66,7 @@ public class SampleServiceTest {
     assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
     assertEquals(SampleType.SOLUTION, eluateSample.getType());
     assertEquals(Sample.Category.SUBMISSION, eluateSample.getCategory());
-    assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, eluateSample.getStatus());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
     assertEquals("1.5 μg", eluateSample.getQuantity());
     assertEquals("50 μl", eluateSample.getVolume());

@@ -45,16 +45,12 @@ public enum SampleStatus {
    */
   CANCELLED,
   /**
-   * Result data must be manually analysed.
-   */
-  DATA_ANALYSIS,
-  /**
    * Sample was analysed and have results.
    */
   ANALYSED;
 
   public static SampleStatus[] analysedStatuses() {
-    return new SampleStatus[] { CANCELLED, DATA_ANALYSIS, ANALYSED };
+    return new SampleStatus[] { CANCELLED, ANALYSED };
   }
 
   private static MessageResource getResources(Locale locale) {

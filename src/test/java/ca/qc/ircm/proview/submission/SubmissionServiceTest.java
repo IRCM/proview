@@ -339,7 +339,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     SubmissionSample sample = submission.getSamples().get(0);
     assertEquals((Long) 442L, sample.getId());
     assertEquals("CAP_20111013_01", sample.getName());
-    assertEquals(SampleStatus.DATA_ANALYSIS, sample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(
         LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
         sample.getSubmission().getSubmissionDate());

@@ -107,7 +107,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
     assertEquals(SampleType.SOLUTION, eluateSample.getType());
     assertEquals(Sample.Category.SUBMISSION, eluateSample.getCategory());
-    assertEquals(SampleStatus.DATA_ANALYSIS, eluateSample.getStatus());
+    assertEquals(SampleStatus.ANALYSED, eluateSample.getStatus());
     assertEquals((Long) 32L, eluateSample.getSubmission().getId());
     assertEquals("1.5 μg", eluateSample.getQuantity());
     assertEquals("50 μl", eluateSample.getVolume());
@@ -343,19 +343,5 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     repository.flush();
     sample = repository.findOne(621L);
     assertEquals(LocalDate.of(2014, 10, 17), sample.getSubmission().getAnalysisDate());
-  }
-
-  @Test
-  public void updateStatus_DataAnalysiss_SubmissionAnalysisDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = repository.findOne(443L);
-    detach(sample);
-    sample.setStatus(SampleStatus.DATA_ANALYSIS);
-    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
-
-    service.updateStatus(Arrays.asList(sample));
-
-    repository.flush();
-    sample = repository.findOne(443L);
-    assertNull(sample.getSubmission().getAnalysisDate());
   }
 }
