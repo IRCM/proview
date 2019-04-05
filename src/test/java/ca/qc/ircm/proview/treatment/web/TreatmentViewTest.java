@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.treatment.web;
 
 import static ca.qc.ircm.proview.treatment.web.TreatmentViewPresenter.TITLE;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
@@ -87,8 +88,10 @@ public class TreatmentViewTest extends TreatmentViewPageObject {
     openWithDigestion();
 
     assertTrue(optional(() -> header()).isPresent());
+    assertTrue(optional(() -> type()).isPresent());
     assertTrue(optional(() -> protocolPanel()).isPresent());
     assertTrue(optional(() -> protocol()).isPresent());
+    assertFalse(optional(() -> fractionationType()).isPresent());
     assertTrue(optional(() -> treatedSamplesPanel()).isPresent());
     assertTrue(optional(() -> treatedSamples()).isPresent());
   }

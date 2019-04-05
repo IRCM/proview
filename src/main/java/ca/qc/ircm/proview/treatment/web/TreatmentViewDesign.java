@@ -21,6 +21,7 @@ import com.vaadin.ui.declarative.Design;
 @SuppressWarnings("serial")
 public class TreatmentViewDesign extends VerticalLayout {
   protected Label header;
+  protected Label type;
   protected Label deleted;
   protected Panel protocolPanel;
   protected Label protocol;

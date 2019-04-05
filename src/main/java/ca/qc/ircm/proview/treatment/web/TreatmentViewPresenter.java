@@ -31,6 +31,7 @@ import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOURCE_VOLUME
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.FRACTIONATION_TYPE;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.PROTOCOL;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.TREATED_SAMPLES;
+import static ca.qc.ircm.proview.treatment.TreatmentProperties.TYPE;
 import static ca.qc.ircm.proview.treatment.TreatmentType.DILUTION;
 import static ca.qc.ircm.proview.treatment.TreatmentType.FRACTIONATION;
 import static ca.qc.ircm.proview.treatment.TreatmentType.SOLUBILISATION;
@@ -95,6 +96,8 @@ public class TreatmentViewPresenter {
     view.setTitle(resources.message(TITLE, applicationName));
     design.header.addStyleName(HEADER);
     design.header.setValue(resources.message(HEADER));
+    design.type.addStyleName(TYPE);
+    design.type.setValue(resources.message(TYPE));
     design.deleted.addStyleName(DELETED);
     design.deleted.setValue(resources.message(DELETED));
     design.deleted.setVisible(false);
@@ -125,9 +128,15 @@ public class TreatmentViewPresenter {
         .setCaption(resources.message(NAME)).setHidden(true);
     design.treatedSamples.addColumn(ts -> ts.getQuantity()).setId(QUANTITY)
         .setCaption(resources.message(QUANTITY)).setHidden(true);
-    design.treatedSamples.addColumn(ts -> ts.getDestinationContainer().getFullName())
+    design.treatedSamples
+        .addColumn(
+            ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
+                : "")
         .setId(DESTINATION_CONTAINER).setCaption(resources.message(DESTINATION_CONTAINER))
-        .setStyleGenerator(ts -> ts.getDestinationContainer().isBanned() ? BANNED : "")
+        .setStyleGenerator(
+            ts -> ts.getDestinationContainer() != null && ts.getDestinationContainer().isBanned()
+                ? BANNED
+                : "")
         .setHidden(true);
     design.treatedSamples.addColumn(ts -> ts.getNumber()).setId(NUMBER)
         .setCaption(resources.message(NUMBER)).setHidden(true);
@@ -156,6 +165,7 @@ public class TreatmentViewPresenter {
         Treatment treatment = treatmentService.get(id);
         if (treatment != null) {
           design.deleted.setVisible(treatment.isDeleted());
+          design.type.setValue(treatment.getType().getLabel(view.getLocale()));
           design.protocolPanel.setVisible(treatment.getProtocol() != null);
           design.protocol
               .setValue(treatment.getProtocol() != null ? treatment.getProtocol().getName() : "");

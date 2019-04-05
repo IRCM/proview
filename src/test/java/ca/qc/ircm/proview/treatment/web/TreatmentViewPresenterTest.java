@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.SOURCE_VOLUME
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.FRACTIONATION_TYPE;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.PROTOCOL;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.TREATED_SAMPLES;
+import static ca.qc.ircm.proview.treatment.TreatmentProperties.TYPE;
 import static ca.qc.ircm.proview.treatment.web.TreatmentViewPresenter.DELETED;
 import static ca.qc.ircm.proview.treatment.web.TreatmentViewPresenter.EXPLANATION;
 import static ca.qc.ircm.proview.treatment.web.TreatmentViewPresenter.EXPLANATION_PANEL;
@@ -110,6 +111,8 @@ public class TreatmentViewPresenterTest {
 
     assertTrue(design.header.getStyleName().contains(HEADER));
     assertTrue(design.header.getStyleName().contains(ValoTheme.LABEL_H1));
+    assertTrue(design.type.getStyleName().contains(ValoTheme.LABEL_H2));
+    assertTrue(design.type.getStyleName().contains(TYPE));
     assertTrue(design.deleted.getStyleName().contains(DELETED));
     assertTrue(design.deleted.getStyleName().contains(ValoTheme.LABEL_FAILURE));
     assertTrue(design.protocolPanel.getStyleName().contains(PROTOCOL_PANEL));
@@ -129,6 +132,7 @@ public class TreatmentViewPresenterTest {
 
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
+    assertEquals(resources.message(TYPE), design.type.getValue());
     assertEquals(resources.message(DELETED), design.deleted.getValue());
     assertEquals(resources.message(PROTOCOL_PANEL), design.protocolPanel.getCaption());
     assertEquals(resources.message(FRACTIONATION_TYPE_PANEL),
@@ -248,6 +252,7 @@ public class TreatmentViewPresenterTest {
     presenter.enter("6");
 
     verify(treatmentService).get(6L);
+    assertEquals(treatment.getType().getLabel(locale), design.type.getValue());
     assertFalse(design.deleted.isVisible());
     assertTrue(design.protocolPanel.isVisible());
     assertEquals(treatment.getProtocol().getName(), design.protocol.getValue());
@@ -281,6 +286,7 @@ public class TreatmentViewPresenterTest {
     presenter.enter("6");
 
     verify(treatmentService).get(6L);
+    assertEquals(treatment.getType().getLabel(locale), design.type.getValue());
     assertTrue(design.deleted.isVisible());
     assertTrue(design.protocolPanel.isVisible());
     assertEquals(treatment.getProtocol().getName(), design.protocol.getValue());
@@ -308,6 +314,7 @@ public class TreatmentViewPresenterTest {
     presenter.enter("4");
 
     verify(treatmentService).get(4L);
+    assertEquals(treatment.getType().getLabel(locale), design.type.getValue());
     assertFalse(design.deleted.isVisible());
     assertFalse(design.protocolPanel.isVisible());
     assertFalse(design.fractionationTypePanel.isVisible());
@@ -338,6 +345,7 @@ public class TreatmentViewPresenterTest {
     presenter.enter("7");
 
     verify(treatmentService).get(7L);
+    assertEquals(treatment.getType().getLabel(locale), design.type.getValue());
     assertFalse(design.deleted.isVisible());
     assertTrue(design.protocolPanel.isVisible());
     assertEquals(treatment.getProtocol().getName(), design.protocol.getValue());
@@ -369,6 +377,7 @@ public class TreatmentViewPresenterTest {
     presenter.enter("2");
 
     verify(treatmentService).get(2L);
+    assertEquals(treatment.getType().getLabel(locale), design.type.getValue());
     assertFalse(design.deleted.isVisible());
     assertFalse(design.protocolPanel.isVisible());
     assertTrue(design.fractionationTypePanel.isVisible());
@@ -402,6 +411,7 @@ public class TreatmentViewPresenterTest {
     presenter.enter("2");
 
     verify(treatmentService).get(2L);
+    assertEquals(treatment.getType().getLabel(locale), design.type.getValue());
     assertFalse(design.deleted.isVisible());
     assertFalse(design.protocolPanel.isVisible());
     assertTrue(design.fractionationTypePanel.isVisible());
@@ -434,6 +444,7 @@ public class TreatmentViewPresenterTest {
     presenter.enter("1");
 
     verify(treatmentService).get(1L);
+    assertEquals(treatment.getType().getLabel(locale), design.type.getValue());
     assertFalse(design.deleted.isVisible());
     assertFalse(design.protocolPanel.isVisible());
     assertFalse(design.fractionationTypePanel.isVisible());
@@ -464,6 +475,7 @@ public class TreatmentViewPresenterTest {
     presenter.enter("5");
 
     verify(treatmentService).get(5L);
+    assertEquals(treatment.getType().getLabel(locale), design.type.getValue());
     assertFalse(design.deleted.isVisible());
     assertFalse(design.protocolPanel.isVisible());
     assertFalse(design.fractionationTypePanel.isVisible());
@@ -494,6 +506,7 @@ public class TreatmentViewPresenterTest {
     presenter.enter("9");
 
     verify(treatmentService).get(9L);
+    assertEquals(treatment.getType().getLabel(locale), design.type.getValue());
     assertFalse(design.deleted.isVisible());
     assertFalse(design.protocolPanel.isVisible());
     assertFalse(design.fractionationTypePanel.isVisible());

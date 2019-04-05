@@ -17,8 +17,10 @@
 
 package ca.qc.ircm.proview.treatment.web;
 
+import static ca.qc.ircm.proview.treatment.TreatmentProperties.FRACTIONATION_TYPE;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.PROTOCOL;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.TREATED_SAMPLES;
+import static ca.qc.ircm.proview.treatment.TreatmentProperties.TYPE;
 import static ca.qc.ircm.proview.treatment.web.TreatmentViewPresenter.HEADER;
 import static ca.qc.ircm.proview.treatment.web.TreatmentViewPresenter.PROTOCOL_PANEL;
 import static ca.qc.ircm.proview.treatment.web.TreatmentViewPresenter.TREATED_SAMPLES_PANEL;
@@ -42,12 +44,20 @@ public class TreatmentViewPageObject extends AbstractTestBenchTestCase {
     return wrap(LabelElement.class, findElement(className(HEADER)));
   }
 
+  protected LabelElement type() {
+    return wrap(LabelElement.class, findElement(className(TYPE)));
+  }
+
   protected PanelElement protocolPanel() {
     return wrap(PanelElement.class, findElement(className(PROTOCOL_PANEL)));
   }
 
   protected LabelElement protocol() {
     return wrap(LabelElement.class, findElement(className(PROTOCOL)));
+  }
+
+  protected LabelElement fractionationType() {
+    return wrap(LabelElement.class, findElement(className(FRACTIONATION_TYPE)));
   }
 
   protected PanelElement treatedSamplesPanel() {
