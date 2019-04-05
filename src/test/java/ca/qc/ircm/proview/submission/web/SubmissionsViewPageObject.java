@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.ADD_SUB
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
+import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HIDDEN;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.UPDATE_STATUS;
@@ -34,6 +35,7 @@ import com.vaadin.testbench.elements.LabelElement;
 public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCase {
   private static final int EXPERIMENT_COLUMN = 0;
   private static final int USER_COLUMN = 1;
+  private static final int HIDDEN_COLUMN = 10;
   private static final int HISTORY_COLUMN = 11;
 
   protected void open() {
@@ -85,6 +87,16 @@ public abstract class SubmissionsViewPageObject extends AbstractTestBenchTestCas
     GridElement submissionsGrid = submissionsGrid();
     submissionsGrid.getCell(row, gridColumnIndex(EXPERIMENT_COLUMN))
         .findElement(className(EXPERIMENT)).click();
+  }
+
+  protected ButtonElement hideSubmissionButtonByRow(int row) {
+    GridElement submissionsGrid = submissionsGrid();
+    submissionsGrid.getCell(row, gridColumnIndex(HIDDEN_COLUMN));
+    return wrap(ButtonElement.class, submissionsGrid.getRow(row).findElement(className(HIDDEN)));
+  }
+
+  protected void clickHideSubmissionByRow(int row) {
+    hideSubmissionButtonByRow(row).click();
   }
 
   protected void clickViewSubmissionHistoryByRow(int row) {

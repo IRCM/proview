@@ -32,18 +32,13 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.EXPERIM
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HELP;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HIDDEN;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HIDE;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HIDE_DONE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SAMPLE_STATUSES_SEPARATOR;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SELECTION_EMPTY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SERVICE;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SHOW;
-import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SHOW_DONE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.SUBMISSIONS_DESCRIPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionsViewPresenter.TITLE;
@@ -228,8 +223,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(designButton.getStyleName().contains(EXPERIMENT));
     assertTrue(design.addSubmission.getStyleName().contains(ADD_SUBMISSION));
     assertTrue(design.updateStatusButton.getStyleName().contains(UPDATE_STATUS));
-    assertTrue(design.hide.getStyleName().contains(HIDE));
-    assertTrue(design.show.getStyleName().contains(SHOW));
   }
 
   @Test
@@ -248,8 +241,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(manyStatuses));
     assertEquals(resources.message(ADD_SUBMISSION), design.addSubmission.getCaption());
     assertEquals(resources.message(UPDATE_STATUS), design.updateStatusButton.getCaption());
-    assertEquals(resources.message(HIDE), design.hide.getCaption());
-    assertEquals(resources.message(SHOW), design.show.getCaption());
   }
 
   @Test
@@ -468,8 +459,15 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(HIDDEN, columns.get(13).getId());
     assertEquals(resources.message(HIDDEN), design.submissionsGrid.getColumn(HIDDEN).getCaption());
     for (Submission submission : submissions) {
-      assertEquals(submission.isHidden() ? resources.message(property(HIDDEN, true)) : "",
-          design.submissionsGrid.getColumn(HIDDEN).getValueProvider().apply(submission));
+      Button hiddenButton =
+          (Button) design.submissionsGrid.getColumn(HIDDEN).getValueProvider().apply(submission);
+      assertTrue(hiddenButton.getStyleName()
+          .contains(submission.isHidden() ? ValoTheme.BUTTON_DANGER : ValoTheme.BUTTON_FRIENDLY));
+      assertTrue(hiddenButton.getStyleName().contains(HIDDEN));
+      assertEquals(submission.isHidden() ? VaadinIcons.EYE_SLASH : VaadinIcons.EYE,
+          hiddenButton.getIcon());
+      assertEquals(resources.message(property(HIDDEN, submission.isHidden())),
+          hiddenButton.getIconAlternateText());
     }
     assertFalse(design.submissionsGrid.getColumn(HIDDEN).isHidable());
     assertTrue(design.submissionsGrid.getColumn(HIDDEN).isHidden());
@@ -1558,8 +1556,6 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Single);
     assertFalse(design.addSubmission.isVisible());
     assertTrue(design.updateStatusButton.isVisible());
-    assertTrue(design.hide.isVisible());
-    assertTrue(design.show.isVisible());
   }
 
   @Test
@@ -1871,6 +1867,37 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
+  public void hide() {
+    presenter.init(view);
+    design.submissionsGrid.setDataProvider(submissionsDataProvider);
+    final Submission submission = submissions.get(0);
+    Button button =
+        (Button) design.submissionsGrid.getColumn(HIDDEN).getValueProvider().apply(submission);
+
+    button.click();
+
+    verify(submissionService).hide(submission);
+    assertTrue(submission.isHidden());
+    verify(submissionsDataProvider).refreshItem(submission);
+  }
+
+  @Test
+  public void show() {
+    presenter.init(view);
+    design.submissionsGrid.setDataProvider(submissionsDataProvider);
+    final Submission submission = submissions.get(0);
+    submission.setHidden(true);
+    Button button =
+        (Button) design.submissionsGrid.getColumn(HIDDEN).getValueProvider().apply(submission);
+
+    button.click();
+
+    verify(submissionService).show(submission);
+    assertFalse(submission.isHidden());
+    verify(submissionsDataProvider).refreshItem(submission);
+  }
+
+  @Test
   public void viewHistory() {
     presenter.init(view);
     final Submission submission = submissions.get(0);
@@ -1918,53 +1945,5 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     assertEquals(submission.getSamples().size(), samples.size());
     assertTrue(samples.containsAll(submission.getSamples()));
     verify(view).navigateTo(SampleStatusView.VIEW_NAME);
-  }
-
-  @Test
-  public void hide() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-    design.submissionsGrid.select(submissions.get(0));
-
-    design.hide.click();
-
-    verify(submissionService).hide(submissions.get(0));
-    verify(view).showTrayNotification(resources.message(HIDE_DONE, submissions.get(0).getName()));
-    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
-  }
-
-  @Test
-  public void hide_NoSelection() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-
-    design.hide.click();
-
-    verify(submissionService, never()).hide(any());
-    verify(view).showError(resources.message(SELECTION_EMPTY));
-  }
-
-  @Test
-  public void show() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-    design.submissionsGrid.select(submissions.get(0));
-
-    design.show.click();
-
-    verify(submissionService).show(submissions.get(0));
-    verify(view).showTrayNotification(resources.message(SHOW_DONE, submissions.get(0).getName()));
-    verify(view).navigateTo(SubmissionsView.VIEW_NAME);
-  }
-
-  @Test
-  public void show_NoSelection() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
-    presenter.init(view);
-
-    design.hide.click();
-
-    verify(submissionService, never()).show(any());
-    verify(view).showError(resources.message(SELECTION_EMPTY));
   }
 }

@@ -199,14 +199,6 @@ public class SubmissionsViewPresenter {
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
     design.updateStatusButton.addClickListener(e -> updateStatus());
-    design.hide.addStyleName(HIDE);
-    design.hide.setCaption(resources.message(HIDE));
-    design.hide.setVisible(authorizationService.hasAdminRole());
-    design.hide.addClickListener(e -> hide());
-    design.show.addStyleName(SHOW);
-    design.show.setCaption(resources.message(SHOW));
-    design.show.setVisible(authorizationService.hasAdminRole());
-    design.show.addClickListener(e -> show());
   }
 
   private void prepareSumissionsGrid() {
@@ -275,9 +267,8 @@ public class SubmissionsViewPresenter {
         .setCaption(resources.message(DATE));
     columnProperties.put(DATE, submission.submissionDate);
     design.submissionsGrid
-        .addColumn(
-            submission -> submission.isHidden() ? resources.message(property(HIDDEN, true)) : "")
-        .setId(HIDDEN).setCaption(resources.message(HIDDEN)).setWidth(100);
+        .addColumn(submission -> hiddenButton(submission), new ComponentRenderer()).setId(HIDDEN)
+        .setCaption(resources.message(HIDDEN)).setWidth(100);
     columnProperties.put(HIDDEN, submission.hidden);
     design.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
@@ -520,6 +511,18 @@ public class SubmissionsViewPresenter {
         .collect(Collectors.joining("\n"));
   }
 
+  private Button hiddenButton(Submission submission) {
+    MessageResource resources = view.getResources();
+    Button button = new Button();
+    button
+        .addStyleName(submission.isHidden() ? ValoTheme.BUTTON_DANGER : ValoTheme.BUTTON_FRIENDLY);
+    button.addStyleName(HIDDEN);
+    button.setIcon(submission.isHidden() ? VaadinIcons.EYE_SLASH : VaadinIcons.EYE);
+    button.setIconAlternateText(resources.message(property(HIDDEN, submission.isHidden())));
+    button.addClickListener(e -> toggleHidden(submission));
+    return button;
+  }
+
   private Button viewHistoryButton(Submission submission) {
     MessageResource resources = view.getResources();
     Button button = new Button();
@@ -626,34 +629,16 @@ public class SubmissionsViewPresenter {
     view.navigateTo(SampleStatusView.VIEW_NAME);
   }
 
-  private void hide() {
-    MessageResource resources = view.getResources();
-    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      Submission submission = design.submissionsGrid.getSelectedItems().iterator().next();
+  private void toggleHidden(Submission submission) {
+    if (submission.isHidden()) {
+      logger.debug("Show submission {}", submission);
+      submissionService.show(submission);
+    } else {
       logger.debug("Hide submission {}", submission);
       submissionService.hide(submission);
-      view.showTrayNotification(resources.message(HIDE_DONE, submission.getName()));
-      view.navigateTo(SubmissionsView.VIEW_NAME);
-    } else {
-      String error = resources.message(SELECTION_EMPTY);
-      logger.debug("Validation error: {}", error);
-      view.showError(error);
     }
-  }
-
-  private void show() {
-    MessageResource resources = view.getResources();
-    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      Submission submission = design.submissionsGrid.getSelectedItems().iterator().next();
-      logger.debug("Hide submission {}", submission);
-      submissionService.show(submission);
-      view.showTrayNotification(resources.message(SHOW_DONE, submission.getName()));
-      view.navigateTo(SubmissionsView.VIEW_NAME);
-    } else {
-      String error = resources.message(SELECTION_EMPTY);
-      logger.debug("Validation error: {}", error);
-      view.showError(error);
-    }
+    submission.setHidden(!submission.isHidden());
+    design.submissionsGrid.getDataProvider().refreshItem(submission);
   }
 
   SubmissionFilter getFilter() {

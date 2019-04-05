@@ -25,8 +25,6 @@ public class SubmissionsViewDesign extends VerticalLayout {
   protected Grid<ca.qc.ircm.proview.submission.Submission> submissionsGrid;
   protected Button addSubmission;
   protected Button updateStatusButton;
-  protected Button hide;
-  protected Button show;
 
   public SubmissionsViewDesign() {
     Design.read(this);

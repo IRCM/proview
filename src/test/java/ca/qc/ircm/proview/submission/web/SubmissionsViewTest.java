@@ -29,12 +29,16 @@ import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
+import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.WindowElement;
+import com.vaadin.ui.themes.ValoTheme;
 import java.util.Locale;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +49,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 @WithSubject(userId = 10)
 public class SubmissionsViewTest extends SubmissionsViewPageObject {
+  @Inject
+  private SubmissionRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
   private boolean admin;
@@ -131,6 +137,19 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
         resources(SubmissionWindow.class).message(SubmissionWindowPresenter.TITLE, experiment)
             .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(SERVICE))).isPresent());
+  }
+
+  @Test
+  @WithSubject
+  public void hideSubmission() throws Throwable {
+    admin = true;
+    open();
+
+    clickHideSubmissionByRow(4);
+
+    assertTrue(hideSubmissionButtonByRow(4).getClassNames().contains(ValoTheme.BUTTON_DANGER));
+    Submission submission = repository.findOne(156L);
+    assertTrue(submission.isHidden());
   }
 
   @Test
