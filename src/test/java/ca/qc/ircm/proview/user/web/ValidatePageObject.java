@@ -19,20 +19,16 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.REMOVE_SELECTED;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.USERS;
 import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE;
-import static ca.qc.ircm.proview.user.web.ValidateViewPresenter.VALIDATE_SELECTED;
 import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.GridElement;
-import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.GridElement.GridRowElement;
 import com.vaadin.testbench.elements.LabelElement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.slf4j.Logger;
@@ -40,10 +36,9 @@ import org.slf4j.LoggerFactory;
 
 public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
   private static final Logger logger = LoggerFactory.getLogger(ValidatePageObject.class);
-  private static final int SELECT_COLUMN = 0;
-  private static final int EMAIL_COLUMN = 1;
-  private static final int VALIDATE_COLUMN = 5;
-  private static final int REMOVE_COLUMN = 6;
+  private static final int EMAIL_COLUMN = 0;
+  private static final int VALIDATE_COLUMN = 4;
+  private static final int REMOVE_COLUMN = 5;
 
   protected void open() {
     openView(ValidateView.VIEW_NAME);
@@ -91,16 +86,6 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
     });
   }
 
-  protected void selectUsers(String... emails) {
-    GridElement usersGrid = usersGrid();
-    Arrays.asList(emails).forEach(email -> {
-      usersGridRows(email).forEach(row -> {
-        GridCellElement checkboxCell = usersGrid.getCell(row, SELECT_COLUMN);
-        checkboxCell.click();
-      });
-    });
-  }
-
   protected List<String> getUserEmails() {
     GridElement usersGrid = usersGrid();
     List<String> emails = new ArrayList<>();
@@ -108,21 +93,5 @@ public abstract class ValidatePageObject extends AbstractTestBenchTestCase {
       emails.add(usersGrid.getCell(row, EMAIL_COLUMN).getText());
     });
     return emails;
-  }
-
-  protected ButtonElement validateSelectedButton() {
-    return wrap(ButtonElement.class, findElement(className(VALIDATE_SELECTED)));
-  }
-
-  protected void clickValidateSelected() {
-    validateSelectedButton().click();
-  }
-
-  protected ButtonElement removeSelectedButton() {
-    return wrap(ButtonElement.class, findElement(className(REMOVE_SELECTED)));
-  }
-
-  protected void clickRemoveSelected() {
-    removeSelectedButton().click();
   }
 }

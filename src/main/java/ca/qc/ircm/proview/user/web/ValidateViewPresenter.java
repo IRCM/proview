@@ -34,8 +34,8 @@ import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.ComponentRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,12 +61,8 @@ public class ValidateViewPresenter {
   public static final String ORGANIZATION = property(LABORATORY, LaboratoryProperties.ORGANIZATION);
   public static final String VALIDATE = "validate";
   public static final String REMOVE = "remove";
-  public static final String VALIDATE_SELECTED = "validateSelected";
-  public static final String REMOVE_SELECTED = "removeSelected";
-  public static final String NO_SELECTION = "selected.none";
   public static final String VALIDATED = "validated";
   public static final String REMOVED = "removed";
-  public static final String USER_SEPARATOR = "userSeparator";
   private static final Logger logger = LoggerFactory.getLogger(ValidateViewPresenter.class);
   private ValidateView view;
   private ValidateViewDesign design;
@@ -102,12 +98,6 @@ public class ValidateViewPresenter {
     design.header.setValue(resources.message(HEADER));
     design.users.addStyleName(USERS);
     prepareUsersGrid();
-    design.validateSelected.addStyleName(VALIDATE_SELECTED);
-    design.validateSelected.setCaption(resources.message(VALIDATE_SELECTED));
-    design.validateSelected.addClickListener(event -> validateSelected());
-    design.removeSelected.addStyleName(REMOVE_SELECTED);
-    design.removeSelected.setCaption(resources.message(REMOVE_SELECTED));
-    design.removeSelected.addClickListener(event -> removeSelected());
   }
 
   private void prepareUsersGrid() {
@@ -131,7 +121,6 @@ public class ValidateViewPresenter {
         .setCaption(resources.message(VALIDATE)).setSortable(false);
     design.users.addColumn(user -> removeButton(user), new ComponentRenderer()).setId(REMOVE)
         .setCaption(resources.message(REMOVE)).setSortable(false);
-    design.users.setSelectionMode(SelectionMode.MULTI);
     design.users.sort(EMAIL, SortDirection.ASCENDING);
     design.users.addStyleName(COMPONENTS);
   }
@@ -148,6 +137,7 @@ public class ValidateViewPresenter {
   private Button validateButton(User user) {
     MessageResource resources = view.getResources();
     Button button = new Button();
+    button.addStyleName(ValoTheme.BUTTON_FRIENDLY);
     button.addStyleName(VALIDATE);
     button.setCaption(resources.message(VALIDATE));
     button.addClickListener(event -> validate(user));
@@ -157,6 +147,7 @@ public class ValidateViewPresenter {
   private Button removeButton(User user) {
     MessageResource resources = view.getResources();
     Button button = new Button();
+    button.addStyleName(ValoTheme.BUTTON_DANGER);
     button.addStyleName(REMOVE);
     button.setCaption(resources.message(REMOVE));
     button.addClickListener(event -> remove(user));
@@ -181,7 +172,7 @@ public class ValidateViewPresenter {
     userService.validate(Collections.nCopies(1, user), homeWebContext());
     refresh();
     final MessageResource resources = view.getResources();
-    view.showTrayNotification(resources.message(VALIDATED, 1, user.getEmail()));
+    view.showTrayNotification(resources.message(VALIDATED, user.getEmail()));
   }
 
   private void remove(User user) {
@@ -189,61 +180,7 @@ public class ValidateViewPresenter {
     userService.delete(Collections.nCopies(1, user));
     refresh();
     final MessageResource resources = view.getResources();
-    view.showTrayNotification(resources.message(REMOVED, 1, user.getEmail()));
-  }
-
-  private boolean validateSelection() {
-    List<User> users = new ArrayList<>(design.users.getSelectedItems());
-    if (users.isEmpty()) {
-      final MessageResource resources = view.getResources();
-      String message = resources.message(NO_SELECTION);
-      logger.trace("Validation failed {}", message);
-      view.showError(message);
-      return false;
-    }
-    return true;
-  }
-
-  private void validateSelected() {
-    if (validateSelection()) {
-      List<User> users = new ArrayList<>(design.users.getSelectedItems());
-      logger.debug("Validate users {}", users);
-      userService.validate(users, homeWebContext());
-      final MessageResource resources = view.getResources();
-      StringBuilder emails = new StringBuilder();
-      for (int i = 0; i < users.size(); i++) {
-        User user = users.get(i);
-        emails.append(user.getEmail());
-        if (i == users.size() - 2) {
-          emails.append(resources.message(USER_SEPARATOR, 1));
-        } else if (i < users.size() - 2) {
-          emails.append(resources.message(USER_SEPARATOR, 0));
-        }
-      }
-      refresh();
-      view.showTrayNotification(resources.message(VALIDATED, users.size(), emails));
-    }
-  }
-
-  private void removeSelected() {
-    if (validateSelection()) {
-      List<User> users = new ArrayList<>(design.users.getSelectedItems());
-      logger.debug("Remove users {}", users);
-      userService.delete(users);
-      final MessageResource resources = view.getResources();
-      StringBuilder emails = new StringBuilder();
-      for (int i = 0; i < users.size(); i++) {
-        User user = users.get(i);
-        emails.append(user.getEmail());
-        if (i == users.size() - 2) {
-          emails.append(resources.message(USER_SEPARATOR, 1));
-        } else if (i < users.size() - 2) {
-          emails.append(resources.message(USER_SEPARATOR, 0));
-        }
-      }
-      refresh();
-      view.showTrayNotification(resources.message(REMOVED, users.size(), emails));
-    }
+    view.showTrayNotification(resources.message(REMOVED, user.getEmail()));
   }
 
   public HomeWebContext homeWebContext() {

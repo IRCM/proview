@@ -33,7 +33,6 @@ import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.testbench.elements.WindowElement;
-import com.vaadin.ui.Notification;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -106,8 +105,6 @@ public class ValidateViewTest extends ValidatePageObject {
 
     assertTrue(optional(() -> headerLabel()).isPresent());
     assertTrue(optional(() -> usersGrid()).isPresent());
-    assertTrue(optional(() -> validateSelectedButton()).isPresent());
-    assertTrue(optional(() -> removeSelectedButton()).isPresent());
   }
 
   @Test
@@ -170,109 +167,5 @@ public class ValidateViewTest extends ValidatePageObject {
     assertEquals("tray_notification", notification.getType());
     assertNotNull(notification.getCaption());
     assertTrue(notification.getCaption().contains(email));
-  }
-
-  @Test
-  public void validateSelected_Error() throws Throwable {
-    open();
-
-    clickValidateSelected();
-
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
-    assertNotNull(notification.getCaption());
-  }
-
-  @Test
-  public void validateSelected_One() throws Throwable {
-    open();
-    String email = "francois.robert@ircm.qc.ca";
-    selectUsers(email);
-
-    clickValidateSelected();
-
-    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
-    User user = getUser(email);
-    assertNotNull(user);
-    assertEquals(email, user.getEmail());
-    assertEquals(true, user.isValid());
-    assertEquals(true, user.isActive());
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals("tray_notification", notification.getType());
-    assertNotNull(notification.getCaption());
-    assertTrue(notification.getCaption().contains(email));
-  }
-
-  @Test
-  public void validateSelected_Many() throws Throwable {
-    open();
-    String[] emails = new String[] { "francois.robert@ircm.qc.ca", "michel.tremblay@ircm.qc.ca" };
-    selectUsers(emails);
-
-    clickValidateSelected();
-
-    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
-    for (String email : emails) {
-      User user = getUser(email);
-      assertNotNull(user);
-      assertEquals(email, user.getEmail());
-      assertEquals(true, user.isValid());
-      assertEquals(true, user.isActive());
-    }
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals("tray_notification", notification.getType());
-    assertNotNull(notification.getCaption());
-    for (String email : emails) {
-      assertTrue(notification.getCaption().contains(email));
-    }
-  }
-
-  @Test
-  public void removeSelected_Error() throws Throwable {
-    open();
-
-    clickRemoveSelected();
-
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals(Notification.Type.ERROR_MESSAGE.getStyle(), notification.getType());
-    assertNotNull(notification.getCaption());
-  }
-
-  @Test
-  public void removeSelected_One() throws Throwable {
-    open();
-    String email = "francois.robert@ircm.qc.ca";
-    selectUsers(email);
-
-    clickRemoveSelected();
-
-    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
-    User user = getUser(email);
-    assertNull(user);
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals("tray_notification", notification.getType());
-    assertNotNull(notification.getCaption());
-    assertTrue(notification.getCaption().contains(email));
-  }
-
-  @Test
-  public void removeSelected_Many() throws Throwable {
-    open();
-    String[] emails = new String[] { "francois.robert@ircm.qc.ca", "michel.tremblay@ircm.qc.ca" };
-    selectUsers(emails);
-
-    clickRemoveSelected();
-
-    assertEquals(viewUrl(ValidateView.VIEW_NAME), getDriver().getCurrentUrl());
-    for (String email : emails) {
-      User user = getUser(email);
-      assertNull(user);
-    }
-    NotificationElement notification = $(NotificationElement.class).first();
-    assertEquals("tray_notification", notification.getType());
-    assertNotNull(notification.getCaption());
-    for (String email : emails) {
-      assertTrue(notification.getCaption().contains(email));
-    }
   }
 }
