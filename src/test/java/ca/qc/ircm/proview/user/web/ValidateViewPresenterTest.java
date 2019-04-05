@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
@@ -36,6 +35,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -60,7 +60,6 @@ import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -94,7 +93,7 @@ public class ValidateViewPresenterTest {
   @Mock
   private MouseEventDetails mouseEventDetails;
   @Captor
-  private ArgumentCaptor<Collection<User>> usersCaptor;
+  private ArgumentCaptor<User> userCaptor;
   @Captor
   private ArgumentCaptor<UserFilter> userFilterCaptor;
   @Captor
@@ -258,7 +257,7 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
-  public void validateOne() {
+  public void validate() {
     presenter.init(view);
     final User user = usersToValidate.get(0);
     List<User> usersToValidateAfter = new ArrayList<>(usersToValidate);
@@ -270,11 +269,8 @@ public class ValidateViewPresenterTest {
 
     button.click();
 
-    verify(userService).validate(usersCaptor.capture(), homeWebContextCaptor.capture());
+    verify(userService).validate(eq(user), homeWebContextCaptor.capture());
     verify(userService, never()).delete(any());
-    Collection<User> users = usersCaptor.getValue();
-    assertEquals(1, users.size());
-    assertTrue(find(users, user.getId()).isPresent());
     verify(view).showTrayNotification(resources.message(VALIDATED, user.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(usersToValidateAfter.size(), dataProvider(design.users).getItems().size());
@@ -283,8 +279,7 @@ public class ValidateViewPresenterTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void removeOne() {
+  public void remove() {
     presenter.init(view);
     final User user = usersToValidate.get(0);
     List<User> usersToValidateAfter = new ArrayList<>(usersToValidate);
@@ -296,11 +291,8 @@ public class ValidateViewPresenterTest {
 
     button.click();
 
-    verify(userService).delete(usersCaptor.capture());
-    verify(userService, never()).validate(any(Collection.class), any());
-    Collection<User> users = usersCaptor.getValue();
-    assertEquals(1, users.size());
-    assertTrue(find(users, user.getId()).isPresent());
+    verify(userService).delete(user);
+    verify(userService, never()).validate(any(), any());
     verify(view).showTrayNotification(resources.message(REMOVED, user.getEmail()));
     verify(userService, times(2)).all(any());
     assertEquals(usersToValidateAfter.size(), dataProvider(design.users).getItems().size());

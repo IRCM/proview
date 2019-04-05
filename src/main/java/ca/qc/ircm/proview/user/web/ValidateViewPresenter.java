@@ -37,7 +37,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -169,7 +168,7 @@ public class ValidateViewPresenter {
 
   private void validate(User user) {
     logger.debug("Validate user {}", user);
-    userService.validate(Collections.nCopies(1, user), homeWebContext());
+    userService.validate(user, homeWebContext());
     refresh();
     final MessageResource resources = view.getResources();
     view.showTrayNotification(resources.message(VALIDATED, user.getEmail()));
@@ -177,7 +176,7 @@ public class ValidateViewPresenter {
 
   private void remove(User user) {
     logger.debug("Remove user {}", user);
-    userService.delete(Collections.nCopies(1, user));
+    userService.delete(user);
     refresh();
     final MessageResource resources = view.getResources();
     view.showTrayNotification(resources.message(REMOVED, user.getEmail()));

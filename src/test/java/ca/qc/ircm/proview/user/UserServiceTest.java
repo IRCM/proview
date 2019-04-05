@@ -924,15 +924,13 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void validate_Many() throws Throwable {
+  public void validate() throws Throwable {
     User user = repository.findOne(7L);
     detach(user);
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
 
-    service.validate(users, homeWebContext());
+    service.validate(user, homeWebContext());
 
     repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
@@ -965,18 +963,16 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void validate_Many_EnglishEmail() throws Throwable {
+  public void validate_EnglishEmail() throws Throwable {
     User updateLocale = repository.findOne(7L);
     updateLocale.setLocale(Locale.CANADA);
-    repository.save(updateLocale);
+    repository.saveAndFlush(updateLocale);
     User user = repository.findOne(7L);
     detach(user);
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
 
-    service.validate(users, homeWebContext());
+    service.validate(user, homeWebContext());
 
     repository.flush();
     MessageResource resources =
@@ -1355,11 +1351,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
     User user = repository.findOne(5L);
     detach(user);
     assertNotNull(user);
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
 
     try {
-      service.delete(users);
+      service.delete(user);
       fail("Expected DeleteValidUserException");
     } catch (DeleteValidUserException e) {
       // Ignore.
@@ -1371,10 +1365,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
     User user = repository.findOne(7L);
     detach(user);
     assertNotNull(user);
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
 
-    service.delete(users);
+    service.delete(user);
 
     repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
@@ -1387,10 +1379,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
     User user = repository.findOne(6L);
     detach(user);
     assertNotNull(user);
-    Collection<User> users = new LinkedList<>();
-    users.add(user);
 
-    service.delete(users);
+    service.delete(user);
 
     repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());

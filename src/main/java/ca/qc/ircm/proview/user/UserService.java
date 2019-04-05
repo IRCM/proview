@@ -409,33 +409,29 @@ public class UserService {
   }
 
   /**
-   * Approve that users are valid.
+   * Approve that user is valid.
    *
-   * @param users
-   *          users to validate
+   * @param user
+   *          user to validate
    * @param webContext
    *          web context used to send email to user
    */
-  public void validate(Collection<User> users, HomeWebContext webContext) {
-    for (User user : users) {
-      user = repository.findOne(user.getId());
-      authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
+  public void validate(User user, HomeWebContext webContext) {
+    user = repository.findOne(user.getId());
+    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
-      user.setValid(true);
-      user.setActive(true);
-    }
+    user.setValid(true);
+    user.setActive(true);
 
     cacheFlusher.flushShiroCache();
 
-    for (User user : users) {
-      try {
-        sendEmailForUserValidation(user, webContext);
-      } catch (MessagingException e) {
-        logger.warn(e.getMessage(), e);
-      }
+    try {
+      sendEmailForUserValidation(user, webContext);
+    } catch (MessagingException e) {
+      logger.warn(e.getMessage(), e);
     }
 
-    logger.info("Users {} have been validated", users);
+    logger.info("User {} have been validated", user);
   }
 
   private void sendEmailForUserValidation(final User user, final HomeWebContext webContext)
@@ -626,27 +622,25 @@ public class UserService {
   }
 
   /**
-   * Deletes invalid users from database.
+   * Deletes invalid user from database.
    *
-   * @param users
-   *          users to delete
+   * @param user
+   *          user to delete
    */
-  public void delete(Collection<User> users) {
-    for (User user : users) {
-      user = repository.findOne(user.getId());
-      authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
+  public void delete(User user) {
+    user = repository.findOne(user.getId());
+    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
-      if (user.isValid()) {
-        throw new DeleteValidUserException(user);
-      }
-
-      boolean manager = user.getLaboratory().getManagers().contains(user);
-      repository.delete(user);
-      if (manager) {
-        laboratoryRepository.delete(user.getLaboratory());
-      }
+    if (user.isValid()) {
+      throw new DeleteValidUserException(user);
     }
 
-    logger.info("Users {} have been removed", users);
+    boolean manager = user.getLaboratory().getManagers().contains(user);
+    repository.delete(user);
+    if (manager) {
+      laboratoryRepository.delete(user.getLaboratory());
+    }
+
+    logger.info("User {} have been removed", user);
   }
 }
