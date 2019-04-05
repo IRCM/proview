@@ -223,7 +223,7 @@ public class UsersViewPresenterTest {
     listener.valueChange(event);
 
     verify(usersProvider).refreshAll();
-    UserWebFilter filter = presenter.getFilter();
+    UserFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.emailContains);
   }
 
@@ -244,7 +244,7 @@ public class UsersViewPresenterTest {
     listener.valueChange(event);
 
     verify(usersProvider).refreshAll();
-    UserWebFilter filter = presenter.getFilter();
+    UserFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.nameContains);
   }
 
@@ -265,7 +265,7 @@ public class UsersViewPresenterTest {
     listener.valueChange(event);
 
     verify(usersProvider).refreshAll();
-    UserWebFilter filter = presenter.getFilter();
+    UserFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.laboratoryNameContains);
   }
 
@@ -286,7 +286,7 @@ public class UsersViewPresenterTest {
     listener.valueChange(event);
 
     verify(usersProvider).refreshAll();
-    UserWebFilter filter = presenter.getFilter();
+    UserFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.organizationContains);
   }
 
@@ -303,7 +303,7 @@ public class UsersViewPresenterTest {
     booleanField.setValue(filterValue);
 
     verify(usersProvider).refreshAll();
-    UserWebFilter filter = presenter.getFilter();
+    UserFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.active);
   }
 
@@ -320,7 +320,7 @@ public class UsersViewPresenterTest {
     booleanField.setValue(filterValue);
 
     verify(usersProvider).refreshAll();
-    UserWebFilter filter = presenter.getFilter();
+    UserFilter filter = presenter.getFilter();
     assertEquals(filterValue, filter.active);
   }
 
@@ -337,7 +337,7 @@ public class UsersViewPresenterTest {
     booleanField.setValue(null);
 
     verify(usersProvider, times(2)).refreshAll();
-    UserWebFilter filter = presenter.getFilter();
+    UserFilter filter = presenter.getFilter();
     assertNull(filter.active);
   }
 
@@ -375,7 +375,6 @@ public class UsersViewPresenterTest {
     assertTrue(userFilter.valid);
     assertNull(userFilter.laboratory);
     assertNull(userFilter.active);
-    assertNull(userFilter.admin);
     assertTrue(design.add.isVisible());
     assertTrue(design.switchUser.isVisible());
     verify(userService).hasInvalid(null);
@@ -391,7 +390,6 @@ public class UsersViewPresenterTest {
     assertTrue(userFilter.valid);
     assertEquals(signedUser.getLaboratory(), userFilter.laboratory);
     assertNull(userFilter.active);
-    assertNull(userFilter.admin);
     assertFalse(design.add.isVisible());
     assertFalse(design.switchUser.isVisible());
     verify(userService).hasInvalid(signedUser.getLaboratory());

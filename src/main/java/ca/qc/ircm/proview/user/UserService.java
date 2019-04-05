@@ -175,33 +175,22 @@ public class UserService {
    * Only managers can search users with a laboratory.
    * </p>
    *
-   * @param parameters
+   * @param filter
    *          parameters
    * @return all users that match parameters
    */
-  public List<User> all(UserFilter parameters) {
-    if (parameters == null) {
-      parameters = new UserFilter();
+  public List<User> all(UserFilter filter) {
+    if (filter == null) {
+      filter = new UserFilter();
     }
-    if (parameters.laboratory != null) {
-      authorizationService.checkLaboratoryManagerPermission(parameters.laboratory);
+    if (filter.laboratory != null) {
+      authorizationService.checkLaboratoryManagerPermission(filter.laboratory);
     } else {
       authorizationService.checkAdminRole();
     }
 
     BooleanExpression predicate = user.id.ne(ROBOT_ID);
-    if (parameters.active != null) {
-      predicate = predicate.and(user.active.eq(parameters.active));
-    }
-    if (parameters.valid != null) {
-      predicate = predicate.and(user.valid.eq(parameters.valid));
-    }
-    if (parameters.admin != null) {
-      predicate = predicate.and(user.admin.eq(parameters.admin));
-    }
-    if (parameters.laboratory != null) {
-      predicate = predicate.and(user.laboratory.eq(parameters.laboratory));
-    }
+    predicate.and(filter.predicate());
     return Lists.newArrayList(repository.findAll(predicate));
   }
 

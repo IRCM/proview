@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.user;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.user.QUser.user;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -25,6 +26,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -305,91 +307,33 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_InvalidInLaboratory() throws Throwable {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    UserFilter parameters = new UserFilter();
-    parameters.valid = false;
-    parameters.laboratory = laboratory;
+  public void all_Filter() throws Throwable {
+    UserFilter filter = mock(UserFilter.class);
+    when(filter.predicate()).thenReturn(user.isNotNull());
 
-    List<User> users = service.all(parameters);
-
-    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
-    assertEquals(1, users.size());
-    assertTrue(find(users, 7).isPresent());
-  }
-
-  @Test
-  public void all_Invalid() throws Throwable {
-    UserFilter parameters = new UserFilter();
-    parameters.valid = false;
-
-    List<User> users = service.all(parameters);
+    List<User> users = service.all(filter);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(2, users.size());
-    assertTrue(find(users, 6).isPresent());
-    assertTrue(find(users, 7).isPresent());
-  }
-
-  @Test
-  public void all_ValidInLaboratory() throws Throwable {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    UserFilter parameters = new UserFilter();
-    parameters.valid = true;
-    parameters.laboratory = laboratory;
-
-    List<User> users = service.all(parameters);
-
-    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
-    assertEquals(4, users.size());
-    assertTrue(find(users, 3).isPresent());
-    assertTrue(find(users, 10).isPresent());
-    assertTrue(find(users, 12).isPresent());
-    assertTrue(find(users, 27).isPresent());
-  }
-
-  @Test
-  public void all_Valid() throws Throwable {
-    UserFilter parameters = new UserFilter();
-    parameters.valid = true;
-
-    List<User> users = service.all(parameters);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(12, users.size());
+    verify(filter).predicate();
+    assertEquals(14, users.size());
     assertTrue(find(users, 2).isPresent());
-    assertTrue(find(users, 3).isPresent());
-    assertTrue(find(users, 4).isPresent());
-    assertTrue(find(users, 5).isPresent());
-    assertTrue(find(users, 10).isPresent());
-    assertTrue(find(users, 11).isPresent());
-    assertTrue(find(users, 12).isPresent());
-    assertTrue(find(users, 19).isPresent());
-    assertTrue(find(users, 24).isPresent());
-    assertTrue(find(users, 25).isPresent());
-    assertTrue(find(users, 26).isPresent());
-    assertTrue(find(users, 27).isPresent());
+    assertFalse(find(users, 1).isPresent());
   }
 
   @Test
-  public void all_NonAdmin() throws Throwable {
-    UserFilter parameters = new UserFilter();
-    parameters.admin = false;
+  public void all_FilterInLaboratory() throws Throwable {
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    UserFilter filter = mock(UserFilter.class);
+    filter.laboratory = laboratory;
+    when(filter.predicate()).thenReturn(user.isNotNull());
 
-    List<User> users = service.all(parameters);
+    List<User> users = service.all(filter);
 
-    verify(authorizationService).checkAdminRole();
-    assertEquals(10, users.size());
-    assertTrue(find(users, 3).isPresent());
-    assertTrue(find(users, 6).isPresent());
-    assertTrue(find(users, 7).isPresent());
-    assertTrue(find(users, 10).isPresent());
-    assertTrue(find(users, 12).isPresent());
-    assertTrue(find(users, 19).isPresent());
-    assertTrue(find(users, 24).isPresent());
-    assertTrue(find(users, 25).isPresent());
-    assertTrue(find(users, 26).isPresent());
-    assertTrue(find(users, 27).isPresent());
+    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
+    verify(filter).predicate();
+    assertEquals(14, users.size());
+    assertTrue(find(users, 2).isPresent());
+    assertFalse(find(users, 1).isPresent());
   }
 
   @Test

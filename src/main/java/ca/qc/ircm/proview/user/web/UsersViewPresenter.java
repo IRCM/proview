@@ -77,7 +77,7 @@ public class UsersViewPresenter {
   private UsersView view;
   private UsersViewDesign design;
   private ListDataProvider<User> usersProvider;
-  private UserWebFilter filter;
+  private UserFilter filter;
   @Inject
   private UserService userService;
   @Inject
@@ -102,7 +102,7 @@ public class UsersViewPresenter {
     this.view = view;
     design = view.design;
     logger.debug("Users view");
-    filter = new UserWebFilter(view.getLocale());
+    filter = new UserFilter();
     prepareComponents();
   }
 
@@ -218,7 +218,7 @@ public class UsersViewPresenter {
     }
     List<User> users = userService.all(filter);
     usersProvider = DataProvider.ofCollection(users);
-    usersProvider.setFilter(this.filter);
+    usersProvider.setFilter(p -> this.filter.test(p));
     return usersProvider;
   }
 
@@ -264,7 +264,7 @@ public class UsersViewPresenter {
     }
   }
 
-  UserWebFilter getFilter() {
+  UserFilter getFilter() {
     return filter;
   }
 }

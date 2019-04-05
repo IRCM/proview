@@ -222,7 +222,6 @@ public class ValidateViewPresenterTest {
     assertFalse(userFilter.valid);
     assertNull(userFilter.laboratory);
     assertNull(userFilter.active);
-    assertNull(userFilter.admin);
   }
 
   @Test
@@ -236,7 +235,6 @@ public class ValidateViewPresenterTest {
     assertFalse(userFilter.valid);
     assertEquals(signedUser.getLaboratory(), userFilter.laboratory);
     assertNull(userFilter.active);
-    assertNull(userFilter.admin);
   }
 
   @Test

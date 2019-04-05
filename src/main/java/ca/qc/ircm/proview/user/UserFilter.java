@@ -17,12 +17,88 @@
 
 package ca.qc.ircm.proview.user;
 
+import static ca.qc.ircm.proview.user.QUser.user;
+
+import ca.qc.ircm.proview.text.Strings;
+import com.querydsl.core.BooleanBuilder;
+import java.util.function.Predicate;
+
 /**
  * Parameters to search users.
  */
-public class UserFilter {
-  public Laboratory laboratory;
+public class UserFilter implements Predicate<User> {
+  public String emailContains;
+  public String nameContains;
   public Boolean active;
   public Boolean valid;
-  public Boolean admin;
+  public String laboratoryNameContains;
+  public String organizationContains;
+  public Laboratory laboratory;
+
+  @Override
+  public boolean test(User user) {
+    boolean test = true;
+    if (emailContains != null) {
+      String emailContainsNormalized = Strings.normalize(emailContains).toLowerCase();
+      String email = Strings.normalize(user.getEmail()).toLowerCase();
+      test &= email.contains(emailContainsNormalized);
+    }
+    if (nameContains != null) {
+      String nameContainsNormalized = Strings.normalize(nameContains).toLowerCase();
+      String name = Strings.normalize(user.getName()).toLowerCase();
+      test &= name.contains(nameContainsNormalized);
+    }
+    if (active != null) {
+      test &= user.isActive() == active;
+    }
+    if (valid != null) {
+      test &= user.isValid() == valid;
+    }
+    if (laboratoryNameContains != null) {
+      String laboratoryNameContainsNormalized =
+          Strings.normalize(laboratoryNameContains).toLowerCase();
+      String laboratoryName = Strings.normalize(user.getLaboratory().getName()).toLowerCase();
+      test &= laboratoryName.contains(laboratoryNameContainsNormalized);
+    }
+    if (organizationContains != null) {
+      String organizationContainsNormalized = Strings.normalize(organizationContains).toLowerCase();
+      String organization = Strings.normalize(user.getLaboratory().getOrganization()).toLowerCase();
+      test &= organization.contains(organizationContainsNormalized);
+    }
+    if (laboratory != null) {
+      test &= user.getLaboratory().equals(laboratory);
+    }
+    return test;
+  }
+
+  /**
+   * Returns QueryDSL predicate matching filter.
+   *
+   * @return QueryDSL predicate matching filter
+   */
+  public com.querydsl.core.types.Predicate predicate() {
+    BooleanBuilder predicate = new BooleanBuilder();
+    if (emailContains != null) {
+      predicate.and(user.email.contains(emailContains));
+    }
+    if (nameContains != null) {
+      predicate.and(user.name.contains(nameContains));
+    }
+    if (active != null) {
+      predicate.and(user.active.eq(active));
+    }
+    if (valid != null) {
+      predicate.and(user.valid.eq(valid));
+    }
+    if (laboratoryNameContains != null) {
+      predicate.and(user.laboratory.name.contains(laboratoryNameContains));
+    }
+    if (organizationContains != null) {
+      predicate.and(user.laboratory.organization.contains(organizationContains));
+    }
+    if (laboratory != null) {
+      predicate.and(user.laboratory.eq(laboratory));
+    }
+    return predicate.getValue();
+  }
 }
