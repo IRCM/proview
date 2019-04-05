@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.sample.SampleStatus.ANALYSED;
 import static ca.qc.ircm.proview.sample.SampleStatus.CANCELLED;
-import static ca.qc.ircm.proview.sample.SampleStatus.DATA_ANALYSIS;
 import static ca.qc.ircm.proview.sample.SampleStatus.DIGESTED;
 import static ca.qc.ircm.proview.sample.SampleStatus.ENRICHED;
 import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
@@ -38,7 +37,6 @@ public class SampleStatusTest {
     List<SampleStatus> analysedStatuses = Arrays.asList(SampleStatus.analysedStatuses());
     assertTrue(analysedStatuses.contains(ANALYSED));
     assertTrue(analysedStatuses.contains(CANCELLED));
-    assertTrue(analysedStatuses.contains(DATA_ANALYSIS));
   }
 
   @Test
@@ -69,12 +67,6 @@ public class SampleStatusTest {
   public void getLabel_Enrich() {
     assertEquals("Enriched", ENRICHED.getLabel(Locale.ENGLISH));
     assertEquals("Enrichit", ENRICHED.getLabel(Locale.FRENCH));
-  }
-
-  @Test
-  public void getLabel_Dataanalysis() {
-    assertEquals("Data analysis", DATA_ANALYSIS.getLabel(Locale.ENGLISH));
-    assertEquals("Analyse de données", DATA_ANALYSIS.getLabel(Locale.FRENCH));
   }
 
   @Test

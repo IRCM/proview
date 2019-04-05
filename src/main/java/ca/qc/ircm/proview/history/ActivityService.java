@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.history;
 
-import static ca.qc.ircm.proview.dataanalysis.QDataAnalysis.dataAnalysis;
 import static ca.qc.ircm.proview.history.QActivity.activity;
 import static ca.qc.ircm.proview.history.QUpdateActivity.updateActivity;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
@@ -40,7 +39,6 @@ import static ca.qc.ircm.proview.user.QPhoneNumber.phoneNumber;
 import static ca.qc.ircm.proview.user.QUser.user;
 
 import ca.qc.ircm.proview.Named;
-import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
@@ -108,12 +106,6 @@ public class ActivityService {
 
   private Object record(String tableName, Long id) {
     switch (tableName) {
-      case DataAnalysis.TABLE_NAME: {
-        JPAQuery<DataAnalysis> query = queryFactory.select(dataAnalysis);
-        query.from(dataAnalysis);
-        query.where(dataAnalysis.id.eq(id));
-        return query.fetchOne();
-      }
       case Acquisition.TABLE_NAME: {
         JPAQuery<Acquisition> query = queryFactory.select(acquisition);
         query.from(acquisition);
@@ -269,15 +261,6 @@ public class ActivityService {
     query.where(msAnalysis.acquisitions.contains(acquisition));
     query.where(activity.tableName.eq(MsAnalysis.TABLE_NAME));
     query.where(acquisition.sample.in(samples));
-    activities.addAll(query.distinct().fetch());
-    // Data analyses.
-    query = queryFactory.select(activity);
-    query.from(activity);
-    query.leftJoin(activity.updates, updateActivity).fetch();
-    query.from(dataAnalysis);
-    query.where(activity.recordId.eq(dataAnalysis.id));
-    query.where(activity.tableName.eq(DataAnalysis.TABLE_NAME));
-    query.where(dataAnalysis.sample.in(samples));
     activities.addAll(query.distinct().fetch());
     return activities;
   }

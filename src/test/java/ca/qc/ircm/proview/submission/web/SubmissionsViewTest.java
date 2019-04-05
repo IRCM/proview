@@ -17,9 +17,8 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionAnalysesFormPresenter.ANALYSIS;
 import static ca.qc.ircm.proview.submission.web.SubmissionFormPresenter.SERVICE;
-import static ca.qc.ircm.proview.submission.web.SubmissionTreatmentsFormPresenter.SAMPLES_PANEL;
+import static ca.qc.ircm.proview.submission.web.SubmissionHistoryFormPresenter.SAMPLES_PANEL;
 import static ca.qc.ircm.proview.submission.web.SubmissionViewPresenter.TITLE;
 import static ca.qc.ircm.proview.web.HelpWindow.WINDOW_STYLE;
 import static org.junit.Assert.assertEquals;
@@ -28,22 +27,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
-import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
-import ca.qc.ircm.proview.digestion.web.DigestionView;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
-import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
-import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
-import ca.qc.ircm.proview.sample.web.ContainerSelectionFormPresenter;
-import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
-import ca.qc.ircm.proview.sample.web.SampleSelectionFormPresenter;
-import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
-import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
-import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.testbench.elements.WindowElement;
@@ -106,19 +93,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> help()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertTrue(optional(() -> addSubmissionButton()).isPresent());
-    assertFalse(optional(() -> selectSamplesButton()).isPresent());
-    assertFalse(optional(() -> selectedSamplesLabel()).isPresent());
-    assertFalse(optional(() -> selectContainersButton()).isPresent());
-    assertFalse(optional(() -> selectedContainersLabel()).isPresent());
     assertFalse(optional(() -> updateStatusButton()).isPresent());
-    assertFalse(optional(() -> transferButton()).isPresent());
-    assertFalse(optional(() -> digestionButton()).isPresent());
-    assertFalse(optional(() -> enrichmentButton()).isPresent());
-    assertFalse(optional(() -> solubilisationButton()).isPresent());
-    assertFalse(optional(() -> dilutionButton()).isPresent());
-    assertFalse(optional(() -> standardAdditionButton()).isPresent());
-    assertFalse(optional(() -> msAnalysisButton()).isPresent());
-    assertTrue(optional(() -> dataAnalysisButton()).isPresent());
   }
 
   @Test
@@ -130,19 +105,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     assertTrue(optional(() -> help()).isPresent());
     assertTrue(optional(() -> submissionsGrid()).isPresent());
     assertFalse(optional(() -> addSubmissionButton()).isPresent());
-    assertTrue(optional(() -> selectSamplesButton()).isPresent());
-    assertTrue(optional(() -> selectedSamplesLabel()).isPresent());
-    assertTrue(optional(() -> selectContainersButton()).isPresent());
-    assertTrue(optional(() -> selectedContainersLabel()).isPresent());
     assertTrue(optional(() -> updateStatusButton()).isPresent());
-    assertTrue(optional(() -> transferButton()).isPresent());
-    assertTrue(optional(() -> digestionButton()).isPresent());
-    assertTrue(optional(() -> enrichmentButton()).isPresent());
-    assertTrue(optional(() -> solubilisationButton()).isPresent());
-    assertTrue(optional(() -> dilutionButton()).isPresent());
-    assertTrue(optional(() -> standardAdditionButton()).isPresent());
-    assertTrue(optional(() -> msAnalysisButton()).isPresent());
-    assertFalse(optional(() -> dataAnalysisButton()).isPresent());
   }
 
   @Test
@@ -168,40 +131,6 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
         resources(SubmissionWindow.class).message(SubmissionWindowPresenter.TITLE, experiment)
             .contains(submissionWindow.getCaption()));
     assertTrue(optional(() -> submissionWindow.findElement(className(SERVICE))).isPresent());
-  }
-
-  @Test
-  public void viewSubmissionResults() throws Throwable {
-    open();
-
-    clickViewSubmissionResultsByRow(4);
-
-    assertNotNull(findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
-    WindowElement submissionWindow =
-        wrap(WindowElement.class, findElement(className(SubmissionAnalysesWindow.WINDOW_STYLE)));
-    String experiment = experimentByRow(4);
-    assertTrue(resources(SubmissionAnalysesWindow.class)
-        .message(SubmissionAnalysesWindow.TITLE, experiment)
-        .contains(submissionWindow.getCaption()));
-    assertTrue(optional(() -> submissionWindow.findElement(className(ANALYSIS))).isPresent());
-  }
-
-  @Test
-  @WithSubject
-  public void viewSubmissionTreatments() throws Throwable {
-    admin = true;
-    open();
-
-    clickViewSubmissionTreatmentsByRow(4);
-
-    assertNotNull(findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
-    WindowElement submissionWindow =
-        wrap(WindowElement.class, findElement(className(SubmissionTreatmentsWindow.WINDOW_STYLE)));
-    String experiment = experimentByRow(4);
-    assertTrue(resources(SubmissionTreatmentsWindow.class)
-        .message(SubmissionTreatmentsWindow.TITLE, experiment)
-        .contains(submissionWindow.getCaption()));
-    assertTrue(optional(() -> submissionWindow.findElement(className(SAMPLES_PANEL))).isPresent());
   }
 
   @Test
@@ -233,174 +162,13 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
 
   @Test
   @WithSubject
-  public void selectSamples() throws Throwable {
-    admin = true;
-    open();
-
-    clickSelectSamplesButton();
-
-    assertNotNull(findElement(className(SampleSelectionWindow.WINDOW_STYLE)));
-    WindowElement sampleSelectionWindow =
-        wrap(WindowElement.class, findElement(className(SampleSelectionWindow.WINDOW_STYLE)));
-    assertTrue(resources(SampleSelectionWindow.class).message(SampleSelectionWindow.TITLE)
-        .contains(sampleSelectionWindow.getCaption()));
-    assertTrue(optional(
-        () -> sampleSelectionWindow.findElement(className(SampleSelectionFormPresenter.SAMPLES)))
-            .isPresent());
-  }
-
-  @Test
-  @WithSubject
-  public void selectContainers() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(3);
-    selectSubmission(5);
-
-    clickSelectContainersButton();
-
-    assertNotNull(findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    assertTrue(resources(ContainerSelectionWindow.class).message(ContainerSelectionWindow.TITLE)
-        .contains(containerSelectionWindow.getCaption()));
-    assertTrue(optional(
-        () -> containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.TYPE)))
-            .isPresent());
-  }
-
-  @Test
-  @WithSubject
   public void updateStatus() throws Throwable {
     admin = true;
     open();
-    selectSubmission(3);
     selectSubmission(5);
 
     clickUpdateStatusButton();
 
     assertEquals(viewUrl(SampleStatusView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject
-  public void transfer() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(5);
-    clickSelectContainersButton();
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
-
-    clickTransferButton();
-
-    assertEquals(viewUrl(TransferView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject
-  public void digestion() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(5);
-    clickSelectContainersButton();
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
-
-    clickDigestionButton();
-
-    assertEquals(viewUrl(DigestionView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject
-  public void enrichment() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(5);
-    clickSelectContainersButton();
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
-
-    clickEnrichmentButton();
-
-    assertEquals(viewUrl(EnrichmentView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject
-  public void solubilisation() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(5);
-    clickSelectContainersButton();
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
-
-    clickSolubilisationButton();
-
-    assertEquals(viewUrl(SolubilisationView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject
-  public void dilution() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(5);
-    clickSelectContainersButton();
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
-
-    clickDilutionButton();
-
-    assertEquals(viewUrl(DilutionView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject
-  public void standardAddition() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(5);
-    clickSelectContainersButton();
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
-
-    clickStandardAdditionButton();
-
-    assertEquals(viewUrl(StandardAdditionView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  @WithSubject
-  public void msAnalysis() throws Throwable {
-    admin = true;
-    open();
-    selectSubmission(5);
-    clickSelectContainersButton();
-    WindowElement containerSelectionWindow =
-        wrap(WindowElement.class, findElement(className(ContainerSelectionWindow.WINDOW_STYLE)));
-    containerSelectionWindow.findElement(className(ContainerSelectionFormPresenter.SELECT)).click();
-
-    clickMsAnalysisButton();
-
-    assertEquals(viewUrl(MsAnalysisView.VIEW_NAME), getDriver().getCurrentUrl());
-  }
-
-  @Test
-  public void dataAnalysis() throws Throwable {
-    open();
-    selectSubmission(5);
-
-    clickDataAnalysisButton();
-
-    assertEquals(viewUrl(DataAnalysisView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

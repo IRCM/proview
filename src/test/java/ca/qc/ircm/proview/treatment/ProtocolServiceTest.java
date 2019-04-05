@@ -20,21 +20,15 @@ package ca.qc.ircm.proview.treatment;
 import static ca.qc.ircm.proview.treatment.Protocol.Type.DIGESTION;
 import static ca.qc.ircm.proview.treatment.Protocol.Type.ENRICHMENT;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.history.Activity;
-import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -43,16 +37,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ProtocolServiceTest {
   @Inject
   private ProtocolService service;
-  @Inject
-  private ProtocolRepository repository;
-  @MockBean
-  private ProtocolActivityService protocolActivityService;
-  @MockBean
-  private ActivityService activityService;
   @MockBean
   private AuthorizationService authorizationService;
-  @Mock
-  private Activity activity;
 
   @Test
   public void get_DigestionProtocol() throws Throwable {
@@ -99,24 +85,5 @@ public class ProtocolServiceTest {
     assertEquals(2, protocols.size());
     assertEquals(true, protocols.contains(service.get(2L)));
     assertEquals(true, protocols.contains(service.get(4L)));
-  }
-
-  @Test
-  public void insert() throws Throwable {
-    Protocol protocol = new Protocol();
-    protocol.setName("unit_test_protocol");
-    protocol.setType(DIGESTION);
-    when(protocolActivityService.insert(any(Protocol.class))).thenReturn(activity);
-
-    service.insert(protocol);
-
-    repository.flush();
-    verify(authorizationService).checkAdminRole();
-    assertNotNull(protocol.getId());
-    protocol = service.get(protocol.getId());
-    assertEquals("unit_test_protocol", protocol.getName());
-    assertEquals(Protocol.Type.DIGESTION, protocol.getType());
-    verify(protocolActivityService).insert(protocol);
-    verify(activityService).insert(activity);
   }
 }

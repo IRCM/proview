@@ -19,23 +19,14 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.web.MenuPresenter.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTACT;
-import static ca.qc.ircm.proview.web.MenuPresenter.CONTROL;
-import static ca.qc.ircm.proview.web.MenuPresenter.DIGESTION;
-import static ca.qc.ircm.proview.web.MenuPresenter.DILUTION;
-import static ca.qc.ircm.proview.web.MenuPresenter.ENRICHMENT;
 import static ca.qc.ircm.proview.web.MenuPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
-import static ca.qc.ircm.proview.web.MenuPresenter.MS_ANALYSIS;
 import static ca.qc.ircm.proview.web.MenuPresenter.PLATE;
 import static ca.qc.ircm.proview.web.MenuPresenter.PROFILE;
 import static ca.qc.ircm.proview.web.MenuPresenter.SIGNIN;
 import static ca.qc.ircm.proview.web.MenuPresenter.SIGNOUT;
-import static ca.qc.ircm.proview.web.MenuPresenter.SOLUBILISATION;
-import static ca.qc.ircm.proview.web.MenuPresenter.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.web.MenuPresenter.STOP_SIGN_AS;
 import static ca.qc.ircm.proview.web.MenuPresenter.SUBMISSION;
-import static ca.qc.ircm.proview.web.MenuPresenter.TRANSFER;
-import static ca.qc.ircm.proview.web.MenuPresenter.TREATMENT;
 import static ca.qc.ircm.proview.web.MenuPresenter.USERS;
 import static org.openqa.selenium.By.className;
 
@@ -75,84 +66,12 @@ public abstract class MenuPageObject extends AbstractTestBenchTestCase {
     submissionMenuItem().click();
   }
 
-  protected WebElement treatmentMenuItem() {
-    return menuItemByStyle(TREATMENT);
-  }
-
-  protected void clickTreatment() {
-    treatmentMenuItem().click();
-  }
-
-  protected WebElement transferMenuItem() {
-    return menuItemByStyle(TRANSFER);
-  }
-
-  protected void clickTransfer() {
-    transferMenuItem().click();
-  }
-
-  protected WebElement digestionMenuItem() {
-    return menuItemByStyle(DIGESTION);
-  }
-
-  protected void clickDigestion() {
-    digestionMenuItem().click();
-  }
-
-  protected WebElement enrichmentMenuItem() {
-    return menuItemByStyle(ENRICHMENT);
-  }
-
-  protected void clickEnrichment() {
-    enrichmentMenuItem().click();
-  }
-
-  protected WebElement solubilisationMenuItem() {
-    return menuItemByStyle(SOLUBILISATION);
-  }
-
-  protected void clickSolubilisation() {
-    solubilisationMenuItem().click();
-  }
-
-  protected WebElement dilutionMenuItem() {
-    return menuItemByStyle(DILUTION);
-  }
-
-  protected void clickDilution() {
-    dilutionMenuItem().click();
-  }
-
-  protected WebElement standardAdditionMenuItem() {
-    return menuItemByStyle(STANDARD_ADDITION);
-  }
-
-  protected void clickStandardAddition() {
-    standardAdditionMenuItem().click();
-  }
-
-  protected WebElement msAnalysisMenuItem() {
-    return menuItemByStyle(MS_ANALYSIS);
-  }
-
-  protected void clickMsAnalysis() {
-    msAnalysisMenuItem().click();
-  }
-
   protected WebElement plateMenuItem() {
     return menuItemByStyle(PLATE);
   }
 
   protected void clickPlate() {
     plateMenuItem().click();
-  }
-
-  protected WebElement controlMenuItem() {
-    return menuItemByStyle(CONTROL);
-  }
-
-  protected void clickControl() {
-    controlMenuItem().click();
   }
 
   protected WebElement profileMenuItem() {

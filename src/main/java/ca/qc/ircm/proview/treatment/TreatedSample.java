@@ -21,7 +21,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
-import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import java.io.Serializable;

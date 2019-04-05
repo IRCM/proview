@@ -20,33 +20,13 @@ package ca.qc.ircm.proview.msanalysis;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 
-import ca.qc.ircm.proview.history.Activity;
-import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.sample.SampleContainerRepository;
-import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.treatment.BaseTreatmentService;
-import ca.qc.ircm.proview.user.User;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,21 +36,11 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class MsAnalysisService extends BaseTreatmentService {
+public class MsAnalysisService {
   @Inject
   private MsAnalysisRepository repository;
   @Inject
-  private SubmissionRepository submissionRepository;
-  @Inject
-  private SubmissionSampleRepository sampleRepository;
-  @Inject
-  private SampleContainerRepository sampleContainerRepository;
-  @Inject
   private JPAQueryFactory queryFactory;
-  @Inject
-  private MsAnalysisActivityService msAnalysisActivityService;
-  @Inject
-  private ActivityService activityService;
   @Inject
   private AuthorizationService authorizationService;
 
@@ -113,166 +83,5 @@ public class MsAnalysisService extends BaseTreatmentService {
     query.where(acquisition.sample.in(submission.samples));
     query.where(submission.eq(submissionParam));
     return query.fetch();
-  }
-
-  /**
-   * Analyse samples by MS.
-   *
-   * @param msAnalysis
-   *          MS analysis
-   * @return MS analysis with complete information for acquisitions
-   * @throws IllegalArgumentException
-   *           MS analysis contains samples from more than one user
-   */
-  public MsAnalysis insert(MsAnalysis msAnalysis) throws IllegalArgumentException {
-    authorizationService.checkAdminRole();
-
-    // Check that all samples where submitted by the same user.
-    chechSameUserForAllSamples(msAnalysis);
-
-    // Add MS analysis to database.
-    msAnalysis.getAcquisitions().stream().forEach(ac -> ac.setMsAnalysis(msAnalysis));
-    Instant insertTime = Instant.now();
-    msAnalysis.setInsertTime(insertTime);
-    setPositions(msAnalysis.getAcquisitions());
-    repository.save(msAnalysis);
-
-    // Set status of submission samples to analysed.
-    for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
-      if (acquisition.getSample() instanceof SubmissionSample) {
-        SubmissionSample submissionSample = (SubmissionSample) acquisition.getSample();
-        submissionSample.setStatus(SampleStatus.ANALYSED);
-        Submission submission = submissionSample.getSubmission();
-        if (submission.getAnalysisDate() == null) {
-          submission.setAnalysisDate(toLocalDate(insertTime));
-          submissionRepository.save(submission);
-        }
-      }
-    }
-
-    repository.flush();
-    // Log insertion of MS analysis.
-    Activity activity = msAnalysisActivityService.insert(msAnalysis);
-    activityService.insert(activity);
-
-    for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
-      if (acquisition.getSample() instanceof SubmissionSample) {
-        sampleRepository.save((SubmissionSample) acquisition.getSample());
-      }
-    }
-    return msAnalysis;
-  }
-
-  private void setPositions(List<Acquisition> acquisitions) {
-    Map<Sample, Integer> positions = new HashMap<>();
-    acquisitions.stream().filter(ac -> ac.getPosition() == null).forEach(acquisition -> {
-      Sample sample = acquisition.getSample();
-      Integer lastPosition = lastPosition(sample);
-      if (lastPosition == null) {
-        lastPosition = 0;
-      }
-      positions.put(sample, lastPosition + 1);
-    });
-    acquisitions.stream().filter(ac -> ac.getPosition() == null).forEach(acquisition -> {
-      Sample sample = acquisition.getSample();
-      Integer position = positions.get(sample);
-      acquisition.setPosition(position);
-      positions.put(sample, position + 1);
-    });
-  }
-
-  private Integer lastPosition(Sample sample) {
-    JPAQuery<Integer> query = queryFactory.select(acquisition.position.max());
-    query.from(acquisition);
-    query.where(acquisition.sample.eq(sample));
-    return query.fetchOne();
-  }
-
-  private void chechSameUserForAllSamples(MsAnalysis msAnalysis) throws IllegalArgumentException {
-    User expectedUser = null;
-    for (Acquisition acquisition : msAnalysis.getAcquisitions()) {
-      if (acquisition.getSample() instanceof SubmissionSample) {
-        SubmissionSample sample = (SubmissionSample) acquisition.getSample();
-        if (expectedUser == null) {
-          expectedUser = sample.getUser();
-        } else if (!expectedUser.getId().equals(sample.getUser().getId())) {
-          throw new IllegalArgumentException("Cannot analyse samples from multiple users");
-        }
-      }
-    }
-  }
-
-  /**
-   * Updates MS analysis's information in database.
-   *
-   * @param msAnalysis
-   *          MS analysis containing new information
-   * @param explanation
-   *          explanation
-   * @throws IllegalArgumentException
-   *           Acquisitions cannot be removed from MS analysis
-   */
-  public void update(MsAnalysis msAnalysis, String explanation) {
-    authorizationService.checkAdminRole();
-
-    MsAnalysis old = repository.findOne(msAnalysis.getId());
-    Set<Long> acquisitionsIds =
-        msAnalysis.getAcquisitions().stream().map(ts -> ts.getId()).collect(Collectors.toSet());
-    if (old.getAcquisitions().stream().filter(ts -> !acquisitionsIds.contains(ts.getId())).findAny()
-        .isPresent()) {
-      throw new IllegalArgumentException("Cannot remove " + Acquisition.class.getSimpleName()
-          + " from " + MsAnalysis.class.getSimpleName() + " on update");
-    }
-
-    setPositions(msAnalysis.getAcquisitions());
-
-    Optional<Activity> activity = msAnalysisActivityService.update(msAnalysis, explanation);
-    if (activity.isPresent()) {
-      activityService.insert(activity.get());
-    }
-
-    repository.save(msAnalysis);
-  }
-
-  /**
-   * Undo MS analysis.
-   *
-   * @param msAnalysis
-   *          MS analysis to undo
-   * @param explanation
-   *          explanation
-   * @param banContainers
-   *          true if containers used in MS analysis should be banned, this will also ban any
-   *          container were samples were transfered after MS analysis
-   */
-  public void undo(MsAnalysis msAnalysis, String explanation, boolean banContainers) {
-    authorizationService.checkAdminRole();
-
-    msAnalysis.setDeleted(true);
-    msAnalysis.setDeletionExplanation(explanation);
-
-    Collection<SampleContainer> bannedContainers = new LinkedHashSet<>();
-    if (banContainers) {
-      // Ban containers used during MS analysis.
-      List<Acquisition> acquisitions = msAnalysis.getAcquisitions();
-      for (Acquisition acquisition : acquisitions) {
-        SampleContainer container = acquisition.getContainer();
-        container.setBanned(true);
-        bannedContainers.add(container);
-
-        // Ban containers were sample were transfered after digestion.
-        this.banDestinations(container, bannedContainers);
-      }
-    }
-
-    // Log changes.
-    Activity activity =
-        msAnalysisActivityService.undoFailed(msAnalysis, explanation, bannedContainers);
-    activityService.insert(activity);
-
-    repository.save(msAnalysis);
-    for (SampleContainer container : bannedContainers) {
-      sampleContainerRepository.save(container);
-    }
   }
 }

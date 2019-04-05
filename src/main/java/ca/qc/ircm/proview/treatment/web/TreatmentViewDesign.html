@@ -8,26 +8,31 @@
  <body>
   <vaadin-vertical-layout>
    <vaadin-label style-name="h1" plain-text _id="header">
-     MS Analysis 
+     Treatment 
+   </vaadin-label>
+   <vaadin-label style-name="h2" plain-text _id="type">
+     Label 
    </vaadin-label>
    <vaadin-label style-name="failure" plain-text _id="deleted">
-     MS Analysis was removed 
+     Treatment was removed 
    </vaadin-label>
-   <vaadin-panel caption="MS Analysis" _id="msAnalysisPanel">
-    <vaadin-vertical-layout>
-     <vaadin-form-layout size-auto margin="false">
-      <vaadin-label caption="Instrument" plain-text _id="massDetectionInstrument">
-        Orbitrap-Fusion 
-      </vaadin-label>
-      <vaadin-label caption="Source" plain-text _id="source">
-        ESI 
-      </vaadin-label>
-     </vaadin-form-layout>
+   <vaadin-panel caption="Protocol" size-auto _id="protocolPanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-label plain-text _id="protocol">
+       Protocol used 
+     </vaadin-label>
     </vaadin-vertical-layout>
    </vaadin-panel>
-   <vaadin-panel _id="acquisitionsPanel">
+   <vaadin-panel caption="Fractionation type" size-auto _id="fractionationTypePanel">
+    <vaadin-vertical-layout size-auto>
+     <vaadin-label plain-text _id="fractionationType">
+       Two DLC 
+     </vaadin-label>
+    </vaadin-vertical-layout>
+   </vaadin-panel>
+   <vaadin-panel _id="treatedSamplesPanel">
     <vaadin-vertical-layout>
-     <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.msanalysis.Acquisition" _id="acquisitions"></vaadin-grid>
+     <vaadin-grid width-full data-item-type="ca.qc.ircm.proview.treatment.TreatedSample" _id="treatedSamples"></vaadin-grid>
     </vaadin-vertical-layout>
    </vaadin-panel>
    <vaadin-panel caption="Explanation" size-auto _id="explanationPanel">

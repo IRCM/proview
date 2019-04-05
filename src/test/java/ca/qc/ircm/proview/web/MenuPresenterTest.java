@@ -19,23 +19,14 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.web.MenuPresenter.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.MenuPresenter.CONTACT;
-import static ca.qc.ircm.proview.web.MenuPresenter.CONTROL;
-import static ca.qc.ircm.proview.web.MenuPresenter.DIGESTION;
-import static ca.qc.ircm.proview.web.MenuPresenter.DILUTION;
-import static ca.qc.ircm.proview.web.MenuPresenter.ENRICHMENT;
 import static ca.qc.ircm.proview.web.MenuPresenter.GUIDELINES;
 import static ca.qc.ircm.proview.web.MenuPresenter.HOME;
-import static ca.qc.ircm.proview.web.MenuPresenter.MS_ANALYSIS;
 import static ca.qc.ircm.proview.web.MenuPresenter.PLATE;
 import static ca.qc.ircm.proview.web.MenuPresenter.PROFILE;
 import static ca.qc.ircm.proview.web.MenuPresenter.SIGNIN;
 import static ca.qc.ircm.proview.web.MenuPresenter.SIGNOUT;
-import static ca.qc.ircm.proview.web.MenuPresenter.SOLUBILISATION;
-import static ca.qc.ircm.proview.web.MenuPresenter.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.web.MenuPresenter.STOP_SIGN_AS;
 import static ca.qc.ircm.proview.web.MenuPresenter.SUBMISSION;
-import static ca.qc.ircm.proview.web.MenuPresenter.TRANSFER;
-import static ca.qc.ircm.proview.web.MenuPresenter.TREATMENT;
 import static ca.qc.ircm.proview.web.MenuPresenter.USERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -43,20 +34,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.digestion.web.DigestionView;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
-import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
-import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.plate.web.PlatesView;
-import ca.qc.ircm.proview.sample.web.ControlView;
 import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
-import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.web.SigninView;
 import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
@@ -135,24 +118,15 @@ public class MenuPresenterTest {
 
     assertTrue(view.menu.getItems().get(0).getStyleName().contains(HOME));
     assertTrue(view.menu.getItems().get(1).getStyleName().contains(SUBMISSION));
-    assertTrue(view.menu.getItems().get(2).getStyleName().contains(TREATMENT));
-    assertTrue(item(TREATMENT).getChildren().get(0).getStyleName().contains(TRANSFER));
-    assertTrue(item(TREATMENT).getChildren().get(1).getStyleName().contains(DIGESTION));
-    assertTrue(item(TREATMENT).getChildren().get(2).getStyleName().contains(ENRICHMENT));
-    assertTrue(item(TREATMENT).getChildren().get(3).getStyleName().contains(SOLUBILISATION));
-    assertTrue(item(TREATMENT).getChildren().get(4).getStyleName().contains(DILUTION));
-    assertTrue(item(TREATMENT).getChildren().get(5).getStyleName().contains(STANDARD_ADDITION));
-    assertTrue(item(TREATMENT).getChildren().get(6).getStyleName().contains(MS_ANALYSIS));
-    assertTrue(view.menu.getItems().get(3).getStyleName().contains(CONTROL));
-    assertTrue(view.menu.getItems().get(4).getStyleName().contains(PLATE));
-    assertTrue(view.menu.getItems().get(5).getStyleName().contains(PROFILE));
-    assertTrue(view.menu.getItems().get(6).getStyleName().contains(SIGNOUT));
-    assertTrue(view.menu.getItems().get(7).getStyleName().contains(CHANGE_LANGUAGE));
-    assertTrue(view.menu.getItems().get(8).getStyleName().contains(USERS));
-    assertTrue(view.menu.getItems().get(9).getStyleName().contains(CONTACT));
-    assertTrue(view.menu.getItems().get(10).getStyleName().contains(GUIDELINES));
-    assertTrue(view.menu.getItems().get(11).getStyleName().contains(SIGNIN));
-    assertTrue(view.menu.getItems().get(12).getStyleName().contains(STOP_SIGN_AS));
+    assertTrue(view.menu.getItems().get(2).getStyleName().contains(PLATE));
+    assertTrue(view.menu.getItems().get(3).getStyleName().contains(PROFILE));
+    assertTrue(view.menu.getItems().get(4).getStyleName().contains(SIGNOUT));
+    assertTrue(view.menu.getItems().get(5).getStyleName().contains(CHANGE_LANGUAGE));
+    assertTrue(view.menu.getItems().get(6).getStyleName().contains(USERS));
+    assertTrue(view.menu.getItems().get(7).getStyleName().contains(CONTACT));
+    assertTrue(view.menu.getItems().get(8).getStyleName().contains(GUIDELINES));
+    assertTrue(view.menu.getItems().get(9).getStyleName().contains(SIGNIN));
+    assertTrue(view.menu.getItems().get(10).getStyleName().contains(STOP_SIGN_AS));
   }
 
   @Test
@@ -161,15 +135,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertFalse(item(SUBMISSION).isVisible());
-    assertFalse(item(TREATMENT).isVisible());
-    assertFalse(item(TRANSFER).isVisible());
-    assertFalse(item(DIGESTION).isVisible());
-    assertFalse(item(ENRICHMENT).isVisible());
-    assertFalse(item(SOLUBILISATION).isVisible());
-    assertFalse(item(DILUTION).isVisible());
-    assertFalse(item(STANDARD_ADDITION).isVisible());
-    assertFalse(item(MS_ANALYSIS).isVisible());
-    assertFalse(item(CONTROL).isVisible());
     assertFalse(item(PLATE).isVisible());
     assertFalse(item(PROFILE).isVisible());
     assertFalse(item(SIGNOUT).isVisible());
@@ -189,15 +154,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertTrue(item(SUBMISSION).isVisible());
-    assertFalse(item(TREATMENT).isVisible());
-    assertFalse(item(TRANSFER).isVisible());
-    assertFalse(item(DIGESTION).isVisible());
-    assertFalse(item(ENRICHMENT).isVisible());
-    assertFalse(item(SOLUBILISATION).isVisible());
-    assertFalse(item(DILUTION).isVisible());
-    assertFalse(item(STANDARD_ADDITION).isVisible());
-    assertFalse(item(MS_ANALYSIS).isVisible());
-    assertFalse(item(CONTROL).isVisible());
     assertFalse(item(PLATE).isVisible());
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
@@ -218,15 +174,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertTrue(item(SUBMISSION).isVisible());
-    assertFalse(item(TREATMENT).isVisible());
-    assertFalse(item(TRANSFER).isVisible());
-    assertFalse(item(DIGESTION).isVisible());
-    assertFalse(item(ENRICHMENT).isVisible());
-    assertFalse(item(SOLUBILISATION).isVisible());
-    assertFalse(item(DILUTION).isVisible());
-    assertFalse(item(STANDARD_ADDITION).isVisible());
-    assertFalse(item(MS_ANALYSIS).isVisible());
-    assertFalse(item(CONTROL).isVisible());
     assertFalse(item(PLATE).isVisible());
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
@@ -247,15 +194,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertTrue(item(SUBMISSION).isVisible());
-    assertTrue(item(TREATMENT).isVisible());
-    assertTrue(item(TRANSFER).isVisible());
-    assertTrue(item(DIGESTION).isVisible());
-    assertTrue(item(ENRICHMENT).isVisible());
-    assertTrue(item(SOLUBILISATION).isVisible());
-    assertTrue(item(DILUTION).isVisible());
-    assertTrue(item(STANDARD_ADDITION).isVisible());
-    assertTrue(item(MS_ANALYSIS).isVisible());
-    assertTrue(item(CONTROL).isVisible());
     assertTrue(item(PLATE).isVisible());
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
@@ -276,15 +214,6 @@ public class MenuPresenterTest {
 
     assertTrue(item(HOME).isVisible());
     assertTrue(item(SUBMISSION).isVisible());
-    assertFalse(item(TREATMENT).isVisible());
-    assertFalse(item(TRANSFER).isVisible());
-    assertFalse(item(DIGESTION).isVisible());
-    assertFalse(item(ENRICHMENT).isVisible());
-    assertFalse(item(SOLUBILISATION).isVisible());
-    assertFalse(item(DILUTION).isVisible());
-    assertFalse(item(STANDARD_ADDITION).isVisible());
-    assertFalse(item(MS_ANALYSIS).isVisible());
-    assertFalse(item(CONTROL).isVisible());
     assertFalse(item(PLATE).isVisible());
     assertTrue(item(PROFILE).isVisible());
     assertTrue(item(SIGNOUT).isVisible());
@@ -302,15 +231,6 @@ public class MenuPresenterTest {
 
     assertEquals(resources.message(HOME), item(HOME).getText());
     assertEquals(resources.message(SUBMISSION), item(SUBMISSION).getText());
-    assertEquals(resources.message(TREATMENT), item(TREATMENT).getText());
-    assertEquals(resources.message(TRANSFER), item(TRANSFER).getText());
-    assertEquals(resources.message(DIGESTION), item(DIGESTION).getText());
-    assertEquals(resources.message(ENRICHMENT), item(ENRICHMENT).getText());
-    assertEquals(resources.message(SOLUBILISATION), item(SOLUBILISATION).getText());
-    assertEquals(resources.message(DILUTION), item(DILUTION).getText());
-    assertEquals(resources.message(STANDARD_ADDITION), item(STANDARD_ADDITION).getText());
-    assertEquals(resources.message(MS_ANALYSIS), item(MS_ANALYSIS).getText());
-    assertEquals(resources.message(CONTROL), item(CONTROL).getText());
     assertEquals(resources.message(PLATE), item(PLATE).getText());
     assertEquals(resources.message(PROFILE), item(PROFILE).getText());
     assertEquals(resources.message(SIGNOUT), item(SIGNOUT).getText());
@@ -338,78 +258,6 @@ public class MenuPresenterTest {
     item(SUBMISSION).getCommand().menuSelected(item(SUBMISSION));
 
     verify(view).navigateTo(SubmissionView.VIEW_NAME);
-  }
-
-  @Test
-  public void transfer() throws Throwable {
-    presenter.init(view);
-
-    item(TRANSFER).getCommand().menuSelected(item(TRANSFER));
-
-    verify(view).navigateTo(TransferView.VIEW_NAME);
-  }
-
-  @Test
-  public void digestion() throws Throwable {
-    presenter.init(view);
-
-    item(DIGESTION).getCommand().menuSelected(item(DIGESTION));
-
-    verify(view).navigateTo(DigestionView.VIEW_NAME);
-  }
-
-  @Test
-  public void enrichment() throws Throwable {
-    presenter.init(view);
-
-    item(ENRICHMENT).getCommand().menuSelected(item(ENRICHMENT));
-
-    verify(view).navigateTo(EnrichmentView.VIEW_NAME);
-  }
-
-  @Test
-  public void solubilisation() throws Throwable {
-    presenter.init(view);
-
-    item(SOLUBILISATION).getCommand().menuSelected(item(SOLUBILISATION));
-
-    verify(view).navigateTo(SolubilisationView.VIEW_NAME);
-  }
-
-  @Test
-  public void dilution() throws Throwable {
-    presenter.init(view);
-
-    item(DILUTION).getCommand().menuSelected(item(DILUTION));
-
-    verify(view).navigateTo(DilutionView.VIEW_NAME);
-  }
-
-  @Test
-  public void standardAddition() throws Throwable {
-    presenter.init(view);
-
-    item(STANDARD_ADDITION).getCommand().menuSelected(item(STANDARD_ADDITION));
-
-    verify(view).navigateTo(StandardAdditionView.VIEW_NAME);
-  }
-
-  @Test
-  public void msAnalysis() throws Throwable {
-    presenter.init(view);
-
-    item(MS_ANALYSIS).getCommand().menuSelected(item(MS_ANALYSIS));
-
-    verify(view).navigateTo(MsAnalysisView.VIEW_NAME);
-  }
-
-  @Test
-  public void control() throws Throwable {
-    presenter.init(view);
-
-    item(CONTROL).getCommand().menuSelected(item(CONTROL));
-
-    verify(view).navigateTo(ControlView.VIEW_NAME);
   }
 
   @Test

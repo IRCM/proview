@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.msanalysis.web;
+package ca.qc.ircm.proview.treatment.web;
 
-import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisViewPresenter.TITLE;
+import static ca.qc.ircm.proview.treatment.web.TreatmentViewPresenter.TITLE;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -35,7 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithSubject
-public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
+public class TreatmentViewTest extends TreatmentViewPageObject {
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -79,37 +79,20 @@ public class MsAnalysisViewTest extends MsAnalysisViewPageObject {
   public void title() throws Throwable {
     open();
 
-    assertTrue(resources(MsAnalysisView.class).message(TITLE, applicationName)
+    assertTrue(resources(TreatmentView.class).message(TITLE, applicationName)
         .contains(getDriver().getTitle()));
   }
 
   @Test
   public void fieldsExistence() throws Throwable {
-    open();
+    openWithDigestion();
 
     assertTrue(optional(() -> header()).isPresent());
-    assertFalse(optional(() -> deleted()).isPresent());
-    assertTrue(optional(() -> msAnalysisPanel()).isPresent());
-    assertTrue(optional(() -> massDetectionInstrument()).isPresent());
-    assertTrue(optional(() -> source()).isPresent());
-    assertTrue(optional(() -> acquisitionsPanel()).isPresent());
-    assertTrue(optional(() -> acquisitions()).isPresent());
-    assertFalse(optional(() -> explanationPanel()).isPresent());
-    assertFalse(optional(() -> explanation()).isPresent());
-  }
-
-  @Test
-  public void fieldsExistence_Update() throws Throwable {
-    openWithMsAnalysis();
-
-    assertTrue(optional(() -> header()).isPresent());
-    assertFalse(optional(() -> deleted()).isPresent());
-    assertTrue(optional(() -> msAnalysisPanel()).isPresent());
-    assertTrue(optional(() -> massDetectionInstrument()).isPresent());
-    assertTrue(optional(() -> source()).isPresent());
-    assertTrue(optional(() -> acquisitionsPanel()).isPresent());
-    assertTrue(optional(() -> acquisitions()).isPresent());
-    assertFalse(optional(() -> explanationPanel()).isPresent());
-    assertFalse(optional(() -> explanation()).isPresent());
+    assertTrue(optional(() -> type()).isPresent());
+    assertTrue(optional(() -> protocolPanel()).isPresent());
+    assertTrue(optional(() -> protocol()).isPresent());
+    assertFalse(optional(() -> fractionationType()).isPresent());
+    assertTrue(optional(() -> treatedSamplesPanel()).isPresent());
+    assertTrue(optional(() -> treatedSamples()).isPresent());
   }
 }

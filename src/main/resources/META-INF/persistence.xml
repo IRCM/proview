@@ -24,11 +24,6 @@
   <persistence-unit name="proview" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>proview</jta-data-source>
-    <class>ca.qc.ircm.proview.dataanalysis.DataAnalysis</class>
-    <class>ca.qc.ircm.proview.digestion.Digestion</class>
-    <class>ca.qc.ircm.proview.dilution.Dilution</class>
-    <class>ca.qc.ircm.proview.enrichment.Enrichment</class>
-    <class>ca.qc.ircm.proview.fractionation.Fractionation</class>
     <class>ca.qc.ircm.proview.history.Activity</class>
     <class>ca.qc.ircm.proview.history.UpdateActivity</class>
     <class>ca.qc.ircm.proview.msanalysis.Acquisition</class>
@@ -44,14 +39,11 @@
     <class>ca.qc.ircm.proview.sample.SampleContainer</class>
     <class>ca.qc.ircm.proview.sample.Standard</class>
     <class>ca.qc.ircm.proview.sample.SubmissionSample</class>
-    <class>ca.qc.ircm.proview.solubilisation.Solubilisation</class>
-    <class>ca.qc.ircm.proview.standard.StandardAddition</class>
     <class>ca.qc.ircm.proview.submission.Submission</class>
     <class>ca.qc.ircm.proview.submission.SubmissionFile</class>
     <class>ca.qc.ircm.proview.treatment.Protocol</class>
     <class>ca.qc.ircm.proview.treatment.TreatedSample</class>
     <class>ca.qc.ircm.proview.treatment.Treatment</class>
-    <class>ca.qc.ircm.proview.transfer.Transfer</class>
     <class>ca.qc.ircm.proview.tube.Tube</class>
     <class>ca.qc.ircm.proview.user.Address</class>
     <class>ca.qc.ircm.proview.user.ForgotPassword</class>

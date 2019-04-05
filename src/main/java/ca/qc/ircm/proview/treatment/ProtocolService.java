@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.treatment;
 
-import ca.qc.ircm.proview.history.Activity;
-import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import java.util.List;
 import javax.inject.Inject;
@@ -33,10 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProtocolService {
   @Inject
   private ProtocolRepository repository;
-  @Inject
-  private ProtocolActivityService protocolActivityService;
-  @Inject
-  private ActivityService activityService;
   @Inject
   private AuthorizationService authorizationService;
 
@@ -70,21 +64,5 @@ public class ProtocolService {
     authorizationService.checkAdminRole();
 
     return repository.findByType(type);
-  }
-
-  /**
-   * Inserts protocol into database.
-   *
-   * @param protocol
-   *          protocol
-   */
-  public void insert(Protocol protocol) {
-    authorizationService.checkAdminRole();
-
-    repository.saveAndFlush(protocol);
-
-    // Log insertion of protocol.
-    Activity activity = protocolActivityService.insert(protocol);
-    activityService.insert(activity);
   }
 }

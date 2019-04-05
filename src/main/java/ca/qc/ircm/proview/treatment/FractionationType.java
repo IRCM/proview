@@ -15,46 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.sample;
+package ca.qc.ircm.proview.treatment;
 
 import ca.qc.ircm.utils.MessageResource;
 import java.util.Locale;
 
 /**
- * All statuses of a sample.
+ * Method used to split sample into fractions.
  */
-public enum SampleStatus {
+public enum FractionationType {
   /**
-   * Waiting to receive sample.
+   * MudPit treatedSample.
    */
-  WAITING,
+  MUDPIT,
   /**
-   * Sample was received and awaits treatments and analysis.
+   * Split by pI.
    */
-  RECEIVED,
-  /**
-   * Sample was digested.
-   */
-  DIGESTED,
-  /**
-   * Sample was enriched.
-   */
-  ENRICHED,
-  /**
-   * Sample analysis was cancelled.
-   */
-  CANCELLED,
-  /**
-   * Sample was analysed and have results.
-   */
-  ANALYSED;
-
-  public static SampleStatus[] analysedStatuses() {
-    return new SampleStatus[] { CANCELLED, ANALYSED };
-  }
-
+  PI;
   private static MessageResource getResources(Locale locale) {
-    return new MessageResource(SampleStatus.class, locale);
+    return new MessageResource(FractionationType.class, locale);
   }
 
   public static String getNullLabel(Locale locale) {

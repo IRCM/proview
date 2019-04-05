@@ -28,29 +28,18 @@ import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
-import ca.qc.ircm.proview.dataanalysis.web.DataAnalysisView;
-import ca.qc.ircm.proview.digestion.web.DigestionView;
-import ca.qc.ircm.proview.dilution.web.DilutionView;
-import ca.qc.ircm.proview.enrichment.web.EnrichmentView;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.msanalysis.web.MsAnalysisView;
 import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleProperties;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.web.ContainerSelectionWindow;
-import ca.qc.ircm.proview.sample.web.SampleSelectionWindow;
 import ca.qc.ircm.proview.sample.web.SampleStatusView;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.solubilisation.web.SolubilisationView;
-import ca.qc.ircm.proview.standard.web.StandardAdditionView;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionProperties;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.transfer.web.TransferView;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.HelpWindow;
@@ -76,7 +65,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.ItemCaptionGenerator;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -93,7 +81,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -129,35 +116,18 @@ public class SubmissionsViewPresenter {
   public static final String SAMPLE_STATUSES = "statuses";
   public static final String SAMPLE_STATUSES_SEPARATOR = property(SAMPLE_STATUSES, "separator");
   public static final String DATE = property(SUBMISSION, SUBMISSION_DATE);
-  public static final String LINKED_TO_RESULTS = "results";
-  public static final String TREATMENTS = "treatments";
   public static final String HIDDEN = property(SUBMISSION, SubmissionProperties.HIDDEN);
   public static final String HIDDEN_STYLE = styleName(SUBMISSION, SubmissionProperties.HIDDEN);
   public static final String HISTORY = "history";
   public static final String ALL = "all";
   public static final String ADD_SUBMISSION = "addSubmission";
-  public static final String SELECT_SAMPLES = "selectSamples";
-  public static final String SELECT_SAMPLES_LABEL = "selectSamplesLabel";
-  public static final String SELECT_CONTAINERS = "selectContainers";
-  public static final String SELECT_CONTAINERS_NO_SAMPLES = "selectContainers.noSamples";
-  public static final String SELECT_CONTAINERS_LABEL = "selectContainersLabel";
   public static final String SELECTION_EMPTY = "selection.empty";
   public static final String UPDATE_STATUS = "updateStatus";
   public static final String HIDE = "hide";
   public static final String HIDE_DONE = "hide.done";
   public static final String SHOW = "show";
   public static final String SHOW_DONE = "show.done";
-  public static final String TRANSFER = "transfer";
-  public static final String DIGESTION = "digestion";
-  public static final String ENRICHMENT = "enrichment";
-  public static final String SOLUBILISATION = "solubilisation";
-  public static final String DILUTION = "dilution";
-  public static final String STANDARD_ADDITION = "standardAddition";
-  public static final String MS_ANALYSIS = "msAnalysis";
-  public static final String DATA_ANALYSIS = "dataAnalysis";
-  public static final String DATA_ANALYSIS_DESCRIPTION = property(DATA_ANALYSIS, "description");
   public static final String NO_SELECTION = "noSelection";
-  public static final String NO_CONTAINERS = "noContainers";
   public static final String CONDITION_FALSE = "condition-false";
   public static final String COLUMN_ORDER = "columnOrder";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewPresenter.class);
@@ -184,15 +154,7 @@ public class SubmissionsViewPresenter {
   @Inject
   private Provider<SubmissionWindow> submissionWindowProvider;
   @Inject
-  private Provider<SubmissionAnalysesWindow> submissionAnalysesWindowProvider;
-  @Inject
-  private Provider<SubmissionTreatmentsWindow> submissionTreatmentsWindowProvider;
-  @Inject
   private Provider<SubmissionHistoryWindow> submissionHistoryWindowProvider;
-  @Inject
-  private Provider<SampleSelectionWindow> sampleSelectionWindowProvider;
-  @Inject
-  private Provider<ContainerSelectionWindow> containerSelectionWindowProvider;
   @Inject
   private Provider<HelpWindow> helpWindowProvider;
   @Value("${spring.application.name}")
@@ -233,20 +195,6 @@ public class SubmissionsViewPresenter {
     design.addSubmission.setCaption(resources.message(ADD_SUBMISSION));
     design.addSubmission.setVisible(!authorizationService.hasAdminRole());
     design.addSubmission.addClickListener(e -> addSubmission());
-    design.sampleSelectionLayout.setVisible(authorizationService.hasAdminRole());
-    design.selectSamplesButton.addStyleName(SELECT_SAMPLES);
-    design.selectSamplesButton.setCaption(resources.message(SELECT_SAMPLES));
-    design.selectSamplesButton.addClickListener(e -> selectSamples());
-    design.selectedSamplesLabel.addStyleName(SELECT_SAMPLES_LABEL);
-    design.selectedSamplesLabel
-        .setValue(resources.message(SELECT_SAMPLES_LABEL, view.savedSamples().size()));
-    design.containerSelectionLayout.setVisible(authorizationService.hasAdminRole());
-    design.selectContainers.addStyleName(SELECT_CONTAINERS);
-    design.selectContainers.setCaption(resources.message(SELECT_CONTAINERS));
-    design.selectContainers.addClickListener(e -> selectContainers());
-    design.selectedContainersLabel.addStyleName(SELECT_CONTAINERS_LABEL);
-    design.selectedContainersLabel
-        .setValue(resources.message(SELECT_CONTAINERS_LABEL, view.savedContainers().size()));
     design.updateStatusButton.addStyleName(UPDATE_STATUS);
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
     design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
@@ -259,34 +207,6 @@ public class SubmissionsViewPresenter {
     design.show.setCaption(resources.message(SHOW));
     design.show.setVisible(authorizationService.hasAdminRole());
     design.show.addClickListener(e -> show());
-    design.treatmentButtons.setVisible(authorizationService.hasAdminRole());
-    design.transfer.addStyleName(TRANSFER);
-    design.transfer.setCaption(resources.message(TRANSFER));
-    design.transfer.addClickListener(e -> transfer());
-    design.digestion.addStyleName(DIGESTION);
-    design.digestion.setCaption(resources.message(DIGESTION));
-    design.digestion.addClickListener(e -> digestion());
-    design.enrichment.addStyleName(ENRICHMENT);
-    design.enrichment.setCaption(resources.message(ENRICHMENT));
-    design.enrichment.addClickListener(e -> enrichment());
-    design.solubilisation.addStyleName(SOLUBILISATION);
-    design.solubilisation.setCaption(resources.message(SOLUBILISATION));
-    design.solubilisation.addClickListener(e -> solubilisation());
-    design.dilution.addStyleName(DILUTION);
-    design.dilution.setCaption(resources.message(DILUTION));
-    design.dilution.addClickListener(e -> dilution());
-    design.standardAddition.addStyleName(STANDARD_ADDITION);
-    design.standardAddition.setCaption(resources.message(STANDARD_ADDITION));
-    design.standardAddition.addClickListener(e -> standardAddition());
-    design.msAnalysis.addStyleName(MS_ANALYSIS);
-    design.msAnalysis.setCaption(resources.message(MS_ANALYSIS));
-    design.msAnalysis.addClickListener(e -> msAnalysis());
-    design.msAnalysis.setVisible(authorizationService.hasAdminRole());
-    design.dataAnalysis.addStyleName(DATA_ANALYSIS);
-    design.dataAnalysis.setCaption(resources.message(DATA_ANALYSIS));
-    design.dataAnalysis.setDescription(resources.message(DATA_ANALYSIS_DESCRIPTION));
-    design.dataAnalysis.addClickListener(e -> dataAnalysis());
-    design.dataAnalysis.setVisible(!authorizationService.hasAdminRole());
   }
 
   private void prepareSumissionsGrid() {
@@ -355,14 +275,6 @@ public class SubmissionsViewPresenter {
         .setCaption(resources.message(DATE));
     columnProperties.put(DATE, submission.submissionDate);
     design.submissionsGrid
-        .addColumn(submission -> viewResultsButton(submission), new ComponentRenderer())
-        .setId(LINKED_TO_RESULTS).setCaption(resources.message(LINKED_TO_RESULTS))
-        .setComparator((s1, s2) -> Boolean.compare(linkedToResults(s1), linkedToResults(s2)))
-        .setSortable(false);
-    design.submissionsGrid
-        .addColumn(submission -> viewTreatmentsButton(submission), new ComponentRenderer())
-        .setId(TREATMENTS).setCaption(resources.message(TREATMENTS)).setSortable(false);
-    design.submissionsGrid
         .addColumn(
             submission -> submission.isHidden() ? resources.message(property(HIDDEN, true)) : "")
         .setId(HIDDEN).setCaption(resources.message(HIDDEN));
@@ -415,13 +327,7 @@ public class SubmissionsViewPresenter {
         .setHidden(userPreferenceService.get(this, SAMPLE_STATUSES, false));
     design.submissionsGrid.getColumn(DATE).setHidable(true);
     design.submissionsGrid.getColumn(DATE).setHidden(userPreferenceService.get(this, DATE, false));
-    design.submissionsGrid.getColumn(LINKED_TO_RESULTS).setHidable(true);
-    design.submissionsGrid.getColumn(LINKED_TO_RESULTS)
-        .setHidden(userPreferenceService.get(this, LINKED_TO_RESULTS, false));
     if (authorizationService.hasAdminRole()) {
-      design.submissionsGrid.getColumn(TREATMENTS).setHidable(true);
-      design.submissionsGrid.getColumn(TREATMENTS)
-          .setHidden(userPreferenceService.get(this, TREATMENTS, false));
       design.submissionsGrid.getColumn(HIDDEN).setHidable(true);
       design.submissionsGrid.getColumn(HIDDEN)
           .setHidden(userPreferenceService.get(this, HIDDEN, false));
@@ -429,7 +335,6 @@ public class SubmissionsViewPresenter {
       design.submissionsGrid.getColumn(HISTORY)
           .setHidden(userPreferenceService.get(this, HISTORY, false));
     } else {
-      design.submissionsGrid.getColumn(TREATMENTS).setHidden(true);
       design.submissionsGrid.getColumn(HIDDEN).setHidden(true);
       design.submissionsGrid.getColumn(HISTORY).setHidden(true);
     }
@@ -451,9 +356,6 @@ public class SubmissionsViewPresenter {
           .getColumns().stream().map(col -> col.getId()).toArray(String[]::new));
     });
     design.submissionsGrid.setFrozenColumnCount(1);
-    if (authorizationService.hasAdminRole()) {
-      design.submissionsGrid.setSelectionMode(SelectionMode.MULTI);
-    }
     HeaderRow filterRow = design.submissionsGrid.appendHeaderRow();
     filterRow.getCell(EXPERIMENT).setComponent(textFilter(e -> {
       filter.experimentContains = e.getValue();
@@ -504,11 +406,6 @@ public class SubmissionsViewPresenter {
       filter.dateRange = e.getSavedObject();
       design.submissionsGrid.getDataProvider().refreshAll();
     }));
-    filterRow.getCell(LINKED_TO_RESULTS).setComponent(comboBoxFilter(e -> {
-      filter.results = e.getValue();
-      design.submissionsGrid.getDataProvider().refreshAll();
-    }, new Boolean[] { true, false },
-        value -> resources.message(property(LINKED_TO_RESULTS, value))));
     filterRow.getCell(HIDDEN).setComponent(comboBoxFilter(e -> {
       filter.hidden = e.getValue();
       design.submissionsGrid.getDataProvider().refreshAll();
@@ -623,37 +520,6 @@ public class SubmissionsViewPresenter {
         .collect(Collectors.joining("\n"));
   }
 
-  private Button viewResultsButton(Submission submission) {
-    MessageResource resources = view.getResources();
-    boolean results = linkedToResults(submission);
-    Button button = new Button();
-    button.addStyleName(LINKED_TO_RESULTS);
-    button.setCaption(resources.message(property(LINKED_TO_RESULTS, results)));
-    if (results) {
-      button.addClickListener(e -> viewSubmissionResults(submission));
-    } else {
-      button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-      button.addStyleName(CONDITION_FALSE);
-    }
-    return button;
-  }
-
-  private boolean linkedToResults(Submission submission) {
-    return submission.getSamples().stream().filter(sample -> sample.getStatus() != null)
-        .filter(sample -> SampleStatus.ANALYSED.equals(sample.getStatus())
-            || SampleStatus.DATA_ANALYSIS.equals(sample.getStatus()))
-        .count() > 0;
-  }
-
-  private Button viewTreatmentsButton(Submission submission) {
-    MessageResource resources = view.getResources();
-    Button button = new Button();
-    button.addStyleName(TREATMENTS);
-    button.setCaption(resources.message(TREATMENTS));
-    button.addClickListener(e -> viewSubmissionTreatments(submission));
-    return button;
-  }
-
   private Button viewHistoryButton(Submission submission) {
     MessageResource resources = view.getResources();
     Button button = new Button();
@@ -736,21 +602,6 @@ public class SubmissionsViewPresenter {
     view.addWindow(submissionWindow);
   }
 
-  private void viewSubmissionResults(Submission submission) {
-    SubmissionAnalysesWindow submissionAnalysesWindow = submissionAnalysesWindowProvider.get();
-    submissionAnalysesWindow.setValue(submission);
-    submissionAnalysesWindow.center();
-    view.addWindow(submissionAnalysesWindow);
-  }
-
-  private void viewSubmissionTreatments(Submission submission) {
-    SubmissionTreatmentsWindow submissionTreatmentsWindow =
-        submissionTreatmentsWindowProvider.get();
-    submissionTreatmentsWindow.setValue(submission);
-    submissionTreatmentsWindow.center();
-    view.addWindow(submissionTreatmentsWindow);
-  }
-
   private void viewSubmissionHistory(Submission submission) {
     SubmissionHistoryWindow submissionHistoryWindow = submissionHistoryWindowProvider.get();
     submissionHistoryWindow.setValue(submission);
@@ -762,60 +613,11 @@ public class SubmissionsViewPresenter {
     view.navigateTo(SubmissionView.VIEW_NAME);
   }
 
-  private void selectSamples() {
-    SampleSelectionWindow sampleSelectionWindow = sampleSelectionWindowProvider.get();
-    sampleSelectionWindow.setModal(true);
-    view.addWindow(sampleSelectionWindow);
-    List<Sample> samples;
-    if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      samples = design.submissionsGrid.getSelectedItems().stream()
-          .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
-    } else {
-      samples = view.savedSamples();
-    }
-    sampleSelectionWindow.setItems(samples);
-    sampleSelectionWindow.center();
-    sampleSelectionWindow.addSaveListener(e -> {
-      MessageResource resources = view.getResources();
-      List<Sample> selectedSamples = e.getSavedObject();
-      design.submissionsGrid.deselectAll();
-      view.saveSamples(selectedSamples);
-      design.selectedSamplesLabel
-          .setValue(resources.message(SELECT_SAMPLES_LABEL, selectedSamples.size()));
-      logger.debug("Selected samples {}", selectedSamples);
-    });
-  }
-
   private void saveSelectedSamples() {
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      MessageResource resources = view.getResources();
       List<Sample> samples = design.submissionsGrid.getSelectedItems().stream()
           .flatMap(submission -> submission.getSamples().stream()).collect(Collectors.toList());
       view.saveSamples(samples);
-      design.selectedSamplesLabel.setValue(resources.message(SELECT_SAMPLES_LABEL, samples.size()));
-    }
-  }
-
-  private void selectContainers() {
-    saveSelectedSamples();
-    if (view.savedSamples().isEmpty()) {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(SELECT_CONTAINERS_NO_SAMPLES));
-    } else {
-      ContainerSelectionWindow containerSelectionWindow = containerSelectionWindowProvider.get();
-      containerSelectionWindow.setModal(true);
-      view.addWindow(containerSelectionWindow);
-      List<Sample> samples = view.savedSamples();
-      containerSelectionWindow.setSamples(samples);
-      containerSelectionWindow.center();
-      containerSelectionWindow.addSaveListener(e -> {
-        MessageResource resources = view.getResources();
-        List<SampleContainer> selectedContainers = e.getSavedObject();
-        view.saveContainers(selectedContainers);
-        design.selectedContainersLabel
-            .setValue(resources.message(SELECT_CONTAINERS_LABEL, selectedContainers.size()));
-        logger.debug("Selected containers {}", selectedContainers);
-      });
     }
   }
 
@@ -827,10 +629,10 @@ public class SubmissionsViewPresenter {
   private void hide() {
     MessageResource resources = view.getResources();
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
-      logger.debug("Hide submissions {}", submissions);
-      submissionService.hide(submissions);
-      view.showTrayNotification(resources.message(HIDE_DONE, submissions.size()));
+      Submission submission = design.submissionsGrid.getSelectedItems().iterator().next();
+      logger.debug("Hide submission {}", submission);
+      submissionService.hide(submission);
+      view.showTrayNotification(resources.message(HIDE_DONE, submission.getName()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     } else {
       String error = resources.message(SELECTION_EMPTY);
@@ -842,89 +644,15 @@ public class SubmissionsViewPresenter {
   private void show() {
     MessageResource resources = view.getResources();
     if (!design.submissionsGrid.getSelectedItems().isEmpty()) {
-      Set<Submission> submissions = design.submissionsGrid.getSelectedItems();
-      logger.debug("Hide submissions {}", submissions);
-      submissionService.show(submissions);
-      view.showTrayNotification(resources.message(SHOW_DONE, submissions.size()));
+      Submission submission = design.submissionsGrid.getSelectedItems().iterator().next();
+      logger.debug("Hide submission {}", submission);
+      submissionService.show(submission);
+      view.showTrayNotification(resources.message(SHOW_DONE, submission.getName()));
       view.navigateTo(SubmissionsView.VIEW_NAME);
     } else {
       String error = resources.message(SELECTION_EMPTY);
       logger.debug("Validation error: {}", error);
       view.showError(error);
-    }
-  }
-
-  private void transfer() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(TransferView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void digestion() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(DigestionView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void enrichment() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(EnrichmentView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void solubilisation() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(SolubilisationView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void dilution() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(DilutionView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void standardAddition() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(StandardAdditionView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void msAnalysis() {
-    if (!view.savedContainers().isEmpty()) {
-      view.navigateTo(MsAnalysisView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_CONTAINERS));
-    }
-  }
-
-  private void dataAnalysis() {
-    Set<Submission> selections = design.submissionsGrid.getSelectedItems();
-    if (!selections.isEmpty()) {
-      view.saveSamples(selections.iterator().next().getSamples());
-      view.navigateTo(DataAnalysisView.VIEW_NAME);
-    } else {
-      MessageResource resources = view.getResources();
-      view.showError(resources.message(NO_SELECTION));
     }
   }
 

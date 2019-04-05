@@ -26,11 +26,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
-import ca.qc.ircm.proview.digestion.Digestion;
-import ca.qc.ircm.proview.dilution.Dilution;
-import ca.qc.ircm.proview.enrichment.Enrichment;
-import ca.qc.ircm.proview.fractionation.Fractionation;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
@@ -45,14 +40,11 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.solubilisation.Solubilisation;
-import ca.qc.ircm.proview.standard.StandardAddition;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.transfer.Transfer;
 import ca.qc.ircm.proview.treatment.Protocol;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.Treatment;
@@ -97,26 +89,14 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   private MessageResource resources = new MessageResource(ActivityService.class, locale);
 
   @Test
-  public void record_DataAnalysis() throws Exception {
-    Activity activity = repository.findOne(5566L);
-
-    Object object = activityService.record(activity);
-
-    verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof DataAnalysis);
-    DataAnalysis dataAnalysis = (DataAnalysis) object;
-    assertEquals((Long) 5L, dataAnalysis.getId());
-  }
-
-  @Test
   public void record_Digestion() throws Exception {
     Activity activity = repository.findOne(5639L);
 
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof Digestion);
-    Digestion digestion = (Digestion) object;
+    assertTrue(object instanceof Treatment);
+    Treatment digestion = (Treatment) object;
     assertEquals((Long) 195L, digestion.getId());
   }
 
@@ -127,8 +107,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof Dilution);
-    Dilution dilution = (Dilution) object;
+    assertTrue(object instanceof Treatment);
+    Treatment dilution = (Treatment) object;
     assertEquals((Long) 210L, dilution.getId());
   }
 
@@ -139,8 +119,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof Enrichment);
-    Enrichment enrichment = (Enrichment) object;
+    assertTrue(object instanceof Treatment);
+    Treatment enrichment = (Treatment) object;
     assertEquals((Long) 225L, enrichment.getId());
   }
 
@@ -151,8 +131,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof Fractionation);
-    Fractionation fractionation = (Fractionation) object;
+    assertTrue(object instanceof Treatment);
+    Treatment fractionation = (Treatment) object;
     assertEquals((Long) 203L, fractionation.getId());
   }
 
@@ -297,8 +277,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof Solubilisation);
-    Solubilisation solubilisation = (Solubilisation) object;
+    assertTrue(object instanceof Treatment);
+    Treatment solubilisation = (Treatment) object;
     assertEquals((Long) 236L, solubilisation.getId());
   }
 
@@ -309,8 +289,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof StandardAddition);
-    StandardAddition standardAddition = (StandardAddition) object;
+    assertTrue(object instanceof Treatment);
+    Treatment standardAddition = (Treatment) object;
     assertEquals((Long) 248L, standardAddition.getId());
   }
 
@@ -387,8 +367,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     Object object = activityService.record(activity);
 
     verify(authorizationService).checkAdminRole();
-    assertTrue(object instanceof Transfer);
-    Transfer transfer = (Transfer) object;
+    assertTrue(object instanceof Treatment);
+    Treatment transfer = (Treatment) object;
     assertEquals((Long) 201L, transfer.getId());
   }
 
@@ -483,7 +463,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_TableNameNull() throws Exception {
-    Activity activity = repository.findOne(5566L);
+    Activity activity = repository.findOne(5650L);
     activity.setTableName(null);
     assertNull(activityService.record(activity));
   }
@@ -495,12 +475,10 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     List<Activity> activities = activityService.all(submission);
 
     verify(authorizationService).checkAdminRole();
-    assertEquals(9, activities.size());
+    assertEquals(7, activities.size());
     assertTrue(find(activities, 5543).isPresent());
     assertTrue(find(activities, 5544).isPresent());
     assertTrue(find(activities, 5550).isPresent());
-    assertTrue(find(activities, 5552).isPresent());
-    assertTrue(find(activities, 5553).isPresent());
     assertTrue(find(activities, 5557).isPresent());
     assertTrue(find(activities, 5558).isPresent());
     assertTrue(find(activities, 5569).isPresent());

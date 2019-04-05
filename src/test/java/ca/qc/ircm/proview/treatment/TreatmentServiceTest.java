@@ -23,11 +23,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.fractionation.Fractionation;
-import ca.qc.ircm.proview.fractionation.FractionationType;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.solubilisation.Solubilisation;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -63,8 +60,8 @@ public class TreatmentServiceTest {
         treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
     assertEquals(null, treatment.getDeletionExplanation());
-    assertEquals(true, treatment instanceof Solubilisation);
-    Solubilisation solubilisation = (Solubilisation) treatment;
+    assertEquals(true, treatment instanceof Treatment);
+    Treatment solubilisation = treatment;
     List<TreatedSample> treatedSamples = solubilisation.getTreatedSamples();
     assertEquals(1, treatedSamples.size());
     TreatedSample treatedSample = treatedSamples.get(0);
@@ -89,8 +86,8 @@ public class TreatmentServiceTest {
         treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
     assertEquals(null, treatment.getDeletionExplanation());
-    assertEquals(true, treatment instanceof Fractionation);
-    Fractionation fractionation = (Fractionation) treatment;
+    assertEquals(true, treatment instanceof Treatment);
+    Treatment fractionation = treatment;
     assertEquals(FractionationType.MUDPIT, fractionation.getFractionationType());
     TreatedSample treatedSample = fractionation.getTreatedSamples().get(0);
     assertEquals((Long) 2L, treatedSample.getId());

@@ -27,7 +27,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.dataanalysis.DataAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.Control;
@@ -1366,79 +1365,5 @@ public class AuthorizationServiceTest {
   @Test
   public void checkMsAnalysisReadPermission_Null() throws Exception {
     authorizationService.checkMsAnalysisReadPermission(null);
-  }
-
-  @Test
-  public void checkDataAnalysisReadPermission_Admin() throws Exception {
-    when(subject.hasRole(any(String.class))).thenReturn(true);
-    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    DataAnalysis dataAnalysis = new DataAnalysis(5L);
-
-    authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
-
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
-  }
-
-  @Test
-  public void checkDataAnalysisReadPermission_NotUser() throws Exception {
-    doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
-    DataAnalysis dataAnalysis = new DataAnalysis(5L);
-
-    try {
-      authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
-      fail("Expected AuthorizationException");
-    } catch (AuthorizationException e) {
-      // Ignore.
-    }
-
-    verify(subject).checkRole("USER");
-  }
-
-  @Test
-  @WithSubject(userId = 10)
-  public void checkDataAnalysisReadPermission_SampleOwner() throws Exception {
-    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    DataAnalysis dataAnalysis = new DataAnalysis(5L);
-
-    authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
-
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
-  }
-
-  @Test
-  @WithSubject(userId = 3)
-  public void checkDataAnalysisReadPermission_LaboratoryManager() throws Exception {
-    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    DataAnalysis dataAnalysis = new DataAnalysis(5L);
-
-    authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
-
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
-  }
-
-  @Test
-  @WithSubject(userId = 6)
-  public void checkDataAnalysisReadPermission_Other() throws Exception {
-    doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
-    DataAnalysis dataAnalysis = new DataAnalysis(5L);
-
-    try {
-      authorizationService.checkDataAnalysisReadPermission(dataAnalysis);
-      fail("Expected AuthorizationException");
-    } catch (AuthorizationException e) {
-      // Ignore.
-    }
-
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
-    verify(subject).checkPermission("dataAnalysis:read:5");
-  }
-
-  @Test
-  public void checkDataAnalysisReadPermission_Null() throws Exception {
-    authorizationService.checkDataAnalysisReadPermission(null);
   }
 }

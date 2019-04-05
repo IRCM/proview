@@ -34,12 +34,6 @@ VALUES (5550,4,'treatment',1,'INSERT','2011-10-13 11:45:00',NULL);
 INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
 VALUES (5551,2,'msanalysis',12,'INSERT','2011-10-14 14:14:25',NULL);
 INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
-VALUES (5552,2,'dataanalysis',3,'INSERT','2011-10-14 14:24:22',NULL);
-INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
-VALUES (5553,2,'dataanalysis',3,'UPDATE','2011-10-14 14:24:22',NULL);
-INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
-VALUES (5554,2,'dataanalysis',4,'INSERT','2011-10-14 14:24:23',NULL);
-INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
 VALUES (5556,2,'submission',34,'INSERT','2011-10-17 15:15:09',NULL);
 INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
 VALUES (5557,4,'treatment',2,'INSERT','2011-10-19 12:20:33',NULL);
@@ -59,8 +53,6 @@ INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explana
 VALUES (5564,2,'treatment',7,'INSERT','2011-11-09 15:20:21',NULL);
 INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
 VALUES (5565,2,'msanalysis',13,'INSERT','2011-11-09 15:37:09',NULL);
-INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
-VALUES (5566,10,'dataanalysis',5,'INSERT','2011-11-09 15:37:09',NULL);
 INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
 VALUES (5568,2,'msanalysis',14,'INSERT','2011-11-15 10:09:11',NULL);
 INSERT INTO activity (id,user_id,tablename,recordid,actiontype,timestamp,explanation)
@@ -666,25 +658,11 @@ VALUES (5936,10,'submission',163,'UPDATE','2017-11-08 10:30:15',NULL);
 INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1020,5551,'sample',442,'UPDATE','status','TO_APPROVE','ANALYSED');
 INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
-VALUES (1021,5552,'sample',1,'UPDATE','status','ANALYSED','DATA_ANALYSIS');
-INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
-VALUES (1022,5553,'dataanalysis',3,'UPDATE','score',NULL,'123456: 95%');
-INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
-VALUES (1023,5553,'dataanalysis',3,'UPDATE','workTime',NULL,'1.75');
-INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
-VALUES (1024,5553,'dataanalysis',3,'UPDATE','status','TO_DO','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
-VALUES (1025,5553,'sample',1,'UPDATE','status','DATA_ANALYSIS','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
-VALUES (1026,5554,'sample',442,'UPDATE','status','ANALYSED','DATA_ANALYSIS');
-INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1028,5557,'samplecontainer',6,'INSERT',NULL,NULL,NULL);
 INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1029,5558,'samplecontainer',7,'INSERT',NULL,NULL,NULL);
 INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1030,5565,'sample',446,'UPDATE','status','TO_APPROVE','ANALYSED');
-INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
-VALUES (1031,5566,'sample',446,'UPDATE','status','ANALYSED','DATA_ANALYSIS');
 INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
 VALUES (1033,5568,'sample',445,'UPDATE','status','TO_APPROVE','ANALYSED');
 INSERT INTO activityupdate (id,updates_id,tablename,recordid,actiontype,actioncolumn,oldvalue,newvalue)
