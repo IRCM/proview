@@ -24,8 +24,6 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
-import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.plate.Plate;
@@ -43,19 +41,15 @@ import com.vaadin.data.ValidationResult;
 import com.vaadin.data.ValueContext;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.server.UserError;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ItemCaptionGenerator;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javax.inject.Inject;
@@ -77,9 +71,7 @@ public class PlatesViewPresenter {
   public static final String HEADER = "header";
   public static final String PLATES = "plates";
   public static final String ALL = "all";
-  public static final String EMPTY_COUNT = "emptyCount";
   public static final String SAMPLE_COUNT = "sampleCount";
-  public static final String LAST_TREATMENT = "lastTreatment";
   public static final String FILTER = "filter";
   private static final Logger logger = LoggerFactory.getLogger(PlatesViewPresenter.class);
   private PlatesView view;
@@ -145,39 +137,8 @@ public class PlatesViewPresenter {
         .setEditorBinding(binder.forField(nameEditor).asRequired(generalResources.message(REQUIRED))
             .withNullRepresentation("")
             .withValidator((value, context) -> validateName(value, context)).bind(NAME));
-    design.plates.addColumn(plate -> plate.getEmptyWellCount()).setId(EMPTY_COUNT)
-        .setCaption(resources.message(EMPTY_COUNT));
-    HorizontalLayout emptyCountLayout = new HorizontalLayout();
-    emptyCountLayout.addComponent(new Label(resources.message(property(EMPTY_COUNT, FILTER))));
-    emptyCountLayout.addComponent(textFilter(event -> {
-      TextField field = (TextField) event.getComponent();
-      field.setComponentError(null);
-      Integer minimumEmptyCount;
-      if (!event.getValue().isEmpty()) {
-        try {
-          minimumEmptyCount = Integer.valueOf(event.getValue());
-          if (minimumEmptyCount < 0 || minimumEmptyCount > Plate.DEFAULT_PLATE_SIZE) {
-            minimumEmptyCount = null;
-            field.setComponentError(
-                new UserError(generalResources.message(OUT_OF_RANGE, 0, Plate.DEFAULT_PLATE_SIZE)));
-          }
-        } catch (NumberFormatException e) {
-          minimumEmptyCount = null;
-          field.setComponentError(new UserError(generalResources.message(INVALID_INTEGER)));
-        }
-      } else {
-        minimumEmptyCount = null;
-      }
-      filter.minimumEmptyCount = minimumEmptyCount;
-      design.plates.getDataProvider().refreshAll();
-    }));
-    filterRow.getCell(EMPTY_COUNT).setComponent(emptyCountLayout);
     design.plates.addColumn(plate -> plate.getSampleCount()).setId(SAMPLE_COUNT)
         .setCaption(resources.message(SAMPLE_COUNT));
-    design.plates.addColumn(plate -> {
-      Instant date = plateService.lastTreatmentOrAnalysisDate(plate);
-      return date != null ? dateFormatter.format(toLocalDate(date)) : null;
-    }).setId(LAST_TREATMENT).setCaption(resources.message(LAST_TREATMENT)).setSortable(false);
     design.plates.addColumn(plate -> dateFormatter.format(toLocalDate(plate.getInsertTime())))
         .setId(INSERT_TIME).setCaption(resources.message(INSERT_TIME));
     filterRow.getCell(INSERT_TIME).setComponent(instantFilter(insertDateFilter, e -> {
