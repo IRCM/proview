@@ -590,24 +590,6 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_Results_True() throws Exception {
-    filter.results = true;
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, submission.samples.any().status.in(SampleStatus.analysedStatuses()));
-  }
-
-  @Test
-  public void predicate_Results_False() throws Exception {
-    filter.results = false;
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
-  }
-
-  @Test
   public void predicate_Hidden_True() throws Exception {
     filter.hidden = true;
 
@@ -1148,24 +1130,6 @@ public class SubmissionFilterTest {
     filter.addConditions(query);
 
     verify(query).where(submission.dataAvailableDate.before(end));
-  }
-
-  @Test
-  public void addConditions_Results_True() throws Exception {
-    filter.results = true;
-
-    filter.addConditions(query);
-
-    verify(query).where(submission.samples.any().status.in(SampleStatus.analysedStatuses()));
-  }
-
-  @Test
-  public void addConditions_Results_False() throws Exception {
-    filter.results = false;
-
-    filter.addConditions(query);
-
-    verify(query).where(submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
   }
 
   @Test
@@ -1768,24 +1732,6 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_Results_True() throws Exception {
-    filter.results = true;
-
-    filter.addCountConditions(query);
-
-    verify(query).where(submission.samples.any().status.in(SampleStatus.analysedStatuses()));
-  }
-
-  @Test
-  public void addCountConditions_Results_False() throws Exception {
-    filter.results = false;
-
-    filter.addCountConditions(query);
-
-    verify(query).where(submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
-  }
-
-  @Test
   public void addCountConditions_AnySampleNameContainsAndAnySampleStatus() throws Exception {
     filter.anySampleNameContains = "test";
     filter.anySampleStatus = SampleStatus.RECEIVED;
@@ -2283,36 +2229,6 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 12, 1))));
     assertTrue(filter.test(dataAvailableDate(LocalDate.of(2011, 1, 1))));
     assertTrue(filter.test(dataAvailableDate(null)));
-  }
-
-  @Test
-  public void test_result_True() {
-    filter.results = true;
-
-    assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
-    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
-    assertTrue(filter.test(sampleStatuses(DIGESTED, CANCELLED)));
-    assertFalse(filter.test(sampleStatuses(RECEIVED, DIGESTED, WAITING)));
-  }
-
-  @Test
-  public void test_result_False() {
-    filter.results = false;
-
-    assertFalse(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
-    assertFalse(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
-    assertFalse(filter.test(sampleStatuses(DIGESTED, CANCELLED)));
-    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, WAITING)));
-  }
-
-  @Test
-  public void test_result_Null() {
-    filter.results = null;
-
-    assertTrue(filter.test(sampleStatuses(RECEIVED, ANALYSED)));
-    assertTrue(filter.test(sampleStatuses(ANALYSED, ANALYSED, DIGESTED)));
-    assertTrue(filter.test(sampleStatuses(DIGESTED, CANCELLED)));
-    assertTrue(filter.test(sampleStatuses(RECEIVED, DIGESTED, WAITING)));
   }
 
   @Test

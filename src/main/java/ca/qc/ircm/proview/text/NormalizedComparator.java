@@ -19,13 +19,16 @@ package ca.qc.ircm.proview.text;
 
 import static ca.qc.ircm.proview.text.Strings.normalize;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
 /**
  * Comparator that normalizes string before comparison.
  */
-public class NormalizedComparator implements Comparator<String> {
+public class NormalizedComparator implements Comparator<String>, Serializable {
+  private static final long serialVersionUID = -3243433160557573573L;
+
   @Override
   public int compare(String o1, String o2) {
     o1 = Objects.toString(o1, "");

@@ -27,8 +27,6 @@ import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.SOURCE;
 import static ca.qc.ircm.proview.web.WebConstants.BANNED;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
-import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
@@ -77,9 +75,6 @@ public class MsAnalysisViewPresenter implements BinderValidator {
     logger.debug("MS Analysis view");
     this.view = view;
     design = view.design;
-    MsAnalysis defaultMsAnalysis = new MsAnalysis();
-    defaultMsAnalysis.setMassDetectionInstrument(MassDetectionInstrument.VELOS);
-    defaultMsAnalysis.setSource(MassDetectionInstrumentSource.ESI);
     prepareComponents();
   }
 

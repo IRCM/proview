@@ -30,10 +30,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -52,7 +49,6 @@ public class SubmissionFilter implements Predicate<Submission> {
   public Range<LocalDate> digestionDateRange;
   public Range<LocalDate> analysisDateRange;
   public Range<LocalDate> dataAvailableDateRange;
-  public Boolean results;
   public Boolean hidden;
   public List<OrderSpecifier<?>> sortOrders;
   public Integer offset;
@@ -115,13 +111,6 @@ public class SubmissionFilter implements Predicate<Submission> {
     if (dataAvailableDateRange != null) {
       test &= submission.getDataAvailableDate() != null
           && dataAvailableDateRange.contains(submission.getDataAvailableDate());
-    }
-    if (results != null) {
-      Set<SampleStatus> analysedStatuses =
-          new HashSet<>(Arrays.asList(SampleStatus.analysedStatuses()));
-      boolean analysed = submission.getSamples().isEmpty() || submission.getSamples().stream()
-          .anyMatch(sample -> analysedStatuses.contains(sample.getStatus()));
-      test &= submission.getSamples().isEmpty() || results ? analysed : !analysed;
     }
     return test;
   }
@@ -239,13 +228,6 @@ public class SubmissionFilter implements Predicate<Submission> {
         predicate.and(submission.dataAvailableDate.before(date));
       }
     }
-    if (results != null) {
-      if (results) {
-        predicate.and(submission.samples.any().status.in(SampleStatus.analysedStatuses()));
-      } else {
-        predicate.and(submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
-      }
-    }
     if (hidden != null) {
       predicate.and(submission.hidden.eq(hidden));
     }
@@ -357,13 +339,6 @@ public class SubmissionFilter implements Predicate<Submission> {
           date = date.plusDays(1);
         }
         query.where(submission.dataAvailableDate.before(date));
-      }
-    }
-    if (results != null) {
-      if (results) {
-        query.where(submission.samples.any().status.in(SampleStatus.analysedStatuses()));
-      } else {
-        query.where(submission.samples.any().status.notIn(SampleStatus.analysedStatuses()));
       }
     }
     if (hidden != null) {

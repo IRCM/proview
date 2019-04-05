@@ -21,17 +21,13 @@ import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.text.Strings;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Filters plate search.
@@ -41,7 +37,6 @@ public class PlateFilter implements Predicate<Plate> {
   public Integer minimumEmptyCount;
   public Range<LocalDate> insertTimeRange;
   public Boolean submission;
-  public List<Sample> containsAnySamples;
 
   @Override
   public boolean test(Plate plate) {
@@ -59,13 +54,6 @@ public class PlateFilter implements Predicate<Plate> {
     }
     if (minimumEmptyCount != null) {
       test &= plate.getEmptyWellCount() >= minimumEmptyCount;
-    }
-    if (containsAnySamples != null) {
-      Set<Long> sampleIds =
-          containsAnySamples.stream().map(sample -> sample.getId()).collect(Collectors.toSet());
-      test &= plate.getWells().stream().filter(well -> well.getSample() != null)
-          .map(well -> well.getSample().getId()).filter(id -> sampleIds.contains(id)).findAny()
-          .isPresent();
     }
     return test;
   }
@@ -104,9 +92,6 @@ public class PlateFilter implements Predicate<Plate> {
       predicate =
           predicate.and(plate.columnCount.multiply(plate.rowCount).subtract(minimumEmptyCount)
               .goe(JPAExpressions.select(mecW.sample.count()).from(plate.wells, mecW)));
-    }
-    if (containsAnySamples != null) {
-      predicate.and(plate.wells.any().sample.in(containsAnySamples));
     }
     return predicate.getValue();
   }

@@ -25,8 +25,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.sample.Control;
-import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.google.common.collect.Range;
 import com.querydsl.core.types.Predicate;
@@ -35,8 +33,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.stream.IntStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -68,22 +64,6 @@ public class PlateFilterTest {
   private Plate submission(boolean submission) {
     Plate plate = mock(Plate.class);
     when(plate.isSubmission()).thenReturn(submission);
-    return plate;
-  }
-
-  private Plate samples(Long... ids) {
-    Plate plate = new Plate();
-    plate.initWells();
-    IntStream.range(0, ids.length)
-        .forEach(i -> plate.getWells().get(i).setSample(new SubmissionSample(ids[i])));
-    return plate;
-  }
-
-  private Plate controls(Long... ids) {
-    Plate plate = new Plate();
-    plate.initWells();
-    IntStream.range(0, ids.length)
-        .forEach(i -> plate.getWells().get(i).setSample(new Control(ids[i])));
     return plate;
   }
 
@@ -225,39 +205,6 @@ public class PlateFilterTest {
 
     assertTrue(filter.test(submission(true)));
     assertTrue(filter.test(submission(false)));
-  }
-
-  @Test
-  public void test_ContainsAnySamples() {
-    filter.containsAnySamples =
-        Arrays.asList(new SubmissionSample(5L), new SubmissionSample(8L), new Control(12L));
-
-    assertTrue(filter.test(samples(5L, 8L, 12L)));
-    assertTrue(filter.test(controls(5L, 8L, 12L)));
-    assertTrue(filter.test(samples(5L, 10L, 14L)));
-    assertTrue(filter.test(samples(7L, 8L, 14L)));
-    assertTrue(filter.test(samples(7L, 10L, 12L)));
-    assertFalse(filter.test(samples(7L, 10L, 14L)));
-    assertTrue(filter.test(controls(5L, 10L, 14L)));
-    assertTrue(filter.test(controls(7L, 8L, 14L)));
-    assertTrue(filter.test(controls(7L, 10L, 12L)));
-    assertFalse(filter.test(controls(7L, 10L, 14L)));
-  }
-
-  @Test
-  public void test_ContainsAnySamples_Null() {
-    filter.containsAnySamples = null;
-
-    assertTrue(filter.test(samples(5L, 8L, 12L)));
-    assertTrue(filter.test(controls(5L, 8L, 12L)));
-    assertTrue(filter.test(samples(5L, 10L, 14L)));
-    assertTrue(filter.test(samples(7L, 8L, 14L)));
-    assertTrue(filter.test(samples(7L, 10L, 12L)));
-    assertTrue(filter.test(samples(7L, 10L, 14L)));
-    assertTrue(filter.test(controls(5L, 10L, 14L)));
-    assertTrue(filter.test(controls(7L, 8L, 14L)));
-    assertTrue(filter.test(controls(7L, 10L, 12L)));
-    assertTrue(filter.test(controls(7L, 10L, 14L)));
   }
 
   @Test
@@ -442,16 +389,6 @@ public class PlateFilterTest {
     Predicate predicate = filter.predicate();
 
     assertEquals(plate.submission.eq(false), predicate);
-  }
-
-  @Test
-  public void predicate_ContainsAnySample() throws Exception {
-    filter.containsAnySamples =
-        Arrays.asList(new SubmissionSample(5L), new SubmissionSample(8L), new Control(12L));
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(plate.wells.any().sample.in(filter.containsAnySamples), predicate);
   }
 
   @Test

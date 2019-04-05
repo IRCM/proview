@@ -37,7 +37,6 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
@@ -45,7 +44,6 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -76,8 +74,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   private PlateRepository repository;
   @Inject
   private WellRepository wellRepository;
-  @Inject
-  private SampleRepository sampleRepository;
   @MockBean
   private PlateActivityService plateActivityService;
   @MockBean
@@ -138,22 +134,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     verify(authorizationService).checkAdminRole();
     verify(filter).predicate();
     assertEquals(18, plates.size());
-  }
-
-  @Test
-  public void all_ContainsAnySamples() throws Exception {
-    PlateFilter filter = new PlateFilter();
-    Sample sample1 = sampleRepository.findOne(629L);
-    Sample sample2 = sampleRepository.findOne(444L);
-    filter.containsAnySamples = Arrays.asList(sample1, sample2);
-
-    List<Plate> plates = service.all(filter);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(3, plates.size());
-    assertTrue(find(plates, 107L).isPresent());
-    assertTrue(find(plates, 120L).isPresent());
-    assertTrue(find(plates, 121L).isPresent());
   }
 
   @Test
