@@ -190,7 +190,7 @@ public class UserService {
     }
 
     BooleanExpression predicate = user.id.ne(ROBOT_ID);
-    predicate.and(filter.predicate());
+    predicate = predicate.and(filter.predicate());
     return Lists.newArrayList(repository.findAll(predicate));
   }
 
