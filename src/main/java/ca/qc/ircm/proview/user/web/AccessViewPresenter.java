@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,7 +91,7 @@ public class AccessViewPresenter {
   @Inject
   private AuthorizationService authorizationService;
   @Inject
-  private UserWindow userWindow;
+  private Provider<UserWindow> userWindowProvider;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -264,11 +265,10 @@ public class AccessViewPresenter {
   }
 
   private void viewUser(User user) {
+    UserWindow userWindow = userWindowProvider.get();
     userWindow.center();
-    if (!userWindow.isAttached()) {
-      userWindow.setValue(user);
-      view.addWindow(userWindow);
-    }
+    userWindow.setValue(user);
+    view.addWindow(userWindow);
   }
 
   private List<User> selectedUsers() {
