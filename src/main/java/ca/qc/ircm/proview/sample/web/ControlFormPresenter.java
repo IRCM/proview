@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
-import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.sample.Control;
@@ -42,7 +41,6 @@ import com.vaadin.data.Validator;
 import com.vaadin.server.UserError;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.regex.Pattern;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,9 +146,6 @@ public class ControlFormPresenter implements BinderValidator {
         return ValidationResult.ok();
       }
       MessageResource generalResources = view.getGeneralResources();
-      if (!Pattern.matches("\\w*", value)) {
-        return ValidationResult.error(generalResources.message(ONLY_WORDS));
-      }
       if (controlService.exists(value)) {
         if (sampleBinder.getBean().getId() == null || !controlService
             .get(sampleBinder.getBean().getId()).getName().equalsIgnoreCase(value)) {

@@ -33,7 +33,6 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.dataProvider;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.errorMessage;
 import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
-import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -309,21 +308,6 @@ public class ControlFormPresenterTest {
     verify(view).showError(stringCaptor.capture());
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
-        design.nameField.getErrorMessage().getFormattedHtmlMessage());
-    verify(controlService, never()).insert(controlCaptor.capture());
-  }
-
-  @Test
-  public void save_InvalidName() {
-    presenter.init(view);
-    setFields();
-    design.nameField.setValue(name + "?");
-
-    design.saveButton.click();
-
-    verify(view).showError(stringCaptor.capture());
-    assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
-    assertEquals(errorMessage(generalResources.message(ONLY_WORDS)),
         design.nameField.getErrorMessage().getFormattedHtmlMessage());
     verify(controlService, never()).insert(controlCaptor.capture());
   }

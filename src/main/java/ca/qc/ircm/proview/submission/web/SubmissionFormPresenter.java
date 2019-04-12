@@ -77,7 +77,6 @@ import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
-import static ca.qc.ircm.proview.web.WebConstants.ONLY_WORDS;
 import static ca.qc.ircm.proview.web.WebConstants.OUT_OF_RANGE;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -152,7 +151,6 @@ import java.util.MissingResourceException;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.inject.Inject;
@@ -1037,18 +1035,13 @@ public class SubmissionFormPresenter implements BinderValidator {
       if (value == null || value.isEmpty()) {
         return ValidationResult.ok();
       }
+      MessageResource resources = view.getResources();
       MessageResource generalResources = view.getGeneralResources();
-      if (!Pattern.matches("\\w*", value)) {
-        String error = generalResources.message(ONLY_WORDS);
-        logger.debug("validation error on {}: {}", SAMPLE_NAME, error);
-        return ValidationResult.error(error);
-      }
       if (submissionSampleService.exists(value)) {
         if (submissionBinder.getBean().getId() == null
             || !submissionService.get(submissionBinder.getBean().getId()).getSamples().stream()
                 .filter(sample -> sample.getName().equalsIgnoreCase(value)).findAny().isPresent()) {
           if (includeSampleNameInError) {
-            MessageResource resources = view.getResources();
             String error = resources.message(property(SAMPLE_NAME, "exists"), value);
             logger.debug("validation error on {}: {}", SAMPLE_NAME, error);
             return ValidationResult.error(error);
