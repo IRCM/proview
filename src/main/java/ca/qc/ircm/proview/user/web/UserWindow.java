@@ -91,11 +91,12 @@ public class UserWindow extends Window implements BaseComponent {
   private void updateUser(User user) {
     logger.debug("User window for user {}", user);
     setCaption(getResources().message(TITLE, user != null ? user.getName() : ""));
+    design.update.setVisible(authorizationService.hasUserWritePermission(user));
     design.update.addClickListener(e -> {
       navigateTo(UserView.VIEW_NAME, String.valueOf(user.getId()));
       close();
     });
     userForm.setValue(user);
-    userForm.setReadOnly(!authorizationService.hasUserWritePermission(user));
+    userForm.setReadOnly(true);
   }
 }
