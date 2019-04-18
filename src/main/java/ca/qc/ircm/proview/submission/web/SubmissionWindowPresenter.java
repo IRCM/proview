@@ -37,8 +37,10 @@ import org.springframework.stereotype.Controller;
 public class SubmissionWindowPresenter {
   public static final String WINDOW_STYLE = "submission-window";
   public static final String TITLE = "title";
+  public static final String UPDATE = "update";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionWindowPresenter.class);
   private SubmissionWindow window = new SubmissionWindow();
+  private SubmissionWindowDesign design = new SubmissionWindowDesign();
   @Inject
   private AuthorizationService authorizationService;
 
@@ -53,22 +55,30 @@ public class SubmissionWindowPresenter {
    */
   public void init(SubmissionWindow window) {
     this.window = window;
+    design = window.design;
     prepareComponents();
   }
 
   private void prepareComponents() {
     closeWindowOnViewChange(window);
+    final MessageResource resources = window.getResources();
     window.addStyleName(WINDOW_STYLE);
     window.setHeight("700px");
     window.setWidth("1200px");
+    design.update.addStyleName(UPDATE);
+    design.update.setCaption(resources.message(UPDATE));
+    window.submissionForm.setReadOnly(true);
   }
 
   void setValue(Submission submission) {
     logger.debug("Submission window for submission {}", submission);
     MessageResource resources = window.getResources();
     window.setCaption(resources.message(TITLE, submission.getExperiment()));
+    design.update.setVisible(authorizationService.hasSubmissionWritePermission(submission));
+    design.update.addClickListener(e -> {
+      window.navigateTo(SubmissionView.VIEW_NAME, String.valueOf(submission.getId()));
+      window.close();
+    });
     window.submissionForm.setValue(submission);
-    window.submissionForm
-        .setReadOnly(!authorizationService.hasSubmissionWritePermission(submission));
   }
 }

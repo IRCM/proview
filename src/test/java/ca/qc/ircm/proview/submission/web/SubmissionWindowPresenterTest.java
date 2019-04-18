@@ -18,7 +18,11 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionWindowPresenter.TITLE;
+import static ca.qc.ircm.proview.submission.web.SubmissionWindowPresenter.UPDATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionWindowPresenter.WINDOW_STYLE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -77,6 +81,7 @@ public class SubmissionWindowPresenterTest extends AbstractComponentTestCase {
     presenter.setValue(submission);
 
     verify(window).addStyleName(WINDOW_STYLE);
+    assertTrue(design.update.getStyleName().contains(UPDATE));
   }
 
   @Test
@@ -85,6 +90,7 @@ public class SubmissionWindowPresenterTest extends AbstractComponentTestCase {
     presenter.setValue(submission);
 
     verify(window).setCaption(resources.message(TITLE, submission.getExperiment()));
+    assertEquals(resources.message(UPDATE), design.update.getCaption());
   }
 
   @Test
@@ -96,19 +102,31 @@ public class SubmissionWindowPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
-  public void readOnly_False() {
+  public void update() {
     when(authorizationService.hasSubmissionWritePermission(submission)).thenReturn(true);
     presenter.init(window);
     presenter.setValue(submission);
 
-    verify(window.submissionForm).setReadOnly(false);
+    design.update.click();
+
+    verify(window).navigateTo(SubmissionView.VIEW_NAME, String.valueOf(submission.getId()));
+    verify(window).close();
   }
 
   @Test
-  public void readOnly_True() {
+  public void update_VisibilityFalse() {
     presenter.init(window);
     presenter.setValue(submission);
 
-    verify(window.submissionForm).setReadOnly(true);
+    assertFalse(design.update.isVisible());
+  }
+
+  @Test
+  public void update_VisibilityTrue() {
+    when(authorizationService.hasSubmissionWritePermission(submission)).thenReturn(true);
+    presenter.init(window);
+    presenter.setValue(submission);
+
+    assertTrue(design.update.isVisible());
   }
 }
