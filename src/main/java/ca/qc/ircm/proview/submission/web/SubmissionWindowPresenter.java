@@ -21,7 +21,14 @@ import static ca.qc.ircm.proview.web.CloseWindowOnViewChange.closeWindowOnViewCh
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.utils.MessageResource;
+import com.vaadin.server.BrowserWindowOpener;
+import com.vaadin.server.StreamResource;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Locale;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +44,15 @@ import org.springframework.stereotype.Controller;
 public class SubmissionWindowPresenter {
   public static final String WINDOW_STYLE = "submission-window";
   public static final String TITLE = "title";
+  public static final String UPDATE = "update";
+  public static final String PRINT = "print";
+  public static final String PRINT_FILENAME = "submission-print-%s.html";
+  public static final String PRINT_MIME = "text/html";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionWindowPresenter.class);
   private SubmissionWindow window = new SubmissionWindow();
+  private SubmissionWindowDesign design = new SubmissionWindowDesign();
+  @Inject
+  private SubmissionService submissionService;
   @Inject
   private AuthorizationService authorizationService;
 
@@ -53,22 +67,46 @@ public class SubmissionWindowPresenter {
    */
   public void init(SubmissionWindow window) {
     this.window = window;
+    design = window.design;
     prepareComponents();
   }
 
   private void prepareComponents() {
     closeWindowOnViewChange(window);
+    final MessageResource resources = window.getResources();
     window.addStyleName(WINDOW_STYLE);
     window.setHeight("700px");
     window.setWidth("1200px");
+    design.update.addStyleName(UPDATE);
+    design.update.setCaption(resources.message(UPDATE));
+    design.print.addStyleName(PRINT);
+    design.print.setCaption(resources.message(PRINT));
+    window.submissionForm.setReadOnly(true);
+  }
+
+  private void preparePrint(Submission submission) {
+    final Locale locale = window.getLocale();
+    String content = submissionService.print(submission, locale);
+    String filename = String.format(PRINT_FILENAME, submission != null ? submission.getId() : "");
+    new ArrayList<>(design.print.getExtensions()).stream().forEach(ext -> ext.remove());
+    StreamResource printResource = new StreamResource(
+        () -> new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), filename);
+    printResource.setMIMEType(PRINT_MIME);
+    printResource.setCacheTime(0);
+    BrowserWindowOpener opener = new BrowserWindowOpener(printResource);
+    opener.extend(design.print);
   }
 
   void setValue(Submission submission) {
     logger.debug("Submission window for submission {}", submission);
     MessageResource resources = window.getResources();
     window.setCaption(resources.message(TITLE, submission.getExperiment()));
+    design.update.setVisible(authorizationService.hasSubmissionWritePermission(submission));
+    design.update.addClickListener(e -> {
+      window.navigateTo(SubmissionView.VIEW_NAME, String.valueOf(submission.getId()));
+      window.close();
+    });
+    preparePrint(submission);
     window.submissionForm.setValue(submission);
-    window.submissionForm
-        .setReadOnly(!authorizationService.hasSubmissionWritePermission(submission));
   }
 }

@@ -1854,13 +1854,11 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   public void viewSubmission() {
     presenter.init(view);
     final Submission submission = submissions.get(0);
-    when(submissionService.get(any())).thenReturn(submission);
     Button button =
         (Button) design.submissionsGrid.getColumn(EXPERIMENT).getValueProvider().apply(submission);
 
     button.click();
 
-    verify(submissionService).get(submission.getId());
     verify(submissionWindow).setValue(submission);
     verify(submissionWindow).center();
     verify(view).addWindow(submissionWindow);
