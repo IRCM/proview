@@ -25,7 +25,6 @@ import ca.qc.ircm.proview.text.Strings;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.JPAExpressions;
 import java.time.LocalDate;
 import java.util.function.Predicate;
 
@@ -34,7 +33,6 @@ import java.util.function.Predicate;
  */
 public class PlateFilter implements Predicate<Plate> {
   public String nameContains;
-  public Integer minimumEmptyCount;
   public Range<LocalDate> insertTimeRange;
   public Boolean submission;
 
@@ -51,9 +49,6 @@ public class PlateFilter implements Predicate<Plate> {
     }
     if (submission != null) {
       test &= submission == plate.isSubmission();
-    }
-    if (minimumEmptyCount != null) {
-      test &= plate.getEmptyWellCount() >= minimumEmptyCount;
     }
     return test;
   }
@@ -86,12 +81,6 @@ public class PlateFilter implements Predicate<Plate> {
     }
     if (submission != null) {
       predicate.and(plate.submission.eq(submission));
-    }
-    if (minimumEmptyCount != null) {
-      QWell mecW = new QWell("mecW");
-      predicate =
-          predicate.and(plate.columnCount.multiply(plate.rowCount).subtract(minimumEmptyCount)
-              .goe(JPAExpressions.select(mecW.sample.count()).from(plate.wells, mecW)));
     }
     return predicate.getValue();
   }

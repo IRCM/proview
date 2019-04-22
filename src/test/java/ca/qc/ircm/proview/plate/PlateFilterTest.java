@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.google.common.collect.Range;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -49,12 +48,6 @@ public class PlateFilterTest {
     return new Plate(null, name);
   }
 
-  private Plate emptyCount(int emptyCount) {
-    Plate plate = mock(Plate.class);
-    when(plate.getEmptyWellCount()).thenReturn(emptyCount);
-    return plate;
-  }
-
   private Plate insertTime(Instant instant) {
     Plate plate = mock(Plate.class);
     when(plate.getInsertTime()).thenReturn(instant);
@@ -67,10 +60,10 @@ public class PlateFilterTest {
     return plate;
   }
 
-  private Plate nameAndEmptyCount(String name, int emptyCount) {
+  private Plate nameAndSubmission(String name, boolean submission) {
     Plate plate = mock(Plate.class);
     when(plate.getName()).thenReturn(name);
-    when(plate.getEmptyWellCount()).thenReturn(emptyCount);
+    when(plate.isSubmission()).thenReturn(submission);
     return plate;
   }
 
@@ -136,28 +129,6 @@ public class PlateFilterTest {
   }
 
   @Test
-  public void test_MinimumEmptyCount() {
-    filter.minimumEmptyCount = 40;
-
-    assertTrue(filter.test(emptyCount(40)));
-    assertTrue(filter.test(emptyCount(41)));
-    assertTrue(filter.test(emptyCount(96)));
-    assertFalse(filter.test(emptyCount(39)));
-    assertFalse(filter.test(emptyCount(0)));
-  }
-
-  @Test
-  public void test_MinimumEmptyCount_Null() {
-    filter.minimumEmptyCount = null;
-
-    assertTrue(filter.test(emptyCount(40)));
-    assertTrue(filter.test(emptyCount(41)));
-    assertTrue(filter.test(emptyCount(96)));
-    assertTrue(filter.test(emptyCount(39)));
-    assertTrue(filter.test(emptyCount(0)));
-  }
-
-  @Test
   public void test_InsertTimeRange() {
     LocalDate from = LocalDate.of(2011, 1, 2);
     LocalDate to = LocalDate.of(2011, 10, 9);
@@ -210,58 +181,28 @@ public class PlateFilterTest {
   @Test
   public void test_NameContainsAndEmptyCount() {
     filter.nameContains = "test";
-    filter.minimumEmptyCount = 40;
+    filter.submission = true;
 
-    assertTrue(filter.test(nameAndEmptyCount("test", 40)));
-    assertTrue(filter.test(nameAndEmptyCount("test", 41)));
-    assertTrue(filter.test(nameAndEmptyCount("test", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("test", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("test", 0)));
-    assertTrue(filter.test(nameAndEmptyCount("TEST", 40)));
-    assertTrue(filter.test(nameAndEmptyCount("TEST", 41)));
-    assertTrue(filter.test(nameAndEmptyCount("TEST", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("TEST", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("TEST", 0)));
-    assertFalse(filter.test(nameAndEmptyCount("abc", 40)));
-    assertFalse(filter.test(nameAndEmptyCount("abc", 41)));
-    assertFalse(filter.test(nameAndEmptyCount("abc", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("abc", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("abc", 0)));
-    assertFalse(filter.test(nameAndEmptyCount("ABC", 40)));
-    assertFalse(filter.test(nameAndEmptyCount("ABC", 41)));
-    assertFalse(filter.test(nameAndEmptyCount("ABC", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("ABC", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("ABC", 0)));
-    assertTrue(filter.test(nameAndEmptyCount("abctest", 40)));
-    assertTrue(filter.test(nameAndEmptyCount("abctest", 41)));
-    assertTrue(filter.test(nameAndEmptyCount("abctest", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("abctest", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("abctest", 0)));
-    assertTrue(filter.test(nameAndEmptyCount("testabc", 40)));
-    assertTrue(filter.test(nameAndEmptyCount("testabc", 41)));
-    assertTrue(filter.test(nameAndEmptyCount("testabc", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("testabc", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("testabc", 0)));
-    assertTrue(filter.test(nameAndEmptyCount("abctestdef", 40)));
-    assertTrue(filter.test(nameAndEmptyCount("abctestdef", 41)));
-    assertTrue(filter.test(nameAndEmptyCount("abctestdef", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("abctestdef", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("abctestdef", 0)));
-    assertTrue(filter.test(nameAndEmptyCount("ABCTEST", 40)));
-    assertTrue(filter.test(nameAndEmptyCount("ABCTEST", 41)));
-    assertTrue(filter.test(nameAndEmptyCount("ABCTEST", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("ABCTEST", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("ABCTEST", 0)));
-    assertTrue(filter.test(nameAndEmptyCount("TESTABC", 40)));
-    assertTrue(filter.test(nameAndEmptyCount("TESTABC", 41)));
-    assertTrue(filter.test(nameAndEmptyCount("TESTABC", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("TESTABC", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("TESTABC", 0)));
-    assertTrue(filter.test(nameAndEmptyCount("ABCTESTDEF", 40)));
-    assertTrue(filter.test(nameAndEmptyCount("ABCTESTDEF", 41)));
-    assertTrue(filter.test(nameAndEmptyCount("ABCTESTDEF", 96)));
-    assertFalse(filter.test(nameAndEmptyCount("ABCTESTDEF", 39)));
-    assertFalse(filter.test(nameAndEmptyCount("ABCTESTDEF", 0)));
+    assertTrue(filter.test(nameAndSubmission("test", true)));
+    assertFalse(filter.test(nameAndSubmission("test", false)));
+    assertTrue(filter.test(nameAndSubmission("TEST", true)));
+    assertFalse(filter.test(nameAndSubmission("TEST", false)));
+    assertFalse(filter.test(nameAndSubmission("abc", true)));
+    assertFalse(filter.test(nameAndSubmission("abc", false)));
+    assertFalse(filter.test(nameAndSubmission("ABC", true)));
+    assertFalse(filter.test(nameAndSubmission("ABC", false)));
+    assertTrue(filter.test(nameAndSubmission("abctest", true)));
+    assertFalse(filter.test(nameAndSubmission("abctest", false)));
+    assertTrue(filter.test(nameAndSubmission("testabc", true)));
+    assertFalse(filter.test(nameAndSubmission("testabc", false)));
+    assertTrue(filter.test(nameAndSubmission("abctestdef", true)));
+    assertFalse(filter.test(nameAndSubmission("abctestdef", false)));
+    assertTrue(filter.test(nameAndSubmission("ABCTEST", true)));
+    assertFalse(filter.test(nameAndSubmission("ABCTEST", false)));
+    assertTrue(filter.test(nameAndSubmission("TESTABC", true)));
+    assertFalse(filter.test(nameAndSubmission("TESTABC", false)));
+    assertTrue(filter.test(nameAndSubmission("ABCTESTDEF", true)));
+    assertFalse(filter.test(nameAndSubmission("ABCTESTDEF", false)));
   }
 
   @Test
@@ -271,17 +212,6 @@ public class PlateFilterTest {
     Predicate predicate = filter.predicate();
 
     assertEquals(plate.name.contains("test"), predicate);
-  }
-
-  @Test
-  public void predicate_MinimumEmptyCount() throws Exception {
-    filter.minimumEmptyCount = 40;
-
-    Predicate predicate = filter.predicate();
-
-    QWell mecW = new QWell("mecW");
-    assertEquals(plate.columnCount.multiply(plate.rowCount).subtract(40)
-        .goe(JPAExpressions.select(mecW.sample.count()).from(plate.wells, mecW)), predicate);
   }
 
   @Test

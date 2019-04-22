@@ -161,20 +161,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_MinimumEmptyCount() throws Exception {
-    PlateFilter filter = new PlateFilter();
-    filter.minimumEmptyCount = 94;
-
-    List<Plate> plates = service.all(filter);
-
-    verify(authorizationService).checkAdminRole();
-    assertEquals(3, plates.size());
-    assertTrue(find(plates, 26L).isPresent());
-    assertTrue(find(plates, 111L).isPresent());
-    assertTrue(find(plates, 122L).isPresent());
-  }
-
-  @Test
   public void all_Null() throws Exception {
     List<Plate> plates = service.all(null);
 
