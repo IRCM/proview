@@ -65,7 +65,7 @@
     <commons-email.version>1.5</commons-email.version>
     <mariadb-java-client.version>2.4.0</mariadb-java-client.version>
     <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
-    <findbugs.version>3.0.1</findbugs.version>
+    <spotbugs.version>4.0.0-beta1</spotbugs.version>
     <generate-property-names.version>0.5</generate-property-names.version>
     <selenium.version>3.4.0</selenium.version>
     <greenmail.version>1.5.9</greenmail.version>
@@ -321,9 +321,9 @@
       <artifactId>thymeleaf</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>annotations</artifactId>
-      <version>${findbugs.version}</version>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>${spotbugs.version}</version>
     </dependency>
     <dependency>
       <groupId>ca.qc.ircm</groupId>
@@ -630,10 +630,10 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
         <configuration>
-          <excludeFilterFile>${basedir}/findbugs-exclude.xml</excludeFilterFile>
+          <excludeFilterFile>${basedir}/spotbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
       <plugin>
