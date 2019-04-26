@@ -175,7 +175,7 @@ public class AuthenticationService {
     String username = token.getUsername();
     User user = getUser(username);
     if (user == null) {
-      throw new UnknownAccountException("No account found for user []");
+      throw new UnknownAccountException("No account found for user [" + username + "]");
     }
     if (!user.isValid()) {
       throw new InvalidAccountException("Account for user [" + username + "] is invalid");
