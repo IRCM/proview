@@ -32,9 +32,5 @@ public enum UserRole {
   /**
    * Administartor.
    */
-  ADMIN,
-  /**
-   * Can approve samples.
-   */
-  APPROVER
+  ADMIN
 }
