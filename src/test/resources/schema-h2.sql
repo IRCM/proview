@@ -62,15 +62,6 @@ CREATE TABLE IF NOT EXISTS phonenumber (
   PRIMARY KEY (id),
   CONSTRAINT phonenumber_ibfk_1 FOREIGN KEY (phonenumbers_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-CREATE TABLE IF NOT EXISTS laboratorymanager (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  managers_id bigint(20) NOT NULL,
-  laboratory_id bigint(20) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (managers_id,laboratory_id),
-  CONSTRAINT laboratorymanager_ibfk_1 FOREIGN KEY (managers_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT laboratorymanager_ibfk_2 FOREIGN KEY (laboratory_id) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
 CREATE TABLE IF NOT EXISTS forgotpassword (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
   user_id bigint(20) NOT NULL,
