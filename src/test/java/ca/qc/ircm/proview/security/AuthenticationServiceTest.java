@@ -66,9 +66,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class AuthenticationServiceTest {
-  private static final String USER = UserRole.USER.name();
-  private static final String MANAGER = UserRole.MANAGER.name();
-  private static final String ADMIN = UserRole.ADMIN.name();
+  private static final String USER = UserRole.USER;
+  private static final String MANAGER = UserRole.MANAGER;
+  private static final String ADMIN = UserRole.ADMIN;
   @Inject
   private AuthenticationService service;
   @Inject
@@ -179,7 +179,7 @@ public class AuthenticationServiceTest {
 
     service.runAs(user);
 
-    verify(subject).checkRole(UserRole.ADMIN.name());
+    verify(subject).checkRole(UserRole.ADMIN);
     verify(subject).runAs(principalCollectionCaptor.capture());
     PrincipalCollection principalCollection = principalCollectionCaptor.getValue();
     assertEquals(user.getId(), principalCollection.getPrimaryPrincipal());

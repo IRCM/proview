@@ -20,17 +20,17 @@ package ca.qc.ircm.proview.user;
 /**
  * Roles for user.
  */
-public enum UserRole {
+public class UserRole {
+  public static final String USER = "USER";
+  public static final String MANAGER = "MANAGER";
+  public static final String ADMIN = "ADMIN";
+
   /**
-   * Normal user.
+   * Returns all user roles.
+   *
+   * @return all user roles
    */
-  USER,
-  /**
-   * Laboratory manager.
-   */
-  MANAGER,
-  /**
-   * Administartor.
-   */
-  ADMIN
+  public static String[] roles() {
+    return new String[] { USER, MANAGER, ADMIN };
+  }
 }

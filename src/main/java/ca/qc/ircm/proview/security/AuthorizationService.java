@@ -55,9 +55,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AuthorizationService {
-  private static final String ADMIN = UserRole.ADMIN.name();
-  private static final String MANAGER = UserRole.MANAGER.name();
-  private static final String USER = UserRole.USER.name();
+  private static final String ADMIN = UserRole.ADMIN;
+  private static final String MANAGER = UserRole.MANAGER;
+  private static final String USER = UserRole.USER;
   @Inject
   private UserRepository repository;
   @Inject

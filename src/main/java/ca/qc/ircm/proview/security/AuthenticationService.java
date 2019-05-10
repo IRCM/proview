@@ -134,7 +134,7 @@ public class AuthenticationService {
     if (user == null) {
       throw new NullPointerException("user cannot be null");
     }
-    getSubject().checkRole(UserRole.ADMIN.name());
+    getSubject().checkRole(UserRole.ADMIN);
     user = getUser(user.getId());
     if (user.isAdmin()) {
       throw new UnauthorizedException("Cannot run as a admin user");
@@ -296,16 +296,16 @@ public class AuthenticationService {
 
   private Set<String> selectRoles(User user) {
     Set<String> roles = new HashSet<>();
-    roles.add(UserRole.USER.name());
+    roles.add(UserRole.USER);
     if (user.isManager()) {
-      roles.add(UserRole.MANAGER.name());
+      roles.add(UserRole.MANAGER);
     }
     if (user.isAdmin()) {
-      roles.add(UserRole.ADMIN.name());
+      roles.add(UserRole.ADMIN);
     }
     if (user.getId() == ROBOT_ID) {
-      roles.add(UserRole.MANAGER.name());
-      roles.add(UserRole.ADMIN.name());
+      roles.add(UserRole.MANAGER);
+      roles.add(UserRole.ADMIN);
     }
 
     Set<String> lowerUpperRoles = new HashSet<>();

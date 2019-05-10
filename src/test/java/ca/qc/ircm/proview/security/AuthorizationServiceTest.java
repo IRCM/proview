@@ -338,34 +338,34 @@ public class AuthorizationServiceTest {
 
     boolean manager = authorizationService.hasLaboratoryManagerPermission(laboratory);
 
-    verify(subject).hasRole(UserRole.USER.name());
-    verify(subject).hasRole(UserRole.ADMIN.name());
+    verify(subject).hasRole(UserRole.USER);
+    verify(subject).hasRole(UserRole.ADMIN);
     assertEquals(true, manager);
   }
 
   @Test
   public void hasLaboratoryManagerPermission_LaboratoryManager() {
-    when(subject.hasRole(UserRole.USER.name())).thenReturn(true);
+    when(subject.hasRole(UserRole.USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     Laboratory laboratory = new Laboratory(1L);
 
     final boolean manager = authorizationService.hasLaboratoryManagerPermission(laboratory);
 
-    verify(subject).hasRole(UserRole.USER.name());
-    verify(subject).hasRole(UserRole.ADMIN.name());
+    verify(subject).hasRole(UserRole.USER);
+    verify(subject).hasRole(UserRole.ADMIN);
     verify(subject).isPermitted("laboratory:manager:1");
     assertEquals(true, manager);
   }
 
   @Test
   public void hasLaboratoryManagerPermission_False() {
-    when(subject.hasRole(UserRole.USER.name())).thenReturn(true);
+    when(subject.hasRole(UserRole.USER)).thenReturn(true);
     Laboratory laboratory = new Laboratory(1L);
 
     final boolean manager = authorizationService.hasLaboratoryManagerPermission(laboratory);
 
-    verify(subject).hasRole(UserRole.USER.name());
-    verify(subject).hasRole(UserRole.ADMIN.name());
+    verify(subject).hasRole(UserRole.USER);
+    verify(subject).hasRole(UserRole.ADMIN);
     verify(subject).isPermitted("laboratory:manager:1");
     assertEquals(false, manager);
   }
