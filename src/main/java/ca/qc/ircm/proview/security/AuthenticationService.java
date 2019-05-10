@@ -288,17 +288,16 @@ public class AuthenticationService {
       authorization.setObjectPermissions(new HashSet<>());
       return authorization;
     } else {
-      boolean manager = user.getLaboratory().getManagers().contains(user);
-      authorization.setRoles(selectRoles(user, manager));
-      authorization.setObjectPermissions(selectPermissions(user, manager));
+      authorization.setRoles(selectRoles(user));
+      authorization.setObjectPermissions(selectPermissions(user));
       return authorization;
     }
   }
 
-  private Set<String> selectRoles(User user, boolean manager) {
+  private Set<String> selectRoles(User user) {
     Set<String> roles = new HashSet<>();
     roles.add(UserRole.USER.name());
-    if (manager) {
+    if (user.isManager()) {
       roles.add(UserRole.MANAGER.name());
     }
     if (user.isAdmin()) {
@@ -318,12 +317,12 @@ public class AuthenticationService {
     return lowerUpperRoles;
   }
 
-  private Set<Permission> selectPermissions(User user, boolean manager) {
+  private Set<Permission> selectPermissions(User user) {
     Set<Permission> permissions = new HashSet<>();
 
     permissions.add(new WildcardPermission("user:*:" + user.getId()));
     permissions.add(new WildcardPermission("laboratory:read:" + user.getLaboratory().getId()));
-    if (manager) {
+    if (user.isManager()) {
       permissions.add(new WildcardPermission("laboratory:manager:" + user.getLaboratory().getId()));
     }
     if (user.getId() == ROBOT_ID) {

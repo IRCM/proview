@@ -23,14 +23,10 @@ import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -69,12 +65,6 @@ public class Laboratory implements Data, Named, Serializable {
   @Column(nullable = false)
   @Size(max = 255)
   private String director;
-  /**
-   * Managers of this laboratory.
-   */
-  @ManyToMany(cascade = CascadeType.PERSIST)
-  @JoinTable(name = "laboratorymanager")
-  private List<User> managers;
 
   public Laboratory() {
   }
@@ -112,14 +102,6 @@ public class Laboratory implements Data, Named, Serializable {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public List<User> getManagers() {
-    return managers;
-  }
-
-  public void setManagers(List<User> managers) {
-    this.managers = managers;
   }
 
   public String getDirector() {

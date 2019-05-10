@@ -78,10 +78,15 @@ public class User implements Data, Named, Serializable {
   @Column(nullable = false)
   private boolean active = false;
   /**
-   * True if User is an admin user.
+   * True if User is an admin.
    */
   @Column(nullable = false)
   private boolean admin = false;
+  /**
+   * True if User is a manager.
+   */
+  @Column(nullable = false)
+  private boolean manager = false;
   /**
    * Hashed password.
    */
@@ -283,5 +288,13 @@ public class User implements Data, Named, Serializable {
 
   public void setRegisterTime(Instant registerTime) {
     this.registerTime = registerTime;
+  }
+
+  public boolean isManager() {
+    return manager;
+  }
+
+  public void setManager(boolean manager) {
+    this.manager = manager;
   }
 }

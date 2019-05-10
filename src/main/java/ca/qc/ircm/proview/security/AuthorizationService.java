@@ -24,7 +24,7 @@ import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSampleContainer.sampleContainer;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
+import static ca.qc.ircm.proview.user.QUser.user;
 
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.QAcquisition;
@@ -294,22 +294,23 @@ public class AuthorizationService {
   }
 
   private boolean laboratoryManagerForAnyMsAnalysisByControl(Sample sampleParam) {
-    User user = getCurrentUser();
-    if (user == null) {
+    User currentUser = getCurrentUser();
+    if (currentUser == null) {
       return false;
     }
 
     QAcquisition controlAcquisition = new QAcquisition("control");
     JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
-    query.from(msAnalysis, controlAcquisition, acquisition, submissionSample);
+    query.from(msAnalysis, controlAcquisition, acquisition, submissionSample, user);
     query.join(acquisition.sample, sample);
     query.join(submissionSample.submission, submission);
-    query.join(submission.laboratory, laboratory);
     query.where(submissionSample.eq(sample));
     query.where(acquisition.in(msAnalysis.acquisitions));
     query.where(controlAcquisition.in(msAnalysis.acquisitions));
     query.where(controlAcquisition.sample.eq(sampleParam));
-    query.where(laboratory.managers.contains(user));
+    query.where(user.laboratory.eq(submission.laboratory));
+    query.where(user.eq(currentUser));
+    query.where(user.manager.eq(true));
     return query.fetchCount() > 0;
   }
 
@@ -457,10 +458,11 @@ public class AuthorizationService {
 
   private boolean isPlateLaboratoryManager(Plate plate) {
     JPAQuery<Long> query = queryFactory.select(submissionSample.id);
-    query.from(submissionSample, well);
+    query.from(submissionSample, well, user);
     query.join(submissionSample.originalContainer, sampleContainer);
-    query.join(submissionSample.submission.laboratory, laboratory);
-    query.where(laboratory.managers.contains(getCurrentUser()));
+    query.where(user.laboratory.eq(submissionSample.submission.laboratory));
+    query.where(user.eq(getCurrentUser()));
+    query.where(user.manager.eq(true));
     query.where(well.id.eq(sampleContainer.id));
     query.where(well.plate.eq(plate));
     return query.fetchCount() > 0;
@@ -484,20 +486,21 @@ public class AuthorizationService {
   }
 
   private boolean laboratoryManagerByMsAnalysis(MsAnalysis msAnalysisParam) {
-    User user = getCurrentUser();
-    if (user == null) {
+    User currentUser = getCurrentUser();
+    if (currentUser == null) {
       return false;
     }
 
     JPAQuery<Long> query = queryFactory.select(msAnalysis.id);
-    query.from(msAnalysis, acquisition, submissionSample);
+    query.from(msAnalysis, acquisition, submissionSample, user);
     query.join(acquisition.sample, sample);
     query.join(submissionSample.submission, submission);
-    query.join(submission.laboratory, laboratory);
     query.where(submissionSample.eq(sample));
     query.where(acquisition.in(msAnalysis.acquisitions));
     query.where(msAnalysis.eq(msAnalysisParam));
-    query.where(laboratory.managers.contains(user));
+    query.where(user.laboratory.eq(submission.laboratory));
+    query.where(user.eq(currentUser));
+    query.where(user.manager.eq(true));
     return query.fetchCount() > 0;
   }
 

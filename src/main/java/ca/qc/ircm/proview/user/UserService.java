@@ -30,7 +30,6 @@ import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -142,9 +141,8 @@ public class UserService {
       return false;
     }
 
-    BooleanExpression predicate =
-        user.valid.eq(true).and(user.active.eq(true)).and(user.admin.eq(false))
-            .and(user.email.eq(email)).and(user.laboratory.managers.contains(user));
+    BooleanExpression predicate = user.valid.eq(true).and(user.active.eq(true))
+        .and(user.admin.eq(false)).and(user.email.eq(email)).and(user.manager.eq(true));
     return repository.count(predicate) > 0;
   }
 
@@ -282,11 +280,11 @@ public class UserService {
   private void registerNewLaboratory(User manager, String password,
       RegisterUserWebContext webContext) {
     setUserPassword(manager, password);
+    manager.setManager(true);
     Laboratory laboratory = manager.getLaboratory();
     laboratory.setDirector(manager.getName());
-    laboratory.setManagers(new ArrayList<User>());
-    laboratory.getManagers().add(manager);
-    laboratoryRepository.saveAndFlush(laboratory);
+    laboratoryRepository.save(laboratory);
+    repository.saveAndFlush(manager);
 
     // Send email to admin users to inform them that a new laboratory has registered.
     try {
@@ -369,12 +367,25 @@ public class UserService {
    */
   public void update(User user, String newPassword) {
     authorizationService.checkUserWritePermission(user);
+    if (!user.isValid() && user.isManager()) {
+      User before = repository.findOne(user.getId());
+      if (!before.isManager()) {
+        throw new InvalidUserException();
+      }
+    }
 
     if (newPassword != null) {
       setUserPassword(user, newPassword);
     }
+    if (user.isManager()) {
+      user.setActive(true);
+    }
 
     repository.save(user);
+
+    if (repository.findAllByLaboratoryAndManagerTrue(user.getLaboratory()).isEmpty()) {
+      throw new UnmanagedLaboratoryException();
+    }
 
     if (authorizationService.hasManagerRole()) {
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
@@ -386,14 +397,12 @@ public class UserService {
   }
 
   private void updateDirectorName(Laboratory laboratory, User possibleDirector) {
-    long id =
-        laboratory.getManagers().stream().mapToLong(manager -> manager.getId()).min().orElse(-1);
-    if (possibleDirector != null && possibleDirector.getId() == id) {
-      laboratory.setDirector(possibleDirector.getName());
-    } else {
-      laboratory.getManagers().stream().filter(manager -> manager.getId() == id).findAny()
-          .ifPresent(director -> laboratory.setDirector(director.getName()));
-    }
+    repository.findAllByLaboratoryAndManagerTrue(laboratory).stream()
+        .mapToLong(manager -> manager.getId()).min().ifPresent(id -> {
+          User manager = repository.findOne(id);
+          laboratory.setDirector(manager.getName());
+        });
+    ;
   }
 
   /**
@@ -493,76 +502,6 @@ public class UserService {
   }
 
   /**
-   * Add user to laboratory's managers.
-   *
-   * @param laboratory
-   *          laboratory
-   * @param user
-   *          new manager
-   * @throws UserNotMemberOfLaboratoryException
-   *           if user is not a member of laboratory
-   * @throws InvalidUserException
-   *           user is invalid and cannot be a manager of laboratory
-   */
-  public void addManager(Laboratory laboratory, User user)
-      throws UserNotMemberOfLaboratoryException, InvalidUserException {
-    authorizationService.checkAdminRole();
-
-    laboratory = laboratoryRepository.findOne(laboratory.getId());
-    user = repository.findOne(user.getId());
-
-    if (!laboratory.equals(user.getLaboratory())) {
-      throw new UserNotMemberOfLaboratoryException();
-    }
-    if (!user.isValid()) {
-      throw new InvalidUserException();
-    }
-
-    if (!laboratory.getManagers().contains(user)) {
-      laboratory.getManagers().add(user);
-    }
-    user.setActive(true);
-    updateDirectorName(laboratory, null);
-    laboratoryRepository.save(laboratory);
-
-    cacheFlusher.flushShiroCache();
-  }
-
-  /**
-   * Remove manager from laboratory's managers.
-   *
-   * @param laboratory
-   *          laboratory
-   * @param manager
-   *          manager
-   * @throws UserNotMemberOfLaboratoryException
-   *           if manager is not a member of laboratory
-   * @throws UnmanagedLaboratoryException
-   *           if laboratory would have no more manager if manager is removed
-   */
-  public void removeManager(Laboratory laboratory, User manager)
-      throws UserNotMemberOfLaboratoryException, UnmanagedLaboratoryException {
-    authorizationService.checkAdminRole();
-
-    laboratory = laboratoryRepository.findOne(laboratory.getId());
-    manager = repository.findOne(manager.getId());
-
-    if (!laboratory.equals(manager.getLaboratory())) {
-      throw new UserNotMemberOfLaboratoryException();
-    }
-
-    if (laboratory.getManagers().contains(manager) && laboratory.getManagers().size() <= 1) {
-      throw new UnmanagedLaboratoryException();
-    } else {
-      laboratory.getManagers().remove(manager);
-    }
-    updateDirectorName(laboratory, null);
-    laboratoryRepository.save(laboratory);
-
-    cacheFlusher.flushShiroCache();
-  }
-
-  /**
    * Deletes invalid user from database.
    *
    * @param user
@@ -576,9 +515,8 @@ public class UserService {
       throw new DeleteValidUserException(user);
     }
 
-    boolean manager = user.getLaboratory().getManagers().contains(user);
     repository.delete(user);
-    if (manager) {
+    if (user.isManager()) {
       laboratoryRepository.delete(user.getLaboratory());
     }
 

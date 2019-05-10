@@ -36,7 +36,6 @@ DROP TABLE submissionfiles IF EXISTS;
 DROP TABLE gelimages IF EXISTS;
 DROP TABLE submission IF EXISTS;
 DROP TABLE forgotpassword IF EXISTS;
-DROP TABLE laboratorymanager IF EXISTS;
 DROP TABLE phonenumber IF EXISTS;
 DROP TABLE user IF EXISTS;
 DROP TABLE address IF EXISTS;

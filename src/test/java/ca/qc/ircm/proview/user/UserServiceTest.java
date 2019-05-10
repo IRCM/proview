@@ -160,6 +160,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(true, user.isManager());
   }
 
   @Test
@@ -202,6 +203,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(true, user.isManager());
   }
 
   @Test
@@ -388,8 +390,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(authorizationService).checkAdminRole();
     verify(authorizationService).getCurrentUser();
     verify(authenticationService).hashPassword("password");
-    Laboratory laboratory = laboratoryRepository.findOne(manager.getLaboratory().getId());
-    assertFalse(find(laboratory.getManagers(), user.getId()).isPresent());
     assertNotNull(user.getId());
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
@@ -414,6 +414,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(true, user.isAdmin());
+    assertEquals(false, user.isManager());
 
     verifyZeroInteractions(emailService);
   }
@@ -446,10 +447,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verifyZeroInteractions(authorizationService);
     verify(authenticationService).hashPassword("password");
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    assertEquals(2, laboratory.getManagers().size());
-    assertTrue(find(laboratory.getManagers(), 3L).isPresent());
-    assertTrue(find(laboratory.getManagers(), 27L).isPresent());
     assertNotNull(user.getId());
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
@@ -474,6 +471,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isManager());
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo("benoit.coulombe@ircm.qc.ca");
@@ -615,8 +613,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     laboratory = laboratoryRepository.findOne(laboratory.getId());
     assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Ribonucleoprotein Biochemistry", laboratory.getName());
-    assertEquals(1, laboratory.getManagers().size());
-    assertEquals(user.getId(), laboratory.getManagers().get(0).getId());
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
@@ -643,6 +639,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(true, user.isManager());
     verify(emailService, times(3)).htmlEmail();
     verify(emailService, times(3)).send(email);
     Set<String> subjects = new HashSet<>();
@@ -760,10 +757,11 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isManager());
   }
 
   @Test
-  public void update_Manager() throws Throwable {
+  public void update_CurrentManager() throws Throwable {
     when(authorizationService.hasManagerRole()).thenReturn(true);
     User user = repository.findOne(3L);
     detach(user);
@@ -826,6 +824,92 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(true, user.isManager());
+  }
+
+  @Test
+  public void update_AddManager() throws Throwable {
+    User user = repository.findOne(10L);
+    detach(user);
+    user.setManager(true);
+
+    service.update(user, null);
+
+    repository.flush();
+    verify(authorizationService).checkUserWritePermission(user);
+    user = repository.findOne(user.getId());
+    assertEquals(true, user.isManager());
+  }
+
+  @Test
+  public void update_AddInactiveManager() throws Throwable {
+    User user = repository.findOne(12L);
+    detach(user);
+    user.setManager(true);
+
+    service.update(user, null);
+
+    repository.flush();
+    verify(authorizationService).checkUserWritePermission(user);
+    user = repository.findOne(user.getId());
+    assertEquals(true, user.isActive());
+    assertEquals(true, user.isManager());
+  }
+
+  @Test(expected = InvalidUserException.class)
+  public void update_AddInvalidManager() throws Throwable {
+    User user = repository.findOne(7L);
+    detach(user);
+    user.setManager(true);
+
+    service.update(user, null);
+  }
+
+  @Test
+  public void update_AddManagerDirectorChange() throws Throwable {
+    User user = repository.findOne(10L);
+    detach(user);
+    user.setManager(true);
+
+    service.update(user, null);
+
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    assertEquals("Benoit Coulombe", laboratory.getDirector());
+  }
+
+  @Test
+  public void update_RemoveManager() throws Throwable {
+    User user = repository.findOne(27L);
+    detach(user);
+    user.setManager(false);
+
+    service.update(user, null);
+
+    repository.flush();
+    verify(authorizationService).checkUserWritePermission(user);
+    user = repository.findOne(user.getId());
+    assertEquals(false, user.isManager());
+  }
+
+  @Test(expected = UnmanagedLaboratoryException.class)
+  public void update_RemoveManagerUnmanagedLaboratory() throws Throwable {
+    User user = repository.findOne(25L);
+    detach(user);
+    user.setManager(false);
+
+    service.update(user, null);
+  }
+
+  @Test
+  public void update_RemoveManagerDirectorChange() throws Throwable {
+    User user = repository.findOne(27L);
+    detach(user);
+    user.setManager(false);
+
+    service.update(user, null);
+
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test
@@ -882,6 +966,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isManager());
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo(user.getEmail());
@@ -953,6 +1038,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isManager());
   }
 
   @Test
@@ -969,6 +1055,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(false, user.isManager());
   }
 
   @Test
@@ -985,6 +1072,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
+    assertEquals(true, user.isManager());
   }
 
   @Test
@@ -1001,6 +1089,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(true, user.isAdmin());
+    assertEquals(false, user.isManager());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1010,199 +1099,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
 
     service.deactivate(user);
-  }
-
-  @Test
-  public void addManagerAdmin() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(1L);
-    User user = repository.findOne(5L);
-    detach(laboratory, user);
-
-    service.addManager(laboratory, user);
-
-    laboratoryRepository.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(cacheFlusher).flushShiroCache();
-    laboratory = laboratoryRepository.findOne(1L);
-    List<User> testManagers = laboratory.getManagers();
-    assertTrue(find(testManagers, user.getId()).isPresent());
-  }
-
-  @Test
-  public void addManager() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    User user = repository.findOne(10L);
-    detach(laboratory, user);
-    List<User> managers = laboratory.getManagers();
-    assertEquals(false, managers.contains(user));
-
-    service.addManager(laboratory, user);
-
-    laboratoryRepository.flush();
-    verify(authorizationService).checkAdminRole();
-    verify(cacheFlusher).flushShiroCache();
-    laboratory = laboratoryRepository.findOne(2L);
-    List<User> testManagers = laboratory.getManagers();
-    assertTrue(find(testManagers, user.getId()).isPresent());
-  }
-
-  @Test
-  public void addManager_InactivatedUser() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    User user = repository.findOne(12L);
-    detach(laboratory, user);
-    List<User> managers = laboratory.getManagers();
-    assertEquals(false, managers.contains(user));
-    assertEquals(false, user.isActive());
-
-    service.addManager(laboratory, user);
-
-    laboratoryRepository.flush();
-    verify(authorizationService).checkAdminRole();
-    laboratory = laboratoryRepository.findOne(2L);
-    List<User> testManagers = laboratory.getManagers();
-    User testUser = repository.findOne(12L);
-    assertTrue(find(testManagers, user.getId()).isPresent());
-    assertEquals(true, testUser.isActive());
-  }
-
-  @Test
-  public void addManager_AlreadyManager() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    User user = repository.findOne(3L);
-    detach(laboratory, user);
-    List<User> managers = laboratory.getManagers();
-    assertTrue(find(managers, user.getId()).isPresent());
-
-    service.addManager(laboratory, user);
-
-    laboratoryRepository.flush();
-    verify(authorizationService).checkAdminRole();
-    laboratory = laboratoryRepository.findOne(2L);
-    List<User> testManagers = laboratory.getManagers();
-    assertTrue(find(testManagers, user.getId()).isPresent());
-  }
-
-  @Test(expected = UserNotMemberOfLaboratoryException.class)
-  public void addManager_WrongLaboratory() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    User user = repository.findOne(2L);
-    detach(laboratory, user);
-
-    service.addManager(laboratory, user);
-  }
-
-  @Test(expected = InvalidUserException.class)
-  public void addManager_Invalid() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    User user = repository.findOne(7L);
-    detach(laboratory, user);
-
-    service.addManager(laboratory, user);
-  }
-
-  @Test
-  public void addManager_DirectorChange() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    laboratory.setDirector("Test");
-    laboratoryRepository.save(laboratory);
-    User user = repository.findOne(10L);
-    detach(laboratory, user);
-
-    service.addManager(laboratory, user);
-
-    laboratoryRepository.flush();
-    laboratory = laboratoryRepository.findOne(2L);
-    assertEquals("Benoit Coulombe", laboratory.getDirector());
-  }
-
-  @Test
-  public void removeManagerAdmin() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(1L);
-    User user = repository.findOne(2L);
-    detach(laboratory, user);
-
-    service.removeManager(laboratory, user);
-
-    laboratoryRepository.flush();
-    verify(authorizationService).checkAdminRole();
-    laboratory = laboratoryRepository.findOne(1L);
-    verify(cacheFlusher).flushShiroCache();
-    List<User> testManagers = laboratory.getManagers();
-    assertFalse(find(testManagers, user.getId()).isPresent());
-  }
-
-  @Test
-  public void removeManager_UnmanagedLaboratory() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(3L);
-    User user = repository.findOne(6L);
-    detach(laboratory, user);
-
-    try {
-      service.removeManager(laboratory, user);
-      fail("Expected UnmanagedLaboratoryException");
-    } catch (UnmanagedLaboratoryException e) {
-      // Ignore.
-    }
-  }
-
-  @Test
-  public void removeManager() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    User user = repository.findOne(27L);
-    detach(laboratory, user);
-    List<User> managers = laboratory.getManagers();
-    assertTrue(find(managers, user.getId()).isPresent());
-
-    service.removeManager(laboratory, user);
-
-    laboratoryRepository.flush();
-    verify(authorizationService).checkAdminRole();
-    laboratory = laboratoryRepository.findOne(2L);
-    verify(cacheFlusher).flushShiroCache();
-    List<User> testManagers = laboratory.getManagers();
-    assertFalse(find(testManagers, user.getId()).isPresent());
-  }
-
-  @Test
-  public void removeManager_AlreadyNotManager() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    User user = repository.findOne(10L);
-    detach(laboratory, user);
-    List<User> managers = laboratory.getManagers();
-    assertEquals(false, managers.contains(user));
-
-    service.removeManager(laboratory, user);
-
-    laboratoryRepository.flush();
-    verify(authorizationService).checkAdminRole();
-    laboratory = laboratoryRepository.findOne(2L);
-    List<User> testManagers = laboratory.getManagers();
-    assertFalse(find(testManagers, user.getId()).isPresent());
-  }
-
-  @Test(expected = UserNotMemberOfLaboratoryException.class)
-  public void removeManager_WrongLaboratory() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    User user = repository.findOne(2L);
-    detach(laboratory, user);
-
-    service.removeManager(laboratory, user);
-  }
-
-  @Test
-  public void removeManager_DirectorChange() throws Exception {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    laboratory.setDirector("Test");
-    laboratoryRepository.saveAndFlush(laboratory);
-    User user = repository.findOne(27L);
-    detach(laboratory, user);
-
-    service.removeManager(laboratory, user);
-
-    laboratoryRepository.flush();
-    laboratory = laboratoryRepository.findOne(2L);
-    assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test

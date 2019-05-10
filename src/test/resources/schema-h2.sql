@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS user (
   active tinyint(1) NOT NULL DEFAULT '0',
   valid tinyint(1) NOT NULL DEFAULT '0',
   admin tinyint(1) NOT NULL DEFAULT '0',
+  manager tinyint(1) NOT NULL DEFAULT '0',
   registertime datetime NOT NULL,
   laboratory_id bigint(20) NOT NULL,
   PRIMARY KEY (id),
