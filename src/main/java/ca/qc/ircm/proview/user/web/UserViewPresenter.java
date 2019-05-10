@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user.web;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.utils.MessageResource;
 import javax.annotation.security.RolesAllowed;
@@ -35,7 +36,7 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@RolesAllowed({ "USER" })
+@RolesAllowed({ UserRole.USER })
 public class UserViewPresenter {
   public static final String TITLE = "title";
   public static final String HEADER = "header";

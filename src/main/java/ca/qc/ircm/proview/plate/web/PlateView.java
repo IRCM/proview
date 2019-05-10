@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.plate.web;
 
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
@@ -29,7 +30,7 @@ import javax.inject.Inject;
  * Plate view.
  */
 @SpringView(name = PlateView.VIEW_NAME)
-@RolesAllowed("USER")
+@RolesAllowed(UserRole.USER)
 public class PlateView extends CustomComponent implements BaseView {
   public static final String VIEW_NAME = "plate";
   private static final long serialVersionUID = -7006664525905554582L;

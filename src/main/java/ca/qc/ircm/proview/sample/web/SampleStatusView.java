@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.sample.web;
 
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -30,7 +31,7 @@ import javax.inject.Inject;
  * Updates sample statuses.
  */
 @SpringView(name = SampleStatusView.VIEW_NAME)
-@RolesAllowed({ "ADMIN" })
+@RolesAllowed({ UserRole.ADMIN })
 public class SampleStatusView extends CustomComponent implements BaseView, SavedSamplesComponent {
   private static final long serialVersionUID = -2790503384190960260L;
   public static final String VIEW_NAME = "samples/status";

@@ -54,6 +54,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class AuthorizationServiceTest {
+  private static final String ADMIN = UserRole.ADMIN;
+  private static final String MANAGER = UserRole.MANAGER;
+  private static final String USER = UserRole.USER;
   @Inject
   private AuthorizationService authorizationService;
   private Subject subject;
@@ -154,7 +157,7 @@ public class AuthorizationServiceTest {
 
     boolean hasRole = authorizationService.hasAdminRole();
 
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(ADMIN);
     assertEquals(false, hasRole);
   }
 
@@ -164,7 +167,7 @@ public class AuthorizationServiceTest {
 
     boolean hasRole = authorizationService.hasAdminRole();
 
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(ADMIN);
     assertEquals(true, hasRole);
   }
 
@@ -174,7 +177,7 @@ public class AuthorizationServiceTest {
 
     boolean hasRole = authorizationService.hasManagerRole();
 
-    verify(subject).hasRole("MANAGER");
+    verify(subject).hasRole(MANAGER);
     assertEquals(false, hasRole);
   }
 
@@ -184,7 +187,7 @@ public class AuthorizationServiceTest {
 
     boolean hasRole = authorizationService.hasManagerRole();
 
-    verify(subject).hasRole("MANAGER");
+    verify(subject).hasRole(MANAGER);
     assertEquals(true, hasRole);
   }
 
@@ -194,7 +197,7 @@ public class AuthorizationServiceTest {
 
     boolean hasRole = authorizationService.hasUserRole();
 
-    verify(subject).hasRole("USER");
+    verify(subject).hasRole(USER);
     assertEquals(false, hasRole);
   }
 
@@ -204,7 +207,7 @@ public class AuthorizationServiceTest {
 
     boolean hasRole = authorizationService.hasUserRole();
 
-    verify(subject).hasRole("USER");
+    verify(subject).hasRole(USER);
     assertEquals(true, hasRole);
   }
 
@@ -212,7 +215,7 @@ public class AuthorizationServiceTest {
   public void checkAdminRole_Admin() {
     authorizationService.checkAdminRole();
 
-    verify(subject).checkRole("ADMIN");
+    verify(subject).checkRole(ADMIN);
   }
 
   @Test
@@ -226,14 +229,14 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("ADMIN");
+    verify(subject).checkRole(ADMIN);
   }
 
   @Test
   public void checkUserRole_User() {
     authorizationService.checkUserRole();
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
@@ -247,7 +250,7 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
@@ -279,8 +282,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkLaboratoryReadPermission(laboratory);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -295,7 +298,7 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
@@ -304,8 +307,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkLaboratoryReadPermission(laboratory);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).checkPermission("laboratory:read:2");
   }
 
@@ -321,8 +324,8 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).checkPermission("laboratory:read:2");
   }
 
@@ -385,8 +388,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkLaboratoryManagerPermission(laboratory);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -401,7 +404,7 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
@@ -410,8 +413,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkLaboratoryManagerPermission(laboratory);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).checkPermission("laboratory:manager:2");
   }
 
@@ -427,8 +430,8 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).checkPermission("laboratory:manager:2");
   }
 
@@ -446,8 +449,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkUserReadPermission(user);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -463,7 +466,7 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
@@ -473,8 +476,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkUserReadPermission(user);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:1");
     verify(subject).checkPermission("user:read:5");
   }
@@ -488,8 +491,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkUserReadPermission(user);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
@@ -506,8 +509,8 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).checkPermission("user:read:10");
   }
@@ -527,8 +530,8 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasUserWritePermission(user);
 
     assertTrue(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -540,12 +543,12 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasUserWritePermission(user);
 
     assertFalse(value);
-    verify(subject).hasRole("USER");
+    verify(subject).hasRole(USER);
   }
 
   @Test
   public void hasUserWritePermission_LaboratoryManager() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     User user = new User(10L);
@@ -554,14 +557,14 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasUserWritePermission(user);
 
     assertTrue(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
   @Test
   public void hasUserWritePermission_CanWrite() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("user:write:10")).thenReturn(true);
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
@@ -569,15 +572,15 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasUserWritePermission(user);
 
     assertTrue(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).isPermitted("user:write:10");
   }
 
   @Test
   public void hasUserWritePermission_CannotWrite() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
@@ -585,8 +588,8 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasUserWritePermission(user);
 
     assertFalse(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).isPermitted("user:write:10");
   }
@@ -607,8 +610,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkUserWritePermission(user);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -624,12 +627,12 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
   public void checkUserWritePermission_LaboratoryManager() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     User user = new User(10L);
@@ -637,29 +640,29 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkUserWritePermission(user);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
   @Test
   public void checkUserWritePermission_CanWrite() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("user:write:10")).thenReturn(true);
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
 
     authorizationService.checkUserWritePermission(user);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).isPermitted("user:write:10");
   }
 
   @Test
   public void checkUserWritePermission_CannotWrite() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
@@ -671,8 +674,8 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).checkPermission("user:write:10");
   }
@@ -690,8 +693,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSampleReadPermission(sample);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -706,7 +709,7 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
@@ -717,8 +720,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSampleReadPermission(sample);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -729,8 +732,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSampleReadPermission(sample);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
@@ -746,8 +749,8 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).checkPermission("sample:owner:446");
   }
@@ -760,8 +763,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSampleReadPermission(sample);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -776,7 +779,7 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
@@ -787,8 +790,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSampleReadPermission(sample);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -799,8 +802,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSampleReadPermission(sample);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -816,8 +819,8 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).checkPermission("sample:owner:444");
   }
 
@@ -834,8 +837,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSubmissionReadPermission(submission);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -850,7 +853,7 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
@@ -861,8 +864,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSubmissionReadPermission(submission);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -873,8 +876,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSubmissionReadPermission(submission);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
@@ -890,8 +893,8 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).checkPermission("submission:owner:35");
   }
@@ -910,8 +913,8 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertTrue(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -923,8 +926,8 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertTrue(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -934,64 +937,64 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertFalse(value);
-    verify(subject).hasRole("USER");
+    verify(subject).hasRole(USER);
   }
 
   @Test
   @WithSubject(userId = 10)
   public void hasSubmissionWritePermission_SubmissionOwner_ToApprove() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     Submission submission = new Submission(36L);
 
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertTrue(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
   @WithSubject(userId = 10)
   public void hasSubmissionWritePermission_SubmissionOwner_Approved() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     Submission submission = new Submission(164L);
 
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertTrue(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
   @WithSubject(userId = 10)
   public void hasSubmissionWritePermission_SubmissionOwner_Received() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     Submission submission = new Submission(161L);
 
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertFalse(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
   @WithSubject(userId = 10)
   public void hasSubmissionWritePermission_SubmissionOwner_Analysed() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     Submission submission = new Submission(156L);
 
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertFalse(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
   public void hasSubmissionWritePermission_LaboratoryManager_ToApprove() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(36L);
@@ -999,42 +1002,42 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertTrue(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
   @Test
   public void hasSubmissionWritePermission_LaboratoryManager_Approved() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
     Submission submission = new Submission(164L);
 
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertTrue(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
   @Test
   public void hasSubmissionWritePermission_LaboratoryManager_Received() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
     Submission submission = new Submission(161L);
 
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertFalse(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
   @Test
   public void hasSubmissionWritePermission_LaboratoryManager_Analysed() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(156L);
@@ -1042,22 +1045,22 @@ public class AuthorizationServiceTest {
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertFalse(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
   @Test
   public void hasSubmissionWritePermission_Other() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(false);
     Submission submission = new Submission(36L);
 
     boolean value = authorizationService.hasSubmissionWritePermission(submission);
 
     assertFalse(value);
-    verify(subject).hasRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
@@ -1076,8 +1079,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSubmissionWritePermission(submission);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -1088,8 +1091,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkSubmissionWritePermission(submission);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -1104,26 +1107,26 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
   @WithSubject(userId = 10)
   public void checkSubmissionWritePermission_SubmissionOwner_ToApprove() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(36L);
 
     authorizationService.checkSubmissionWritePermission(submission);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
   @WithSubject(userId = 10)
   public void checkSubmissionWritePermission_SubmissionOwner_Analysed() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(156L);
 
@@ -1134,27 +1137,27 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
   public void checkSubmissionWritePermission_LaboratoryManager_ToApprove() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(36L);
 
     authorizationService.checkSubmissionWritePermission(submission);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
   @Test
   public void checkSubmissionWritePermission_LaboratoryManager_Analysed() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(156L);
@@ -1166,14 +1169,14 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
   }
 
   @Test
   public void checkSubmissionWritePermission_Other() {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
 
     Submission submission = new Submission(36L);
@@ -1184,8 +1187,8 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).isPermitted("laboratory:manager:2");
     verify(subject).checkPermission("submission:owner:36");
   }
@@ -1203,7 +1206,7 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkPlateReadPermission(plate);
 
-    verify(subject).hasRole("ADMIN");
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -1222,7 +1225,7 @@ public class AuthorizationServiceTest {
   @Test
   @WithSubject(userId = 10)
   public void checkPlateReadPermission_UserOwner() throws Exception {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Plate plate = new Plate(123L);
 
@@ -1232,7 +1235,7 @@ public class AuthorizationServiceTest {
   @Test
   @WithSubject(userId = 10)
   public void checkPlateReadPermission_UserNotOwner() throws Exception {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Plate plate = new Plate(26L);
 
@@ -1247,21 +1250,21 @@ public class AuthorizationServiceTest {
   @Test
   @WithSubject(userId = 3)
   public void checkPlateReadPermission_LaboratoryManagerOwner() throws Exception {
-    when(subject.hasRole("USER")).thenReturn(true);
-    when(subject.hasRole("MANAGER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
+    when(subject.hasRole(MANAGER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Plate plate = new Plate(123L);
 
     authorizationService.checkPlateReadPermission(plate);
 
-    verify(subject).hasRole("MANAGER");
+    verify(subject).hasRole(MANAGER);
   }
 
   @Test
   @WithSubject(userId = 3)
   public void checkPlateReadPermission_LaboratoryManagerNotOwner() throws Exception {
-    when(subject.hasRole("USER")).thenReturn(true);
-    when(subject.hasRole("MANAGER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
+    when(subject.hasRole(MANAGER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Plate plate = new Plate(26L);
 
@@ -1276,7 +1279,7 @@ public class AuthorizationServiceTest {
   @Test
   @WithSubject(userId = 6)
   public void checkPlateReadPermission_Other() throws Exception {
-    when(subject.hasRole("USER")).thenReturn(true);
+    when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Plate plate = new Plate(123L);
 
@@ -1301,8 +1304,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkMsAnalysisReadPermission(msAnalysis);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -1317,7 +1320,7 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
+    verify(subject).checkRole(USER);
   }
 
   @Test
@@ -1328,8 +1331,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkMsAnalysisReadPermission(msAnalysis);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -1340,8 +1343,8 @@ public class AuthorizationServiceTest {
 
     authorizationService.checkMsAnalysisReadPermission(msAnalysis);
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
   }
 
   @Test
@@ -1357,8 +1360,8 @@ public class AuthorizationServiceTest {
       // Ignore.
     }
 
-    verify(subject).checkRole("USER");
-    verify(subject).hasRole("ADMIN");
+    verify(subject).checkRole(USER);
+    verify(subject).hasRole(ADMIN);
     verify(subject).checkPermission("msAnalysis:read:13");
   }
 

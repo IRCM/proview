@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.msanalysis.web;
 
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.component.SavedContainersComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -30,7 +31,7 @@ import javax.inject.Inject;
  * Dilution view.
  */
 @SpringView(name = MsAnalysisView.VIEW_NAME)
-@RolesAllowed({ "ADMIN" })
+@RolesAllowed({ UserRole.ADMIN })
 public class MsAnalysisView extends CustomComponent implements BaseView, SavedContainersComponent {
   public static final String VIEW_NAME = "msanalysis";
   private static final long serialVersionUID = 6117296449537842206L;

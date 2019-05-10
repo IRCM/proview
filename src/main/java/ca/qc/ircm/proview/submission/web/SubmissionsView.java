@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.component.SavedContainersComponent;
 import ca.qc.ircm.proview.web.component.SavedSamplesComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
@@ -30,7 +31,7 @@ import javax.inject.Inject;
  * Submissions view.
  */
 @SpringView(name = SubmissionsView.VIEW_NAME)
-@RolesAllowed({ "USER" })
+@RolesAllowed({ UserRole.USER })
 public class SubmissionsView extends CustomComponent
     implements BaseView, SavedSamplesComponent, SavedContainersComponent {
   public static final String VIEW_NAME = "submissions";

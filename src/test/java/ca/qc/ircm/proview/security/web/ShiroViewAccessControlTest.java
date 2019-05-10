@@ -39,6 +39,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class ShiroViewAccessControlTest {
+  private static final String USER = ca.qc.ircm.proview.user.UserRole.USER;
+  private static final String ADMIN = ca.qc.ircm.proview.user.UserRole.ADMIN;
   private ShiroViewAccessControl accessControl;
   @Mock
   private ApplicationContext applicationContext;
@@ -70,13 +72,13 @@ public class ShiroViewAccessControlTest {
   public void isAccessGranted_User_True() {
     String beanname = UserRole.class.getName();
     when(applicationContext.getType(any())).thenAnswer(i -> UserRole.class);
-    when(getSubject().hasRole("USER")).thenReturn(true);
+    when(getSubject().hasRole(USER)).thenReturn(true);
 
     boolean granted = accessControl.isAccessGranted(ui, beanname);
 
     assertTrue(granted);
     verify(applicationContext).getType(beanname);
-    verify(getSubject()).hasRole("USER");
+    verify(getSubject()).hasRole(USER);
   }
 
   @Test
@@ -88,20 +90,20 @@ public class ShiroViewAccessControlTest {
 
     assertFalse(granted);
     verify(applicationContext).getType(beanname);
-    verify(getSubject()).hasRole("USER");
+    verify(getSubject()).hasRole(USER);
   }
 
   @Test
   public void isAccessGranted_Admin_True() {
     String beanname = AdminRole.class.getName();
     when(applicationContext.getType(any())).thenAnswer(i -> AdminRole.class);
-    when(getSubject().hasRole("ADMIN")).thenReturn(true);
+    when(getSubject().hasRole(ADMIN)).thenReturn(true);
 
     boolean granted = accessControl.isAccessGranted(ui, beanname);
 
     assertTrue(granted);
     verify(applicationContext).getType(beanname);
-    verify(getSubject()).hasRole("ADMIN");
+    verify(getSubject()).hasRole(ADMIN);
   }
 
   @Test
@@ -113,34 +115,34 @@ public class ShiroViewAccessControlTest {
 
     assertFalse(granted);
     verify(applicationContext).getType(beanname);
-    verify(getSubject()).hasRole("ADMIN");
+    verify(getSubject()).hasRole(ADMIN);
   }
 
   @Test
   public void isAccessGranted_UserOrAdmin_UserTrue() {
     String beanname = UserOrAdminRole.class.getName();
     when(applicationContext.getType(any())).thenAnswer(i -> UserOrAdminRole.class);
-    when(getSubject().hasRole("USER")).thenReturn(true);
+    when(getSubject().hasRole(USER)).thenReturn(true);
 
     boolean granted = accessControl.isAccessGranted(ui, beanname);
 
     assertTrue(granted);
     verify(applicationContext).getType(beanname);
-    verify(getSubject()).hasRole("USER");
+    verify(getSubject()).hasRole(USER);
   }
 
   @Test
   public void isAccessGranted_UserOrAdmin_AdminTrue() {
     String beanname = UserOrAdminRole.class.getName();
     when(applicationContext.getType(any())).thenAnswer(i -> UserOrAdminRole.class);
-    when(getSubject().hasRole("ADMIN")).thenReturn(true);
+    when(getSubject().hasRole(ADMIN)).thenReturn(true);
 
     boolean granted = accessControl.isAccessGranted(ui, beanname);
 
     assertTrue(granted);
     verify(applicationContext).getType(beanname);
-    verify(getSubject()).hasRole("USER");
-    verify(getSubject()).hasRole("ADMIN");
+    verify(getSubject()).hasRole(USER);
+    verify(getSubject()).hasRole(ADMIN);
   }
 
   @Test
@@ -152,22 +154,22 @@ public class ShiroViewAccessControlTest {
 
     assertFalse(granted);
     verify(applicationContext).getType(beanname);
-    verify(getSubject()).hasRole("USER");
-    verify(getSubject()).hasRole("ADMIN");
+    verify(getSubject()).hasRole(USER);
+    verify(getSubject()).hasRole(ADMIN);
   }
 
   public static class NoRoles {
   }
 
-  @RolesAllowed("USER")
+  @RolesAllowed(USER)
   public static class UserRole {
   }
 
-  @RolesAllowed("ADMIN")
+  @RolesAllowed(ADMIN)
   public static class AdminRole {
   }
 
-  @RolesAllowed({ "USER", "ADMIN" })
+  @RolesAllowed({ USER, ADMIN })
   public static class UserOrAdminRole {
   }
 }

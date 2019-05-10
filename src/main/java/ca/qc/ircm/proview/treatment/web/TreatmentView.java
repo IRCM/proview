@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.treatment.web;
 
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.component.SavedContainersComponent;
 import ca.qc.ircm.proview.web.view.BaseView;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -13,7 +14,7 @@ import javax.inject.Inject;
  * Treatment view.
  */
 @SpringView(name = TreatmentView.VIEW_NAME)
-@RolesAllowed({ "ADMIN" })
+@RolesAllowed({ UserRole.ADMIN })
 public class TreatmentView extends CustomComponent implements BaseView, SavedContainersComponent {
   public static final String VIEW_NAME = "treatment";
   private static final long serialVersionUID = -1530151615569179054L;
