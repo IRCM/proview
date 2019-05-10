@@ -32,7 +32,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -123,8 +122,8 @@ public class User implements Data, Named, Serializable {
   /**
    * User's laboratory.
    */
-  @ManyToOne
-  @JoinTable(name = "laboratoryuser", joinColumns = @JoinColumn(name = "user_id"))
+  @ManyToOne(optional = false)
+  @JoinColumn
   private Laboratory laboratory;
   /**
    * Address.

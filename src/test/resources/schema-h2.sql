@@ -46,8 +46,10 @@ CREATE TABLE IF NOT EXISTS user (
   valid tinyint(1) NOT NULL DEFAULT '0',
   admin tinyint(1) NOT NULL DEFAULT '0',
   registertime datetime NOT NULL,
+  laboratory_id bigint(20) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY useremail (email),
+  CONSTRAINT userLaboratory_ibfk FOREIGN KEY (laboratory_id) REFERENCES laboratory (id) ON UPDATE CASCADE,
   CONSTRAINT user_ibfk_1 FOREIGN KEY (address_id) REFERENCES address (id) ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS phonenumber (
@@ -58,15 +60,6 @@ CREATE TABLE IF NOT EXISTS phonenumber (
   extension varchar(20) DEFAULT NULL,
   PRIMARY KEY (id),
   CONSTRAINT phonenumber_ibfk_1 FOREIGN KEY (phonenumbers_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-CREATE TABLE IF NOT EXISTS laboratoryuser (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  user_id bigint(20) NOT NULL,
-  laboratory_id bigint(20) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (user_id,laboratory_id),
-  CONSTRAINT laboratoryuser_ibfk_1 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT laboratoryuser_ibfk_2 FOREIGN KEY (laboratory_id) REFERENCES laboratory (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS laboratorymanager (
   id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
