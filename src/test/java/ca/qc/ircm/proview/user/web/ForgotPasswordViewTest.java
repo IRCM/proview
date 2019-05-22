@@ -21,21 +21,19 @@ import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.SAVED;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.security.PasswordVersion;
-import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import javax.inject.Inject;
-import org.apache.shiro.codec.Hex;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,7 +42,7 @@ public class ForgotPasswordViewTest extends ForgotPasswordPageObject {
   @Inject
   private UserRepository userRepository;
   @Inject
-  private SecurityConfiguration securityConfiguration;
+  private PasswordEncoder passwordEncoder;
   @Value("${spring.application.name}")
   private String applicationName;
   private String password = "unittestpassword";
@@ -94,12 +92,9 @@ public class ForgotPasswordViewTest extends ForgotPasswordPageObject {
 
     assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
     User user = userRepository.findOne(10L);
-    PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
-    assertNotNull(user.getSalt());
-    SimpleHash hash = new SimpleHash(passwordVersion.getAlgorithm(), password,
-        Hex.decode(user.getSalt()), passwordVersion.getIterations());
-    assertEquals(hash.toHex(), user.getHashedPassword());
-    assertEquals((Integer) passwordVersion.getVersion(), user.getPasswordVersion());
+    assertEquals(passwordEncoder.encode(password), user.getHashedPassword());
+    assertNull(user.getSalt());
+    assertNull(user.getPasswordVersion());
     NotificationElement notification = $(NotificationElement.class).first();
     assertEquals("tray_notification", notification.getType());
     assertNotNull(notification.getCaption());

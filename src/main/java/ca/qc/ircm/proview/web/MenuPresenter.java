@@ -19,16 +19,14 @@ package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.plate.web.PlatesView;
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.user.web.SigninView;
-import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.UI;
 import java.util.Locale;
 import javax.inject.Inject;
 import org.slf4j.Logger;
@@ -69,16 +67,8 @@ public class MenuPresenter {
   private MenuItem signin;
   @Inject
   private AuthorizationService authorizationService;
-  @Inject
-  private AuthenticationService authenticationService;
 
   protected MenuPresenter() {
-  }
-
-  protected MenuPresenter(AuthorizationService authorizationService,
-      AuthenticationService authenticationService) {
-    this.authorizationService = authorizationService;
-    this.authenticationService = authenticationService;
   }
 
   /**
@@ -149,18 +139,12 @@ public class MenuPresenter {
 
   private void stopSignas() {
     logger.debug("Stop sign as user {}", authorizationService.getCurrentUser());
-    authenticationService.stopRunAs();
-    changeView(MainView.VIEW_NAME);
+    view.getUI().getPage().setLocation(WebSecurityConfiguration.SWITCH_USER_EXIT_URL);
   }
 
   private void signout() {
     logger.debug("Signout user {}", authorizationService.getCurrentUser());
-    UI ui = view.getUI();
-    if (ui instanceof MainUi) {
-      String signoutUrl = ((MainUi) ui).getServletContext().getContextPath();
-      signoutUrl += SignoutFilter.SIGNOUT_URL;
-      ui.getPage().setLocation(signoutUrl);
-    }
+    view.getUI().getPage().setLocation(WebSecurityConfiguration.SIGNOUT_URL);
   }
 
   private void changeLanguage() {

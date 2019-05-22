@@ -19,8 +19,6 @@ package ca.qc.ircm.proview.user;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.security.AuthenticationService;
-import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.utils.MessageResource;
 import java.time.Instant;
 import java.time.Period;
@@ -28,10 +26,11 @@ import java.util.Locale;
 import java.util.Random;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
@@ -53,7 +52,7 @@ public class ForgotPasswordService {
   @Inject
   private UserRepository userRepository;
   @Inject
-  private AuthenticationService authenticatingService;
+  private PasswordEncoder passwordEncoder;
   @Inject
   private TemplateEngine emailTemplateEngine;
   @Inject
@@ -109,8 +108,8 @@ public class ForgotPasswordService {
     forgotPassword.setConfirmNumber(rand);
 
     User user = userRepository.findByEmail(email);
-    if (authenticatingService.isRobot(user.getId())) {
-      throw new UnauthorizedException("Cannot change password for robot");
+    if (user.getId() == User.ROBOT_ID) {
+      throw new AccessDeniedException("Cannot change password for robot");
     }
     forgotPassword.setUser(user);
     repository.saveAndFlush(forgotPassword);
@@ -172,11 +171,12 @@ public class ForgotPasswordService {
     User user = forgotPassword.getUser();
 
     // Encrypt password.
-    HashedPassword hashedPassword = authenticatingService.hashPassword(newPassword);
+    String hashedPassword = passwordEncoder.encode(newPassword);
     // Update password.
     user = userRepository.findOne(user.getId());
-    user.setHashedPassword(hashedPassword.getPassword());
-    user.setSalt(hashedPassword.getSalt());
+    user.setHashedPassword(hashedPassword);
+    user.setSalt(null);
+    user.setPasswordVersion(null);
     userRepository.save(user);
 
     // Tag ForgotPassword has being used.

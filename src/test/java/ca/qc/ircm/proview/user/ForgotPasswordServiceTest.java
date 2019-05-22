@@ -29,15 +29,12 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.security.AuthenticationService;
-import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.utils.MessageResource;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import javax.inject.Inject;
-import org.apache.shiro.authz.AuthorizationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +47,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.util.StringUtils;
 
@@ -69,12 +68,12 @@ public class ForgotPasswordServiceTest {
   @MockBean
   private EmailService emailService;
   @MockBean
-  private AuthenticationService authenticationService;
+  private PasswordEncoder passwordEncoder;
   @Mock
   private MimeMessageHelper email;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
-  private HashedPassword hashedPassword;
+  private String hashedPassword;
   private User user;
   private Integer confirmNumber;
   private String forgotPasswordUrl = "/validate/user";
@@ -91,8 +90,8 @@ public class ForgotPasswordServiceTest {
         return forgotPasswordUrl;
       }
     });
-    hashedPassword = new HashedPassword("da78f3a74658706", "4ae8470fc73a83f369fed012", 1);
-    when(authenticationService.hashPassword(any(String.class))).thenReturn(hashedPassword);
+    hashedPassword = "da78f3a74658706/4ae8470fc73a83f369fed012";
+    when(passwordEncoder.encode(any(String.class))).thenReturn(hashedPassword);
     when(emailService.htmlEmail()).thenReturn(email);
     confirmNumber = 70987756;
   }
@@ -145,12 +144,12 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void insert_Robot() throws Exception {
-    when(authenticationService.isRobot(any(Long.class))).thenReturn(true);
+    user = userRepository.findOne(1L);
 
     try {
       service.insert(user.getEmail(), forgotPasswordWebContext());
-      fail("Expected AuthorizationException");
-    } catch (AuthorizationException e) {
+      fail("Expected AccessDeniedException");
+    } catch (AccessDeniedException e) {
       // Ignore.
     }
   }
@@ -218,11 +217,11 @@ public class ForgotPasswordServiceTest {
 
     repository.flush();
     assertNull(service.get(forgotPassword.getId(), forgotPassword.getConfirmNumber()));
-    verify(authenticationService).hashPassword("abc");
+    verify(passwordEncoder).encode("abc");
     User user = forgotPassword.getUser();
-    assertEquals(hashedPassword.getPassword(), user.getHashedPassword());
-    assertEquals(hashedPassword.getSalt(), user.getSalt());
-    assertEquals((Integer) hashedPassword.getPasswordVersion(), user.getPasswordVersion());
+    assertEquals(hashedPassword, user.getHashedPassword());
+    assertNull(user.getSalt());
+    assertNull(user.getPasswordVersion());
   }
 
   @Test

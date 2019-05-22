@@ -38,10 +38,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
-public class ShiroViewAccessControlTest {
+public class SpringViewAccessControlTest {
   private static final String USER = ca.qc.ircm.proview.user.UserRole.USER;
   private static final String ADMIN = ca.qc.ircm.proview.user.UserRole.ADMIN;
-  private ShiroViewAccessControl accessControl;
+  private SpringViewAccessControl accessControl;
   @Mock
   private ApplicationContext applicationContext;
   @Mock
@@ -49,7 +49,7 @@ public class ShiroViewAccessControlTest {
 
   @Before
   public void beforeTest() {
-    accessControl = new ShiroViewAccessControl(applicationContext);
+    accessControl = new SpringViewAccessControl(applicationContext);
   }
 
   private Subject getSubject() {

@@ -58,20 +58,9 @@ vaadin:
     closeIdleSessions: true
 
 security:
-# Shiro.
-  cipherKey: '0x2c9bff536d5bb8ae5550c93cdadace1b'
-  passwords:
-    - version: 1
-      algorithm: SHA-256
-      iterations: 1000
-  maximumSignAttemps: 5
-  maximumSignAttempsDelay: 300000  # 5 minutes.
-  disableSignAttemps: 15
-# Health.
-  basic:
-    path: /noUrlBecauseShiroSecurityIsUsedForVaadin
-  user:
-    name: admin
+  lockAttemps: 5
+  lock-duration: PT3M
+  disableSignAttemps: 20
 
 ldap:
   enabled: false
@@ -134,6 +123,9 @@ spring:
         password: secret
   jpa:
     show-sql: false
+
+security:
+  rememberMeKey: 'JfYMi0qUQVt8FObsZHW7'
 
 ldap:
   enabled: true

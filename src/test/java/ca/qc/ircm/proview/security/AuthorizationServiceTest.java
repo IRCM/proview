@@ -47,12 +47,14 @@ import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.subject.Subject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@Ignore
 public class AuthorizationServiceTest {
   private static final String ADMIN = UserRole.ADMIN;
   private static final String MANAGER = UserRole.MANAGER;

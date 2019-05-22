@@ -20,11 +20,8 @@ package ca.qc.ircm.proview.user;
 import static ca.qc.ircm.proview.user.QUser.user;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
-import ca.qc.ircm.proview.cache.CacheFlusher;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Lists;
@@ -38,6 +35,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
@@ -56,13 +54,11 @@ public class UserService {
   @Inject
   private LaboratoryRepository laboratoryRepository;
   @Inject
-  private AuthenticationService authenticationService;
+  private PasswordEncoder passwordEncoder;
   @Inject
   private EmailService emailService;
   @Inject
   private TemplateEngine emailTemplateEngine;
-  @Inject
-  private CacheFlusher cacheFlusher;
   @Inject
   private ApplicationConfiguration applicationConfiguration;
   @Inject
@@ -217,10 +213,10 @@ public class UserService {
   }
 
   private void setUserPassword(User user, String password) {
-    HashedPassword hashedPassword = authenticationService.hashPassword(password);
-    user.setHashedPassword(hashedPassword.getPassword());
-    user.setSalt(hashedPassword.getSalt());
-    user.setPasswordVersion(hashedPassword.getPasswordVersion());
+    String hashedPassword = passwordEncoder.encode(password);
+    user.setHashedPassword(hashedPassword);
+    user.setSalt(null);
+    user.setPasswordVersion(null);
   }
 
   private void registerNewUser(User user, String password, User manager,
@@ -350,8 +346,6 @@ public class UserService {
     user.setLaboratory(manager.getLaboratory());
     repository.saveAndFlush(user);
 
-    cacheFlusher.flushShiroCache();
-
     logger.info("Admin user {} added to database", user);
   }
 
@@ -420,8 +414,6 @@ public class UserService {
     user.setValid(true);
     user.setActive(true);
 
-    cacheFlusher.flushShiroCache();
-
     try {
       sendEmailForUserValidation(user, webContext);
     } catch (MessagingException e) {
@@ -475,8 +467,6 @@ public class UserService {
     user.setActive(true);
     repository.save(user);
 
-    cacheFlusher.flushShiroCache();
-
     logger.info("User {} was activated", user);
   }
 
@@ -495,8 +485,6 @@ public class UserService {
     user = repository.findOne(user.getId());
     user.setActive(false);
     repository.save(user);
-
-    cacheFlusher.flushShiroCache();
 
     logger.info("User {} was deactivate", user);
   }

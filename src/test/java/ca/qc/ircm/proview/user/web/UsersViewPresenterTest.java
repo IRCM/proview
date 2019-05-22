@@ -26,7 +26,6 @@ import static ca.qc.ircm.proview.user.web.UsersViewPresenter.EMPTY;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.ORGANIZATION;
-import static ca.qc.ircm.proview.user.web.UsersViewPresenter.SWITCHED;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.SWITCH_USER;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.USERS;
@@ -43,15 +42,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
+import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -88,7 +87,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class UsersViewPresenterTest {
+public class UsersViewPresenterTest extends AbstractComponentTestCase {
   @Inject
   private UsersViewPresenter presenter;
   @Inject
@@ -97,8 +96,6 @@ public class UsersViewPresenterTest {
   private UserService userService;
   @MockBean
   private AuthorizationService authorizationService;
-  @MockBean
-  private AuthenticationService authenticationService;
   @MockBean
   private UserWindow userWindow;
   @Mock
@@ -138,6 +135,7 @@ public class UsersViewPresenterTest {
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getUI()).thenReturn(ui);
     when(clickItemEvent.getMouseEventDetails()).thenReturn(mouseEventDetails);
   }
 
@@ -528,9 +526,8 @@ public class UsersViewPresenterTest {
 
     design.switchUser.click();
 
-    verify(authenticationService).runAs(user);
-    verify(view).showTrayNotification(resources.message(SWITCHED, user.getEmail()));
-    verify(view).navigateTo(MainView.VIEW_NAME);
+    verify(page).setLocation(WebSecurityConfiguration.SWITCH_USER_URL + "?"
+        + WebSecurityConfiguration.SWITCH_USERNAME_PARAMETER + "=" + user.getEmail());
   }
 
   @Test
@@ -539,7 +536,7 @@ public class UsersViewPresenterTest {
 
     design.switchUser.click();
 
-    verifyZeroInteractions(authenticationService);
+    verifyZeroInteractions(page);
     verify(view).showError(resources.message(EMPTY));
   }
 }

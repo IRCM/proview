@@ -34,6 +34,7 @@ public class ConverterConfiguration {
   private Set<Converter<?, ?>> getConverters() {
     Set<Converter<?, ?>> converters = new HashSet<>();
     converters.add(new StringToPathConverter());
+    converters.add(new DurationConverter());
 
     return converters;
   }

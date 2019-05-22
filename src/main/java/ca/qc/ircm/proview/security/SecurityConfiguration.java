@@ -17,28 +17,66 @@
 
 package ca.qc.ircm.proview.security;
 
-import java.util.List;
-import org.apache.shiro.realm.Realm;
+import java.time.Duration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Security configuration.
  */
-public interface SecurityConfiguration {
-  public String realmName();
+@Configuration
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix = SecurityConfiguration.PREFIX)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+public class SecurityConfiguration {
+  public static final String PREFIX = "security";
+  private int lockAttemps;
+  private Duration lockDuration;
+  private int disableSignAttemps;
+  private String rememberMeKey;
 
-  public String authorizationCacheName();
+  /**
+   * Returns security context.
+   * 
+   * @return security context
+   */
+  public SecurityContext getSecurityContext() {
+    return SecurityContextHolder.getContext();
+  }
 
-  public Realm shiroRealm();
+  public int getLockAttemps() {
+    return lockAttemps;
+  }
 
-  public List<PasswordVersion> getPasswordVersions();
+  public void setLockAttemps(int lockAttemps) {
+    this.lockAttemps = lockAttemps;
+  }
 
-  public PasswordVersion getPasswordVersion();
+  public Duration getLockDuration() {
+    return lockDuration;
+  }
 
-  public byte[] getCipherKeyBytes();
+  public void setLockDuration(Duration lockDuration) {
+    this.lockDuration = lockDuration;
+  }
 
-  public int maximumSignAttemps();
+  public int getDisableSignAttemps() {
+    return disableSignAttemps;
+  }
 
-  public long maximumSignAttempsDelay();
+  public void setDisableSignAttemps(int disableSignAttemps) {
+    this.disableSignAttemps = disableSignAttemps;
+  }
 
-  public int disableSignAttemps();
+  public String getRememberMeKey() {
+    return rememberMeKey;
+  }
+
+  public void setRememberMeKey(String rememberMeKey) {
+    this.rememberMeKey = rememberMeKey;
+  }
 }

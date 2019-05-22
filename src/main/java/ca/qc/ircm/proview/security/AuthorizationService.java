@@ -43,9 +43,17 @@ import ca.qc.ircm.proview.user.UserRole;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Collection;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +66,7 @@ public class AuthorizationService {
   private static final String ADMIN = UserRole.ADMIN;
   private static final String MANAGER = UserRole.MANAGER;
   private static final String USER = UserRole.USER;
+  private static final Logger logger = LoggerFactory.getLogger(AuthorizationService.class);
   @Inject
   private UserRepository repository;
   @Inject
@@ -72,6 +81,10 @@ public class AuthorizationService {
 
   private Subject getSubject() {
     return SecurityUtils.getSubject();
+  }
+
+  private Authentication getAuthentication() {
+    return SecurityContextHolder.getContext().getAuthentication();
   }
 
   private User getUser(Long id) {
@@ -128,6 +141,39 @@ public class AuthorizationService {
   }
 
   /**
+   * Returns true if current user has specified role, false otherwise.
+   *
+   * @param role
+   *          role
+   * @return true if current user has specified role, false otherwise
+   */
+  public boolean hasRole(String role) {
+    Authentication authentication = getAuthentication();
+    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+    boolean hasRole = false;
+    for (GrantedAuthority authority : authorities) {
+      hasRole |= authority.getAuthority().equals(role);
+    }
+    logger.trace("user {} hasRole {}? {}", authentication.getName(), role, hasRole);
+    return hasRole;
+  }
+
+  /**
+   * Returns true if current user has any of the specified roles, false otherwise.
+   *
+   * @param roles
+   *          roles
+   * @return true if current user has any of the specified roles, false otherwise
+   */
+  public boolean hasAnyRole(String... roles) {
+    boolean hasAnyRole = false;
+    for (String role : roles) {
+      hasAnyRole |= hasRole(role);
+    }
+    return hasAnyRole;
+  }
+
+  /**
    * Returns true if user has admin role, false otherwise.
    *
    * @return true if user has admin role, false otherwise
@@ -173,6 +219,23 @@ public class AuthorizationService {
    */
   public void checkRobotRole() {
     getSubject().checkPermission(new RobotPermission());
+  }
+
+  /**
+   * Returns true if current user is authorized to access class, false otherwise.
+   *
+   * @param type
+   *          class
+   * @return true if current user is authorized to access class, false otherwise
+   */
+  public boolean isAuthorized(Class<?> type) {
+    RolesAllowed rolesAllowed = AnnotationUtils.findAnnotation(type, RolesAllowed.class);
+    if (rolesAllowed != null) {
+      String[] roles = rolesAllowed.value();
+      return hasAnyRole(roles);
+    } else {
+      return true;
+    }
   }
 
   /**

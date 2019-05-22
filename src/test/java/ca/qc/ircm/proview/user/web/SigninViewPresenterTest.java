@@ -35,16 +35,16 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.LdapConfiguration;
+import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
@@ -61,7 +61,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
 import java.util.Locale;
-import org.apache.shiro.authc.AuthenticationException;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,30 +69,48 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
-public class SigninViewPresenterTest {
+public class SigninViewPresenterTest extends AbstractComponentTestCase {
+  @Inject
   private SigninViewPresenter presenter;
   @Mock
   private SigninView view;
   @Mock
-  private AuthenticationService authenticationService;
-  @Mock
+  private AuthenticationProvider authenticationProvider;
+  @MockBean
+  private SessionAuthenticationStrategy sessionAuthenticationStrategy;
+  @MockBean
   private AuthorizationService authorizationService;
-  @Mock
+  @MockBean
   private UserService userService;
-  @Mock
+  @MockBean
   private ForgotPasswordService forgotPasswordService;
-  @Mock
+  @MockBean
+  private SecurityConfiguration securityConfiguration;
+  @MockBean
   private LdapConfiguration ldapConfiguration;
+  @Mock
+  private Authentication authentication;
+  @Mock
+  private SecurityContext securityContext;
   @Mock
   private CustomLoginForm signForm;
   @Mock
   private User user;
   @Mock
   private ForgotPassword forgotPassword;
+  @Captor
+  private ArgumentCaptor<Authentication> authenticationCaptor;
   @Captor
   private ArgumentCaptor<LoginListener> loginListenerCaptor;
   @Captor
@@ -117,8 +135,7 @@ public class SigninViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new SigninViewPresenter(authenticationService, authorizationService, userService,
-        forgotPasswordService, ldapConfiguration, applicationName);
+    presenter.setAuthenticationProvider(authenticationProvider);
     design = new SigninViewDesign();
     view.design = design;
     view.signForm = signForm;
@@ -128,6 +145,9 @@ public class SigninViewPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
+    when(view.getMainUi()).thenReturn(ui);
+    when(authenticationProvider.authenticate(any())).thenReturn(authentication);
+    when(securityConfiguration.getSecurityContext()).thenReturn(securityContext);
   }
 
   @Test
@@ -181,7 +201,16 @@ public class SigninViewPresenterTest {
 
     clickLoginButton();
 
-    verify(authenticationService).sign(username, password, true);
+    verify(authenticationProvider).authenticate(authenticationCaptor.capture());
+    Authentication rawToken = authenticationCaptor.getValue();
+    assertTrue(rawToken instanceof UsernamePasswordAuthenticationToken);
+    UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) rawToken;
+    assertEquals(username, token.getName());
+    assertEquals(password, token.getCredentials());
+    verify(securityConfiguration).getSecurityContext();
+    verify(securityContext).setAuthentication(authentication);
+    verify(sessionAuthenticationStrategy).onAuthentication(token, httpServletRequest,
+        httpServletResponse);
     verify(view).navigateTo(SubmissionsView.VIEW_NAME);
   }
 
@@ -196,7 +225,7 @@ public class SigninViewPresenterTest {
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         signFormUsername.getErrorMessage().getFormattedHtmlMessage());
-    verify(authenticationService, never()).sign(any(), any(), anyBoolean());
+    verify(authenticationProvider, never()).authenticate(any());
   }
 
   @Test
@@ -211,12 +240,12 @@ public class SigninViewPresenterTest {
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(INVALID_EMAIL)),
         signFormUsername.getErrorMessage().getFormattedHtmlMessage());
-    verify(authenticationService, never()).sign(any(), any(), anyBoolean());
+    verify(authenticationProvider, never()).authenticate(any());
   }
 
   @Test
   public void sign_EmailInvalid_Ldap() {
-    when(ldapConfiguration.enabled()).thenReturn(true);
+    when(ldapConfiguration.isEnabled()).thenReturn(true);
     presenter.init(view);
     signFormUsername.setValue("aaa");
     signFormPassword.setValue(password);
@@ -224,7 +253,16 @@ public class SigninViewPresenterTest {
     clickLoginButton();
 
     verify(view, never()).showError(stringCaptor.capture());
-    verify(authenticationService).sign("aaa", password, true);
+    verify(authenticationProvider).authenticate(authenticationCaptor.capture());
+    Authentication rawToken = authenticationCaptor.getValue();
+    assertTrue(rawToken instanceof UsernamePasswordAuthenticationToken);
+    UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) rawToken;
+    assertEquals("aaa", token.getName());
+    assertEquals(password, token.getCredentials());
+    verify(securityConfiguration).getSecurityContext();
+    verify(securityContext).setAuthentication(authentication);
+    verify(sessionAuthenticationStrategy).onAuthentication(token, httpServletRequest,
+        httpServletResponse);
   }
 
   @Test
@@ -238,12 +276,12 @@ public class SigninViewPresenterTest {
     assertEquals(generalResources.message(FIELD_NOTIFICATION), stringCaptor.getValue());
     assertEquals(errorMessage(generalResources.message(REQUIRED)),
         signFormPassword.getErrorMessage().getFormattedHtmlMessage());
-    verify(authenticationService, never()).sign(any(), any(), anyBoolean());
+    verify(authenticationProvider, never()).authenticate(any());
   }
 
   @Test
   public void sign_AuthenticationException() {
-    when(authorizationService.isUser()).thenThrow(new AuthenticationException());
+    when(authorizationService.isUser()).thenThrow(new BadCredentialsException("test"));
     presenter.init(view);
     signFormUsername.setValue(username);
     signFormPassword.setValue(password);
@@ -252,7 +290,16 @@ public class SigninViewPresenterTest {
 
     verify(view).showError(stringCaptor.capture());
     assertEquals(resources.message("sign.fail"), stringCaptor.getValue());
-    verify(authenticationService).sign(username, password, true);
+    verify(authenticationProvider).authenticate(authenticationCaptor.capture());
+    Authentication rawToken = authenticationCaptor.getValue();
+    assertTrue(rawToken instanceof UsernamePasswordAuthenticationToken);
+    UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) rawToken;
+    assertEquals(username, token.getName());
+    assertEquals(password, token.getCredentials());
+    verify(securityConfiguration).getSecurityContext();
+    verify(securityContext).setAuthentication(authentication);
+    verify(sessionAuthenticationStrategy).onAuthentication(token, httpServletRequest,
+        httpServletResponse);
   }
 
   @Test

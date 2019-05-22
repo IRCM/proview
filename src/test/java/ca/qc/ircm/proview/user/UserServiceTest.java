@@ -34,11 +34,8 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
-import ca.qc.ircm.proview.cache.CacheFlusher;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.HomeWebContext;
@@ -62,6 +59,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.util.StringUtils;
 
@@ -77,20 +75,18 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Inject
   private LaboratoryRepository laboratoryRepository;
   @MockBean
-  private AuthenticationService authenticationService;
+  private PasswordEncoder passwordEncoder;
   @MockBean
   private ApplicationConfiguration applicationConfiguration;
   @MockBean
   private EmailService emailService;
   @MockBean
   private AuthorizationService authorizationService;
-  @MockBean
-  private CacheFlusher cacheFlusher;
   @Mock
   private MimeMessageHelper email;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
-  private HashedPassword hashedPassword;
+  private String hashedPassword;
   private String validateUserUrl = "/validate/user";
   private String homeUrl = "/";
 
@@ -105,8 +101,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
         return "http://proview.ircm.qc.ca/proview" + invocation.getArguments()[0];
       }
     });
-    hashedPassword = new HashedPassword("da78f3a74658706", "4ae8470fc73a83f369fed012", 1);
-    when(authenticationService.hashPassword(any(String.class))).thenReturn(hashedPassword);
+    hashedPassword = "da78f3a74658706/4ae8470fc73a83f369fed012";
+    when(passwordEncoder.encode(any(String.class))).thenReturn(hashedPassword);
     when(emailService.htmlEmail()).thenReturn(email);
   }
 
@@ -389,16 +385,16 @@ public class UserServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(authorizationService).checkAdminRole();
     verify(authorizationService).getCurrentUser();
-    verify(authenticationService).hashPassword("password");
+    verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
     assertEquals((Long) 1L, user.getLaboratory().getId());
-    assertEquals(hashedPassword.getPassword(), user.getHashedPassword());
-    assertEquals(hashedPassword.getSalt(), user.getSalt());
-    assertEquals((Integer) hashedPassword.getPasswordVersion(), user.getPasswordVersion());
+    assertEquals(hashedPassword, user.getHashedPassword());
+    assertNull(user.getSalt());
+    assertNull(user.getPasswordVersion());
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
     address = user.getAddress();
     assertEquals("110 av des Pins Ouest", address.getLine());
@@ -446,16 +442,19 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verifyZeroInteractions(authorizationService);
-    verify(authenticationService).hashPassword("password");
+    verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
     assertEquals((Long) 2L, user.getLaboratory().getId());
-    assertEquals(hashedPassword.getPassword(), user.getHashedPassword());
-    assertEquals(hashedPassword.getSalt(), user.getSalt());
-    assertEquals((Integer) hashedPassword.getPasswordVersion(), user.getPasswordVersion());
+    assertEquals(hashedPassword, user.getHashedPassword());
+    assertNull(user.getSalt());
+    assertNull(user.getPasswordVersion());
+    assertEquals(hashedPassword, user.getHashedPassword());
+    assertNull(user.getSalt());
+    assertNull(user.getPasswordVersion());
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
     address = user.getAddress();
     assertEquals("110 av des Pins Ouest", address.getLine());
@@ -607,7 +606,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verifyZeroInteractions(authorizationService);
-    verify(authenticationService).hashPassword("password");
+    verify(passwordEncoder).encode("password");
     assertNotNull(laboratory.getId());
     assertNotNull(user.getId());
     laboratory = laboratoryRepository.findOne(laboratory.getId());
@@ -621,9 +620,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Ribonucleoprotein Biochemistry", laboratory.getName());
     assertEquals("Christian Poitras", laboratory.getDirector());
-    assertEquals(hashedPassword.getPassword(), user.getHashedPassword());
-    assertEquals(hashedPassword.getSalt(), user.getSalt());
-    assertEquals((Integer) hashedPassword.getPasswordVersion(), user.getPasswordVersion());
+    assertEquals(hashedPassword, user.getHashedPassword());
+    assertNull(user.getSalt());
+    assertNull(user.getPasswordVersion());
     assertEquals(Locale.CANADA, user.getLocale());
     address = user.getAddress();
     assertEquals("110 av des Pins Ouest", address.getLine());
@@ -921,11 +920,11 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(authorizationService).checkUserWritePermission(user);
-    verify(authenticationService).hashPassword("unit_test_password");
+    verify(passwordEncoder).encode("unit_test_password");
     user = repository.findOne(4L);
-    assertEquals(hashedPassword.getPassword(), user.getHashedPassword());
-    assertEquals(hashedPassword.getSalt(), user.getSalt());
-    assertEquals((Integer) hashedPassword.getPasswordVersion(), user.getPasswordVersion());
+    assertEquals(hashedPassword, user.getHashedPassword());
+    assertNull(user.getSalt());
+    assertNull(user.getPasswordVersion());
   }
 
   @Test
@@ -961,7 +960,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(7L);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
@@ -1033,7 +1031,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(12L);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
@@ -1050,7 +1047,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(10L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
@@ -1067,7 +1063,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(3L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
@@ -1084,7 +1079,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
-    verify(cacheFlusher).flushShiroCache();
     user = repository.findOne(4L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());

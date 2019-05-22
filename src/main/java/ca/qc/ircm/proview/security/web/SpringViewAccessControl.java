@@ -17,12 +17,11 @@
 
 package ca.qc.ircm.proview.security.web;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.SecurityConfiguration;
 import com.vaadin.spring.access.ViewAccessControl;
 import com.vaadin.ui.UI;
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -32,40 +31,28 @@ import org.springframework.stereotype.Controller;
  * ViewAccessControl for Shiro.
  */
 @Controller
-public class ShiroViewAccessControl implements ViewAccessControl {
-  private static final Logger logger = LoggerFactory.getLogger(ShiroViewAccessControl.class);
+public class SpringViewAccessControl implements ViewAccessControl {
+  private static final Logger logger = LoggerFactory.getLogger(SpringViewAccessControl.class);
   @Inject
   private ApplicationContext applicationContext;
+  @Inject
+  private AuthorizationService authorizationService;
+  @Inject
+  private SecurityConfiguration securityConfiguration;
 
-  protected ShiroViewAccessControl() {
+  protected SpringViewAccessControl() {
   }
 
-  protected ShiroViewAccessControl(ApplicationContext applicationContext) {
+  protected SpringViewAccessControl(ApplicationContext applicationContext) {
     this.applicationContext = applicationContext;
   }
 
   @Override
   public boolean isAccessGranted(UI ui, String beanName) {
+    String name = securityConfiguration.getSecurityContext().getAuthentication().getName();
     Class<?> beanClass = applicationContext.getType(beanName);
-    Subject subject = getSubject();
-    if (beanClass.isAnnotationPresent(RolesAllowed.class)) {
-      RolesAllowed rolesAllowed = beanClass.getAnnotation(RolesAllowed.class);
-      String[] roles = rolesAllowed.value();
-      boolean hasAnyRole = false;
-      for (String role : roles) {
-        hasAnyRole |= subject.hasRole(role);
-      }
-      logger.debug("Access to view {} granted to user {}, {}", beanName, subject.getPrincipal(),
-          hasAnyRole);
-      return hasAnyRole;
-    } else {
-      logger.debug("Access to view {} automatically granted to user {}, no {}", beanName,
-          subject.getPrincipal(), RolesAllowed.class.getName());
-      return true;
-    }
-  }
-
-  private Subject getSubject() {
-    return SecurityUtils.getSubject();
+    boolean authorized = authorizationService.isAuthorized(beanClass);
+    logger.debug("Access to view {} granted to user {}, {}", beanName, name, authorized);
+    return authorized;
   }
 }

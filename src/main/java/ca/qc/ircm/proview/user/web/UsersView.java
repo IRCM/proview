@@ -32,6 +32,8 @@ import javax.inject.Inject;
 @RolesAllowed({ UserRole.ADMIN, UserRole.MANAGER })
 public class UsersView extends CustomComponent implements BaseView {
   public static final String VIEW_NAME = "users";
+  public static final String SWITCH_USER = "switchUser";
+  public static final String SWITCH_FAILED = "switchFailed";
   private static final long serialVersionUID = -1897739429426168438L;
   protected UsersViewDesign design = new UsersViewDesign();
   @Inject

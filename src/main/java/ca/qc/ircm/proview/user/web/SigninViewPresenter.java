@@ -21,9 +21,9 @@ import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.LdapConfiguration;
+import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.user.UserService;
@@ -35,12 +35,16 @@ import com.vaadin.data.Validator;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.ui.themes.ValoTheme;
 import javax.inject.Inject;
-import org.apache.shiro.authc.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -66,7 +70,9 @@ public class SigninViewPresenter {
   private Binder<SigninInformation> signBinder = new Binder<>(SigninInformation.class);
   private Binder<SigninInformation> forgotPasswordBinder = new Binder<>(SigninInformation.class);
   @Inject
-  private AuthenticationService authenticationService;
+  private AuthenticationProvider authenticationProvider;
+  @Inject
+  private SessionAuthenticationStrategy sessionAuthenticationStrategy;
   @Inject
   private AuthorizationService authorizationService;
   @Inject
@@ -74,23 +80,13 @@ public class SigninViewPresenter {
   @Inject
   private ForgotPasswordService forgotPasswordService;
   @Inject
+  private SecurityConfiguration securityConfiguration;
+  @Inject
   private LdapConfiguration ldapConfiguration;
   @Value("${spring.application.name}")
   private String applicationName;
 
   public SigninViewPresenter() {
-  }
-
-  protected SigninViewPresenter(AuthenticationService authenticationService,
-      AuthorizationService authorizationService, UserService userService,
-      ForgotPasswordService forgotPasswordService, LdapConfiguration ldapConfiguration,
-      String applicationName) {
-    this.authenticationService = authenticationService;
-    this.authorizationService = authorizationService;
-    this.userService = userService;
-    this.forgotPasswordService = forgotPasswordService;
-    this.ldapConfiguration = ldapConfiguration;
-    this.applicationName = applicationName;
   }
 
   /**
@@ -149,7 +145,7 @@ public class SigninViewPresenter {
   }
 
   private Validator<String> signEmailValidator() {
-    if (ldapConfiguration.enabled()) {
+    if (ldapConfiguration.isEnabled()) {
       return (value, context) -> ValidationResult.ok();
     } else {
       MessageResource generalResources = view.getGeneralResources();
@@ -176,7 +172,12 @@ public class SigninViewPresenter {
       String password = view.signForm.getPasswordField().getValue();
       try {
         logger.debug("User {} tries to signin", username);
-        authenticationService.sign(username, password, true);
+        Authentication token = new UsernamePasswordAuthenticationToken(username, password);
+        final Authentication authenticated = authenticationProvider.authenticate(token);
+        securityConfiguration.getSecurityContext().setAuthentication(authenticated);
+        sessionAuthenticationStrategy.onAuthentication(token,
+            view.getMainUi().getVaadinServletRequest().getHttpServletRequest(),
+            view.getMainUi().getVaadinServletResponse().getHttpServletResponse());
         String viewName = SigninView.VIEW_NAME;
         if (authorizationService.isUser()) {
           viewName = SubmissionsView.VIEW_NAME;
@@ -226,6 +227,10 @@ public class SigninViewPresenter {
     if (authorizationService.isUser()) {
       view.navigateTo(SubmissionsView.VIEW_NAME);
     }
+  }
+
+  void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
+    this.authenticationProvider = authenticationProvider;
   }
 
   public static class SigninInformation {

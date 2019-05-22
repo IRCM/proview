@@ -17,20 +17,20 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USERNAME_PARAMETER;
+import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USER_URL;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 import static ca.qc.ircm.proview.web.WebConstants.COMPONENTS;
 
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.provider.DataProvider;
@@ -45,6 +45,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -82,8 +85,6 @@ public class UsersViewPresenter {
   private UserService userService;
   @Inject
   private AuthorizationService authorizationService;
-  @Inject
-  private AuthenticationService authenticationService;
   @Inject
   private Provider<UserWindow> userWindowProvider;
   @Value("${spring.application.name}")
@@ -258,9 +259,17 @@ public class UsersViewPresenter {
     if (user == null) {
       view.showError(resources.message(EMPTY));
     } else {
-      authenticationService.runAs(user);
-      view.showTrayNotification(resources.message(SWITCHED, user.getEmail()));
-      view.navigateTo(MainView.VIEW_NAME);
+      view.getUI().getPage().setLocation(switchUserUrl(user));
+    }
+  }
+
+  private String switchUserUrl(User user) {
+    try {
+      return SWITCH_USER_URL + "?" + SWITCH_USERNAME_PARAMETER + "="
+          + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8.name());
+    } catch (UnsupportedEncodingException e) {
+      logger.warn("UTF_8 not supported ???");
+      return SWITCH_USER_URL;
     }
   }
 
