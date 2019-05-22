@@ -69,6 +69,8 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -519,7 +521,7 @@ public class UsersViewPresenterTest extends AbstractComponentTestCase {
   }
 
   @Test
-  public void switchUser() {
+  public void switchUser() throws Throwable {
     presenter.init(view);
     final User user = users.get(0);
     design.users.select(user);
@@ -527,7 +529,8 @@ public class UsersViewPresenterTest extends AbstractComponentTestCase {
     design.switchUser.click();
 
     verify(page).setLocation(WebSecurityConfiguration.SWITCH_USER_URL + "?"
-        + WebSecurityConfiguration.SWITCH_USERNAME_PARAMETER + "=" + user.getEmail());
+        + WebSecurityConfiguration.SWITCH_USERNAME_PARAMETER + "="
+        + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8.name()));
   }
 
   @Test
