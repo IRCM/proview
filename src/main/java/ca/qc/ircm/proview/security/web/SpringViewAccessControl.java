@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.security.web;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.security.SecurityConfiguration;
 import com.vaadin.spring.access.ViewAccessControl;
 import com.vaadin.ui.UI;
 import javax.inject.Inject;
@@ -37,22 +36,20 @@ public class SpringViewAccessControl implements ViewAccessControl {
   private ApplicationContext applicationContext;
   @Inject
   private AuthorizationService authorizationService;
-  @Inject
-  private SecurityConfiguration securityConfiguration;
 
   protected SpringViewAccessControl() {
   }
 
-  protected SpringViewAccessControl(ApplicationContext applicationContext) {
-    this.applicationContext = applicationContext;
-  }
-
   @Override
   public boolean isAccessGranted(UI ui, String beanName) {
-    String name = securityConfiguration.getSecurityContext().getAuthentication().getName();
+    Long userId = authorizationService.getCurrentUser().getId();
     Class<?> beanClass = applicationContext.getType(beanName);
     boolean authorized = authorizationService.isAuthorized(beanClass);
-    logger.debug("Access to view {} granted to user {}, {}", beanName, name, authorized);
+    logger.debug("Access to view {} granted to user {}, {}", beanName, userId, authorized);
     return authorized;
+  }
+
+  void setApplicationContext(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
   }
 }
