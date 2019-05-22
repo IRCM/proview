@@ -51,6 +51,7 @@ public class DaoAuthenticationProviderWithLdap extends DaoAuthenticationProvider
     try {
       super.additionalAuthenticationChecks(userDetails, authentication);
       resetSignAttemps(user);
+      // TODO Update password if an old version is used.
     } catch (BadCredentialsException e) {
       // Try LDAP, if available.
       if (authentication.getCredentials() != null && ldapConfiguration.isEnabled()
