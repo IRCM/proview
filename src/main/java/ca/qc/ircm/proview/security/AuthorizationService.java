@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.sample.QSampleContainer.sampleContainer;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.UserAuthority.FORCE_CHANGE_PASSWORD;
 
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.QAcquisition;
@@ -51,9 +52,14 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,40 +81,26 @@ public class AuthorizationService {
   private SubmissionRepository submissionRepository;
   @Inject
   private JPAQueryFactory queryFactory;
+  @Inject
+  private UserDetailsService userDetailsService;
+  //TODO Replace once permissionEvaluator is available.
+  //@Inject
+  private PermissionEvaluator permissionEvaluator;
 
   protected AuthorizationService() {
-  }
-
-  private Subject getSubject() {
-    return SecurityUtils.getSubject();
   }
 
   private Authentication getAuthentication() {
     return SecurityContextHolder.getContext().getAuthentication();
   }
 
-  private User getUser(Long id) {
-    if (id == null) {
+  private UserDetails getUserDetails() {
+    Authentication authentication = getAuthentication();
+    if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+      return (UserDetails) authentication.getPrincipal();
+    } else {
       return null;
     }
-
-    return repository.findOne(id);
-  }
-
-  private Sample getSample(Long id) {
-    if (id == null) {
-      return null;
-    }
-
-    return sampleRepository.findOne(id);
-  }
-
-  private Submission getSubmission(Long id) {
-    if (id == null) {
-      return null;
-    }
-
-    return submissionRepository.findOne(id);
   }
 
   /**
@@ -117,27 +109,26 @@ public class AuthorizationService {
    * @return current user
    */
   public User getCurrentUser() {
-    return getUser((Long) getSubject().getPrincipal());
+    UserDetails user = getUserDetails();
+    if (user instanceof AuthenticatedUser) {
+      Long userId = ((AuthenticatedUser) user).getId();
+      if (userId == null) {
+        return null;
+      }
+
+      return repository.findOne(userId);
+    } else {
+      return null;
+    }
   }
 
   /**
-   * Returns true if current user is authenticated or remembered, false otherwise.
+   * Returns true if current user is anonymous, false otherwise.
    *
-   * @return true if current user is authenticated or remembered, false otherwise
+   * @return true if current user is anonymous, false otherwise
    */
-  public boolean isUser() {
-    return getSubject().isAuthenticated() || getSubject().isRemembered();
-  }
-
-  /**
-   * Returns true if user is 'running as' another identity other than its original one, false
-   * otherwise.
-   *
-   * @return true if user is 'running as' another identity other than its original one, false
-   *         otherwise
-   */
-  public boolean isRunAs() {
-    return getSubject().isRunAs();
+  public boolean isAnonymous() {
+    return getUserDetails() == null;
   }
 
   /**
@@ -171,6 +162,113 @@ public class AuthorizationService {
       hasAnyRole |= hasRole(role);
     }
     return hasAnyRole;
+  }
+
+  /**
+   * Returns true if current user has all of the specified roles, false otherwise.
+   *
+   * @param roles
+   *          roles
+   * @return true if current user has all of the specified roles, false otherwise
+   */
+  public boolean hasAllRoles(String... roles) {
+    boolean hasAllRole = true;
+    for (String role : roles) {
+      hasAllRole &= hasRole(role);
+    }
+    return hasAllRole;
+  }
+
+  /**
+   * Reload current user's authorities.
+   */
+  public void reloadAuthorities() {
+    if (hasRole(FORCE_CHANGE_PASSWORD)) {
+      Authentication oldAuthentication = getAuthentication();
+      logger.debug("reload authorities from user {}", oldAuthentication.getName());
+      UserDetails userDetails = userDetailsService.loadUserByUsername(oldAuthentication.getName());
+      UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+          userDetails, oldAuthentication.getCredentials(), userDetails.getAuthorities());
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+  }
+
+  /**
+   * Returns true if current user is authorized to access class, false otherwise.
+   *
+   * @param type
+   *          class
+   * @return true if current user is authorized to access class, false otherwise
+   */
+  public boolean isAuthorized(Class<?> type) {
+    RolesAllowed rolesAllowed = AnnotationUtils.findAnnotation(type, RolesAllowed.class);
+    if (rolesAllowed != null) {
+      String[] roles = rolesAllowed.value();
+      return hasAnyRole(roles);
+    } else {
+      return true;
+    }
+  }
+
+  /**
+   * Returns true if current user has permission on object, false otherwise.
+   *
+   * @param object
+   *          object
+   * @param permission
+   *          permission
+   * @return true if current user has permission on object, false otherwise
+   */
+  public boolean hasPermission(Object object, Permission permission) {
+    return permissionEvaluator.hasPermission(getAuthentication(), object, permission);
+  }
+
+  private Subject getSubject() {
+    return SecurityUtils.getSubject();
+  }
+
+  private User getUser(Long id) {
+    if (id == null) {
+      return null;
+    }
+
+    return repository.findOne(id);
+  }
+
+  private Sample getSample(Long id) {
+    if (id == null) {
+      return null;
+    }
+
+    return sampleRepository.findOne(id);
+  }
+
+  private Submission getSubmission(Long id) {
+    if (id == null) {
+      return null;
+    }
+
+    return submissionRepository.findOne(id);
+  }
+
+  /**
+   * Returns true if current user is authenticated or remembered, false otherwise.
+   *
+   * @return true if current user is authenticated or remembered, false otherwise
+   */
+  public boolean isUser() {
+    return getSubject().isAuthenticated() || getSubject().isRemembered();
+  }
+
+  /**
+   * Returns true if user is 'running as' another identity other than its original one, false
+   * otherwise.
+   *
+   * @return true if user is 'running as' another identity other than its original one, false
+   *         otherwise
+   */
+  public boolean isRunAs() {
+    return getSubject().isRunAs();
   }
 
   /**
@@ -219,23 +317,6 @@ public class AuthorizationService {
    */
   public void checkRobotRole() {
     getSubject().checkPermission(new RobotPermission());
-  }
-
-  /**
-   * Returns true if current user is authorized to access class, false otherwise.
-   *
-   * @param type
-   *          class
-   * @return true if current user is authorized to access class, false otherwise
-   */
-  public boolean isAuthorized(Class<?> type) {
-    RolesAllowed rolesAllowed = AnnotationUtils.findAnnotation(type, RolesAllowed.class);
-    if (rolesAllowed != null) {
-      String[] roles = rolesAllowed.value();
-      return hasAnyRole(roles);
-    } else {
-      return true;
-    }
   }
 
   /**
@@ -585,5 +666,9 @@ public class AuthorizationService {
         }
       }
     }
+  }
+
+  void setPermissionEvaluator(PermissionEvaluator permissionEvaluator) {
+    this.permissionEvaluator = permissionEvaluator;
   }
 }

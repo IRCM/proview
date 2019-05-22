@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.security;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -34,22 +35,34 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
-import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.Laboratory;
-import ca.qc.ircm.proview.user.PhoneNumber;
-import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.authz.Permission;
 import org.apache.shiro.subject.Subject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
+import org.springframework.security.web.authentication.switchuser.SwitchUserGrantedAuthority;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,8 +72,17 @@ public class AuthorizationServiceTest {
   private static final String ADMIN = UserRole.ADMIN;
   private static final String MANAGER = UserRole.MANAGER;
   private static final String USER = UserRole.USER;
+  private static final String DEFAULT_ROLE = USER;
   @Inject
   private AuthorizationService authorizationService;
+  @Inject
+  private UserDetailsService userDetailsService;
+  @Mock
+  private PermissionEvaluator permissionEvaluator;
+  @Mock
+  private Object object;
+  @Mock
+  private Permission permission;
   private Subject subject;
 
   /**
@@ -69,45 +91,208 @@ public class AuthorizationServiceTest {
   @Before
   public void beforeTest() {
     subject = SecurityUtils.getSubject();
+    authorizationService.setPermissionEvaluator(permissionEvaluator);
+  }
+
+  private void switchToUser(String username) {
+    Authentication previousAuthentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
+    authorities.add(new SwitchUserGrantedAuthority(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR,
+        previousAuthentication));
+    TestingAuthenticationToken authentication =
+        new TestingAuthenticationToken(userDetails, null, authorities);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
   }
 
   @Test
-  @WithSubject(userId = 3)
-  public void getCurrentUser() {
-    User user = authorizationService.getCurrentUser();
-
-    assertEquals((Long) 3L, user.getId());
-    assertEquals("benoit.coulombe@ircm.qc.ca", user.getEmail());
-    assertEquals("Benoit Coulombe", user.getName());
-    assertEquals("da78f3a74658706440f6001b4600d4894d8eea572be0d070f830ca6d716ad55d",
-        user.getHashedPassword());
-    assertEquals("4ae8470fc73a83f369fed012e583b8cb60388919253ea84154610519489a7ba8"
-        + "ab57cde3fc86f04efd02b89175bea7436a8a6a41f5fc6bac5ae6b0f3cf12a535", user.getSalt());
-    assertEquals((Integer) 1, user.getPasswordVersion());
-    assertEquals((Long) 2L, user.getLaboratory().getId());
-    assertEquals(Locale.CANADA_FRENCH, user.getLocale());
-    Address address = user.getAddress();
-    assertEquals("110, avenue des Pins Ouest", address.getLine());
-    assertEquals("Montréal", address.getTown());
-    assertEquals("Québec", address.getState());
-    assertEquals("H2W 1R7", address.getPostalCode());
-    assertEquals("Canada", address.getCountry());
-    assertEquals(1, user.getPhoneNumbers().size());
-    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
-    assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
-    assertEquals("514-555-5556", phoneNumber.getNumber());
-    assertEquals(null, phoneNumber.getExtension());
-    assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
+  @WithAnonymousUser
+  public void getCurrentUser_Anonymous() throws Throwable {
+    assertNull(authorizationService.getCurrentUser());
   }
 
   @Test
-  @WithSubject(anonymous = true)
-  public void getCurrentUser_Anonymous() {
+  @WithUserDetails("lana@ircm.qc.ca")
+  public void getCurrentUser() throws Throwable {
     User user = authorizationService.getCurrentUser();
+    assertNotNull(authorizationService.getCurrentUser());
+    assertEquals((Long) 1L, user.getId());
+  }
 
-    assertNull(user);
+  @Test
+  @WithAnonymousUser
+  public void isAnonymous_True() throws Throwable {
+    assertTrue(authorizationService.isAnonymous());
+  }
+
+  @Test
+  @WithMockUser
+  public void isAnonymous_False() throws Throwable {
+    assertFalse(authorizationService.isAnonymous());
+  }
+
+  @Test
+  @WithMockUser
+  public void hasRole_False() throws Throwable {
+    assertFalse(authorizationService.hasRole(ADMIN));
+  }
+
+  @Test
+  @WithMockUser
+  public void hasRole_True() throws Throwable {
+    assertTrue(authorizationService.hasRole(DEFAULT_ROLE));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void hasRole_SwitchedUser() throws Throwable {
+    switchToUser("benoit.coulombe@ircm.qc.ca");
+    assertTrue(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
+  }
+
+  @Test
+  @WithMockUser
+  public void hasAnyRole_False() throws Throwable {
+    assertFalse(authorizationService.hasAnyRole(ADMIN, MANAGER));
+  }
+
+  @Test
+  @WithMockUser
+  public void hasAnyRole_TrueFirst() throws Throwable {
+    assertTrue(authorizationService.hasAnyRole(DEFAULT_ROLE, MANAGER));
+  }
+
+  @Test
+  @WithMockUser
+  public void hasAnyRole_TrueLast() throws Throwable {
+    assertTrue(authorizationService.hasAnyRole(ADMIN, DEFAULT_ROLE));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void hasAnyRole_SwitchedUser() throws Throwable {
+    switchToUser("benoit.coulombe@ircm.qc.ca");
+    assertTrue(authorizationService.hasAnyRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
+  }
+
+  @Test
+  @WithUserDetails("christian.poitras@ircm.qc.ca")
+  @Ignore("User does not have expired password")
+  public void removeForceChangePasswordRole() throws Throwable {
+    fail("Program test");
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  @Ignore("User does not have expired password")
+  public void removeForceChangePasswordRole_NoForceChangePasswordRole() throws Throwable {
+    fail("Program test");
+  }
+
+  @Test
+  @WithMockUser
+  public void isAuthorized_NoRole() throws Throwable {
+    assertTrue(authorizationService.isAuthorized(NoRoleTest.class));
+  }
+
+  @Test
+  @WithMockUser
+  public void isAuthorized_UserRole_True() throws Throwable {
+    assertTrue(authorizationService.isAuthorized(UserRoleTest.class));
+  }
+
+  @Test
+  @WithMockUser(roles = {})
+  public void isAuthorized_UserRole_False() throws Throwable {
+    assertFalse(authorizationService.isAuthorized(UserRoleTest.class));
+  }
+
+  @Test
+  @WithMockUser(authorities = { MANAGER })
+  public void isAuthorized_ManagerRole_True() throws Throwable {
+    assertTrue(authorizationService.isAuthorized(ManagerRoleTest.class));
+  }
+
+  @Test
+  @WithMockUser
+  public void isAuthorized_ManagerRole_False() throws Throwable {
+    assertFalse(authorizationService.isAuthorized(ManagerRoleTest.class));
+  }
+
+  @Test
+  @WithMockUser(authorities = { ADMIN })
+  public void isAuthorized_AdminRole_True() throws Throwable {
+    assertTrue(authorizationService.isAuthorized(AdminRoleTest.class));
+  }
+
+  @Test
+  @WithMockUser
+  public void isAuthorized_AdminRole_False() throws Throwable {
+    assertFalse(authorizationService.isAuthorized(AdminRoleTest.class));
+  }
+
+  @Test
+  @WithMockUser(authorities = { MANAGER })
+  public void isAuthorized_ManagerOrAdminRole_Manager() throws Throwable {
+    assertTrue(authorizationService.isAuthorized(ManagerOrAdminRoleTest.class));
+  }
+
+  @Test
+  @WithMockUser(authorities = { ADMIN })
+  public void isAuthorized_ManagerOrAdminRole_Admin() throws Throwable {
+    assertTrue(authorizationService.isAuthorized(ManagerOrAdminRoleTest.class));
+  }
+
+  @Test
+  @WithMockUser
+  public void isAuthorized_ManagerOrAdminRole_False() throws Throwable {
+    assertFalse(authorizationService.isAuthorized(ManagerOrAdminRoleTest.class));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isAuthorized_SwitchedUser() throws Throwable {
+    switchToUser("benoit.coulombe@ircm.qc.ca");
+    assertTrue(authorizationService.isAuthorized(UserRoleTest.class));
+    assertTrue(authorizationService.isAuthorized(ManagerRoleTest.class));
+    assertFalse(authorizationService.isAuthorized(AdminRoleTest.class));
+    assertTrue(authorizationService.isAuthorized(ManagerOrAdminRoleTest.class));
+  }
+
+  @Test
+  @WithAnonymousUser
+  public void hasPermission_False() throws Throwable {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    assertFalse(authorizationService.hasPermission(object, permission));
+    verify(permissionEvaluator).hasPermission(authentication, object, permission);
+  }
+
+  @Test
+  @WithAnonymousUser
+  public void hasPermission_True() throws Throwable {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+    assertTrue(authorizationService.hasPermission(object, permission));
+    verify(permissionEvaluator).hasPermission(authentication, object, permission);
+  }
+
+  public static final class NoRoleTest {
+  }
+
+  @RolesAllowed(USER)
+  public static final class UserRoleTest {
+  }
+
+  @RolesAllowed(MANAGER)
+  public static final class ManagerRoleTest {
+  }
+
+  @RolesAllowed(ADMIN)
+  public static final class AdminRoleTest {
+  }
+
+  @RolesAllowed({ MANAGER, ADMIN })
+  public static final class ManagerOrAdminRoleTest {
   }
 
   @Test
@@ -264,7 +449,8 @@ public class AuthorizationServiceTest {
 
   @Test
   public void checkRobotRole_Other() {
-    doThrow(new AuthorizationException()).when(subject).checkPermission(any(Permission.class));
+    doThrow(new AuthorizationException()).when(subject)
+        .checkPermission(any(org.apache.shiro.authz.Permission.class));
 
     try {
       authorizationService.checkRobotRole();
