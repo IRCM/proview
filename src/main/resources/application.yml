@@ -126,6 +126,10 @@ spring:
 
 security:
   rememberMeKey: 'JfYMi0qUQVt8FObsZHW7'
+  passwords:
+    - version: 1
+      algorithm: SHA-256
+      iterations: 1000
 
 ldap:
   enabled: true

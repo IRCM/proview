@@ -70,6 +70,10 @@ public class SpringDataUserDetailsService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority(FORCE_CHANGE_PASSWORD));
       }
       */
+      if (user.getPasswordVersion() != null) {
+        user.setHashedPassword("{" + user.getPasswordVersion() + "}" + user.getHashedPassword()
+            + ShiroPasswordEncoder.SEPARATOR + user.getSalt());
+      }
       return new AuthenticatedUser(user, authorities);
     }
   }

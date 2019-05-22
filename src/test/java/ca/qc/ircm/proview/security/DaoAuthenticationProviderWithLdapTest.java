@@ -28,9 +28,11 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -105,7 +107,7 @@ public class DaoAuthenticationProviderWithLdapTest {
         new UsernamePasswordAuthenticationToken("christian.poitras@ircm.qc.ca", "test");
     ldapDaoAuthenticationProvider.authenticate(authentication);
 
-    verify(ldapService).getUsername("jonh.smith@ircm.qc.ca");
+    verify(ldapService).getUsername("christian.poitras@ircm.qc.ca");
     verify(ldapService).isPasswordValid("frobert", "test");
     User user = userRepository.findOne(2L);
     assertEquals(0, user.getSignAttempts());
@@ -184,8 +186,8 @@ public class DaoAuthenticationProviderWithLdapTest {
 
     User user = userRepository.findOne(12L);
     assertEquals(3, user.getSignAttempts());
-    assertTrue(Instant.now().minus(19, ChronoUnit.MINUTES).isAfter(user.getLastSignAttempt()));
-    assertTrue(Instant.now().minus(30, ChronoUnit.MINUTES).isBefore(user.getLastSignAttempt()));
+    assertEquals(TimeConverter.toInstant(LocalDateTime.of(2013, 11, 9, 15, 48, 24)),
+        user.getLastSignAttempt());
   }
 
   @Test

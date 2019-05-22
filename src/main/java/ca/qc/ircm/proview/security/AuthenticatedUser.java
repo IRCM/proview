@@ -30,7 +30,7 @@ public class AuthenticatedUser extends User implements Data {
   private final Long id;
 
   /**
-   * Construct the <code>UserWithId</code> with the details required by authentication.
+   * Construct the <code>AuthenticatedUser</code> with the details required by authentication.
    *
    * @param user
    *          user
@@ -57,7 +57,7 @@ public class AuthenticatedUser extends User implements Data {
   }
 
   /**
-   * Construct the <code>UserWithId</code> with the details required by authentication.
+   * Construct the <code>AuthenticatedUser</code> with the details required by authentication.
    *
    * @param user
    *          user
@@ -72,6 +72,27 @@ public class AuthenticatedUser extends User implements Data {
   public AuthenticatedUser(ca.qc.ircm.proview.user.User user,
       Collection<? extends GrantedAuthority> authorities) {
     super(user.getEmail(), user.getHashedPassword(), authorities);
+    id = user.getId();
+  }
+
+  /**
+   * Construct the <code>AuthenticatedUser</code> with the details required by authentication.
+   *
+   * @param user
+   *          user
+   * @param password
+   *          hashed password
+   * @param authorities
+   *          the authorities that should be granted to the caller if they presented the correct
+   *          username and password and the user is enabled. Not null.
+   *
+   * @throws IllegalArgumentException
+   *           if a <code>null</code> value was passed either as a parameter or as an element in the
+   *           <code>GrantedAuthority</code> collection
+   */
+  public AuthenticatedUser(ca.qc.ircm.proview.user.User user, String password,
+      Collection<? extends GrantedAuthority> authorities) {
+    super(user.getEmail(), password, authorities);
     id = user.getId();
   }
 

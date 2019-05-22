@@ -23,6 +23,7 @@ import ca.qc.ircm.proview.security.DaoAuthenticationProviderWithLdap;
 import ca.qc.ircm.proview.security.LdapConfiguration;
 import ca.qc.ircm.proview.security.LdapService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
+import ca.qc.ircm.proview.security.ShiroPasswordEncoder;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.web.SigninView;
@@ -97,6 +98,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     Map<String, PasswordEncoder> encoders = new HashMap<>();
     PasswordEncoder defaultPasswordEncoder = new BCryptPasswordEncoder();
     encoders.put(PASSWORD_ENCRYPTION, defaultPasswordEncoder);
+    configuration.getPasswords().forEach(pv -> {
+      encoders.put(String.valueOf(pv.getVersion()),
+          new ShiroPasswordEncoder(pv.getAlgorithm(), pv.getIterations()));
+    });
 
     DelegatingPasswordEncoder passworEncoder =
         new DelegatingPasswordEncoder(PASSWORD_ENCRYPTION, encoders);
