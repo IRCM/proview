@@ -23,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.msanalysis.Acquisition;
@@ -39,7 +38,6 @@ import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
@@ -54,6 +52,7 @@ import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -66,11 +65,14 @@ import java.util.Locale;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser(authorities = { UserRole.ADMIN })
 public class ActivityServiceTest extends AbstractServiceTestCase {
   private static final QActivity qactivity = QActivity.activity;
   @Inject
@@ -83,8 +85,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   private SampleRepository sampleRepository;
   @Inject
   private PlateRepository plateRepository;
-  @MockBean
-  private AuthorizationService authorizationService;
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(ActivityService.class, locale);
 
@@ -94,7 +94,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Treatment);
     Treatment digestion = (Treatment) object;
     assertEquals((Long) 195L, digestion.getId());
@@ -106,7 +105,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Treatment);
     Treatment dilution = (Treatment) object;
     assertEquals((Long) 210L, dilution.getId());
@@ -118,7 +116,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Treatment);
     Treatment enrichment = (Treatment) object;
     assertEquals((Long) 225L, enrichment.getId());
@@ -130,7 +127,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Treatment);
     Treatment fractionation = (Treatment) object;
     assertEquals((Long) 203L, fractionation.getId());
@@ -144,7 +140,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Acquisition);
     Acquisition acquisition = (Acquisition) object;
     assertEquals((Long) 1L, acquisition.getId());
@@ -156,7 +151,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof MsAnalysis);
     MsAnalysis msAnalysis = (MsAnalysis) object;
     assertEquals((Long) 19L, msAnalysis.getId());
@@ -168,7 +162,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Plate);
     Plate plate = (Plate) object;
     assertEquals((Long) 26L, plate.getId());
@@ -182,7 +175,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Well);
     Well well = (Well) object;
     assertEquals((Long) 128L, well.getId());
@@ -196,7 +188,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Contaminant);
     Contaminant contaminant = (Contaminant) object;
     assertEquals((Long) 2L, contaminant.getId());
@@ -210,7 +201,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Control);
     Control control = (Control) object;
     assertEquals((Long) 444L, control.getId());
@@ -222,7 +212,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof SubmissionSample);
     SubmissionSample sample = (SubmissionSample) object;
     assertEquals((Long) 559L, sample.getId());
@@ -236,7 +225,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof SampleContainer);
     SampleContainer container = (SampleContainer) object;
     assertEquals((Long) 1L, container.getId());
@@ -250,7 +238,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Standard);
     Standard standard = (Standard) object;
     assertEquals((Long) 4L, standard.getId());
@@ -264,7 +251,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof SubmissionSample);
     SubmissionSample sample = (SubmissionSample) object;
     assertEquals((Long) 1L, sample.getId());
@@ -276,7 +262,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Treatment);
     Treatment solubilisation = (Treatment) object;
     assertEquals((Long) 236L, solubilisation.getId());
@@ -288,7 +273,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Treatment);
     Treatment standardAddition = (Treatment) object;
     assertEquals((Long) 248L, standardAddition.getId());
@@ -300,7 +284,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Submission);
     Submission submission = (Submission) object;
     assertEquals((Long) 1L, submission.getId());
@@ -314,7 +297,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof SubmissionFile);
     SubmissionFile file = (SubmissionFile) object;
     assertEquals((Long) 1L, file.getId());
@@ -326,7 +308,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Protocol);
     Protocol protocol = (Protocol) object;
     assertEquals((Long) 1L, protocol.getId());
@@ -340,7 +321,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof TreatedSample);
     TreatedSample ts = (TreatedSample) object;
     assertEquals((Long) 1L, ts.getId());
@@ -354,7 +334,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Treatment);
     Treatment treatment = (Treatment) object;
     assertEquals((Long) 1L, treatment.getId());
@@ -366,7 +345,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Treatment);
     Treatment transfer = (Treatment) object;
     assertEquals((Long) 201L, transfer.getId());
@@ -380,7 +358,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Tube);
     Tube tube = (Tube) object;
     assertEquals((Long) 1L, tube.getId());
@@ -394,7 +371,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof ForgotPassword);
     ForgotPassword forgotPassword = (ForgotPassword) object;
     assertEquals((Long) 7L, forgotPassword.getId());
@@ -408,7 +384,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Address);
     Address address = (Address) object;
     assertEquals((Long) 1L, address.getId());
@@ -422,7 +397,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof Laboratory);
     Laboratory laboratory = (Laboratory) object;
     assertEquals((Long) 2L, laboratory.getId());
@@ -436,7 +410,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof PhoneNumber);
     PhoneNumber phoneNumber = (PhoneNumber) object;
     assertEquals((Long) 1L, phoneNumber.getId());
@@ -450,7 +423,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Object object = activityService.record(activity);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(object instanceof User);
     User user = (User) object;
     assertEquals((Long) 1L, user.getId());
@@ -468,13 +440,28 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertNull(activityService.record(activity));
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void record_AccessDenied_Anonymous() throws Exception {
+    Activity activity = repository.findOne(5639L);
+
+    activityService.record(activity);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  public void record_AccessDenied() throws Exception {
+    Activity activity = repository.findOne(5639L);
+
+    activityService.record(activity);
+  }
+
   @Test
   public void all_Submission() throws Exception {
     Submission submission = submissionRepository.findOne(1L);
 
     List<Activity> activities = activityService.all(submission);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals(7, activities.size());
     assertTrue(find(activities, 5543).isPresent());
     assertTrue(find(activities, 5544).isPresent());
@@ -491,7 +478,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     List<Activity> activities = activityService.all(submission);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals(7, activities.size());
     assertTrue(find(activities, 5634).isPresent());
     assertTrue(find(activities, 5635).isPresent());
@@ -509,13 +495,28 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertTrue(activities.isEmpty());
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void all_AccessDenied_Anonymous() throws Exception {
+    Submission submission = submissionRepository.findOne(1L);
+
+    activityService.all(submission);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  public void all_AccessDenied() throws Exception {
+    Submission submission = submissionRepository.findOne(1L);
+
+    activityService.all(submission);
+  }
+
   @Test
   public void allInsertActivities_Plate() throws Exception {
     Plate plate = new Plate(26L);
 
     List<Activity> activities = activityService.allInsertActivities(plate);
 
-    verify(authorizationService).checkAdminRole();
     assertFalse(activities.isEmpty());
     Activity activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -536,13 +537,28 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertTrue(activities.isEmpty());
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void allInsertActivities_AccessDenied_Anonymous() throws Exception {
+    Plate plate = new Plate(26L);
+
+    activityService.allInsertActivities(plate);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  public void allInsertActivities_AccessDenied() throws Exception {
+    Plate plate = new Plate(26L);
+
+    activityService.allInsertActivities(plate);
+  }
+
   @Test
   public void allUpdateWellActivities() throws Exception {
     Plate plate = new Plate(26L);
 
     List<Activity> activities = activityService.allUpdateWellActivities(plate);
 
-    verify(authorizationService).checkAdminRole();
     // Ban.
     Activity activity = activities.get(0);
     assertEquals(ActionType.UPDATE, activity.getActionType());
@@ -570,13 +586,28 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertTrue(activities.isEmpty());
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void allUpdateWellActivities_AccessDenied_Anonymous() throws Exception {
+    Plate plate = new Plate(26L);
+
+    activityService.allUpdateWellActivities(plate);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  public void allUpdateWellActivities_AccessDenied() throws Exception {
+    Plate plate = new Plate(26L);
+
+    activityService.allUpdateWellActivities(plate);
+  }
+
   @Test
   public void allTreatmentActivities_Plate() throws Exception {
     Plate plate = new Plate(26L);
 
     List<Activity> activities = activityService.allTreatmentActivities(plate);
 
-    verify(authorizationService).checkAdminRole();
     // Transfer.
     assertTrue(find(activities, 5573L).isPresent());
     Activity activity = find(activities, 5573L).get();
@@ -624,13 +655,28 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(0, activities.size());
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void allTreatmentActivities_AccessDenied_Anonymous() throws Exception {
+    Plate plate = new Plate(26L);
+
+    activityService.allTreatmentActivities(plate);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  public void allTreatmentActivities_AccessDenied() throws Exception {
+    Plate plate = new Plate(26L);
+
+    activityService.allTreatmentActivities(plate);
+  }
+
   @Test
   public void allMsAnalysisActivities_Plate() throws Exception {
     Plate plate = new Plate(115L);
 
     List<Activity> activities = activityService.allMsAnalysisActivities(plate);
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(find(activities, 5829L).isPresent());
     Activity activity = find(activities, 5829L).get();
     assertEquals(ActionType.INSERT, activity.getActionType());
@@ -658,6 +704,22 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(0, activities.size());
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void allMsAnalysisActivities_AccessDenied_Anonymous() throws Exception {
+    Plate plate = new Plate(115L);
+
+    activityService.allMsAnalysisActivities(plate);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  public void allMsAnalysisActivities_AccessDenied() throws Exception {
+    Plate plate = new Plate(115L);
+
+    activityService.allMsAnalysisActivities(plate);
+  }
+
   @Test
   public void description_Insert() {
     Submission submission = submissionRepository.findOne(1L);
@@ -665,7 +727,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     String description = activityService.description(activity, locale);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals(resources.message("activity", activity.getActionType().ordinal(),
         activity.getTableName(), submission.getName(), activity.getRecordId()), description);
   }
@@ -677,7 +738,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     String description = activityService.description(activity, locale);
 
-    verify(authorizationService).checkAdminRole();
     String[] descriptionLines = description.split("\n", -1);
     assertEquals(resources.message("activity", activity.getActionType().ordinal(),
         activity.getTableName(), submission.getName(), activity.getRecordId()),
@@ -697,6 +757,22 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
               update.getRecordId(), update.getColumn(), update.getOldValue(), update.getNewValue()),
           descriptionLines[i + 1]);
     }
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void description_AccessDenied_Anonymous() throws Exception {
+    Activity activity = repository.findOne(5543L);
+
+    activityService.description(activity, locale);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  public void description_AccessDenied() throws Exception {
+    Activity activity = repository.findOne(5543L);
+
+    activityService.description(activity, locale);
   }
 
   @Test

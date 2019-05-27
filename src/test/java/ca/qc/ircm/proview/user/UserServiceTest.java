@@ -59,7 +59,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.util.StringUtils;
 
@@ -284,10 +287,31 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
+  public void hasInvalid_AnyLaboratory() throws Throwable {
+    boolean hasInvalid = service.hasInvalid();
+
+    assertEquals(true, hasInvalid);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void hasInvalid_AnyLaboratory_AccessDenied_Anonymous() throws Throwable {
+    service.hasInvalid();
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void hasInvalid_AnyLaboratory_AccessDenied() throws Throwable {
+    service.hasInvalid();
+  }
+
+  @Test
   public void hasInvalid_True() throws Throwable {
     boolean hasInvalid = service.hasInvalid(laboratoryRepository.findOne(3L));
 
     assertEquals(true, hasInvalid);
+    verify(authorizationService).checkLaboratoryManagerPermission(any());
   }
 
   @Test
@@ -295,23 +319,17 @@ public class UserServiceTest extends AbstractServiceTestCase {
     boolean hasInvalid = service.hasInvalid(laboratoryRepository.findOne(4L));
 
     assertEquals(false, hasInvalid);
+    verify(authorizationService).checkLaboratoryManagerPermission(any());
   }
 
   @Test
-  public void hasInvalid_AnyLaboratory() throws Throwable {
-    boolean hasInvalid = service.hasInvalid(null);
-
-    assertEquals(true, hasInvalid);
-  }
-
-  @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void all_Filter() throws Throwable {
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
 
     List<User> users = service.all(filter);
 
-    verify(authorizationService).checkAdminRole();
     verify(filter).predicate();
     assertEquals(14, users.size());
     assertTrue(find(users, 2).isPresent());
@@ -319,26 +337,10 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_FilterInLaboratory() throws Throwable {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
-    UserFilter filter = mock(UserFilter.class);
-    filter.laboratory = laboratory;
-    when(filter.predicate()).thenReturn(user.isNotNull());
-
-    List<User> users = service.all(filter);
-
-    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
-    verify(filter).predicate();
-    assertEquals(14, users.size());
-    assertTrue(find(users, 2).isPresent());
-    assertFalse(find(users, 1).isPresent());
-  }
-
-  @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void all_Null() throws Throwable {
     List<User> users = service.all(null);
 
-    authorizationService.checkAdminRole();
     assertEquals(14, users.size());
     assertTrue(find(users, 2).isPresent());
     assertTrue(find(users, 3).isPresent());
@@ -356,7 +358,63 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertTrue(find(users, 27).isPresent());
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void all_Filter_AccessDenied_Anonymous() throws Throwable {
+    UserFilter filter = mock(UserFilter.class);
+    when(filter.predicate()).thenReturn(user.isNotNull());
+
+    service.all(filter);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void all_Filter_AccessDenied() throws Throwable {
+    UserFilter filter = mock(UserFilter.class);
+    when(filter.predicate()).thenReturn(user.isNotNull());
+
+    service.all(filter);
+  }
+
   @Test
+  public void all_Laboratory_Filter() throws Throwable {
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    UserFilter filter = mock(UserFilter.class);
+    when(filter.predicate()).thenReturn(user.isNotNull());
+
+    List<User> users = service.all(filter, laboratory);
+
+    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
+    verify(filter).predicate();
+    assertEquals(14, users.size());
+    assertTrue(find(users, 2).isPresent());
+    assertFalse(find(users, 1).isPresent());
+  }
+
+  @Test
+  public void all_Laboratory_NullFilter() throws Throwable {
+    Laboratory laboratory = laboratoryRepository.findOne(2L);
+
+    List<User> users = service.all(null, laboratory);
+
+    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
+    assertEquals(14, users.size());
+    assertTrue(find(users, 2).isPresent());
+    assertFalse(find(users, 1).isPresent());
+  }
+
+  @Test
+  public void all_Laboratory_NullLaboratory() throws Throwable {
+    UserFilter filter = mock(UserFilter.class);
+    when(filter.predicate()).thenReturn(user.isNotNull());
+
+    List<User> users = service.all(filter, null);
+
+    assertTrue(users.isEmpty());
+  }
+
+  @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void register_Admin() throws Throwable {
     final User manager = repository.findOne(1L);
     when(authorizationService.getCurrentUser()).thenReturn(manager);
@@ -383,7 +441,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.register(user, "password", null, registerUserWebContext());
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(authorizationService).getCurrentUser();
     verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
@@ -413,6 +470,62 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(false, user.isManager());
 
     verifyZeroInteractions(emailService);
+  }
+
+  @Test
+  @WithAnonymousUser
+  public void register_Admin_AccessDenied_Anonymous() throws Throwable {
+    final User manager = repository.findOne(1L);
+    when(authorizationService.getCurrentUser()).thenReturn(manager);
+    User user = new User();
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.setName("Christian Poitras");
+    user.setLocale(Locale.CANADA_FRENCH);
+    user.setAdmin(true);
+    Address address = new Address();
+    address.setLine("110 av des Pins Ouest");
+    address.setTown("Montréal");
+    address.setState("Québec");
+    address.setPostalCode("H2W 1R7");
+    address.setCountry("Canada");
+    user.setAddress(address);
+    PhoneNumber phoneNumber = new PhoneNumber();
+    phoneNumber.setType(PhoneNumberType.WORK);
+    phoneNumber.setNumber("514-555-5500");
+    phoneNumber.setExtension("3228");
+    List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    phoneNumbers.add(phoneNumber);
+    user.setPhoneNumbers(phoneNumbers);
+
+    service.register(user, "password", null, registerUserWebContext());
+  }
+
+  @Test
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void register_Admin_AccessDenied() throws Throwable {
+    final User manager = repository.findOne(1L);
+    when(authorizationService.getCurrentUser()).thenReturn(manager);
+    User user = new User();
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.setName("Christian Poitras");
+    user.setLocale(Locale.CANADA_FRENCH);
+    user.setAdmin(true);
+    Address address = new Address();
+    address.setLine("110 av des Pins Ouest");
+    address.setTown("Montréal");
+    address.setState("Québec");
+    address.setPostalCode("H2W 1R7");
+    address.setCountry("Canada");
+    user.setAddress(address);
+    PhoneNumber phoneNumber = new PhoneNumber();
+    phoneNumber.setType(PhoneNumberType.WORK);
+    phoneNumber.setNumber("514-555-5500");
+    phoneNumber.setExtension("3228");
+    List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    phoneNumbers.add(phoneNumber);
+    user.setPhoneNumbers(phoneNumbers);
+
+    service.register(user, "password", null, registerUserWebContext());
   }
 
   @Test

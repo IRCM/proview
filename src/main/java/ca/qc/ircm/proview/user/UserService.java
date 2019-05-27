@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.user;
 
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
@@ -27,6 +28,7 @@ import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -35,6 +37,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,8 +146,17 @@ public class UserService {
   }
 
   /**
-   * Returns true if laboratory contains an invalid user, false otherwise. <br>
-   * If laboratory is null, returns true if any user is invalid, false otherwise.
+   * Returns true if any user is invalid, false otherwise.
+   *
+   * @return true if any user is invalid, false otherwise
+   */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
+  public boolean hasInvalid() {
+    return repository.countByValidFalse() > 0;
+  }
+
+  /**
+   * Returns true if laboratory contains an invalid user, false otherwise.
    *
    * @param laboratory
    *          laboratory
@@ -152,12 +164,10 @@ public class UserService {
    */
   public boolean hasInvalid(Laboratory laboratory) {
     if (laboratory == null) {
-      authorizationService.checkAdminRole();
-      return repository.countByValidFalse() > 0;
-    } else {
-      authorizationService.checkLaboratoryManagerPermission(laboratory);
-      return repository.countByValidFalseAndLaboratory(laboratory) > 0;
+      throw new IllegalArgumentException("laboratory parameter cannot be null");
     }
+    authorizationService.checkLaboratoryManagerPermission(laboratory);
+    return repository.countByValidFalseAndLaboratory(laboratory) > 0;
   }
 
   /**
@@ -173,15 +183,34 @@ public class UserService {
    *          parameters
    * @return all users that match parameters
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<User> all(UserFilter filter) {
     if (filter == null) {
       filter = new UserFilter();
     }
-    if (filter.laboratory != null) {
-      authorizationService.checkLaboratoryManagerPermission(filter.laboratory);
-    } else {
-      authorizationService.checkAdminRole();
+
+    BooleanExpression predicate = user.id.ne(ROBOT_ID);
+    predicate = predicate.and(filter.predicate());
+    return Lists.newArrayList(repository.findAll(predicate));
+  }
+
+  /**
+   * Returns all laboratory's users that match parameters. Only managers can search users with a
+   * laboratory.
+   *
+   * @param filter
+   *          parameters
+   * @param laboratory
+   *          laboratory
+   * @return all laboratory's users that match parameters
+   */
+  public List<User> all(UserFilter filter, Laboratory laboratory) {
+    if (filter == null) {
+      filter = new UserFilter();
+    } else if (laboratory == null) {
+      return new ArrayList<>();
     }
+    authorizationService.checkLaboratoryManagerPermission(laboratory);
 
     BooleanExpression predicate = user.id.ne(ROBOT_ID);
     predicate = predicate.and(filter.predicate());
@@ -333,11 +362,11 @@ public class UserService {
     }
   }
 
-  private void registerAdmin(User user, String password) {
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
+  protected void registerAdmin(User user, String password) {
     if (!user.isAdmin()) {
       throw new IllegalArgumentException("Laboratory must be admin, use register instead.");
     }
-    authorizationService.checkAdminRole();
 
     final User manager = authorizationService.getCurrentUser();
     setUserPassword(user, password);

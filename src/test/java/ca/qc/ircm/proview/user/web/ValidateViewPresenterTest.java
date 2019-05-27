@@ -221,7 +221,6 @@ public class ValidateViewPresenterTest {
 
     UserFilter userFilter = userFilterCaptor.getValue();
     assertFalse(userFilter.valid);
-    assertNull(userFilter.laboratory);
     assertNull(userFilter.active);
   }
 
@@ -230,11 +229,10 @@ public class ValidateViewPresenterTest {
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(false);
     presenter.init(view);
 
-    verify(userService).all(userFilterCaptor.capture());
+    verify(userService).all(userFilterCaptor.capture(), eq(signedUser.getLaboratory()));
 
     UserFilter userFilter = userFilterCaptor.getValue();
     assertFalse(userFilter.valid);
-    assertEquals(signedUser.getLaboratory(), userFilter.laboratory);
     assertNull(userFilter.active);
   }
 
@@ -261,7 +259,7 @@ public class ValidateViewPresenterTest {
     final User user = usersToValidate.get(0);
     List<User> usersToValidateAfter = new ArrayList<>(usersToValidate);
     usersToValidateAfter.remove(0);
-    when(userService.all(any())).thenReturn(usersToValidateAfter);
+    when(userService.all(any(), any())).thenReturn(usersToValidateAfter);
     String homeUrl = "homeUrl";
     when(view.getUrl(any())).thenReturn(homeUrl);
     Button button = (Button) design.users.getColumn(VALIDATE).getValueProvider().apply(user);
@@ -271,7 +269,7 @@ public class ValidateViewPresenterTest {
     verify(userService).validate(eq(user), homeWebContextCaptor.capture());
     verify(userService, never()).delete(any());
     verify(view).showTrayNotification(resources.message(VALIDATED, user.getEmail()));
-    verify(userService, times(2)).all(any());
+    verify(userService, times(2)).all(any(), any());
     assertEquals(usersToValidateAfter.size(), dataProvider(design.users).getItems().size());
     HomeWebContext homeWebContext = homeWebContextCaptor.getValue();
     assertEquals(homeUrl, homeWebContext.getHomeUrl(locale));
@@ -283,7 +281,7 @@ public class ValidateViewPresenterTest {
     final User user = usersToValidate.get(0);
     List<User> usersToValidateAfter = new ArrayList<>(usersToValidate);
     usersToValidateAfter.remove(0);
-    when(userService.all(any())).thenReturn(usersToValidateAfter);
+    when(userService.all(any(), any())).thenReturn(usersToValidateAfter);
     String homeUrl = "homeUrl";
     when(view.getUrl(any())).thenReturn(homeUrl);
     Button button = (Button) design.users.getColumn(REMOVE).getValueProvider().apply(user);
@@ -293,7 +291,7 @@ public class ValidateViewPresenterTest {
     verify(userService).delete(user);
     verify(userService, never()).validate(any(), any());
     verify(view).showTrayNotification(resources.message(REMOVED, user.getEmail()));
-    verify(userService, times(2)).all(any());
+    verify(userService, times(2)).all(any(), any());
     assertEquals(usersToValidateAfter.size(), dataProvider(design.users).getItems().size());
   }
 }

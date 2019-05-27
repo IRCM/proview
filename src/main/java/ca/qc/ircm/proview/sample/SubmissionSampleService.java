@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -30,6 +31,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -96,9 +98,8 @@ public class SubmissionSampleService {
    * @param samples
    *          samples containing new status
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void updateStatus(Collection<? extends SubmissionSample> samples) {
-    authorizationService.checkAdminRole();
-
     for (SubmissionSample sample : samples) {
       SampleStatus status = sample.getStatus();
       sample = repository.findOne(sample.getId());

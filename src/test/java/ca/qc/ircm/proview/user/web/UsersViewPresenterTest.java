@@ -36,6 +36,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -374,11 +375,10 @@ public class UsersViewPresenterTest extends AbstractComponentTestCase {
     verify(userService).all(userFilterCaptor.capture());
     UserFilter userFilter = userFilterCaptor.getValue();
     assertTrue(userFilter.valid);
-    assertNull(userFilter.laboratory);
     assertNull(userFilter.active);
     assertTrue(design.add.isVisible());
     assertTrue(design.switchUser.isVisible());
-    verify(userService).hasInvalid(null);
+    verify(userService).hasInvalid();
   }
 
   @Test
@@ -386,10 +386,9 @@ public class UsersViewPresenterTest extends AbstractComponentTestCase {
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(false);
     presenter.init(view);
 
-    verify(userService).all(userFilterCaptor.capture());
+    verify(userService).all(userFilterCaptor.capture(), eq(signedUser.getLaboratory()));
     UserFilter userFilter = userFilterCaptor.getValue();
     assertTrue(userFilter.valid);
-    assertEquals(signedUser.getLaboratory(), userFilter.laboratory);
     assertNull(userFilter.active);
     assertFalse(design.add.isVisible());
     assertFalse(design.switchUser.isVisible());

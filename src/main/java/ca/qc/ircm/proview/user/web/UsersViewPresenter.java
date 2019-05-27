@@ -215,18 +215,23 @@ public class UsersViewPresenter {
   private DataProvider<User, ?> searchUsers() {
     UserFilter filter = new UserFilter();
     filter.valid = true;
-    if (!authorizationService.hasRole(UserRole.ADMIN)) {
-      filter.laboratory = authorizationService.getCurrentUser().getLaboratory();
+    List<User> users;
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
+      users = userService.all(filter);
+    } else {
+      users = userService.all(filter, authorizationService.getCurrentUser().getLaboratory());
     }
-    List<User> users = userService.all(filter);
     usersProvider = DataProvider.ofCollection(users);
     usersProvider.setFilter(p -> this.filter.test(p));
     return usersProvider;
   }
 
   private boolean showValidation() {
-    return userService.hasInvalid(authorizationService.hasRole(UserRole.ADMIN) ? null
-        : authorizationService.getCurrentUser().getLaboratory());
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
+      return userService.hasInvalid();
+    } else {
+      return userService.hasInvalid(authorizationService.getCurrentUser().getLaboratory());
+    }
   }
 
   private void validation() {

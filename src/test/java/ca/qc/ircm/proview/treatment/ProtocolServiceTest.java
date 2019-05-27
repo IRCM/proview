@@ -21,30 +21,29 @@ import static ca.qc.ircm.proview.treatment.Protocol.Type.DIGESTION;
 import static ca.qc.ircm.proview.treatment.Protocol.Type.ENRICHMENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.UserRole;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser(authorities = UserRole.ADMIN)
 public class ProtocolServiceTest {
   @Inject
   private ProtocolService service;
-  @MockBean
-  private AuthorizationService authorizationService;
 
   @Test
   public void get_DigestionProtocol() throws Throwable {
     Protocol protocol = service.get(1L);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals((Long) 1L, protocol.getId());
     assertEquals("digestion_protocol_1", protocol.getName());
     assertEquals(Protocol.Type.DIGESTION, protocol.getType());
@@ -54,7 +53,6 @@ public class ProtocolServiceTest {
   public void get_EnrichmentProtocol() throws Throwable {
     Protocol protocol = service.get(2L);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, protocol.getId());
     assertEquals("enrichment_protocol_1", protocol.getName());
     assertEquals(Protocol.Type.ENRICHMENT, protocol.getType());
@@ -67,11 +65,22 @@ public class ProtocolServiceTest {
     assertNull(protocol);
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void get_AccessDenied_Anonymous() throws Throwable {
+    service.get(1L);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void get_AccessDenied() throws Throwable {
+    service.get(1L);
+  }
+
   @Test
   public void all_Digestion() throws Throwable {
     List<Protocol> protocols = service.all(DIGESTION);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals(2, protocols.size());
     assertEquals(true, protocols.contains(service.get(1L)));
     assertEquals(true, protocols.contains(service.get(3L)));
@@ -81,9 +90,20 @@ public class ProtocolServiceTest {
   public void all_Enrichment() throws Throwable {
     List<Protocol> protocols = service.all(ENRICHMENT);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals(2, protocols.size());
     assertEquals(true, protocols.contains(service.get(2L)));
     assertEquals(true, protocols.contains(service.get(4L)));
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void all_AccessDenied_Anonymous() throws Throwable {
+    service.all(DIGESTION);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void all_AccessDenied() throws Throwable {
+    service.all(DIGESTION);
   }
 }

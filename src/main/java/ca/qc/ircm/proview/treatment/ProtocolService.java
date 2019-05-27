@@ -17,9 +17,11 @@
 
 package ca.qc.ircm.proview.treatment;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+
 import java.util.List;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProtocolService {
   @Inject
   private ProtocolRepository repository;
-  @Inject
-  private AuthorizationService authorizationService;
 
   protected ProtocolService() {
   }
@@ -44,11 +44,11 @@ public class ProtocolService {
    *          database identifier of protocol
    * @return protocol
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Protocol get(Long id) {
     if (id == null) {
       return null;
     }
-    authorizationService.checkAdminRole();
 
     return repository.findOne(id);
   }
@@ -60,9 +60,8 @@ public class ProtocolService {
    *          protocol type
    * @return all protocols of specified type
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Protocol> all(Protocol.Type type) {
-    authorizationService.checkAdminRole();
-
     return repository.findByType(type);
   }
 }

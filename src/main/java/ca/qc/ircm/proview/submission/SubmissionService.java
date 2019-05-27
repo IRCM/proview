@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
@@ -59,6 +60,7 @@ import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -485,9 +487,8 @@ public class SubmissionService {
    * @param submission
    *          submission
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void hide(Submission submission) {
-    authorizationService.checkAdminRole();
-
     submission = repository.findOne(submission.getId());
     submission.setHidden(true);
     repository.save(submission);
@@ -504,9 +505,8 @@ public class SubmissionService {
    * @param submission
    *          submission
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void show(Submission submission) {
-    authorizationService.checkAdminRole();
-
     submission = repository.findOne(submission.getId());
     submission.setHidden(false);
     repository.save(submission);

@@ -128,10 +128,11 @@ public class ValidateViewPresenter {
   private List<User> searchUsers() {
     UserFilter filter = new UserFilter();
     filter.valid = false;
-    if (!authorizationService.hasRole(UserRole.ADMIN)) {
-      filter.laboratory = authorizationService.getCurrentUser().getLaboratory();
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
+      return userService.all(filter);
+    } else {
+      return userService.all(filter, authorizationService.getCurrentUser().getLaboratory());
     }
-    return userService.all(filter);
   }
 
   private Button validateButton(User user) {

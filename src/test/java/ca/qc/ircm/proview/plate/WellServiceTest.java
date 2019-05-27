@@ -19,16 +19,17 @@ package ca.qc.ircm.proview.plate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,14 +37,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class WellServiceTest {
   @Inject
   private WellService service;
-  @MockBean
-  private AuthorizationService authorizationService;
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void get() throws Exception {
     Well well = service.get(129L);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals((Long) 129L, well.getId());
     assertEquals((Long) 26L, well.getPlate().getId());
     assertEquals((Long) 1L, well.getSample().getId());
@@ -56,9 +55,22 @@ public class WellServiceTest {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void get_Null() throws Exception {
     Well well = service.get(null);
 
     assertNull(well);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void get_AccessDenied_Anonymous() throws Exception {
+    service.get(129L);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void get_AccessDenied() throws Exception {
+    service.get(129L);
   }
 }

@@ -29,6 +29,7 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -36,6 +37,9 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,26 +72,39 @@ public class TubeServiceTest {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void nameAvailable_True() throws Throwable {
     boolean available = service.nameAvailable("FAM119A_band_01");
 
-    verify(authorizationService).checkAdminRole();
     assertFalse(available);
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void nameAvailable_False() throws Throwable {
     boolean available = service.nameAvailable("unit_test");
 
-    verify(authorizationService).checkAdminRole();
     assertTrue(available);
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void nameAvailable_Null() throws Throwable {
     boolean available = service.nameAvailable(null);
 
     assertFalse(available);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void nameAvailable_AccessDenied_Anonymous() throws Throwable {
+    service.nameAvailable("FAM119A_band_01");
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void nameAvailable_AccessDenied() throws Throwable {
+    service.nameAvailable("FAM119A_band_01");
   }
 
   @Test

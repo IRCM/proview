@@ -33,7 +33,6 @@ public class UserFilter implements Predicate<User> {
   public Boolean valid;
   public String laboratoryNameContains;
   public String organizationContains;
-  public Laboratory laboratory;
 
   @Override
   public boolean test(User user) {
@@ -65,9 +64,6 @@ public class UserFilter implements Predicate<User> {
       String organization = Strings.normalize(user.getLaboratory().getOrganization()).toLowerCase();
       test &= organization.contains(organizationContainsNormalized);
     }
-    if (laboratory != null) {
-      test &= user.getLaboratory().equals(laboratory);
-    }
     return test;
   }
 
@@ -95,9 +91,6 @@ public class UserFilter implements Predicate<User> {
     }
     if (organizationContains != null) {
       predicate.and(user.laboratory.organization.contains(organizationContains));
-    }
-    if (laboratory != null) {
-      predicate.and(user.laboratory.eq(laboratory));
     }
     return predicate.getValue();
   }

@@ -17,11 +17,14 @@
 
 package ca.qc.ircm.proview.tube;
 
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,11 +68,11 @@ public class TubeService {
    *          tube's name
    * @return true if name is available in database, false otherwise
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public boolean nameAvailable(String name) {
     if (name == null) {
       return false;
     }
-    authorizationService.checkAdminRole();
 
     return repository.countByName(name) == 0;
   }

@@ -21,37 +21,36 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.sample.SampleContainerType;
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser(authorities = UserRole.ADMIN)
 public class TreatmentServiceTest {
   @Inject
   private TreatmentService treatmentService;
   @Inject
   private SubmissionRepository submissionRepository;
-  @MockBean
-  private AuthorizationService authorizationService;
 
   @Test
   public void get_Solubilisation() throws Throwable {
     Treatment treatment = treatmentService.get(1L);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals((Long) 1L, treatment.getId());
     assertEquals(TreatmentType.SOLUBILISATION, treatment.getType());
     assertEquals((Long) 4L, treatment.getUser().getId());
@@ -77,7 +76,6 @@ public class TreatmentServiceTest {
   public void get_EnrichmentProtocol() throws Throwable {
     Treatment treatment = treatmentService.get(2L);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals((Long) 2L, treatment.getId());
     assertEquals(TreatmentType.FRACTIONATION, treatment.getType());
     assertEquals((Long) 4L, treatment.getUser().getId());
@@ -108,13 +106,24 @@ public class TreatmentServiceTest {
     assertNull(protocol);
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void get_AccessDenied_Anonymous() throws Throwable {
+    treatmentService.get(1L);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void get_AccessDenied() throws Throwable {
+    treatmentService.get(1L);
+  }
+
   @Test
   public void all_147() {
     Submission submission = submissionRepository.findOne(147L);
 
     List<Treatment> treatments = treatmentService.all(submission);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals(2, treatments.size());
     assertTrue(find(treatments, 194L).isPresent());
     assertTrue(find(treatments, 195L).isPresent());
@@ -126,7 +135,6 @@ public class TreatmentServiceTest {
 
     List<Treatment> treatments = treatmentService.all(submission);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals(12, treatments.size());
     for (long id = 209; id < 214; id++) {
       assertTrue("Treatment " + id + " not found", find(treatments, id).isPresent());
@@ -141,5 +149,21 @@ public class TreatmentServiceTest {
     List<Treatment> treatments = treatmentService.all(null);
 
     assertTrue(treatments.isEmpty());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void all_AccessDenied_Anonymous() throws Throwable {
+    Submission submission = submissionRepository.findOne(149L);
+
+    treatmentService.all(submission);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void all_AccessDenied() throws Throwable {
+    Submission submission = submissionRepository.findOne(149L);
+
+    treatmentService.all(submission);
   }
 }

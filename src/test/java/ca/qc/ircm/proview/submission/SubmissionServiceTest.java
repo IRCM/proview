@@ -94,6 +94,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -2914,6 +2917,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void hide() throws Exception {
     Submission submission = repository.findOne(147L);
     detach(submission);
@@ -2922,14 +2926,34 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.hide(submission);
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(activityService).insert(activity);
     submission = repository.findOne(submission.getId());
     verify(submissionActivityService).update(submission, null);
     assertTrue(submission.isHidden());
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void hide_AccessDenied_Anonymous() throws Exception {
+    Submission submission = repository.findOne(147L);
+    detach(submission);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+
+    service.hide(submission);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void hide_AccessDenied() throws Exception {
+    Submission submission = repository.findOne(147L);
+    detach(submission);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+
+    service.hide(submission);
+  }
+
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   @SuppressWarnings("unchecked")
   public void show() throws Exception {
     Submission submission = repository.findOne(36L);
@@ -2940,10 +2964,33 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.show(submission);
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(activityService).insert(activity);
     submission = repository.findOne(submission.getId());
     verify(submissionActivityService).update(submission, null);
     assertFalse(submission.isHidden());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  @SuppressWarnings("unchecked")
+  public void show_AccessDenied_Anonymous() throws Exception {
+    Submission submission = repository.findOne(36L);
+    detach(submission);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
+        Optional.empty());
+
+    service.show(submission);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @SuppressWarnings("unchecked")
+  public void show_AccessDenied() throws Exception {
+    Submission submission = repository.findOne(36L);
+    detach(submission);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
+        Optional.empty());
+
+    service.show(submission);
   }
 }

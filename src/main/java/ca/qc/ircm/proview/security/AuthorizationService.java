@@ -306,6 +306,7 @@ public class AuthorizationService {
   /**
    * Checks that current user has admin role.
    */
+  @Deprecated
   public void checkAdminRole() {
     getSubject().checkRole(ADMIN);
   }
