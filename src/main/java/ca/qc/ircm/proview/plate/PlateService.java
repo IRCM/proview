@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.history.Activity;
@@ -124,11 +125,11 @@ public class PlateService {
    *          plate's name
    * @return true if name is available in database, false otherwise
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public boolean nameAvailable(String name) {
     if (name == null) {
       return false;
     }
-    authorizationService.checkUserRole();
     User user = authorizationService.getCurrentUser();
 
     if (authorizationService.hasRole(UserRole.ADMIN)) {

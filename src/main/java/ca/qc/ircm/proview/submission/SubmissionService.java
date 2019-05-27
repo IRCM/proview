@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
@@ -122,24 +123,12 @@ public class SubmissionService {
    * For managers, returns all submissions made a user of his laboratory<br>
    * For administrators, returns all submissions.
    *
-   * @return current user's submissions or more for managers / administrators
-   */
-  public List<Submission> all() {
-    return all(null);
-  }
-
-  /**
-   * Returns current user's submissions.<br>
-   * For managers, returns all submissions made a user of his laboratory<br>
-   * For administrators, returns all submissions.
-   *
    * @param filter
    *          filter submissions to return
    * @return current user's submissions or more for managers / administrators
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public List<Submission> all(SubmissionFilter filter) {
-    authorizationService.checkUserRole();
-
     JPAQuery<Submission> query = queryFactory.select(submission);
     initializeAllQuery(query);
     if (filter != null) {
@@ -166,9 +155,8 @@ public class SubmissionService {
    *          filter submissions to return
    * @return current user's submissions or more for managers / administrators
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public int count(SubmissionFilter filter) {
-    authorizationService.checkUserRole();
-
     JPAQuery<Long> query = queryFactory.select(submission.id.countDistinct());
     initializeAllQuery(query);
     if (filter != null) {
@@ -239,8 +227,8 @@ public class SubmissionService {
    * @param submission
    *          submission
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public void insert(Submission submission) {
-    authorizationService.checkUserRole();
     User user = authorizationService.getCurrentUser();
     Laboratory laboratory = user.getLaboratory();
 

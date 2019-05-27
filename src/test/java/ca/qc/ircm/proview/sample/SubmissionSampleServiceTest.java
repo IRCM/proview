@@ -135,7 +135,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("CAP_20111013_05");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(true, exists);
   }
 
@@ -146,7 +145,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("CAP_20111013_80");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
   }
 
@@ -157,7 +155,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("CAP_20111013_05");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
   }
 
@@ -168,7 +165,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("control_01");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
   }
 
@@ -180,6 +176,12 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     boolean exists = service.exists(null);
 
     assertEquals(false, exists);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void exists_AccessDenied() throws Throwable {
+    service.exists("CAP_20111013_05");
   }
 
   @Test

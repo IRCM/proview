@@ -314,6 +314,7 @@ public class AuthorizationService {
   /**
    * Checks that current user has user role.
    */
+  @Deprecated
   public void checkUserRole() {
     getSubject().checkRole(USER);
   }

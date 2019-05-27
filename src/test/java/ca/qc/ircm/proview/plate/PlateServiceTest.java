@@ -199,7 +199,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("unit_test");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(true, available);
   }
 
@@ -211,7 +210,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("A_20111108");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, available);
   }
 
@@ -223,7 +221,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("unit_test");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(true, available);
   }
 
@@ -235,7 +232,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("Andrew-20171108");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, available);
   }
 
@@ -247,7 +243,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("Andrew-20171108");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(true, available);
   }
 
@@ -271,6 +266,12 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     boolean available = service.nameAvailable(null);
 
     assertEquals(false, available);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void nameAvailable_AccessDenied_Anonymous() throws Throwable {
+    service.nameAvailable("unit_test");
   }
 
   @SuppressWarnings("deprecation")

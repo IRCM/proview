@@ -73,7 +73,6 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -101,6 +100,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser
 public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Inject
   private SubmissionService service;
@@ -325,94 +325,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all() throws Throwable {
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authorizationService.getCurrentUser()).thenReturn(user);
-
-    List<Submission> submissions = service.all();
-
-    verify(authorizationService).checkUserRole();
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
-    assertFalse(find(submissions, 34).isPresent());
-    Submission submission = find(submissions, 32).get();
-    assertEquals((Long) 32L, submission.getId());
-    assertEquals("cap_experiment", submission.getExperiment());
-    assertEquals("cap_goal", submission.getGoal());
-    SubmissionSample sample = submission.getSamples().get(0);
-    assertEquals((Long) 442L, sample.getId());
-    assertEquals("CAP_20111013_01", sample.getName());
-    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        sample.getSubmission().getSubmissionDate());
-    submission = find(submissions, 33).get();
-    assertEquals((Long) 33L, submission.getId());
-    sample = submission.getSamples().get(0);
-    assertEquals((Long) 443L, sample.getId());
-    assertEquals("CAP_20111013_05", sample.getName());
-    assertEquals(SampleStatus.WAITING, sample.getStatus());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        sample.getSubmission().getSubmissionDate());
-  }
-
-  @Test
-  public void all_User() throws Throwable {
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authorizationService.getCurrentUser()).thenReturn(user);
-
-    List<Submission> submissions = service.all();
-
-    verify(authorizationService).checkUserRole();
-    assertEquals(3, submissions.size());
-    assertTrue(find(submissions, 1).isPresent());
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
-  }
-
-  @Test
-  public void all_Manager() throws Throwable {
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authorizationService.getCurrentUser()).thenReturn(user);
-    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
-        .thenReturn(true);
-
-    List<Submission> submissions = service.all();
-
-    verify(authorizationService).checkUserRole();
-    assertEquals(18, submissions.size());
-    assertTrue(find(submissions, 1).isPresent());
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
-    assertFalse(find(submissions, 34).isPresent());
-    assertTrue(find(submissions, 35).isPresent());
-    assertFalse(find(submissions, 36).isPresent());
-  }
-
-  @Test
-  public void all_Admin() throws Throwable {
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authorizationService.getCurrentUser()).thenReturn(user);
-    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
-
-    List<Submission> submissions = service.all();
-
-    verify(authorizationService).checkUserRole();
-    assertEquals(20, submissions.size());
-    assertTrue(find(submissions, 1).isPresent());
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
-    assertTrue(find(submissions, 34).isPresent());
-    assertTrue(find(submissions, 35).isPresent());
-    assertTrue(find(submissions, 36).isPresent());
-  }
-
-  @Test
   public void all_Filter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
@@ -422,7 +334,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     verify(filter).predicate();
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
@@ -439,7 +350,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertTrue(find(submissions, 32).isPresent());
     assertFalse(find(submissions, 33).isPresent());
     assertFalse(find(submissions, 34).isPresent());
@@ -457,7 +367,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(3, submissions.size());
     assertTrue(find(submissions, 148).isPresent());
     assertTrue(find(submissions, 149).isPresent());
@@ -477,7 +386,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(3, submissions.size());
     assertTrue(find(submissions, 149).isPresent());
     assertTrue(find(submissions, 150).isPresent());
@@ -494,7 +402,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals((Long) 33L, submissions.get(0).getId());
     assertEquals((Long) 32L, submissions.get(1).getId());
     assertEquals((Long) 1L, submissions.get(2).getId());
@@ -511,7 +418,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals((Long) 32L, submissions.get(0).getId());
     assertEquals((Long) 33L, submissions.get(1).getId());
     assertEquals((Long) 1L, submissions.get(2).getId());
@@ -528,7 +434,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals((Long) 33L, submissions.get(0).getId());
     assertEquals((Long) 32L, submissions.get(1).getId());
     assertEquals((Long) 1L, submissions.get(2).getId());
@@ -545,7 +450,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals((Long) 1L, submissions.get(0).getId());
     assertEquals((Long) 32L, submissions.get(1).getId());
     assertEquals((Long) 33L, submissions.get(2).getId());
@@ -559,10 +463,18 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(null);
 
-    verify(authorizationService).checkUserRole();
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
     assertFalse(find(submissions, 34).isPresent());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void all_AccessDenied() {
+    SubmissionFilter filter = mock(SubmissionFilter.class);
+    when(filter.predicate()).thenReturn(submission.isNotNull());
+
+    service.all(filter);
   }
 
   @Test
@@ -575,7 +487,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(filter);
 
-    verify(authorizationService).checkUserRole();
     verify(filter).predicate();
     assertEquals(3, count);
   }
@@ -590,7 +501,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(1, count);
   }
 
@@ -605,7 +515,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(15, count);
   }
 
@@ -622,7 +531,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(10, count);
   }
 
@@ -634,8 +542,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(null);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(3, count);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void count_AccessDenied() {
+    SubmissionFilter filter = mock(SubmissionFilter.class);
+    when(filter.predicate()).thenReturn(submission.isNotNull());
+
+    service.count(filter);
   }
 
   private Submission submissionForPrint(Service service) {
@@ -1760,7 +1676,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
@@ -1902,7 +1817,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
@@ -2054,7 +1968,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
@@ -2195,7 +2108,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
@@ -2321,7 +2233,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(any(Submission.class));
     verify(activityService).insert(activity);
     // Validate email that is sent to proteomic users.
@@ -2340,6 +2251,67 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(true, htmlContent.contains("unit_test_eluate_01"));
     assertFalse(textContent.contains("???"));
     assertFalse(htmlContent.contains("???"));
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void insert_AccessDenied() {
+    SubmissionSample sample = new SubmissionSample();
+    sample.setName("unit_test_gel_01");
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
+    List<SubmissionSample> samples = new LinkedList<>();
+    samples.add(sample);
+    when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
+    Submission submission = new Submission();
+    submission.setService(Service.LC_MS_MS);
+    submission.setTaxonomy("human");
+    submission.setExperiment("experiment");
+    submission.setGoal("goal");
+    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setInjectionType(InjectionType.LC_MS);
+    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
+    submission.setOtherProteolyticDigestionMethod("other digestion");
+    submission.setProteinIdentification(ProteinIdentification.NCBINR);
+    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
+    submission.setOtherEnrichmentType("other enrichment");
+    submission.setProtein("protein");
+    submission.setPostTranslationModification("my_modification");
+    submission.setMudPitFraction(MudPitFraction.EIGHT);
+    submission.setProteinContent(ProteinContent.MEDIUM);
+    submission.setSeparation(GelSeparation.ONE_DIMENSION);
+    submission.setThickness(GelThickness.ONE);
+    submission.setColoration(GelColoration.COOMASSIE);
+    submission.setOtherColoration("other coloration");
+    submission.setDevelopmentTime("5.0 min");
+    submission.setDecoloration(true);
+    submission.setWeightMarkerQuantity(20.0);
+    submission.setProteinQuantity("20.0 μg");
+    submission.setComment("comment");
+    submission.setSamples(samples);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename("my_file.docx");
+    byte[] fileContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      fileContent[i] = (byte) random.nextInt();
+    }
+    file.setContent(fileContent);
+    List<SubmissionFile> files = new LinkedList<>();
+    files.add(file);
+    SubmissionFile gelImage = new SubmissionFile();
+    gelImage.setFilename("my_gel_image.jpg");
+    byte[] imageContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      imageContent[i] = (byte) random.nextInt();
+    }
+    gelImage.setContent(imageContent);
+    files.add(gelImage);
+    submission.setFiles(files);
+
+    service.insert(submission);
   }
 
   @Test

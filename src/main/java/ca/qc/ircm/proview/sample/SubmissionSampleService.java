@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -80,11 +81,11 @@ public class SubmissionSampleService {
    * @return true if a sample with this name is already in database for current user, false
    *         otherwise
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public boolean exists(String name) {
     if (name == null) {
       return false;
     }
-    authorizationService.checkUserRole();
     User currentUser = authorizationService.getCurrentUser();
 
     BooleanExpression predicate =
