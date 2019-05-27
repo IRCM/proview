@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.junit.Before;
@@ -67,7 +66,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-@Ignore
+@SuppressWarnings("deprecation")
 public class AuthorizationServiceTest {
   private static final String ADMIN = UserRole.ADMIN;
   private static final String MANAGER = UserRole.MANAGER;
@@ -90,7 +89,7 @@ public class AuthorizationServiceTest {
    */
   @Before
   public void beforeTest() {
-    subject = SecurityUtils.getSubject();
+    //subject = SecurityUtils.getSubject();
     authorizationService.setPermissionEvaluator(permissionEvaluator);
   }
 
@@ -112,7 +111,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  @WithUserDetails("lana@ircm.qc.ca")
+  @WithUserDetails("proview@ircm.qc.ca")
   public void getCurrentUser() throws Throwable {
     User user = authorizationService.getCurrentUser();
     assertNotNull(authorizationService.getCurrentUser());
@@ -296,6 +295,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void isUser_Authenticated() {
     when(subject.isAuthenticated()).thenReturn(true);
 
@@ -305,6 +305,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void isUser_Remembered() {
     when(subject.isRemembered()).thenReturn(true);
 
@@ -314,6 +315,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void isUser_NotAuthenticatedOrRemembered() {
     boolean value = authorizationService.isUser();
 
@@ -321,6 +323,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void isRunAs_True() {
     when(subject.isRunAs()).thenReturn(true);
 
@@ -330,6 +333,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void isRunAs_False() {
     when(subject.isRunAs()).thenReturn(false);
 
@@ -339,6 +343,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasAdminRole_False() {
     when(subject.hasRole(any(String.class))).thenReturn(false);
 
@@ -349,6 +354,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasAdminRole_True() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
 
@@ -359,6 +365,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasManagerRole_False() {
     when(subject.hasRole(any(String.class))).thenReturn(false);
 
@@ -369,6 +376,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasManagerRole_True() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
 
@@ -379,6 +387,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasUserRole_False() {
     when(subject.hasRole(any(String.class))).thenReturn(false);
 
@@ -389,6 +398,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasUserRole_True() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
 
@@ -399,6 +409,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkAdminRole_Admin() {
     authorizationService.checkAdminRole();
 
@@ -406,6 +417,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkAdminRole_Other() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
 
@@ -420,6 +432,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserRole_User() {
     authorizationService.checkUserRole();
 
@@ -427,6 +440,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserRole_NonUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
 
@@ -441,6 +455,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkRobotRole_Robot() {
     authorizationService.checkRobotRole();
 
@@ -448,6 +463,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkRobotRole_Other() {
     doThrow(new AuthorizationException()).when(subject)
         .checkPermission(any(org.apache.shiro.authz.Permission.class));
@@ -463,6 +479,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryReadPermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -475,6 +492,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryReadPermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     Laboratory laboratory = new Laboratory(2L);
@@ -490,6 +508,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryReadPermission_Member() {
     Laboratory laboratory = new Laboratory(2L);
 
@@ -501,6 +520,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryReadPermission_Other() {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Laboratory laboratory = new Laboratory(2L);
@@ -518,11 +538,13 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryReadPermission_Null() {
     authorizationService.checkLaboratoryReadPermission(null);
   }
 
   @Test
+  @Ignore
   public void hasLaboratoryManagerPermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     Laboratory laboratory = new Laboratory(1L);
@@ -535,6 +557,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasLaboratoryManagerPermission_LaboratoryManager() {
     when(subject.hasRole(UserRole.USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
@@ -549,6 +572,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasLaboratoryManagerPermission_False() {
     when(subject.hasRole(UserRole.USER)).thenReturn(true);
     Laboratory laboratory = new Laboratory(1L);
@@ -562,6 +586,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasLaboratoryManagerPermission_Null() {
     boolean manager = authorizationService.hasLaboratoryManagerPermission(null);
 
@@ -569,6 +594,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryManagerPermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -581,6 +607,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryManagerPermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     Laboratory laboratory = new Laboratory(2L);
@@ -596,6 +623,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryManagerPermission_LaboratoryManager() {
     Laboratory laboratory = new Laboratory(2L);
 
@@ -607,6 +635,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryManagerPermission_Other() {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Laboratory laboratory = new Laboratory(2L);
@@ -624,11 +653,13 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkLaboratoryManagerPermission_Null() {
     authorizationService.checkLaboratoryManagerPermission(null);
   }
 
   @Test
+  @Ignore
   public void checkUserReadPermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -642,6 +673,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserReadPermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     User user = new User(6L);
@@ -658,6 +690,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserReadPermission_CanRead() {
     User user = new User(5L);
     user.setLaboratory(new Laboratory(1L));
@@ -671,6 +704,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserReadPermission_LaboratoryManager() {
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -685,6 +719,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserReadPermission_CannotRead() {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     User user = new User(10L);
@@ -704,11 +739,13 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserReadPermission_Null() {
     authorizationService.checkUserReadPermission(null);
   }
 
   @Test
+  @Ignore
   public void hasUserWritePermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -723,6 +760,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasUserWritePermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     User user = new User(10L);
@@ -735,6 +773,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasUserWritePermission_LaboratoryManager() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
@@ -751,6 +790,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasUserWritePermission_CanWrite() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("user:write:10")).thenReturn(true);
@@ -767,6 +807,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasUserWritePermission_CannotWrite() {
     when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -783,6 +824,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasUserWritePermission_Null() {
     boolean value = authorizationService.hasUserWritePermission(null);
 
@@ -790,6 +832,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserWritePermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -803,6 +846,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserWritePermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     User user = new User(10L);
@@ -819,6 +863,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserWritePermission_LaboratoryManager() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
@@ -834,6 +879,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserWritePermission_CanWrite() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("user:write:10")).thenReturn(true);
@@ -849,6 +895,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserWritePermission_CannotWrite() {
     when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -869,11 +916,13 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkUserWritePermission_Null() {
     authorizationService.checkUserWritePermission(null);
   }
 
   @Test
+  @Ignore
   public void checkSampleReadPermission_SubmissionSample_Admin() throws Exception {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -886,6 +935,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSampleReadPermission_SubmissionSample_NotUser() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     SubmissionSample sample = new SubmissionSample(446L);
@@ -902,6 +952,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void checkSampleReadPermission_SubmissionSample_SampleOwner() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     SubmissionSample sample = new SubmissionSample(446L);
@@ -913,6 +964,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSampleReadPermission_SubmissionSample_LaboratoryManager() throws Exception {
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -926,6 +978,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSampleReadPermission_SubmissionSample_Other() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     SubmissionSample sample = new SubmissionSample(446L);
@@ -944,6 +997,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSampleReadPermission_Control_Admin() throws Exception {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -956,6 +1010,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSampleReadPermission_Control_NotUser() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     Control sample = new Control(444L);
@@ -972,6 +1027,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void checkSampleReadPermission_Control_SampleOwnerForAnalysis() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Control sample = new Control(444L);
@@ -984,6 +1040,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 3)
+  @Ignore
   public void checkSampleReadPermission_Control_LaboratoryManagerForAnalysis() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Control sample = new Control(444L);
@@ -996,6 +1053,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 6)
+  @Ignore
   public void checkSampleReadPermission_Control_Other() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
 
@@ -1013,11 +1071,13 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSampleReadPermission_Null() throws Exception {
     authorizationService.checkSampleReadPermission(null);
   }
 
   @Test
+  @Ignore
   public void checkSubmissionReadPermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1030,6 +1090,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionReadPermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     Submission submission = new Submission(35L);
@@ -1046,6 +1107,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void checkSubmissionReadPermission_SubmissionOwner() {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Submission submission = new Submission(35L);
@@ -1057,6 +1119,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionReadPermission_LaboratoryManager() {
     when(subject.isPermitted(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1070,6 +1133,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionReadPermission_Other() {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
 
@@ -1088,11 +1152,13 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionReadPermission_Null() {
     authorizationService.checkSubmissionReadPermission(null);
   }
 
   @Test
+  @Ignore
   public void hasSubmissionWritePermission_Admin_ToApprove() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1106,6 +1172,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasSubmissionWritePermission_Admin_Analysed() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1119,6 +1186,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasSubmissionWritePermission_NotUser() {
     Submission submission = new Submission(36L);
 
@@ -1130,6 +1198,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void hasSubmissionWritePermission_SubmissionOwner_ToApprove() {
     when(subject.hasRole(USER)).thenReturn(true);
     Submission submission = new Submission(36L);
@@ -1143,6 +1212,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void hasSubmissionWritePermission_SubmissionOwner_Approved() {
     when(subject.hasRole(USER)).thenReturn(true);
     Submission submission = new Submission(164L);
@@ -1156,6 +1226,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void hasSubmissionWritePermission_SubmissionOwner_Received() {
     when(subject.hasRole(USER)).thenReturn(true);
     Submission submission = new Submission(161L);
@@ -1169,6 +1240,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void hasSubmissionWritePermission_SubmissionOwner_Analysed() {
     when(subject.hasRole(USER)).thenReturn(true);
     Submission submission = new Submission(156L);
@@ -1181,6 +1253,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasSubmissionWritePermission_LaboratoryManager_ToApprove() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
@@ -1196,6 +1269,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasSubmissionWritePermission_LaboratoryManager_Approved() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
@@ -1210,6 +1284,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasSubmissionWritePermission_LaboratoryManager_Received() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
@@ -1224,6 +1299,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasSubmissionWritePermission_LaboratoryManager_Analysed() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted("laboratory:manager:2")).thenReturn(true);
@@ -1239,6 +1315,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasSubmissionWritePermission_Other() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(false);
@@ -1253,6 +1330,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void hasSubmissionWritePermission_Null() {
     boolean value = authorizationService.hasSubmissionWritePermission(null);
 
@@ -1260,6 +1338,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionWritePermission_Admin_ToApprove() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1272,6 +1351,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionWritePermission_Admin_Analysed() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1284,6 +1364,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionWritePermission_NotUser() {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     Submission submission = new Submission(36L);
@@ -1300,6 +1381,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void checkSubmissionWritePermission_SubmissionOwner_ToApprove() {
     when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1313,6 +1395,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void checkSubmissionWritePermission_SubmissionOwner_Analysed() {
     when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1330,6 +1413,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionWritePermission_LaboratoryManager_ToApprove() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
@@ -1344,6 +1428,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionWritePermission_LaboratoryManager_Analysed() {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.isPermitted(any(String.class))).thenReturn(true);
@@ -1363,6 +1448,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionWritePermission_Other() {
     when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1382,11 +1468,13 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkSubmissionWritePermission_Null() {
     authorizationService.checkSubmissionWritePermission(null);
   }
 
   @Test
+  @Ignore
   public void checkPlateReadPermission_Admin() throws Exception {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1398,6 +1486,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkPlateReadPermission_NotUser() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     Plate plate = new Plate(26L);
@@ -1412,6 +1501,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void checkPlateReadPermission_UserOwner() throws Exception {
     when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1422,6 +1512,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void checkPlateReadPermission_UserNotOwner() throws Exception {
     when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1437,6 +1528,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 3)
+  @Ignore
   public void checkPlateReadPermission_LaboratoryManagerOwner() throws Exception {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.hasRole(MANAGER)).thenReturn(true);
@@ -1450,6 +1542,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 3)
+  @Ignore
   public void checkPlateReadPermission_LaboratoryManagerNotOwner() throws Exception {
     when(subject.hasRole(USER)).thenReturn(true);
     when(subject.hasRole(MANAGER)).thenReturn(true);
@@ -1466,6 +1559,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 6)
+  @Ignore
   public void checkPlateReadPermission_Other() throws Exception {
     when(subject.hasRole(USER)).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1480,11 +1574,13 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkPlateReadPermission_Null() throws Exception {
     authorizationService.checkPlateReadPermission(null);
   }
 
   @Test
+  @Ignore
   public void checkMsAnalysisReadPermission_Admin() throws Exception {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
@@ -1497,6 +1593,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkMsAnalysisReadPermission_NotUser() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkRole(any(String.class));
     MsAnalysis msAnalysis = new MsAnalysis(13L);
@@ -1513,6 +1610,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 10)
+  @Ignore
   public void checkMsAnalysisReadPermission_SampleOwner() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     MsAnalysis msAnalysis = new MsAnalysis(13L);
@@ -1525,6 +1623,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 3)
+  @Ignore
   public void checkMsAnalysisReadPermission_LaboratoryManager() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     MsAnalysis msAnalysis = new MsAnalysis(13L);
@@ -1537,6 +1636,7 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithSubject(userId = 6)
+  @Ignore
   public void checkMsAnalysisReadPermission_Other() throws Exception {
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));
     MsAnalysis msAnalysis = new MsAnalysis(13L);
@@ -1554,6 +1654,7 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @Ignore
   public void checkMsAnalysisReadPermission_Null() throws Exception {
     authorizationService.checkMsAnalysisReadPermission(null);
   }
