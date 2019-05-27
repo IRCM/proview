@@ -456,30 +456,6 @@ public class AuthorizationServiceTest {
 
   @Test
   @Ignore
-  public void checkRobotRole_Robot() {
-    authorizationService.checkRobotRole();
-
-    verify(subject).checkPermission(new RobotPermission());
-  }
-
-  @Test
-  @Ignore
-  public void checkRobotRole_Other() {
-    doThrow(new AuthorizationException()).when(subject)
-        .checkPermission(any(org.apache.shiro.authz.Permission.class));
-
-    try {
-      authorizationService.checkRobotRole();
-      fail("Expected AuthorizationException");
-    } catch (AuthorizationException e) {
-      // Ignore.
-    }
-
-    verify(subject).checkPermission(new RobotPermission());
-  }
-
-  @Test
-  @Ignore
   public void checkLaboratoryReadPermission_Admin() {
     when(subject.hasRole(any(String.class))).thenReturn(true);
     doThrow(new AuthorizationException()).when(subject).checkPermission(any(String.class));

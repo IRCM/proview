@@ -319,13 +319,6 @@ public class AuthorizationService {
   }
 
   /**
-   * Checks that current user has robot role.
-   */
-  public void checkRobotRole() {
-    getSubject().checkPermission(new RobotPermission());
-  }
-
-  /**
    * Checks that current user can read laboratory.
    *
    * @param laboratory
