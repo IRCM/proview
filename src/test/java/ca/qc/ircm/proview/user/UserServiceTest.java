@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -60,6 +61,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -68,7 +71,9 @@ import org.thymeleaf.util.StringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser
 public class UserServiceTest extends AbstractServiceTestCase {
+  private static final String WRITE = "write";
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
   @Inject
@@ -85,6 +90,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
   private EmailService emailService;
   @MockBean
   private AuthorizationService authorizationService;
+  @MockBean
+  private PermissionEvaluator permissionEvaluator;
   @Mock
   private MimeMessageHelper email;
   @Captor
@@ -107,6 +114,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     hashedPassword = "da78f3a74658706/4ae8470fc73a83f369fed012";
     when(passwordEncoder.encode(any(String.class))).thenReturn(hashedPassword);
     when(emailService.htmlEmail()).thenReturn(email);
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
   }
 
   private <D extends PhoneNumber> D findPhoneNumber(Collection<D> datas, PhoneNumberType type) {
@@ -308,18 +316,22 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void hasInvalid_True() throws Throwable {
-    boolean hasInvalid = service.hasInvalid(laboratoryRepository.findOne(3L));
+    Laboratory laboratory = laboratoryRepository.findOne(3L);
+
+    boolean hasInvalid = service.hasInvalid(laboratory);
 
     assertEquals(true, hasInvalid);
-    verify(authorizationService).checkLaboratoryManagerPermission(any());
+    verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
   }
 
   @Test
   public void hasInvalid_False() throws Throwable {
-    boolean hasInvalid = service.hasInvalid(laboratoryRepository.findOne(4L));
+    Laboratory laboratory = laboratoryRepository.findOne(4L);
+
+    boolean hasInvalid = service.hasInvalid(laboratory);
 
     assertEquals(false, hasInvalid);
-    verify(authorizationService).checkLaboratoryManagerPermission(any());
+    verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
   }
 
   @Test
@@ -384,7 +396,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     List<User> users = service.all(filter, laboratory);
 
-    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
+    verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
     verify(filter).predicate();
     assertEquals(14, users.size());
     assertTrue(find(users, 2).isPresent());
@@ -397,7 +409,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     List<User> users = service.all(null, laboratory);
 
-    verify(authorizationService).checkLaboratoryManagerPermission(laboratory);
+    verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
     assertEquals(14, users.size());
     assertTrue(find(users, 2).isPresent());
     assertFalse(find(users, 1).isPresent());
@@ -1055,7 +1067,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(authorizationService).checkUserWritePermission(user);
     verify(authorizationService).hasRole(UserRole.MANAGER);
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("lab test", user.getLaboratory().getName());
@@ -1072,7 +1084,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.validate(user, homeWebContext());
 
     repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
     user = repository.findOne(7L);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
@@ -1143,7 +1155,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.activate(user);
 
     repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
     user = repository.findOne(12L);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
@@ -1159,7 +1171,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.deactivate(user);
 
     repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
     user = repository.findOne(10L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
@@ -1175,7 +1187,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.deactivate(user);
 
     repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
     user = repository.findOne(3L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
@@ -1191,7 +1203,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.deactivate(user);
 
     repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
     user = repository.findOne(4L);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
@@ -1231,7 +1243,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.delete(user);
 
     repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
     user = repository.findOne(7L);
     assertNull(user);
   }
@@ -1245,7 +1257,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.delete(user);
 
     repository.flush();
-    verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
+    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
     user = repository.findOne(6L);
     assertNull(user);
     Laboratory laboratory = laboratoryRepository.findOne(3L);

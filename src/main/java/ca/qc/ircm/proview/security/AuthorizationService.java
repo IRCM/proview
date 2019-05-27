@@ -320,51 +320,6 @@ public class AuthorizationService {
   }
 
   /**
-   * Checks that current user can read laboratory.
-   *
-   * @param laboratory
-   *          laboratory
-   */
-  public void checkLaboratoryReadPermission(Laboratory laboratory) {
-    if (laboratory != null) {
-      getSubject().checkRole(USER);
-      if (!getSubject().hasRole(ADMIN)) {
-        getSubject().checkPermission("laboratory:read:" + laboratory.getId());
-      }
-    }
-  }
-
-  /**
-   * Returns true if user is a manager for laboratory, false otherwise.
-   *
-   * @param laboratory
-   *          laboratory
-   * @return true if user is a manager for laboratory, false otherwise
-   */
-  public boolean hasLaboratoryManagerPermission(Laboratory laboratory) {
-    if (laboratory != null && getSubject().hasRole(USER)) {
-      return getSubject().hasRole(ADMIN)
-          || getSubject().isPermitted("laboratory:manager:" + laboratory.getId());
-    }
-    return false;
-  }
-
-  /**
-   * Checks that current user is a manager of laboratory.
-   *
-   * @param laboratory
-   *          laboratory
-   */
-  public void checkLaboratoryManagerPermission(Laboratory laboratory) {
-    if (laboratory != null) {
-      getSubject().checkRole(USER);
-      if (!getSubject().hasRole(ADMIN)) {
-        getSubject().checkPermission("laboratory:manager:" + laboratory.getId());
-      }
-    }
-  }
-
-  /**
    * Checks that current user can read user.
    *
    * @param user

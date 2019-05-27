@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -162,11 +163,11 @@ public class UserService {
    *          laboratory
    * @return true if laboratory contains an invalid user, false otherwise
    */
+  @PreAuthorize("hasPermission(#laboratory, 'write')")
   public boolean hasInvalid(Laboratory laboratory) {
     if (laboratory == null) {
       throw new IllegalArgumentException("laboratory parameter cannot be null");
     }
-    authorizationService.checkLaboratoryManagerPermission(laboratory);
     return repository.countByValidFalseAndLaboratory(laboratory) > 0;
   }
 
@@ -204,13 +205,13 @@ public class UserService {
    *          laboratory
    * @return all laboratory's users that match parameters
    */
+  @PreAuthorize("hasPermission(#laboratory, 'write')")
   public List<User> all(UserFilter filter, Laboratory laboratory) {
     if (filter == null) {
       filter = new UserFilter();
     } else if (laboratory == null) {
       return new ArrayList<>();
     }
-    authorizationService.checkLaboratoryManagerPermission(laboratory);
 
     BooleanExpression predicate = user.id.ne(ROBOT_ID);
     predicate = predicate.and(filter.predicate());
@@ -411,7 +412,7 @@ public class UserService {
     }
 
     if (authorizationService.hasRole(UserRole.MANAGER)) {
-      authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
+      authorizationService.hasPermission(user.getLaboratory(), BasePermission.WRITE);
       updateDirectorName(user.getLaboratory(), user);
       laboratoryRepository.save(user.getLaboratory());
     }
@@ -436,9 +437,9 @@ public class UserService {
    * @param webContext
    *          web context used to send email to user
    */
+  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void validate(User user, HomeWebContext webContext) {
     user = repository.findOne(user.getId());
-    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
     user.setValid(true);
     user.setActive(true);
@@ -489,9 +490,9 @@ public class UserService {
    * @param user
    *          user
    */
+  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void activate(User user) {
     user = repository.findOne(user.getId());
-    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
     user.setActive(true);
     repository.save(user);
@@ -505,8 +506,8 @@ public class UserService {
    * @param user
    *          user
    */
+  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void deactivate(User user) {
-    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
     if (user.getId() == ROBOT_ID) {
       throw new IllegalArgumentException("Robot cannot be deactivated");
     }
@@ -524,9 +525,9 @@ public class UserService {
    * @param user
    *          user to delete
    */
+  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void delete(User user) {
     user = repository.findOne(user.getId());
-    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
     if (user.isValid()) {
       throw new DeleteValidUserException(user);

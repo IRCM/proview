@@ -62,6 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -172,7 +173,7 @@ public class SubmissionService {
     query.from(submission);
     if (!authorizationService.hasRole(UserRole.ADMIN)) {
       query.where(submission.hidden.eq(false));
-      if (authorizationService.hasLaboratoryManagerPermission(currentLaboratory)) {
+      if (authorizationService.hasPermission(currentLaboratory, BasePermission.WRITE)) {
         query.where(submission.laboratory.eq(currentLaboratory));
       } else {
         query.where(submission.user.eq(currentUser));

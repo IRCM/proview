@@ -73,6 +73,10 @@ public class Laboratory implements Data, Named, Serializable {
     this.id = id;
   }
 
+  public Laboratory(String name) {
+    this.name = name;
+  }
+
   @Override
   public String toString() {
     return "Laboratory [id=" + id + ", organization=" + organization + ", name=" + name + "]";

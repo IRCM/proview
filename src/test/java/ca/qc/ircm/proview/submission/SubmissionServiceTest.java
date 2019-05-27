@@ -73,6 +73,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -94,6 +95,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -322,6 +324,90 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = service.get(null);
 
     assertNull(submission);
+  }
+
+  @Test
+  public void all() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
+    List<Submission> submissions = service.all(null);
+
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    Submission submission = find(submissions, 32).get();
+    assertEquals((Long) 32L, submission.getId());
+    assertEquals("cap_experiment", submission.getExperiment());
+    assertEquals("cap_goal", submission.getGoal());
+    SubmissionSample sample = submission.getSamples().get(0);
+    assertEquals((Long) 442L, sample.getId());
+    assertEquals("CAP_20111013_01", sample.getName());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
+    assertEquals(
+        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+        sample.getSubmission().getSubmissionDate());
+    submission = find(submissions, 33).get();
+    assertEquals((Long) 33L, submission.getId());
+    sample = submission.getSamples().get(0);
+    assertEquals((Long) 443L, sample.getId());
+    assertEquals("CAP_20111013_05", sample.getName());
+    assertEquals(SampleStatus.WAITING, sample.getStatus());
+    assertEquals(
+        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+        sample.getSubmission().getSubmissionDate());
+  }
+
+  @Test
+  public void all_User() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+
+    List<Submission> submissions = service.all(null);
+
+    assertEquals(3, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+  }
+
+  @Test
+  public void all_Manager() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+
+    List<Submission> submissions = service.all(null);
+
+    verify(authorizationService).hasPermission(user.getLaboratory(), BasePermission.WRITE);
+    assertEquals(18, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void all_Admin() throws Throwable {
+    User user = new User(3L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
+
+    List<Submission> submissions = service.all(null);
+
+    assertEquals(20, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
   }
 
   @Test
