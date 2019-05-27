@@ -3,8 +3,6 @@ package ca.qc.ircm.proview.security;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
-import ca.qc.ircm.proview.user.Laboratory;
-import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserAuthority;
 import ca.qc.ircm.proview.user.UserRepository;
@@ -15,15 +13,14 @@ import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 
 /**
- * {@link PermissionEvaluator} that can evaluate permission for {@link Laboratory}.
+ * {@link PermissionEvaluator} that can evaluate permission for {@link User}.
  */
-public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
-  private LaboratoryRepository repository;
+public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
+  private UserRepository repository;
   private AuthorizationService authorizationService;
 
-  LaboratoryPermissionEvaluator(LaboratoryRepository repository, UserRepository userRepository,
-      AuthorizationService authorizationService) {
-    super(userRepository);
+  UserPermissionEvaluator(UserRepository repository, AuthorizationService authorizationService) {
+    super(repository);
     this.repository = repository;
     this.authorizationService = authorizationService;
   }
@@ -31,48 +28,51 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
       Object permission) {
-    if ((authentication == null) || !(targetDomainObject instanceof Laboratory)
+    if ((authentication == null) || !(targetDomainObject instanceof User)
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
-    Laboratory laboratory = (Laboratory) targetDomainObject;
+    User user = (User) targetDomainObject;
     User currentUser = getUser(authentication);
     Permission realPermission = resolvePermission(permission);
-    return hasPermission(laboratory, currentUser, realPermission);
+    return hasPermission(user, currentUser, realPermission);
   }
 
   @Override
   public boolean hasPermission(Authentication authentication, Serializable targetId,
       String targetType, Object permission) {
     if ((authentication == null) || !(targetId instanceof Long)
-        || !targetType.equals(Laboratory.class.getName())
+        || !targetType.equals(User.class.getName())
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
-    Laboratory laboratory = repository.findOne((Long) targetId);
-    if (laboratory == null) {
+    User user = repository.findOne((Long) targetId);
+    if (user == null) {
       return false;
     }
     User currentUser = getUser(authentication);
     Permission realPermission = resolvePermission(permission);
-    return hasPermission(laboratory, currentUser, realPermission);
+    return hasPermission(user, currentUser, realPermission);
   }
 
-  private boolean hasPermission(Laboratory laboratory, User currentUser, Permission permission) {
+  private boolean hasPermission(User user, User currentUser, Permission permission) {
     if (currentUser == null) {
       return false;
     }
     if (authorizationService.hasRole(ADMIN)) {
       return true;
     }
-    if (laboratory.getId() == null) {
+    if (user.getId() == null) {
       return false;
+    }
+    if (user.getId().equals(currentUser.getId())) {
+      return true;
     }
     boolean authorized = false;
     authorized |= permission.equals(BasePermission.READ)
-        && authorizationService.hasRole(UserAuthority.laboratoryMember(laboratory));
-    authorized |= permission.equals(BasePermission.WRITE)
-        && authorizationService.hasAllRoles(MANAGER, UserAuthority.laboratoryMember(laboratory));
+        && authorizationService.hasRole(UserAuthority.laboratoryMember(user.getLaboratory()));
+    authorized |= permission.equals(BasePermission.WRITE) && authorizationService
+        .hasAllRoles(MANAGER, UserAuthority.laboratoryMember(user.getLaboratory()));
     return authorized;
   }
 }

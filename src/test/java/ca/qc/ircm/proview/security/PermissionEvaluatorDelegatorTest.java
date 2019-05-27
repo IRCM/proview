@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.User;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +42,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ServiceTestAnnotations
 public class PermissionEvaluatorDelegatorTest {
   private static final String LABORATORY_CLASS = Laboratory.class.getName();
+  private static final String USER_CLASS = User.class.getName();
   private static final String READ = "read";
   private static final Permission BASE_READ = BasePermission.READ;
   private static final String WRITE = "write";
@@ -50,11 +52,16 @@ public class PermissionEvaluatorDelegatorTest {
   @Mock
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
   @Mock
+  private UserPermissionEvaluator userPermissionEvaluator;
+  @Mock
   private Laboratory laboratory;
+  @Mock
+  private User user;
 
   @Before
   public void beforeTest() {
     permissionEvaluator.setLaboratoryPermissionEvaluator(laboratoryPermissionEvaluator);
+    permissionEvaluator.setUserPermissionEvaluator(userPermissionEvaluator);
   }
 
   private Authentication authentication() {
@@ -119,6 +126,63 @@ public class PermissionEvaluatorDelegatorTest {
         LABORATORY_CLASS, WRITE);
     verify(laboratoryPermissionEvaluator).hasPermission(authentication(), laboratory.getId(),
         LABORATORY_CLASS, BASE_WRITE);
+  }
+
+  @Test
+  @WithAnonymousUser
+  public void hasPermission_User_False() throws Throwable {
+    assertFalse(permissionEvaluator.hasPermission(authentication(), user, READ));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), user, BASE_READ));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), user, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), user, BASE_WRITE));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, READ));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, BASE_READ));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, WRITE));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, BASE_WRITE));
+    verify(userPermissionEvaluator).hasPermission(authentication(), user, READ);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user, BASE_READ);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user, WRITE);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user, BASE_WRITE);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user.getId(), USER_CLASS, READ);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user.getId(), USER_CLASS,
+        BASE_READ);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user.getId(), USER_CLASS,
+        WRITE);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user.getId(), USER_CLASS,
+        BASE_WRITE);
+  }
+
+  @Test
+  @WithAnonymousUser
+  public void hasPermission_User_True() throws Throwable {
+    when(userPermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+    when(userPermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
+    assertTrue(permissionEvaluator.hasPermission(authentication(), user, READ));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), user, BASE_READ));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), user, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), user, BASE_WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, READ));
+    assertTrue(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, BASE_READ));
+    assertTrue(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, WRITE));
+    assertTrue(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, BASE_WRITE));
+    verify(userPermissionEvaluator).hasPermission(authentication(), user, READ);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user, BASE_READ);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user, WRITE);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user, BASE_WRITE);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user.getId(), USER_CLASS, READ);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user.getId(), USER_CLASS,
+        BASE_READ);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user.getId(), USER_CLASS,
+        WRITE);
+    verify(userPermissionEvaluator).hasPermission(authentication(), user.getId(), USER_CLASS,
+        BASE_WRITE);
   }
 
   @Test

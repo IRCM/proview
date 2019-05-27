@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.security;
 
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
+import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -24,11 +25,13 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
   @Inject
   private LaboratoryRepository laboratoryRepository;
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
+  private UserPermissionEvaluator userPermissionEvaluator;
 
   @PostConstruct
   protected void init() {
     laboratoryPermissionEvaluator = new LaboratoryPermissionEvaluator(laboratoryRepository,
         userRepository, authorizationService);
+    userPermissionEvaluator = new UserPermissionEvaluator(userRepository, authorizationService);
   }
 
   @Override
@@ -37,6 +40,8 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
     if (targetDomainObject instanceof Laboratory) {
       return laboratoryPermissionEvaluator.hasPermission(authentication, targetDomainObject,
           permission);
+    } else if (targetDomainObject instanceof User) {
+      return userPermissionEvaluator.hasPermission(authentication, targetDomainObject, permission);
     }
     return false;
   }
@@ -47,6 +52,9 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
     if (targetType.equals(Laboratory.class.getName())) {
       return laboratoryPermissionEvaluator.hasPermission(authentication, targetId, targetType,
           permission);
+    } else if (targetType.equals(User.class.getName())) {
+      return userPermissionEvaluator.hasPermission(authentication, targetId, targetType,
+          permission);
     }
     return false;
   }
@@ -54,5 +62,9 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
   void setLaboratoryPermissionEvaluator(
       LaboratoryPermissionEvaluator laboratoryPermissionEvaluator) {
     this.laboratoryPermissionEvaluator = laboratoryPermissionEvaluator;
+  }
+
+  void setUserPermissionEvaluator(UserPermissionEvaluator userPermissionEvaluator) {
+    this.userPermissionEvaluator = userPermissionEvaluator;
   }
 }
