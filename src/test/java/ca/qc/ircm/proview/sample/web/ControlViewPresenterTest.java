@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.sample.ControlRepository;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -121,7 +122,7 @@ public class ControlViewPresenterTest {
 
   @Test
   public void enter_Empty() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     presenter.enter("");
 
@@ -144,7 +145,7 @@ public class ControlViewPresenterTest {
 
   @Test
   public void enter_Control() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     final Control control = repository.findOne(444L);
     when(controlService.get(444L)).thenReturn(control);
 

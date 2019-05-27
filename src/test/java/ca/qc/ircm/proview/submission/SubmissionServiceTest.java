@@ -63,6 +63,7 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.utils.MessageResource;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -394,7 +395,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
 
     List<Submission> submissions = service.all();
 
@@ -2783,7 +2784,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setUser(user);
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
@@ -2865,7 +2866,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       detach(sa.getOriginalContainer());
     });
     submission.getSamples().add(sample);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 

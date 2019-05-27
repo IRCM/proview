@@ -194,7 +194,7 @@ public class SigninViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void sign_User() {
-    when(authorizationService.isUser()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
     presenter.init(view);
     signFormUsername.setValue(username);
     signFormPassword.setValue(password);
@@ -281,7 +281,7 @@ public class SigninViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void sign_AuthenticationException() {
-    when(authorizationService.isUser()).thenThrow(new BadCredentialsException("test"));
+    when(authorizationService.isAnonymous()).thenThrow(new BadCredentialsException("test"));
     presenter.init(view);
     signFormUsername.setValue(username);
     signFormPassword.setValue(password);
@@ -375,7 +375,7 @@ public class SigninViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void enter_NotSigned() {
-    when(authorizationService.isUser()).thenReturn(false);
+    when(authorizationService.isAnonymous()).thenReturn(true);
     presenter.init(view);
 
     presenter.enter("");
@@ -385,7 +385,7 @@ public class SigninViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void enter_User() {
-    when(authorizationService.isUser()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
     presenter.init(view);
 
     presenter.enter("");

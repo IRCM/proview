@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
@@ -91,7 +92,7 @@ public class RegisterViewPresenterTest {
 
   @Test
   public void captions_Admin() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     verify(view).setTitle(resources.message(property(TITLE, "admin"), applicationName));

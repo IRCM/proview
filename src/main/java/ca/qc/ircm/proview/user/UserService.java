@@ -381,7 +381,7 @@ public class UserService {
       throw new UnmanagedLaboratoryException();
     }
 
-    if (authorizationService.hasManagerRole()) {
+    if (authorizationService.hasRole(UserRole.MANAGER)) {
       authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
       updateDirectorName(user.getLaboratory(), user);
       laboratoryRepository.save(user.getLaboratory());

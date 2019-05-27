@@ -40,6 +40,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.web.SigninView;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.UsersView;
@@ -57,6 +58,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -130,6 +132,7 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_Anonymous() throws Throwable {
+    when(authorizationService.isAnonymous()).thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());
@@ -147,8 +150,8 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_User() throws Throwable {
-    when(authorizationService.isUser()).thenReturn(true);
-    when(authorizationService.hasUserRole()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.USER)).thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());
@@ -166,9 +169,9 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_Manager() throws Throwable {
-    when(authorizationService.isUser()).thenReturn(true);
-    when(authorizationService.hasUserRole()).thenReturn(true);
-    when(authorizationService.hasManagerRole()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.USER)).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());
@@ -186,9 +189,9 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_Admin() throws Throwable {
-    when(authorizationService.isUser()).thenReturn(true);
-    when(authorizationService.hasUserRole()).thenReturn(true);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.USER)).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());
@@ -206,9 +209,10 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_SignedAs() throws Throwable {
-    when(authorizationService.isUser()).thenReturn(true);
-    when(authorizationService.hasUserRole()).thenReturn(true);
-    when(authorizationService.isRunAs()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.USER)).thenReturn(true);
+    when(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR))
+        .thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());

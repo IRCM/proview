@@ -77,6 +77,7 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserPreferenceService;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.HelpWindow;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
@@ -499,7 +500,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void submissionsGrid_Manager() {
-    when(authorizationService.hasManagerRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
     presenter.init(view);
 
     assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidable());
@@ -531,7 +532,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void submissionsGrid_Admin() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidable());
@@ -612,7 +613,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   public void submissionsGrid_HiddenColumnAdmin() {
     when(userPreferenceService.get(any(), eq(SAMPLE_COUNT), any())).thenReturn(true);
     when(userPreferenceService.get(any(), eq(HISTORY), any())).thenReturn(true);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     assertFalse(design.submissionsGrid.getColumn(EXPERIMENT).isHidable());
@@ -1550,7 +1551,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void visible_Admin() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     assertTrue(design.submissionsGrid.getSelectionModel() instanceof SelectionModel.Single);
@@ -1618,7 +1619,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateDigestionDate() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = LocalDate.now().minusDays(1);
@@ -1635,7 +1636,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateDigestionDate_Clear() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     gridStartEdit(design.submissionsGrid, submission);
@@ -1650,7 +1651,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateDigestionDate_Cancel() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = submission.getDigestionDate();
@@ -1666,7 +1667,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateAnalysisDate() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = LocalDate.now().minusDays(1);
@@ -1683,7 +1684,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateAnalysisDate_Clear() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     gridStartEdit(design.submissionsGrid, submission);
@@ -1698,7 +1699,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateAnalysisDate_Cancel() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = submission.getAnalysisDate();
@@ -1714,7 +1715,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateDataAvailableDate() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = LocalDate.now().minusDays(1);
@@ -1731,7 +1732,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateDataAvailableDate_Clear() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     gridStartEdit(design.submissionsGrid, submission);
@@ -1746,7 +1747,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateDataAvailableDate_Cancel() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     LocalDate date = submission.getDataAvailableDate();
@@ -1763,7 +1764,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void udpateInstrument() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     gridStartEdit(design.submissionsGrid, submission);
@@ -1787,7 +1788,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void udpateInstrument_Clear() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     gridStartEdit(design.submissionsGrid, submission);
@@ -1804,7 +1805,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void udpateInstrument_Cancel() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     gridStartEdit(design.submissionsGrid, submission);
@@ -1821,7 +1822,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void udpateDigestionAndAnalysisAndDataAvailableDate() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     Submission submission = submissions.get(0);
     final LocalDate sampleDeliveryDate = LocalDate.now().minusDays(2);
@@ -1922,7 +1923,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void updateStatus() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     design.updateStatusButton.click();
@@ -1933,7 +1934,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void updateStatus_Selection() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     final Submission submission = find(submissions, 32L).orElse(null);
     design.submissionsGrid.select(submission);

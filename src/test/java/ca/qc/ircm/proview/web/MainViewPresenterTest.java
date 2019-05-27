@@ -49,7 +49,7 @@ public class MainViewPresenterTest {
 
   @Test
   public void enter_NotSigned() {
-    when(authorizationService.isUser()).thenReturn(false);
+    when(authorizationService.isAnonymous()).thenReturn(true);
     presenter.init(view);
     presenter.enter("");
 
@@ -58,7 +58,7 @@ public class MainViewPresenterTest {
 
   @Test
   public void enter_User() {
-    when(authorizationService.isUser()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
     presenter.init(view);
     presenter.enter("");
 

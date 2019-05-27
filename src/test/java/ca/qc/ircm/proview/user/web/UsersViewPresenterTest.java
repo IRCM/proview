@@ -50,6 +50,7 @@ import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeEvent;
@@ -367,7 +368,7 @@ public class UsersViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void init_Admin() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     verify(userService).all(userFilterCaptor.capture());
@@ -382,7 +383,7 @@ public class UsersViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void init_LaboratoryManager() {
-    when(authorizationService.hasAdminRole()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(false);
     presenter.init(view);
 
     verify(userService).all(userFilterCaptor.capture());

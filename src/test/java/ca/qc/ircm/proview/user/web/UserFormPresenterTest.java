@@ -71,6 +71,7 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.RegisterUserWebContext;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -179,7 +180,7 @@ public class UserFormPresenterTest {
   }
 
   private boolean isAdmin() {
-    return authorizationService.hasAdminRole();
+    return authorizationService.hasRole(UserRole.ADMIN);
   }
 
   private void setFields() {
@@ -389,7 +390,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void readOnly_True_NewAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(null);
     presenter.setReadOnly(true);
 
@@ -438,7 +439,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void readOnly_True_ExistsManagerUser() {
-    when(authorizationService.hasManagerRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
     presenter.setValue(user);
     presenter.setReadOnly(true);
 
@@ -463,7 +464,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void readOnly_True_ExistsAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(user);
     presenter.setReadOnly(true);
 
@@ -511,7 +512,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void readOnly_False_NewAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(null);
 
     assertFalse(design.emailField.isReadOnly());
@@ -562,7 +563,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void readOnly_False_ExistsManagerUser() {
-    when(authorizationService.hasManagerRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
     presenter.setValue(user);
 
     assertFalse(design.emailField.isReadOnly());
@@ -588,7 +589,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void readOnly_False_ExistsAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(user);
 
     assertFalse(design.emailField.isReadOnly());
@@ -646,7 +647,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void visible_ReadOnly_NewAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(null);
     presenter.setReadOnly(true);
 
@@ -713,7 +714,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void visible_ReadOnly_ExistsAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(user);
     presenter.setReadOnly(true);
 
@@ -777,7 +778,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void visible_NewAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(null);
 
     assertTrue(design.userPanel.isVisible());
@@ -851,7 +852,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void visible_ExistsAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(user);
 
     assertTrue(design.userPanel.isVisible());
@@ -892,7 +893,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void defaultLaboratory_NewAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(null);
 
     assertEquals(currentUser.getLaboratory().getOrganization(),
@@ -910,7 +911,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void defaultLaboratory_ExistingAdminUser() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(user);
 
     assertEquals(user.getLaboratory().getOrganization(), design.organizationField.getValue());
@@ -1508,7 +1509,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_InsertAdmin() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(null);
     setFields();
     String validationUrl = "validationUrl";
@@ -1589,7 +1590,7 @@ public class UserFormPresenterTest {
 
   @Test
   public void save_UpdateAdmin() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.setValue(user);
     setFields();
     final int expectedPhoneNumberSize = this.user.getPhoneNumbers().size() + 1;

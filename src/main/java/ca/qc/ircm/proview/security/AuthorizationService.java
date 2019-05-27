@@ -256,6 +256,7 @@ public class AuthorizationService {
    *
    * @return true if current user is authenticated or remembered, false otherwise
    */
+  @Deprecated
   public boolean isUser() {
     return getSubject().isAuthenticated() || getSubject().isRemembered();
   }
@@ -267,6 +268,7 @@ public class AuthorizationService {
    * @return true if user is 'running as' another identity other than its original one, false
    *         otherwise
    */
+  @Deprecated
   public boolean isRunAs() {
     return getSubject().isRunAs();
   }
@@ -276,6 +278,7 @@ public class AuthorizationService {
    *
    * @return true if user has admin role, false otherwise
    */
+  @Deprecated
   public boolean hasAdminRole() {
     return getSubject().hasRole(ADMIN);
   }
@@ -285,6 +288,7 @@ public class AuthorizationService {
    *
    * @return true if user has manager role, false otherwise
    */
+  @Deprecated
   public boolean hasManagerRole() {
     return getSubject().hasRole(MANAGER);
   }
@@ -294,6 +298,7 @@ public class AuthorizationService {
    *
    * @return true if user has user role, false otherwise
    */
+  @Deprecated
   public boolean hasUserRole() {
     return getSubject().hasRole(USER);
   }

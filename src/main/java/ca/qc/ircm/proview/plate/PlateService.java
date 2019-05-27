@@ -28,6 +28,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -129,7 +130,7 @@ public class PlateService {
     authorizationService.checkUserRole();
     User user = authorizationService.getCurrentUser();
 
-    if (authorizationService.hasAdminRole()) {
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
       return repository.countByName(name) == 0;
     } else {
       JPAQuery<Long> query = queryFactory.select(plate.id);

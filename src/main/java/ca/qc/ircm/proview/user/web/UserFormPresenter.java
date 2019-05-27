@@ -46,6 +46,7 @@ import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
 import ca.qc.ircm.utils.MessageResource;
@@ -416,11 +417,11 @@ public class UserFormPresenter implements BinderValidator {
   }
 
   private boolean isManager() {
-    return authorizationService.hasManagerRole();
+    return authorizationService.hasRole(UserRole.MANAGER);
   }
 
   private boolean isAdmin() {
-    return authorizationService.hasAdminRole();
+    return authorizationService.hasRole(UserRole.ADMIN);
   }
 
   public User getValue() {

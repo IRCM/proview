@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.plate.web.PlatesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.web.SigninView;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.UsersView;
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -122,14 +124,16 @@ public class MenuPresenter {
   }
 
   private void updateVisible() {
-    submission.setVisible(authorizationService.hasUserRole());
-    plate.setVisible(authorizationService.hasAdminRole());
-    profile.setVisible(authorizationService.isUser());
-    signout.setVisible(authorizationService.isUser());
-    users.setVisible(authorizationService.hasManagerRole() || authorizationService.hasAdminRole());
-    guidelines.setVisible(authorizationService.hasUserRole());
-    signin.setVisible(!authorizationService.isUser());
-    stopSignas.setVisible(authorizationService.isRunAs());
+    submission.setVisible(authorizationService.hasRole(UserRole.USER));
+    plate.setVisible(authorizationService.hasRole(UserRole.ADMIN));
+    profile.setVisible(!authorizationService.isAnonymous());
+    signout.setVisible(!authorizationService.isAnonymous());
+    users.setVisible(authorizationService.hasRole(UserRole.MANAGER)
+        || authorizationService.hasRole(UserRole.ADMIN));
+    guidelines.setVisible(authorizationService.hasRole(UserRole.USER));
+    signin.setVisible(authorizationService.isAnonymous());
+    stopSignas
+        .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
   }
 
   private void changeView(String viewName) {

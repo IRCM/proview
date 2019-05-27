@@ -179,7 +179,7 @@ public class SigninViewPresenter {
             view.getMainUi().getVaadinServletRequest().getHttpServletRequest(),
             view.getMainUi().getVaadinServletResponse().getHttpServletResponse());
         String viewName = SigninView.VIEW_NAME;
-        if (authorizationService.isUser()) {
+        if (!authorizationService.isAnonymous()) {
           viewName = SubmissionsView.VIEW_NAME;
         }
         view.navigateTo(viewName);
@@ -224,7 +224,7 @@ public class SigninViewPresenter {
    *          view parameters
    */
   public void enter(String parameters) {
-    if (authorizationService.isUser()) {
+    if (!authorizationService.isAnonymous()) {
       view.navigateTo(SubmissionsView.VIEW_NAME);
     }
   }

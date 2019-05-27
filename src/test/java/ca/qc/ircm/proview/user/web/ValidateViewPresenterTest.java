@@ -47,6 +47,7 @@ import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
@@ -213,7 +214,7 @@ public class ValidateViewPresenterTest {
 
   @Test
   public void usersToValidate_Admin() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     verify(userService).all(userFilterCaptor.capture());
@@ -226,7 +227,7 @@ public class ValidateViewPresenterTest {
 
   @Test
   public void usersToValidate_LaboratoryManager() {
-    when(authorizationService.hasAdminRole()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(false);
     presenter.init(view);
 
     verify(userService).all(userFilterCaptor.capture());

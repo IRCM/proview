@@ -761,7 +761,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_CurrentManager() throws Throwable {
-    when(authorizationService.hasManagerRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
     User user = repository.findOne(3L);
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
@@ -929,7 +929,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Lab() throws Throwable {
-    when(authorizationService.hasManagerRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
     User user = repository.findOne(3L);
     detach(user);
 
@@ -941,7 +941,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(authorizationService).checkUserWritePermission(user);
-    verify(authorizationService).hasManagerRole();
+    verify(authorizationService).hasRole(UserRole.MANAGER);
     verify(authorizationService).checkLaboratoryManagerPermission(user.getLaboratory());
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());

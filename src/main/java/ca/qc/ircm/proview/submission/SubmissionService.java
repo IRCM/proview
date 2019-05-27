@@ -39,6 +39,7 @@ import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.OrderSpecifier;
@@ -179,7 +180,7 @@ public class SubmissionService {
     final Laboratory currentLaboratory = currentUser.getLaboratory();
 
     query.from(submission);
-    if (!authorizationService.hasAdminRole()) {
+    if (!authorizationService.hasRole(UserRole.ADMIN)) {
       query.where(submission.hidden.eq(false));
       if (authorizationService.hasLaboratoryManagerPermission(currentLaboratory)) {
         query.where(submission.laboratory.eq(currentLaboratory));
@@ -223,8 +224,8 @@ public class SubmissionService {
       }
     }
 
-    String templateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Print.html";
+    String templateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Print.html";
     String content = emailTemplateEngine.process(templateLocation, context);
     return content;
   }
@@ -306,8 +307,8 @@ public class SubmissionService {
   }
 
   private List<User> adminUsers() {
-    BooleanExpression predicate = user.admin.eq(true).and(user.valid.eq(true))
-        .and(user.active.eq(true)).and(user.id.ne(1L));
+    BooleanExpression predicate =
+        user.admin.eq(true).and(user.valid.eq(true)).and(user.active.eq(true)).and(user.id.ne(1L));
     return Lists.newArrayList(userRepository.findAll(predicate));
   }
 
@@ -335,11 +336,11 @@ public class SubmissionService {
     final List<User> proteomicUsers = adminUsers();
     MimeMessageHelper email = emailService.htmlEmail();
     email.setSubject(resource.message("subject." + type.name()));
-    String htmlTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Email.html";
+    String htmlTemplateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Email.txt";
+    String textTemplateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
     for (User proteomicUser : proteomicUsers) {
@@ -362,7 +363,7 @@ public class SubmissionService {
   public void update(Submission submission, String explanation) throws IllegalArgumentException {
     validateUpdateSubmission(submission);
     authorizationService.checkSubmissionWritePermission(submission);
-    if (!authorizationService.hasAdminRole()
+    if (!authorizationService.hasRole(UserRole.ADMIN)
         && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
       Submission userSupplied = submission;
       submission = repository.findOne(submission.getId());
@@ -374,8 +375,8 @@ public class SubmissionService {
           tube.setName(userSupplied.getSamples().get(i).getOriginalContainer().getName());
         } else {
           Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
-          Plate userSuppliedPlate = ((Well) userSupplied.getSamples().get(i).getOriginalContainer())
-              .getPlate();
+          Plate userSuppliedPlate =
+              ((Well) userSupplied.getSamples().get(i).getOriginalContainer()).getPlate();
           plate.setName(userSuppliedPlate.getName());
         }
       }
@@ -388,7 +389,7 @@ public class SubmissionService {
       activityService.insert(activity.get());
       repository.flush();
 
-      if (!authorizationService.hasAdminRole()) {
+      if (!authorizationService.hasRole(UserRole.ADMIN)) {
         // Send email to admin users to inform them of the changes in submission.
         try {
           this.sendSubmissionToAdmins(submission, ActionType.UPDATE);
@@ -400,7 +401,7 @@ public class SubmissionService {
   }
 
   private void validateUpdateSubmission(Submission submission) {
-    if (!authorizationService.hasAdminRole()) {
+    if (!authorizationService.hasRole(UserRole.ADMIN)) {
       Submission old = repository.findOne(submission.getId());
       if (!old.getUser().getId().equals(submission.getUser().getId())) {
         throw new IllegalArgumentException("Cannot update submission's owner");

@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.vaadin.VaadinUtils.property;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import javax.inject.Inject;
@@ -74,7 +75,7 @@ public class RegisterViewPresenter {
     view.setTitle(resources.message(TITLE, applicationName));
     design.headerLabel.addStyleName(HEADER);
     design.headerLabel.setValue(resources.message(HEADER));
-    if (authorizationService.hasAdminRole()) {
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
       view.setTitle(resources.message(property(TITLE, "admin"), applicationName));
       design.headerLabel.setValue(resources.message(property(HEADER, "admin")));
     }

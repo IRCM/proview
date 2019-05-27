@@ -163,6 +163,7 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.DefaultMultiFileUpload;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
@@ -1466,7 +1467,7 @@ public class SubmissionFormPresenterTest {
     sample.setStandards(Arrays.asList(new Standard()));
     sample.setContaminants(Arrays.asList(new Contaminant()));
     submission.setSamples(Arrays.asList(sample));
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
 
@@ -4336,7 +4337,7 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_MissingExplanation() throws Throwable {
     Submission submission = repository.findOne(164L);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
     List<SubmissionSample> samples = new ArrayList<>(dataProvider(design.samples).getItems());
@@ -6013,7 +6014,7 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_AdminUpdate() throws Throwable {
     Submission submission = repository.findOne(147L);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
     design.service.setValue(LC_MS_MS);
@@ -6155,7 +6156,7 @@ public class SubmissionFormPresenterTest {
   @Test
   public void save_AdminUpdateError() throws Throwable {
     Submission submission = repository.findOne(147L);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
     design.service.setValue(LC_MS_MS);

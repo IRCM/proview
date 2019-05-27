@@ -108,6 +108,7 @@ import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.vaadin.VaadinUtils;
 import ca.qc.ircm.proview.web.MultiFileUploadFileHandler;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
@@ -1472,7 +1473,8 @@ public class SubmissionFormPresenter implements BinderValidator {
     filesDataProvider.getItems().clear();
     filesDataProvider.getItems().addAll(files);
     filesDataProvider.refreshAll();
-    design.explanationPanel.setVisible(authorizationService.hasAdminRole() && samples.stream()
+    design.explanationPanel.setVisible(authorizationService.hasRole(UserRole.ADMIN) && samples
+        .stream()
         .filter(sample -> sample.getStatus() != null && sample.getStatus() != SampleStatus.WAITING)
         .findAny().isPresent());
     preparePrint(submissionBinder.getBean());

@@ -30,6 +30,7 @@ import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -120,11 +121,11 @@ public class UsersViewPresenter {
     prepareUsersGrid();
     design.add.addStyleName(ADD);
     design.add.setCaption(resources.message(ADD));
-    design.add.setVisible(authorizationService.hasAdminRole());
+    design.add.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     design.add.addClickListener(e -> add());
     design.switchUser.addStyleName(SWITCH_USER);
     design.switchUser.setCaption(resources.message(SWITCH_USER));
-    design.switchUser.setVisible(authorizationService.hasAdminRole());
+    design.switchUser.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     design.switchUser.addClickListener(e -> switchUser());
   }
 
@@ -214,7 +215,7 @@ public class UsersViewPresenter {
   private DataProvider<User, ?> searchUsers() {
     UserFilter filter = new UserFilter();
     filter.valid = true;
-    if (!authorizationService.hasAdminRole()) {
+    if (!authorizationService.hasRole(UserRole.ADMIN)) {
       filter.laboratory = authorizationService.getCurrentUser().getLaboratory();
     }
     List<User> users = userService.all(filter);
@@ -224,7 +225,7 @@ public class UsersViewPresenter {
   }
 
   private boolean showValidation() {
-    return userService.hasInvalid(authorizationService.hasAdminRole() ? null
+    return userService.hasInvalid(authorizationService.hasRole(UserRole.ADMIN) ? null
         : authorizationService.getCurrentUser().getLaboratory());
   }
 
