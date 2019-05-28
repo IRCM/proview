@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.security;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.submission.Submission;
@@ -69,7 +70,7 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
       return true;
     }
     if (submission.getId() == null) {
-      return false;
+      return authorizationService.hasRole(USER);
     }
     User owner = submission.getUser();
     boolean authorized = false;

@@ -147,16 +147,16 @@ public class SubmissionPermissionEvaluatorTest {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void hasPermission_WriteNew_User() throws Throwable {
     Submission submission = new Submission();
-    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
   }
 
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void hasPermission_WriteNew_Manager() throws Throwable {
     Submission submission = new Submission();
-    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
   }
 
   @Test
