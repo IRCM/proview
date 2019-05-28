@@ -61,7 +61,7 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
     return hasPermission(submission, currentUser, realPermission);
   }
 
-  private boolean hasPermission(Submission submission, User currentUser, Permission permission) {
+  boolean hasPermission(Submission submission, User currentUser, Permission permission) {
     if (currentUser == null) {
       return false;
     }

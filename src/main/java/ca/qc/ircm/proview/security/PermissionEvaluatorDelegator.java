@@ -1,5 +1,7 @@
 package ca.qc.ircm.proview.security;
 
+import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -28,9 +30,12 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
   private LaboratoryRepository laboratoryRepository;
   @Inject
   private SubmissionRepository submissionRepository;
+  @Inject
+  private SampleRepository sampleRepository;
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
   private UserPermissionEvaluator userPermissionEvaluator;
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
+  private SamplePermissionEvaluator samplePermissionEvaluator;
 
   @PostConstruct
   protected void init() {
@@ -39,6 +44,8 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
     userPermissionEvaluator = new UserPermissionEvaluator(userRepository, authorizationService);
     submissionPermissionEvaluator = new SubmissionPermissionEvaluator(submissionRepository,
         userRepository, authorizationService);
+    samplePermissionEvaluator = new SamplePermissionEvaluator(sampleRepository, userRepository,
+        authorizationService, submissionPermissionEvaluator);
   }
 
   @Override
@@ -51,6 +58,9 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
       return userPermissionEvaluator.hasPermission(authentication, targetDomainObject, permission);
     } else if (targetDomainObject instanceof Submission) {
       return submissionPermissionEvaluator.hasPermission(authentication, targetDomainObject,
+          permission);
+    } else if (targetDomainObject instanceof Sample) {
+      return samplePermissionEvaluator.hasPermission(authentication, targetDomainObject,
           permission);
     }
     return false;
@@ -68,6 +78,9 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
     } else if (targetType.equals(Submission.class.getName())) {
       return submissionPermissionEvaluator.hasPermission(authentication, targetId, targetType,
           permission);
+    } else if (targetType.equals(Sample.class.getName())) {
+      return samplePermissionEvaluator.hasPermission(authentication, targetId, targetType,
+          permission);
     }
     return false;
   }
@@ -84,5 +97,9 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
   void setSubmissionPermissionEvaluator(
       SubmissionPermissionEvaluator submissionPermissionEvaluator) {
     this.submissionPermissionEvaluator = submissionPermissionEvaluator;
+  }
+
+  void setSamplePermissionEvaluator(SamplePermissionEvaluator samplePermissionEvaluator) {
+    this.samplePermissionEvaluator = samplePermissionEvaluator;
   }
 }
