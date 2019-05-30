@@ -342,7 +342,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = service.get(plate);
 
     assertEquals((Long) 163L, submission.getId());
-    verify(authorizationService).checkPlateReadPermission(plate);
+    verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
   }
 
   @Test
@@ -352,7 +352,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = service.get(plate);
 
     assertNull(submission);
-    verify(authorizationService).checkPlateReadPermission(plate);
+    verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
   }
 
   @Test

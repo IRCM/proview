@@ -65,6 +65,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -73,6 +74,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ServiceTestAnnotations
 @WithMockUser
 public class PlateServiceTest extends AbstractServiceTestCase {
+  private static final String READ = "read";
   @Inject
   private PlateService service;
   @Inject
@@ -85,6 +87,8 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   private ActivityService activityService;
   @MockBean
   private AuthorizationService authorizationService;
+  @MockBean
+  private PermissionEvaluator permissionEvaluator;
   @Mock
   private Activity activity;
   @Captor
@@ -97,13 +101,14 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Before
   public void beforeTest() {
     optionalActivity = Optional.of(activity);
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
   }
 
   @Test
   public void get() throws Exception {
     Plate plate = service.get(26L);
 
-    verify(authorizationService).checkPlateReadPermission(plate);
+    verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
     assertFalse(plate.isSubmission());

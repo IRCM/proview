@@ -531,6 +531,7 @@ public class AuthorizationService {
    * @param plate
    *          plate
    */
+  @Deprecated
   public void checkPlateReadPermission(Plate plate) {
     if (plate != null) {
       if (!hasPlateReadPermission(plate)) {

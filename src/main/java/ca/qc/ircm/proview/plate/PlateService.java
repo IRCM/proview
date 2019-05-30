@@ -53,6 +53,7 @@ import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,14 +94,13 @@ public class PlateService {
    *          plate's database identifier
    * @return plate
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public Plate get(Long id) {
     if (id == null) {
       return null;
     }
 
-    Plate plate = repository.findOne(id);
-    authorizationService.checkPlateReadPermission(plate);
-    return plate;
+    return repository.findOne(id);
   }
 
   /**

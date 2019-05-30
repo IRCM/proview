@@ -128,11 +128,11 @@ public class SubmissionService {
    *          plate
    * @return submission related to this plate
    */
+  @PreAuthorize("hasPermission(#plate, 'read')")
   public Submission get(Plate plate) {
     if (plate == null) {
       return null;
     }
-    authorizationService.checkPlateReadPermission(plate);
 
     QPlate qplate = QPlate.plate;
     JPAQuery<Submission> query = queryFactory.select(submissionSample.submission);
