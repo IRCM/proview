@@ -67,6 +67,9 @@ public class SamplePermissionEvaluatorTest {
   @Mock
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
 
+  /**
+   * Before test.
+   */
   @Before
   public void beforeTest() {
     permissionEvaluator = new SamplePermissionEvaluator(sampleRepository, userRepository,
