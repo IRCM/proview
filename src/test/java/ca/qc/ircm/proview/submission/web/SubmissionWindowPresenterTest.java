@@ -53,6 +53,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -120,7 +121,7 @@ public class SubmissionWindowPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void update() {
-    when(authorizationService.hasSubmissionWritePermission(submission)).thenReturn(true);
+    when(authorizationService.hasPermission(submission, BasePermission.WRITE)).thenReturn(true);
     presenter.init(window);
     presenter.setValue(submission);
 
@@ -140,7 +141,7 @@ public class SubmissionWindowPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void update_VisibilityTrue() {
-    when(authorizationService.hasSubmissionWritePermission(submission)).thenReturn(true);
+    when(authorizationService.hasPermission(submission, BasePermission.WRITE)).thenReturn(true);
     presenter.init(window);
     presenter.setValue(submission);
 

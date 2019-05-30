@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -122,7 +123,7 @@ public class SubmissionViewPresenter {
         Submission submission = submissionService.get(id);
         view.submissionForm.setValue(submission);
         view.submissionForm
-            .setReadOnly(!authorizationService.hasSubmissionWritePermission(submission));
+            .setReadOnly(!authorizationService.hasPermission(submission, BasePermission.WRITE));
       } catch (NumberFormatException e) {
         view.showWarning(view.getResources().message(INVALID_SUBMISSION));
       }

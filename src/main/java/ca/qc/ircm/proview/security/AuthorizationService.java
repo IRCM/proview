@@ -458,6 +458,7 @@ public class AuthorizationService {
    * @param submission
    *          submission
    */
+  @Deprecated
   public void checkSubmissionReadPermission(Submission submission) {
     if (submission != null) {
       submission = getSubmission(submission.getId());
@@ -482,6 +483,7 @@ public class AuthorizationService {
    *          submission
    * @return true if current user can write submission, false otherwise
    */
+  @Deprecated
   public boolean hasSubmissionWritePermission(Submission submission) {
     if (submission != null) {
       submission = getSubmission(submission.getId());
@@ -506,6 +508,7 @@ public class AuthorizationService {
    * @param submission
    *          submission
    */
+  @Deprecated
   public void checkSubmissionWritePermission(Submission submission) {
     if (submission != null) {
       submission = getSubmission(submission.getId());

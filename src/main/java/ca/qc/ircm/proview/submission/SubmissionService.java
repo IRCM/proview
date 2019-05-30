@@ -63,6 +63,7 @@ import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,14 +112,13 @@ public class SubmissionService {
    *          database identifier of submission
    * @return submission
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public Submission get(Long id) {
     if (id == null) {
       return null;
     }
 
-    Submission submission = repository.findOne(id);
-    authorizationService.checkSubmissionReadPermission(submission);
-    return submission;
+    return repository.findOne(id);
   }
 
   /**
@@ -375,9 +375,9 @@ public class SubmissionService {
    * @throws IllegalArgumentException
    *           samples don't all have {@link SampleStatus#WAITING} status
    */
+  @PreAuthorize("hasPermission(#submission, 'write')")
   public void update(Submission submission, String explanation) throws IllegalArgumentException {
     validateUpdateSubmission(submission);
-    authorizationService.checkSubmissionWritePermission(submission);
     if (!authorizationService.hasRole(UserRole.ADMIN)
         && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
       Submission userSupplied = submission;
