@@ -49,8 +49,7 @@ public class AuthorizationService {
   private UserRepository repository;
   @Inject
   private UserDetailsService userDetailsService;
-  //TODO Replace once permissionEvaluator is available.
-  //@Inject
+  @Inject
   private PermissionEvaluator permissionEvaluator;
 
   protected AuthorizationService() {
