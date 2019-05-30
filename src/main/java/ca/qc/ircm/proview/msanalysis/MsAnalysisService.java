@@ -20,14 +20,15 @@ package ca.qc.ircm.proview.msanalysis;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,8 +42,6 @@ public class MsAnalysisService {
   private MsAnalysisRepository repository;
   @Inject
   private JPAQueryFactory queryFactory;
-  @Inject
-  private AuthorizationService authorizationService;
 
   protected MsAnalysisService() {
   }
@@ -54,14 +53,13 @@ public class MsAnalysisService {
    *          database identifier of MS analysis
    * @return MS analysis
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public MsAnalysis get(Long id) {
     if (id == null) {
       return null;
     }
 
-    MsAnalysis msAnalysis = repository.findOne(id);
-    authorizationService.checkMsAnalysisReadPermission(msAnalysis);
-    return msAnalysis;
+    return repository.findOne(id);
   }
 
   /**
@@ -71,11 +69,11 @@ public class MsAnalysisService {
    *          submission
    * @return all MS analysis made on submission
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<MsAnalysis> all(Submission submissionParam) {
     if (submissionParam == null) {
       return new ArrayList<>();
     }
-    authorizationService.checkSubmissionReadPermission(submissionParam);
 
     JPAQuery<MsAnalysis> query = queryFactory.select(msAnalysis).distinct();
     query.from(msAnalysis, acquisition, submission);

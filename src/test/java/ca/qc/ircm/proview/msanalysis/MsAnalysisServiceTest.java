@@ -18,13 +18,14 @@
 package ca.qc.ircm.proview.msanalysis;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.MANAGER;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -34,22 +35,21 @@ import java.util.List;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser(authorities = ADMIN)
 public class MsAnalysisServiceTest extends AbstractServiceTestCase {
   @Inject
   private MsAnalysisService service;
-  @MockBean
-  private AuthorizationService authorizationService;
 
   @Test
   public void get() {
     MsAnalysis msAnalysis = service.get(1L);
 
-    verify(authorizationService).checkMsAnalysisReadPermission(msAnalysis);
     assertNotNull(msAnalysis);
     assertEquals((Long) 1L, msAnalysis.getId());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
@@ -59,6 +59,12 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
         msAnalysis.getInsertTime());
     assertEquals(false, msAnalysis.isDeleted());
     assertEquals(null, msAnalysis.getDeletionExplanation());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { USER, MANAGER })
+  public void get_NotAdmin() {
+    service.get(1L);
   }
 
   @Test
@@ -74,9 +80,16 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
 
     List<MsAnalysis> msAnalyses = service.all(submission);
 
-    verify(authorizationService).checkSubmissionReadPermission(submission);
     assertEquals(1, msAnalyses.size());
     assertTrue(find(msAnalyses, 21).isPresent());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { USER, MANAGER })
+  public void all_NotAdmin() {
+    Submission submission = new Submission(155L);
+
+    service.all(submission);
   }
 
   @Test
