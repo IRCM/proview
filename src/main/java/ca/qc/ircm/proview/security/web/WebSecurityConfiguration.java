@@ -34,8 +34,6 @@ import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.proview.web.ErrorView;
 import ca.qc.ircm.proview.web.MainView;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -48,8 +46,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
@@ -58,10 +54,8 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 /**
@@ -181,28 +175,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
    * @return session authentication strategy
    */
   @Bean
-  public SessionAuthenticationStrategy sessionControlAuthenticationStrategy() {
-    SessionFixationProtectionStrategy sessionFixationProtectionStrategy =
-        new SessionFixationProtectionStrategy();
-    sessionFixationProtectionStrategy.setMigrateSessionAttributes(false);
-
-    RegisterSessionAuthenticationStrategy registerSessionAuthenticationStrategy =
-        new RegisterSessionAuthenticationStrategy(sessionRegistry());
-
-    List<SessionAuthenticationStrategy> strategies = new LinkedList<>();
-    strategies.add(sessionFixationProtectionStrategy);
-    strategies.add(registerSessionAuthenticationStrategy);
-
-    CompositeSessionAuthenticationStrategy compositeSessionAuthenticationStrategy =
-        new CompositeSessionAuthenticationStrategy(strategies);
-
-    return compositeSessionAuthenticationStrategy;
-  }
-
-  @Bean
-  public SessionRegistry sessionRegistry() {
-    SessionRegistry sessionRegistry = new SessionRegistryImpl();
-    return sessionRegistry;
+  public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+    return new ChangeSessionIdAuthenticationStrategy();
   }
 
   /**
