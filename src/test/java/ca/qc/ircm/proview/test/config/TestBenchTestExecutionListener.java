@@ -53,14 +53,14 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
   private static final String SKIP_TESTS_SYSTEM_PROPERTY = "testbench.skip";
   private static final String DRIVER_SYSTEM_PROPERTY = "testbench.driver";
   private static final String RETRIES_SYSTEM_PROPERTY = "testbench.retries";
+  @SuppressWarnings("unused")
   private static final String PAHNTOM_JS_DRIVER = PhantomJSDriver.class.getName();
   @SuppressWarnings("unused")
   private static final String FIREFOX_DRIVER = FirefoxDriver.class.getName();
-  @SuppressWarnings("unused")
   private static final String CHROME_DRIVER = ChromeDriver.class.getName();
   @SuppressWarnings("unused")
   private static final String OPERA_DRIVER = OperaDriver.class.getName();
-  private static final String DEFAULT_DRIVER = PAHNTOM_JS_DRIVER;
+  private static final String DEFAULT_DRIVER = CHROME_DRIVER;
   private static final Logger logger =
       LoggerFactory.getLogger(TestBenchTestExecutionListener.class);
 
