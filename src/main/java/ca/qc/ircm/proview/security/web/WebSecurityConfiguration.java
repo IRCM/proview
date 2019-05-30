@@ -34,6 +34,8 @@ import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.proview.web.ErrorView;
 import ca.qc.ircm.proview.web.MainView;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -46,6 +48,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
@@ -54,6 +58,10 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 /**
@@ -62,7 +70,8 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-  public static final String SIGNIN_PROCESSING_URL = url(SigninView.VIEW_NAME);
+  // Skip Spring Security sign-in, it is done manually in SigninView.
+  public static final String SIGNIN_PROCESSING_URL = url(SigninView.VIEW_NAME + "Fake");
   public static final String SIGNOUT_URL = "/signout";
   public static final String SWITCH_USER_URL = url(UsersView.SWITCH_USER);
   public static final String SWITCH_USERNAME_PARAMETER = "username";
@@ -75,7 +84,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       SIGNIN_PROCESSING_URL + "?" + SigninView.EXCESSIVE_ATTEMPTS;
   private static final String SIGNIN_DISABLED_URL =
       SIGNIN_PROCESSING_URL + "?" + SigninView.DISABLED;
-  private static final String SIGNIN_URL = SIGNIN_PROCESSING_URL;
+  private static final String SIGNIN_URL = url(SigninView.VIEW_NAME);
   private static final String SIGNOUT_SUCCESS_URL = url(MainView.VIEW_NAME);
   private static final String SWITCH_USER_FAILURE_URL =
       url(UsersView.VIEW_NAME) + "?" + UsersView.SWITCH_FAILED;
@@ -164,6 +173,36 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     filter.setExitUserUrl(SWITCH_USER_EXIT_URL);
     filter.setUsernameParameter(SWITCH_USERNAME_PARAMETER);
     return filter;
+  }
+
+  /**
+   * Returns session authentication strategy.
+   *
+   * @return session authentication strategy
+   */
+  @Bean
+  public SessionAuthenticationStrategy sessionControlAuthenticationStrategy() {
+    SessionFixationProtectionStrategy sessionFixationProtectionStrategy =
+        new SessionFixationProtectionStrategy();
+    sessionFixationProtectionStrategy.setMigrateSessionAttributes(false);
+
+    RegisterSessionAuthenticationStrategy registerSessionAuthenticationStrategy =
+        new RegisterSessionAuthenticationStrategy(sessionRegistry());
+
+    List<SessionAuthenticationStrategy> strategies = new LinkedList<>();
+    strategies.add(sessionFixationProtectionStrategy);
+    strategies.add(registerSessionAuthenticationStrategy);
+
+    CompositeSessionAuthenticationStrategy compositeSessionAuthenticationStrategy =
+        new CompositeSessionAuthenticationStrategy(strategies);
+
+    return compositeSessionAuthenticationStrategy;
+  }
+
+  @Bean
+  public SessionRegistry sessionRegistry() {
+    SessionRegistry sessionRegistry = new SessionRegistryImpl();
+    return sessionRegistry;
   }
 
   /**
