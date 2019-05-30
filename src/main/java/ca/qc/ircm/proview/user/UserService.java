@@ -37,6 +37,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -78,13 +79,13 @@ public class UserService {
    *          database identifier of user
    * @return user
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public User get(Long id) {
     if (id == null) {
       return null;
     }
 
     User user = repository.findOne(id);
-    authorizationService.checkUserReadPermission(user);
     return user;
   }
 
@@ -95,13 +96,13 @@ public class UserService {
    *          email
    * @return user with email
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public User get(String email) {
     if (email == null) {
       return null;
     }
 
     User ret = noSecurityGet(email);
-    authorizationService.checkUserReadPermission(ret);
     return ret;
   }
 
@@ -389,8 +390,8 @@ public class UserService {
    * @throws UnauthorizedException
    *           user must match signed user
    */
+  @PreAuthorize("hasPermission(#user, 'write')")
   public void update(User user, String newPassword) {
-    authorizationService.checkUserWritePermission(user);
     if (!user.isValid() && user.isManager()) {
       User before = repository.findOne(user.getId());
       if (!before.isManager()) {

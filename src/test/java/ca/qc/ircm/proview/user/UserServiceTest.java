@@ -73,6 +73,7 @@ import org.thymeleaf.util.StringUtils;
 @ServiceTestAnnotations
 @WithMockUser
 public class UserServiceTest extends AbstractServiceTestCase {
+  private static final String READ = "read";
   private static final String WRITE = "write";
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
@@ -138,7 +139,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   public void get_Id() throws Throwable {
     User user = service.get(3L);
 
-    verify(authorizationService).checkUserReadPermission(user);
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(READ));
     assertEquals((Long) 3L, user.getId());
     assertEquals("benoit.coulombe@ircm.qc.ca", user.getEmail());
     assertEquals("Benoit Coulombe", user.getName());
@@ -181,7 +182,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   public void get_Email() throws Throwable {
     User user = service.get("benoit.coulombe@ircm.qc.ca");
 
-    verify(authorizationService).checkUserReadPermission(user);
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(READ));
     assertEquals((Long) 3L, user.getId());
     assertEquals("benoit.coulombe@ircm.qc.ca", user.getEmail());
     assertEquals("Benoit Coulombe", user.getName());
@@ -848,7 +849,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.update(user, null);
 
     repository.flush();
-    verify(authorizationService).checkUserWritePermission(user);
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
@@ -915,7 +916,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.update(user, null);
 
     repository.flush();
-    verify(authorizationService).checkUserWritePermission(user);
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     user = repository.findOne(user.getId());
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
@@ -960,7 +961,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.update(user, null);
 
     repository.flush();
-    verify(authorizationService).checkUserWritePermission(user);
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     user = repository.findOne(user.getId());
     assertEquals(true, user.isManager());
   }
@@ -974,7 +975,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.update(user, null);
 
     repository.flush();
-    verify(authorizationService).checkUserWritePermission(user);
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     user = repository.findOne(user.getId());
     assertEquals(true, user.isActive());
     assertEquals(true, user.isManager());
@@ -1010,7 +1011,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.update(user, null);
 
     repository.flush();
-    verify(authorizationService).checkUserWritePermission(user);
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     user = repository.findOne(user.getId());
     assertEquals(false, user.isManager());
   }
@@ -1044,7 +1045,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.update(user, "unit_test_password");
 
     repository.flush();
-    verify(authorizationService).checkUserWritePermission(user);
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     verify(passwordEncoder).encode("unit_test_password");
     user = repository.findOne(4L);
     assertEquals(hashedPassword, user.getHashedPassword());
@@ -1065,7 +1066,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.update(user, null);
 
     repository.flush();
-    verify(authorizationService).checkUserWritePermission(user);
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     verify(authorizationService).hasRole(UserRole.MANAGER);
     verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     user = repository.findOne(user.getId());

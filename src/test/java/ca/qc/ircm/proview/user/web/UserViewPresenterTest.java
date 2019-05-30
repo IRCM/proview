@@ -42,6 +42,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -100,13 +101,13 @@ public class UserViewPresenterTest {
     User user = userCaptor.getValue();
     assertEquals(this.user, user);
     verify(view.userForm).setReadOnly(true);
-    verify(authorizationService).hasUserWritePermission(user);
+    verify(authorizationService).hasPermission(user, BasePermission.WRITE);
   }
 
   @Test
   public void enter() {
     when(authorizationService.getCurrentUser()).thenReturn(user);
-    when(authorizationService.hasUserWritePermission(any())).thenReturn(true);
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
 
     presenter.enter("");
 
@@ -114,7 +115,7 @@ public class UserViewPresenterTest {
     User user = userCaptor.getValue();
     assertEquals(this.user, user);
     verify(view.userForm).setReadOnly(false);
-    verify(authorizationService).hasUserWritePermission(user);
+    verify(authorizationService).hasPermission(user, BasePermission.WRITE);
   }
 
   @Test
@@ -127,13 +128,13 @@ public class UserViewPresenterTest {
     User user = userCaptor.getValue();
     assertEquals(this.user, user);
     verify(view.userForm).setReadOnly(true);
-    verify(authorizationService).hasUserWritePermission(user);
+    verify(authorizationService).hasPermission(user, BasePermission.WRITE);
   }
 
   @Test
   public void enter_User() {
     when(userService.get(any(Long.class))).thenReturn(user);
-    when(authorizationService.hasUserWritePermission(any())).thenReturn(true);
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
 
     presenter.enter("1");
 
@@ -141,7 +142,7 @@ public class UserViewPresenterTest {
     User user = userCaptor.getValue();
     assertEquals(this.user, user);
     verify(view.userForm).setReadOnly(false);
-    verify(authorizationService).hasUserWritePermission(user);
+    verify(authorizationService).hasPermission(user, BasePermission.WRITE);
   }
 
   @Test

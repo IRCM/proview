@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -110,6 +111,6 @@ public class UserViewPresenter {
   }
 
   private boolean readOnly(User user) {
-    return !authorizationService.hasUserWritePermission(user);
+    return !authorizationService.hasPermission(user, BasePermission.WRITE);
   }
 }

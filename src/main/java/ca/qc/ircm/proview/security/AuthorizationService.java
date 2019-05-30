@@ -325,6 +325,7 @@ public class AuthorizationService {
    * @param user
    *          user
    */
+  @Deprecated
   public void checkUserReadPermission(User user) {
     if (user != null) {
       user = getUser(user.getId());
@@ -344,6 +345,7 @@ public class AuthorizationService {
    *          user
    * @return true if current user can write user, false otherwise
    */
+  @Deprecated
   public boolean hasUserWritePermission(User user) {
     if (user != null) {
       user = getUser(user.getId());
@@ -363,6 +365,7 @@ public class AuthorizationService {
    * @param user
    *          user
    */
+  @Deprecated
   public void checkUserWritePermission(User user) {
     if (user != null) {
       user = getUser(user.getId());
