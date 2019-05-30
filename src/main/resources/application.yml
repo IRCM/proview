@@ -164,5 +164,12 @@ spring:
 main:
   serverUrl: http://localhost:${local.server.port}
 
+security:
+  rememberMeKey: 'JfYMi0qUQVt8FObsZHW7'
+  passwords:
+    - version: 1
+      algorithm: SHA-256
+      iterations: 1000
+
 email:
   enabled: false
