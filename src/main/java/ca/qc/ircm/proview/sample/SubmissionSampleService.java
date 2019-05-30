@@ -32,6 +32,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,14 +63,13 @@ public class SubmissionSampleService {
    *          database identifier of submitted sample
    * @return submitted sample
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public SubmissionSample get(Long id) {
     if (id == null) {
       return null;
     }
 
-    SubmissionSample sample = repository.findOne(id);
-    authorizationService.checkSampleReadPermission(sample);
-    return sample;
+    return repository.findOne(id);
   }
 
   /**

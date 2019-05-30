@@ -22,39 +22,50 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser
 public class TubeServiceTest {
+  private static final String READ = "read";
   @Inject
   private TubeService service;
   @MockBean
-  private AuthorizationService authorizationService;
+  private PermissionEvaluator permissionEvaluator;
+
+  @Before
+  public void beforeTest() {
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+  }
 
   @Test
   public void get() throws Throwable {
     Tube tube = service.get(1L);
 
-    verify(authorizationService).checkSampleReadPermission(tube.getSample());
+    verify(permissionEvaluator).hasPermission(any(), eq(tube.getSample()), eq(READ));
     assertEquals((Long) 1L, tube.getId());
     assertEquals("FAM119A_band_01", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
@@ -113,7 +124,7 @@ public class TubeServiceTest {
 
     List<Tube> tubes = service.all(sample);
 
-    verify(authorizationService).checkSampleReadPermission(sample);
+    verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertEquals(3, tubes.size());
     assertTrue(find(tubes, 1L).isPresent());
     assertTrue(find(tubes, 6L).isPresent());

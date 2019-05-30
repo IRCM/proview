@@ -19,31 +19,43 @@ package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser
 public class SampleContainerServiceTest {
+  private static final String READ = "read";
   @Inject
   private SampleContainerService service;
   @MockBean
-  private AuthorizationService authorizationService;
+  private PermissionEvaluator permissionEvaluator;
+
+  @Before
+  public void beforeTest() {
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+  }
 
   @Test
   public void get_Id() throws Throwable {
     SampleContainer container = service.get(1L);
 
-    verify(authorizationService).checkSampleReadPermission(container.getSample());
+    verify(permissionEvaluator).hasPermission(any(), eq(container.getSample()), eq(READ));
     assertEquals((Long) 1L, container.getId());
     assertEquals((Long) 1L, container.getSample().getId());
     assertEquals(SampleContainerType.TUBE, container.getType());
@@ -65,7 +77,7 @@ public class SampleContainerServiceTest {
 
     SampleContainer container = service.last(sample);
 
-    verify(authorizationService).checkSampleReadPermission(sample);
+    verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertEquals((Long) 129L, container.getId());
     assertEquals((Long) 1L, container.getSample().getId());
     assertEquals(SampleContainerType.WELL, container.getType());

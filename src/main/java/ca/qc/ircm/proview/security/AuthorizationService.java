@@ -422,6 +422,7 @@ public class AuthorizationService {
    * @param sample
    *          sample
    */
+  @Deprecated
   public void checkSampleReadPermission(Sample sample) {
     if (sample != null) {
       sample = getSample(sample.getId());

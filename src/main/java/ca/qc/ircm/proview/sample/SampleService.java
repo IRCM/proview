@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.sample;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class SampleService {
   @Inject
   private SampleRepository repository;
-  @Inject
-  private AuthorizationService authorizationService;
 
   protected SampleService() {
   }
@@ -43,13 +41,12 @@ public class SampleService {
    *          database identifier of sample
    * @return sample
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public Sample get(Long id) {
     if (id == null) {
       return null;
     }
 
-    Sample sample = repository.findOne(id);
-    authorizationService.checkSampleReadPermission(sample);
-    return sample;
+    return repository.findOne(id);
   }
 }

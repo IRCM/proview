@@ -20,29 +20,41 @@ package ca.qc.ircm.proview.sample;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser
 public class SampleServiceTest {
+  private static final String READ = "read";
   @Inject
   private SampleService service;
   @MockBean
-  private AuthorizationService authorizationService;
+  private PermissionEvaluator permissionEvaluator;
+
+  @Before
+  public void beforeTest() {
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+  }
 
   @Test
   public void get_SubmissionSample_Gel() throws Throwable {
     Sample sample = service.get(1L);
 
-    verify(authorizationService).checkSampleReadPermission(sample);
+    verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample gelSample = (SubmissionSample) sample;
     assertEquals((Long) 1L, gelSample.getId());
@@ -58,7 +70,7 @@ public class SampleServiceTest {
   public void get_SubmissionSample() throws Throwable {
     Sample sample = service.get(442L);
 
-    verify(authorizationService).checkSampleReadPermission(sample);
+    verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample eluateSample = (SubmissionSample) sample;
     assertEquals((Long) 442L, eluateSample.getId());
@@ -76,7 +88,7 @@ public class SampleServiceTest {
   public void get_Control() throws Throwable {
     Sample sample = service.get(444L);
 
-    verify(authorizationService).checkSampleReadPermission(sample);
+    verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof Control);
     Control control = (Control) sample;
     assertEquals((Long) 444L, control.getId());

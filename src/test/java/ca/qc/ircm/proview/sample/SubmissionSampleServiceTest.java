@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,6 +48,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -55,6 +57,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ServiceTestAnnotations
 @WithMockUser
 public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
+  private static final String READ = "read";
   @Inject
   private SubmissionSampleService service;
   @Inject
@@ -65,6 +68,8 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   private ActivityService activityService;
   @MockBean
   private AuthorizationService authorizationService;
+  @MockBean
+  private PermissionEvaluator permissionEvaluator;
   @Mock
   private Activity activity;
   @Captor
@@ -77,13 +82,14 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Before
   public void beforeTest() {
     optionalActivity = Optional.of(activity);
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
   }
 
   @Test
   public void get_Gel() throws Throwable {
     SubmissionSample sample = service.get(1L);
 
-    verify(authorizationService).checkSampleReadPermission(sample);
+    verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample gelSample = sample;
     assertEquals((Long) 1L, gelSample.getId());
@@ -103,7 +109,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   public void get() throws Throwable {
     SubmissionSample sample = service.get(442L);
 
-    verify(authorizationService).checkSampleReadPermission(sample);
+    verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample eluateSample = sample;
     assertEquals((Long) 442L, eluateSample.getId());
