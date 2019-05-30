@@ -28,6 +28,7 @@ import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.web.SigninView;
 import ca.qc.ircm.proview.user.web.UsersView;
+import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.proview.web.MainView;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,9 +59,9 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-  public static final String SIGNIN_PROCESSING_URL = "/" + SigninView.VIEW_NAME;
+  public static final String SIGNIN_PROCESSING_URL = url(SigninView.VIEW_NAME);
   public static final String SIGNOUT_URL = "/signout";
-  public static final String SWITCH_USER_URL = "/" + UsersView.SWITCH_USER;
+  public static final String SWITCH_USER_URL = url(UsersView.SWITCH_USER);
   public static final String SWITCH_USERNAME_PARAMETER = "username";
   public static final String SWITCH_USER_EXIT_URL = SWITCH_USER_URL + "/exit";
   private static final String SIGNIN_FAILURE_URL_PATTERN =
@@ -72,10 +73,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final String SIGNIN_DISABLED_URL =
       SIGNIN_PROCESSING_URL + "?" + SigninView.DISABLED;
   private static final String SIGNIN_URL = SIGNIN_PROCESSING_URL;
-  private static final String SIGNOUT_SUCCESS_URL = "/" + MainView.VIEW_NAME;
+  private static final String SIGNOUT_SUCCESS_URL = url(MainView.VIEW_NAME);
   private static final String SWITCH_USER_FAILURE_URL =
-      "/" + UsersView.VIEW_NAME + "?" + UsersView.SWITCH_FAILED;
-  private static final String SWITCH_USER_TRAGET_URL = "/" + MainView.VIEW_NAME;
+      url(UsersView.VIEW_NAME) + "?" + UsersView.SWITCH_FAILED;
+  private static final String SWITCH_USER_TRAGET_URL = url(MainView.VIEW_NAME);
   private static final String PASSWORD_ENCRYPTION = "bcrypt";
   @Inject
   private UserDetailsService userDetailsService;
@@ -189,6 +190,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .antMatchers(SWITCH_USER_URL).hasAuthority(ADMIN).antMatchers(SWITCH_USER_EXIT_URL)
         .authenticated()
 
+        // Allow anonymous views.
+        .antMatchers(url(ContactView.VIEW_NAME)).permitAll()
+
         // Allow all requests by logged in users.
         .anyRequest().hasAnyAuthority(UserRole.roles())
 
@@ -216,28 +220,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(WebSecurity web) throws Exception {
     web.ignoring().antMatchers(
-        // Vaadin Flow static resources
+        // Vaadin static resources.
         "/VAADIN/**",
 
-        // the standard favicon URI
-        "/favicon.ico",
+        // Vaadin servlet.
+        "/vaadinServlet/**");
+  }
 
-        // web application manifest
-        "/manifest.json", "/sw.js", "/offline-page.html",
-
-        // icons and images
-        "/icons/**", "/images/**",
-
-        // (development mode) static resources
-        "/frontend/**",
-
-        // (development mode) webjars
-        "/webjars/**",
-
-        // (development mode) H2 debugging console
-        "/h2-console/**",
-
-        // (production mode) static resources
-        "/frontend-es5/**", "/frontend-es6/**");
+  private static String url(String view) {
+    return "/" + view;
   }
 }
