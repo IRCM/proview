@@ -42,6 +42,7 @@ import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -116,6 +117,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private LaboratoryRepository laboratoryRepository;
   @Inject
   private TubeRepository tubeRepository;
+  @Inject
+  private PlateRepository plateRepository;
   @MockBean
   private SubmissionActivityService submissionActivityService;
   @MockBean
@@ -320,8 +323,35 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_Null() throws Throwable {
-    Submission submission = service.get(null);
+  public void get_NullId() throws Throwable {
+    Submission submission = service.get((Long) null);
+
+    assertNull(submission);
+  }
+
+  @Test
+  public void get_Plate() throws Throwable {
+    Plate plate = plateRepository.findOne(123L);
+
+    Submission submission = service.get(plate);
+
+    assertEquals((Long) 163L, submission.getId());
+    verify(authorizationService).checkPlateReadPermission(plate);
+  }
+
+  @Test
+  public void get_PlateNotSubmision() throws Throwable {
+    Plate plate = plateRepository.findOne(26L);
+
+    Submission submission = service.get(plate);
+
+    assertNull(submission);
+    verify(authorizationService).checkPlateReadPermission(plate);
+  }
+
+  @Test
+  public void get_NullPlate() throws Throwable {
+    Submission submission = service.get((Plate) null);
 
     assertNull(submission);
   }

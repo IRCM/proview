@@ -5898,7 +5898,7 @@ public class SubmissionFormPresenterTest {
     Submission database = repository.findOne(36L);
     database.setProteinIdentification(REFSEQ);
     when(submissionSampleService.exists(any())).thenReturn(true);
-    when(submissionService.get(any())).thenReturn(database);
+    when(submissionService.get(any(Long.class))).thenReturn(database);
     when(view.standardsForm.getValue()).thenReturn(database.getSamples().get(0).getStandards());
     when(view.contaminantsForm.getValue())
         .thenReturn(database.getSamples().get(0).getContaminants());

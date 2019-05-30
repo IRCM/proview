@@ -1,9 +1,12 @@
 package ca.qc.ircm.proview.security;
 
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
@@ -32,10 +35,15 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
   private SubmissionRepository submissionRepository;
   @Inject
   private SampleRepository sampleRepository;
+  @Inject
+  private PlateRepository plateRepository;
+  @Inject
+  private SubmissionService submissionService;
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
   private UserPermissionEvaluator userPermissionEvaluator;
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
   private SamplePermissionEvaluator samplePermissionEvaluator;
+  private PlatePermissionEvaluator platePermissionEvaluator;
 
   @PostConstruct
   protected void init() {
@@ -46,6 +54,8 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
         userRepository, authorizationService);
     samplePermissionEvaluator = new SamplePermissionEvaluator(sampleRepository, userRepository,
         authorizationService, submissionPermissionEvaluator);
+    platePermissionEvaluator = new PlatePermissionEvaluator(plateRepository, userRepository,
+        authorizationService, submissionService, submissionPermissionEvaluator);
   }
 
   @Override
@@ -62,6 +72,8 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
     } else if (targetDomainObject instanceof Sample) {
       return samplePermissionEvaluator.hasPermission(authentication, targetDomainObject,
           permission);
+    } else if (targetDomainObject instanceof Plate) {
+      return platePermissionEvaluator.hasPermission(authentication, targetDomainObject, permission);
     }
     return false;
   }
@@ -80,6 +92,9 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
           permission);
     } else if (targetType.equals(Sample.class.getName())) {
       return samplePermissionEvaluator.hasPermission(authentication, targetId, targetType,
+          permission);
+    } else if (targetType.equals(Plate.class.getName())) {
+      return platePermissionEvaluator.hasPermission(authentication, targetId, targetType,
           permission);
     }
     return false;
@@ -101,5 +116,9 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
 
   void setSamplePermissionEvaluator(SamplePermissionEvaluator samplePermissionEvaluator) {
     this.samplePermissionEvaluator = samplePermissionEvaluator;
+  }
+
+  void setPlatePermissionEvaluator(PlatePermissionEvaluator platePermissionEvaluator) {
+    this.platePermissionEvaluator = platePermissionEvaluator;
   }
 }

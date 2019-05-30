@@ -23,6 +23,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -47,6 +48,7 @@ public class PermissionEvaluatorDelegatorTest {
   private static final String USER_CLASS = User.class.getName();
   private static final String SUBMISSION_CLASS = Submission.class.getName();
   private static final String SAMPLE_CLASS = Sample.class.getName();
+  private static final String PLATE_CLASS = Plate.class.getName();
   private static final String READ = "read";
   private static final Permission BASE_READ = BasePermission.READ;
   private static final String WRITE = "write";
@@ -62,6 +64,8 @@ public class PermissionEvaluatorDelegatorTest {
   @Mock
   private SamplePermissionEvaluator samplePermissionEvaluator;
   @Mock
+  private PlatePermissionEvaluator platePermissionEvaluator;
+  @Mock
   private Laboratory laboratory;
   @Mock
   private User user;
@@ -69,13 +73,19 @@ public class PermissionEvaluatorDelegatorTest {
   private Submission submission;
   @Mock
   private Sample sample;
+  @Mock
+  private Plate plate;
 
+  /**
+   * Before test.
+   */
   @Before
   public void beforeTest() {
     permissionEvaluator.setLaboratoryPermissionEvaluator(laboratoryPermissionEvaluator);
     permissionEvaluator.setUserPermissionEvaluator(userPermissionEvaluator);
     permissionEvaluator.setSubmissionPermissionEvaluator(submissionPermissionEvaluator);
     permissionEvaluator.setSamplePermissionEvaluator(samplePermissionEvaluator);
+    permissionEvaluator.setPlatePermissionEvaluator(platePermissionEvaluator);
   }
 
   private Authentication authentication() {
@@ -317,6 +327,66 @@ public class PermissionEvaluatorDelegatorTest {
     verify(samplePermissionEvaluator).hasPermission(authentication(), sample.getId(), SAMPLE_CLASS,
         WRITE);
     verify(samplePermissionEvaluator).hasPermission(authentication(), sample.getId(), SAMPLE_CLASS,
+        BASE_WRITE);
+  }
+
+  @Test
+  @WithAnonymousUser
+  public void hasPermission_Plate_False() throws Throwable {
+    assertFalse(permissionEvaluator.hasPermission(authentication(), plate, READ));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_READ));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, READ));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, BASE_READ));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS,
+        BASE_WRITE));
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate, READ);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate, BASE_READ);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate, WRITE);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate, BASE_WRITE);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate.getId(), PLATE_CLASS,
+        READ);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate.getId(), PLATE_CLASS,
+        BASE_READ);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate.getId(), PLATE_CLASS,
+        WRITE);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate.getId(), PLATE_CLASS,
+        BASE_WRITE);
+  }
+
+  @Test
+  @WithAnonymousUser
+  public void hasPermission_Plate_True() throws Throwable {
+    when(platePermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+    when(platePermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
+    assertTrue(permissionEvaluator.hasPermission(authentication(), plate, READ));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), plate, BASE_READ));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
+    assertTrue(
+        permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, READ));
+    assertTrue(
+        permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, BASE_READ));
+    assertTrue(
+        permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS,
+        BASE_WRITE));
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate, READ);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate, BASE_READ);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate, WRITE);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate, BASE_WRITE);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate.getId(), PLATE_CLASS,
+        READ);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate.getId(), PLATE_CLASS,
+        BASE_READ);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate.getId(), PLATE_CLASS,
+        WRITE);
+    verify(platePermissionEvaluator).hasPermission(authentication(), plate.getId(), PLATE_CLASS,
         BASE_WRITE);
   }
 

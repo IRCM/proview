@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QUser.user;
@@ -29,6 +30,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
+import ca.qc.ircm.proview.plate.QPlate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -117,6 +119,28 @@ public class SubmissionService {
     Submission submission = repository.findOne(id);
     authorizationService.checkSubmissionReadPermission(submission);
     return submission;
+  }
+
+  /**
+   * Selects submission related to this plate.
+   *
+   * @param plate
+   *          plate
+   * @return submission related to this plate
+   */
+  public Submission get(Plate plate) {
+    if (plate == null) {
+      return null;
+    }
+    authorizationService.checkPlateReadPermission(plate);
+
+    QPlate qplate = QPlate.plate;
+    JPAQuery<Submission> query = queryFactory.select(submissionSample.submission);
+    query.from(qplate, submissionSample);
+    query.where(qplate.eq(plate));
+    query.where(qplate.submission.eq(true));
+    query.where(submissionSample.originalContainer.in(qplate.wells));
+    return query.fetchFirst();
   }
 
   /**
