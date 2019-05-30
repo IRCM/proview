@@ -119,6 +119,12 @@ public class AuthorizationServiceTest {
   }
 
   @Test
+  @WithAnonymousUser
+  public void hasRole_Anonymous() throws Throwable {
+    assertFalse(authorizationService.hasRole(ADMIN));
+  }
+
+  @Test
   @WithMockUser
   public void hasRole_False() throws Throwable {
     assertFalse(authorizationService.hasRole(ADMIN));
@@ -135,6 +141,12 @@ public class AuthorizationServiceTest {
   public void hasRole_SwitchedUser() throws Throwable {
     switchToUser("benoit.coulombe@ircm.qc.ca");
     assertTrue(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
+  }
+
+  @Test
+  @WithAnonymousUser
+  public void hasAnyRole_Anonymous() throws Throwable {
+    assertFalse(authorizationService.hasAnyRole(ADMIN, MANAGER));
   }
 
   @Test

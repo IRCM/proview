@@ -105,6 +105,10 @@ public class AuthorizationService {
    */
   public boolean hasRole(String role) {
     Authentication authentication = getAuthentication();
+    if (authentication == null) {
+      return false;
+    }
+
     Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
     boolean hasRole = false;
     for (GrantedAuthority authority : authorities) {
