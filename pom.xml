@@ -30,7 +30,7 @@
   <version>2.29-SNAPSHOT</version>
   <inceptionYear>2006</inceptionYear>
   <description>LIMS managing sample analysis by mass spectrometry (MS)</description>
-  <url>http://bitbucket.org/ircm/proview-2</url>
+  <url>http://bitbucket.org/ircm/proview-3</url>
   <licenses>
     <license>
       <name>GNU Affero General Public License</name>
@@ -39,13 +39,13 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:https://bitbucket.org/ircm/proview-2.git</connection>
-    <developerConnection>scm:git:https://bitbucket.org/ircm/proview-2.git</developerConnection>
-    <url>https://bitbucket.org/ircm/proview-2</url>
+    <connection>scm:git:https://bitbucket.org/ircm/proview-3.git</connection>
+    <developerConnection>scm:git:https://bitbucket.org/ircm/proview-3.git</developerConnection>
+    <url>https://bitbucket.org/ircm/proview-3</url>
   </scm>
   <issueManagement>
     <system>Bitbucket</system>
-    <url>https://bitbucket.org/ircm/proview-2/issues</url>
+    <url>https://bitbucket.org/ircm/proview-3/issues</url>
   </issueManagement>
   <properties>
     <main-class>ca.qc.ircm.proview.Main</main-class>
