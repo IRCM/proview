@@ -17,8 +17,10 @@
 
 package ca.qc.ircm.proview.plate;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class WellService {
   @Inject
   private WellRepository wellRepository;
-  @Inject
-  private AuthorizationService authorizationService;
 
   protected WellService() {
   }
@@ -43,11 +43,11 @@ public class WellService {
    *          database identifier of well
    * @return well
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Well get(Long id) {
     if (id == null) {
       return null;
     }
-    authorizationService.checkAdminRole();
 
     return wellRepository.findOne(id);
   }

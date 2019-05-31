@@ -46,6 +46,7 @@ import javax.validation.constraints.Size;
 public class User implements Data, Named, Serializable {
   public static final String TABLE_NAME = "user";
   public static final String LOCALE_PREFERENCE = "locale";
+  public static final long ROBOT_ID = 1L;
   private static final long serialVersionUID = 4251923438573972499L;
 
   /**
@@ -148,6 +149,10 @@ public class User implements Data, Named, Serializable {
 
   public User(Long id) {
     this.id = id;
+  }
+
+  public User(String email) {
+    this.email = email;
   }
 
   public User(Long id, String email) {

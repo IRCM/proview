@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,6 +33,7 @@ import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,11 +47,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser
 public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
+  private static final String READ = "read";
   @Inject
   private SubmissionSampleService service;
   @Inject
@@ -60,6 +68,8 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   private ActivityService activityService;
   @MockBean
   private AuthorizationService authorizationService;
+  @MockBean
+  private PermissionEvaluator permissionEvaluator;
   @Mock
   private Activity activity;
   @Captor
@@ -72,13 +82,14 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Before
   public void beforeTest() {
     optionalActivity = Optional.of(activity);
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
   }
 
   @Test
   public void get_Gel() throws Throwable {
     SubmissionSample sample = service.get(1L);
 
-    verify(authorizationService).checkSampleReadPermission(sample);
+    verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample gelSample = sample;
     assertEquals((Long) 1L, gelSample.getId());
@@ -98,7 +109,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   public void get() throws Throwable {
     SubmissionSample sample = service.get(442L);
 
-    verify(authorizationService).checkSampleReadPermission(sample);
+    verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
     SubmissionSample eluateSample = sample;
     assertEquals((Long) 442L, eluateSample.getId());
@@ -130,7 +141,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("CAP_20111013_05");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(true, exists);
   }
 
@@ -141,7 +151,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("CAP_20111013_80");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
   }
 
@@ -152,7 +161,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("CAP_20111013_05");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
   }
 
@@ -163,7 +171,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("control_01");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
   }
 
@@ -177,7 +184,14 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     assertEquals(false, exists);
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void exists_AccessDenied() throws Throwable {
+    service.exists("CAP_20111013_05");
+  }
+
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus() throws Throwable {
     SubmissionSample sample1 = repository.findOne(443L);
     detach(sample1);
@@ -193,7 +207,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(samples);
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     SubmissionSample testSample1 = repository.findOne(443L);
     SubmissionSample testSample2 = repository.findOne(445L);
     assertEquals(SampleStatus.DIGESTED, testSample1.getStatus());
@@ -209,6 +222,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Name() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
     detach(sample);
@@ -222,7 +236,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(samples);
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     sample = repository.findOne(443L);
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
     assertEquals(name, sample.getName());
@@ -230,6 +243,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Received_SampleDeliveryDate_UpdatedNull() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
     detach(sample);
@@ -246,6 +260,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Received_SampleDeliveryDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(559L);
     detach(sample);
@@ -260,6 +275,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Digested_SampleDeliveryDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
     detach(sample);
@@ -274,6 +290,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Digested_SubmissionDigestionDate_UpdatedNull() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
     detach(sample);
@@ -289,6 +306,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Digested_SubmissionDigestionDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(559L);
     detach(sample);
@@ -303,6 +321,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Analysed_SubmissionDigestionDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
     detach(sample);
@@ -317,6 +336,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Analysed_SubmissionAnalysisDate_UpdatedNull() throws Throwable {
     SubmissionSample sample = repository.findOne(443L);
     detach(sample);
@@ -332,6 +352,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Analysed_SubmissionAnalysisDate_NotUpdated() throws Throwable {
     SubmissionSample sample = repository.findOne(621L);
     detach(sample);
@@ -343,5 +364,39 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     repository.flush();
     sample = repository.findOne(621L);
     assertEquals(LocalDate.of(2014, 10, 17), sample.getSubmission().getAnalysisDate());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void updateStatus_AccessDenied_Anonymous() throws Throwable {
+    SubmissionSample sample1 = repository.findOne(443L);
+    detach(sample1);
+    sample1.setStatus(SampleStatus.DIGESTED);
+    SubmissionSample sample2 = repository.findOne(445L);
+    detach(sample2);
+    sample2.setStatus(SampleStatus.RECEIVED);
+    Collection<SubmissionSample> samples = new LinkedList<>();
+    samples.add(sample1);
+    samples.add(sample2);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
+
+    service.updateStatus(samples);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void updateStatus_AccessDenied() throws Throwable {
+    SubmissionSample sample1 = repository.findOne(443L);
+    detach(sample1);
+    sample1.setStatus(SampleStatus.DIGESTED);
+    SubmissionSample sample2 = repository.findOne(445L);
+    detach(sample2);
+    sample2.setStatus(SampleStatus.RECEIVED);
+    Collection<SubmissionSample> samples = new LinkedList<>();
+    samples.add(sample1);
+    samples.add(sample2);
+    when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
+
+    service.updateStatus(samples);
   }
 }

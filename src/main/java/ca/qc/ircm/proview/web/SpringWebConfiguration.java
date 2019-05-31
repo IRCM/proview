@@ -20,9 +20,6 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.web.WebConstants.DEFAULT_LOCALE;
 
 import ca.qc.ircm.proview.logging.web.MdcFilter;
-import ca.qc.ircm.proview.security.web.ShiroWebEnvironmentListener;
-import ca.qc.ircm.proview.user.web.SignoutFilter;
-import org.apache.shiro.web.servlet.ShiroFilter;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,19 +38,9 @@ import org.springframework.web.util.IntrospectorCleanupListener;
 public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
   public static final String SHIRO_FILTER_NAME = "ShiroFilter";
 
-  @Bean(name = SHIRO_FILTER_NAME)
-  public ShiroFilter shiroFilter() {
-    return new ShiroFilter();
-  }
-
   @Bean(name = MdcFilter.BEAN_NAME)
   public MdcFilter ndcFilter() {
     return new MdcFilter();
-  }
-
-  @Bean(name = SignoutFilter.BEAN_NAME)
-  public SignoutFilter signoutFilter() {
-    return new SignoutFilter();
   }
 
   @Bean
@@ -67,15 +54,9 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
     return new ServletListenerRegistrationBean<>(new RequestContextListener());
   }
 
-  @Bean
-  public ServletListenerRegistrationBean<ShiroWebEnvironmentListener>
-      shiroWebEnvironmentListener() {
-    return new ServletListenerRegistrationBean<>(new ShiroWebEnvironmentListener());
-  }
-
   /**
    * Returns {@link LocaleResolver} instance.
-   * 
+   *
    * @return {@link LocaleResolver} instance
    */
   @Bean
@@ -87,7 +68,7 @@ public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
 
   /**
    * Returns {@link LocaleChangeInterceptor} instance.
-   * 
+   *
    * @return {@link LocaleChangeInterceptor} instance
    */
   @Bean

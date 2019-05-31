@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -91,7 +92,7 @@ public class UserWindow extends Window implements BaseComponent {
   private void updateUser(User user) {
     logger.debug("User window for user {}", user);
     setCaption(getResources().message(TITLE, user != null ? user.getName() : ""));
-    design.update.setVisible(authorizationService.hasUserWritePermission(user));
+    design.update.setVisible(authorizationService.hasPermission(user, BasePermission.WRITE));
     design.update.addClickListener(e -> {
       navigateTo(UserView.VIEW_NAME, String.valueOf(user.getId()));
       close();

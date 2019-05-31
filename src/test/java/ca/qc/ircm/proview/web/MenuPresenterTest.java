@@ -36,12 +36,12 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.plate.web.PlatesView;
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.web.SigninView;
-import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.utils.MessageResource;
@@ -51,23 +51,25 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
 import java.util.Locale;
 import java.util.Optional;
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class MenuPresenterTest {
+  @Inject
   private MenuPresenter presenter;
   @Mock
   private Menu view;
-  @Mock
+  @MockBean
   private AuthorizationService authorizationService;
-  @Mock
-  private AuthenticationService authenticationService;
   @Mock
   private MainUi ui;
   @Mock
@@ -85,7 +87,6 @@ public class MenuPresenterTest {
    */
   @Before
   public void beforeTest() {
-    presenter = new MenuPresenter(authorizationService, authenticationService);
     view.menu = new MenuBar();
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
@@ -131,6 +132,7 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_Anonymous() throws Throwable {
+    when(authorizationService.isAnonymous()).thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());
@@ -148,8 +150,8 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_User() throws Throwable {
-    when(authorizationService.isUser()).thenReturn(true);
-    when(authorizationService.hasUserRole()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.USER)).thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());
@@ -167,9 +169,9 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_Manager() throws Throwable {
-    when(authorizationService.isUser()).thenReturn(true);
-    when(authorizationService.hasUserRole()).thenReturn(true);
-    when(authorizationService.hasManagerRole()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.USER)).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());
@@ -187,9 +189,9 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_Admin() throws Throwable {
-    when(authorizationService.isUser()).thenReturn(true);
-    when(authorizationService.hasUserRole()).thenReturn(true);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.USER)).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());
@@ -207,9 +209,10 @@ public class MenuPresenterTest {
 
   @Test
   public void visibility_SignedAs() throws Throwable {
-    when(authorizationService.isUser()).thenReturn(true);
-    when(authorizationService.hasUserRole()).thenReturn(true);
-    when(authorizationService.isRunAs()).thenReturn(true);
+    when(authorizationService.isAnonymous()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.USER)).thenReturn(true);
+    when(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR))
+        .thenReturn(true);
     presenter.init(view);
 
     assertTrue(item(HOME).isVisible());
@@ -284,7 +287,7 @@ public class MenuPresenterTest {
 
     item(SIGNOUT).getCommand().menuSelected(item(SIGNOUT));
 
-    verify(page).setLocation(contextPath + SignoutFilter.SIGNOUT_URL);
+    verify(page).setLocation(WebSecurityConfiguration.SIGNOUT_URL);
   }
 
   @Test
@@ -353,7 +356,6 @@ public class MenuPresenterTest {
 
     item(STOP_SIGN_AS).getCommand().menuSelected(item(STOP_SIGN_AS));
 
-    verify(authenticationService).stopRunAs();
-    verify(view).navigateTo(MainView.VIEW_NAME);
+    verify(page).setLocation(WebSecurityConfiguration.SWITCH_USER_EXIT_URL);
   }
 }

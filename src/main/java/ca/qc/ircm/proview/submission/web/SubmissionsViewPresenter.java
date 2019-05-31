@@ -42,6 +42,7 @@ import ca.qc.ircm.proview.submission.SubmissionProperties;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.UserPreferenceService;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.HelpWindow;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.filter.LocalDateFilterComponent;
@@ -193,11 +194,11 @@ public class SubmissionsViewPresenter {
     prepareSumissionsGrid();
     design.addSubmission.addStyleName(ADD_SUBMISSION);
     design.addSubmission.setCaption(resources.message(ADD_SUBMISSION));
-    design.addSubmission.setVisible(!authorizationService.hasAdminRole());
+    design.addSubmission.setVisible(!authorizationService.hasRole(UserRole.ADMIN));
     design.addSubmission.addClickListener(e -> addSubmission());
     design.updateStatusButton.addStyleName(UPDATE_STATUS);
     design.updateStatusButton.setCaption(resources.message(UPDATE_STATUS));
-    design.updateStatusButton.setVisible(authorizationService.hasAdminRole());
+    design.updateStatusButton.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     design.updateStatusButton.addClickListener(e -> updateStatus());
   }
 
@@ -273,14 +274,14 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid
         .addColumn(submission -> viewHistoryButton(submission), new ComponentRenderer())
         .setId(HISTORY).setCaption(resources.message(HISTORY)).setSortable(false);
-    if (authorizationService.hasAdminRole()) {
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
       design.submissionsGrid.getColumn(USER).setHidable(true);
       design.submissionsGrid.getColumn(USER)
           .setHidden(userPreferenceService.get(this, USER, false));
       design.submissionsGrid.getColumn(DIRECTOR).setHidable(true);
       design.submissionsGrid.getColumn(DIRECTOR)
           .setHidden(userPreferenceService.get(this, DIRECTOR, false));
-    } else if (authorizationService.hasManagerRole()) {
+    } else if (authorizationService.hasRole(UserRole.MANAGER)) {
       design.submissionsGrid.getColumn(USER).setHidable(true);
       design.submissionsGrid.getColumn(USER)
           .setHidden(userPreferenceService.get(this, USER, false));
@@ -318,7 +319,7 @@ public class SubmissionsViewPresenter {
         .setHidden(userPreferenceService.get(this, SAMPLE_STATUSES, false));
     design.submissionsGrid.getColumn(DATE).setHidable(true);
     design.submissionsGrid.getColumn(DATE).setHidden(userPreferenceService.get(this, DATE, false));
-    if (authorizationService.hasAdminRole()) {
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
       design.submissionsGrid.getColumn(HIDDEN).setHidable(true);
       design.submissionsGrid.getColumn(HIDDEN)
           .setHidden(userPreferenceService.get(this, HIDDEN, false));
@@ -411,7 +412,7 @@ public class SubmissionsViewPresenter {
     design.submissionsGrid.getEditor().setBinder(binder);
     design.submissionsGrid.getColumn(SAMPLE_DELIVERY_DATE)
         .setEditorBinding(binder.forField(dateField()).bind(SAMPLE_DELIVERY_DATE));
-    if (authorizationService.hasAdminRole()) {
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
       design.submissionsGrid.getColumn(DIGESTION_DATE)
           .setEditorBinding(binder.forField(dateField()).bind(DIGESTION_DATE));
       design.submissionsGrid.getColumn(ANALYSIS_DATE)

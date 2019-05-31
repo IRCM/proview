@@ -18,6 +18,8 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -30,6 +32,8 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -59,14 +63,13 @@ public class SubmissionSampleService {
    *          database identifier of submitted sample
    * @return submitted sample
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public SubmissionSample get(Long id) {
     if (id == null) {
       return null;
     }
 
-    SubmissionSample sample = repository.findOne(id);
-    authorizationService.checkSampleReadPermission(sample);
-    return sample;
+    return repository.findOne(id);
   }
 
   /**
@@ -78,11 +81,11 @@ public class SubmissionSampleService {
    * @return true if a sample with this name is already in database for current user, false
    *         otherwise
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public boolean exists(String name) {
     if (name == null) {
       return false;
     }
-    authorizationService.checkUserRole();
     User currentUser = authorizationService.getCurrentUser();
 
     BooleanExpression predicate =
@@ -96,9 +99,8 @@ public class SubmissionSampleService {
    * @param samples
    *          samples containing new status
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void updateStatus(Collection<? extends SubmissionSample> samples) {
-    authorizationService.checkAdminRole();
-
     for (SubmissionSample sample : samples) {
       SampleStatus status = sample.getStatus();
       sample = repository.findOne(sample.getId());

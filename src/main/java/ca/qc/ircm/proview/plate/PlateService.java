@@ -21,6 +21,8 @@ import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.history.Activity;
@@ -28,6 +30,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -50,6 +53,8 @@ import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
@@ -89,14 +94,13 @@ public class PlateService {
    *          plate's database identifier
    * @return plate
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public Plate get(Long id) {
     if (id == null) {
       return null;
     }
 
-    Plate plate = repository.findOne(id);
-    authorizationService.checkPlateReadPermission(plate);
-    return plate;
+    return repository.findOne(id);
   }
 
   /**
@@ -106,9 +110,8 @@ public class PlateService {
    *          filters plates
    * @return all plates passing filter
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Plate> all(PlateFilter filter) {
-    authorizationService.checkAdminRole();
-
     if (filter == null) {
       filter = new PlateFilter();
     }
@@ -122,14 +125,14 @@ public class PlateService {
    *          plate's name
    * @return true if name is available in database, false otherwise
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public boolean nameAvailable(String name) {
     if (name == null) {
       return false;
     }
-    authorizationService.checkUserRole();
     User user = authorizationService.getCurrentUser();
 
-    if (authorizationService.hasAdminRole()) {
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
       return repository.countByName(name) == 0;
     } else {
       JPAQuery<Long> query = queryFactory.select(plate.id);
@@ -225,12 +228,12 @@ public class PlateService {
    * @return moment of last treatment or analysis made on any sample on plate, whichever is the most
    *         recent
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Instant lastTreatmentOrAnalysisDate(Plate plate) {
     if (plate == null) {
       return null;
     }
 
-    authorizationService.checkAdminRole();
     Instant treatmentInstant = queryFactory.select(treatment.insertTime.max()).from(treatment)
         .where(treatment.treatedSamples.any().container.in(plate.getWells())
             .or(treatment.treatedSamples.any().destinationContainer.in(plate.getWells())))
@@ -252,9 +255,8 @@ public class PlateService {
    * @param plate
    *          plate to insert
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void insert(Plate plate) {
-    authorizationService.checkAdminRole();
-
     plate.setInsertTime(Instant.now());
     initWellList(plate);
     repository.saveAndFlush(plate);
@@ -275,9 +277,8 @@ public class PlateService {
    * @param plate
    *          plate
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void update(Plate plate) {
-    authorizationService.checkAdminRole();
-
     repository.save(plate);
 
     Optional<Activity> optionalActivity = plateActivityService.update(plate);
@@ -298,9 +299,8 @@ public class PlateService {
    * @param explanation
    *          explanation for banning wells
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void ban(Plate plate, WellLocation from, WellLocation to, String explanation) {
-    authorizationService.checkAdminRole();
-
     Collection<Well> wells = plate.wells(from, to);
     for (Well well : wells) {
       well.setBanned(true);
@@ -329,9 +329,8 @@ public class PlateService {
    * @param explanation
    *          explanation for reactivating wells
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void activate(Plate plate, WellLocation from, WellLocation to, String explanation) {
-    authorizationService.checkAdminRole();
-
     Collection<Well> wells = plate.wells(from, to);
     for (Well well : wells) {
       well.setBanned(false);

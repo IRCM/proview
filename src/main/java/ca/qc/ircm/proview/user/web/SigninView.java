@@ -31,6 +31,9 @@ import javax.inject.Inject;
 public class SigninView extends CustomComponent implements BaseView {
   private static final long serialVersionUID = -2537732272999926530L;
   public static final String VIEW_NAME = "user/signin";
+  public static final String FAIL = "fail";
+  public static final String DISABLED = "disabled";
+  public static final String EXCESSIVE_ATTEMPTS = "excessiveAttempts";
   protected SigninViewDesign design = new SigninViewDesign();
   protected CustomLoginForm signForm = new CustomLoginForm();
   @Inject

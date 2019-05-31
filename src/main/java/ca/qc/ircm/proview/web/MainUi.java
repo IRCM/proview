@@ -26,6 +26,8 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.navigator.PushStateNavigation;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletRequest;
+import com.vaadin.server.VaadinServletResponse;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.ui.Transport;
 import com.vaadin.spring.annotation.SpringUI;
@@ -99,5 +101,13 @@ public class MainUi extends UI {
 
   public String getUrl(String viewName) {
     return getServletContext().getContextPath() + "/#!" + viewName;
+  }
+
+  public VaadinServletRequest getVaadinServletRequest() {
+    return VaadinServletRequest.getCurrent();
+  }
+
+  public VaadinServletResponse getVaadinServletResponse() {
+    return VaadinServletResponse.getCurrent();
   }
 }

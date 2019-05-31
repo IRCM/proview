@@ -17,11 +17,14 @@
 
 package ca.qc.ircm.proview.tube;
 
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.security.AuthorizationService;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TubeService {
   @Inject
   private TubeRepository repository;
-  @Inject
-  private AuthorizationService authorizationService;
 
   protected TubeService() {
   }
@@ -46,16 +47,13 @@ public class TubeService {
    *          database identifier of tube
    * @return tube
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject.sample, 'read')")
   public Tube get(Long id) {
     if (id == null) {
       return null;
     }
 
-    Tube tube = repository.findOne(id);
-    if (tube != null) {
-      authorizationService.checkSampleReadPermission(tube.getSample());
-    }
-    return tube;
+    return repository.findOne(id);
   }
 
   /**
@@ -65,11 +63,11 @@ public class TubeService {
    *          tube's name
    * @return true if name is available in database, false otherwise
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public boolean nameAvailable(String name) {
     if (name == null) {
       return false;
     }
-    authorizationService.checkAdminRole();
 
     return repository.countByName(name) == 0;
   }
@@ -81,11 +79,11 @@ public class TubeService {
    *          sample.
    * @return digestion tubes used for sample.
    */
+  @PreAuthorize("hasPermission(#sample, 'read')")
   public List<Tube> all(Sample sample) {
     if (sample == null) {
       return new ArrayList<>();
     }
-    authorizationService.checkSampleReadPermission(sample);
 
     return repository.findBySample(sample);
   }

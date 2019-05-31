@@ -69,12 +69,6 @@ public class UserFilterTest {
     return user;
   }
 
-  private User laboratory(Laboratory laboratory) {
-    User user = new User();
-    user.setLaboratory(laboratory);
-    return user;
-  }
-
   private User laboratoryName(String name) {
     User user = new User();
     user.setLaboratory(new Laboratory());
@@ -221,22 +215,6 @@ public class UserFilterTest {
   }
 
   @Test
-  public void test_Laboratory() {
-    filter.laboratory = new Laboratory();
-
-    assertTrue(filter.test(laboratory(filter.laboratory)));
-    assertFalse(filter.test(laboratory(new Laboratory())));
-  }
-
-  @Test
-  public void test_LaboratoryNull() {
-    filter.laboratory = null;
-
-    assertTrue(filter.test(laboratory(new Laboratory())));
-    assertTrue(filter.test(laboratory(new Laboratory())));
-  }
-
-  @Test
   public void test_EmailContainsAndActive() {
     filter.emailContains = "test";
     filter.active = true;
@@ -317,15 +295,5 @@ public class UserFilterTest {
     Predicate predicate = filter.predicate();
 
     assertEquals(predicate, user.laboratory.organization.contains("test"));
-  }
-
-  @Test
-  public void predicate_Laboratory() {
-    Laboratory laboratory = new Laboratory(1L);
-    filter.laboratory = laboratory;
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, user.laboratory.eq(laboratory));
   }
 }

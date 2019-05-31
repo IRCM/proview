@@ -18,19 +18,14 @@
 package ca.qc.ircm.proview.test;
 
 import ca.qc.ircm.proview.Main;
-import ca.qc.ircm.proview.security.PasswordVersion;
-import ca.qc.ircm.proview.security.SecurityConfiguration;
 import java.util.Random;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.Hex;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class GeneratePassword {
-  public static final String PASSWORD_ALGORITHM = "SHA-256";
-  public static final int PASSWORD_ITERATIONS = 1000;
-
   /**
    * Generates random passwords.
    *
@@ -39,18 +34,11 @@ public class GeneratePassword {
    */
   public static void main(String[] args) throws Exception {
     try (ConfigurableApplicationContext context = SpringApplication.run(Main.class, args)) {
-      SecurityConfiguration securityConfiguration = context.getBean(SecurityConfiguration.class);
+      PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
       final String password = "password";
-      Random random = new Random();
-      byte[] salt = new byte[64];
-      random.nextBytes(salt);
-      PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
-      SimpleHash hash = new SimpleHash(passwordVersion.getAlgorithm(), password, salt,
-          passwordVersion.getIterations());
+      String hash = passwordEncoder.encode(password);
       System.out.println("Hashed password");
-      System.out.println(String.format("version: %s", passwordVersion));
-      System.out.println("password: " + hash.toHex());
-      System.out.println("salt:     " + Hex.encodeToString(salt));
+      System.out.println("password: " + hash);
       System.out.println("---------------");
     }
 

@@ -59,7 +59,7 @@ public class LdapService {
    */
   public boolean isPasswordValid(String username, String password) {
     try {
-      LdapQuery query = query().where(ldapConfiguration.idAttribute()).is(username);
+      LdapQuery query = query().where(ldapConfiguration.getIdAttribute()).is(username);
       ldapTemplate.authenticate(query, password);
       logger.debug("Valid LDAP password for user [{}]", username);
       return true;
@@ -77,10 +77,10 @@ public class LdapService {
    * @return user's email from LDAP or null if user does not exists
    */
   public String getEmail(String username) {
-    LdapQuery query = query().attributes(ldapConfiguration.mailAttribute())
-        .where(ldapConfiguration.idAttribute()).is(username);
+    LdapQuery query = query().attributes(ldapConfiguration.getMailAttribute())
+        .where(ldapConfiguration.getIdAttribute()).is(username);
     AttributesMapper<String> mapper =
-        attrs -> Optional.ofNullable(attrs.get(ldapConfiguration.mailAttribute())).map(attr -> {
+        attrs -> Optional.ofNullable(attrs.get(ldapConfiguration.getMailAttribute())).map(attr -> {
           try {
             return attr.get();
           } catch (NamingException e) {
@@ -100,10 +100,10 @@ public class LdapService {
    * @return user's username on LDAP or null if user does not exists
    */
   public String getUsername(String email) {
-    LdapQuery query = query().attributes(ldapConfiguration.idAttribute())
-        .where(ldapConfiguration.mailAttribute()).is(email);
+    LdapQuery query = query().attributes(ldapConfiguration.getIdAttribute())
+        .where(ldapConfiguration.getMailAttribute()).is(email);
     AttributesMapper<String> mapper =
-        attrs -> Optional.ofNullable(attrs.get(ldapConfiguration.idAttribute())).map(attr -> {
+        attrs -> Optional.ofNullable(attrs.get(ldapConfiguration.getIdAttribute())).map(attr -> {
           try {
             return attr.get();
           } catch (NamingException e) {

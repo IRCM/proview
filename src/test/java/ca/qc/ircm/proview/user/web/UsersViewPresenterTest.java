@@ -26,7 +26,6 @@ import static ca.qc.ircm.proview.user.web.UsersViewPresenter.EMPTY;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.HEADER;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.ORGANIZATION;
-import static ca.qc.ircm.proview.user.web.UsersViewPresenter.SWITCHED;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.SWITCH_USER;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.TITLE;
 import static ca.qc.ircm.proview.user.web.UsersViewPresenter.USERS;
@@ -37,21 +36,23 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
+import ca.qc.ircm.proview.test.config.AbstractComponentTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -70,6 +71,8 @@ import com.vaadin.ui.components.grid.HeaderRow;
 import com.vaadin.ui.components.grid.ItemClickListener;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -88,7 +91,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class UsersViewPresenterTest {
+public class UsersViewPresenterTest extends AbstractComponentTestCase {
   @Inject
   private UsersViewPresenter presenter;
   @Inject
@@ -97,8 +100,6 @@ public class UsersViewPresenterTest {
   private UserService userService;
   @MockBean
   private AuthorizationService authorizationService;
-  @MockBean
-  private AuthenticationService authenticationService;
   @MockBean
   private UserWindow userWindow;
   @Mock
@@ -138,6 +139,7 @@ public class UsersViewPresenterTest {
     view.design = design;
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
+    when(view.getUI()).thenReturn(ui);
     when(clickItemEvent.getMouseEventDetails()).thenReturn(mouseEventDetails);
   }
 
@@ -367,28 +369,26 @@ public class UsersViewPresenterTest {
 
   @Test
   public void init_Admin() {
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
 
     verify(userService).all(userFilterCaptor.capture());
     UserFilter userFilter = userFilterCaptor.getValue();
     assertTrue(userFilter.valid);
-    assertNull(userFilter.laboratory);
     assertNull(userFilter.active);
     assertTrue(design.add.isVisible());
     assertTrue(design.switchUser.isVisible());
-    verify(userService).hasInvalid(null);
+    verify(userService).hasInvalid();
   }
 
   @Test
   public void init_LaboratoryManager() {
-    when(authorizationService.hasAdminRole()).thenReturn(false);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(false);
     presenter.init(view);
 
-    verify(userService).all(userFilterCaptor.capture());
+    verify(userService).all(userFilterCaptor.capture(), eq(signedUser.getLaboratory()));
     UserFilter userFilter = userFilterCaptor.getValue();
     assertTrue(userFilter.valid);
-    assertEquals(signedUser.getLaboratory(), userFilter.laboratory);
     assertNull(userFilter.active);
     assertFalse(design.add.isVisible());
     assertFalse(design.switchUser.isVisible());
@@ -521,16 +521,16 @@ public class UsersViewPresenterTest {
   }
 
   @Test
-  public void switchUser() {
+  public void switchUser() throws Throwable {
     presenter.init(view);
     final User user = users.get(0);
     design.users.select(user);
 
     design.switchUser.click();
 
-    verify(authenticationService).runAs(user);
-    verify(view).showTrayNotification(resources.message(SWITCHED, user.getEmail()));
-    verify(view).navigateTo(MainView.VIEW_NAME);
+    verify(page).setLocation(WebSecurityConfiguration.SWITCH_USER_URL + "?"
+        + WebSecurityConfiguration.SWITCH_USERNAME_PARAMETER + "="
+        + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8.name()));
   }
 
   @Test
@@ -539,7 +539,7 @@ public class UsersViewPresenterTest {
 
     design.switchUser.click();
 
-    verifyZeroInteractions(authenticationService);
+    verifyZeroInteractions(page);
     verify(view).showError(resources.message(EMPTY));
   }
 }

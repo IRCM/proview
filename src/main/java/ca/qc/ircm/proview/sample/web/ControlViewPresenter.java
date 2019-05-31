@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.sample.web;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.ControlService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.SaveEvent;
 import ca.qc.ircm.proview.web.SaveListener;
 import ca.qc.ircm.proview.web.validator.BinderValidator;
@@ -64,7 +65,7 @@ public class ControlViewPresenter implements BinderValidator, SaveListener<Contr
     logger.debug("Control view");
     this.view = view;
     design = view.design;
-    view.form.setReadOnly(!authorizationService.hasAdminRole());
+    view.form.setReadOnly(!authorizationService.hasRole(UserRole.ADMIN));
     view.form.addSaveListener(this);
     final MessageResource resources = view.getResources();
     view.setTitle(resources.message(TITLE, applicationName));

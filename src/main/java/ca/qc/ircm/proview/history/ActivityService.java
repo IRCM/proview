@@ -37,6 +37,7 @@ import static ca.qc.ircm.proview.user.QForgotPassword.forgotPassword;
 import static ca.qc.ircm.proview.user.QLaboratory.laboratory;
 import static ca.qc.ircm.proview.user.QPhoneNumber.phoneNumber;
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
@@ -47,7 +48,6 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.treatment.Protocol;
@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,8 +83,6 @@ public class ActivityService {
   private ActivityRepository repository;
   @Inject
   private JPAQueryFactory queryFactory;
-  @Inject
-  private AuthorizationService authorizationService;
 
   protected ActivityService() {
   }
@@ -95,11 +94,11 @@ public class ActivityService {
    *          activity
    * @return object associated with this activity
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Object record(Activity activity) {
     if (activity == null || activity.getTableName() == null) {
       return null;
     }
-    authorizationService.checkAdminRole();
 
     return record(activity.getTableName(), activity.getRecordId());
   }
@@ -220,11 +219,11 @@ public class ActivityService {
    *          submission
    * @return all activities involving submission or one of it samples
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> all(Submission submission) {
     if (submission == null) {
       return new ArrayList<>();
     }
-    authorizationService.checkAdminRole();
 
     final List<Activity> activities = new ArrayList<>();
     final List<SubmissionSample> samples = submission.getSamples();
@@ -272,11 +271,11 @@ public class ActivityService {
    *          plate
    * @return all activities of plate's insertion in database
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> allInsertActivities(Plate plate) {
     if (plate == null) {
       return new ArrayList<>();
     }
-    authorizationService.checkAdminRole();
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
@@ -295,11 +294,11 @@ public class ActivityService {
    *          plate
    * @return all activities of plate's wells updates in database
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> allUpdateWellActivities(Plate plate) {
     if (plate == null) {
       return new ArrayList<>();
     }
-    authorizationService.checkAdminRole();
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
@@ -320,11 +319,11 @@ public class ActivityService {
    *          plate
    * @return treatment activities
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> allTreatmentActivities(Plate plate) {
     if (plate == null) {
       return new ArrayList<>();
     }
-    authorizationService.checkAdminRole();
 
     final List<Activity> activities = new ArrayList<>();
     JPAQuery<Activity> query = queryFactory.select(activity);
@@ -350,11 +349,11 @@ public class ActivityService {
    *          plate
    * @return MS analysis activities
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> allMsAnalysisActivities(Plate plate) {
     if (plate == null) {
       return new ArrayList<>();
     }
-    authorizationService.checkAdminRole();
 
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
@@ -380,11 +379,11 @@ public class ActivityService {
    *          user's locale
    * @return description of activity
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public String description(Activity activity, Locale locale) {
     if (activity == null || locale == null) {
       return null;
     }
-    authorizationService.checkAdminRole();
 
     MessageResource resources = new MessageResource(ActivityService.class, locale);
     StringBuilder builder = new StringBuilder();

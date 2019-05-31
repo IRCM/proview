@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.test.config.ShiroTestExecutionListener.REMEMBER_ME_COOKIE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -37,6 +36,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 public class MenuTest extends MenuPageObject {
+  private static final String REMEMBER_ME_COOKIE_NAME = "remember-me";
+
   @Test
   @WithSubject
   public void submission() throws Throwable {

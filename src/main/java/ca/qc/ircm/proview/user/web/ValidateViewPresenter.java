@@ -28,6 +28,7 @@ import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserFilter;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.proview.web.MainView;
@@ -127,10 +128,11 @@ public class ValidateViewPresenter {
   private List<User> searchUsers() {
     UserFilter filter = new UserFilter();
     filter.valid = false;
-    if (!authorizationService.hasAdminRole()) {
-      filter.laboratory = authorizationService.getCurrentUser().getLaboratory();
+    if (authorizationService.hasRole(UserRole.ADMIN)) {
+      return userService.all(filter);
+    } else {
+      return userService.all(filter, authorizationService.getCurrentUser().getLaboratory());
     }
-    return userService.all(filter);
   }
 
   private Button validateButton(User user) {

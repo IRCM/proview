@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -55,6 +56,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -140,7 +142,7 @@ public class SubmissionViewPresenterTest {
   public void enter_NoSubmission_ReadOnly() {
     presenter.enter("");
 
-    verify(submissionService, never()).get(any());
+    verify(submissionService, never()).get(any(Long.class));
     verify(view.submissionForm, never()).setValue(any());
     verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
@@ -149,8 +151,8 @@ public class SubmissionViewPresenterTest {
 
   @Test
   public void enter_Submission() {
-    when(submissionService.get(any())).thenReturn(submission);
-    when(authorizationService.hasSubmissionWritePermission(any())).thenReturn(true);
+    when(submissionService.get(any(Long.class))).thenReturn(submission);
+    when(authorizationService.hasPermission(any(), eq(BasePermission.WRITE))).thenReturn(true);
 
     presenter.enter("1");
 
@@ -163,8 +165,8 @@ public class SubmissionViewPresenterTest {
 
   @Test
   public void enter_Submission_ReadOnly() {
-    when(submissionService.get(any())).thenReturn(submission);
-    when(authorizationService.hasSubmissionWritePermission(any())).thenReturn(false);
+    when(submissionService.get(any(Long.class))).thenReturn(submission);
+    when(authorizationService.hasPermission(any(), eq(BasePermission.WRITE))).thenReturn(false);
 
     presenter.enter("1");
 
@@ -179,7 +181,7 @@ public class SubmissionViewPresenterTest {
   public void enter_InvalidSubmission() {
     presenter.enter("a");
 
-    verify(submissionService, never()).get(any());
+    verify(submissionService, never()).get(any(Long.class));
     verify(view.submissionForm, never()).setValue(any());
     verify(view.submissionForm, atLeastOnce()).setReadOnly(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());

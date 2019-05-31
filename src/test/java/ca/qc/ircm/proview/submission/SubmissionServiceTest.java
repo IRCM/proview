@@ -42,6 +42,7 @@ import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
@@ -63,6 +64,7 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.utils.MessageResource;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -93,11 +95,19 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser
 public class SubmissionServiceTest extends AbstractServiceTestCase {
+  private static final String READ = "read";
+  private static final String WRITE = "write";
   @Inject
   private SubmissionService service;
   @Inject
@@ -110,6 +120,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private LaboratoryRepository laboratoryRepository;
   @Inject
   private TubeRepository tubeRepository;
+  @Inject
+  private PlateRepository plateRepository;
   @MockBean
   private SubmissionActivityService submissionActivityService;
   @MockBean
@@ -118,6 +130,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private EmailService emailService;
   @MockBean
   private AuthorizationService authorizationService;
+  @MockBean
+  private PermissionEvaluator permissionEvaluator;
   @MockBean
   private PricingEvaluator pricingEvaluator;
   @Mock
@@ -142,6 +156,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user = userRepository.findOne(4L);
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(emailService.htmlEmail()).thenReturn(email);
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
     optionalActivity = Optional.of(activity);
   }
 
@@ -158,7 +173,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void get() throws Throwable {
     Submission submission = service.get(1L);
 
-    verify(authorizationService).checkSubmissionReadPermission(submission);
+    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(READ));
     assertEquals((Long) 1L, submission.getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("Human", submission.getTaxonomy());
@@ -236,7 +251,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void get_33() throws Throwable {
     Submission submission = service.get(33L);
 
-    verify(authorizationService).checkSubmissionReadPermission(submission);
+    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(READ));
     assertEquals((Long) 33L, submission.getId());
     assertEquals(Service.SMALL_MOLECULE, submission.getService());
     assertEquals(null, submission.getTaxonomy());
@@ -314,8 +329,35 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_Null() throws Throwable {
-    Submission submission = service.get(null);
+  public void get_NullId() throws Throwable {
+    Submission submission = service.get((Long) null);
+
+    assertNull(submission);
+  }
+
+  @Test
+  public void get_Plate() throws Throwable {
+    Plate plate = plateRepository.findOne(123L);
+
+    Submission submission = service.get(plate);
+
+    assertEquals((Long) 163L, submission.getId());
+    verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
+  }
+
+  @Test
+  public void get_PlateNotSubmision() throws Throwable {
+    Plate plate = plateRepository.findOne(26L);
+
+    Submission submission = service.get(plate);
+
+    assertNull(submission);
+    verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
+  }
+
+  @Test
+  public void get_NullPlate() throws Throwable {
+    Submission submission = service.get((Plate) null);
 
     assertNull(submission);
   }
@@ -326,9 +368,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    List<Submission> submissions = service.all();
+    List<Submission> submissions = service.all(null);
 
-    verify(authorizationService).checkUserRole();
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
     assertFalse(find(submissions, 34).isPresent());
@@ -360,9 +401,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
-    List<Submission> submissions = service.all();
+    List<Submission> submissions = service.all(null);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(3, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
@@ -374,12 +414,11 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
-    when(authorizationService.hasLaboratoryManagerPermission(any(Laboratory.class)))
-        .thenReturn(true);
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
 
-    List<Submission> submissions = service.all();
+    List<Submission> submissions = service.all(null);
 
-    verify(authorizationService).checkUserRole();
+    verify(authorizationService).hasPermission(user.getLaboratory(), BasePermission.WRITE);
     assertEquals(18, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
@@ -394,11 +433,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authorizationService.getCurrentUser()).thenReturn(user);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
 
-    List<Submission> submissions = service.all();
+    List<Submission> submissions = service.all(null);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(20, submissions.size());
     assertTrue(find(submissions, 1).isPresent());
     assertTrue(find(submissions, 32).isPresent());
@@ -418,7 +456,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     verify(filter).predicate();
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
@@ -435,7 +472,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertTrue(find(submissions, 32).isPresent());
     assertFalse(find(submissions, 33).isPresent());
     assertFalse(find(submissions, 34).isPresent());
@@ -453,7 +489,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(3, submissions.size());
     assertTrue(find(submissions, 148).isPresent());
     assertTrue(find(submissions, 149).isPresent());
@@ -473,7 +508,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(3, submissions.size());
     assertTrue(find(submissions, 149).isPresent());
     assertTrue(find(submissions, 150).isPresent());
@@ -490,7 +524,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals((Long) 33L, submissions.get(0).getId());
     assertEquals((Long) 32L, submissions.get(1).getId());
     assertEquals((Long) 1L, submissions.get(2).getId());
@@ -507,7 +540,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals((Long) 32L, submissions.get(0).getId());
     assertEquals((Long) 33L, submissions.get(1).getId());
     assertEquals((Long) 1L, submissions.get(2).getId());
@@ -524,7 +556,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals((Long) 33L, submissions.get(0).getId());
     assertEquals((Long) 32L, submissions.get(1).getId());
     assertEquals((Long) 1L, submissions.get(2).getId());
@@ -541,7 +572,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals((Long) 1L, submissions.get(0).getId());
     assertEquals((Long) 32L, submissions.get(1).getId());
     assertEquals((Long) 33L, submissions.get(2).getId());
@@ -555,10 +585,18 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(null);
 
-    verify(authorizationService).checkUserRole();
     assertTrue(find(submissions, 32).isPresent());
     assertTrue(find(submissions, 33).isPresent());
     assertFalse(find(submissions, 34).isPresent());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void all_AccessDenied() {
+    SubmissionFilter filter = mock(SubmissionFilter.class);
+    when(filter.predicate()).thenReturn(submission.isNotNull());
+
+    service.all(filter);
   }
 
   @Test
@@ -571,7 +609,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(filter);
 
-    verify(authorizationService).checkUserRole();
     verify(filter).predicate();
     assertEquals(3, count);
   }
@@ -586,7 +623,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(1, count);
   }
 
@@ -601,7 +637,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(15, count);
   }
 
@@ -618,7 +653,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(filter);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(10, count);
   }
 
@@ -630,8 +664,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     int count = service.count(null);
 
-    verify(authorizationService).checkUserRole();
     assertEquals(3, count);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void count_AccessDenied() {
+    SubmissionFilter filter = mock(SubmissionFilter.class);
+    when(filter.predicate()).thenReturn(submission.isNotNull());
+
+    service.count(filter);
   }
 
   private Submission submissionForPrint(Service service) {
@@ -1756,7 +1798,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
@@ -1898,7 +1939,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
@@ -2050,7 +2090,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
@@ -2191,7 +2230,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
@@ -2317,7 +2355,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.insert(submission);
 
     repository.flush();
-    verify(authorizationService).checkUserRole();
     verify(submissionActivityService).insert(any(Submission.class));
     verify(activityService).insert(activity);
     // Validate email that is sent to proteomic users.
@@ -2338,6 +2375,67 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(htmlContent.contains("???"));
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void insert_AccessDenied() {
+    SubmissionSample sample = new SubmissionSample();
+    sample.setName("unit_test_gel_01");
+    sample.setNumberProtein(10);
+    sample.setMolecularWeight(120.0);
+    List<SubmissionSample> samples = new LinkedList<>();
+    samples.add(sample);
+    when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
+    Submission submission = new Submission();
+    submission.setService(Service.LC_MS_MS);
+    submission.setTaxonomy("human");
+    submission.setExperiment("experiment");
+    submission.setGoal("goal");
+    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setSource(MassDetectionInstrumentSource.ESI);
+    submission.setInjectionType(InjectionType.LC_MS);
+    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
+    submission.setOtherProteolyticDigestionMethod("other digestion");
+    submission.setProteinIdentification(ProteinIdentification.NCBINR);
+    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setEnrichmentType(EnrichmentType.PHOSPHOPEPTIDES);
+    submission.setOtherEnrichmentType("other enrichment");
+    submission.setProtein("protein");
+    submission.setPostTranslationModification("my_modification");
+    submission.setMudPitFraction(MudPitFraction.EIGHT);
+    submission.setProteinContent(ProteinContent.MEDIUM);
+    submission.setSeparation(GelSeparation.ONE_DIMENSION);
+    submission.setThickness(GelThickness.ONE);
+    submission.setColoration(GelColoration.COOMASSIE);
+    submission.setOtherColoration("other coloration");
+    submission.setDevelopmentTime("5.0 min");
+    submission.setDecoloration(true);
+    submission.setWeightMarkerQuantity(20.0);
+    submission.setProteinQuantity("20.0 μg");
+    submission.setComment("comment");
+    submission.setSamples(samples);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename("my_file.docx");
+    byte[] fileContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      fileContent[i] = (byte) random.nextInt();
+    }
+    file.setContent(fileContent);
+    List<SubmissionFile> files = new LinkedList<>();
+    files.add(file);
+    SubmissionFile gelImage = new SubmissionFile();
+    gelImage.setFilename("my_gel_image.jpg");
+    byte[] imageContent = new byte[512];
+    for (int i = 0; i < 512; i++) {
+      imageContent[i] = (byte) random.nextInt();
+    }
+    gelImage.setContent(imageContent);
+    files.add(gelImage);
+    submission.setFiles(files);
+
+    service.insert(submission);
+  }
+
   @Test
   public void update() throws Exception {
     Submission submission = repository.findOne(36L);
@@ -2356,7 +2454,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.update(submission, null);
 
     repository.flush();
-    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
     submission = repository.findOne(submission.getId());
@@ -2438,7 +2536,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.update(submission, null);
 
     repository.flush();
-    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
     submission = repository.findOne(submission.getId());
@@ -2524,7 +2622,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.update(submission, null);
 
     repository.flush();
-    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
     submission = repository.findOne(submission.getId());
@@ -2616,7 +2714,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.update(submission, null);
 
     repository.flush();
-    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
     submission = repository.findOne(submission.getId());
@@ -2783,14 +2881,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setUser(user);
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
     service.update(submission, "unit_test");
 
     repository.flush();
-    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
     submission = repository.findOne(1L);
@@ -2865,14 +2963,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       detach(sa.getOriginalContainer());
     });
     submission.getSamples().add(sample);
-    when(authorizationService.hasAdminRole()).thenReturn(true);
+    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
 
     service.update(submission, "unit_test");
 
     repository.flush();
-    verify(authorizationService).checkSubmissionWritePermission(submission);
+    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
     submission = repository.findOne(submission.getId());
@@ -2913,6 +3011,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void hide() throws Exception {
     Submission submission = repository.findOne(147L);
     detach(submission);
@@ -2921,14 +3020,34 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.hide(submission);
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(activityService).insert(activity);
     submission = repository.findOne(submission.getId());
     verify(submissionActivityService).update(submission, null);
     assertTrue(submission.isHidden());
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void hide_AccessDenied_Anonymous() throws Exception {
+    Submission submission = repository.findOne(147L);
+    detach(submission);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+
+    service.hide(submission);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void hide_AccessDenied() throws Exception {
+    Submission submission = repository.findOne(147L);
+    detach(submission);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+
+    service.hide(submission);
+  }
+
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   @SuppressWarnings("unchecked")
   public void show() throws Exception {
     Submission submission = repository.findOne(36L);
@@ -2939,10 +3058,33 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     service.show(submission);
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(activityService).insert(activity);
     submission = repository.findOne(submission.getId());
     verify(submissionActivityService).update(submission, null);
     assertFalse(submission.isHidden());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  @SuppressWarnings("unchecked")
+  public void show_AccessDenied_Anonymous() throws Exception {
+    Submission submission = repository.findOne(36L);
+    detach(submission);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
+        Optional.empty());
+
+    service.show(submission);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @SuppressWarnings("unchecked")
+  public void show_AccessDenied() throws Exception {
+    Submission submission = repository.findOne(36L);
+    detach(submission);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
+        Optional.empty());
+
+    service.show(submission);
   }
 }

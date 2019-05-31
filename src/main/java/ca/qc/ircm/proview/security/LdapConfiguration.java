@@ -17,13 +17,43 @@
 
 package ca.qc.ircm.proview.security;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
 /**
  * LDAP configuration.
  */
-public interface LdapConfiguration {
-  public boolean enabled();
+@Configuration
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix = LdapConfiguration.PREFIX)
+public class LdapConfiguration {
+  public static final String PREFIX = "ldap";
+  private boolean enabled;
+  private String idAttribute;
+  private String mailAttribute;
 
-  public String idAttribute();
+  public String getIdAttribute() {
+    return idAttribute;
+  }
 
-  public String mailAttribute();
+  public void setIdAttribute(String idAttribute) {
+    this.idAttribute = idAttribute;
+  }
+
+  public String getMailAttribute() {
+    return mailAttribute;
+  }
+
+  public void setMailAttribute(String mailAttribute) {
+    this.mailAttribute = mailAttribute;
+  }
+
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
 }

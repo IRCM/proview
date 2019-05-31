@@ -19,12 +19,17 @@ package ca.qc.ircm.proview.test.config;
 
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.web.MainUi;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.Page;
+import com.vaadin.server.VaadinServletRequest;
+import com.vaadin.server.VaadinServletResponse;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.ConnectorTracker;
-import com.vaadin.ui.UI;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.mockito.Mock;
 
@@ -33,13 +38,23 @@ import org.mockito.Mock;
  */
 public abstract class AbstractComponentTestCase {
   @Mock
-  protected UI ui;
+  protected MainUi ui;
   @Mock
   protected ConnectorTracker connectorTracker;
   @Mock
   protected VaadinSession vaadinSession;
   @Mock
   protected Navigator navigator;
+  @Mock
+  protected Page page;
+  @Mock
+  protected VaadinServletRequest vaadinServletRequest;
+  @Mock
+  protected HttpServletRequest httpServletRequest;
+  @Mock
+  protected VaadinServletResponse vaadinServletResponse;
+  @Mock
+  protected HttpServletResponse httpServletResponse;
   @PersistenceContext
   private EntityManager entityManager;
 
@@ -51,7 +66,12 @@ public abstract class AbstractComponentTestCase {
     when(ui.getConnectorTracker()).thenReturn(connectorTracker);
     when(ui.getSession()).thenReturn(vaadinSession);
     when(ui.getNavigator()).thenReturn(navigator);
+    when(ui.getPage()).thenReturn(page);
+    when(ui.getVaadinServletRequest()).thenReturn(vaadinServletRequest);
+    when(ui.getVaadinServletResponse()).thenReturn(vaadinServletResponse);
     when(vaadinSession.hasLock()).thenReturn(true);
+    when(vaadinServletRequest.getHttpServletRequest()).thenReturn(httpServletRequest);
+    when(vaadinServletResponse.getHttpServletResponse()).thenReturn(httpServletResponse);
   }
 
   protected void detach(Object... entities) {

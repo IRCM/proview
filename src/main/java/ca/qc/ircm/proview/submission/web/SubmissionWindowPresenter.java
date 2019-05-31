@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -101,7 +102,7 @@ public class SubmissionWindowPresenter {
     logger.debug("Submission window for submission {}", submission);
     MessageResource resources = window.getResources();
     window.setCaption(resources.message(TITLE, submission.getExperiment()));
-    design.update.setVisible(authorizationService.hasSubmissionWritePermission(submission));
+    design.update.setVisible(authorizationService.hasPermission(submission, BasePermission.WRITE));
     design.update.addClickListener(e -> {
       window.navigateTo(SubmissionView.VIEW_NAME, String.valueOf(submission.getId()));
       window.close();

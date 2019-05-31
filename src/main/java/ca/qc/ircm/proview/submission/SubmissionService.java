@@ -17,9 +17,12 @@
 
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
@@ -27,6 +30,7 @@ import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
+import ca.qc.ircm.proview.plate.QPlate;
 import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -39,6 +43,7 @@ import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.OrderSpecifier;
@@ -58,6 +63,9 @@ import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -104,25 +112,35 @@ public class SubmissionService {
    *          database identifier of submission
    * @return submission
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public Submission get(Long id) {
     if (id == null) {
       return null;
     }
 
-    Submission submission = repository.findOne(id);
-    authorizationService.checkSubmissionReadPermission(submission);
-    return submission;
+    return repository.findOne(id);
   }
 
   /**
-   * Returns current user's submissions.<br>
-   * For managers, returns all submissions made a user of his laboratory<br>
-   * For administrators, returns all submissions.
+   * Selects submission related to this plate.
    *
-   * @return current user's submissions or more for managers / administrators
+   * @param plate
+   *          plate
+   * @return submission related to this plate
    */
-  public List<Submission> all() {
-    return all(null);
+  @PreAuthorize("hasPermission(#plate, 'read')")
+  public Submission get(Plate plate) {
+    if (plate == null) {
+      return null;
+    }
+
+    QPlate qplate = QPlate.plate;
+    JPAQuery<Submission> query = queryFactory.select(submissionSample.submission);
+    query.from(qplate, submissionSample);
+    query.where(qplate.eq(plate));
+    query.where(qplate.submission.eq(true));
+    query.where(submissionSample.originalContainer.in(qplate.wells));
+    return query.fetchFirst();
   }
 
   /**
@@ -134,9 +152,8 @@ public class SubmissionService {
    *          filter submissions to return
    * @return current user's submissions or more for managers / administrators
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public List<Submission> all(SubmissionFilter filter) {
-    authorizationService.checkUserRole();
-
     JPAQuery<Submission> query = queryFactory.select(submission);
     initializeAllQuery(query);
     if (filter != null) {
@@ -163,9 +180,8 @@ public class SubmissionService {
    *          filter submissions to return
    * @return current user's submissions or more for managers / administrators
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public int count(SubmissionFilter filter) {
-    authorizationService.checkUserRole();
-
     JPAQuery<Long> query = queryFactory.select(submission.id.countDistinct());
     initializeAllQuery(query);
     if (filter != null) {
@@ -179,9 +195,9 @@ public class SubmissionService {
     final Laboratory currentLaboratory = currentUser.getLaboratory();
 
     query.from(submission);
-    if (!authorizationService.hasAdminRole()) {
+    if (!authorizationService.hasRole(UserRole.ADMIN)) {
       query.where(submission.hidden.eq(false));
-      if (authorizationService.hasLaboratoryManagerPermission(currentLaboratory)) {
+      if (authorizationService.hasPermission(currentLaboratory, BasePermission.WRITE)) {
         query.where(submission.laboratory.eq(currentLaboratory));
       } else {
         query.where(submission.user.eq(currentUser));
@@ -223,8 +239,8 @@ public class SubmissionService {
       }
     }
 
-    String templateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Print.html";
+    String templateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Print.html";
     String content = emailTemplateEngine.process(templateLocation, context);
     return content;
   }
@@ -236,8 +252,8 @@ public class SubmissionService {
    * @param submission
    *          submission
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public void insert(Submission submission) {
-    authorizationService.checkUserRole();
     User user = authorizationService.getCurrentUser();
     Laboratory laboratory = user.getLaboratory();
 
@@ -306,8 +322,8 @@ public class SubmissionService {
   }
 
   private List<User> adminUsers() {
-    BooleanExpression predicate = user.admin.eq(true).and(user.valid.eq(true))
-        .and(user.active.eq(true)).and(user.id.ne(1L));
+    BooleanExpression predicate =
+        user.admin.eq(true).and(user.valid.eq(true)).and(user.active.eq(true)).and(user.id.ne(1L));
     return Lists.newArrayList(userRepository.findAll(predicate));
   }
 
@@ -335,11 +351,11 @@ public class SubmissionService {
     final List<User> proteomicUsers = adminUsers();
     MimeMessageHelper email = emailService.htmlEmail();
     email.setSubject(resource.message("subject." + type.name()));
-    String htmlTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Email.html";
+    String htmlTemplateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Email.txt";
+    String textTemplateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
     for (User proteomicUser : proteomicUsers) {
@@ -359,10 +375,10 @@ public class SubmissionService {
    * @throws IllegalArgumentException
    *           samples don't all have {@link SampleStatus#WAITING} status
    */
+  @PreAuthorize("hasPermission(#submission, 'write')")
   public void update(Submission submission, String explanation) throws IllegalArgumentException {
     validateUpdateSubmission(submission);
-    authorizationService.checkSubmissionWritePermission(submission);
-    if (!authorizationService.hasAdminRole()
+    if (!authorizationService.hasRole(UserRole.ADMIN)
         && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
       Submission userSupplied = submission;
       submission = repository.findOne(submission.getId());
@@ -374,8 +390,8 @@ public class SubmissionService {
           tube.setName(userSupplied.getSamples().get(i).getOriginalContainer().getName());
         } else {
           Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
-          Plate userSuppliedPlate = ((Well) userSupplied.getSamples().get(i).getOriginalContainer())
-              .getPlate();
+          Plate userSuppliedPlate =
+              ((Well) userSupplied.getSamples().get(i).getOriginalContainer()).getPlate();
           plate.setName(userSuppliedPlate.getName());
         }
       }
@@ -388,7 +404,7 @@ public class SubmissionService {
       activityService.insert(activity.get());
       repository.flush();
 
-      if (!authorizationService.hasAdminRole()) {
+      if (!authorizationService.hasRole(UserRole.ADMIN)) {
         // Send email to admin users to inform them of the changes in submission.
         try {
           this.sendSubmissionToAdmins(submission, ActionType.UPDATE);
@@ -400,7 +416,7 @@ public class SubmissionService {
   }
 
   private void validateUpdateSubmission(Submission submission) {
-    if (!authorizationService.hasAdminRole()) {
+    if (!authorizationService.hasRole(UserRole.ADMIN)) {
       Submission old = repository.findOne(submission.getId());
       if (!old.getUser().getId().equals(submission.getUser().getId())) {
         throw new IllegalArgumentException("Cannot update submission's owner");
@@ -484,9 +500,8 @@ public class SubmissionService {
    * @param submission
    *          submission
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void hide(Submission submission) {
-    authorizationService.checkAdminRole();
-
     submission = repository.findOne(submission.getId());
     submission.setHidden(true);
     repository.save(submission);
@@ -503,9 +518,8 @@ public class SubmissionService {
    * @param submission
    *          submission
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void show(Submission submission) {
-    authorizationService.checkAdminRole();
-
     submission = repository.findOne(submission.getId());
     submission.setHidden(false);
     repository.save(submission);

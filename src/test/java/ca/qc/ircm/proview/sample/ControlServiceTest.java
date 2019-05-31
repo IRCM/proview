@@ -29,10 +29,10 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.tube.Tube;
+import ca.qc.ircm.proview.user.UserRole;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,10 +44,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
+@WithMockUser
 public class ControlServiceTest extends AbstractServiceTestCase {
   @Inject
   private ControlService service;
@@ -57,8 +61,6 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   private SampleActivityService sampleActivityService;
   @MockBean
   private ActivityService activityService;
-  @MockBean
-  private AuthorizationService authorizationService;
   @Mock
   private Activity activity;
   @Captor
@@ -76,10 +78,10 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void get_Id() {
     Control control = service.get(444L);
 
-    verify(authorizationService).checkAdminRole();
     assertEquals((Long) 444L, control.getId());
     assertEquals("control_01", control.getName());
     assertEquals(ControlType.NEGATIVE_CONTROL, control.getControlType());
@@ -91,27 +93,51 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void get_NullId() {
     Control control = service.get(null);
 
     assertNull(control);
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void get_AccessDenied_Anonymous() {
+    service.get(444L);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void get_AccessDenied() {
+    service.get(444L);
+  }
+
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void all() {
     List<Control> controls = service.all();
 
-    verify(authorizationService).checkAdminRole();
     assertEquals(2, controls.size());
     assertTrue(find(controls, 444).isPresent());
     assertTrue(find(controls, 448).isPresent());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void all_AccessDenied_Anonymous() {
+    service.all();
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void all_AccessDenied() {
+    service.all();
   }
 
   @Test
   public void exists_True() throws Throwable {
     boolean exists = service.exists("control_01");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(true, exists);
   }
 
@@ -119,7 +145,6 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   public void exists_False() throws Throwable {
     boolean exists = service.exists("control_AB");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
   }
 
@@ -127,7 +152,6 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   public void exists_SubmissionSampleName() throws Throwable {
     boolean exists = service.exists("CAP_20111013_05");
 
-    verify(authorizationService).checkUserRole();
     assertEquals(false, exists);
   }
 
@@ -138,7 +162,14 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     assertEquals(false, exists);
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void exists_AccessDenied_Anonymous() {
+    service.exists("control_01");
+  }
+
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void insert() {
     Control control = new Control();
     control.setName("nc_test_000001");
@@ -162,7 +193,6 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     service.insert(control);
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).insertControl(controlCaptor.capture());
     verify(activityService).insert(activity);
     Control testControl = service.get(control.getId());
@@ -201,7 +231,58 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     assertEquals("com2", standard.getComment());
   }
 
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void insert_AccessDenied_Anonymous() {
+    Control control = new Control();
+    control.setName("nc_test_000001");
+    control.setControlType(ControlType.NEGATIVE_CONTROL);
+    control.setType(SampleType.GEL);
+    control.setVolume("20.0 μl");
+    control.setQuantity("12.0 μg");
+    control.setStandards(new ArrayList<>());
+    Standard standard1 = new Standard();
+    standard1.setName("std1");
+    standard1.setQuantity("1 ug");
+    standard1.setComment("com1");
+    control.getStandards().add(standard1);
+    Standard standard2 = new Standard();
+    standard2.setName("std2");
+    standard2.setQuantity("2 ug");
+    standard2.setComment("com2");
+    control.getStandards().add(standard2);
+    when(sampleActivityService.insertControl(any(Control.class))).thenReturn(activity);
+
+    service.insert(control);
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void insert_AccessDenied() {
+    Control control = new Control();
+    control.setName("nc_test_000001");
+    control.setControlType(ControlType.NEGATIVE_CONTROL);
+    control.setType(SampleType.GEL);
+    control.setVolume("20.0 μl");
+    control.setQuantity("12.0 μg");
+    control.setStandards(new ArrayList<>());
+    Standard standard1 = new Standard();
+    standard1.setName("std1");
+    standard1.setQuantity("1 ug");
+    standard1.setComment("com1");
+    control.getStandards().add(standard1);
+    Standard standard2 = new Standard();
+    standard2.setName("std2");
+    standard2.setQuantity("2 ug");
+    standard2.setComment("com2");
+    control.getStandards().add(standard2);
+    when(sampleActivityService.insertControl(any(Control.class))).thenReturn(activity);
+
+    service.insert(control);
+  }
+
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void update() {
     Control control = repository.findOne(444L);
     detach(control);
@@ -216,7 +297,6 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     service.update(control, "test changes");
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     Control test = repository.findOne(control.getId());
@@ -240,6 +320,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void update_AddStandard() {
     Standard standard = new Standard();
     standard.setName("my_new_standard");
@@ -254,7 +335,6 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     service.update(control, "test changes");
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     // Validate new standard.
@@ -276,6 +356,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void update_UpdateStandard() {
     Control control = repository.findOne(448L);
     detach(control);
@@ -290,7 +371,6 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     service.update(control, "test changes");
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     // Validate standard update.
@@ -312,6 +392,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  @WithMockUser(authorities = UserRole.ADMIN)
   public void update_RemoveStandard() {
     Control control = repository.findOne(448L);
     detach(control);
@@ -322,7 +403,6 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     service.update(control, "test changes");
 
     repository.flush();
-    verify(authorizationService).checkAdminRole();
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     // Validate standard deletion.
@@ -333,5 +413,37 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     assertTrue(newSample instanceof Control);
     Control newControl = (Control) newSample;
     assertEquals(0, newControl.getStandards().size());
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithAnonymousUser
+  public void update_AccessDenied_Anonymous() {
+    Control control = repository.findOne(444L);
+    detach(control);
+    control.setName("nc_test_000001");
+    control.setControlType(ControlType.POSITIVE_CONTROL);
+    control.setType(SampleType.SOLUTION);
+    control.setVolume("2.0 μl");
+    control.setQuantity("40 μg");
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    service.update(control, "test changes");
+  }
+
+  @Test(expected = AccessDeniedException.class)
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void update_AccessDenied() {
+    Control control = repository.findOne(444L);
+    detach(control);
+    control.setName("nc_test_000001");
+    control.setControlType(ControlType.POSITIVE_CONTROL);
+    control.setType(SampleType.SOLUTION);
+    control.setVolume("2.0 μl");
+    control.setQuantity("40 μg");
+    when(sampleActivityService.update(any(Sample.class), any(String.class)))
+        .thenReturn(optionalActivity);
+
+    service.update(control, "test changes");
   }
 }

@@ -18,18 +18,17 @@
 package ca.qc.ircm.proview.user;
 
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
-import ca.qc.ircm.proview.cache.CacheFlusher;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.security.HashedPassword;
 import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.utils.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -38,6 +37,10 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
@@ -56,13 +59,11 @@ public class UserService {
   @Inject
   private LaboratoryRepository laboratoryRepository;
   @Inject
-  private AuthenticationService authenticationService;
+  private PasswordEncoder passwordEncoder;
   @Inject
   private EmailService emailService;
   @Inject
   private TemplateEngine emailTemplateEngine;
-  @Inject
-  private CacheFlusher cacheFlusher;
   @Inject
   private ApplicationConfiguration applicationConfiguration;
   @Inject
@@ -78,13 +79,13 @@ public class UserService {
    *          database identifier of user
    * @return user
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public User get(Long id) {
     if (id == null) {
       return null;
     }
 
     User user = repository.findOne(id);
-    authorizationService.checkUserReadPermission(user);
     return user;
   }
 
@@ -95,13 +96,13 @@ public class UserService {
    *          email
    * @return user with email
    */
+  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
   public User get(String email) {
     if (email == null) {
       return null;
     }
 
     User ret = noSecurityGet(email);
-    authorizationService.checkUserReadPermission(ret);
     return ret;
   }
 
@@ -147,21 +148,28 @@ public class UserService {
   }
 
   /**
-   * Returns true if laboratory contains an invalid user, false otherwise. <br>
-   * If laboratory is null, returns true if any user is invalid, false otherwise.
+   * Returns true if any user is invalid, false otherwise.
+   *
+   * @return true if any user is invalid, false otherwise
+   */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
+  public boolean hasInvalid() {
+    return repository.countByValidFalse() > 0;
+  }
+
+  /**
+   * Returns true if laboratory contains an invalid user, false otherwise.
    *
    * @param laboratory
    *          laboratory
    * @return true if laboratory contains an invalid user, false otherwise
    */
+  @PreAuthorize("hasPermission(#laboratory, 'write')")
   public boolean hasInvalid(Laboratory laboratory) {
     if (laboratory == null) {
-      authorizationService.checkAdminRole();
-      return repository.countByValidFalse() > 0;
-    } else {
-      authorizationService.checkLaboratoryManagerPermission(laboratory);
-      return repository.countByValidFalseAndLaboratory(laboratory) > 0;
+      throw new IllegalArgumentException("laboratory parameter cannot be null");
     }
+    return repository.countByValidFalseAndLaboratory(laboratory) > 0;
   }
 
   /**
@@ -177,14 +185,33 @@ public class UserService {
    *          parameters
    * @return all users that match parameters
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<User> all(UserFilter filter) {
     if (filter == null) {
       filter = new UserFilter();
     }
-    if (filter.laboratory != null) {
-      authorizationService.checkLaboratoryManagerPermission(filter.laboratory);
-    } else {
-      authorizationService.checkAdminRole();
+
+    BooleanExpression predicate = user.id.ne(ROBOT_ID);
+    predicate = predicate.and(filter.predicate());
+    return Lists.newArrayList(repository.findAll(predicate));
+  }
+
+  /**
+   * Returns all laboratory's users that match parameters. Only managers can search users with a
+   * laboratory.
+   *
+   * @param filter
+   *          parameters
+   * @param laboratory
+   *          laboratory
+   * @return all laboratory's users that match parameters
+   */
+  @PreAuthorize("hasPermission(#laboratory, 'write')")
+  public List<User> all(UserFilter filter, Laboratory laboratory) {
+    if (filter == null) {
+      filter = new UserFilter();
+    } else if (laboratory == null) {
+      return new ArrayList<>();
     }
 
     BooleanExpression predicate = user.id.ne(ROBOT_ID);
@@ -217,10 +244,10 @@ public class UserService {
   }
 
   private void setUserPassword(User user, String password) {
-    HashedPassword hashedPassword = authenticationService.hashPassword(password);
-    user.setHashedPassword(hashedPassword.getPassword());
-    user.setSalt(hashedPassword.getSalt());
-    user.setPasswordVersion(hashedPassword.getPasswordVersion());
+    String hashedPassword = passwordEncoder.encode(password);
+    user.setHashedPassword(hashedPassword);
+    user.setSalt(null);
+    user.setPasswordVersion(null);
   }
 
   private void registerNewUser(User user, String password, User manager,
@@ -337,11 +364,11 @@ public class UserService {
     }
   }
 
-  private void registerAdmin(User user, String password) {
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
+  protected void registerAdmin(User user, String password) {
     if (!user.isAdmin()) {
       throw new IllegalArgumentException("Laboratory must be admin, use register instead.");
     }
-    authorizationService.checkAdminRole();
 
     final User manager = authorizationService.getCurrentUser();
     setUserPassword(user, password);
@@ -349,8 +376,6 @@ public class UserService {
     user.setActive(true);
     user.setLaboratory(manager.getLaboratory());
     repository.saveAndFlush(user);
-
-    cacheFlusher.flushShiroCache();
 
     logger.info("Admin user {} added to database", user);
   }
@@ -365,8 +390,8 @@ public class UserService {
    * @throws UnauthorizedException
    *           user must match signed user
    */
+  @PreAuthorize("hasPermission(#user, 'write')")
   public void update(User user, String newPassword) {
-    authorizationService.checkUserWritePermission(user);
     if (!user.isValid() && user.isManager()) {
       User before = repository.findOne(user.getId());
       if (!before.isManager()) {
@@ -387,8 +412,8 @@ public class UserService {
       throw new UnmanagedLaboratoryException();
     }
 
-    if (authorizationService.hasManagerRole()) {
-      authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
+    if (authorizationService.hasRole(UserRole.MANAGER)) {
+      authorizationService.hasPermission(user.getLaboratory(), BasePermission.WRITE);
       updateDirectorName(user.getLaboratory(), user);
       laboratoryRepository.save(user.getLaboratory());
     }
@@ -413,14 +438,12 @@ public class UserService {
    * @param webContext
    *          web context used to send email to user
    */
+  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void validate(User user, HomeWebContext webContext) {
     user = repository.findOne(user.getId());
-    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
     user.setValid(true);
     user.setActive(true);
-
-    cacheFlusher.flushShiroCache();
 
     try {
       sendEmailForUserValidation(user, webContext);
@@ -468,14 +491,12 @@ public class UserService {
    * @param user
    *          user
    */
+  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void activate(User user) {
     user = repository.findOne(user.getId());
-    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
     user.setActive(true);
     repository.save(user);
-
-    cacheFlusher.flushShiroCache();
 
     logger.info("User {} was activated", user);
   }
@@ -486,8 +507,8 @@ public class UserService {
    * @param user
    *          user
    */
+  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void deactivate(User user) {
-    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
     if (user.getId() == ROBOT_ID) {
       throw new IllegalArgumentException("Robot cannot be deactivated");
     }
@@ -495,8 +516,6 @@ public class UserService {
     user = repository.findOne(user.getId());
     user.setActive(false);
     repository.save(user);
-
-    cacheFlusher.flushShiroCache();
 
     logger.info("User {} was deactivate", user);
   }
@@ -507,9 +526,9 @@ public class UserService {
    * @param user
    *          user to delete
    */
+  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void delete(User user) {
     user = repository.findOne(user.getId());
-    authorizationService.checkLaboratoryManagerPermission(user.getLaboratory());
 
     if (user.isValid()) {
       throw new DeleteValidUserException(user);

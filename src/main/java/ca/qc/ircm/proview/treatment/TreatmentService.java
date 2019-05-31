@@ -18,14 +18,15 @@
 package ca.qc.ircm.proview.treatment;
 
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TreatmentService {
   @Inject
   private TreatmentRepository repository;
-  @Inject
-  private AuthorizationService authorizationService;
 
   protected TreatmentService() {
   }
@@ -50,11 +49,11 @@ public class TreatmentService {
    *          database identifier of treatment
    * @return treatment
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Treatment get(Long id) {
     if (id == null) {
       return null;
     }
-    authorizationService.checkAdminRole();
 
     return repository.findOne(id);
   }
@@ -66,11 +65,11 @@ public class TreatmentService {
    *          submission
    * @return all treatments where one of the submission's samples was treated
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Treatment> all(Submission submission) {
     if (submission == null) {
       return new ArrayList<>();
     }
-    authorizationService.checkAdminRole();
 
     BooleanExpression predicate = treatment.treatedSamples.any().sample.in(submission.getSamples())
         .and(treatment.deleted.eq(false));

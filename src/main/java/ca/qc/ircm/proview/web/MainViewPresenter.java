@@ -63,7 +63,7 @@ public class MainViewPresenter {
    *          view parameters
    */
   public void enter(String parameters) {
-    if (authorizationService.isUser()) {
+    if (!authorizationService.isAnonymous()) {
       view.navigateTo(SubmissionsView.VIEW_NAME);
     } else {
       view.navigateTo(SigninView.VIEW_NAME);

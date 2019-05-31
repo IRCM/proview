@@ -17,15 +17,18 @@
 
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.USER;
+
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeRepository;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +46,6 @@ public class ControlService {
   private SampleActivityService sampleActivityService;
   @Inject
   private ActivityService activityService;
-  @Inject
-  private AuthorizationService authorizationService;
 
   protected ControlService() {
   }
@@ -56,11 +57,11 @@ public class ControlService {
    *          Database identifier of control
    * @return control in database
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Control get(Long id) {
     if (id == null) {
       return null;
     }
-    authorizationService.checkAdminRole();
 
     return repository.findOne(id);
   }
@@ -70,9 +71,8 @@ public class ControlService {
    *
    * @return all controls
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Control> all() {
-    authorizationService.checkAdminRole();
-
     return repository.findAll();
   }
 
@@ -83,11 +83,11 @@ public class ControlService {
    *          name of control
    * @return true if a control with this name is already in database, false otherwise
    */
+  @PreAuthorize("hasAuthority('" + USER + "')")
   public boolean exists(String name) {
     if (name == null) {
       return false;
     }
-    authorizationService.checkUserRole();
 
     return repository.countByName(name) > 0;
   }
@@ -98,11 +98,8 @@ public class ControlService {
    * @param control
    *          control
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void insert(Control control) {
-    authorizationService.checkAdminRole();
-
-    //repository.save(control);
-
     // Insert tube.
     Tube tube = new Tube();
     tube.setSample(control);
@@ -125,9 +122,8 @@ public class ControlService {
    * @param explanation
    *          explanation for changes made to sample
    */
+  @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void update(Control control, String explanation) {
-    authorizationService.checkAdminRole();
-
     // Log changes.
     Optional<Activity> activity = sampleActivityService.update(control, explanation);
     if (activity.isPresent()) {

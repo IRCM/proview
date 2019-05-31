@@ -22,10 +22,9 @@ import static ca.qc.ircm.proview.user.web.UserViewPresenter.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import ca.qc.ircm.proview.security.PasswordVersion;
-import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.test.config.WithSubject;
@@ -42,11 +41,10 @@ import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.ui.Notification;
 import java.util.Locale;
 import javax.inject.Inject;
-import org.apache.shiro.codec.Hex;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -54,7 +52,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @WithSubject(userId = 10)
 public class UserViewTest extends UserPageObject {
   @Inject
-  private SecurityConfiguration securityConfiguration;
+  private PasswordEncoder passwordEncoder;
   @Inject
   private JPAQueryFactory jpaQueryFactory;
   @Value("${spring.application.name}")
@@ -194,12 +192,9 @@ public class UserViewTest extends UserPageObject {
     assertEquals(name, user.getName());
     Laboratory laboratory = user.getLaboratory();
     assertEquals((Long) 2L, laboratory.getId());
-    PasswordVersion passwordVersion = securityConfiguration.getPasswordVersion();
-    assertNotNull(user.getSalt());
-    SimpleHash hash = new SimpleHash(passwordVersion.getAlgorithm(), password,
-        Hex.decode(user.getSalt()), passwordVersion.getIterations());
-    assertEquals(hash.toHex(), user.getHashedPassword());
-    assertEquals((Integer) passwordVersion.getVersion(), user.getPasswordVersion());
+    assertEquals(passwordEncoder.encode(password), user.getHashedPassword());
+    assertNull(user.getSalt());
+    assertNull(user.getPasswordVersion());
     assertNotNull(user.getLocale());
     Address userAddress = user.getAddress();
     assertEquals(addressLine, userAddress.getLine());

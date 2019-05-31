@@ -19,22 +19,22 @@ package ca.qc.ircm.proview.web;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.plate.web.PlatesView;
-import ca.qc.ircm.proview.security.AuthenticationService;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
+import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.web.SigninView;
-import ca.qc.ircm.proview.user.web.SignoutFilter;
 import ca.qc.ircm.proview.user.web.UserView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.UI;
 import java.util.Locale;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -69,16 +69,8 @@ public class MenuPresenter {
   private MenuItem signin;
   @Inject
   private AuthorizationService authorizationService;
-  @Inject
-  private AuthenticationService authenticationService;
 
   protected MenuPresenter() {
-  }
-
-  protected MenuPresenter(AuthorizationService authorizationService,
-      AuthenticationService authenticationService) {
-    this.authorizationService = authorizationService;
-    this.authenticationService = authenticationService;
   }
 
   /**
@@ -132,14 +124,16 @@ public class MenuPresenter {
   }
 
   private void updateVisible() {
-    submission.setVisible(authorizationService.hasUserRole());
-    plate.setVisible(authorizationService.hasAdminRole());
-    profile.setVisible(authorizationService.isUser());
-    signout.setVisible(authorizationService.isUser());
-    users.setVisible(authorizationService.hasManagerRole() || authorizationService.hasAdminRole());
-    guidelines.setVisible(authorizationService.hasUserRole());
-    signin.setVisible(!authorizationService.isUser());
-    stopSignas.setVisible(authorizationService.isRunAs());
+    submission.setVisible(authorizationService.hasRole(UserRole.USER));
+    plate.setVisible(authorizationService.hasRole(UserRole.ADMIN));
+    profile.setVisible(!authorizationService.isAnonymous());
+    signout.setVisible(!authorizationService.isAnonymous());
+    users.setVisible(authorizationService.hasRole(UserRole.MANAGER)
+        || authorizationService.hasRole(UserRole.ADMIN));
+    guidelines.setVisible(authorizationService.hasRole(UserRole.USER));
+    signin.setVisible(authorizationService.isAnonymous());
+    stopSignas
+        .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
   }
 
   private void changeView(String viewName) {
@@ -149,18 +143,12 @@ public class MenuPresenter {
 
   private void stopSignas() {
     logger.debug("Stop sign as user {}", authorizationService.getCurrentUser());
-    authenticationService.stopRunAs();
-    changeView(MainView.VIEW_NAME);
+    view.getUI().getPage().setLocation(WebSecurityConfiguration.SWITCH_USER_EXIT_URL);
   }
 
   private void signout() {
     logger.debug("Signout user {}", authorizationService.getCurrentUser());
-    UI ui = view.getUI();
-    if (ui instanceof MainUi) {
-      String signoutUrl = ((MainUi) ui).getServletContext().getContextPath();
-      signoutUrl += SignoutFilter.SIGNOUT_URL;
-      ui.getPage().setLocation(signoutUrl);
-    }
+    view.getUI().getPage().setLocation(WebSecurityConfiguration.SIGNOUT_URL);
   }
 
   private void changeLanguage() {
