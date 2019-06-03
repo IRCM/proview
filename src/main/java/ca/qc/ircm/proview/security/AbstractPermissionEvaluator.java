@@ -45,7 +45,7 @@ public abstract class AbstractPermissionEvaluator implements PermissionEvaluator
         return null;
       }
 
-      return userRepository.findOne(userId);
+      return userRepository.findById(userId).orElse(null);
     } else {
       return null;
     }

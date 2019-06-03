@@ -120,7 +120,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void all_147() {
-    Submission submission = submissionRepository.findOne(147L);
+    Submission submission = submissionRepository.findById(147L).orElse(null);
 
     List<Treatment> treatments = treatmentService.all(submission);
 
@@ -131,7 +131,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void all_149() {
-    Submission submission = submissionRepository.findOne(149L);
+    Submission submission = submissionRepository.findById(149L).orElse(null);
 
     List<Treatment> treatments = treatmentService.all(submission);
 
@@ -154,7 +154,7 @@ public class TreatmentServiceTest {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void all_AccessDenied_Anonymous() throws Throwable {
-    Submission submission = submissionRepository.findOne(149L);
+    Submission submission = submissionRepository.findById(149L).orElse(null);
 
     treatmentService.all(submission);
   }
@@ -162,7 +162,7 @@ public class TreatmentServiceTest {
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void all_AccessDenied() throws Throwable {
-    Submission submission = submissionRepository.findOne(149L);
+    Submission submission = submissionRepository.findById(149L).orElse(null);
 
     treatmentService.all(submission);
   }

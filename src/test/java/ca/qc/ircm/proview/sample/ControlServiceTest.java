@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -284,7 +284,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void update() {
-    Control control = repository.findOne(444L);
+    Control control = repository.findById(444L).orElse(null);
     detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
@@ -299,7 +299,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
-    Control test = repository.findOne(control.getId());
+    Control test = repository.findById(control.getId()).orElse(null);
     assertEquals("nc_test_000001", test.getName());
     assertEquals(ControlType.POSITIVE_CONTROL, test.getControlType());
     assertEquals(SampleType.SOLUTION, test.getType());
@@ -326,7 +326,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     standard.setName("my_new_standard");
     standard.setQuantity("3 μg");
     standard.setComment("some_comment");
-    Control control = repository.findOne(444L);
+    Control control = repository.findById(444L).orElse(null);
     detach(control);
     control.getStandards().add(standard);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
@@ -338,7 +338,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     // Validate new standard.
-    Control test = repository.findOne(control.getId());
+    Control test = repository.findById(control.getId()).orElse(null);
     assertEquals(1, test.getStandards().size());
     Standard testStandard = test.getStandards().get(0);
     assertEquals("my_new_standard", testStandard.getName());
@@ -358,7 +358,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void update_UpdateStandard() {
-    Control control = repository.findOne(448L);
+    Control control = repository.findById(448L).orElse(null);
     detach(control);
     // Change standard.
     Standard standard = control.getStandards().get(0);
@@ -374,7 +374,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     // Validate standard update.
-    Control test = repository.findOne(control.getId());
+    Control test = repository.findById(control.getId()).orElse(null);
     assertEquals(1, test.getStandards().size());
     Standard testStandard = test.getStandards().get(0);
     assertEquals("new_standard_name", testStandard.getName());
@@ -394,7 +394,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void update_RemoveStandard() {
-    Control control = repository.findOne(448L);
+    Control control = repository.findById(448L).orElse(null);
     detach(control);
     control.getStandards().remove(0);
     when(sampleActivityService.update(any(Sample.class), any(String.class)))
@@ -406,7 +406,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
     verify(sampleActivityService).update(sampleCaptor.capture(), eq("test changes"));
     verify(activityService).insert(activity);
     // Validate standard deletion.
-    Control test = repository.findOne(control.getId());
+    Control test = repository.findById(control.getId()).orElse(null);
     assertEquals(0, test.getStandards().size());
     // Validate activity log.
     Sample newSample = sampleCaptor.getValue();
@@ -418,7 +418,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void update_AccessDenied_Anonymous() {
-    Control control = repository.findOne(444L);
+    Control control = repository.findById(444L).orElse(null);
     detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
@@ -434,7 +434,7 @@ public class ControlServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void update_AccessDenied() {
-    Control control = repository.findOne(444L);
+    Control control = repository.findById(444L).orElse(null);
     detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);

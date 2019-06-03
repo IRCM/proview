@@ -88,7 +88,7 @@ public class SubmissionWindowPresenterTest extends AbstractComponentTestCase {
     when(window.getUI()).thenReturn(ui);
     when(ui.getNavigator()).thenReturn(navigator);
     when(submissionService.print(any(), any())).thenReturn("");
-    submission = repository.findOne(1L);
+    submission = repository.findById(1L).orElse(null);
   }
 
   @Test

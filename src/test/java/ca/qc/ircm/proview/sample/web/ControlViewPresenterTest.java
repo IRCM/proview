@@ -132,7 +132,7 @@ public class ControlViewPresenterTest {
 
   @Test
   public void enter_Control_ReadOnly() {
-    final Control control = repository.findOne(444L);
+    final Control control = repository.findById(444L).orElse(null);
     when(controlService.get(444L)).thenReturn(control);
 
     presenter.init(view);
@@ -146,7 +146,7 @@ public class ControlViewPresenterTest {
   @Test
   public void enter_Control() {
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
-    final Control control = repository.findOne(444L);
+    final Control control = repository.findById(444L).orElse(null);
     when(controlService.get(444L)).thenReturn(control);
 
     presenter.init(view);

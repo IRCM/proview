@@ -53,7 +53,7 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
-    Submission submission = repository.findOne((Long) targetId);
+    Submission submission = repository.findById((Long) targetId).orElse(null);
     if (submission == null) {
       return false;
     }

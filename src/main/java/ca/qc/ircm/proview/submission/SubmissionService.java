@@ -118,7 +118,7 @@ public class SubmissionService {
       return null;
     }
 
-    return repository.findOne(id);
+    return repository.findById(id).orElse(null);
   }
 
   /**
@@ -381,7 +381,7 @@ public class SubmissionService {
     if (!authorizationService.hasRole(UserRole.ADMIN)
         && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
       Submission userSupplied = submission;
-      submission = repository.findOne(submission.getId());
+      submission = repository.findById(submission.getId()).orElse(null);
       for (int i = 0; i < submission.getSamples().size(); i++) {
         SubmissionSample sample = submission.getSamples().get(i);
         sample.setName(userSupplied.getSamples().get(i).getName());
@@ -417,7 +417,7 @@ public class SubmissionService {
 
   private void validateUpdateSubmission(Submission submission) {
     if (!authorizationService.hasRole(UserRole.ADMIN)) {
-      Submission old = repository.findOne(submission.getId());
+      Submission old = repository.findById(submission.getId()).orElse(null);
       if (!old.getUser().getId().equals(submission.getUser().getId())) {
         throw new IllegalArgumentException("Cannot update submission's owner");
       }
@@ -436,7 +436,7 @@ public class SubmissionService {
   }
 
   private void doUpdate(Submission submission) throws IllegalArgumentException {
-    Submission old = repository.findOne(submission.getId());
+    Submission old = repository.findById(submission.getId()).orElse(null);
     submission.setLaboratory(submission.getUser().getLaboratory());
 
     removeUnusedContainers(submission, old);
@@ -502,7 +502,7 @@ public class SubmissionService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void hide(Submission submission) {
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     submission.setHidden(true);
     repository.save(submission);
 
@@ -520,7 +520,7 @@ public class SubmissionService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void show(Submission submission) {
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     submission.setHidden(false);
     repository.save(submission);
 

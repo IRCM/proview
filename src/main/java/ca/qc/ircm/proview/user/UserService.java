@@ -85,7 +85,7 @@ public class UserService {
       return null;
     }
 
-    User user = repository.findOne(id);
+    User user = repository.findById(id).orElse(null);
     return user;
   }
 
@@ -393,7 +393,7 @@ public class UserService {
   @PreAuthorize("hasPermission(#user, 'write')")
   public void update(User user, String newPassword) {
     if (!user.isValid() && user.isManager()) {
-      User before = repository.findOne(user.getId());
+      User before = repository.findById(user.getId()).orElse(null);
       if (!before.isManager()) {
         throw new InvalidUserException();
       }
@@ -424,7 +424,7 @@ public class UserService {
   private void updateDirectorName(Laboratory laboratory, User possibleDirector) {
     repository.findAllByLaboratoryAndManagerTrue(laboratory).stream()
         .mapToLong(manager -> manager.getId()).min().ifPresent(id -> {
-          User manager = repository.findOne(id);
+          User manager = repository.findById(id).orElse(null);
           laboratory.setDirector(manager.getName());
         });
     ;
@@ -440,7 +440,7 @@ public class UserService {
    */
   @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void validate(User user, HomeWebContext webContext) {
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
 
     user.setValid(true);
     user.setActive(true);
@@ -493,7 +493,7 @@ public class UserService {
    */
   @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void activate(User user) {
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
 
     user.setActive(true);
     repository.save(user);
@@ -513,7 +513,7 @@ public class UserService {
       throw new IllegalArgumentException("Robot cannot be deactivated");
     }
 
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     user.setActive(false);
     repository.save(user);
 
@@ -528,7 +528,7 @@ public class UserService {
    */
   @PreAuthorize("hasPermission(#user.laboratory, 'write')")
   public void delete(User user) {
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
 
     if (user.isValid()) {
       throw new DeleteValidUserException(user);

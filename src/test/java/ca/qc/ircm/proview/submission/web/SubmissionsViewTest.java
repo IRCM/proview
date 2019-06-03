@@ -148,7 +148,7 @@ public class SubmissionsViewTest extends SubmissionsViewPageObject {
     clickHideSubmissionByRow(4);
 
     assertTrue(hideSubmissionButtonByRow(4).getClassNames().contains(ValoTheme.BUTTON_DANGER));
-    Submission submission = repository.findOne(156L);
+    Submission submission = repository.findById(156L).orElse(null);
     assertTrue(submission.isHidden());
   }
 

@@ -91,7 +91,7 @@ public class ForgotPasswordViewTest extends ForgotPasswordPageObject {
     clickSave();
 
     assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
-    User user = userRepository.findOne(10L);
+    User user = userRepository.findById(10L).orElse(null);
     assertEquals(passwordEncoder.encode(password), user.getHashedPassword());
     assertNull(user.getSalt());
     assertNull(user.getPasswordVersion());

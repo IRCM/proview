@@ -116,7 +116,7 @@ public class PlateWindowPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void setValue() {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     presenter.init(view);
     presenter.setValue(plate);
 
@@ -127,7 +127,7 @@ public class PlateWindowPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void print() throws Throwable {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     presenter.init(view);
     presenter.setValue(plate);
 

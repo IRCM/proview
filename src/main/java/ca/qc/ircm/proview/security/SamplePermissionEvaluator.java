@@ -52,7 +52,7 @@ public class SamplePermissionEvaluator extends AbstractPermissionEvaluator {
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
-    Sample sample = repository.findOne((Long) targetId);
+    Sample sample = repository.findById((Long) targetId).orElse(null);
     if (sample == null) {
       return false;
     }

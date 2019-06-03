@@ -124,9 +124,9 @@ public class SampleStatusViewTest extends SampleStatusPageObject {
     assertNotNull(notification.getCaption());
     assertEquals(resources(SampleStatusView.class).message(SAVE + ".done", 2),
         notification.getCaption());
-    Submission submission = submissionRepository.findOne(32L);
+    Submission submission = submissionRepository.findById(32L).orElse(null);
     assertEquals(SampleStatus.ANALYSED, submission.getSamples().get(0).getStatus());
-    submission = submissionRepository.findOne(147L);
+    submission = submissionRepository.findById(147L).orElse(null);
     assertEquals(SampleStatus.CANCELLED, submission.getSamples().get(0).getStatus());
   }
 }

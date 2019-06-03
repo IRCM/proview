@@ -90,7 +90,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Digestion() throws Exception {
-    Activity activity = repository.findOne(5639L);
+    Activity activity = repository.findById(5639L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -101,7 +101,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Dilution() throws Exception {
-    Activity activity = repository.findOne(5680L);
+    Activity activity = repository.findById(5680L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -112,7 +112,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Enrichment() throws Exception {
-    Activity activity = repository.findOne(5719L);
+    Activity activity = repository.findById(5719L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -123,7 +123,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Fractionation() throws Exception {
-    Activity activity = repository.findOne(5659L);
+    Activity activity = repository.findById(5659L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -147,7 +147,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_MsAnalysis() throws Exception {
-    Activity activity = repository.findOne(5828L);
+    Activity activity = repository.findById(5828L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -158,7 +158,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Plate() throws Exception {
-    Activity activity = repository.findOne(5559L);
+    Activity activity = repository.findById(5559L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -208,7 +208,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Sample() throws Exception {
-    Activity activity = repository.findOne(5635L);
+    Activity activity = repository.findById(5635L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -258,7 +258,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Solubilisation() throws Exception {
-    Activity activity = repository.findOne(5763L);
+    Activity activity = repository.findById(5763L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -269,7 +269,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_StandardAddition() throws Exception {
-    Activity activity = repository.findOne(5796L);
+    Activity activity = repository.findById(5796L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -280,7 +280,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Submission() throws Exception {
-    Activity activity = repository.findOne(5543L);
+    Activity activity = repository.findById(5543L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -304,7 +304,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Protocol() throws Exception {
-    Activity activity = repository.findOne(5545L);
+    Activity activity = repository.findById(5545L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -341,7 +341,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_Transfer() throws Exception {
-    Activity activity = repository.findOne(5657L);
+    Activity activity = repository.findById(5657L).orElse(null);
 
     Object object = activityService.record(activity);
 
@@ -435,7 +435,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void record_TableNameNull() throws Exception {
-    Activity activity = repository.findOne(5650L);
+    Activity activity = repository.findById(5650L).orElse(null);
     activity.setTableName(null);
     assertNull(activityService.record(activity));
   }
@@ -443,7 +443,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void record_AccessDenied_Anonymous() throws Exception {
-    Activity activity = repository.findOne(5639L);
+    Activity activity = repository.findById(5639L).orElse(null);
 
     activityService.record(activity);
   }
@@ -451,14 +451,14 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void record_AccessDenied() throws Exception {
-    Activity activity = repository.findOne(5639L);
+    Activity activity = repository.findById(5639L).orElse(null);
 
     activityService.record(activity);
   }
 
   @Test
   public void all_Submission() throws Exception {
-    Submission submission = submissionRepository.findOne(1L);
+    Submission submission = submissionRepository.findById(1L).orElse(null);
 
     List<Activity> activities = activityService.all(submission);
 
@@ -474,7 +474,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void all_Submission_147() throws Exception {
-    Submission submission = submissionRepository.findOne(147L);
+    Submission submission = submissionRepository.findById(147L).orElse(null);
 
     List<Activity> activities = activityService.all(submission);
 
@@ -498,7 +498,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void all_AccessDenied_Anonymous() throws Exception {
-    Submission submission = submissionRepository.findOne(1L);
+    Submission submission = submissionRepository.findById(1L).orElse(null);
 
     activityService.all(submission);
   }
@@ -506,7 +506,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void all_AccessDenied() throws Exception {
-    Submission submission = submissionRepository.findOne(1L);
+    Submission submission = submissionRepository.findById(1L).orElse(null);
 
     activityService.all(submission);
   }
@@ -722,8 +722,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void description_Insert() {
-    Submission submission = submissionRepository.findOne(1L);
-    Activity activity = repository.findOne(5543L);
+    Submission submission = submissionRepository.findById(1L).orElse(null);
+    Activity activity = repository.findById(5543L).orElse(null);
 
     String description = activityService.description(activity, locale);
 
@@ -733,8 +733,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void description_Update() {
-    Submission submission = submissionRepository.findOne(163L);
-    Activity activity = repository.findOne(5936L);
+    Submission submission = submissionRepository.findById(163L).orElse(null);
+    Activity activity = repository.findById(5936L).orElse(null);
 
     String description = activityService.description(activity, locale);
 
@@ -746,11 +746,12 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
       UpdateActivity update = activity.getUpdates().get(i);
       String name = null;
       if (update.getTableName().equals(Submission.TABLE_NAME)) {
-        name = submissionRepository.findOne(update.getRecordId()).getName();
+        name = submissionRepository.findById(update.getRecordId()).map(su -> su.getName())
+            .orElse(null);
       } else if (update.getTableName().equals(Sample.TABLE_NAME)) {
-        name = sampleRepository.findOne(update.getRecordId()).getName();
+        name = sampleRepository.findById(update.getRecordId()).map(su -> su.getName()).orElse(null);
       } else if (update.getTableName().equals(Plate.TABLE_NAME)) {
-        name = plateRepository.findOne(update.getRecordId()).getName();
+        name = plateRepository.findById(update.getRecordId()).map(su -> su.getName()).orElse(null);
       }
       assertEquals(
           resources.message("update", update.getActionType().ordinal(), update.getTableName(), name,
@@ -762,7 +763,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void description_AccessDenied_Anonymous() throws Exception {
-    Activity activity = repository.findOne(5543L);
+    Activity activity = repository.findById(5543L).orElse(null);
 
     activityService.description(activity, locale);
   }
@@ -770,7 +771,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void description_AccessDenied() throws Exception {
-    Activity activity = repository.findOne(5543L);
+    Activity activity = repository.findById(5543L).orElse(null);
 
     activityService.description(activity, locale);
   }

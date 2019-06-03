@@ -27,8 +27,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -153,7 +153,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
    */
   @Before
   public void beforeTest() throws Throwable {
-    user = userRepository.findOne(4L);
+    user = userRepository.findById(4L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(user);
     when(emailService.htmlEmail()).thenReturn(email);
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
@@ -337,7 +337,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_Plate() throws Throwable {
-    Plate plate = plateRepository.findOne(123L);
+    Plate plate = plateRepository.findById(123L).orElse(null);
 
     Submission submission = service.get(plate);
 
@@ -347,7 +347,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_PlateNotSubmision() throws Throwable {
-    Plate plate = plateRepository.findOne(26L);
+    Plate plate = plateRepository.findById(26L).orElse(null);
 
     Submission submission = service.get(plate);
 
@@ -680,8 +680,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = new Submission();
     submission.setService(service);
     submission.setSubmissionDate(Instant.now().minus(2, ChronoUnit.DAYS));
-    submission.setUser(userRepository.findOne(3L));
-    submission.setLaboratory(laboratoryRepository.findOne(2L));
+    submission.setUser(userRepository.findById(3L).orElse(null));
+    submission.setLaboratory(laboratoryRepository.findById(2L).orElse(null));
     SubmissionSample sample1 = new SubmissionSample(1L, "first sample");
     sample1.setQuantity("15 ug");
     sample1.setVolume("10 ul");
@@ -1732,7 +1732,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void print_NullLocale() throws Exception {
-    Submission submission = repository.findOne(1L);
+    Submission submission = repository.findById(1L).orElse(null);
 
     assertEquals("", service.print(submission, null));
   }
@@ -1801,7 +1801,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
@@ -1942,7 +1942,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
@@ -2093,7 +2093,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
@@ -2233,7 +2233,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
     assertNotNull(submission.getId());
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertNotNull(submission.getSubmissionDate());
@@ -2438,7 +2438,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update() throws Exception {
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2457,7 +2457,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     assertEquals((Long) 10L, submission.getUser().getId());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
@@ -2519,7 +2519,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Sample() throws Exception {
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sample -> {
       detach(sample);
@@ -2539,7 +2539,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -2611,7 +2611,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     sample.setStandards(standards);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2625,7 +2625,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
@@ -2654,8 +2654,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(submissionSample, tube.getSample());
     assertEquals(false, tube.isBanned());
     assertEquals(0, tube.getVersion());
-    assertNull(sampleRepository.findOne(447L));
-    assertNull(tubeRepository.findOne(9L));
+    assertNull(sampleRepository.findById(447L).orElse(null));
+    assertNull(tubeRepository.findById(9L).orElse(null));
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -2703,7 +2703,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     sample.setStandards(standards);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2717,7 +2717,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     assertEquals((Long) 10L, submission.getUser().getId());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     samples = submission.getSamples();
@@ -2751,8 +2751,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(0, well.getColumn());
     assertEquals(false, well.isBanned());
     assertEquals(0, well.getVersion());
-    assertNull(sampleRepository.findOne(447L));
-    assertNull(tubeRepository.findOne(9L));
+    assertNull(sampleRepository.findById(447L).orElse(null));
+    assertNull(tubeRepository.findById(9L).orElse(null));
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -2761,13 +2761,13 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test(expected = IllegalArgumentException.class)
   public void update_UpdateUser() throws Exception {
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
       detach(sa.getOriginalContainer());
     });
-    User user = userRepository.findOne(4L);
+    User user = userRepository.findById(4L).orElse(null);
     submission.setUser(user);
     when(submissionActivityService.update(any(Submission.class), any(String.class)))
         .thenReturn(optionalActivity);
@@ -2777,7 +2777,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test(expected = IllegalArgumentException.class)
   public void update_Received() throws Exception {
-    Submission submission = repository.findOne(149L);
+    Submission submission = repository.findById(149L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2789,7 +2789,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test(expected = IllegalArgumentException.class)
   public void update_AfterReceived() throws Exception {
-    Submission submission = repository.findOne(147L);
+    Submission submission = repository.findById(147L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2801,7 +2801,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Email() throws Exception {
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2834,7 +2834,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Admin() throws Exception {
-    Submission submission = repository.findOne(1L);
+    Submission submission = repository.findById(1L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2877,7 +2877,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     gelImage.setContent(imageContent);
     files.add(gelImage);
     submission.setFiles(files);
-    User user = userRepository.findOne(4L);
+    User user = userRepository.findById(4L).orElse(null);
     submission.setUser(user);
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
@@ -2891,7 +2891,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
-    submission = repository.findOne(1L);
+    submission = repository.findById(1L).orElse(null);
     verify(activityService).insert(activity);
     assertEquals((Long) 1L, submission.getId());
     assertEquals(user.getId(), submission.getUser().getId());
@@ -2956,7 +2956,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    Submission submission = repository.findOne(147L);
+    Submission submission = repository.findById(147L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2973,7 +2973,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(3, samples.size());
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
@@ -3013,7 +3013,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void hide() throws Exception {
-    Submission submission = repository.findOne(147L);
+    Submission submission = repository.findById(147L).orElse(null);
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
@@ -3021,7 +3021,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(activityService).insert(activity);
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     verify(submissionActivityService).update(submission, null);
     assertTrue(submission.isHidden());
   }
@@ -3029,7 +3029,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void hide_AccessDenied_Anonymous() throws Exception {
-    Submission submission = repository.findOne(147L);
+    Submission submission = repository.findById(147L).orElse(null);
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
@@ -3039,7 +3039,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void hide_AccessDenied() throws Exception {
-    Submission submission = repository.findOne(147L);
+    Submission submission = repository.findById(147L).orElse(null);
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
@@ -3050,7 +3050,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @WithMockUser(authorities = UserRole.ADMIN)
   @SuppressWarnings("unchecked")
   public void show() throws Exception {
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
@@ -3059,7 +3059,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(activityService).insert(activity);
-    submission = repository.findOne(submission.getId());
+    submission = repository.findById(submission.getId()).orElse(null);
     verify(submissionActivityService).update(submission, null);
     assertFalse(submission.isHidden());
   }
@@ -3068,7 +3068,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @WithAnonymousUser
   @SuppressWarnings("unchecked")
   public void show_AccessDenied_Anonymous() throws Exception {
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
@@ -3080,7 +3080,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   @SuppressWarnings("unchecked")
   public void show_AccessDenied() throws Exception {
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());

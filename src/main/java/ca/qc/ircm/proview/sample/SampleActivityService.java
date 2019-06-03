@@ -88,7 +88,8 @@ public class SampleActivityService {
   public Optional<Activity> updateStatus(final SubmissionSample sample) {
     User user = authorizationService.getCurrentUser();
 
-    final SubmissionSample oldSample = submissionSampleRepository.findOne(sample.getId());
+    final SubmissionSample oldSample =
+        submissionSampleRepository.findById(sample.getId()).orElse(null);
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     Submission oldSubmission = oldSample.getSubmission();
@@ -138,7 +139,7 @@ public class SampleActivityService {
   public Optional<Activity> update(final Sample newSample, final String explanation) {
     User user = authorizationService.getCurrentUser();
 
-    final Sample oldSample = repository.findOne(newSample.getId());
+    final Sample oldSample = repository.findById(newSample.getId()).orElse(null);
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
 

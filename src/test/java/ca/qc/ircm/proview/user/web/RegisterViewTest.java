@@ -254,7 +254,7 @@ public class RegisterViewTest extends RegisterPageObject {
     assertNotNull(user.getId());
     assertEquals(email, user.getEmail());
     assertEquals(name, user.getName());
-    User admin = repository.findOne((Long) SecurityUtils.getSubject().getPrincipal());
+    User admin = repository.findById((Long) SecurityUtils.getSubject().getPrincipal()).orElse(null);
     Laboratory laboratory = user.getLaboratory();
     assertEquals(admin.getLaboratory().getId(), laboratory.getId());
     assertEquals(passwordEncoder.encode(password), user.getHashedPassword());

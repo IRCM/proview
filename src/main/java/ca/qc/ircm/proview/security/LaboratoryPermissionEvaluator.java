@@ -49,7 +49,7 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
-    Laboratory laboratory = repository.findOne((Long) targetId);
+    Laboratory laboratory = repository.findById((Long) targetId).orElse(null);
     if (laboratory == null) {
       return false;
     }

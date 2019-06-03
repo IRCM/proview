@@ -25,7 +25,7 @@ import static ca.qc.ircm.proview.plate.web.PlateViewPresenter.TITLE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.containsInstanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -90,10 +90,10 @@ public class PlateViewPresenterTest {
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
     when(plateService.get(any(Long.class)))
-        .thenAnswer(i -> repository.findOne(i.getArgumentAt(0, Long.class)));
+        .thenAnswer(i -> repository.findById(i.getArgument(0)).orElse(null));
     plates = new ArrayList<>();
-    plates.add(repository.findOne(26L));
-    plates.add(repository.findOne(107L));
+    plates.add(repository.findById(26L).orElse(null));
+    plates.add(repository.findById(107L).orElse(null));
     when(plateService.all(any())).thenReturn(plates);
     platePrint = RandomStringUtils.randomAlphanumeric(1000);
     when(plateService.print(any(), any())).thenReturn(platePrint);
@@ -115,7 +115,7 @@ public class PlateViewPresenterTest {
     presenter.init(view);
     presenter.enter("26");
 
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(resources.message(HEADER), design.header.getValue());
     assertEquals(plate.getName(), design.plateComponentPanel.getCaption());
@@ -156,7 +156,7 @@ public class PlateViewPresenterTest {
   public void print_Plate() throws Throwable {
     presenter.init(view);
     presenter.enter("26");
-    final Plate plate = repository.findOne(26L);
+    final Plate plate = repository.findById(26L).orElse(null);
 
     verify(plateService).print(plate, locale);
     assertEquals(1, design.print.getExtensions().size());
@@ -175,7 +175,7 @@ public class PlateViewPresenterTest {
 
   @Test
   public void print_UpdatePlate() throws Throwable {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     presenter.init(view);
     presenter.enter("26");
 
@@ -209,7 +209,7 @@ public class PlateViewPresenterTest {
     presenter.init(view);
     presenter.enter("26");
 
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     verify(view).setTitle(resources.message(TITLE, applicationName));
     assertEquals(plate.getName(), design.plateComponentPanel.getCaption());
     verify(plateComponent).setValue(plate);

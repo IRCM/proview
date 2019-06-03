@@ -107,7 +107,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update() {
-    Submission newSubmission = repository.findOne(1L);
+    Submission newSubmission = repository.findById(1L).orElse(null);
     detach(newSubmission);
     final User oldUser = new User(3L);
     final Laboratory oldLaboratory = new Laboratory(2L);
@@ -599,7 +599,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_ChangeSamples() {
-    Submission submission = repository.findOne(147L);
+    Submission submission = repository.findById(147L).orElse(null);
     detach(submission);
     submission.getSamples().remove(1);
     submission.getSamples().add(new SubmissionSample(640L, "new_sample"));
@@ -642,7 +642,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_PlateName() {
-    Submission submission = repository.findOne(163L);
+    Submission submission = repository.findById(163L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sample -> {
       detach(sample);
@@ -675,7 +675,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_AddSolvent() throws Throwable {
-    Submission submission = repository.findOne(33L);
+    Submission submission = repository.findById(33L).orElse(null);
     Solvent solvent = Solvent.OTHER;
     submission.getSolvents().add(solvent);
     submission.setOtherSolvent("ch3oh");
@@ -712,7 +712,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_RemoveSolvent() throws Throwable {
-    Submission submission = repository.findOne(33L);
+    Submission submission = repository.findById(33L).orElse(null);
     Solvent solvent = Solvent.METHANOL;
     submission.getSolvents().remove(solvent);
     detach(submission);
@@ -740,7 +740,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_NoChange() {
-    Submission submission = repository.findOne(1L);
+    Submission submission = repository.findById(1L).orElse(null);
     detach(submission);
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");

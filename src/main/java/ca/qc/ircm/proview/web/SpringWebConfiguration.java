@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.util.IntrospectorCleanupListener;
@@ -35,7 +35,7 @@ import org.springframework.web.util.IntrospectorCleanupListener;
  * Enable Spring Web MVC for REST services.
  */
 @Configuration
-public class SpringWebConfiguration extends WebMvcConfigurerAdapter {
+public class SpringWebConfiguration implements WebMvcConfigurer {
   public static final String SHIRO_FILTER_NAME = "ShiroFilter";
 
   @Bean(name = MdcFilter.BEAN_NAME)

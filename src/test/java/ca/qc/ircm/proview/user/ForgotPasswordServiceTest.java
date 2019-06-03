@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -83,7 +83,7 @@ public class ForgotPasswordServiceTest {
    */
   @Before
   public void beforeTest() throws Throwable {
-    user = userRepository.findOne(10L);
+    user = userRepository.findById(10L).orElse(null);
     when(applicationConfiguration.getUrl(any(String.class))).thenAnswer(new Answer<String>() {
       @Override
       public String answer(InvocationOnMock invocation) throws Throwable {
@@ -144,7 +144,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void insert_Robot() throws Exception {
-    user = userRepository.findOne(1L);
+    user = userRepository.findById(1L).orElse(null);
 
     try {
       service.insert(user.getEmail(), forgotPasswordWebContext());
@@ -162,7 +162,7 @@ public class ForgotPasswordServiceTest {
     assertNotNull(forgotPassword.getId());
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
-    forgotPassword = repository.findOne(forgotPassword.getId());
+    forgotPassword = repository.findById(forgotPassword.getId()).orElse(null);
     assertNotNull(forgotPassword.getConfirmNumber());
     assertTrue(
         Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
@@ -211,7 +211,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void updatePassword() throws Exception {
-    ForgotPassword forgotPassword = repository.findOne(9L);
+    ForgotPassword forgotPassword = repository.findById(9L).orElse(null);
 
     service.updatePassword(forgotPassword, "abc");
 
@@ -226,7 +226,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void updatePassword_Expired() throws Exception {
-    ForgotPassword forgotPassword = repository.findOne(7L);
+    ForgotPassword forgotPassword = repository.findById(7L).orElse(null);
 
     try {
       service.updatePassword(forgotPassword, "abc");

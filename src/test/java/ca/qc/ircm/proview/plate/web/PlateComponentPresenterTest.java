@@ -26,8 +26,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -92,8 +92,8 @@ public class PlateComponentPresenterTest {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    when(plateService.workbook(any(), any())).thenAnswer(i -> realPlateService
-        .workbook(i.getArgumentAt(0, Plate.class), i.getArgumentAt(1, Locale.class)));
+    when(plateService.workbook(any(), any()))
+        .thenAnswer(i -> realPlateService.workbook(i.getArgument(0), i.getArgument(1)));
   }
 
   @Test

@@ -46,7 +46,7 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
-    User user = repository.findOne((Long) targetId);
+    User user = repository.findById((Long) targetId).orElse(null);
     if (user == null) {
       return false;
     }

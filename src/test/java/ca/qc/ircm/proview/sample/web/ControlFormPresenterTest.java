@@ -37,8 +37,8 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -233,7 +233,7 @@ public class ControlFormPresenterTest {
   public void readOnly_True_Update() {
     presenter.init(view);
     presenter.setReadOnly(true);
-    Control control = repository.findOne(444L);
+    Control control = repository.findById(444L).orElse(null);
     presenter.setValue(control);
 
     assertTrue(design.nameField.isReadOnly());
@@ -282,7 +282,7 @@ public class ControlFormPresenterTest {
   @Test
   public void readOnly_False_Update() {
     presenter.init(view);
-    Control control = repository.findOne(444L);
+    Control control = repository.findById(444L).orElse(null);
     presenter.setValue(control);
 
     assertFalse(design.nameField.isReadOnly());
@@ -315,7 +315,7 @@ public class ControlFormPresenterTest {
   @Test
   public void save_NameExists() {
     presenter.init(view);
-    final Control control = repository.findOne(444L);
+    final Control control = repository.findById(444L).orElse(null);
     presenter.setValue(control);
     when(controlService.exists(any())).thenReturn(true);
     when(controlService.get(any())).thenReturn(control);
@@ -345,7 +345,7 @@ public class ControlFormPresenterTest {
 
   @Test
   public void save_MissingExplanation() throws Throwable {
-    Control control = repository.findOne(444L);
+    Control control = repository.findById(444L).orElse(null);
     presenter.init(view);
     presenter.setValue(control);
     setFields();
@@ -388,7 +388,7 @@ public class ControlFormPresenterTest {
 
   @Test
   public void save_Update() {
-    Control control = repository.findOne(444L);
+    Control control = repository.findById(444L).orElse(null);
     presenter.init(view);
     presenter.setValue(control);
     setFields();
@@ -419,7 +419,7 @@ public class ControlFormPresenterTest {
 
   @Test
   public void setBean_Standards() {
-    final Control control = repository.findOne(444L);
+    final Control control = repository.findById(444L).orElse(null);
     Standard standard = new Standard();
     standard.setName("std1");
     standard.setQuantity("1 ug");

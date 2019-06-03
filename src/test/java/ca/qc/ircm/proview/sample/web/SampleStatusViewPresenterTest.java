@@ -40,8 +40,8 @@ import static ca.qc.ircm.proview.web.WebConstants.FIELD_NOTIFICATION;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -127,12 +127,12 @@ public class SampleStatusViewPresenterTest extends AbstractComponentTestCase {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    samples.add(repository.findOne(442L));
-    samples.add(repository.findOne(559L));
+    samples.add(repository.findById(442L).orElse(null));
+    samples.add(repository.findById(559L).orElse(null));
     samples.forEach(s -> detach(s));
     when(view.savedSamples()).thenReturn(new ArrayList<>(samples));
     when(submissionSampleService.get(any()))
-        .thenAnswer(i -> repository.findOne((Long) i.getArguments()[0]));
+        .thenAnswer(i -> repository.findById((Long) i.getArguments()[0]).orElse(null));
   }
 
   @Test
@@ -459,7 +459,7 @@ public class SampleStatusViewPresenterTest extends AbstractComponentTestCase {
   @Test
   public void enter_InvalidId() {
     when(sampleService.get(any()))
-        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findById((Long) i.getArguments()[0]).orElse(null));
     presenter.init(view);
 
     presenter.enter("a");
@@ -471,7 +471,7 @@ public class SampleStatusViewPresenterTest extends AbstractComponentTestCase {
   @Test
   public void enter_NotExists() {
     when(sampleService.get(any()))
-        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findById((Long) i.getArguments()[0]).orElse(null));
     presenter.init(view);
 
     presenter.enter("2");
@@ -483,7 +483,7 @@ public class SampleStatusViewPresenterTest extends AbstractComponentTestCase {
   @Test
   public void enter_EmptyId() {
     when(sampleService.get(any()))
-        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findById((Long) i.getArguments()[0]).orElse(null));
     presenter.init(view);
 
     presenter.enter("32,");
@@ -494,11 +494,11 @@ public class SampleStatusViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void enter_Sample() {
-    Sample sample = sampleRepository.findOne(445L);
+    Sample sample = sampleRepository.findById(445L).orElse(null);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample);
     when(sampleService.get(any()))
-        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findById((Long) i.getArguments()[0]).orElse(null));
     presenter.init(view);
 
     presenter.enter("445");
@@ -516,13 +516,13 @@ public class SampleStatusViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void enter_MultipleSamples() {
-    Sample sample1 = sampleRepository.findOne(445L);
-    Sample sample2 = sampleRepository.findOne(446L);
+    Sample sample1 = sampleRepository.findById(445L).orElse(null);
+    Sample sample2 = sampleRepository.findById(446L).orElse(null);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample1);
     samples.add(sample2);
     when(sampleService.get(any()))
-        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findById((Long) i.getArguments()[0]).orElse(null));
     presenter.init(view);
 
     presenter.enter("445,446");
@@ -541,11 +541,11 @@ public class SampleStatusViewPresenterTest extends AbstractComponentTestCase {
 
   @Test
   public void enter_SampleWithControl() {
-    Sample sample1 = sampleRepository.findOne(445L);
+    Sample sample1 = sampleRepository.findById(445L).orElse(null);
     List<Sample> samples = new ArrayList<>();
     samples.add(sample1);
     when(sampleService.get(any()))
-        .thenAnswer(i -> sampleRepository.findOne((Long) i.getArguments()[0]));
+        .thenAnswer(i -> sampleRepository.findById((Long) i.getArguments()[0]).orElse(null));
     presenter.init(view);
 
     presenter.enter("445,444");

@@ -129,10 +129,10 @@ public class SavedSamplesComponentTest extends AbstractComponentTestCase {
   @Test
   public void savedSampleFromMultipleUsers_True() {
     Collection<Sample> samples = new ArrayList<>();
-    samples.add(repository.findOne(442L));
-    samples.add(repository.findOne(443L));
-    samples.add(repository.findOne(444L));
-    samples.add(repository.findOne(446L));
+    samples.add(repository.findById(442L).orElse(null));
+    samples.add(repository.findById(443L).orElse(null));
+    samples.add(repository.findById(444L).orElse(null));
+    samples.add(repository.findById(446L).orElse(null));
     when(vaadinSession.getAttribute(any(String.class))).thenReturn(samples);
 
     boolean multipleUsers = component.savedSampleFromMultipleUsers();
@@ -143,9 +143,9 @@ public class SavedSamplesComponentTest extends AbstractComponentTestCase {
   @Test
   public void savedSampleFromMultipleUsers_False() {
     Collection<Sample> samples = new ArrayList<>();
-    samples.add(repository.findOne(442L));
-    samples.add(repository.findOne(443L));
-    samples.add(repository.findOne(444L));
+    samples.add(repository.findById(442L).orElse(null));
+    samples.add(repository.findById(443L).orElse(null));
+    samples.add(repository.findById(444L).orElse(null));
     when(vaadinSession.getAttribute(any(String.class))).thenReturn(samples);
 
     boolean multipleUsers = component.savedSampleFromMultipleUsers();
@@ -156,10 +156,10 @@ public class SavedSamplesComponentTest extends AbstractComponentTestCase {
   @Test
   public void savedSampleFromMultipleUsers_FalseDueToNullUser() {
     Collection<Sample> samples = new ArrayList<>();
-    samples.add(repository.findOne(442L));
-    samples.add(repository.findOne(443L));
-    samples.add(repository.findOne(444L));
-    SubmissionSample sample = submissionSampleRepository.findOne(446L);
+    samples.add(repository.findById(442L).orElse(null));
+    samples.add(repository.findById(443L).orElse(null));
+    samples.add(repository.findById(444L).orElse(null));
+    SubmissionSample sample = submissionSampleRepository.findById(446L).orElse(null);
     sample.getSubmission().setUser(null);
     samples.add(sample);
     when(vaadinSession.getAttribute(any(String.class))).thenReturn(samples);

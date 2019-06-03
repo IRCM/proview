@@ -49,6 +49,6 @@ public class WellService {
       return null;
     }
 
-    return wellRepository.findOne(id);
+    return wellRepository.findById(id).orElse(null);
   }
 }

@@ -237,7 +237,7 @@ public class SubmissionsViewPresenterTest extends AbstractComponentTestCase {
     for (Column<Submission, ?> column : design.submissionsGrid.getColumns()) {
       assertEquals(resources.message(column.getId()), column.getCaption());
     }
-    Submission manyStatuses = repository.findOne(153L);
+    Submission manyStatuses = repository.findById(153L).orElse(null);
     assertEquals(statusesValue(manyStatuses),
         design.submissionsGrid.getColumn(SAMPLE_STATUSES).getValueProvider().apply(manyStatuses));
     assertEquals(resources.message(ADD_SUBMISSION), design.addSubmission.getCaption());

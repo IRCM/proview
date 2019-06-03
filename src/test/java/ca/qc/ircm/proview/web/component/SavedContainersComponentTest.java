@@ -126,10 +126,10 @@ public class SavedContainersComponentTest extends AbstractComponentTestCase {
   @Test
   public void savedContainersFromMultipleUsers_True() {
     Collection<SampleContainer> containers = new ArrayList<>();
-    containers.add(repository.findOne(2L));
-    containers.add(repository.findOne(3L));
-    containers.add(repository.findOne(4L));
-    containers.add(repository.findOne(8L));
+    containers.add(repository.findById(2L).orElse(null));
+    containers.add(repository.findById(3L).orElse(null));
+    containers.add(repository.findById(4L).orElse(null));
+    containers.add(repository.findById(8L).orElse(null));
     when(vaadinSession.getAttribute(any(String.class))).thenReturn(containers);
 
     boolean multipleUsers = component.savedContainersFromMultipleUsers();
@@ -140,9 +140,9 @@ public class SavedContainersComponentTest extends AbstractComponentTestCase {
   @Test
   public void savedContainersFromMultipleUsers_False() {
     Collection<SampleContainer> containers = new ArrayList<>();
-    containers.add(repository.findOne(2L));
-    containers.add(repository.findOne(3L));
-    containers.add(repository.findOne(4L));
+    containers.add(repository.findById(2L).orElse(null));
+    containers.add(repository.findById(3L).orElse(null));
+    containers.add(repository.findById(4L).orElse(null));
     when(vaadinSession.getAttribute(any(String.class))).thenReturn(containers);
 
     boolean multipleUsers = component.savedContainersFromMultipleUsers();
@@ -153,10 +153,10 @@ public class SavedContainersComponentTest extends AbstractComponentTestCase {
   @Test
   public void savedContainersFromMultipleUsers_FalseDueToNullUser() {
     Collection<SampleContainer> containers = new ArrayList<>();
-    containers.add(repository.findOne(2L));
-    containers.add(repository.findOne(3L));
-    containers.add(repository.findOne(4L));
-    SampleContainer container = repository.findOne(8L);
+    containers.add(repository.findById(2L).orElse(null));
+    containers.add(repository.findById(3L).orElse(null));
+    containers.add(repository.findById(4L).orElse(null));
+    SampleContainer container = repository.findById(8L).orElse(null);
     ((SubmissionSample) container.getSample()).getSubmission().setUser(null);
     containers.add(container);
     when(vaadinSession.getAttribute(any(String.class))).thenReturn(containers);
@@ -169,10 +169,10 @@ public class SavedContainersComponentTest extends AbstractComponentTestCase {
   @Test
   public void savedContainersFromMultipleUsers_FalseDueToNullSample() {
     Collection<SampleContainer> containers = new ArrayList<>();
-    containers.add(repository.findOne(2L));
-    containers.add(repository.findOne(3L));
-    containers.add(repository.findOne(4L));
-    containers.add(repository.findOne(130L));
+    containers.add(repository.findById(2L).orElse(null));
+    containers.add(repository.findById(3L).orElse(null));
+    containers.add(repository.findById(4L).orElse(null));
+    containers.add(repository.findById(130L).orElse(null));
     when(vaadinSession.getAttribute(any(String.class))).thenReturn(containers);
 
     boolean multipleUsers = component.savedContainersFromMultipleUsers();

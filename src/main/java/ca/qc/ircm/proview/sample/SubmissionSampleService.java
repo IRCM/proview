@@ -69,7 +69,7 @@ public class SubmissionSampleService {
       return null;
     }
 
-    return repository.findOne(id);
+    return repository.findById(id).orElse(null);
   }
 
   /**
@@ -103,7 +103,7 @@ public class SubmissionSampleService {
   public void updateStatus(Collection<? extends SubmissionSample> samples) {
     for (SubmissionSample sample : samples) {
       SampleStatus status = sample.getStatus();
-      sample = repository.findOne(sample.getId());
+      sample = repository.findById(sample.getId()).orElse(null);
       sample.setStatus(status);
       // Log changes.
       Optional<Activity> activity = sampleActivityService.updateStatus(sample);

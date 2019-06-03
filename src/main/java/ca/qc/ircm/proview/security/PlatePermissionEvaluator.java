@@ -54,7 +54,7 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
-    Plate plate = repository.findOne((Long) targetId);
+    Plate plate = repository.findById((Long) targetId).orElse(null);
     if (plate == null) {
       return false;
     }

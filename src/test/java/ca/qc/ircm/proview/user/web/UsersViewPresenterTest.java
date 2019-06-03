@@ -127,13 +127,13 @@ public class UsersViewPresenterTest extends AbstractComponentTestCase {
    */
   @Before
   public void beforeTest() {
-    signedUser = repository.findOne(1L);
+    signedUser = repository.findById(1L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(signedUser);
     users = new ArrayList<>();
-    users.add(repository.findOne(4L));
-    users.add(repository.findOne(5L));
-    users.add(repository.findOne(10L));
-    users.add(repository.findOne(11L));
+    users.add(repository.findById(4L).orElse(null));
+    users.add(repository.findById(5L).orElse(null));
+    users.add(repository.findById(10L).orElse(null));
+    users.add(repository.findById(11L).orElse(null));
     when(userService.all(any())).thenReturn(users);
     design = new UsersViewDesign();
     view.design = design;

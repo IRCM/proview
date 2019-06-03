@@ -112,12 +112,12 @@ public class ValidateViewPresenterTest {
    */
   @Before
   public void beforeTest() {
-    signedUser = repository.findOne(1L);
+    signedUser = repository.findById(1L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(signedUser);
     usersToValidate = new ArrayList<>();
-    usersToValidate.add(repository.findOne(4L));
-    usersToValidate.add(repository.findOne(5L));
-    usersToValidate.add(repository.findOne(10L));
+    usersToValidate.add(repository.findById(4L).orElse(null));
+    usersToValidate.add(repository.findById(5L).orElse(null));
+    usersToValidate.add(repository.findById(10L).orElse(null));
     when(userService.all(any())).thenReturn(usersToValidate);
     design = new ValidateViewDesign();
     view.design = design;

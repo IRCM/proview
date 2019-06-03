@@ -193,7 +193,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void enter_MsAnalysis() {
-    MsAnalysis msAnalysis = repository.findOne(14L);
+    MsAnalysis msAnalysis = repository.findById(14L).orElse(null);
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);
     presenter.init(view);
     presenter.enter("14");
@@ -213,7 +213,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void enter_MsAnalysisMultipleAcquisitionPerSample() {
-    MsAnalysis msAnalysis = repository.findOne(14L);
+    MsAnalysis msAnalysis = repository.findById(14L).orElse(null);
     msAnalysis.getAcquisitions().get(0).setNumberOfAcquisition(2);
     Acquisition newAcquisition = new Acquisition();
     newAcquisition.setMsAnalysis(msAnalysis);
@@ -244,7 +244,7 @@ public class MsAnalysisViewPresenterTest {
 
   @Test
   public void enter_MsAnalysisDeleted() {
-    MsAnalysis msAnalysis = repository.findOne(14L);
+    MsAnalysis msAnalysis = repository.findById(14L).orElse(null);
     msAnalysis.setDeleted(true);
     msAnalysis.setDeletionExplanation("test on multiple\nlines");
     when(msAnalysisService.get(any(Long.class))).thenReturn(msAnalysis);

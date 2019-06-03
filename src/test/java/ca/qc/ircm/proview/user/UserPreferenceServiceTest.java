@@ -59,7 +59,7 @@ public class UserPreferenceServiceTest {
    */
   @Before
   public void beforeTest() {
-    user = userRepository.findOne(2L);
+    user = userRepository.findById(2L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 
@@ -77,12 +77,12 @@ public class UserPreferenceServiceTest {
   private UserPreference find(User user, String referer, String name) {
     BooleanExpression predicate = userPreference.preference.referer.eq(referer)
         .and(userPreference.preference.name.eq(name)).and(userPreference.user.eq(user));
-    return repository.findOne(predicate);
+    return repository.findOne(predicate).orElse(null);
   }
 
   private Preference findPreference(String referer, String name) {
     BooleanExpression predicate = preference.referer.eq(referer).and(preference.name.eq(name));
-    return preferenceRepository.findOne(predicate);
+    return preferenceRepository.findOne(predicate).orElse(null);
   }
 
   @Test
@@ -93,7 +93,7 @@ public class UserPreferenceServiceTest {
 
   @Test
   public void get_MissingUserPreference() {
-    User user = userRepository.findOne(10L);
+    User user = userRepository.findById(10L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     assertEquals("default value", service.get(this, PREFERENCE_1, "default value"));
@@ -102,8 +102,7 @@ public class UserPreferenceServiceTest {
 
   @Test
   public void get_MissingPreference() {
-    assertEquals("default value",
-        service.get(this, "missing reference", "default value"));
+    assertEquals("default value", service.get(this, "missing reference", "default value"));
   }
 
   @Test
@@ -132,7 +131,7 @@ public class UserPreferenceServiceTest {
   public void save_Insert_All() throws Throwable {
     String value = "test value 1";
     String name = "test new preference";
-    User user = userRepository.findOne(10L);
+    User user = userRepository.findById(10L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     service.save(this, name, value);
@@ -145,7 +144,7 @@ public class UserPreferenceServiceTest {
   @Test
   public void save_Insert() throws Throwable {
     String value = "test value 1";
-    User user = userRepository.findOne(10L);
+    User user = userRepository.findById(10L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(user);
 
     service.save(this, PREFERENCE_1, value);

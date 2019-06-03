@@ -25,8 +25,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -317,7 +317,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void hasInvalid_True() throws Throwable {
-    Laboratory laboratory = laboratoryRepository.findOne(3L);
+    Laboratory laboratory = laboratoryRepository.findById(3L).orElse(null);
 
     boolean hasInvalid = service.hasInvalid(laboratory);
 
@@ -327,7 +327,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void hasInvalid_False() throws Throwable {
-    Laboratory laboratory = laboratoryRepository.findOne(4L);
+    Laboratory laboratory = laboratoryRepository.findById(4L).orElse(null);
 
     boolean hasInvalid = service.hasInvalid(laboratory);
 
@@ -391,7 +391,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void all_Laboratory_Filter() throws Throwable {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElse(null);
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
 
@@ -406,7 +406,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void all_Laboratory_NullFilter() throws Throwable {
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElse(null);
 
     List<User> users = service.all(null, laboratory);
 
@@ -429,7 +429,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void register_Admin() throws Throwable {
-    final User manager = repository.findOne(1L);
+    final User manager = repository.findById(1L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(manager);
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
@@ -457,7 +457,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(authorizationService).getCurrentUser();
     verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -488,7 +488,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Test
   @WithAnonymousUser
   public void register_Admin_AccessDenied_Anonymous() throws Throwable {
-    final User manager = repository.findOne(1L);
+    final User manager = repository.findById(1L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(manager);
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
@@ -516,7 +516,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void register_Admin_AccessDenied() throws Throwable {
-    final User manager = repository.findOne(1L);
+    final User manager = repository.findById(1L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(manager);
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
@@ -570,7 +570,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verifyZeroInteractions(authorizationService);
     verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -624,7 +624,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void register_ExistingLaboratory_EnglishEmail() throws Throwable {
-    User updateLocale = repository.findOne(3L);
+    User updateLocale = repository.findById(3L).orElse(null);
     updateLocale.setLocale(Locale.CANADA);
     repository.save(updateLocale);
     final User manager = new User();
@@ -675,7 +675,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void register_ExistingLaboratory_Invalid() throws Throwable {
-    final User manager = repository.findOne(6L);
+    final User manager = repository.findById(6L).orElse(null);
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -735,10 +735,10 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(passwordEncoder).encode("password");
     assertNotNull(laboratory.getId());
     assertNotNull(user.getId());
-    laboratory = laboratoryRepository.findOne(laboratory.getId());
+    laboratory = laboratoryRepository.findById(laboratory.getId()).orElse(null);
     assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Ribonucleoprotein Biochemistry", laboratory.getName());
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -821,7 +821,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update() throws Throwable {
-    User user = repository.findOne(12L);
+    User user = repository.findById(12L).orElse(null);
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -850,7 +850,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -888,7 +888,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Test
   public void update_CurrentManager() throws Throwable {
     when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
-    User user = repository.findOne(3L);
+    User user = repository.findById(3L).orElse(null);
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -917,7 +917,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
@@ -954,7 +954,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_AddManager() throws Throwable {
-    User user = repository.findOne(10L);
+    User user = repository.findById(10L).orElse(null);
     detach(user);
     user.setManager(true);
 
@@ -962,13 +962,13 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     assertEquals(true, user.isManager());
   }
 
   @Test
   public void update_AddInactiveManager() throws Throwable {
-    User user = repository.findOne(12L);
+    User user = repository.findById(12L).orElse(null);
     detach(user);
     user.setManager(true);
 
@@ -976,14 +976,14 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isManager());
   }
 
   @Test(expected = InvalidUserException.class)
   public void update_AddInvalidManager() throws Throwable {
-    User user = repository.findOne(7L);
+    User user = repository.findById(7L).orElse(null);
     detach(user);
     user.setManager(true);
 
@@ -992,19 +992,19 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_AddManagerDirectorChange() throws Throwable {
-    User user = repository.findOne(10L);
+    User user = repository.findById(10L).orElse(null);
     detach(user);
     user.setManager(true);
 
     service.update(user, null);
 
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElse(null);
     assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test
   public void update_RemoveManager() throws Throwable {
-    User user = repository.findOne(27L);
+    User user = repository.findById(27L).orElse(null);
     detach(user);
     user.setManager(false);
 
@@ -1012,13 +1012,13 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     assertEquals(false, user.isManager());
   }
 
   @Test(expected = UnmanagedLaboratoryException.class)
   public void update_RemoveManagerUnmanagedLaboratory() throws Throwable {
-    User user = repository.findOne(25L);
+    User user = repository.findById(25L).orElse(null);
     detach(user);
     user.setManager(false);
 
@@ -1027,19 +1027,19 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_RemoveManagerDirectorChange() throws Throwable {
-    User user = repository.findOne(27L);
+    User user = repository.findById(27L).orElse(null);
     detach(user);
     user.setManager(false);
 
     service.update(user, null);
 
-    Laboratory laboratory = laboratoryRepository.findOne(2L);
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElse(null);
     assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test
   public void updatePassword() throws Throwable {
-    User user = repository.findOne(4L);
+    User user = repository.findById(4L).orElse(null);
     detach(user);
 
     service.update(user, "unit_test_password");
@@ -1047,7 +1047,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     verify(passwordEncoder).encode("unit_test_password");
-    user = repository.findOne(4L);
+    user = repository.findById(4L).orElse(null);
     assertEquals(hashedPassword, user.getHashedPassword());
     assertNull(user.getSalt());
     assertNull(user.getPasswordVersion());
@@ -1056,7 +1056,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Test
   public void update_Lab() throws Throwable {
     when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
-    User user = repository.findOne(3L);
+    User user = repository.findById(3L).orElse(null);
     detach(user);
 
     user.setEmail("unit_test@ircm.qc.ca");
@@ -1069,7 +1069,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     verify(authorizationService).hasRole(UserRole.MANAGER);
     verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
-    user = repository.findOne(user.getId());
+    user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("lab test", user.getLaboratory().getName());
     assertEquals("organization test", user.getLaboratory().getOrganization());
@@ -1077,7 +1077,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void validate() throws Throwable {
-    User user = repository.findOne(7L);
+    User user = repository.findById(7L).orElse(null);
     detach(user);
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
@@ -1086,7 +1086,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findOne(7L);
+    user = repository.findById(7L).orElse(null);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -1116,10 +1116,10 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void validate_EnglishEmail() throws Throwable {
-    User updateLocale = repository.findOne(7L);
+    User updateLocale = repository.findById(7L).orElse(null);
     updateLocale.setLocale(Locale.CANADA);
     repository.saveAndFlush(updateLocale);
-    User user = repository.findOne(7L);
+    User user = repository.findById(7L).orElse(null);
     detach(user);
     assertEquals(false, user.isActive());
     assertEquals(false, user.isValid());
@@ -1149,7 +1149,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void activate() throws Throwable {
-    User user = repository.findOne(12L);
+    User user = repository.findById(12L).orElse(null);
     detach(user);
     assertEquals(false, user.isActive());
 
@@ -1157,7 +1157,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findOne(12L);
+    user = repository.findById(12L).orElse(null);
     assertEquals(true, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -1166,14 +1166,14 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void deactivate() throws Throwable {
-    User user = repository.findOne(10L);
+    User user = repository.findById(10L).orElse(null);
     detach(user);
 
     service.deactivate(user);
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findOne(10L);
+    user = repository.findById(10L).orElse(null);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -1182,14 +1182,14 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void deactivate_Manager() throws Throwable {
-    User user = repository.findOne(3L);
+    User user = repository.findById(3L).orElse(null);
     detach(user);
 
     service.deactivate(user);
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findOne(3L);
+    user = repository.findById(3L).orElse(null);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
@@ -1198,14 +1198,14 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void deactivate_Admin() throws Throwable {
-    User user = repository.findOne(4L);
+    User user = repository.findById(4L).orElse(null);
     detach(user);
 
     service.deactivate(user);
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findOne(4L);
+    user = repository.findById(4L).orElse(null);
     assertEquals(false, user.isActive());
     assertEquals(true, user.isValid());
     assertEquals(true, user.isAdmin());
@@ -1214,7 +1214,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test(expected = IllegalArgumentException.class)
   public void deactivate_Robot() throws Throwable {
-    User user = repository.findOne(1L);
+    User user = repository.findById(1L).orElse(null);
     detach(user);
     assertEquals(true, user.isActive());
 
@@ -1223,7 +1223,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void deleteValid() throws Throwable {
-    User user = repository.findOne(5L);
+    User user = repository.findById(5L).orElse(null);
     detach(user);
     assertNotNull(user);
 
@@ -1237,7 +1237,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void delete() throws Throwable {
-    User user = repository.findOne(7L);
+    User user = repository.findById(7L).orElse(null);
     detach(user);
     assertNotNull(user);
 
@@ -1245,13 +1245,13 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findOne(7L);
+    user = repository.findById(7L).orElse(null);
     assertNull(user);
   }
 
   @Test
   public void delete_NewLaboratory() throws Throwable {
-    User user = repository.findOne(6L);
+    User user = repository.findById(6L).orElse(null);
     detach(user);
     assertNotNull(user);
 
@@ -1259,9 +1259,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findOne(6L);
+    user = repository.findById(6L).orElse(null);
     assertNull(user);
-    Laboratory laboratory = laboratoryRepository.findOne(3L);
+    Laboratory laboratory = laboratoryRepository.findById(3L).orElse(null);
     assertNull(laboratory);
   }
 }

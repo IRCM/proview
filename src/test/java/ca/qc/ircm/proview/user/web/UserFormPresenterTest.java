@@ -165,9 +165,9 @@ public class UserFormPresenterTest {
     when(defaultAddressConfiguration.getCountry()).thenReturn(defaultCountry);
     when(defaultAddressConfiguration.getPostalCode()).thenReturn(defaultPostalCode);
     presenter.init(view);
-    user = repository.findOne(10L);
+    user = repository.findById(10L).orElse(null);
     when(userService.isManager(any())).thenReturn(true);
-    currentUser = repository.findOne(1L);
+    currentUser = repository.findById(1L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(currentUser);
   }
 

@@ -100,7 +100,7 @@ public class SubmissionActivityService {
   public Optional<Activity> update(final Submission submission, final String explanation) {
     final User user = authorizationService.getCurrentUser();
 
-    final Submission oldSubmission = repository.findOne(submission.getId());
+    final Submission oldSubmission = repository.findById(submission.getId()).orElse(null);
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     class SubmissionUpdateActivityBuilder extends UpdateActivityBuilder {
@@ -274,7 +274,7 @@ public class SubmissionActivityService {
             .map(ua -> new UpdateActivityBuilder(ua)).collect(Collectors.toList())));
         if (sample.getOriginalContainer() instanceof Well) {
           Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
-          Plate oldPlate = plateRepository.findOne(plate.getId());
+          Plate oldPlate = plateRepository.findById(plate.getId()).orElse(null);
           updateBuilders.add(plateUpdate(plate).column(qname(qplate.name))
               .oldValue(oldPlate.getName()).newValue(plate.getName()));
         }

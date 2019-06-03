@@ -246,7 +246,7 @@ public class TreatmentViewPresenterTest {
 
   @Test
   public void enter_Digestion() {
-    Treatment treatment = repository.findOne(6L);
+    Treatment treatment = repository.findById(6L).orElse(null);
     when(treatmentService.get(any())).thenReturn(treatment);
     presenter.init(view);
     presenter.enter("6");
@@ -278,7 +278,7 @@ public class TreatmentViewPresenterTest {
 
   @Test
   public void enter_DigestionDeleted() {
-    Treatment treatment = repository.findOne(6L);
+    Treatment treatment = repository.findById(6L).orElse(null);
     treatment.setDeleted(true);
     treatment.setDeletionExplanation("Multiple line\nTest");
     when(treatmentService.get(any())).thenReturn(treatment);
@@ -308,7 +308,7 @@ public class TreatmentViewPresenterTest {
 
   @Test
   public void enter_Dilution() {
-    Treatment treatment = repository.findOne(4L);
+    Treatment treatment = repository.findById(4L).orElse(null);
     when(treatmentService.get(any())).thenReturn(treatment);
     presenter.init(view);
     presenter.enter("4");
@@ -339,7 +339,7 @@ public class TreatmentViewPresenterTest {
 
   @Test
   public void enter_Enrichment() {
-    Treatment treatment = repository.findOne(7L);
+    Treatment treatment = repository.findById(7L).orElse(null);
     when(treatmentService.get(any())).thenReturn(treatment);
     presenter.init(view);
     presenter.enter("7");
@@ -371,7 +371,7 @@ public class TreatmentViewPresenterTest {
 
   @Test
   public void enter_Fractionation_Mudpit() {
-    Treatment treatment = repository.findOne(2L);
+    Treatment treatment = repository.findById(2L).orElse(null);
     when(treatmentService.get(any())).thenReturn(treatment);
     presenter.init(view);
     presenter.enter("2");
@@ -404,7 +404,7 @@ public class TreatmentViewPresenterTest {
 
   @Test
   public void enter_Fractionation_Pi() {
-    Treatment treatment = repository.findOne(2L);
+    Treatment treatment = repository.findById(2L).orElse(null);
     treatment.setFractionationType(FractionationType.PI);
     when(treatmentService.get(any())).thenReturn(treatment);
     presenter.init(view);
@@ -438,7 +438,7 @@ public class TreatmentViewPresenterTest {
 
   @Test
   public void enter_Solubilisation() {
-    Treatment treatment = repository.findOne(1L);
+    Treatment treatment = repository.findById(1L).orElse(null);
     when(treatmentService.get(any())).thenReturn(treatment);
     presenter.init(view);
     presenter.enter("1");
@@ -469,7 +469,7 @@ public class TreatmentViewPresenterTest {
 
   @Test
   public void enter_StandardAddition() {
-    Treatment treatment = repository.findOne(5L);
+    Treatment treatment = repository.findById(5L).orElse(null);
     when(treatmentService.get(any())).thenReturn(treatment);
     presenter.init(view);
     presenter.enter("5");
@@ -500,7 +500,7 @@ public class TreatmentViewPresenterTest {
 
   @Test
   public void enter_Transfer() {
-    Treatment treatment = repository.findOne(9L);
+    Treatment treatment = repository.findById(9L).orElse(null);
     when(treatmentService.get(any())).thenReturn(treatment);
     presenter.init(view);
     presenter.enter("9");

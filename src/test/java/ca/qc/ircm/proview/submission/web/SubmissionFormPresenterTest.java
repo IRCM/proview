@@ -523,7 +523,7 @@ public class SubmissionFormPresenterTest {
     submission.setQuantificationComment(quantificationComment);
     submission.setComment(comment);
     submission.setSubmissionDate(Instant.now());
-    User user = userRepository.findOne(3L);
+    User user = userRepository.findById(3L).orElse(null);
     submission.setUser(user);
     submission.setLaboratory(user.getLaboratory());
     List<SubmissionSample> samples = new ArrayList<>();
@@ -3463,7 +3463,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_ExistsPlateName_Update() throws Throwable {
-    Submission submission = repository.findOne(163L);
+    Submission submission = repository.findById(163L).orElse(null);
     final Plate plate = ((Well) submission.getSamples().get(0).getOriginalContainer()).getPlate();
     presenter.init(view);
     presenter.setValue(submission);
@@ -4336,7 +4336,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_MissingExplanation() throws Throwable {
-    Submission submission = repository.findOne(164L);
+    Submission submission = repository.findById(164L).orElse(null);
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
@@ -5757,7 +5757,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_Update() throws Throwable {
-    Submission submission = repository.findOne(36L);
+    Submission submission = repository.findById(36L).orElse(null);
     presenter.init(view);
     presenter.setValue(submission);
     design.service.setValue(LC_MS_MS);
@@ -5895,7 +5895,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_UpdateNoChange() throws Throwable {
-    Submission database = repository.findOne(36L);
+    Submission database = repository.findById(36L).orElse(null);
     database.setProteinIdentification(REFSEQ);
     when(submissionSampleService.exists(any())).thenReturn(true);
     when(submissionService.get(any(Long.class))).thenReturn(database);
@@ -6013,7 +6013,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_AdminUpdate() throws Throwable {
-    Submission submission = repository.findOne(147L);
+    Submission submission = repository.findById(147L).orElse(null);
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);
@@ -6155,7 +6155,7 @@ public class SubmissionFormPresenterTest {
 
   @Test
   public void save_AdminUpdateError() throws Throwable {
-    Submission submission = repository.findOne(147L);
+    Submission submission = repository.findById(147L).orElse(null);
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     presenter.setValue(submission);

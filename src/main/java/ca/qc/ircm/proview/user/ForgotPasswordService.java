@@ -79,7 +79,7 @@ public class ForgotPasswordService {
       return null;
     }
 
-    ForgotPassword forgotPassword = repository.findOne(id);
+    ForgotPassword forgotPassword = repository.findById(id).orElse(null);
     if (confirmNumber.equals(forgotPassword.getConfirmNumber()) && !forgotPassword.isUsed()
         && forgotPassword.getRequestMoment().isAfter(Instant.now().minus(VALID_PERIOD))) {
       return forgotPassword;
@@ -173,7 +173,7 @@ public class ForgotPasswordService {
     // Encrypt password.
     String hashedPassword = passwordEncoder.encode(newPassword);
     // Update password.
-    user = userRepository.findOne(user.getId());
+    user = userRepository.findById(user.getId()).orElse(null);
     user.setHashedPassword(hashedPassword);
     user.setSalt(null);
     user.setPasswordVersion(null);

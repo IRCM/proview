@@ -89,7 +89,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void updateStatus() {
-    SubmissionSample sample = submissionSampleRepository.findOne(584L);
+    SubmissionSample sample = submissionSampleRepository.findById(584L).orElse(null);
     detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     Submission submission = sample.getSubmission();
@@ -149,7 +149,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_SubmissionSample() {
-    SubmissionSample submissionSample = submissionSampleRepository.findOne(442L);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(442L).orElse(null);
     detach(submissionSample);
     submissionSample.setName("new_solution_tag_0001");
     submissionSample.setType(SampleType.DRY);
@@ -222,7 +222,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_SubmissionSample_AddContaminants() {
-    SubmissionSample submissionSample = submissionSampleRepository.findOne(442L);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(442L).orElse(null);
     detach(submissionSample);
     Contaminant contaminant = new Contaminant();
     contaminant.setId(57894121L);
@@ -252,7 +252,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_SubmissionSample_UpdateContaminants() {
-    SubmissionSample submissionSample = submissionSampleRepository.findOne(447L);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(447L).orElse(null);
     detach(submissionSample);
     for (Contaminant contaminant : submissionSample.getContaminants()) {
       detach(contaminant);
@@ -302,7 +302,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_SubmissionSample_RemoveContaminant() {
-    SubmissionSample submissionSample = submissionSampleRepository.findOne(447L);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(447L).orElse(null);
     detach(submissionSample);
     final Contaminant contaminant = submissionSample.getContaminants().get(0);
     submissionSample.getContaminants().remove(0);
@@ -328,7 +328,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_SubmissionSample_AddStandard() {
-    SubmissionSample submissionSample = submissionSampleRepository.findOne(442L);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(442L).orElse(null);
     detach(submissionSample);
     Standard standard = new Standard();
     standard.setId(57894121L);
@@ -358,7 +358,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_SubmissionSample_UpdateStandard() {
-    SubmissionSample submissionSample = submissionSampleRepository.findOne(447L);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(447L).orElse(null);
     detach(submissionSample);
     for (Standard standard : submissionSample.getStandards()) {
       detach(standard);
@@ -408,7 +408,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_SubmissionSample_RemoveStandard() {
-    SubmissionSample submissionSample = submissionSampleRepository.findOne(447L);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(447L).orElse(null);
     detach(submissionSample);
     final Standard standard = submissionSample.getStandards().get(0);
     submissionSample.getStandards().remove(0);
@@ -434,7 +434,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Control() {
-    Control control = controlRepository.findOne(444L);
+    Control control = controlRepository.findById(444L).orElse(null);
     detach(control);
     control.setName("nc_test_000001");
     control.setControlType(ControlType.POSITIVE_CONTROL);
@@ -497,7 +497,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Control_AddStandard() {
-    Control control = controlRepository.findOne(444L);
+    Control control = controlRepository.findById(444L).orElse(null);
     detach(control);
     Standard standard = new Standard();
     standard.setId(57894121L);
@@ -526,7 +526,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Control_UpdateStandard() {
-    Control control = controlRepository.findOne(448L);
+    Control control = controlRepository.findById(448L).orElse(null);
     detach(control);
     for (Standard standard : control.getStandards()) {
       detach(standard);
@@ -575,7 +575,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Control_RemoveStandard() {
-    Control control = controlRepository.findOne(448L);
+    Control control = controlRepository.findById(448L).orElse(null);
     detach(control);
     final Standard standard = control.getStandards().get(0);
     control.getStandards().remove(0);
@@ -600,7 +600,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Submission_SampleDeliveryAndDigestionDateAndAnalysisDate() {
-    SubmissionSample sample = submissionSampleRepository.findOne(584L);
+    SubmissionSample sample = submissionSampleRepository.findById(584L).orElse(null);
     Submission submission = sample.getSubmission();
     detach(sample);
     detach(submission);
@@ -636,7 +636,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_NoChange() {
-    Control control = controlRepository.findOne(448L);
+    Control control = controlRepository.findById(448L).orElse(null);
     detach(control);
 
     Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");

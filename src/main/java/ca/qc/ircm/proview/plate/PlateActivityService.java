@@ -87,7 +87,7 @@ public class PlateActivityService {
   public Optional<Activity> update(final Plate plate) {
     User user = authorizationService.getCurrentUser();
 
-    Plate oldPlate = repository.findOne(plate.getId());
+    Plate oldPlate = repository.findById(plate.getId()).orElse(null);
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     updateBuilders.add(updateActivity(plate).column("name").oldValue(oldPlate.getName())
@@ -155,7 +155,7 @@ public class PlateActivityService {
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     for (Well well : wells) {
-      Well oldWell = wellRepository.findOne(well.getId());
+      Well oldWell = wellRepository.findById(well.getId()).orElse(null);
       updateBuilders.add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 
@@ -195,7 +195,7 @@ public class PlateActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     for (Well well : wells) {
       assert well.getPlate().equals(plate);
-      Well oldWell = wellRepository.findOne(well.getId());
+      Well oldWell = wellRepository.findById(well.getId()).orElse(null);
       updateBuilders.add(new ActivateSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 

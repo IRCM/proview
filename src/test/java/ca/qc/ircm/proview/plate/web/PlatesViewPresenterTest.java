@@ -35,7 +35,7 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -125,16 +125,16 @@ public class PlatesViewPresenterTest extends AbstractComponentTestCase {
     when(view.getLocale()).thenReturn(locale);
     when(view.getResources()).thenReturn(resources);
     when(view.getGeneralResources()).thenReturn(generalResources);
-    plates.add(repository.findOne(26L));
-    plates.add(repository.findOne(107L));
-    plates.add(repository.findOne(123L));
+    plates.add(repository.findById(26L).orElse(null));
+    plates.add(repository.findById(107L).orElse(null));
+    plates.add(repository.findById(123L).orElse(null));
     IntStream.range(0, plates.size() - 1).forEach(
         i -> lastTreatmentOrAnalysisDate.put(plates.get(i), Instant.now().minusSeconds(i * 2)));
     when(plateService.all(any())).thenReturn(new ArrayList<>(plates));
     when(plateService.lastTreatmentOrAnalysisDate(any()))
-        .thenAnswer(i -> lastTreatmentOrAnalysisDate.get(i.getArgumentAt(0, Plate.class)));
+        .thenAnswer(i -> lastTreatmentOrAnalysisDate.get(i.getArgument(0)));
     when(plateService.get(any()))
-        .thenAnswer(i -> repository.findOne(i.getArgumentAt(0, Long.class)));
+        .thenAnswer(i -> repository.findById(i.getArgument(0)).orElse(null));
   }
 
   @Test

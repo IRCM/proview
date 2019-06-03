@@ -53,7 +53,7 @@ public class TubeService {
       return null;
     }
 
-    return repository.findOne(id);
+    return repository.findById(id).orElse(null);
   }
 
   /**

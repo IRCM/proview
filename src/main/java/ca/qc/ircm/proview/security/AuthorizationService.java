@@ -81,7 +81,7 @@ public class AuthorizationService {
         return null;
       }
 
-      return repository.findOne(userId);
+      return repository.findById(userId).orElse(null);
     } else {
       return null;
     }

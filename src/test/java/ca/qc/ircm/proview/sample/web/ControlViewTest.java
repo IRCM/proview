@@ -191,7 +191,7 @@ public class ControlViewTest extends ControlViewPageObject {
     Matcher matcher = Pattern.compile(viewUrl(ControlView.VIEW_NAME) + "/(\\d+)").matcher(url);
     assertTrue(matcher.matches());
     Long id = Long.valueOf(matcher.group(1));
-    Control control = repository.findOne(id);
+    Control control = repository.findById(id).orElse(null);
     assertEquals(name, control.getName());
     assertEquals(type, control.getType());
     assertEquals(quantity, control.getQuantity());

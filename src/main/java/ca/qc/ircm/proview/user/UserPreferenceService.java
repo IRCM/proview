@@ -72,18 +72,18 @@ public class UserPreferenceService {
   private UserPreference find(User user, String referer, String name) {
     BooleanExpression predicate = userPreference.preference.referer.eq(referer)
         .and(userPreference.preference.name.eq(name)).and(userPreference.user.eq(user));
-    return repository.findOne(predicate);
+    return repository.findOne(predicate).orElse(null);
   }
 
   private UserPreference find(User user, Preference preference) {
     BooleanExpression predicate =
         userPreference.user.eq(user).and(userPreference.preference.eq(preference));
-    return repository.findOne(predicate);
+    return repository.findOne(predicate).orElse(null);
   }
 
   private Preference findPreference(String referer, String name) {
     BooleanExpression predicate = preference.referer.eq(referer).and(preference.name.eq(name));
-    return preferenceRepository.findOne(predicate);
+    return preferenceRepository.findOne(predicate).orElse(null);
   }
 
   /**

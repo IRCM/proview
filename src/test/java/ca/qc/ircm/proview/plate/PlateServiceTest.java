@@ -26,9 +26,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -474,15 +474,15 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @WithMockUser(authorities = UserRole.ADMIN)
   public void lastTreatmentOrAnalysisDate() {
     assertEquals(toInstant(LocalDateTime.of(2011, 11, 16, 15, 7, 34)),
-        service.lastTreatmentOrAnalysisDate(repository.findOne(26L)));
+        service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null)));
     assertEquals(toInstant(LocalDateTime.of(2014, 10, 15, 15, 53, 34)),
-        service.lastTreatmentOrAnalysisDate(repository.findOne(115L)));
+        service.lastTreatmentOrAnalysisDate(repository.findById(115L).orElse(null)));
     assertEquals(toInstant(LocalDateTime.of(2014, 10, 17, 11, 54, 22)),
-        service.lastTreatmentOrAnalysisDate(repository.findOne(118L)));
+        service.lastTreatmentOrAnalysisDate(repository.findById(118L).orElse(null)));
     assertEquals(toInstant(LocalDateTime.of(2014, 10, 22, 9, 57, 18)),
-        service.lastTreatmentOrAnalysisDate(repository.findOne(121L)));
-    assertNull(service.lastTreatmentOrAnalysisDate(repository.findOne(122L)));
-    assertNull(service.lastTreatmentOrAnalysisDate(repository.findOne(123L)));
+        service.lastTreatmentOrAnalysisDate(repository.findById(121L).orElse(null)));
+    assertNull(service.lastTreatmentOrAnalysisDate(repository.findById(122L).orElse(null)));
+    assertNull(service.lastTreatmentOrAnalysisDate(repository.findById(123L).orElse(null)));
   }
 
   @Test
@@ -494,13 +494,13 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void lastTreatmentOrAnalysisDate_AccessDenied_Anonymous() throws Throwable {
-    service.lastTreatmentOrAnalysisDate(repository.findOne(26L));
+    service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null));
   }
 
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void lastTreatmentOrAnalysisDate_AccessDenied() throws Throwable {
-    service.lastTreatmentOrAnalysisDate(repository.findOne(26L));
+    service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null));
   }
 
   @Test
@@ -543,7 +543,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void update() throws Exception {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
 
@@ -560,7 +560,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void update_AccessDenied_Anonymous() throws Throwable {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
 
@@ -570,7 +570,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void update_AccessDenied() throws Throwable {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
 
@@ -580,18 +580,17 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void ban_OneWell() {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     detach(plate);
     WellLocation location = new WellLocation(0, 0);
-    when(plateActivityService.ban(anyCollectionOf(Well.class), any(String.class)))
-        .thenReturn(activity);
+    when(plateActivityService.ban(anyCollection(), any(String.class))).thenReturn(activity);
 
     service.ban(plate, location, location, "unit test");
 
     repository.flush();
     verify(plateActivityService).ban(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    Well well = wellRepository.findOne(128L);
+    Well well = wellRepository.findById(128L).orElse(null);
     assertEquals(true, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
@@ -601,12 +600,11 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void ban_MultipleWells() {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     detach(plate);
     WellLocation from = new WellLocation(3, 3);
     WellLocation to = new WellLocation(5, 4);
-    when(plateActivityService.ban(anyCollectionOf(Well.class), any(String.class)))
-        .thenReturn(activity);
+    when(plateActivityService.ban(anyCollection(), any(String.class))).thenReturn(activity);
 
     service.ban(plate, from, to, "unit test");
 
@@ -615,7 +613,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     verify(activityService).insert(activity);
     List<Well> bannedWells = service.get(plate.getId()).wells(from, to);
     for (Well bannedWell : bannedWells) {
-      Well well = wellRepository.findOne(bannedWell.getId());
+      Well well = wellRepository.findById(bannedWell.getId()).orElse(null);
       assertEquals(true, well.isBanned());
     }
     Collection<Well> loggedWells = wellsCaptor.getValue();
@@ -628,12 +626,11 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void ban_AccessDenied_Anonymous() throws Throwable {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     detach(plate);
     WellLocation from = new WellLocation(3, 3);
     WellLocation to = new WellLocation(5, 4);
-    when(plateActivityService.ban(anyCollectionOf(Well.class), any(String.class)))
-        .thenReturn(activity);
+    when(plateActivityService.ban(anyCollection(), any(String.class))).thenReturn(activity);
 
     service.ban(plate, from, to, "unit test");
   }
@@ -641,12 +638,11 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void ban_AccessDenied() throws Throwable {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     detach(plate);
     WellLocation from = new WellLocation(3, 3);
     WellLocation to = new WellLocation(5, 4);
-    when(plateActivityService.ban(anyCollectionOf(Well.class), any(String.class)))
-        .thenReturn(activity);
+    when(plateActivityService.ban(anyCollection(), any(String.class))).thenReturn(activity);
 
     service.ban(plate, from, to, "unit test");
   }
@@ -654,18 +650,17 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void activate_OneWell() {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     detach(plate);
     WellLocation location = new WellLocation(6, 11);
-    when(plateActivityService.activate(anyCollectionOf(Well.class), any(String.class)))
-        .thenReturn(activity);
+    when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
 
     service.activate(plate, location, location, "unit test");
 
     repository.flush();
     verify(plateActivityService).activate(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    Well well = wellRepository.findOne(211L);
+    Well well = wellRepository.findById(211L).orElse(null);
     assertEquals(false, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
@@ -675,23 +670,22 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void activate_MultipleWells() {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     detach(plate);
     WellLocation from = new WellLocation(5, 11);
     WellLocation to = new WellLocation(7, 11);
-    when(plateActivityService.activate(anyCollectionOf(Well.class), any(String.class)))
-        .thenReturn(activity);
+    when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
 
     service.activate(plate, from, to, "unit test");
 
     repository.flush();
     verify(plateActivityService).activate(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    Well well = wellRepository.findOne(199L);
+    Well well = wellRepository.findById(199L).orElse(null);
     assertEquals(false, well.isBanned());
-    well = wellRepository.findOne(211L);
+    well = wellRepository.findById(211L).orElse(null);
     assertEquals(false, well.isBanned());
-    well = wellRepository.findOne(223L);
+    well = wellRepository.findById(223L).orElse(null);
     assertEquals(false, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(3, loggedWells.size());
@@ -703,11 +697,10 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithAnonymousUser
   public void activate_AccessDenied_Anonymous() throws Throwable {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     detach(plate);
     WellLocation location = new WellLocation(6, 11);
-    when(plateActivityService.activate(anyCollectionOf(Well.class), any(String.class)))
-        .thenReturn(activity);
+    when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
 
     service.activate(plate, location, location, "unit test");
   }
@@ -715,11 +708,10 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void activate_AccessDenied() throws Throwable {
-    Plate plate = repository.findOne(26L);
+    Plate plate = repository.findById(26L).orElse(null);
     detach(plate);
     WellLocation location = new WellLocation(6, 11);
-    when(plateActivityService.activate(anyCollectionOf(Well.class), any(String.class)))
-        .thenReturn(activity);
+    when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
 
     service.activate(plate, location, location, "unit test");
   }
