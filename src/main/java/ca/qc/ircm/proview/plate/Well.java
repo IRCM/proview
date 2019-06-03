@@ -49,12 +49,12 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
   /**
    * Row where well is located on plate.
    */
-  @Column(updatable = false, nullable = false)
+  @Column(name = "wellrow", updatable = false, nullable = false)
   private int row;
   /**
    * Column where well is located on plate.
    */
-  @Column(name = "col", updatable = false, nullable = false)
+  @Column(name = "wellcolumn", updatable = false, nullable = false)
   private int column;
 
   /**

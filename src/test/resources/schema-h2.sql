@@ -16,14 +16,14 @@
 --
 
 CREATE TABLE IF NOT EXISTS laboratory (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   organization varchar(255) NOT NULL,
   director varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS address (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   line varchar(200) NOT NULL,
   town varchar(50) NOT NULL,
   state varchar(50) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS address (
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS user (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   email varchar(255) NOT NULL,
   name varchar(255) NOT NULL,
   hashedpassword varchar(255) DEFAULT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS user (
   CONSTRAINT user_ibfk_1 FOREIGN KEY (address_id) REFERENCES address (id) ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS phonenumber (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   phonenumbers_id bigint(20) DEFAULT NULL,
   type varchar(255) NOT NULL,
   number varchar(50) NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS phonenumber (
   CONSTRAINT phonenumber_ibfk_1 FOREIGN KEY (phonenumbers_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS forgotpassword (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   user_id bigint(20) NOT NULL,
   requestmoment datetime NOT NULL,
   confirmnumber int(11) NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS forgotpassword (
   CONSTRAINT forgotpassword_ibfk_1 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS submission (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   service varchar(50) DEFAULT NULL,
   experiment varchar(100) DEFAULT NULL,
   goal varchar(150) DEFAULT NULL,
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS submission (
   CONSTRAINT submission_ibfk_2 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS submissionfiles (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   files_id bigint(20) DEFAULT NULL,
   filename varchar(255) NOT NULL,
   content blob,
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS submissionfiles (
   CONSTRAINT submissionfiles_ibfk_1 FOREIGN KEY (files_id) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS plate (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,
   columncount int NOT NULL,
   rowcount int NOT NULL,
@@ -148,23 +148,23 @@ CREATE TABLE IF NOT EXISTS plate (
 );
 CREATE INDEX IF NOT EXISTS plateName ON plate (name);
 CREATE TABLE IF NOT EXISTS samplecontainer (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   type varchar(50) NOT NULL,
   name varchar(100) DEFAULT NULL,
   plate_id bigint(20) DEFAULT NULL,
-  col int(11) DEFAULT NULL,
-  row int(11) DEFAULT NULL,
+  wellcolumn int(11) DEFAULT NULL,
+  wellrow int(11) DEFAULT NULL,
   sample_id bigint(20) DEFAULT NULL,
   version int(11) DEFAULT 0,
   timestamp datetime NOT NULL,
   banned tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
-  UNIQUE KEY samplecontainerPlateId (plate_id,col,row),
+  UNIQUE KEY samplecontainerPlateId (plate_id,wellcolumn,wellrow),
   CONSTRAINT samplecontainer_ibfk_1 FOREIGN KEY (plate_id) REFERENCES plate (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE INDEX IF NOT EXISTS samplecontainerName ON samplecontainer (name);
 CREATE TABLE IF NOT EXISTS sample (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(150) DEFAULT NULL,
   controltype varchar(50) DEFAULT NULL,
   type varchar(50) DEFAULT NULL,
@@ -186,7 +186,7 @@ CREATE INDEX IF NOT EXISTS sampleName ON sample (name);
 ALTER TABLE samplecontainer
 ADD CONSTRAINT IF NOT EXISTS samplecontainer_ibfk_2 FOREIGN KEY (sample_id) REFERENCES sample (id) ON DELETE SET NULL ON UPDATE CASCADE;
 CREATE TABLE IF NOT EXISTS standard (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
   quantity varchar(100) DEFAULT NULL,
   standards_id bigint(20) DEFAULT NULL,
@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS standard (
   CONSTRAINT standard_ibfk_1 FOREIGN KEY (standards_id) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS contaminant (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
   quantity varchar(100) DEFAULT NULL,
   contaminants_id bigint(20) DEFAULT NULL,
@@ -206,21 +206,21 @@ CREATE TABLE IF NOT EXISTS contaminant (
   CONSTRAINT contaminant_ibfk_1 FOREIGN KEY (contaminants_id) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS solvent (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   submission_id bigint(20) DEFAULT NULL,
   solvents varchar(150) NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT solvent_ibfk_1 FOREIGN KEY (submission_id) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS protocol (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) DEFAULT NULL,
   type varchar(50) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY protocolName (name)
 );
 CREATE TABLE IF NOT EXISTS treatment (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   type varchar(100) DEFAULT NULL,
   protocol_id bigint(20) DEFAULT NULL,
   fractionationtype varchar(50) DEFAULT NULL,
@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS treatment (
   CONSTRAINT treatment_ibfk_2 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS treatedsample (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   treatment_id bigint(20) DEFAULT NULL,
   sample_id bigint(20) NOT NULL,
   container_id bigint(20) DEFAULT NULL,
@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS treatedsample (
   CONSTRAINT treatedsample_ibfk_4 FOREIGN KEY (destinationcontainer_id) REFERENCES samplecontainer (id) ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS msanalysis (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   source varchar(100) DEFAULT NULL,
   massdetectioninstrument varchar(100) NOT NULL,
   inserttime datetime NOT NULL,
@@ -266,7 +266,7 @@ CREATE TABLE IF NOT EXISTS msanalysis (
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS acquisition (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   msanalysis_id bigint(20) DEFAULT NULL,
   sample_id bigint(20) NOT NULL,
   container_id bigint(20) DEFAULT NULL,
@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS acquisition (
 );
 CREATE INDEX IF NOT EXISTS acquisitionFile ON acquisition (acquisitionfile,sample_id);
 CREATE TABLE IF NOT EXISTS dataanalysis (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   sample_id bigint(20) NOT NULL,
   protein varchar(255) NOT NULL,
   peptide varchar(255) DEFAULT NULL,
@@ -297,7 +297,7 @@ CREATE TABLE IF NOT EXISTS dataanalysis (
   CONSTRAINT dataanalysis_ibfk_1 FOREIGN KEY (sample_id) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS activity (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   user_id bigint(20) NOT NULL,
   tablename varchar(50) NOT NULL,
   recordid bigint(20) NOT NULL,
@@ -308,7 +308,7 @@ CREATE TABLE IF NOT EXISTS activity (
 );
 CREATE INDEX IF NOT EXISTS activityRecordIndex ON activity (tablename,recordid,actiontype);
 CREATE TABLE IF NOT EXISTS activityupdate (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   updates_id bigint(20) DEFAULT NULL,
   tablename varchar(50) NOT NULL,
   recordid bigint(20) NOT NULL,
@@ -320,7 +320,7 @@ CREATE TABLE IF NOT EXISTS activityupdate (
   CONSTRAINT activityupdate_ibfk_1 FOREIGN KEY (updates_id) REFERENCES activity (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS preference (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   referer varchar(255) NOT NULL,
   name varchar(255) NOT NULL,
   PRIMARY KEY (id),
@@ -328,7 +328,7 @@ CREATE TABLE IF NOT EXISTS preference (
 );
 CREATE INDEX IF NOT EXISTS preferenceName ON preference (name);
 CREATE TABLE IF NOT EXISTS userpreference (
-  id bigint(20) NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+  id bigint(20) NOT NULL AUTO_INCREMENT,
   preference_id bigint(20) NOT NULL,
   user_id bigint(20) NOT NULL,
   value blob DEFAULT NULL,
