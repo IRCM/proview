@@ -23,5 +23,5 @@ import com.vaadin.ui.Component;
  * Component extending all component utility interfaces.
  */
 public interface BaseComponent extends Component, NotificationComponent, NavigationComponent,
-    MessageResourcesComponent, UiComponent, ConfirmDialogComponent, MainUiComponent {
+    MessageResourcesComponent, UiComponent, ConfirmDialogComponent {
 }

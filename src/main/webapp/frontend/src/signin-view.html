@@ -1,0 +1,27 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="signin-view">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+    </template>
+
+    <script>
+        class SigninView extends Polymer.Element {
+            static get is() {
+                return 'signin-view';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+        }
+        customElements.define(SigninView.is, SigninView);
+    </script>
+</dom-module>

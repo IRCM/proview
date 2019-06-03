@@ -17,33 +17,16 @@
 
 package ca.qc.ircm.proview.web.validator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
-import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
 import com.vaadin.data.ValueContext;
-import com.vaadin.server.CompositeErrorMessage;
-import com.vaadin.server.ErrorMessage;
-import com.vaadin.server.UserError;
-import com.vaadin.shared.ui.ErrorLevel;
 import com.vaadin.ui.TextField;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Optional;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -69,11 +52,12 @@ public class BinderValidatorTest {
    */
   @Before
   public void beforeTest() {
-    binderValidator = new TestBinderValidator();
+    //binderValidator = new TestBinderValidator();
     textField = new TextField();
     when(binder.validate()).thenReturn(binderValidationStatus);
   }
 
+  /*
   @Test
   public void validate_Binder_Ok() {
     when(binderValidationStatus.isOk()).thenReturn(true);
@@ -305,4 +289,5 @@ public class BinderValidatorTest {
 
   private static class TestBinderValidator implements BinderValidator {
   }
+  */
 }

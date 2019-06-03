@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.vaadin;
 
 import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.data.provider.Query;
 import com.vaadin.ui.Grid;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -37,7 +36,7 @@ public class VaadinUtils {
 
   /**
    * Concatenates names to create a valid CSS class name.
-   * 
+   *
    * @param names
    *          class names
    * @return valid CSS class name based on names
@@ -86,7 +85,9 @@ public class VaadinUtils {
 
     Comparator<T> comparator = gridComparator(grid);
     ListDataProvider<T> dataProvider = (ListDataProvider<T>) grid.getDataProvider();
-    return dataProvider
-        .fetch(new Query<>(0, Integer.MAX_VALUE, null, comparator, dataProvider.getFilter()));
+    // TODO Fix returned stream.
+    return Stream.empty();
+    //    return dataProvider
+    //        .fetch(new Query<>(0, Integer.MAX_VALUE, null, comparator, dataProvider.getFilter()));
   }
 }
