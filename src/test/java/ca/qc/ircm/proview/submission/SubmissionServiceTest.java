@@ -2448,8 +2448,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setGoal("goal");
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
     service.update(submission, null);
 
@@ -2530,8 +2529,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.getSamples().get(0).setName("unit_test_01");
     submission.getSamples().get(0).setVolume("20.0 μl");
     submission.getSamples().get(0).setQuantity("2.0 μg");
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
     service.update(submission, null);
 
@@ -2609,8 +2607,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
     Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2701,8 +2698,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<Standard> standards = new ArrayList<>();
     standards.add(standard);
     sample.setStandards(standards);
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
     Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2769,8 +2765,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     });
     User user = userRepository.findById(4L).orElse(null);
     submission.setUser(user);
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
     service.update(submission, null);
   }
@@ -2809,8 +2804,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
     service.update(submission, null);
 
@@ -2882,8 +2876,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Instant newInstant = Instant.now();
     submission.setSubmissionDate(newInstant);
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
     service.update(submission, "unit_test");
 
@@ -2964,8 +2957,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     });
     submission.getSamples().add(sample);
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
-    when(submissionActivityService.update(any(Submission.class), any(String.class)))
-        .thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
     service.update(submission, "unit_test");
 

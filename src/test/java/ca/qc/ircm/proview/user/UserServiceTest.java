@@ -790,9 +790,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
             .filter(
                 subject -> subject.equals(englishResources.message("newLaboratory.email.subject")))
             .count());
-    stringCaptor.getAllValues().clear();
     verify(email, times(3)).setText(stringCaptor.capture(), stringCaptor.capture());
-    for (int i = 0; i < 6; i += 2) {
+    for (int i = 3; i < 9; i += 2) {
       String textContent = stringCaptor.getAllValues().get(i);
       String htmlContent = stringCaptor.getAllValues().get(i + 1);
       Locale locale = Locale.ENGLISH;
