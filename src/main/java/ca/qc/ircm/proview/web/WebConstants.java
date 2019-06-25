@@ -31,6 +31,8 @@ import java.util.Set;
 public class WebConstants {
   public static final Locale DEFAULT_LOCALE = Locale.FRENCH;
   public static final String GENERAL_MESSAGES = "VaadinMessages";
+  public static final String APPLICATION_NAME = "application.name";
+  public static final String TITLE = "title";
   public static final String COMPONENTS = "components";
   public static final String FIELD_NOTIFICATION = "field.notification";
   public static final String PLACEHOLDER = "placeholder";
@@ -52,8 +54,8 @@ public class WebConstants {
   public static final String SAVED_SAMPLES = "savedSamples";
   public static final String SAVED_CONTAINERS = "savedContainers";
   public static final String SAVED_SAMPLE_FROM_MULTIPLE_USERS = "savedSamplesFromMultipleUsers";
-  public static final Method VALUE_CHANGE_LISTENER_METHOD =
-      ReflectTools.findMethod(ValueChangeListener.class, "valueChange", ValueChangeEvent.class);
+  public static final Method VALUE_CHANGE_LISTENER_METHOD = ReflectTools
+      .findMethod(ValueChangeListener.class, "valueChange", ValueChangeEvent.class);
 
   /**
    * Returns all valid locales for program.
