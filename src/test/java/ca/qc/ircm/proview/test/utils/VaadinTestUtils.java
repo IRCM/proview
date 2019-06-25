@@ -17,13 +17,12 @@
 
 package ca.qc.ircm.proview.test.utils;
 
-import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.data.provider.Query;
-import com.vaadin.server.UserError;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.RadioButtonGroup;
-import com.vaadin.ui.components.grid.EditorImpl;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.editor.EditorImpl;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.provider.Query;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -88,9 +87,5 @@ public class VaadinTestUtils {
         | InvocationTargetException | NoSuchMethodException e) {
       throw new IllegalStateException("Could not call doEdit", e);
     }
-  }
-
-  public static String errorMessage(String message) {
-    return new UserError(message).getFormattedHtmlMessage();
   }
 }

@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.web;
 
-import com.vaadin.data.HasValue.ValueChangeEvent;
-import com.vaadin.data.HasValue.ValueChangeListener;
-import com.vaadin.util.ReflectTools;
+import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
+import com.vaadin.flow.internal.ReflectTools;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Locale;
@@ -55,7 +55,7 @@ public class WebConstants {
   public static final String SAVED_CONTAINERS = "savedContainers";
   public static final String SAVED_SAMPLE_FROM_MULTIPLE_USERS = "savedSamplesFromMultipleUsers";
   public static final Method VALUE_CHANGE_LISTENER_METHOD = ReflectTools
-      .findMethod(ValueChangeListener.class, "valueChange", ValueChangeEvent.class);
+      .findMethod(ValueChangeListener.class, "valueChanged", ValueChangeEvent.class);
 
   /**
    * Returns all valid locales for program.
