@@ -3,7 +3,7 @@
 
 ALTER TABLE user
 ADD COLUMN laboratory_id bigint(20) DEFAULT NULL;
-UPDATE USER
+UPDATE user
 JOIN laboratoryuser ON user.id = laboratoryuser.user_id
 SET user.laboratory_id = laboratoryuser.laboratory_id;
 ALTER TABLE user
