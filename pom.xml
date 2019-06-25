@@ -251,11 +251,6 @@
       <version>${shiro.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-web</artifactId>
-      <version>${shiro.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-core</artifactId>
     </dependency>
