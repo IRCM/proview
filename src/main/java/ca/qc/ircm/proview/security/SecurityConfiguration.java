@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.security;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -63,6 +64,9 @@ public class SecurityConfiguration {
   private boolean validatePasswordConfiguration() {
     boolean valid = true;
     Set<Integer> versions = new HashSet<>();
+    if (passwords == null) {
+      passwords = new ArrayList<>();
+    }
     for (int i = 0; i < passwords.size(); i++) {
       PasswordVersion passwordVersion = passwords.get(i);
       int version = passwordVersion.getVersion();
