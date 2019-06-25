@@ -18,11 +18,25 @@
 package ca.qc.ircm.proview.text;
 
 import java.text.Normalizer;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Strings {
   /**
+   * Concatenates properties separating them by dots.
+   *
+   * @param names
+   *          property names
+   * @return properties separated by dots
+   */
+  public static String property(Object... names) {
+    return Arrays.asList(names).stream().filter(name -> name != null)
+        .map(name -> String.valueOf(name)).collect(Collectors.joining("."));
+  }
+
+  /**
    * Removes accents from characters.
-   * 
+   *
    * @param value
    *          value
    * @return value without accents
