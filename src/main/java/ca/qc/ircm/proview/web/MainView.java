@@ -1,32 +1,23 @@
 package ca.qc.ircm.proview.web;
 
-import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.templatemodel.TemplateModel;
+import static ca.qc.ircm.proview.user.UserRole.USER;
+
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Route;
+import javax.annotation.security.RolesAllowed;
 
 /**
- * A Designer generated component for the main-view template.
- *
- * Designer will add and remove fields with @Id mappings but does not overwrite or otherwise change
- * this file.
+ * Main view.
  */
-@Tag("main-view")
-@HtmlImport("src/main-view.html")
-public class MainView extends PolymerTemplate<MainView.MainViewModel> {
+@Route(value = MainView.VIEW_NAME, layout = ViewLayout.class)
+@RolesAllowed({ USER })
+public class MainView extends VerticalLayout {
   public static final String VIEW_NAME = "";
+  private static final long serialVersionUID = -4472228116629914718L;
+  private H1 header = new H1("Main view");
 
-  /**
-   * Creates a new MainView.
-   */
   public MainView() {
-    // You can initialise any data required for the connected UI components here.
-  }
-
-  /**
-   * This model binds properties between MainView and main-view
-   */
-  public interface MainViewModel extends TemplateModel {
-    // Add setters and getters for template properties here.
+    add(header);
   }
 }

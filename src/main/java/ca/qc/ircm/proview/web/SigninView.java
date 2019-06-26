@@ -8,7 +8,6 @@ import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
-import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginI18n.ErrorMessage;
 import com.vaadin.flow.component.login.LoginOverlay;
@@ -30,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * Signin view.
  */
 @Route(value = SigninView.VIEW_NAME)
-@HtmlImport("styles/shared-styles.html")
 public class SigninView extends LoginOverlay
     implements LocaleChangeObserver, HasDynamicTitle, AfterNavigationObserver, BeforeEnterObserver {
   public static final String VIEW_NAME = "signin";
