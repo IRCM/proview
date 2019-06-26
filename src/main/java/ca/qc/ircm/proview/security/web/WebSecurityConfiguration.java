@@ -29,10 +29,14 @@ import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.flow.server.ServletHelper.RequestType;
+import com.vaadin.flow.shared.ApplicationConstants;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.DisabledException;
@@ -50,8 +54,6 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 /**
@@ -60,12 +62,11 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-  // Skip Spring Security sign-in, it is done manually in SigninView.
-  public static final String SIGNIN_PROCESSING_URL = url(SigninView.VIEW_NAME + "Fake");
+  public static final String SIGNIN_PROCESSING_URL = "/" + SigninView.VIEW_NAME;
   public static final String SIGNOUT_URL = "/signout";
-  public static final String SWITCH_USER_URL = url(UsersView.SWITCH_USER);
+  public static final String SWITCH_USER_URL = "/switchUser";
   public static final String SWITCH_USERNAME_PARAMETER = "username";
-  public static final String SWITCH_USER_EXIT_URL = SWITCH_USER_URL + "/exit";
+  public static final String SWITCH_USER_EXIT_URL = "/switchUser/exit";
   private static final String SIGNIN_FAILURE_URL_PATTERN = Pattern.quote(SIGNIN_PROCESSING_URL)
       + "\\?.*";
   private static final String SIGNIN_DEFAULT_FAILURE_URL = SIGNIN_PROCESSING_URL + "?"
@@ -73,11 +74,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final String SIGNIN_LOCKED_URL = SIGNIN_PROCESSING_URL + "?" + SigninView.LOCKED;
   private static final String SIGNIN_DISABLED_URL = SIGNIN_PROCESSING_URL + "?"
       + SigninView.DISABLED;
-  private static final String SIGNIN_URL = url(SigninView.VIEW_NAME);
-  private static final String SIGNOUT_SUCCESS_URL = url(MainView.VIEW_NAME);
-  private static final String SWITCH_USER_FAILURE_URL = url(UsersView.VIEW_NAME) + "?"
+  private static final String SIGNIN_URL = SIGNIN_PROCESSING_URL;
+  private static final String SIGNOUT_SUCCESS_URL = "/" + MainView.VIEW_NAME;
+  private static final String SWITCH_USER_FAILURE_URL = "/" + UsersView.VIEW_NAME + "?"
       + UsersView.SWITCH_FAILED;
-  private static final String SWITCH_USER_TRAGET_URL = url(MainView.VIEW_NAME);
+  private static final String SWITCH_USER_TRAGET_URL = "/" + MainView.VIEW_NAME;
   private static final String PASSWORD_ENCRYPTION = "bcrypt";
   @Inject
   private UserDetailsService userDetailsService;
@@ -163,16 +164,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   /**
-   * Returns session authentication strategy.
-   *
-   * @return session authentication strategy
-   */
-  @Bean
-  public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-    return new ChangeSessionIdAuthenticationStrategy();
-  }
-
-  /**
    * Registers our UserDetailsService and the password encoder to be used on login attempts.
    */
   @Override
@@ -189,11 +180,21 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     // Not using Spring CSRF here to be able to use plain HTML for the login page
     http.csrf().disable()
 
+        // Register our CustomRequestCache, that saves unauthorized access attempts, so
+        // the user is redirected after login.
+        .requestCache().requestCache(new SkipVaadinRequestCache())
+
         // Restrict access to our application.
-        .authorizeRequests()
+        .and().authorizeRequests()
+
+        // Allow all flow internal requests.
+        .requestMatchers(WebSecurityConfiguration::isVaadinInternalRequest).permitAll()
 
         // Allow all login failure URLs.
         .regexMatchers(SIGNIN_FAILURE_URL_PATTERN).permitAll()
+
+        // Allow test URLs.
+        .regexMatchers("/testvaadinservice").permitAll()
 
         // Only admins can switch users.
         .antMatchers(SWITCH_USER_URL).hasAuthority(ADMIN).antMatchers(SWITCH_USER_EXIT_URL)
@@ -232,14 +233,34 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(WebSecurity web) throws Exception {
     web.ignoring().antMatchers(
-        // Vaadin static resources.
+        // Vaadin Flow static resources
         "/VAADIN/**",
 
-        // Vaadin servlet.
-        "/vaadinServlet/**");
+        // the standard favicon URI
+        "/favicon.ico",
+
+        // web application manifest
+        "/manifest.json", "/sw.js", "/offline-page.html",
+
+        // icons and images
+        "/icons/**", "/images/**",
+
+        // (development mode) static resources
+        "/frontend/**",
+
+        // (development mode) webjars
+        "/webjars/**",
+
+        // (development mode) H2 debugging console
+        "/h2-console/**",
+
+        // (production mode) static resources
+        "/frontend-es5/**", "/frontend-es6/**");
   }
 
-  private static String url(String view) {
-    return "/" + view;
+  static boolean isVaadinInternalRequest(HttpServletRequest request) {
+    final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
+    return parameterValue != null
+        && Stream.of(RequestType.values()).anyMatch(r -> r.getIdentifier().equals(parameterValue));
   }
 }
