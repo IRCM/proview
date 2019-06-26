@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.user.UserProperties.HASHED_PASSWORD;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.utils.MessageResource;
 import com.vaadin.flow.component.login.LoginI18n;
@@ -24,6 +25,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Signin view.
@@ -46,8 +48,11 @@ public class SigninView extends LoginOverlay
   private static final Logger logger = LoggerFactory.getLogger(SigninView.class);
   protected LoginI18n i18n;
   protected String error;
+  private SecurityConfiguration configuration;
 
-  public SigninView() {
+  @Autowired
+  protected SigninView(SecurityConfiguration configuration) {
+    this.configuration = configuration;
   }
 
   @PostConstruct
@@ -89,7 +94,8 @@ public class SigninView extends LoginOverlay
       error = FAIL;
     }
     i18n.getErrorMessage().setTitle(resources.message(property(error, TITLE)));
-    i18n.getErrorMessage().setMessage(resources.message(error));
+    i18n.getErrorMessage()
+        .setMessage(resources.message(error, configuration.getLockDuration().getSeconds() / 60));
     setI18n(i18n);
   }
 

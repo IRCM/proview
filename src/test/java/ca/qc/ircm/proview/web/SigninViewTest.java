@@ -36,6 +36,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
@@ -52,12 +53,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class SigninViewTest extends AbstractViewTestCase {
   private SigninView view;
+  @Autowired
+  private SecurityConfiguration configuration;
   @Mock
   private AfterNavigationEvent afterNavigationEvent;
   @Mock
@@ -76,7 +80,7 @@ public class SigninViewTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new SigninView();
+    view = new SigninView(configuration);
     view.init();
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     when(location.getQueryParameters()).thenReturn(queryParameters);
@@ -146,7 +150,8 @@ public class SigninViewTest extends AbstractViewTestCase {
     assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
     assertEquals(resources.message(property(LOCKED, TITLE)),
         view.i18n.getErrorMessage().getTitle());
-    assertEquals(resources.message(LOCKED), view.i18n.getErrorMessage().getMessage());
+    assertEquals(resources.message(LOCKED, configuration.getLockDuration().getSeconds() / 60),
+        view.i18n.getErrorMessage().getMessage());
   }
 
   @Test
