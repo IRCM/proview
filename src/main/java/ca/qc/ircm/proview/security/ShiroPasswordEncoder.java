@@ -3,12 +3,16 @@ package ca.qc.ircm.proview.security;
 import java.security.SecureRandom;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * {@link PasswordEncoder} that supports Shiro's Hash.
  */
 public class ShiroPasswordEncoder implements PasswordEncoder {
+  @SuppressWarnings("unused")
+  private static final Logger logger = LoggerFactory.getLogger(ShiroPasswordEncoder.class);
   public static final String SEPARATOR = "/";
   private final SecureRandom random = new SecureRandom();
   private final String algorithm;
