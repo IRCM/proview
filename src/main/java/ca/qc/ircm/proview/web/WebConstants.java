@@ -33,6 +33,7 @@ public class WebConstants {
   public static final String GENERAL_MESSAGES = "VaadinMessages";
   public static final String APPLICATION_NAME = "application.name";
   public static final String TITLE = "title";
+  public static final String THEME = "theme";
   public static final String COMPONENTS = "components";
   public static final String FIELD_NOTIFICATION = "field.notification";
   public static final String PLACEHOLDER = "placeholder";
@@ -45,11 +46,15 @@ public class WebConstants {
   public static final String INVALID_EMAIL = "invalidEmail";
   public static final String ALREADY_EXISTS = "alreadyExists";
   public static final String OUT_OF_RANGE = "outOfRange";
+  public static final String SUCCESS = "success";
+  public static final String ERROR = "error";
+  public static final String ERROR_TEXT = "error-text";
   public static final String CANCEL = "cancel";
   public static final String BUTTON_SKIP_ROW = "skip-row";
   public static final String UPLOAD_STATUS = "uploadStatus";
   public static final String OVER_MAXIMUM_SIZE = "overMaximumSize";
   public static final String BANNED = "banned";
+  public static final String ALL = "all";
   public static final String SAVED_SUBMISSIONS = "savedSubmissions";
   public static final String SAVED_SAMPLES = "savedSamples";
   public static final String SAVED_CONTAINERS = "savedContainers";
