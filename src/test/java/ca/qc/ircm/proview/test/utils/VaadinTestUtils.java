@@ -17,9 +17,13 @@
 
 package ca.qc.ircm.proview.test.utils;
 
+import static org.junit.Assert.assertEquals;
+
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.EditorImpl;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
@@ -27,9 +31,25 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class VaadinTestUtils {
+  private static final String ICON_ATTRIBUTE = "icon";
+
+  @SuppressWarnings("unchecked")
+  public static <C extends Component> Optional<C> findChild(Component start,
+      Class<C> componentType) {
+    if (start == null) {
+      return Optional.empty();
+    }
+    if (componentType.isAssignableFrom(start.getClass())) {
+      return Optional.of((C) start);
+    }
+    return start.getChildren().map(child -> findChild(child, componentType))
+        .filter(oc -> oc.isPresent()).findFirst().orElse(Optional.empty());
+  }
+
   @SuppressWarnings("unchecked")
   public static <V> ListDataProvider<V> dataProvider(Grid<V> grid) {
     return (ListDataProvider<V>) grid.getDataProvider();
@@ -87,5 +107,18 @@ public class VaadinTestUtils {
         | InvocationTargetException | NoSuchMethodException e) {
       throw new IllegalStateException("Could not call doEdit", e);
     }
+  }
+
+  /**
+   * Validates that actual icon is the same as the expected icon.
+   *
+   * @param expected
+   *          expected icon
+   * @param actual
+   *          actual icon
+   */
+  public static void validateIcon(Icon expected, Component actual) {
+    assertEquals(expected.getElement().getAttribute(ICON_ATTRIBUTE),
+        actual.getElement().getAttribute(ICON_ATTRIBUTE));
   }
 }

@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.ContactView.ADDRESS;
 import static ca.qc.ircm.proview.web.ContactView.HEADER;
@@ -34,6 +36,8 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.text.MessageResource;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Locale;
 import org.junit.Before;
@@ -89,6 +93,19 @@ public class ContactViewTest extends AbstractViewTestCase {
     assertEquals(resources.message(property(WEBSITE, NAME)), view.websiteName.getText());
     assertEquals(resources.message(property(WEBSITE, ADDRESS)), view.websiteAddress.getText());
     assertEquals(resources.message(property(WEBSITE, PHONE)), view.websitePhone.getText());
+  }
+
+  @Test
+  public void icons() {
+    validateIcon(VaadinIcon.ENVELOPE.create(),
+        findChild(view.proteomicNameAnchor, Icon.class).get());
+    validateIcon(VaadinIcon.MAP_MARKER.create(),
+        findChild(view.proteomicAddressAnchor, Icon.class).get());
+    validateIcon(VaadinIcon.PHONE.create(), findChild(view.proteomicPhoneAnchor, Icon.class).get());
+    validateIcon(VaadinIcon.ENVELOPE.create(), findChild(view.websiteNameAnchor, Icon.class).get());
+    validateIcon(VaadinIcon.MAP_MARKER.create(),
+        findChild(view.websiteAddressAnchor, Icon.class).get());
+    validateIcon(VaadinIcon.PHONE.create(), findChild(view.websitePhoneAnchor, Icon.class).get());
   }
 
   @Test
