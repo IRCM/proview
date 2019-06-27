@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.utils.MessageResource;
+import ca.qc.ircm.text.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

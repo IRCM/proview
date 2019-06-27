@@ -24,7 +24,7 @@ import static java.util.Locale.ENGLISH;
 import static java.util.Locale.FRENCH;
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.utils.MessageResource;
+import ca.qc.ircm.text.MessageResource;
 import org.junit.Test;
 
 public class PhoneNumberTypeTest {

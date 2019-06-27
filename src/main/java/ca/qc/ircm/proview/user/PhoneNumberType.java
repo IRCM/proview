@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.user;
 
-import ca.qc.ircm.utils.MessageResource;
+import ca.qc.ircm.text.MessageResource;
 import java.util.Locale;
 
 /**

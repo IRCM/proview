@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.thymeleaf;
 
-import ca.qc.ircm.utils.XmlResourceBundleControl;
+import ca.qc.ircm.text.XmlResourceBundleControl;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Enumeration;

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import ca.qc.ircm.utils.MessageResource;
+import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Locale;
 import org.junit.Before;

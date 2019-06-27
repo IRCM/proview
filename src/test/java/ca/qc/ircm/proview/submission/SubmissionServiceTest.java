@@ -65,7 +65,7 @@ import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.utils.MessageResource;
+import ca.qc.ircm.text.MessageResource;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;

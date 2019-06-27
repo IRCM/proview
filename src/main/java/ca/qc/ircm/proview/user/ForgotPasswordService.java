@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.user;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.utils.MessageResource;
+import ca.qc.ircm.text.MessageResource;
 import java.time.Instant;
 import java.time.Period;
 import java.util.Locale;

@@ -15,19 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.utils;
+package ca.qc.ircm.text;
 
 import static org.junit.Assert.assertEquals;
 
+import ca.qc.ircm.text.MessageResource;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import org.junit.Test;
 
-public class MessageResourceXmlTest {
+public class MessageResourceTest {
   @Test
   public void message() {
     MessageResource messageResource =
-        new MessageResource(MessageResourceXmlTest.class.getName(), Locale.CANADA);
+        new MessageResource(MessageResourceTest.class.getName(), Locale.CANADA);
 
     String message = messageResource.message("message");
 
@@ -37,7 +38,7 @@ public class MessageResourceXmlTest {
   @Test
   public void message_NoReplacements() {
     MessageResource messageResource =
-        new MessageResource(MessageResourceXmlTest.class.getName(), Locale.CANADA);
+        new MessageResource(MessageResourceTest.class.getName(), Locale.CANADA);
 
     String message = messageResource.message("replacements");
 
@@ -47,7 +48,7 @@ public class MessageResourceXmlTest {
   @Test
   public void message_Replacements() {
     MessageResource messageResource =
-        new MessageResource(MessageResourceXmlTest.class.getName(), Locale.CANADA);
+        new MessageResource(MessageResourceTest.class.getName(), Locale.CANADA);
 
     String message = messageResource.message("replacements", "test", 1, 0.32,
         new GregorianCalendar(2015, 7, 24, 15, 23, 45).getTime());
@@ -57,8 +58,7 @@ public class MessageResourceXmlTest {
 
   @Test
   public void message_Class() {
-    MessageResource messageResource =
-        new MessageResource(MessageResourceXmlTest.class, Locale.CANADA);
+    MessageResource messageResource = new MessageResource(MessageResourceTest.class, Locale.CANADA);
 
     String message = messageResource.message("message");
 
@@ -67,8 +67,7 @@ public class MessageResourceXmlTest {
 
   @Test
   public void message_Class_NoReplacements() {
-    MessageResource messageResource =
-        new MessageResource(MessageResourceXmlTest.class, Locale.CANADA);
+    MessageResource messageResource = new MessageResource(MessageResourceTest.class, Locale.CANADA);
 
     String message = messageResource.message("replacements");
 
@@ -77,8 +76,7 @@ public class MessageResourceXmlTest {
 
   @Test
   public void message_Class_Replacements() {
-    MessageResource messageResource =
-        new MessageResource(MessageResourceXmlTest.class, Locale.CANADA);
+    MessageResource messageResource = new MessageResource(MessageResourceTest.class, Locale.CANADA);
 
     String message = messageResource.message("replacements", "test", 1, 0.32,
         new GregorianCalendar(2015, 7, 24, 15, 23, 45).getTime());
@@ -89,7 +87,7 @@ public class MessageResourceXmlTest {
   @Test
   public void message_French() {
     MessageResource messageResource =
-        new MessageResource(MessageResourceXmlTest.class.getName(), Locale.FRENCH);
+        new MessageResource(MessageResourceTest.class.getName(), Locale.FRENCH);
 
     String message = messageResource.message("message");
 
@@ -99,7 +97,7 @@ public class MessageResourceXmlTest {
   @Test
   public void message_French_NoReplacements() {
     MessageResource messageResource =
-        new MessageResource(MessageResourceXmlTest.class.getName(), Locale.FRENCH);
+        new MessageResource(MessageResourceTest.class.getName(), Locale.FRENCH);
 
     String message = messageResource.message("replacements");
 
@@ -109,7 +107,7 @@ public class MessageResourceXmlTest {
   @Test
   public void message_French_Replacements() {
     MessageResource messageResource =
-        new MessageResource(MessageResourceXmlTest.class.getName(), Locale.FRENCH);
+        new MessageResource(MessageResourceTest.class.getName(), Locale.FRENCH);
 
     String message = messageResource.message("replacements", "test", 1, 0.32,
         new GregorianCalendar(2015, 7, 24, 15, 23, 45).getTime());

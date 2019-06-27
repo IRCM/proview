@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.utils.MessageResource;
+import ca.qc.ircm.text.MessageResource;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;

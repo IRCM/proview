@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.utils;
+package ca.qc.ircm.text;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.text.XmlResourceBundle;
 import java.io.InputStream;
 import java.util.Enumeration;
 import org.junit.Test;

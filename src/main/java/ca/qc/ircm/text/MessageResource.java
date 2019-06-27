@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.utils;
+package ca.qc.ircm.text;
 
 import java.text.MessageFormat;
 import java.util.Locale;

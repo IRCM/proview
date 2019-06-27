@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.msanalysis;
 
-import ca.qc.ircm.utils.MessageResource;
+import ca.qc.ircm.text.MessageResource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
