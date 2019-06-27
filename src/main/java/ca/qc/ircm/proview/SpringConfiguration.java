@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.mail.MailConfiguration;
-import ca.qc.ircm.proview.thymeleaf.XmlClasspathMessageResolver;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -31,6 +30,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.messageresolver.StandardMessageResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 /**
@@ -51,7 +51,7 @@ public class SpringConfiguration {
   public TemplateEngine emailTemplateEngine() {
     TemplateEngine templateEngine = new TemplateEngine();
     templateEngine.setTemplateResolver(new ClassLoaderTemplateResolver());
-    templateEngine.setMessageResolver(new XmlClasspathMessageResolver());
+    templateEngine.setMessageResolver(new StandardMessageResolver());
     return templateEngine;
   }
 

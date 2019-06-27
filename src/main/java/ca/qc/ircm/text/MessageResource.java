@@ -28,12 +28,11 @@ public class MessageResource {
   private final ResourceBundle resources;
 
   public MessageResource(String baseName, Locale locale) {
-    resources = ResourceBundle.getBundle(baseName, locale, new XmlResourceBundleControl());
+    resources = ResourceBundle.getBundle(baseName, locale);
   }
 
   public MessageResource(Class<?> baseClass, Locale locale) {
-    resources =
-        ResourceBundle.getBundle(baseClass.getName(), locale, new XmlResourceBundleControl());
+    resources = ResourceBundle.getBundle(baseClass.getName(), locale);
   }
 
   /**
