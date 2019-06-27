@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.web;
 
-import com.vaadin.data.HasValue.ValueChangeEvent;
-import com.vaadin.data.HasValue.ValueChangeListener;
-import com.vaadin.util.ReflectTools;
+import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
+import com.vaadin.flow.internal.ReflectTools;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Locale;
@@ -31,6 +31,9 @@ import java.util.Set;
 public class WebConstants {
   public static final Locale DEFAULT_LOCALE = Locale.FRENCH;
   public static final String GENERAL_MESSAGES = "VaadinMessages";
+  public static final String APPLICATION_NAME = "application.name";
+  public static final String TITLE = "title";
+  public static final String THEME = "theme";
   public static final String COMPONENTS = "components";
   public static final String FIELD_NOTIFICATION = "field.notification";
   public static final String PLACEHOLDER = "placeholder";
@@ -43,17 +46,21 @@ public class WebConstants {
   public static final String INVALID_EMAIL = "invalidEmail";
   public static final String ALREADY_EXISTS = "alreadyExists";
   public static final String OUT_OF_RANGE = "outOfRange";
+  public static final String SUCCESS = "success";
+  public static final String ERROR = "error";
+  public static final String ERROR_TEXT = "error-text";
   public static final String CANCEL = "cancel";
   public static final String BUTTON_SKIP_ROW = "skip-row";
   public static final String UPLOAD_STATUS = "uploadStatus";
   public static final String OVER_MAXIMUM_SIZE = "overMaximumSize";
   public static final String BANNED = "banned";
+  public static final String ALL = "all";
   public static final String SAVED_SUBMISSIONS = "savedSubmissions";
   public static final String SAVED_SAMPLES = "savedSamples";
   public static final String SAVED_CONTAINERS = "savedContainers";
   public static final String SAVED_SAMPLE_FROM_MULTIPLE_USERS = "savedSamplesFromMultipleUsers";
-  public static final Method VALUE_CHANGE_LISTENER_METHOD =
-      ReflectTools.findMethod(ValueChangeListener.class, "valueChange", ValueChangeEvent.class);
+  public static final Method VALUE_CHANGE_LISTENER_METHOD = ReflectTools
+      .findMethod(ValueChangeListener.class, "valueChanged", ValueChangeEvent.class);
 
   /**
    * Returns all valid locales for program.

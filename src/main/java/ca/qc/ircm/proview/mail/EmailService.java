@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.mail;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
+import com.google.common.io.ByteStreams;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,7 +34,6 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import org.vaadin.easyuploads.Streams;
 
 /**
  * Service class for sending emails.
@@ -109,7 +109,7 @@ public class EmailService {
     try {
       if (email.isMultipart()) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        Streams.copy(email.getMimeMultipart().getBodyPart(0).getInputStream(), output);
+        ByteStreams.copy(email.getMimeMultipart().getBodyPart(0).getInputStream(), output);
         return new String(output.toByteArray(), StandardCharsets.UTF_8);
       } else {
         return String.valueOf(email.getMimeMessage().getContent());

@@ -17,12 +17,13 @@
 
 package ca.qc.ircm.proview.web;
 
-import com.vaadin.ui.Component;
+import com.vaadin.flow.component.Component;
+import java.util.EventObject;
 
 /**
  * Save event.
  */
-public class SaveEvent<V> extends Component.Event {
+public class SaveEvent<V> extends EventObject {
   private static final long serialVersionUID = 7709868652458561869L;
   private V savedObject;
 

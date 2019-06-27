@@ -23,6 +23,22 @@ import org.junit.Test;
 
 public class StringsTest {
   @Test
+  public void property() {
+    assertEquals("", Strings.property((Object) null));
+    assertEquals("true", Strings.property(true));
+    assertEquals("sample", Strings.property("sample"));
+    assertEquals("sample", Strings.property("sample", null));
+    assertEquals("sample.name", Strings.property("sample", null, "name"));
+    assertEquals("sample.true", Strings.property("sample", true));
+    assertEquals("sample.name", Strings.property("sample.name"));
+    assertEquals("sample.name", Strings.property("sample", "name"));
+    assertEquals("sample.standards.name", Strings.property("sample.standards.name"));
+    assertEquals("sample.standards.name", Strings.property("sample.standards", "name"));
+    assertEquals("sample.standards.name", Strings.property("sample", "standards.name"));
+    assertEquals("sample.standards.name", Strings.property("sample", "standards", "name"));
+  }
+
+  @Test
   public void normalize() {
     assertEquals("bateau", Strings.normalize("bàteau"));
     assertEquals("BATEAU", Strings.normalize("BÀTEAU"));

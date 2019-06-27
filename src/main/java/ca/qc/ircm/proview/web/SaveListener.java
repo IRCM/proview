@@ -17,16 +17,15 @@
 
 package ca.qc.ircm.proview.web;
 
-import com.vaadin.ui.Component;
-import com.vaadin.util.ReflectTools;
+import com.vaadin.flow.internal.ReflectTools;
 import java.lang.reflect.Method;
 
 /**
  * Interface for listening for a {@link SaveEvent} fired by a {@link Component}.
  */
 public interface SaveListener<V> {
-  public static final Method SAVED_METHOD =
-      ReflectTools.findMethod(SaveListener.class, "saved", SaveEvent.class);
+  public static final Method SAVED_METHOD = ReflectTools.findMethod(SaveListener.class, "saved",
+      SaveEvent.class);
 
   /**
    * Called when an object has been saved. A reference to the saved object is given by
