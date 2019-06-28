@@ -30,6 +30,7 @@ import com.vaadin.flow.data.provider.Query;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,6 +49,19 @@ public class VaadinTestUtils {
     }
     return start.getChildren().map(child -> findChild(child, componentType))
         .filter(oc -> oc.isPresent()).findFirst().orElse(Optional.empty());
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <C extends Component> List<C> findChildren(Component start,
+      Class<C> componentType) {
+    if (start == null) {
+      return Collections.emptyList();
+    }
+    if (componentType.isAssignableFrom(start.getClass())) {
+      return Collections.nCopies(1, (C) start);
+    }
+    return start.getChildren().flatMap(child -> findChildren(child, componentType).stream())
+        .collect(Collectors.toList());
   }
 
   @SuppressWarnings("unchecked")

@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.user.web.UsersView;
@@ -32,6 +33,7 @@ public class ViewLayout extends VerticalLayout
   public static final String EXIT_SWITCH_USER = "exitSwitchUser";
   public static final String SIGNOUT = "signout";
   public static final String CONTACT = "contact";
+  public static final String GUIDELINES = "guidelines";
   private static final long serialVersionUID = 710800815636494374L;
   private static final Logger logger = LoggerFactory.getLogger(ViewLayout.class);
   protected Tabs tabs = new Tabs();
@@ -40,6 +42,7 @@ public class ViewLayout extends VerticalLayout
   protected Tab exitSwitchUser = new Tab();
   protected Tab signout = new Tab();
   protected Tab contact = new Tab();
+  protected Tab guidelines = new Tab();
   private Map<Tab, String> tabsHref = new HashMap<>();
   private String currentHref;
   @Inject
@@ -55,12 +58,13 @@ public class ViewLayout extends VerticalLayout
   @PostConstruct
   void init() {
     add(tabs);
-    tabs.add(home, users, exitSwitchUser, signout, contact);
+    tabs.add(home, users, exitSwitchUser, signout, contact, guidelines);
     exitSwitchUser
         .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
     tabsHref.put(home, MainView.VIEW_NAME);
     tabsHref.put(users, UsersView.VIEW_NAME);
     tabsHref.put(contact, ContactView.VIEW_NAME);
+    tabsHref.put(guidelines, GuidelinesView.VIEW_NAME);
     tabs.addSelectedChangeListener(e -> selectTab());
   }
 
@@ -72,6 +76,7 @@ public class ViewLayout extends VerticalLayout
     exitSwitchUser.setLabel(resources.message(EXIT_SWITCH_USER));
     signout.setLabel(resources.message(SIGNOUT));
     contact.setLabel(resources.message(CONTACT));
+    guidelines.setLabel(resources.message(GUIDELINES));
   }
 
   private void selectTab() {

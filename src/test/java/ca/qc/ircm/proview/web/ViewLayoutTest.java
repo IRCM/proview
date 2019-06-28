@@ -30,6 +30,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
@@ -101,6 +102,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertFalse(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
     assertTrue(view.contact.isVisible());
+    assertTrue(view.guidelines.isVisible());
   }
 
   @Test
@@ -113,6 +115,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertTrue(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
     assertTrue(view.contact.isVisible());
+    assertTrue(view.guidelines.isVisible());
   }
 
   @Test
@@ -188,6 +191,30 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   }
 
   @Test
+  public void tabs_SelectGuidelines() {
+    Location location = new Location(MainView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+    view.afterNavigation(afterNavigationEvent);
+
+    view.tabs.setSelectedTab(view.guidelines);
+
+    verify(ui).navigate(GuidelinesView.VIEW_NAME);
+    verify(page, never()).executeJs(any());
+  }
+
+  @Test
+  public void tabs_SelectGuidelinesNoChange() {
+    Location location = new Location(GuidelinesView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+    view.afterNavigation(afterNavigationEvent);
+
+    view.tabs.setSelectedTab(view.guidelines);
+
+    verify(ui, never()).navigate(any(String.class));
+    verify(page, never()).executeJs(any());
+  }
+
+  @Test
   public void tabs_SelectExitSwitchUser() {
     Location location = new Location(MainView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
@@ -240,6 +267,16 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.afterNavigation(afterNavigationEvent);
 
     assertEquals(view.contact, view.tabs.getSelectedTab());
+  }
+
+  @Test
+  public void afterNavigation_Guidelines() {
+    Location location = new Location(GuidelinesView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+
+    view.afterNavigation(afterNavigationEvent);
+
+    assertEquals(view.guidelines, view.tabs.getSelectedTab());
   }
 
   public static class ViewTest {
