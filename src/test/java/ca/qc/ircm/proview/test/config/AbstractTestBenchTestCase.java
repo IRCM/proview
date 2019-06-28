@@ -18,7 +18,10 @@
 package ca.qc.ircm.proview.test.config;
 
 import static ca.qc.ircm.proview.web.ViewLayout.HOME;
+import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
@@ -72,11 +75,22 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   }
 
   protected Locale currentLocale() {
-    TabsElement tabs = $(TabsElement.class).first();
-    TabElement home = tabs.$(TabElement.class).first();
     Set<Locale> locales = WebConstants.getLocales();
-    return locales.stream().filter(locale -> new MessageResource(ViewLayout.class, locale)
-        .message(HOME).equals(home.getText())).findAny().orElse(Locale.ENGLISH);
+    TabElement home = optional(() -> $(TabsElement.class).first().$(TabElement.class).first())
+        .orElse(null);
+    Optional<Locale> optlocale = locales.stream()
+        .filter(locale -> new MessageResource(ViewLayout.class, locale).message(HOME)
+            .equals(home != null ? home.getText() : ""))
+        .findAny();
+    if (!optlocale.isPresent()) {
+      optlocale = locales.stream()
+          .filter(locale -> new MessageResource(SigninView.class, locale)
+              .message(TITLE,
+                  new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME))
+              .equals(getDriver().getTitle()))
+          .findAny();
+    }
+    return optlocale.orElse(null);
   }
 
   protected MessageResource resources(Class<?> baseClass) {

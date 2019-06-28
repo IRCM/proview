@@ -25,9 +25,8 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
-import ca.qc.ircm.proview.security.web.AccessDeniedError;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.web.ContactView;
+import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.html.testbench.AnchorElement;
@@ -55,13 +54,11 @@ public class GuidelinesViewItTest extends GuidelinesViewPageObject {
   @Test
   @WithAnonymousUser
   public void security_Anonymous() throws Throwable {
-    openView(ContactView.VIEW_NAME);
-    Locale locale = currentLocale();
-
     open();
 
+    Locale locale = currentLocale();
     assertEquals(
-        new MessageResource(AccessDeniedError.class, locale).message(TITLE,
+        new MessageResource(SigninView.class, locale).message(TITLE,
             new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
@@ -95,8 +92,8 @@ public class GuidelinesViewItTest extends GuidelinesViewPageObject {
     // TODO program test.
     open();
 
-    Guideline guideline =
-        guidelinesConfiguration.categories(currentLocale()).get(0).guidelines().get(0);
+    Guideline guideline = guidelinesConfiguration.categories(currentLocale()).get(0).guidelines()
+        .get(0);
     AnchorElement guidelineElement = categoryGuidelines(categories().get(0)).get(0);
     guidelineElement.click();
   }
