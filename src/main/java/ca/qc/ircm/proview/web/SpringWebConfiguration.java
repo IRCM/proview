@@ -39,7 +39,7 @@ public class SpringWebConfiguration implements WebMvcConfigurer {
   public static final String SHIRO_FILTER_NAME = "ShiroFilter";
 
   @Bean(name = MdcFilter.BEAN_NAME)
-  public MdcFilter ndcFilter() {
+  public MdcFilter mdcFilter() {
     return new MdcFilter();
   }
 
