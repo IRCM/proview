@@ -17,8 +17,10 @@
 
 package ca.qc.ircm.proview.files.web;
 
+import static ca.qc.ircm.proview.files.web.CategoryComponent.CATEGORY;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.files.Category;
@@ -63,6 +65,11 @@ public class CategoryComponentTest extends AbstractViewTestCase {
     when(guideline2.path())
         .thenReturn(Paths.get(System.getProperty("user.home"), "guideline2.pdf"));
     component = new CategoryComponent(category);
+  }
+
+  @Test
+  public void styles() {
+    assertTrue(component.getClassNames().contains(CATEGORY));
   }
 
   @Test

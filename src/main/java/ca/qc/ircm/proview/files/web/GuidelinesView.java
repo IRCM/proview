@@ -39,6 +39,7 @@ public class GuidelinesView extends VerticalLayout
   @PostConstruct
   void init() {
     add(header);
+    header.setId(HEADER);
   }
 
   @Override

@@ -66,6 +66,11 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
   }
 
   @Test
+  public void ids() {
+    assertEquals(HEADER, view.header.getId().orElse(null));
+  }
+
+  @Test
   public void labels() {
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());

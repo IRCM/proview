@@ -10,10 +10,12 @@ import com.vaadin.flow.server.StreamResource;
  * Category component.
  */
 public class CategoryComponent extends VerticalLayout {
+  public static final String CATEGORY = "category";
   private static final long serialVersionUID = -6619674234077142003L;
   protected H2 header = new H2();
 
   public CategoryComponent(Category category) {
+    addClassName(CATEGORY);
     setPadding(false);
     add(header);
     header.setText(category.name());
