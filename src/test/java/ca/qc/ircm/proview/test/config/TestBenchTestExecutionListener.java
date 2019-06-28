@@ -29,7 +29,9 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.opera.OperaDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,11 +132,21 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
     if (driverClass == null) {
       driverClass = DEFAULT_DRIVER;
     }
-    try {
-      return (WebDriver) Class.forName(driverClass).newInstance();
-    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-      logger.error("Could not instantiate WebDriver class {}", driverClass);
-      throw new IllegalStateException("Could not instantiate WebDriver class " + driverClass, e);
+    if (driverClass.equals(CHROME_DRIVER)) {
+      ChromeOptions options = new ChromeOptions();
+      options.setHeadless(true);
+      return new ChromeDriver(options);
+    } else if (driverClass.equals(FIREFOX_DRIVER)) {
+      FirefoxOptions options = new FirefoxOptions();
+      options.setHeadless(true);
+      return new FirefoxDriver(options);
+    } else {
+      try {
+        return (WebDriver) Class.forName(driverClass).newInstance();
+      } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+        logger.error("Could not instantiate WebDriver class {}", driverClass);
+        throw new IllegalStateException("Could not instantiate WebDriver class " + driverClass, e);
+      }
     }
   }
 
