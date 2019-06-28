@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import com.vaadin.testbench.TestBenchTestCase;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -61,19 +62,17 @@ public class TestBenchSecurityFilter extends GenericFilterBean
       throws IOException, ServletException {
     HttpServletRequest request = (HttpServletRequest) req;
     HttpServletResponse response = (HttpServletResponse) res;
-    if (copyAuthenticationOnFilter) {
-      if (authentication == null) {
-        logger.warn("authentication is null in test bench test");
-        filterChain.doFilter(request, response);
-      } else {
-        logger.debug("set authentication {} in security context", authentication);
-        HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, response);
-        SecurityContext securityContext = repo.loadContext(holder);
-        securityContext.setAuthentication(authentication);
-        repo.saveContext(securityContext, holder.getRequest(), holder.getResponse());
-        filterChain.doFilter(holder.getRequest(), holder.getResponse());
-      }
+    if (copyAuthenticationOnFilter && authentication != null) {
+      logger.debug("set authentication {} in security context", authentication);
+      HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, response);
+      SecurityContext securityContext = repo.loadContext(holder);
+      securityContext.setAuthentication(authentication);
+      repo.saveContext(securityContext, holder.getRequest(), holder.getResponse());
+      filterChain.doFilter(holder.getRequest(), holder.getResponse());
     } else {
+      if (copyAuthenticationOnFilter && authentication == null) {
+        logger.warn("authentication is null in test bench test");
+      }
       filterChain.doFilter(request, response);
     }
   }
@@ -81,13 +80,17 @@ public class TestBenchSecurityFilter extends GenericFilterBean
   @Override
   public void beforeTestClass(TestContext testContext) throws Exception {
     testContext.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(this);
-    copyAuthenticationOnFilter = true;
+    copyAuthenticationOnFilter = isTestBenchTest(testContext);
   }
 
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     authentication = SecurityContextHolder.getContext().getAuthentication();
-    logger.debug("saving authentication {}", authentication);
+    logger.trace("saving authentication {}", authentication);
+  }
+
+  private boolean isTestBenchTest(TestContext testContext) {
+    return TestBenchTestCase.class.isAssignableFrom(testContext.getTestClass());
   }
 
   @Override

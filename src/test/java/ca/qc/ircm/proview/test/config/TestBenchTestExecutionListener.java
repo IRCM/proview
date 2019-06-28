@@ -43,10 +43,9 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 @Order(TestBenchTestExecutionListener.ORDER)
 public class TestBenchTestExecutionListener extends AbstractTestExecutionListener {
   public static final int ORDER = 0;
-  private static final String LICENSE_ERROR_MESSAGE =
-      "License for Vaadin TestBench not found. Skipping test class {0} .";
-  private static final String[] LICENSE_PATHS =
-      new String[] { "vaadin.testbench.developer.license", ".vaadin.testbench.developer.license" };
+  private static final String LICENSE_ERROR_MESSAGE = "License for Vaadin TestBench not found. Skipping test class {0} .";
+  private static final String[] LICENSE_PATHS = new String[] { "vaadin.testbench.developer.license",
+      ".vaadin.testbench.developer.license" };
   private static final String LICENSE_SYSTEM_PROPERTY = "vaadin.testbench.developer.license";
   private static final String SKIP_TESTS_ERROR_MESSAGE = "TestBench tests are skipped";
   private static final String SKIP_TESTS_SYSTEM_PROPERTY = "testbench.skip";
@@ -58,58 +57,68 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
   @SuppressWarnings("unused")
   private static final String OPERA_DRIVER = OperaDriver.class.getName();
   private static final String DEFAULT_DRIVER = CHROME_DRIVER;
-  private static final Logger logger =
-      LoggerFactory.getLogger(TestBenchTestExecutionListener.class);
+  private static final Logger logger = LoggerFactory
+      .getLogger(TestBenchTestExecutionListener.class);
 
   @Override
   public void beforeTestClass(TestContext testContext) throws Exception {
-    if (isSkipTestBenchTests()) {
-      assumeTrue(SKIP_TESTS_ERROR_MESSAGE, false);
-    }
+    if (isTestBenchTest(testContext)) {
+      if (isSkipTestBenchTests()) {
+        assumeTrue(SKIP_TESTS_ERROR_MESSAGE, false);
+      }
 
-    boolean licenseFileExists = false;
-    for (String licencePath : LICENSE_PATHS) {
-      licenseFileExists |=
-          Files.exists(Paths.get(System.getProperty("user.home")).resolve(licencePath));
+      boolean licenseFileExists = false;
+      for (String licencePath : LICENSE_PATHS) {
+        licenseFileExists |= Files
+            .exists(Paths.get(System.getProperty("user.home")).resolve(licencePath));
+      }
+      if (!licenseFileExists && System.getProperty(LICENSE_SYSTEM_PROPERTY) == null) {
+        String message = MessageFormat.format(LICENSE_ERROR_MESSAGE,
+            testContext.getTestClass().getName());
+        logger.info(message);
+        assumeTrue(message, false);
+      }
+      setRetries();
     }
-    if (!licenseFileExists && System.getProperty(LICENSE_SYSTEM_PROPERTY) == null) {
-      String message =
-          MessageFormat.format(LICENSE_ERROR_MESSAGE, testContext.getTestClass().getName());
-      logger.info(message);
-      assumeTrue(message, false);
-    }
-    setRetries();
   }
 
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
-    WebDriver driver = driver();
-    TestBenchTestCase target = getInstance(testContext);
-    target.setDriver(driver);
-    try {
-      driver.manage().window().setSize(new Dimension(1280, 960));
-    } catch (WebDriverException e) {
-      logger.warn("Could not resize browser", e);
+    if (isTestBenchTest(testContext)) {
+      WebDriver driver = driver();
+      TestBenchTestCase target = getInstance(testContext);
+      target.setDriver(driver);
+      try {
+        driver.manage().window().setSize(new Dimension(1280, 960));
+      } catch (WebDriverException e) {
+        logger.warn("Could not resize browser", e);
+      }
     }
   }
 
   @Override
   public void afterTestMethod(TestContext testContext) throws Exception {
-    TestBenchTestCase target = getInstance(testContext);
-    target.getDriver().manage().deleteAllCookies();
-    boolean useScreenshotRule = false;
-    TestBenchTestAnnotations testBenchTestAnnotations = findAnnotation(target.getClass(),
-        testContext.getTestMethod(), TestBenchTestAnnotations.class);
-    if (testBenchTestAnnotations != null) {
-      useScreenshotRule = testBenchTestAnnotations.useScreenshotRule();
-    }
-    if (!useScreenshotRule) {
-      target.getDriver().quit();
+    if (isTestBenchTest(testContext)) {
+      TestBenchTestCase target = getInstance(testContext);
+      target.getDriver().manage().deleteAllCookies();
+      boolean useScreenshotRule = false;
+      TestBenchTestAnnotations testBenchTestAnnotations = findAnnotation(target.getClass(),
+          testContext.getTestMethod(), TestBenchTestAnnotations.class);
+      if (testBenchTestAnnotations != null) {
+        useScreenshotRule = testBenchTestAnnotations.useScreenshotRule();
+      }
+      if (!useScreenshotRule) {
+        target.getDriver().quit();
+      }
     }
   }
 
   private boolean isSkipTestBenchTests() {
     return Boolean.valueOf(System.getProperty(SKIP_TESTS_SYSTEM_PROPERTY));
+  }
+
+  private boolean isTestBenchTest(TestContext testContext) {
+    return TestBenchTestCase.class.isAssignableFrom(testContext.getTestClass());
   }
 
   private TestBenchTestCase getInstance(TestContext testContext) {
