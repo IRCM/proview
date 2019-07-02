@@ -66,7 +66,7 @@ public class TestBenchTestExecutionListener
   private static final String DEFAULT_DRIVER = CHROME_DRIVER;
   private static final Logger logger = LoggerFactory
       .getLogger(TestBenchTestExecutionListener.class);
-  @Value("${download-home}")
+  @Value("${download-home:${user.dir}/target}")
   protected String downloadHome;
 
   @Override
