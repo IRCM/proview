@@ -288,7 +288,7 @@ public class UsersViewTest extends AbstractViewTestCase {
     for (User user : users) {
       assertEquals(user.getName() != null ? user.getName() : "", valueProvider.apply(user));
     }
-    verify(view.users).addColumn(valueProviderCaptor.capture(), eq(NAME));
+    verify(view.users).addColumn(valueProviderCaptor.capture(), eq(LABORATORY));
     valueProvider = valueProviderCaptor.getValue();
     for (User user : users) {
       assertEquals(user.getLaboratory().getName() != null ? user.getLaboratory().getName() : "",
