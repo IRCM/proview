@@ -745,21 +745,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isManager());
   }
 
-  @Test
-  public void save_Update_AddInactiveManager() throws Throwable {
-    User user = repository.findById(12L).orElse(null);
-    detach(user);
-    user.setManager(true);
-
-    service.save(user, null);
-
-    repository.flush();
-    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    user = repository.findById(user.getId()).orElse(null);
-    assertEquals(true, user.isActive());
-    assertEquals(true, user.isManager());
-  }
-
   @Test(expected = InvalidUserException.class)
   public void save_Update_AddInvalidManager() throws Throwable {
     User user = repository.findById(7L).orElse(null);
@@ -855,6 +840,35 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  public void save_Update_Activate() throws Throwable {
+    User user = repository.findById(12L).orElse(null);
+    detach(user);
+    assertFalse(user.isActive());
+    user.setActive(true);
+
+    service.save(user, null);
+
+    repository.flush();
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
+    user = repository.findById(user.getId()).orElse(null);
+    assertTrue(user.isActive());
+  }
+
+  @Test
+  public void save_Update_Deactivate() throws Throwable {
+    User user = repository.findById(10L).orElse(null);
+    detach(user);
+    user.setActive(false);
+
+    service.save(user, null);
+
+    repository.flush();
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
+    user = repository.findById(user.getId()).orElse(null);
+    assertFalse(user.isActive());
+  }
+
+  @Test
   public void validate() throws Throwable {
     User user = repository.findById(7L).orElse(null);
     detach(user);
@@ -924,80 +938,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertTrue(htmlContent.contains(url));
     assertFalse(textContent.contains("???"));
     assertFalse(htmlContent.contains("???"));
-  }
-
-  @Test
-  public void activate() throws Throwable {
-    User user = repository.findById(12L).orElse(null);
-    detach(user);
-    assertEquals(false, user.isActive());
-
-    service.activate(user);
-
-    repository.flush();
-    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findById(12L).orElse(null);
-    assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
-    assertEquals(false, user.isManager());
-  }
-
-  @Test
-  public void deactivate() throws Throwable {
-    User user = repository.findById(10L).orElse(null);
-    detach(user);
-
-    service.deactivate(user);
-
-    repository.flush();
-    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findById(10L).orElse(null);
-    assertEquals(false, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
-    assertEquals(false, user.isManager());
-  }
-
-  @Test
-  public void deactivate_Manager() throws Throwable {
-    User user = repository.findById(3L).orElse(null);
-    detach(user);
-
-    service.deactivate(user);
-
-    repository.flush();
-    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findById(3L).orElse(null);
-    assertEquals(false, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
-    assertEquals(true, user.isManager());
-  }
-
-  @Test
-  public void deactivate_Admin() throws Throwable {
-    User user = repository.findById(4L).orElse(null);
-    detach(user);
-
-    service.deactivate(user);
-
-    repository.flush();
-    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findById(4L).orElse(null);
-    assertEquals(false, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(true, user.isAdmin());
-    assertEquals(false, user.isManager());
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void deactivate_Robot() throws Throwable {
-    User user = repository.findById(1L).orElse(null);
-    detach(user);
-    assertEquals(true, user.isActive());
-
-    service.deactivate(user);
   }
 
   @Test

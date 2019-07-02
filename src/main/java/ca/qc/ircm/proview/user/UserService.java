@@ -297,9 +297,6 @@ public class UserService {
     if (newPassword != null) {
       setUserPassword(user, newPassword);
     }
-    if (user.isManager()) {
-      user.setActive(true);
-    }
 
     repository.save(user);
 
@@ -378,41 +375,6 @@ public class UserService {
     email.setText(textEmail, htmlEmail);
 
     emailService.send(email);
-  }
-
-  /**
-   * Allows user to use program.
-   *
-   * @param user
-   *          user
-   */
-  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
-  public void activate(User user) {
-    user = repository.findById(user.getId()).orElse(null);
-
-    user.setActive(true);
-    repository.save(user);
-
-    logger.info("User {} was activated", user);
-  }
-
-  /**
-   * Prevents user to use program.
-   *
-   * @param user
-   *          user
-   */
-  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
-  public void deactivate(User user) {
-    if (user.getId() == ROBOT_ID) {
-      throw new IllegalArgumentException("Robot cannot be deactivated");
-    }
-
-    user = repository.findById(user.getId()).orElse(null);
-    user.setActive(false);
-    repository.save(user);
-
-    logger.info("User {} was deactivate", user);
   }
 
   /**
