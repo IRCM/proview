@@ -20,30 +20,21 @@ package ca.qc.ircm.proview.user;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
-import ca.qc.ircm.proview.ApplicationConfiguration;
-import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.web.HomeWebContext;
-import ca.qc.ircm.text.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
 /**
  * User service class.
@@ -59,12 +50,6 @@ public class UserService {
   private LaboratoryRepository laboratoryRepository;
   @Inject
   private PasswordEncoder passwordEncoder;
-  @Inject
-  private EmailService emailService;
-  @Inject
-  private TemplateEngine emailTemplateEngine;
-  @Inject
-  private ApplicationConfiguration applicationConfiguration;
   @Inject
   private AuthorizationService authorizationService;
 
@@ -144,31 +129,6 @@ public class UserService {
     BooleanExpression predicate = user.valid.eq(true).and(user.active.eq(true))
         .and(user.admin.eq(false)).and(user.email.eq(email)).and(user.manager.eq(true));
     return repository.count(predicate) > 0;
-  }
-
-  /**
-   * Returns true if any user is invalid, false otherwise.
-   *
-   * @return true if any user is invalid, false otherwise
-   */
-  @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public boolean hasInvalid() {
-    return repository.countByValidFalse() > 0;
-  }
-
-  /**
-   * Returns true if laboratory contains an invalid user, false otherwise.
-   *
-   * @param laboratory
-   *          laboratory
-   * @return true if laboratory contains an invalid user, false otherwise
-   */
-  @PreAuthorize("hasPermission(#laboratory, 'write')")
-  public boolean hasInvalid(Laboratory laboratory) {
-    if (laboratory == null) {
-      throw new IllegalArgumentException("laboratory parameter cannot be null");
-    }
-    return repository.countByValidFalseAndLaboratory(laboratory) > 0;
   }
 
   /**
@@ -320,61 +280,6 @@ public class UserService {
           laboratory.setDirector(manager.getName());
         });
     ;
-  }
-
-  /**
-   * Approve that user is valid.
-   *
-   * @param user
-   *          user to validate
-   * @param webContext
-   *          web context used to send email to user
-   */
-  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
-  public void validate(User user, HomeWebContext webContext) {
-    user = repository.findById(user.getId()).orElse(null);
-
-    user.setValid(true);
-    user.setActive(true);
-
-    try {
-      sendEmailForUserValidation(user, webContext);
-    } catch (MessagingException e) {
-      logger.warn(e.getMessage(), e);
-    }
-
-    logger.info("User {} have been validated", user);
-  }
-
-  private void sendEmailForUserValidation(final User user, final HomeWebContext webContext)
-      throws MessagingException {
-    // Get user's prefered locale.
-    Locale locale = Locale.CANADA;
-    if (user.getLocale() != null) {
-      locale = user.getLocale();
-    }
-
-    final String url = applicationConfiguration.getUrl(webContext.getHomeUrl(locale));
-
-    // Prepare email content.
-    MimeMessageHelper email = emailService.htmlEmail();
-    email.addTo(user.getEmail());
-    MessageResource messageResource = new MessageResource(
-        UserService.class.getName() + "_ValidateEmail", locale);
-    String subject = messageResource.message("email.subject");
-    email.setSubject(subject);
-    Context context = new Context(user.getLocale());
-    context.setVariable("user", user);
-    context.setVariable("url", url);
-    String htmlTemplateLocation = "/" + UserService.class.getName().replace(".", "/")
-        + "_ValidateEmail.html";
-    String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation = "/" + UserService.class.getName().replace(".", "/")
-        + "_ValidateEmail.txt";
-    String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
-    email.setText(textEmail, htmlEmail);
-
-    emailService.send(email);
   }
 
   /**

@@ -32,13 +32,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.ApplicationConfiguration;
-import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.HomeWebContext;
-import ca.qc.ircm.text.MessageResource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,15 +43,9 @@ import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.domain.BasePermission;
@@ -63,7 +53,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.thymeleaf.util.StringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
@@ -82,34 +71,18 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @MockBean
   private PasswordEncoder passwordEncoder;
   @MockBean
-  private ApplicationConfiguration applicationConfiguration;
-  @MockBean
-  private EmailService emailService;
-  @MockBean
   private AuthorizationService authorizationService;
   @MockBean
   private PermissionEvaluator permissionEvaluator;
-  @Mock
-  private MimeMessageHelper email;
-  @Captor
-  private ArgumentCaptor<String> stringCaptor;
   private String hashedPassword;
-  private String homeUrl = "/";
 
   /**
    * Before test.
    */
   @Before
   public void beforeTest() throws Throwable {
-    when(applicationConfiguration.getUrl(any(String.class))).thenAnswer(new Answer<String>() {
-      @Override
-      public String answer(InvocationOnMock invocation) throws Throwable {
-        return "http://proview.ircm.qc.ca/proview" + invocation.getArguments()[0];
-      }
-    });
     hashedPassword = "da78f3a74658706/4ae8470fc73a83f369fed012";
     when(passwordEncoder.encode(any(String.class))).thenReturn(hashedPassword);
-    when(emailService.htmlEmail()).thenReturn(email);
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
   }
 
@@ -120,10 +93,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
       }
     }
     return null;
-  }
-
-  private HomeWebContext homeWebContext() {
-    return locale -> homeUrl;
   }
 
   @Test
@@ -284,46 +253,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     boolean manager = service.isManager(null);
 
     assertEquals(false, manager);
-  }
-
-  @Test
-  @WithMockUser(authorities = UserRole.ADMIN)
-  public void hasInvalid_AnyLaboratory() throws Throwable {
-    boolean hasInvalid = service.hasInvalid();
-
-    assertEquals(true, hasInvalid);
-  }
-
-  @Test(expected = AccessDeniedException.class)
-  @WithAnonymousUser
-  public void hasInvalid_AnyLaboratory_AccessDenied_Anonymous() throws Throwable {
-    service.hasInvalid();
-  }
-
-  @Test(expected = AccessDeniedException.class)
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void hasInvalid_AnyLaboratory_AccessDenied() throws Throwable {
-    service.hasInvalid();
-  }
-
-  @Test
-  public void hasInvalid_True() throws Throwable {
-    Laboratory laboratory = laboratoryRepository.findById(3L).orElse(null);
-
-    boolean hasInvalid = service.hasInvalid(laboratory);
-
-    assertEquals(true, hasInvalid);
-    verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
-  }
-
-  @Test
-  public void hasInvalid_False() throws Throwable {
-    Laboratory laboratory = laboratoryRepository.findById(4L).orElse(null);
-
-    boolean hasInvalid = service.hasInvalid(laboratory);
-
-    assertEquals(false, hasInvalid);
-    verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
   }
 
   @Test
@@ -866,78 +795,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertFalse(user.isActive());
-  }
-
-  @Test
-  public void validate() throws Throwable {
-    User user = repository.findById(7L).orElse(null);
-    detach(user);
-    assertEquals(false, user.isActive());
-    assertEquals(false, user.isValid());
-
-    service.validate(user, homeWebContext());
-
-    repository.flush();
-    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findById(7L).orElse(null);
-    assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
-    assertEquals(false, user.isAdmin());
-    assertEquals(false, user.isManager());
-    verify(emailService).htmlEmail();
-    verify(emailService).send(email);
-    verify(email).addTo(user.getEmail());
-    MessageResource resources = new MessageResource(UserService.class.getName() + "_ValidateEmail",
-        Locale.CANADA_FRENCH);
-    verify(email).setSubject(resources.message("email.subject"));
-    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
-    String textContent = stringCaptor.getAllValues().get(0);
-    String htmlContent = stringCaptor.getAllValues().get(1);
-    assertTrue(textContent.contains(resources.message("header", user.getEmail())));
-    assertTrue(
-        htmlContent.contains(StringUtils.escapeXml(resources.message("header", user.getEmail()))));
-    assertTrue(textContent.contains(resources.message("message")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
-    assertTrue(textContent.contains(resources.message("footer")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
-    String url = applicationConfiguration.getUrl(homeUrl);
-    assertTrue(textContent.contains(url));
-    assertTrue(htmlContent.contains(url));
-    assertFalse(textContent.contains("???"));
-    assertFalse(htmlContent.contains("???"));
-  }
-
-  @Test
-  public void validate_EnglishEmail() throws Throwable {
-    User updateLocale = repository.findById(7L).orElse(null);
-    updateLocale.setLocale(Locale.CANADA);
-    repository.saveAndFlush(updateLocale);
-    User user = repository.findById(7L).orElse(null);
-    detach(user);
-    assertEquals(false, user.isActive());
-    assertEquals(false, user.isValid());
-
-    service.validate(user, homeWebContext());
-
-    repository.flush();
-    MessageResource resources = new MessageResource(UserService.class.getName() + "_ValidateEmail",
-        Locale.CANADA);
-    verify(email).setSubject(resources.message("email.subject"));
-    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
-    String textContent = stringCaptor.getAllValues().get(0);
-    String htmlContent = stringCaptor.getAllValues().get(1);
-    assertTrue(textContent.contains(resources.message("header", user.getEmail())));
-    assertTrue(
-        htmlContent.contains(StringUtils.escapeXml(resources.message("header", user.getEmail()))));
-    assertTrue(textContent.contains(resources.message("message")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
-    assertTrue(textContent.contains(resources.message("footer")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
-    String url = applicationConfiguration.getUrl(homeUrl);
-    assertTrue(textContent.contains(url));
-    assertTrue(htmlContent.contains(url));
-    assertFalse(textContent.contains("???"));
-    assertFalse(htmlContent.contains("???"));
   }
 
   @Test
