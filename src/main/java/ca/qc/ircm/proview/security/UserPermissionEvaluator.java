@@ -65,7 +65,7 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
       return false;
     }
     if (user.getId() != null && user.getId() == ROBOT_ID && permission.equals(BasePermission.WRITE)
-        && (!user.isValid() || !user.isActive())) {
+        && !user.isActive()) {
       return false;
     }
     if (authorizationService.hasRole(ADMIN)) {

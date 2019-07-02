@@ -63,12 +63,6 @@ public class UserFilterTest {
     return user;
   }
 
-  private User valid(boolean valid) {
-    User user = new User();
-    user.setValid(valid);
-    return user;
-  }
-
   private User laboratoryName(String name) {
     User user = new User();
     user.setLaboratory(new Laboratory());
@@ -146,30 +140,6 @@ public class UserFilterTest {
 
     assertTrue(filter.test(active(true)));
     assertTrue(filter.test(active(false)));
-  }
-
-  @Test
-  public void test_ValidTrue() {
-    filter.valid = true;
-
-    assertTrue(filter.test(valid(true)));
-    assertFalse(filter.test(valid(false)));
-  }
-
-  @Test
-  public void test_ValidFalse() {
-    filter.valid = false;
-
-    assertFalse(filter.test(valid(true)));
-    assertTrue(filter.test(valid(false)));
-  }
-
-  @Test
-  public void test_ValidNull() {
-    filter.valid = null;
-
-    assertTrue(filter.test(valid(true)));
-    assertTrue(filter.test(valid(false)));
   }
 
   @Test
@@ -259,24 +229,6 @@ public class UserFilterTest {
     Predicate predicate = filter.predicate();
 
     assertEquals(predicate, user.active.eq(false));
-  }
-
-  @Test
-  public void predicate_ValidTrue() {
-    filter.valid = true;
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, user.valid.eq(true));
-  }
-
-  @Test
-  public void predicate_ValidFalse() {
-    filter.valid = false;
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, user.valid.eq(false));
   }
 
   @Test

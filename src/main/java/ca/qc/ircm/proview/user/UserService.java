@@ -126,8 +126,8 @@ public class UserService {
       return false;
     }
 
-    BooleanExpression predicate = user.valid.eq(true).and(user.active.eq(true))
-        .and(user.admin.eq(false)).and(user.email.eq(email)).and(user.manager.eq(true));
+    BooleanExpression predicate = user.active.eq(true).and(user.admin.eq(false))
+        .and(user.email.eq(email)).and(user.manager.eq(true));
     return repository.count(predicate) > 0;
   }
 
@@ -211,7 +211,6 @@ public class UserService {
 
   private void registerNewUser(User user, String password) {
     setUserPassword(user, password);
-    user.setValid(true);
     user.setActive(true);
     repository.saveAndFlush(user);
 
@@ -221,7 +220,6 @@ public class UserService {
   private void registerNewLaboratory(User manager, String password) {
     setUserPassword(manager, password);
     manager.setManager(true);
-    manager.setValid(true);
     manager.setActive(true);
     Laboratory laboratory = manager.getLaboratory();
     laboratory.setDirector(manager.getName());
@@ -238,7 +236,6 @@ public class UserService {
 
     final User manager = authorizationService.getCurrentUser();
     setUserPassword(user, password);
-    user.setValid(true);
     user.setActive(true);
     user.setLaboratory(manager.getLaboratory());
     repository.saveAndFlush(user);
@@ -247,13 +244,6 @@ public class UserService {
   }
 
   private void update(User user, String newPassword) {
-    if (!user.isValid() && user.isManager()) {
-      User before = repository.findById(user.getId()).orElse(null);
-      if (!before.isManager()) {
-        throw new InvalidUserException();
-      }
-    }
-
     if (newPassword != null) {
       setUserPassword(user, newPassword);
     }
@@ -280,27 +270,5 @@ public class UserService {
           laboratory.setDirector(manager.getName());
         });
     ;
-  }
-
-  /**
-   * Deletes invalid user from database.
-   *
-   * @param user
-   *          user to delete
-   */
-  @PreAuthorize("hasPermission(#user.laboratory, 'write')")
-  public void delete(User user) {
-    user = repository.findById(user.getId()).orElse(null);
-
-    if (user.isValid()) {
-      throw new DeleteValidUserException(user);
-    }
-
-    repository.delete(user);
-    if (user.isManager()) {
-      laboratoryRepository.delete(user.getLaboratory());
-    }
-
-    logger.info("User {} have been removed", user);
   }
 }

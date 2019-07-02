@@ -30,7 +30,6 @@ public class UserFilter implements Predicate<User> {
   public String emailContains;
   public String nameContains;
   public Boolean active;
-  public Boolean valid;
   public String laboratoryNameContains;
   public String organizationContains;
 
@@ -50,12 +49,9 @@ public class UserFilter implements Predicate<User> {
     if (active != null) {
       test &= user.isActive() == active;
     }
-    if (valid != null) {
-      test &= user.isValid() == valid;
-    }
     if (laboratoryNameContains != null) {
-      String laboratoryNameContainsNormalized =
-          Strings.normalize(laboratoryNameContains).toLowerCase();
+      String laboratoryNameContainsNormalized = Strings.normalize(laboratoryNameContains)
+          .toLowerCase();
       String laboratoryName = Strings.normalize(user.getLaboratory().getName()).toLowerCase();
       test &= laboratoryName.contains(laboratoryNameContainsNormalized);
     }
@@ -82,9 +78,6 @@ public class UserFilter implements Predicate<User> {
     }
     if (active != null) {
       predicate.and(user.active.eq(active));
-    }
-    if (valid != null) {
-      predicate.and(user.valid.eq(valid));
     }
     if (laboratoryNameContains != null) {
       predicate.and(user.laboratory.name.contains(laboratoryNameContains));

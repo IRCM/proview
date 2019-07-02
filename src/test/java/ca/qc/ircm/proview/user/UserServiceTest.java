@@ -24,7 +24,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -126,7 +125,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("514-555-5556", phoneNumber.getNumber());
     assertEquals(null, phoneNumber.getExtension());
     assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
     assertEquals(true, user.isManager());
   }
@@ -169,7 +167,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("514-555-5556", phoneNumber.getNumber());
     assertEquals(null, phoneNumber.getExtension());
     assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
     assertEquals(true, user.isManager());
   }
@@ -264,7 +261,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     List<User> users = service.all(filter);
 
     verify(filter).predicate();
-    assertEquals(14, users.size());
+    assertEquals(12, users.size());
     assertTrue(find(users, 2).isPresent());
     assertFalse(find(users, 1).isPresent());
   }
@@ -274,13 +271,11 @@ public class UserServiceTest extends AbstractServiceTestCase {
   public void all_Null() throws Throwable {
     List<User> users = service.all(null);
 
-    assertEquals(14, users.size());
+    assertEquals(12, users.size());
     assertTrue(find(users, 2).isPresent());
     assertTrue(find(users, 3).isPresent());
     assertTrue(find(users, 4).isPresent());
     assertTrue(find(users, 5).isPresent());
-    assertTrue(find(users, 6).isPresent());
-    assertTrue(find(users, 7).isPresent());
     assertTrue(find(users, 10).isPresent());
     assertTrue(find(users, 11).isPresent());
     assertTrue(find(users, 12).isPresent());
@@ -319,7 +314,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
     verify(filter).predicate();
-    assertEquals(14, users.size());
+    assertEquals(12, users.size());
     assertTrue(find(users, 2).isPresent());
     assertFalse(find(users, 1).isPresent());
   }
@@ -331,7 +326,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     List<User> users = service.all(null, laboratory);
 
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
-    assertEquals(14, users.size());
+    assertEquals(12, users.size());
     assertTrue(find(users, 2).isPresent());
     assertFalse(find(users, 1).isPresent());
   }
@@ -398,7 +393,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("514-555-5500", phoneNumber.getNumber());
     assertEquals("3228", phoneNumber.getExtension());
     assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
     assertEquals(true, user.isAdmin());
     assertEquals(false, user.isManager());
   }
@@ -457,7 +451,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("514-555-5500", phoneNumber.getNumber());
     assertEquals("3228", phoneNumber.getExtension());
     assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
     assertEquals(false, user.isManager());
   }
@@ -522,7 +515,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("514-555-5500", phoneNumber.getNumber());
     assertEquals("3228", phoneNumber.getExtension());
     assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
     assertEquals(true, user.isManager());
   }
@@ -588,7 +580,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("514-987-5502", phoneNumber.getNumber());
     assertEquals("1234", phoneNumber.getExtension());
     assertEquals(false, user.isActive());
-    assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
     assertEquals(false, user.isManager());
   }
@@ -655,7 +646,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("514-987-5502", phoneNumber.getNumber());
     assertEquals("1234", phoneNumber.getExtension());
     assertEquals(true, user.isActive());
-    assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
     assertEquals(true, user.isManager());
   }
@@ -672,15 +662,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(true, user.isManager());
-  }
-
-  @Test(expected = InvalidUserException.class)
-  public void save_Update_AddInvalidManager() throws Throwable {
-    User user = repository.findById(7L).orElse(null);
-    detach(user);
-    user.setManager(true);
-
-    service.save(user, null);
   }
 
   @Test
@@ -795,49 +776,5 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertFalse(user.isActive());
-  }
-
-  @Test
-  public void deleteValid() throws Throwable {
-    User user = repository.findById(5L).orElse(null);
-    detach(user);
-    assertNotNull(user);
-
-    try {
-      service.delete(user);
-      fail("Expected DeleteValidUserException");
-    } catch (DeleteValidUserException e) {
-      // Ignore.
-    }
-  }
-
-  @Test
-  public void delete() throws Throwable {
-    User user = repository.findById(7L).orElse(null);
-    detach(user);
-    assertNotNull(user);
-
-    service.delete(user);
-
-    repository.flush();
-    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findById(7L).orElse(null);
-    assertNull(user);
-  }
-
-  @Test
-  public void delete_NewLaboratory() throws Throwable {
-    User user = repository.findById(6L).orElse(null);
-    detach(user);
-    assertNotNull(user);
-
-    service.delete(user);
-
-    repository.flush();
-    verify(permissionEvaluator).hasPermission(any(), eq(user.getLaboratory()), eq(WRITE));
-    user = repository.findById(6L).orElse(null);
-    assertNull(user);
-    Laboratory laboratory = laboratoryRepository.findById(3L).orElse(null);
-    assertNull(laboratory);
   }
 }

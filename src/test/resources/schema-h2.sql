@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS user (
   locale varchar(50) DEFAULT NULL,
   address_id bigint(20) DEFAULT NULL,
   active tinyint(1) NOT NULL DEFAULT '0',
-  valid tinyint(1) NOT NULL DEFAULT '0',
   admin tinyint(1) NOT NULL DEFAULT '0',
   manager tinyint(1) NOT NULL DEFAULT '0',
   registertime datetime NOT NULL,

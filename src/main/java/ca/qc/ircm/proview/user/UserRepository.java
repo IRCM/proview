@@ -11,8 +11,4 @@ public interface UserRepository extends JpaRepository<User, Long>, QuerydslPredi
   User findByEmail(String email);
 
   List<User> findAllByLaboratoryAndManagerTrue(Laboratory laboratory);
-
-  long countByValidFalse();
-
-  long countByValidFalseAndLaboratory(Laboratory laboratory);
 }

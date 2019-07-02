@@ -306,7 +306,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   @Test
   public void toggleActive_Inactive() {
     presenter.init(view);
-    User user = userRepository.findById(7L).orElse(null);
+    User user = userRepository.findById(11L).orElse(null);
     presenter.toggleActive(user);
     verify(userService).save(user, null);
     assertTrue(user.isActive());

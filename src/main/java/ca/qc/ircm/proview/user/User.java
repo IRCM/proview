@@ -69,11 +69,6 @@ public class User implements Data, Named, Serializable {
   @Size(max = 255)
   private String name;
   /**
-   * True if user is registered and is currently valid.
-   */
-  @Column(nullable = false)
-  private boolean valid = false;
-  /**
    * True if User is active. An active user can log into program.
    */
   @Column(nullable = false)
@@ -197,14 +192,6 @@ public class User implements Data, Named, Serializable {
 
   public void setActive(boolean active) {
     this.active = active;
-  }
-
-  public boolean isValid() {
-    return valid;
-  }
-
-  public void setValid(boolean valid) {
-    this.valid = valid;
   }
 
   public Laboratory getLaboratory() {
