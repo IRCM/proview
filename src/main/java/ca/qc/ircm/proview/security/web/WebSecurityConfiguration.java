@@ -69,17 +69,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   public static final String SWITCH_USER_URL = "/switchUser";
   public static final String SWITCH_USERNAME_PARAMETER = "username";
   public static final String SWITCH_USER_EXIT_URL = "/switchUser/exit";
-  private static final String SIGNIN_FAILURE_URL_PATTERN =
-      Pattern.quote(SIGNIN_PROCESSING_URL) + "\\?.*";
-  private static final String SIGNIN_DEFAULT_FAILURE_URL =
-      SIGNIN_PROCESSING_URL + "?" + SigninView.FAIL;
+  private static final String SIGNIN_FAILURE_URL_PATTERN = Pattern.quote(SIGNIN_PROCESSING_URL)
+      + "\\?.*";
+  private static final String SIGNIN_DEFAULT_FAILURE_URL = SIGNIN_PROCESSING_URL + "?"
+      + SigninView.FAIL;
   private static final String SIGNIN_LOCKED_URL = SIGNIN_PROCESSING_URL + "?" + SigninView.LOCKED;
-  private static final String SIGNIN_DISABLED_URL =
-      SIGNIN_PROCESSING_URL + "?" + SigninView.DISABLED;
+  private static final String SIGNIN_DISABLED_URL = SIGNIN_PROCESSING_URL + "?"
+      + SigninView.DISABLED;
   private static final String SIGNIN_URL = SIGNIN_PROCESSING_URL;
   private static final String SIGNOUT_SUCCESS_URL = "/" + MainView.VIEW_NAME;
-  private static final String SWITCH_USER_FAILURE_URL =
-      "/" + UsersView.VIEW_NAME + "?" + UsersView.SWITCH_FAILED;
+  private static final String SWITCH_USER_FAILURE_URL = "/" + UsersView.VIEW_NAME + "?"
+      + UsersView.SWITCH_FAILED;
   private static final String SWITCH_USER_TRAGET_URL = "/" + MainView.VIEW_NAME;
   private static final String PASSWORD_ENCRYPTION = "bcrypt";
   @Inject
@@ -108,8 +108,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
           new ShiroPasswordEncoder(pv.getAlgorithm(), pv.getIterations()));
     });
 
-    DelegatingPasswordEncoder passworEncoder =
-        new DelegatingPasswordEncoder(PASSWORD_ENCRYPTION, encoders);
+    DelegatingPasswordEncoder passworEncoder = new DelegatingPasswordEncoder(PASSWORD_ENCRYPTION,
+        encoders);
     passworEncoder.setDefaultPasswordEncoderForMatches(defaultPasswordEncoder);
 
     return passworEncoder;
@@ -121,9 +121,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
    * @return {@link DaoAuthenticationProviderWithLdap}
    */
   @Bean
+  @SuppressWarnings("checkstyle:linelength")
   public DaoAuthenticationProviderWithLdap authenticationProvider() {
-    DaoAuthenticationProviderWithLdap authenticationProvider =
-        new DaoAuthenticationProviderWithLdap();
+    DaoAuthenticationProviderWithLdap authenticationProvider = new DaoAuthenticationProviderWithLdap();
     authenticationProvider.setUserDetailsService(userDetailsService);
     authenticationProvider.setPasswordEncoder(passwordEncoder());
     authenticationProvider.setUserRepository(userRepository);
@@ -139,12 +139,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
    * @return {@link AuthenticationFailureHandler}
    */
   @Bean
+  @SuppressWarnings("checkstyle:linelength")
   public AuthenticationFailureHandler authenticationFailureHandler() {
     final Map<String, String> failureUrlMap = new HashMap<>();
     failureUrlMap.put(LockedException.class.getName(), SIGNIN_LOCKED_URL);
     failureUrlMap.put(DisabledException.class.getName(), SIGNIN_DISABLED_URL);
-    ExceptionMappingAuthenticationFailureHandler authenticationFailureHandler =
-        new ExceptionMappingAuthenticationFailureHandler();
+    ExceptionMappingAuthenticationFailureHandler authenticationFailureHandler = new ExceptionMappingAuthenticationFailureHandler();
     authenticationFailureHandler.setDefaultFailureUrl(SIGNIN_DEFAULT_FAILURE_URL);
     authenticationFailureHandler.setExceptionMappings(failureUrlMap);
     return authenticationFailureHandler;
@@ -235,6 +235,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       Class<?> clazz = Class.forName("ca.qc.ircm.proview.test.config.TestBenchSecurityFilter");
       http.addFilterBefore((Filter) clazz.newInstance(), SecurityContextPersistenceFilter.class);
     } catch (ClassNotFoundException e) {
+      // Ignore, not running unit tests.
     }
   }
 

@@ -14,6 +14,12 @@ public class CategoryComponent extends VerticalLayout {
   private static final long serialVersionUID = -6619674234077142003L;
   protected H2 header = new H2();
 
+  /**
+   * Creates a category component for specified category.
+   *
+   * @param category
+   *          category
+   */
   public CategoryComponent(Category category) {
     addClassName(CATEGORY);
     setPadding(false);

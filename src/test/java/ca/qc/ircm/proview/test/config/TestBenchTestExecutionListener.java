@@ -151,7 +151,6 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
       }
       return new ChromeDriver(options);
     } else if (driverClass.equals(FIREFOX_DRIVER)) {
-      FirefoxOptions options = new FirefoxOptions();
       FirefoxProfile profile = new FirefoxProfile();
       profile.setPreference("browser.download.folderList", 2);
       profile.setPreference("browser.download.dir", downloadHome);
@@ -159,6 +158,7 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
       profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
           "application/msword,application/pdf");
       profile.setPreference("pdfjs.disabled", true);
+      FirefoxOptions options = new FirefoxOptions();
       options.setProfile(profile);
       options.setHeadless(true);
       return new FirefoxDriver(options);
