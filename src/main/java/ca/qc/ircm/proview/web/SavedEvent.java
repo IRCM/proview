@@ -23,15 +23,15 @@ import java.util.EventObject;
 /**
  * Save event.
  */
-public class SaveEvent<V> extends EventObject {
+public class SavedEvent<V> extends EventObject {
   private static final long serialVersionUID = 7709868652458561869L;
   private V savedObject;
 
-  public SaveEvent(Component source) {
+  public SavedEvent(Component source) {
     super(source);
   }
 
-  public SaveEvent(Component source, V savedObject) {
+  public SavedEvent(Component source, V savedObject) {
     super(source);
     this.savedObject = savedObject;
   }
