@@ -19,22 +19,27 @@ package ca.qc.ircm.proview.files.web;
 
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
+import ca.qc.ircm.proview.test.config.Download;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.html.testbench.AnchorElement;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,6 +55,8 @@ public class GuidelinesViewItTest extends GuidelinesViewPageObject {
   private GuidelinesConfiguration guidelinesConfiguration;
   @Value("${spring.application.name}")
   private String applicationName;
+  @Value("${download-home}")
+  protected Path downloadHome;
 
   @Test
   @WithAnonymousUser
@@ -87,14 +94,28 @@ public class GuidelinesViewItTest extends GuidelinesViewPageObject {
   }
 
   @Test
-  @Ignore
+  @Download
   public void download() throws Throwable {
-    // TODO program test.
-    open();
-
+    Files.createDirectories(downloadHome);
     Guideline guideline = guidelinesConfiguration.categories(currentLocale()).get(0).guidelines()
         .get(0);
+    Path downloaded = downloadHome.resolve(guideline.path().getFileName().toString());
+    Files.deleteIfExists(downloaded);
+    Path source = Paths.get(getClass().getResource("/structure1.png").toURI());
+    Files.createDirectories(guideline.path().getParent());
+    Files.copy(source, guideline.path(), StandardCopyOption.REPLACE_EXISTING);
+
+    open();
+
     AnchorElement guidelineElement = categoryGuidelines(categories().get(0)).get(0);
     guidelineElement.click();
+    // Wait for file to download.
+    Thread.sleep(2000);
+    assertTrue(Files.exists(downloaded));
+    try {
+      assertArrayEquals(Files.readAllBytes(guideline.path()), Files.readAllBytes(downloaded));
+    } finally {
+      Files.delete(downloaded);
+    }
   }
 }

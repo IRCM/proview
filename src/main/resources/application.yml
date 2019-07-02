@@ -175,3 +175,8 @@ security:
 
 email:
   enabled: false
+
+guidelines:
+  home: ${user.dir}/target/guidelines
+
+download-home: ${user.dir}/target/download

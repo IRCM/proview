@@ -25,6 +25,7 @@ import com.vaadin.testbench.TestBenchTestCase;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -32,18 +33,22 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.opera.OperaDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.support.AbstractTestExecutionListener;
+import org.springframework.test.context.TestExecutionListener;
 
 /**
  * Rule for integration tests using Vaadin's test bench.
  */
 @Order(TestBenchTestExecutionListener.ORDER)
-public class TestBenchTestExecutionListener extends AbstractTestExecutionListener {
+public class TestBenchTestExecutionListener
+    implements TestExecutionListener, Ordered, InjectDependencies {
   public static final int ORDER = 0;
   private static final String LICENSE_ERROR_MESSAGE = "License for Vaadin TestBench not found. Skipping test class {0} .";
   private static final String[] LICENSE_PATHS = new String[] { "vaadin.testbench.developer.license",
@@ -61,9 +66,12 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
   private static final String DEFAULT_DRIVER = CHROME_DRIVER;
   private static final Logger logger = LoggerFactory
       .getLogger(TestBenchTestExecutionListener.class);
+  @Value("${download-home}")
+  protected String downloadHome;
 
   @Override
   public void beforeTestClass(TestContext testContext) throws Exception {
+    injectDependencies(testContext.getApplicationContext());
     if (isTestBenchTest(testContext)) {
       if (isSkipTestBenchTests()) {
         assumeTrue(SKIP_TESTS_ERROR_MESSAGE, false);
@@ -87,7 +95,7 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     if (isTestBenchTest(testContext)) {
-      WebDriver driver = driver();
+      WebDriver driver = driver(testContext);
       TestBenchTestCase target = getInstance(testContext);
       target.setDriver(driver);
       try {
@@ -127,17 +135,34 @@ public class TestBenchTestExecutionListener extends AbstractTestExecutionListene
     return (TestBenchTestCase) testContext.getTestInstance();
   }
 
-  private WebDriver driver() {
+  private WebDriver driver(TestContext testContext) {
     String driverClass = System.getProperty(DRIVER_SYSTEM_PROPERTY);
     if (driverClass == null) {
       driverClass = DEFAULT_DRIVER;
     }
     if (driverClass.equals(CHROME_DRIVER)) {
+      Download downloadAnnotations = findAnnotation(testContext.getTestClass(),
+          testContext.getTestMethod(), Download.class);
       ChromeOptions options = new ChromeOptions();
-      options.setHeadless(true);
+      if (downloadAnnotations != null) {
+        HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
+        chromePrefs.put("profile.default_content_settings.popups", 0);
+        chromePrefs.put("download.default_directory", downloadHome);
+        options.setExperimentalOption("prefs", chromePrefs);
+      } else {
+        options.setHeadless(true);
+      }
       return new ChromeDriver(options);
     } else if (driverClass.equals(FIREFOX_DRIVER)) {
       FirefoxOptions options = new FirefoxOptions();
+      FirefoxProfile profile = new FirefoxProfile();
+      profile.setPreference("browser.download.folderList", 2);
+      profile.setPreference("browser.download.dir", downloadHome);
+      profile.setPreference("browser.download.useDownloadDir", true);
+      profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
+          "application/msword,application/pdf");
+      profile.setPreference("pdfjs.disabled", true);
+      options.setProfile(profile);
       options.setHeadless(true);
       return new FirefoxDriver(options);
     } else {
