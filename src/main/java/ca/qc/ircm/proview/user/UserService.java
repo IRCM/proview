@@ -114,24 +114,6 @@ public class UserService {
   }
 
   /**
-   * Returns true if email parameter is the email of a non-admin laboratory manager, false
-   * otherwise.
-   *
-   * @param email
-   *          email
-   * @return true if email parameter is the email of a non-admin laboratory manager, false otherwise
-   */
-  public boolean isManager(String email) {
-    if (email == null) {
-      return false;
-    }
-
-    BooleanExpression predicate = user.active.eq(true).and(user.admin.eq(false))
-        .and(user.email.eq(email)).and(user.manager.eq(true));
-    return repository.count(predicate) > 0;
-  }
-
-  /**
    * Returns all users that match parameters.
    * <p>
    * Only admin users can search users without a laboratory.

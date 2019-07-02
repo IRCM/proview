@@ -204,55 +204,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void isManager_Robot() throws Throwable {
-    boolean manager = service.isManager("proview@ircm.qc.ca");
-
-    assertEquals(false, manager);
-  }
-
-  @Test
-  public void isManager_Admin() throws Throwable {
-    boolean manager = service.isManager("christian.poitras@ircm.qc.ca");
-
-    assertEquals(false, manager);
-  }
-
-  @Test
-  public void isManager_Manager() throws Throwable {
-    boolean manager = service.isManager("benoit.coulombe@ircm.qc.ca");
-
-    assertEquals(true, manager);
-  }
-
-  @Test
-  public void isManager_NonManager() throws Throwable {
-    boolean manager = service.isManager("james.johnson@ircm.qc.ca");
-
-    assertEquals(false, manager);
-  }
-
-  @Test
-  public void isManager_Invalid() throws Throwable {
-    boolean manager = service.isManager("nicole.francis@ircm.qc.ca");
-
-    assertEquals(false, manager);
-  }
-
-  @Test
-  public void isManager_Inactive() throws Throwable {
-    boolean manager = service.isManager("marie.trudel@ircm.qc.ca");
-
-    assertEquals(false, manager);
-  }
-
-  @Test
-  public void isManager_Null() throws Throwable {
-    boolean manager = service.isManager(null);
-
-    assertEquals(false, manager);
-  }
-
-  @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void all_Filter() throws Throwable {
     UserFilter filter = mock(UserFilter.class);
