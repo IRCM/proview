@@ -233,6 +233,44 @@ public class UserPermissionEvaluatorTest {
   }
 
   @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void hasPermission_Write_Robot() throws Throwable {
+    User user = userRepository.findById(1L).orElse(null);
+    assertTrue(permissionEvaluator.hasPermission(authentication(), user, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), user, BASE_WRITE));
+    assertTrue(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, WRITE));
+    assertTrue(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, BASE_WRITE));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void hasPermission_Write_Robot_Invalidate() throws Throwable {
+    User user = userRepository.findById(1L).orElse(null);
+    user.setValid(false);
+    assertFalse(permissionEvaluator.hasPermission(authentication(), user, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), user, BASE_WRITE));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, WRITE));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, BASE_WRITE));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void hasPermission_Write_Robot_Deactivate() throws Throwable {
+    User user = userRepository.findById(1L).orElse(null);
+    user.setActive(false);
+    assertFalse(permissionEvaluator.hasPermission(authentication(), user, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), user, BASE_WRITE));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, WRITE));
+    assertFalse(
+        permissionEvaluator.hasPermission(authentication(), user.getId(), USER_CLASS, BASE_WRITE));
+  }
+
+  @Test
   public void hasPermission_NullAuthentication() throws Throwable {
     User user = userRepository.findById(10L).orElse(null);
     assertFalse(permissionEvaluator.hasPermission(null, user, READ));

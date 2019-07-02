@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
  * {@link PermissionEvaluator} that can evaluate permission for {@link User}.
  */
 public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
+  private static final long ROBOT_ID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(UserPermissionEvaluator.class);
   private UserRepository repository;
   private AuthorizationService authorizationService;
@@ -61,6 +62,10 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
   private boolean hasPermission(User user, User currentUser, Permission permission) {
     logger.debug("hasPermission: {}, {}, {}", user, currentUser, permission);
     if (currentUser == null) {
+      return false;
+    }
+    if (user.getId() != null && user.getId() == ROBOT_ID && permission.equals(BasePermission.WRITE)
+        && (!user.isValid() || !user.isActive())) {
       return false;
     }
     if (authorizationService.hasRole(ADMIN)) {
