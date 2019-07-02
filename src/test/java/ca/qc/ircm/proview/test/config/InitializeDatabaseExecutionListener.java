@@ -24,26 +24,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestExecutionListener;
 
 /**
  * Initialized test database.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class InitializeDatabaseExecutionListener extends InjectIntoTestExecutionListener {
-  private static final Logger logger =
-      LoggerFactory.getLogger(InitializeDatabaseExecutionListener.class);
+public class InitializeDatabaseExecutionListener
+    implements TestExecutionListener, InjectDependencies {
+  public static final int ORDER = Ordered.HIGHEST_PRECEDENCE;
+  private static final Logger logger = LoggerFactory
+      .getLogger(InitializeDatabaseExecutionListener.class);
   /**
    * Matches pass1.
    */
   @SuppressWarnings("checkstyle:linelength")
-  public static final String PASSWORD_PASS1 =
-      "$2a$10$nGJQSCEj1xlQR/C.nEO8G.GQ4/wUCuGrRKNd0AV3oQp3FwzjtfyAq";
+  public static final String PASSWORD_PASS1 = "$2a$10$nGJQSCEj1xlQR/C.nEO8G.GQ4/wUCuGrRKNd0AV3oQp3FwzjtfyAq";
   /**
    * Matches pass2.
    */
   @SuppressWarnings("checkstyle:linelength")
-  public static final String PASSWORD_PASS2 =
-      "$2a$10$JU0aj7Cc/7sWVkFXoHbWTuvVWEAwXFT1EhCX4S6Aa9JfSsKqLP8Tu";
+  public static final String PASSWORD_PASS2 = "$2a$10$JU0aj7Cc/7sWVkFXoHbWTuvVWEAwXFT1EhCX4S6Aa9JfSsKqLP8Tu";
   @Inject
   private UserRepository userRepository;
 

@@ -38,7 +38,6 @@ import org.openqa.selenium.opera.OperaDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestExecutionListener;
@@ -46,10 +45,8 @@ import org.springframework.test.context.TestExecutionListener;
 /**
  * Rule for integration tests using Vaadin's test bench.
  */
-@Order(TestBenchTestExecutionListener.ORDER)
-public class TestBenchTestExecutionListener
-    implements TestExecutionListener, Ordered, InjectDependencies {
-  public static final int ORDER = 0;
+@Order(0)
+public class TestBenchTestExecutionListener implements TestExecutionListener, InjectDependencies {
   private static final String LICENSE_ERROR_MESSAGE = "License for Vaadin TestBench not found. Skipping test class {0} .";
   private static final String[] LICENSE_PATHS = new String[] { "vaadin.testbench.developer.license",
       ".vaadin.testbench.developer.license" };
@@ -179,10 +176,5 @@ public class TestBenchTestExecutionListener
     if (System.getProperty(RETRIES_SYSTEM_PROPERTY) != null) {
       Parameters.setMaxAttempts(Integer.parseInt(System.getProperty(RETRIES_SYSTEM_PROPERTY)));
     }
-  }
-
-  @Override
-  public int getOrder() {
-    return ORDER;
   }
 }

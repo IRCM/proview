@@ -25,14 +25,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.support.AbstractTestExecutionListener;
+import org.springframework.test.context.TestExecutionListener;
 
 /**
  * Skip tests annotated with {@link Slow} if <code>skipSlowTests</code> system property is set.
  */
-@Order(SlowTestExecutionListener.ORDER)
-public class SlowTestExecutionListener extends AbstractTestExecutionListener {
-  public static final int ORDER = Ordered.HIGHEST_PRECEDENCE;
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class SlowTestExecutionListener implements TestExecutionListener {
   private static final Logger logger = LoggerFactory.getLogger(SlowTestExecutionListener.class);
   private final boolean skipSlowTests;
 
@@ -56,8 +55,8 @@ public class SlowTestExecutionListener extends AbstractTestExecutionListener {
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     if (skipSlowTests) {
-      Slow slow =
-          findAnnotation(testContext.getTestClass(), testContext.getTestMethod(), Slow.class);
+      Slow slow = findAnnotation(testContext.getTestClass(), testContext.getTestMethod(),
+          Slow.class);
       if (slow != null) {
         String message = "Test " + testContext.getTestMethod().getName() + " of class "
             + testContext.getTestClass().getName() + " is skipped";
@@ -65,10 +64,5 @@ public class SlowTestExecutionListener extends AbstractTestExecutionListener {
         assumeTrue(message, false);
       }
     }
-  }
-
-  @Override
-  public int getOrder() {
-    return ORDER;
   }
 }
