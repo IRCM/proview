@@ -82,6 +82,17 @@ public class VaadinTestUtils {
     }
   }
 
+  /**
+   * Returns the first child of specified type.
+   *
+   * @param <C>
+   *          Component
+   * @param start
+   *          component
+   * @param componentType
+   *          child's type
+   * @return the first child of specified type
+   */
   @SuppressWarnings("unchecked")
   public static <C extends Component> Optional<C> findChild(Component start,
       Class<C> componentType) {
@@ -95,6 +106,17 @@ public class VaadinTestUtils {
         .filter(oc -> oc.isPresent()).findFirst().orElse(Optional.empty());
   }
 
+  /**
+   * Returns all the children of specified type.
+   *
+   * @param <C>
+   *          Component
+   * @param start
+   *          component
+   * @param componentType
+   *          children's type
+   * @return all the children of specified type
+   */
   @SuppressWarnings("unchecked")
   public static <C extends Component> List<C> findChildren(Component start,
       Class<C> componentType) {
