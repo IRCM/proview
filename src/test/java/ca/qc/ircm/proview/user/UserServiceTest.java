@@ -314,9 +314,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
     verify(filter).predicate();
-    assertEquals(12, users.size());
-    assertTrue(find(users, 2).isPresent());
-    assertFalse(find(users, 1).isPresent());
+    assertEquals(4, users.size());
+    assertTrue(find(users, 3).isPresent());
+    assertFalse(find(users, 2).isPresent());
   }
 
   @Test
@@ -326,9 +326,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
     List<User> users = service.all(null, laboratory);
 
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
-    assertEquals(12, users.size());
-    assertTrue(find(users, 2).isPresent());
-    assertFalse(find(users, 1).isPresent());
+    assertEquals(4, users.size());
+    assertTrue(find(users, 3).isPresent());
+    assertFalse(find(users, 2).isPresent());
   }
 
   @Test

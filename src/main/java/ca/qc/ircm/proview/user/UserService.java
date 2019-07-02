@@ -175,6 +175,7 @@ public class UserService {
 
     BooleanExpression predicate = user.id.ne(ROBOT_ID);
     predicate = predicate.and(filter.predicate());
+    predicate = predicate.and(user.laboratory.eq(laboratory));
     return Lists.newArrayList(repository.findAll(predicate));
   }
 
