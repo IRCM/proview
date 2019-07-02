@@ -19,9 +19,13 @@ package ca.qc.ircm.proview.test.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventBus;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.grid.editor.EditorImpl;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -37,6 +41,46 @@ import java.util.stream.Collectors;
 
 public class VaadinTestUtils {
   private static final String ICON_ATTRIBUTE = "icon";
+
+  /**
+   * Simulates a click on button.
+   *
+   * @param button
+   *          button
+   */
+  public static void clickButton(Button button) {
+    try {
+      Method method = Component.class.getDeclaredMethod("getEventBus");
+      method.setAccessible(true);
+      ComponentEventBus eventBus = (ComponentEventBus) method.invoke(button);
+      eventBus.fireEvent(new ClickEvent<>(button));
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+        | IllegalArgumentException | InvocationTargetException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  /**
+   * Simulates an item click on grid.
+   *
+   * @param grid
+   *          grid
+   * @param item
+   *          item
+   */
+  public static <E> void doubleClickItem(Grid<E> grid, E item) {
+    try {
+      String key = grid.getDataCommunicator().getKeyMapper().key(item);
+      Method method = Component.class.getDeclaredMethod("getEventBus");
+      method.setAccessible(true);
+      ComponentEventBus eventBus = (ComponentEventBus) method.invoke(grid);
+      eventBus.fireEvent(new ItemDoubleClickEvent<>(grid, false, key, -1, -1, -1, -1, 2, 0, false,
+          false, false, false));
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+        | IllegalArgumentException | InvocationTargetException e) {
+      throw new IllegalStateException(e);
+    }
+  }
 
   @SuppressWarnings("unchecked")
   public static <C extends Component> Optional<C> findChild(Component start,

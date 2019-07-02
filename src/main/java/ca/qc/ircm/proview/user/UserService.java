@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -220,26 +219,26 @@ public class UserService {
   }
 
   /**
-   * Register a new user in a laboratory.
+   * Saves user in database.
    *
    * @param user
-   *          user to register
+   *          user
    * @param password
-   *          user's password
-   * @param manager
-   *          user's manager
-   * @param webContext
-   *          web context used to send email to managers or admin users
+   *          user's new password, required if user does not exists
    */
-  public void register(User user, String password, User manager,
-      RegisterUserWebContext webContext) {
-    user.setRegisterTime(Instant.now());
-    if (user.isAdmin()) {
-      registerAdmin(user, password);
-    } else if (manager == null) {
-      registerNewLaboratory(user, password, webContext);
+  @PreAuthorize("hasPermission(#user, 'write')")
+  public void save(User user, String password) {
+    if (user.getId() == null) {
+      user.setRegisterTime(Instant.now());
+      if (user.isAdmin()) {
+        registerAdmin(user, password);
+      } else if (user.getLaboratory().getId() == null) {
+        registerNewLaboratory(user, password);
+      } else {
+        registerNewUser(user, password);
+      }
     } else {
-      registerNewUser(user, password, manager, webContext);
+      update(user, password);
     }
   }
 
@@ -250,122 +249,29 @@ public class UserService {
     user.setPasswordVersion(null);
   }
 
-  private void registerNewUser(User user, String password, User manager,
-      RegisterUserWebContext webContext) {
-    manager = noSecurityGet(manager.getEmail());
-    if (!manager.isValid()) {
-      throw new IllegalArgumentException("Cannot add user to a laboratory with an invalid manager");
-    }
-
+  private void registerNewUser(User user, String password) {
     setUserPassword(user, password);
-    user.setLaboratory(manager.getLaboratory());
+    user.setValid(true);
+    user.setActive(true);
     repository.saveAndFlush(user);
-
-    // Send email to manager to inform him that a new user has registered.
-    try {
-      this.sendEmailForNewUser(user, manager, webContext);
-    } catch (MessagingException e) {
-      logger.warn(e.getMessage(), e);
-    }
 
     logger.info("User {} of laboratory {} added to database", user, user.getLaboratory());
   }
 
-  private void sendEmailForNewUser(final User user, final User manager,
-      final RegisterUserWebContext webContext) throws MessagingException {
-    // Get manager's prefered locale.
-    Locale locale = Locale.CANADA;
-    if (manager.getLocale() != null) {
-      locale = manager.getLocale();
-    }
-
-    // Prepare URL used to validate user.
-    final String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(locale));
-
-    // Prepare email content.
-    MimeMessageHelper email = emailService.htmlEmail();
-    email.addTo(manager.getEmail());
-    MessageResource resources =
-        new MessageResource(UserService.class.getName() + "_RegisterEmail", locale);
-    String subject = resources.message("email.subject");
-    email.setSubject(subject);
-    Context context = new Context(locale);
-    context.setVariable("user", user);
-    context.setVariable("newLaboratory", false);
-    context.setVariable("url", url);
-    String htmlTemplateLocation =
-        "/" + UserService.class.getName().replace(".", "/") + "_RegisterEmail.html";
-    String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation =
-        "/" + UserService.class.getName().replace(".", "/") + "_RegisterEmail.txt";
-    String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
-    email.setText(textEmail, htmlEmail);
-
-    emailService.send(email);
-  }
-
-  private void registerNewLaboratory(User manager, String password,
-      RegisterUserWebContext webContext) {
+  private void registerNewLaboratory(User manager, String password) {
     setUserPassword(manager, password);
     manager.setManager(true);
+    manager.setValid(true);
+    manager.setActive(true);
     Laboratory laboratory = manager.getLaboratory();
     laboratory.setDirector(manager.getName());
     laboratoryRepository.save(laboratory);
     repository.saveAndFlush(manager);
 
-    // Send email to admin users to inform them that a new laboratory has registered.
-    try {
-      this.sendEmailForNewLaboratory(laboratory, manager, webContext);
-    } catch (Throwable e) {
-      logger.warn(e.getMessage(), e);
-    }
-
     logger.info("Laboratory {} with manager {} added to database", laboratory, manager);
   }
 
-  private List<User> adminUsers() {
-    BooleanExpression predicate = user.admin.eq(true).and(user.valid.eq(true))
-        .and(user.active.eq(true)).and(user.id.ne(ROBOT_ID));
-    return Lists.newArrayList(repository.findAll(predicate));
-  }
-
-  private void sendEmailForNewLaboratory(final Laboratory laboratory, final User manager,
-      final RegisterUserWebContext webContext) throws MessagingException {
-    List<User> adminUsers = adminUsers();
-
-    for (final User adminUser : adminUsers) {
-      // Get adminUser's prefered locale.
-      Locale locale = Locale.CANADA;
-      if (adminUser.getLocale() != null) {
-        locale = adminUser.getLocale();
-      }
-      // Prepare URL used to validate laboratory.
-      final String url = applicationConfiguration.getUrl(webContext.getValidateUserUrl(locale));
-      // Prepare email content.
-      MimeMessageHelper email = emailService.htmlEmail();
-      MessageResource resources =
-          new MessageResource(UserService.class.getName() + "_RegisterEmail", locale);
-      String subject = resources.message("newLaboratory.email.subject");
-      email.setSubject(subject);
-      email.addTo(adminUser.getEmail());
-      Context context = new Context(locale);
-      context.setVariable("user", manager);
-      context.setVariable("newLaboratory", true);
-      context.setVariable("url", url);
-      String htmlTemplateLocation =
-          UserService.class.getName().replace(".", "/") + "_RegisterEmail.html";
-      String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-      String textTemplateLocation =
-          UserService.class.getName().replace(".", "/") + "_RegisterEmail.txt";
-      String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
-      email.setText(textEmail, htmlEmail);
-
-      emailService.send(email);
-    }
-  }
-
-  @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  protected void registerAdmin(User user, String password) {
+  private void registerAdmin(User user, String password) {
     if (!user.isAdmin()) {
       throw new IllegalArgumentException("Laboratory must be admin, use register instead.");
     }
@@ -380,18 +286,7 @@ public class UserService {
     logger.info("Admin user {} added to database", user);
   }
 
-  /**
-   * Updates a User.
-   *
-   * @param user
-   *          signed user with new information
-   * @param newPassword
-   *          new password or null if password does not change
-   * @throws UnauthorizedException
-   *           user must match signed user
-   */
-  @PreAuthorize("hasPermission(#user, 'write')")
-  public void update(User user, String newPassword) {
+  private void update(User user, String newPassword) {
     if (!user.isValid() && user.isManager()) {
       User before = repository.findById(user.getId()).orElse(null);
       if (!before.isManager()) {
@@ -467,18 +362,18 @@ public class UserService {
     // Prepare email content.
     MimeMessageHelper email = emailService.htmlEmail();
     email.addTo(user.getEmail());
-    MessageResource messageResource =
-        new MessageResource(UserService.class.getName() + "_ValidateEmail", locale);
+    MessageResource messageResource = new MessageResource(
+        UserService.class.getName() + "_ValidateEmail", locale);
     String subject = messageResource.message("email.subject");
     email.setSubject(subject);
     Context context = new Context(user.getLocale());
     context.setVariable("user", user);
     context.setVariable("url", url);
-    String htmlTemplateLocation =
-        "/" + UserService.class.getName().replace(".", "/") + "_ValidateEmail.html";
+    String htmlTemplateLocation = "/" + UserService.class.getName().replace(".", "/")
+        + "_ValidateEmail.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation =
-        "/" + UserService.class.getName().replace(".", "/") + "_ValidateEmail.txt";
+    String textTemplateLocation = "/" + UserService.class.getName().replace(".", "/")
+        + "_ValidateEmail.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
 

@@ -7,6 +7,8 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserAuthority;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
@@ -16,6 +18,7 @@ import org.springframework.security.core.Authentication;
  * {@link PermissionEvaluator} that can evaluate permission for {@link User}.
  */
 public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
+  private static final Logger logger = LoggerFactory.getLogger(UserPermissionEvaluator.class);
   private UserRepository repository;
   private AuthorizationService authorizationService;
 
@@ -56,6 +59,7 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
   }
 
   private boolean hasPermission(User user, User currentUser, Permission permission) {
+    logger.debug("hasPermission: {}, {}, {}", user, currentUser, permission);
     if (currentUser == null) {
       return false;
     }

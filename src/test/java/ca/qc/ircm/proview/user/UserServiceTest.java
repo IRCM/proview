@@ -28,8 +28,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -43,10 +41,8 @@ import ca.qc.ircm.proview.web.HomeWebContext;
 import ca.qc.ircm.text.MessageResource;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,7 +94,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   private String hashedPassword;
-  private String validateUserUrl = "/validate/user";
   private String homeUrl = "/";
 
   /**
@@ -125,10 +120,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
       }
     }
     return null;
-  }
-
-  private RegisterUserWebContext registerUserWebContext() {
-    return locale -> validateUserUrl;
   }
 
   private HomeWebContext homeWebContext() {
@@ -427,8 +418,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = UserRole.ADMIN)
-  public void register_Admin() throws Throwable {
+  public void save_Insert_Admin() throws Throwable {
     final User manager = repository.findById(1L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(manager);
     User user = new User();
@@ -451,9 +441,10 @@ public class UserServiceTest extends AbstractServiceTestCase {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    service.register(user, "password", null, registerUserWebContext());
+    service.save(user, "password");
 
     repository.flush();
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     verify(authorizationService).getCurrentUser();
     verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
@@ -481,70 +472,10 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isValid());
     assertEquals(true, user.isAdmin());
     assertEquals(false, user.isManager());
-
-    verifyZeroInteractions(emailService);
   }
 
   @Test
-  @WithAnonymousUser
-  public void register_Admin_AccessDenied_Anonymous() throws Throwable {
-    final User manager = repository.findById(1L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(manager);
-    User user = new User();
-    user.setEmail("unit_test@ircm.qc.ca");
-    user.setName("Christian Poitras");
-    user.setLocale(Locale.CANADA_FRENCH);
-    user.setAdmin(true);
-    Address address = new Address();
-    address.setLine("110 av des Pins Ouest");
-    address.setTown("Montréal");
-    address.setState("Québec");
-    address.setPostalCode("H2W 1R7");
-    address.setCountry("Canada");
-    user.setAddress(address);
-    PhoneNumber phoneNumber = new PhoneNumber();
-    phoneNumber.setType(PhoneNumberType.WORK);
-    phoneNumber.setNumber("514-555-5500");
-    phoneNumber.setExtension("3228");
-    List<PhoneNumber> phoneNumbers = new ArrayList<>();
-    phoneNumbers.add(phoneNumber);
-    user.setPhoneNumbers(phoneNumbers);
-
-    service.register(user, "password", null, registerUserWebContext());
-  }
-
-  @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void register_Admin_AccessDenied() throws Throwable {
-    final User manager = repository.findById(1L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(manager);
-    User user = new User();
-    user.setEmail("unit_test@ircm.qc.ca");
-    user.setName("Christian Poitras");
-    user.setLocale(Locale.CANADA_FRENCH);
-    user.setAdmin(true);
-    Address address = new Address();
-    address.setLine("110 av des Pins Ouest");
-    address.setTown("Montréal");
-    address.setState("Québec");
-    address.setPostalCode("H2W 1R7");
-    address.setCountry("Canada");
-    user.setAddress(address);
-    PhoneNumber phoneNumber = new PhoneNumber();
-    phoneNumber.setType(PhoneNumberType.WORK);
-    phoneNumber.setNumber("514-555-5500");
-    phoneNumber.setExtension("3228");
-    List<PhoneNumber> phoneNumbers = new ArrayList<>();
-    phoneNumbers.add(phoneNumber);
-    user.setPhoneNumbers(phoneNumbers);
-
-    service.register(user, "password", null, registerUserWebContext());
-  }
-
-  @Test
-  public void register_ExistingLaboratory() throws Throwable {
-    final User manager = new User();
-    manager.setEmail("benoit.coulombe@ircm.qc.ca");
+  public void save_Insert_ExistingLaboratory() throws Throwable {
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -563,10 +494,13 @@ public class UserServiceTest extends AbstractServiceTestCase {
     List<PhoneNumber> phoneNumbers = new ArrayList<>();
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
+    user.setLaboratory(laboratoryRepository.findById(2L).get());
+    when(authorizationService.getCurrentUser()).thenReturn(repository.findById(3L).get());
 
-    service.register(user, "password", manager, registerUserWebContext());
+    service.save(user, "password");
 
     repository.flush();
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     verifyZeroInteractions(authorizationService);
     verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
@@ -593,118 +527,14 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
     assertEquals("514-555-5500", phoneNumber.getNumber());
     assertEquals("3228", phoneNumber.getExtension());
-    assertEquals(false, user.isActive());
-    assertEquals(false, user.isValid());
+    assertEquals(true, user.isActive());
+    assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
     assertEquals(false, user.isManager());
-    verify(emailService).htmlEmail();
-    verify(emailService).send(email);
-    verify(email).addTo("benoit.coulombe@ircm.qc.ca");
-    MessageResource resources =
-        new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA_FRENCH);
-    verify(email).setSubject(resources.message("email.subject"));
-    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
-    String textContent = stringCaptor.getAllValues().get(0);
-    String htmlContent = stringCaptor.getAllValues().get(1);
-    assertTrue(textContent.contains(resources.message("header", user.getName())));
-    assertTrue(
-        htmlContent.contains(StringUtils.escapeXml(resources.message("header", user.getName()))));
-    assertTrue(textContent.contains(resources.message("header2")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("header2"))));
-    assertTrue(textContent.contains(resources.message("message")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
-    assertTrue(textContent.contains(resources.message("footer")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
-    String url = applicationConfiguration.getUrl(validateUserUrl);
-    assertTrue(textContent.contains(url));
-    assertTrue(htmlContent.contains(url));
-    assertFalse(textContent.contains("???"));
-    assertFalse(htmlContent.contains("???"));
   }
 
   @Test
-  public void register_ExistingLaboratory_EnglishEmail() throws Throwable {
-    User updateLocale = repository.findById(3L).orElse(null);
-    updateLocale.setLocale(Locale.CANADA);
-    repository.save(updateLocale);
-    final User manager = new User();
-    manager.setEmail("benoit.coulombe@ircm.qc.ca");
-    User user = new User();
-    user.setEmail("unit_test@ircm.qc.ca");
-    user.setName("Christian Poitras");
-    user.setLocale(Locale.CANADA_FRENCH);
-    Address address = new Address();
-    address.setLine("110 av des Pins Ouest");
-    address.setTown("Montréal");
-    address.setState("Québec");
-    address.setPostalCode("H2W 1R7");
-    address.setCountry("Canada");
-    user.setAddress(address);
-    PhoneNumber phoneNumber = new PhoneNumber();
-    phoneNumber.setType(PhoneNumberType.WORK);
-    phoneNumber.setNumber("514-555-5500");
-    phoneNumber.setExtension("3228");
-    List<PhoneNumber> phoneNumbers = new ArrayList<>();
-    phoneNumbers.add(phoneNumber);
-    user.setPhoneNumbers(phoneNumbers);
-
-    service.register(user, "password", manager, registerUserWebContext());
-
-    repository.flush();
-    MessageResource resources =
-        new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA);
-    verify(email).setSubject(resources.message("email.subject"));
-    verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
-    String textContent = stringCaptor.getAllValues().get(0);
-    String htmlContent = stringCaptor.getAllValues().get(1);
-    assertTrue(textContent.contains(resources.message("header", user.getName())));
-    assertTrue(
-        htmlContent.contains(StringUtils.escapeXml(resources.message("header", user.getName()))));
-    assertTrue(textContent.contains(resources.message("header2")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("header2"))));
-    assertTrue(textContent.contains(resources.message("message")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
-    assertTrue(textContent.contains(resources.message("footer")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
-    String url = applicationConfiguration.getUrl(validateUserUrl);
-    assertTrue(textContent.contains(url));
-    assertTrue(htmlContent.contains(url));
-    assertFalse(textContent.contains("???"));
-    assertFalse(htmlContent.contains("???"));
-  }
-
-  @Test
-  public void register_ExistingLaboratory_Invalid() throws Throwable {
-    final User manager = repository.findById(6L).orElse(null);
-    User user = new User();
-    user.setEmail("unit_test@ircm.qc.ca");
-    user.setName("Christian Poitras");
-    user.setLocale(Locale.CANADA_FRENCH);
-    Address address = new Address();
-    address.setLine("110 av des Pins Ouest");
-    address.setTown("Montréal");
-    address.setState("Québec");
-    address.setPostalCode("H2W 1R7");
-    address.setCountry("Canada");
-    user.setAddress(address);
-    PhoneNumber phoneNumber = new PhoneNumber();
-    phoneNumber.setType(PhoneNumberType.WORK);
-    phoneNumber.setNumber("514-555-5500");
-    phoneNumber.setExtension("3228");
-    List<PhoneNumber> phoneNumbers = new ArrayList<>();
-    phoneNumbers.add(phoneNumber);
-    user.setPhoneNumbers(phoneNumbers);
-
-    try {
-      service.register(user, "password", manager, registerUserWebContext());
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-      // Success.
-    }
-  }
-
-  @Test
-  public void register_NewLaboratory() throws Throwable {
+  public void save_Insert_NewLaboratory() throws Throwable {
     Laboratory laboratory = new Laboratory();
     laboratory.setOrganization("IRCM");
     laboratory.setName("Ribonucleoprotein Biochemistry");
@@ -728,9 +558,10 @@ public class UserServiceTest extends AbstractServiceTestCase {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    service.register(user, "password", null, registerUserWebContext());
+    service.save(user, "password");
 
     repository.flush();
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     verifyZeroInteractions(authorizationService);
     verify(passwordEncoder).encode("password");
     assertNotNull(laboratory.getId());
@@ -761,65 +592,14 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
     assertEquals("514-555-5500", phoneNumber.getNumber());
     assertEquals("3228", phoneNumber.getExtension());
-    assertEquals(false, user.isActive());
-    assertEquals(false, user.isValid());
+    assertEquals(true, user.isActive());
+    assertEquals(true, user.isValid());
     assertEquals(false, user.isAdmin());
     assertEquals(true, user.isManager());
-    verify(emailService, times(3)).htmlEmail();
-    verify(emailService, times(3)).send(email);
-    Set<String> subjects = new HashSet<>();
-    MessageResource frenchResources =
-        new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.CANADA_FRENCH);
-    subjects.add(frenchResources.message("newLaboratory.email.subject"));
-    MessageResource englishResources =
-        new MessageResource(UserService.class.getName() + "_RegisterEmail", Locale.ENGLISH);
-    subjects.add(englishResources.message("newLaboratory.email.subject"));
-    verify(email).addTo("christian.poitras@ircm.qc.ca");
-    verify(email).addTo("liam.li@ircm.qc.ca");
-    verify(email).addTo("jackson.smith@ircm.qc.ca");
-    verify(email, never()).addTo("robert.stlouis@ircm.qc.ca");
-    verify(email, never()).addTo("benoit.coulombe@ircm.qc.ca");
-    verify(email, times(3)).setSubject(stringCaptor.capture());
-    assertEquals(1,
-        stringCaptor.getAllValues().stream()
-            .filter(
-                subject -> subject.equals(frenchResources.message("newLaboratory.email.subject")))
-            .count());
-    assertEquals(2,
-        stringCaptor.getAllValues().stream()
-            .filter(
-                subject -> subject.equals(englishResources.message("newLaboratory.email.subject")))
-            .count());
-    verify(email, times(3)).setText(stringCaptor.capture(), stringCaptor.capture());
-    for (int i = 3; i < 9; i += 2) {
-      String textContent = stringCaptor.getAllValues().get(i);
-      String htmlContent = stringCaptor.getAllValues().get(i + 1);
-      Locale locale = Locale.ENGLISH;
-      if (textContent.contains(frenchResources.message("header2"))) {
-        locale = Locale.CANADA_FRENCH;
-      }
-      MessageResource resources =
-          new MessageResource(UserService.class.getName() + "_RegisterEmail", locale);
-      assertTrue(textContent.contains(
-          resources.message("newLaboratory.header", user.getName(), laboratory.getName())));
-      assertTrue(htmlContent.contains(StringUtils.escapeXml(
-          resources.message("newLaboratory.header", user.getName(), laboratory.getName()))));
-      assertTrue(textContent.contains(resources.message("header2")));
-      assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("header2"))));
-      assertTrue(textContent.contains(resources.message("message")));
-      assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
-      assertTrue(textContent.contains(resources.message("footer")));
-      assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
-      String url = applicationConfiguration.getUrl(validateUserUrl);
-      assertTrue(textContent.contains(url));
-      assertTrue(htmlContent.contains(url));
-      assertFalse(textContent.contains("???"));
-      assertFalse(htmlContent.contains("???"));
-    }
   }
 
   @Test
-  public void update() throws Throwable {
+  public void save_Update() throws Throwable {
     User user = repository.findById(12L).orElse(null);
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
@@ -845,7 +625,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     phoneNumbers.add(phoneNumber2);
     user.setPhoneNumbers(phoneNumbers);
 
-    service.update(user, null);
+    service.save(user, null);
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
@@ -885,7 +665,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_CurrentManager() throws Throwable {
+  public void save_Update_CurrentManager() throws Throwable {
     when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
     User user = repository.findById(3L).orElse(null);
     detach(user);
@@ -912,7 +692,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     phoneNumbers.add(phoneNumber2);
     user.setPhoneNumbers(phoneNumbers);
 
-    service.update(user, null);
+    service.save(user, null);
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
@@ -952,12 +732,12 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_AddManager() throws Throwable {
+  public void save_Update_AddManager() throws Throwable {
     User user = repository.findById(10L).orElse(null);
     detach(user);
     user.setManager(true);
 
-    service.update(user, null);
+    service.save(user, null);
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
@@ -966,12 +746,12 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_AddInactiveManager() throws Throwable {
+  public void save_Update_AddInactiveManager() throws Throwable {
     User user = repository.findById(12L).orElse(null);
     detach(user);
     user.setManager(true);
 
-    service.update(user, null);
+    service.save(user, null);
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
@@ -981,33 +761,33 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test(expected = InvalidUserException.class)
-  public void update_AddInvalidManager() throws Throwable {
+  public void save_Update_AddInvalidManager() throws Throwable {
     User user = repository.findById(7L).orElse(null);
     detach(user);
     user.setManager(true);
 
-    service.update(user, null);
+    service.save(user, null);
   }
 
   @Test
-  public void update_AddManagerDirectorChange() throws Throwable {
+  public void save_Update_AddManagerDirectorChange() throws Throwable {
     User user = repository.findById(10L).orElse(null);
     detach(user);
     user.setManager(true);
 
-    service.update(user, null);
+    service.save(user, null);
 
     Laboratory laboratory = laboratoryRepository.findById(2L).orElse(null);
     assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test
-  public void update_RemoveManager() throws Throwable {
+  public void save_Update_RemoveManager() throws Throwable {
     User user = repository.findById(27L).orElse(null);
     detach(user);
     user.setManager(false);
 
-    service.update(user, null);
+    service.save(user, null);
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
@@ -1016,32 +796,32 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test(expected = UnmanagedLaboratoryException.class)
-  public void update_RemoveManagerUnmanagedLaboratory() throws Throwable {
+  public void save_Update_RemoveManagerUnmanagedLaboratory() throws Throwable {
     User user = repository.findById(25L).orElse(null);
     detach(user);
     user.setManager(false);
 
-    service.update(user, null);
+    service.save(user, null);
   }
 
   @Test
-  public void update_RemoveManagerDirectorChange() throws Throwable {
+  public void save_Update_RemoveManagerDirectorChange() throws Throwable {
     User user = repository.findById(27L).orElse(null);
     detach(user);
     user.setManager(false);
 
-    service.update(user, null);
+    service.save(user, null);
 
     Laboratory laboratory = laboratoryRepository.findById(2L).orElse(null);
     assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test
-  public void updatePassword() throws Throwable {
+  public void save_UpdatePassword() throws Throwable {
     User user = repository.findById(4L).orElse(null);
     detach(user);
 
-    service.update(user, "unit_test_password");
+    service.save(user, "unit_test_password");
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
@@ -1053,7 +833,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_Lab() throws Throwable {
+  public void save_Update_Lab() throws Throwable {
     when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
     User user = repository.findById(3L).orElse(null);
     detach(user);
@@ -1062,7 +842,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     user.getLaboratory().setName("lab test");
     user.getLaboratory().setOrganization("organization test");
 
-    service.update(user, null);
+    service.save(user, null);
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
@@ -1093,8 +873,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo(user.getEmail());
-    MessageResource resources =
-        new MessageResource(UserService.class.getName() + "_ValidateEmail", Locale.CANADA_FRENCH);
+    MessageResource resources = new MessageResource(UserService.class.getName() + "_ValidateEmail",
+        Locale.CANADA_FRENCH);
     verify(email).setSubject(resources.message("email.subject"));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
@@ -1126,8 +906,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
     service.validate(user, homeWebContext());
 
     repository.flush();
-    MessageResource resources =
-        new MessageResource(UserService.class.getName() + "_ValidateEmail", Locale.CANADA);
+    MessageResource resources = new MessageResource(UserService.class.getName() + "_ValidateEmail",
+        Locale.CANADA);
     verify(email).setSubject(resources.message("email.subject"));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
