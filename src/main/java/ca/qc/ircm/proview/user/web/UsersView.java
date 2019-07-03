@@ -76,12 +76,14 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected Div error = new Div();
   protected Button add = new Button();
   protected Button switchUser = new Button();
+  protected UserDialog userDialog;
   private Map<User, Button> actives = new HashMap<>();
   private transient UsersViewPresenter presenter;
 
   @Autowired
-  protected UsersView(UsersViewPresenter presenter) {
+  protected UsersView(UsersViewPresenter presenter, UserDialog userDialog) {
     this.presenter = presenter;
+    this.userDialog = userDialog;
   }
 
   @SuppressWarnings("unchecked")

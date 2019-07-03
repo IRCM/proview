@@ -22,10 +22,12 @@ import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS_REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +40,9 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.text.MessageResource;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -55,7 +59,6 @@ import java.util.Locale;
 import java.util.Map;
 import javax.inject.Inject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -77,8 +80,8 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   private DataProvider<User, ?> dataProvider;
   @Captor
   private ArgumentCaptor<User> userCaptor;
-  //@Captor
-  //private ArgumentCaptor<ComponentEventListener<SavedEvent<UserDialog>>> userSavedListenerCaptor;
+  @Captor
+  private ArgumentCaptor<ComponentEventListener<SavedEvent<UserDialog>>> userSavedListenerCaptor;
   @Inject
   private UserRepository userRepository;
   private List<User> users;
@@ -100,7 +103,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     view.error = new Div();
     view.add = new Button();
     view.switchUser = new Button();
-    //view.userDialog = mock(UserDialog.class);
+    view.userDialog = mock(UserDialog.class);
     users = userRepository.findAll();
     when(userService.all(any(), any(Laboratory.class))).thenReturn(users);
     when(userService.all(any())).thenReturn(users);
@@ -269,29 +272,27 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
-  @Ignore("No UserDialog")
   public void view() {
-    //    presenter.init(view);
-    //    User user = new User();
-    //    user.setId(2L);
-    //    User databaseUser = userRepository.findById(2L).orElse(null);
-    //    when(userService.get(any())).thenReturn(databaseUser);
-    //    presenter.view(user);
-    //    verify(userService).get(2L);
-    //    verify(view.userDialog).setUser(databaseUser);
-    //    verify(view.userDialog).open();
+    presenter.init(view);
+    User user = new User();
+    user.setId(2L);
+    User databaseUser = userRepository.findById(2L).orElse(null);
+    when(userService.get(any(Long.class))).thenReturn(databaseUser);
+    presenter.view(user);
+    verify(userService).get(2L);
+    verify(view.userDialog).setUser(databaseUser);
+    verify(view.userDialog).open();
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  @Ignore("No UserDialog")
   public void refreshExperimentsOnUserSaved() {
-    //    presenter.init(view);
-    //    verify(view.userDialog).addSavedListener(userSavedListenerCaptor.capture());
-    //    ComponentEventListener<SavedEvent<UserDialog>> savedListener = userSavedListenerCaptor
-    //        .getValue();
-    //    savedListener.onComponentEvent(mock(SavedEvent.class));
-    //    verify(userService, times(2)).all(currentUser.getLaboratory());
+    presenter.init(view);
+    verify(view.userDialog).addSavedListener(userSavedListenerCaptor.capture());
+    ComponentEventListener<SavedEvent<UserDialog>> savedListener =
+        userSavedListenerCaptor.getValue();
+    savedListener.onComponentEvent(mock(SavedEvent.class));
+    verify(userService, times(2)).all(null, currentUser.getLaboratory());
   }
 
   @Test
@@ -344,17 +345,16 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
-  @Ignore("No UserDialog")
   public void add() {
-    //    presenter.init(view);
-    //    presenter.add();
-    //    verify(view.userDialog).setUser(userCaptor.capture());
-    //    User user = userCaptor.getValue();
-    //    assertNull(user.getId());
-    //    assertNull(user.getEmail());
-    //    assertNull(user.getName());
-    //    assertNull(user.getLaboratory());
-    //    verify(view.userDialog).open();
+    presenter.init(view);
+    presenter.add();
+    verify(view.userDialog).setUser(userCaptor.capture());
+    User user = userCaptor.getValue();
+    assertNull(user.getId());
+    assertNull(user.getEmail());
+    assertNull(user.getName());
+    assertNull(user.getLaboratory());
+    verify(view.userDialog).open();
   }
 
   @Test

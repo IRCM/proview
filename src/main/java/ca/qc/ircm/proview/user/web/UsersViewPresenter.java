@@ -75,8 +75,7 @@ public class UsersViewPresenter {
     view.error.setVisible(false);
     view.add.setVisible(authorizationService.hasAnyRole(ADMIN, MANAGER));
     view.switchUser.setVisible(authorizationService.hasRole(ADMIN));
-    //view.userDialog.addSavedListener(e -> loadUsers());
-    //view.laboratoryDialog.addSavedListener(e -> loadUsers());
+    view.userDialog.addSavedListener(e -> loadUsers());
   }
 
   @SuppressWarnings("checkstyle:linelength")
@@ -84,8 +83,8 @@ public class UsersViewPresenter {
     List<User> users = authorizationService.hasRole(ADMIN) ? userService.all(null)
         : userService.all(null, authorizationService.getCurrentUser().getLaboratory());
     usersDataProvider = new ListDataProvider<>(users);
-    ConfigurableFilterDataProvider<User, Void, SerializablePredicate<User>> dataProvider = usersDataProvider
-        .withConfigurableFilter();
+    ConfigurableFilterDataProvider<User, Void, SerializablePredicate<User>> dataProvider =
+        usersDataProvider.withConfigurableFilter();
     dataProvider.setFilter(filter);
     view.users.setDataProvider(dataProvider);
   }
@@ -120,8 +119,8 @@ public class UsersViewPresenter {
 
   void view(User user) {
     clearError();
-    //view.userDialog.setUser(userService.get(user.getId()));
-    //view.userDialog.open();
+    view.userDialog.setUser(userService.get(user.getId()));
+    view.userDialog.open();
   }
 
   void toggleActive(User user) {
@@ -154,8 +153,8 @@ public class UsersViewPresenter {
   }
 
   void add() {
-    //view.userDialog.setUser(new User());
-    //view.userDialog.open();
+    view.userDialog.setUser(new User());
+    view.userDialog.open();
   }
 
   void showError(Map<String, List<String>> parameters, Locale locale) {
