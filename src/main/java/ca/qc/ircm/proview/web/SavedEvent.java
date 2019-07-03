@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ * Copyright (c) 2018 Institut de recherches cliniques de Montreal (IRCM)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,29 +18,15 @@
 package ca.qc.ircm.proview.web;
 
 import com.vaadin.flow.component.Component;
-import java.util.EventObject;
+import com.vaadin.flow.component.ComponentEvent;
 
 /**
- * Save event.
+ * Saved event.
  */
-public class SavedEvent<V> extends EventObject {
-  private static final long serialVersionUID = 7709868652458561869L;
-  private V savedObject;
+public class SavedEvent<V extends Component> extends ComponentEvent<V> {
+  private static final long serialVersionUID = 1558070508317511253L;
 
-  public SavedEvent(Component source) {
-    super(source);
-  }
-
-  public SavedEvent(Component source, V savedObject) {
-    super(source);
-    this.savedObject = savedObject;
-  }
-
-  public V getSavedObject() {
-    return savedObject;
-  }
-
-  public void setSavedObject(V savedObject) {
-    this.savedObject = savedObject;
+  public SavedEvent(V source, boolean fromClient) {
+    super(source, fromClient);
   }
 }

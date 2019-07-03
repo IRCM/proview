@@ -39,6 +39,28 @@ public class StringsTest {
   }
 
   @Test
+  public void styleName() {
+    assertEquals("", Strings.property((Object) null));
+    assertEquals("true", Strings.styleName(true));
+    assertEquals("sample", Strings.styleName("sample"));
+    assertEquals("sample-true", Strings.styleName("sample", true));
+    assertEquals("sample", Strings.styleName("sample", null));
+    assertEquals("sample-name", Strings.styleName("sample", null, "name"));
+    assertEquals("sample-name", Strings.styleName("sample-name"));
+    assertEquals("sample-name", Strings.styleName("sample.name"));
+    assertEquals("sample-name", Strings.styleName("sample", "name"));
+    assertEquals("sample-standards-name", Strings.styleName("sample-standards-name"));
+    assertEquals("sample-standards-name", Strings.styleName("sample.standards.name"));
+    assertEquals("sample-standards-name", Strings.styleName("sample.standards-name"));
+    assertEquals("sample-standards-name", Strings.styleName("sample-standards.name"));
+    assertEquals("sample-standards-name", Strings.styleName("sample-standards", "name"));
+    assertEquals("sample-standards-name", Strings.styleName("sample.standards", "name"));
+    assertEquals("sample-standards-name", Strings.styleName("sample", "standards-name"));
+    assertEquals("sample-standards-name", Strings.styleName("sample", "standards.name"));
+    assertEquals("sample-standards-name", Strings.styleName("sample", "standards", "name"));
+  }
+
+  @Test
   public void normalize() {
     assertEquals("bateau", Strings.normalize("bàteau"));
     assertEquals("BATEAU", Strings.normalize("BÀTEAU"));

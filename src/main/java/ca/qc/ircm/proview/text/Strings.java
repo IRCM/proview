@@ -35,6 +35,19 @@ public class Strings {
   }
 
   /**
+   * Concatenates names to create a valid CSS class name.
+   *
+   * @param names
+   *          class names
+   * @return valid CSS class name based on names
+   */
+  public static String styleName(Object... names) {
+    return Arrays.asList(names).stream().filter(name -> name != null)
+        .map(name -> String.valueOf(name)).map(name -> name.replaceAll("\\.", "-"))
+        .collect(Collectors.joining("-"));
+  }
+
+  /**
    * Removes accents from characters.
    *
    * @param value

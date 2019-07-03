@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventBus;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -29,6 +30,9 @@ import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.grid.editor.EditorImpl;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.binder.BindingValidationStatus;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import java.lang.reflect.InvocationTargetException;
@@ -168,6 +172,21 @@ public class VaadinTestUtils {
 
   public static <V> List<V> items(RadioButtonGroup<V> radios) {
     return new ArrayList<>(dataProvider(radios).getItems());
+  }
+
+  public static Optional<BindingValidationStatus<?>>
+      findValidationStatusByField(BinderValidationStatus<?> statuses, HasValue<?, ?> field) {
+    return findValidationStatusByField(statuses.getFieldValidationErrors(), field);
+  }
+
+  public static Optional<BindingValidationStatus<?>>
+      findValidationStatusByField(ValidationException e, HasValue<?, ?> field) {
+    return findValidationStatusByField(e.getFieldValidationErrors(), field);
+  }
+
+  public static Optional<BindingValidationStatus<?>>
+      findValidationStatusByField(List<BindingValidationStatus<?>> statuses, HasValue<?, ?> field) {
+    return statuses.stream().filter(ve -> ve.getField().equals(field)).findFirst();
   }
 
   /**

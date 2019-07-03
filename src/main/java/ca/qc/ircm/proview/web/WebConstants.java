@@ -34,6 +34,7 @@ public class WebConstants {
   public static final String APPLICATION_NAME = "application.name";
   public static final String TITLE = "title";
   public static final String THEME = "theme";
+  public static final String PRIMARY = "primary";
   public static final String COMPONENTS = "components";
   public static final String FIELD_NOTIFICATION = "field.notification";
   public static final String PLACEHOLDER = "placeholder";
@@ -49,18 +50,20 @@ public class WebConstants {
   public static final String SUCCESS = "success";
   public static final String ERROR = "error";
   public static final String ERROR_TEXT = "error-text";
+  public static final String BORDER = "border";
   public static final String CANCEL = "cancel";
   public static final String BUTTON_SKIP_ROW = "skip-row";
   public static final String UPLOAD_STATUS = "uploadStatus";
   public static final String OVER_MAXIMUM_SIZE = "overMaximumSize";
   public static final String BANNED = "banned";
   public static final String ALL = "all";
+  public static final String SAVE = "save";
   public static final String SAVED_SUBMISSIONS = "savedSubmissions";
   public static final String SAVED_SAMPLES = "savedSamples";
   public static final String SAVED_CONTAINERS = "savedContainers";
   public static final String SAVED_SAMPLE_FROM_MULTIPLE_USERS = "savedSamplesFromMultipleUsers";
-  public static final Method VALUE_CHANGE_LISTENER_METHOD = ReflectTools
-      .findMethod(ValueChangeListener.class, "valueChanged", ValueChangeEvent.class);
+  public static final Method VALUE_CHANGE_LISTENER_METHOD =
+      ReflectTools.findMethod(ValueChangeListener.class, "valueChanged", ValueChangeEvent.class);
 
   /**
    * Returns all valid locales for program.
