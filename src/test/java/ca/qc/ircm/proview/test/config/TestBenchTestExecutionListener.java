@@ -47,9 +47,11 @@ import org.springframework.test.context.TestExecutionListener;
  */
 @Order(0)
 public class TestBenchTestExecutionListener implements TestExecutionListener, InjectDependencies {
-  private static final String LICENSE_ERROR_MESSAGE = "License for Vaadin TestBench not found. Skipping test class {0} .";
-  private static final String[] LICENSE_PATHS = new String[] { "vaadin.testbench.developer.license",
-      ".vaadin.testbench.developer.license" };
+  @SuppressWarnings("checkstyle:linelength")
+  private static final String LICENSE_ERROR_MESSAGE =
+      "License for Vaadin TestBench not found. Skipping test class {0} .";
+  private static final String[] LICENSE_PATHS =
+      new String[] { "vaadin.testbench.developer.license", ".vaadin.testbench.developer.license" };
   private static final String LICENSE_SYSTEM_PROPERTY = "vaadin.testbench.developer.license";
   private static final String SKIP_TESTS_ERROR_MESSAGE = "TestBench tests are skipped";
   private static final String SKIP_TESTS_SYSTEM_PROPERTY = "testbench.skip";
@@ -61,8 +63,8 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
   @SuppressWarnings("unused")
   private static final String OPERA_DRIVER = OperaDriver.class.getName();
   private static final String DEFAULT_DRIVER = CHROME_DRIVER;
-  private static final Logger logger = LoggerFactory
-      .getLogger(TestBenchTestExecutionListener.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(TestBenchTestExecutionListener.class);
   @Value("${download-home:${user.dir}/target}")
   protected String downloadHome;
 
@@ -76,12 +78,12 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
 
       boolean licenseFileExists = false;
       for (String licencePath : LICENSE_PATHS) {
-        licenseFileExists |= Files
-            .exists(Paths.get(System.getProperty("user.home")).resolve(licencePath));
+        licenseFileExists |=
+            Files.exists(Paths.get(System.getProperty("user.home")).resolve(licencePath));
       }
       if (!licenseFileExists && System.getProperty(LICENSE_SYSTEM_PROPERTY) == null) {
-        String message = MessageFormat.format(LICENSE_ERROR_MESSAGE,
-            testContext.getTestClass().getName());
+        String message =
+            MessageFormat.format(LICENSE_ERROR_MESSAGE, testContext.getTestClass().getName());
         logger.info(message);
         assumeTrue(message, false);
       }
@@ -138,8 +140,8 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
       driverClass = DEFAULT_DRIVER;
     }
     if (driverClass.equals(CHROME_DRIVER)) {
-      Download downloadAnnotations = findAnnotation(testContext.getTestClass(),
-          testContext.getTestMethod(), Download.class);
+      Download downloadAnnotations =
+          findAnnotation(testContext.getTestClass(), testContext.getTestMethod(), Download.class);
       ChromeOptions options = new ChromeOptions();
       if (downloadAnnotations != null) {
         HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
