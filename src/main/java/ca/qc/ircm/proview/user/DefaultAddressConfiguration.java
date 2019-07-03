@@ -29,27 +29,33 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = DefaultAddressConfiguration.PREFIX)
 public class DefaultAddressConfiguration {
   public static final String PREFIX = "address";
-  private String errorReceiver;
-  private String address;
+  private String line;
   private String town;
   private String state;
   private String postalCode;
   private String country;
 
-  public String getErrorReceiver() {
-    return errorReceiver;
-  }
-
-  public void setErrorReceiver(String errorReceiver) {
-    this.errorReceiver = errorReceiver;
-  }
-
-  public String getAddress() {
+  /**
+   * Returns default address.
+   * 
+   * @return default address
+   */
+  public Address getAddress() {
+    Address address = new Address();
+    address.setLine(line);
+    address.setTown(town);
+    address.setState(state);
+    address.setCountry(country);
+    address.setPostalCode(postalCode);
     return address;
   }
 
-  public void setAddress(String address) {
-    this.address = address;
+  public String getLine() {
+    return line;
+  }
+
+  public void setLine(String line) {
+    this.line = line;
   }
 
   public String getTown() {

@@ -33,10 +33,16 @@ public class DefaultAddressConfigurationTest {
 
   @Test
   public void defaultProperties() throws Throwable {
-    assertEquals("110 avenue des Pins Ouest", defaultAddressConfiguration.getAddress());
+    assertEquals("110 avenue des Pins Ouest", defaultAddressConfiguration.getLine());
     assertEquals("Montreal", defaultAddressConfiguration.getTown());
     assertEquals("Quebec", defaultAddressConfiguration.getState());
     assertEquals("Canada", defaultAddressConfiguration.getCountry());
     assertEquals("H2W 1R7", defaultAddressConfiguration.getPostalCode());
+    Address address = defaultAddressConfiguration.getAddress();
+    assertEquals("110 avenue des Pins Ouest", address.getLine());
+    assertEquals("Montreal", address.getTown());
+    assertEquals("Quebec", address.getState());
+    assertEquals("Canada", address.getCountry());
+    assertEquals("H2W 1R7", address.getPostalCode());
   }
 }

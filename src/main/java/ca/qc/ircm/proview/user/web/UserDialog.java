@@ -18,6 +18,11 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
+import static ca.qc.ircm.proview.user.AddressProperties.LINE;
+import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
+import static ca.qc.ircm.proview.user.AddressProperties.STATE;
+import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.ORGANIZATION;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
@@ -30,6 +35,8 @@ import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.THEME;
 
+import ca.qc.ircm.proview.user.Address;
+import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.User;
@@ -51,7 +58,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -81,17 +88,22 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected VerticalLayout newLaboratoryLayout = new VerticalLayout();
   protected TextField newLaboratoryOrganization = new TextField();
   protected TextField newLaboratoryName = new TextField();
+  protected TextField addressLine = new TextField();
+  protected TextField town = new TextField();
+  protected TextField state = new TextField();
+  protected TextField country = new TextField();
+  protected TextField postalCode = new TextField();
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected Button cancel = new Button();
-  @Inject
   private transient UserDialogPresenter presenter;
+  private transient DefaultAddressConfiguration defaultAddressConfiguration;
 
-  protected UserDialog() {
-  }
-
-  protected UserDialog(UserDialogPresenter presenter) {
+  @Autowired
+  protected UserDialog(UserDialogPresenter presenter,
+      DefaultAddressConfiguration defaultAddressConfiguration) {
     this.presenter = presenter;
+    this.defaultAddressConfiguration = defaultAddressConfiguration;
   }
 
   /**
@@ -110,7 +122,13 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     laboratoryLayout.setPadding(false);
     laboratoryLayout.setSpacing(false);
     laboratoryLayout.add(createNewLaboratory, laboratory, newLaboratoryLayout);
-    layout.add(header, userLayout, passwords, laboratoryLayout, buttonsLayout);
+    VerticalLayout addressLayout = new VerticalLayout();
+    addressLayout.setPadding(false);
+    addressLayout.setSpacing(false);
+    addressLayout.add(addressLine, town, state, country, postalCode);
+    layout.add(header, userLayout, passwords, laboratoryLayout, addressLayout, buttonsLayout);
+    newLaboratoryLayout.setPadding(false);
+    newLaboratoryLayout.setSpacing(false);
     newLaboratoryLayout.add(newLaboratoryOrganization, newLaboratoryName);
     buttonsLayout.add(save, cancel);
     header.addClassName(HEADER);
@@ -127,6 +145,17 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     newLaboratoryOrganization.setPlaceholder(ORGANIZATION_PLACEHOLDER);
     newLaboratoryName.addClassName(styleName(LABORATORY, LABORATORY_NAME));
     newLaboratoryName.setPlaceholder(LABORATORY_NAME_PLACEHOLDER);
+    Address address = defaultAddressConfiguration.getAddress();
+    addressLine.addClassName(LINE);
+    addressLine.setPlaceholder(address.getLine());
+    town.addClassName(TOWN);
+    town.setPlaceholder(address.getTown());
+    state.addClassName(STATE);
+    state.setPlaceholder(address.getState());
+    country.addClassName(COUNTRY);
+    country.setPlaceholder(address.getCountry());
+    postalCode.addClassName(POSTAL_CODE);
+    postalCode.setPlaceholder(address.getPostalCode());
     save.addClassName(SAVE);
     save.getElement().setAttribute(THEME, PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
@@ -142,6 +171,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     final MessageResource resources = new MessageResource(UserDialog.class, getLocale());
     final MessageResource userResources = new MessageResource(User.class, getLocale());
     final MessageResource laboratoryResources = new MessageResource(Laboratory.class, getLocale());
+    final MessageResource addressResources = new MessageResource(Address.class, getLocale());
     final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
     updateHeader();
     email.setLabel(userResources.message(EMAIL));
@@ -152,6 +182,11 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     laboratory.setLabel(userResources.message(LABORATORY));
     newLaboratoryName.setLabel(laboratoryResources.message(LABORATORY_NAME));
     newLaboratoryOrganization.setLabel(laboratoryResources.message(ORGANIZATION));
+    addressLine.setLabel(addressResources.message(LINE));
+    town.setLabel(addressResources.message(TOWN));
+    state.setLabel(addressResources.message(STATE));
+    country.setLabel(addressResources.message(COUNTRY));
+    postalCode.setLabel(addressResources.message(POSTAL_CODE));
     save.setText(webResources.message(SAVE));
     cancel.setText(webResources.message(CANCEL));
     presenter.localeChange(getLocale());

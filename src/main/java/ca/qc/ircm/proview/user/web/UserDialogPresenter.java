@@ -17,6 +17,11 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
+import static ca.qc.ircm.proview.user.AddressProperties.LINE;
+import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
+import static ca.qc.ircm.proview.user.AddressProperties.STATE;
+import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.ORGANIZATION;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
@@ -30,6 +35,8 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.user.Address;
+import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
@@ -66,19 +73,23 @@ public class UserDialogPresenter {
   private static final Logger logger = LoggerFactory.getLogger(UserDialogPresenter.class);
   private UserDialog dialog;
   private Binder<User> binder = new BeanValidationBinder<>(User.class);
-  private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
   private ListDataProvider<Laboratory> laboratoriesDataProvider;
+  private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
+  private Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
   private User user;
   private UserService userService;
   private LaboratoryService laboratoryService;
   private AuthorizationService authorizationService;
+  private DefaultAddressConfiguration defaultAddressConfiguration;
 
   @Autowired
   protected UserDialogPresenter(UserService userService, LaboratoryService laboratoryService,
-      AuthorizationService authorizationService) {
+      AuthorizationService authorizationService,
+      DefaultAddressConfiguration defaultAddressConfiguration) {
     this.userService = userService;
     this.laboratoryService = laboratoryService;
     this.authorizationService = authorizationService;
+    this.defaultAddressConfiguration = defaultAddressConfiguration;
   }
 
   void init(UserDialog dialog) {
@@ -121,6 +132,16 @@ public class UserDialogPresenter {
         .withNullRepresentation("").bind(LABORATORY_NAME);
     laboratoryBinder.forField(dialog.newLaboratoryOrganization)
         .asRequired(webResources.message(REQUIRED)).withNullRepresentation("").bind(ORGANIZATION);
+    addressBinder.forField(dialog.addressLine).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(LINE);
+    addressBinder.forField(dialog.town).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(TOWN);
+    addressBinder.forField(dialog.state).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(STATE);
+    addressBinder.forField(dialog.country).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(COUNTRY);
+    addressBinder.forField(dialog.postalCode).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(POSTAL_CODE);
     dialog.save.setText(webResources.message(SAVE));
     dialog.cancel.setText(webResources.message(CANCEL));
     updateReadOnly();
@@ -138,6 +159,7 @@ public class UserDialogPresenter {
     binder.setReadOnly(readOnly);
     dialog.laboratory.setReadOnly(readOnly || !authorizationService.hasRole(UserRole.ADMIN));
     dialog.passwords.setVisible(!readOnly);
+    addressBinder.setReadOnly(readOnly);
   }
 
   private void updateManager() {
@@ -164,6 +186,10 @@ public class UserDialogPresenter {
     return laboratoryBinder.validate();
   }
 
+  BinderValidationStatus<Address> validateAddress() {
+    return addressBinder.validate();
+  }
+
   private boolean validate() {
     boolean valid = true;
     valid = validateUser().isOk() && valid;
@@ -171,6 +197,7 @@ public class UserDialogPresenter {
     if (dialog.createNewLaboratory.getValue()) {
       valid = validateLaboratory().isOk() && valid;
     }
+    valid = validateAddress().isOk() && valid;
     return valid;
   }
 
@@ -208,9 +235,13 @@ public class UserDialogPresenter {
     if (user.getLaboratory() == null && !laboratoriesDataProvider.getItems().isEmpty()) {
       user.setLaboratory(laboratoriesDataProvider.getItems().iterator().next());
     }
+    if (user.getAddress() == null) {
+      user.setAddress(defaultAddressConfiguration.getAddress());
+    }
     this.user = user;
     binder.setBean(user);
     dialog.passwords.setRequired(user.getId() == null);
+    addressBinder.setBean(user.getAddress());
     updateReadOnly();
   }
 

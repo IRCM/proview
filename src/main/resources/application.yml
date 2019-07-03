@@ -101,7 +101,7 @@ guidelines:
 
 # Address to display by default on user registration page.
 address:
-  address: 110 avenue des Pins Ouest
+  line: 110 avenue des Pins Ouest
   town: Montreal
   state: Quebec
   country: Canada

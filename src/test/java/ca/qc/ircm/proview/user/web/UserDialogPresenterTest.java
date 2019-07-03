@@ -37,6 +37,8 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.Address;
+import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.LaboratoryService;
@@ -94,6 +96,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
   private UserRepository userRepository;
   @Inject
   private LaboratoryRepository laboratoryRepository;
+  @Inject
+  private DefaultAddressConfiguration defaultAddressConfiguration;
   private Locale locale = Locale.ENGLISH;
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private String email = "test@ircm.qc.ca";
@@ -101,6 +105,11 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
   private String password = "test_password";
   private String newLaboratoryName = "New Test Laboratory";
   private String newLaboratoryOrganization = "New Test Organization";
+  private String addressLine = "200 My Street";
+  private String town = "My Town";
+  private String state = "My State";
+  private String country = "My Country";
+  private String postalCode = "12345";
   private User currentUser;
   private List<Laboratory> laboratories;
   private Laboratory laboratory;
@@ -110,7 +119,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
    */
   @Before
   public void beforeTest() {
-    presenter = new UserDialogPresenter(userService, laboratoryService, authorizationService);
+    presenter = new UserDialogPresenter(userService, laboratoryService, authorizationService,
+        defaultAddressConfiguration);
     dialog.header = new H2();
     dialog.email = new TextField();
     dialog.name = new TextField();
@@ -122,6 +132,11 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.newLaboratoryLayout = new VerticalLayout();
     dialog.newLaboratoryOrganization = new TextField();
     dialog.newLaboratoryName = new TextField();
+    dialog.addressLine = new TextField();
+    dialog.town = new TextField();
+    dialog.state = new TextField();
+    dialog.country = new TextField();
+    dialog.postalCode = new TextField();
     dialog.buttonsLayout = new HorizontalLayout();
     dialog.save = new Button();
     dialog.cancel = new Button();
@@ -142,6 +157,11 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     }
     dialog.newLaboratoryOrganization.setValue(newLaboratoryOrganization);
     dialog.newLaboratoryName.setValue(newLaboratoryName);
+    dialog.addressLine.setValue(addressLine);
+    dialog.town.setValue(town);
+    dialog.state.setValue(state);
+    dialog.country.setValue(country);
+    dialog.postalCode.setValue(postalCode);
   }
 
   @Test
@@ -343,6 +363,17 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(booleanCaptor.getValue());
     assertEquals(laboratory.getId(), dialog.laboratory.getValue().getId());
     assertTrue(dialog.laboratory.isReadOnly());
+    Address address = defaultAddressConfiguration.getAddress();
+    assertEquals(address.getLine(), dialog.addressLine.getValue());
+    assertFalse(dialog.addressLine.isReadOnly());
+    assertEquals(address.getTown(), dialog.town.getValue());
+    assertFalse(dialog.town.isReadOnly());
+    assertEquals(address.getState(), dialog.state.getValue());
+    assertFalse(dialog.state.isReadOnly());
+    assertEquals(address.getCountry(), dialog.country.getValue());
+    assertFalse(dialog.country.isReadOnly());
+    assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
+    assertFalse(dialog.postalCode.isReadOnly());
   }
 
   @Test
@@ -370,6 +401,17 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(booleanCaptor.getValue());
     assertEquals((Long) 1L, dialog.laboratory.getValue().getId());
     assertFalse(dialog.laboratory.isReadOnly());
+    Address address = defaultAddressConfiguration.getAddress();
+    assertEquals(address.getLine(), dialog.addressLine.getValue());
+    assertFalse(dialog.addressLine.isReadOnly());
+    assertEquals(address.getTown(), dialog.town.getValue());
+    assertFalse(dialog.town.isReadOnly());
+    assertEquals(address.getState(), dialog.state.getValue());
+    assertFalse(dialog.state.isReadOnly());
+    assertEquals(address.getCountry(), dialog.country.getValue());
+    assertFalse(dialog.country.isReadOnly());
+    assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
+    assertFalse(dialog.postalCode.isReadOnly());
   }
 
   @Test
@@ -392,6 +434,17 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
     assertTrue(dialog.laboratory.isReadOnly());
+    Address address = user.getAddress();
+    assertEquals(address.getLine(), dialog.addressLine.getValue());
+    assertTrue(dialog.addressLine.isReadOnly());
+    assertEquals(address.getTown(), dialog.town.getValue());
+    assertTrue(dialog.town.isReadOnly());
+    assertEquals(address.getState(), dialog.state.getValue());
+    assertTrue(dialog.state.isReadOnly());
+    assertEquals(address.getCountry(), dialog.country.getValue());
+    assertTrue(dialog.country.isReadOnly());
+    assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
+    assertTrue(dialog.postalCode.isReadOnly());
   }
 
   @Test
@@ -417,6 +470,17 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
     assertTrue(dialog.laboratory.isReadOnly());
+    Address address = user.getAddress();
+    assertEquals(address.getLine(), dialog.addressLine.getValue());
+    assertFalse(dialog.addressLine.isReadOnly());
+    assertEquals(address.getTown(), dialog.town.getValue());
+    assertFalse(dialog.town.isReadOnly());
+    assertEquals(address.getState(), dialog.state.getValue());
+    assertFalse(dialog.state.isReadOnly());
+    assertEquals(address.getCountry(), dialog.country.getValue());
+    assertFalse(dialog.country.isReadOnly());
+    assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
+    assertFalse(dialog.postalCode.isReadOnly());
   }
 
   @Test
@@ -444,6 +508,17 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
     assertFalse(dialog.laboratory.isReadOnly());
+    Address address = user.getAddress();
+    assertEquals(address.getLine(), dialog.addressLine.getValue());
+    assertFalse(dialog.addressLine.isReadOnly());
+    assertEquals(address.getTown(), dialog.town.getValue());
+    assertFalse(dialog.town.isReadOnly());
+    assertEquals(address.getState(), dialog.state.getValue());
+    assertFalse(dialog.state.isReadOnly());
+    assertEquals(address.getCountry(), dialog.country.getValue());
+    assertFalse(dialog.country.isReadOnly());
+    assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
+    assertFalse(dialog.postalCode.isReadOnly());
   }
 
   @Test
@@ -466,6 +541,17 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
     assertTrue(dialog.laboratory.isReadOnly());
+    Address address = user.getAddress();
+    assertEquals(address.getLine(), dialog.addressLine.getValue());
+    assertTrue(dialog.addressLine.isReadOnly());
+    assertEquals(address.getTown(), dialog.town.getValue());
+    assertTrue(dialog.town.isReadOnly());
+    assertEquals(address.getState(), dialog.state.getValue());
+    assertTrue(dialog.state.isReadOnly());
+    assertEquals(address.getCountry(), dialog.country.getValue());
+    assertTrue(dialog.country.isReadOnly());
+    assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
+    assertTrue(dialog.postalCode.isReadOnly());
   }
 
   @Test
@@ -491,6 +577,17 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
     assertTrue(dialog.laboratory.isReadOnly());
+    Address address = user.getAddress();
+    assertEquals(address.getLine(), dialog.addressLine.getValue());
+    assertFalse(dialog.addressLine.isReadOnly());
+    assertEquals(address.getTown(), dialog.town.getValue());
+    assertFalse(dialog.town.isReadOnly());
+    assertEquals(address.getState(), dialog.state.getValue());
+    assertFalse(dialog.state.isReadOnly());
+    assertEquals(address.getCountry(), dialog.country.getValue());
+    assertFalse(dialog.country.isReadOnly());
+    assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
+    assertFalse(dialog.postalCode.isReadOnly());
   }
 
   @Test
@@ -518,6 +615,17 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
     assertFalse(dialog.laboratory.isReadOnly());
+    Address address = user.getAddress();
+    assertEquals(address.getLine(), dialog.addressLine.getValue());
+    assertFalse(dialog.addressLine.isReadOnly());
+    assertEquals(address.getTown(), dialog.town.getValue());
+    assertFalse(dialog.town.isReadOnly());
+    assertEquals(address.getState(), dialog.state.getValue());
+    assertFalse(dialog.state.isReadOnly());
+    assertEquals(address.getCountry(), dialog.country.getValue());
+    assertFalse(dialog.country.isReadOnly());
+    assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
+    assertFalse(dialog.postalCode.isReadOnly());
   }
 
   @Test
@@ -533,6 +641,12 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     verify(dialog.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     assertEquals(laboratory.getId(), dialog.laboratory.getValue().getId());
+    Address address = defaultAddressConfiguration.getAddress();
+    assertEquals(address.getLine(), dialog.addressLine.getValue());
+    assertEquals(address.getTown(), dialog.town.getValue());
+    assertEquals(address.getState(), dialog.state.getValue());
+    assertEquals(address.getCountry(), dialog.country.getValue());
+    assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
   }
 
   @Test
@@ -701,6 +815,121 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(status.isOk());
     Optional<BindingValidationStatus<?>> optionalError =
         findValidationStatusByField(status, dialog.newLaboratoryName);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    verify(userService, never()).save(any(), any());
+    verify(dialog, never()).close();
+    verify(dialog, never()).fireSavedEvent();
+  }
+
+  @Test
+  public void save_AddressLineEmpty() {
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    presenter.init(dialog);
+    presenter.localeChange(locale);
+    fillForm();
+    dialog.addressLine.setValue("");
+
+    presenter.save();
+
+    BinderValidationStatus<Address> status = presenter.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, dialog.addressLine);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    verify(userService, never()).save(any(), any());
+    verify(dialog, never()).close();
+    verify(dialog, never()).fireSavedEvent();
+  }
+
+  @Test
+  public void save_TownEmpty() {
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    presenter.init(dialog);
+    presenter.localeChange(locale);
+    fillForm();
+    dialog.town.setValue("");
+
+    presenter.save();
+
+    BinderValidationStatus<Address> status = presenter.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, dialog.town);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    verify(userService, never()).save(any(), any());
+    verify(dialog, never()).close();
+    verify(dialog, never()).fireSavedEvent();
+  }
+
+  @Test
+  public void save_StateEmpty() {
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    presenter.init(dialog);
+    presenter.localeChange(locale);
+    fillForm();
+    dialog.state.setValue("");
+
+    presenter.save();
+
+    BinderValidationStatus<Address> status = presenter.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, dialog.state);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    verify(userService, never()).save(any(), any());
+    verify(dialog, never()).close();
+    verify(dialog, never()).fireSavedEvent();
+  }
+
+  @Test
+  public void save_CountryEmpty() {
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    presenter.init(dialog);
+    presenter.localeChange(locale);
+    fillForm();
+    dialog.country.setValue("");
+
+    presenter.save();
+
+    BinderValidationStatus<Address> status = presenter.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, dialog.country);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    verify(userService, never()).save(any(), any());
+    verify(dialog, never()).close();
+    verify(dialog, never()).fireSavedEvent();
+  }
+
+  @Test
+  public void save_PostalCodeEmpty() {
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    presenter.init(dialog);
+    presenter.localeChange(locale);
+    fillForm();
+    dialog.postalCode.setValue("");
+
+    presenter.save();
+
+    BinderValidationStatus<Address> status = presenter.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, dialog.postalCode);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
