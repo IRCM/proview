@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.user.LaboratoryProperties.ORGANIZATION;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -27,8 +28,12 @@ import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.user.web.UserDialog.CLASS_NAME;
 import static ca.qc.ircm.proview.user.web.UserDialog.CREATE_NEW_LABORATORY;
+import static ca.qc.ircm.proview.user.web.UserDialog.EMAIL_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserDialog.HEADER;
 import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME;
+import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME_PLACEHOLDER;
+import static ca.qc.ircm.proview.user.web.UserDialog.NAME_PLACEHOLDER;
+import static ca.qc.ircm.proview.user.web.UserDialog.ORGANIZATION_PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.BORDER;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
@@ -107,9 +112,20 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertTrue(dialog.newLaboratoryLayout.getClassNames().contains(BORDER));
     assertTrue(
         dialog.newLaboratoryName.getClassNames().contains(styleName(LABORATORY, LABORATORY_NAME)));
+    assertTrue(dialog.newLaboratoryOrganization.getClassNames()
+        .contains(styleName(LABORATORY, ORGANIZATION)));
     assertTrue(dialog.save.getClassNames().contains(SAVE));
     assertTrue(dialog.save.getElement().getAttribute(THEME).contains(PRIMARY));
     assertTrue(dialog.cancel.getClassNames().contains(CANCEL));
+  }
+
+  @Test
+  public void placeholder() {
+    dialog.localeChange(mock(LocaleChangeEvent.class));
+    assertEquals(EMAIL_PLACEHOLDER, dialog.email.getPlaceholder());
+    assertEquals(NAME_PLACEHOLDER, dialog.name.getPlaceholder());
+    assertEquals(ORGANIZATION_PLACEHOLDER, dialog.newLaboratoryOrganization.getPlaceholder());
+    assertEquals(LABORATORY_NAME_PLACEHOLDER, dialog.newLaboratoryName.getPlaceholder());
   }
 
   @Test
@@ -122,8 +138,9 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
     assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(userResources.message(LABORATORY), dialog.newLaboratoryHeader.getText());
     assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.newLaboratoryName.getLabel());
+    assertEquals(laboratoryResources.message(ORGANIZATION),
+        dialog.newLaboratoryOrganization.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), dialog.save.getIcon());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -148,8 +165,9 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
     assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(userResources.message(LABORATORY), dialog.newLaboratoryHeader.getText());
     assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.newLaboratoryName.getLabel());
+    assertEquals(laboratoryResources.message(ORGANIZATION),
+        dialog.newLaboratoryOrganization.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
     verify(presenter).localeChange(locale);

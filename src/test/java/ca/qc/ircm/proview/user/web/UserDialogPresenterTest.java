@@ -51,7 +51,6 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.GeneratedVaadinComboBox.CustomValueSetEvent;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -101,6 +100,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
   private String name = "Test User";
   private String password = "test_password";
   private String newLaboratoryName = "New Test Laboratory";
+  private String newLaboratoryOrganization = "New Test Organization";
   private User currentUser;
   private List<Laboratory> laboratories;
   private Laboratory laboratory;
@@ -120,7 +120,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.passwords = mock(PasswordsForm.class);
     dialog.laboratory = new ComboBox<>();
     dialog.newLaboratoryLayout = new VerticalLayout();
-    dialog.newLaboratoryHeader = new H6();
+    dialog.newLaboratoryOrganization = new TextField();
     dialog.newLaboratoryName = new TextField();
     dialog.buttonsLayout = new HorizontalLayout();
     dialog.save = new Button();
@@ -140,6 +140,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     if (!items(dialog.laboratory).isEmpty()) {
       dialog.laboratory.setValue(laboratory);
     }
+    dialog.newLaboratoryOrganization.setValue(newLaboratoryOrganization);
     dialog.newLaboratoryName.setValue(newLaboratoryName);
   }
 
@@ -659,6 +660,31 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
+  public void save_NewLaboratoryOrganizationEmpty() {
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    presenter.init(dialog);
+    presenter.localeChange(locale);
+    fillForm();
+    dialog.manager.setValue(true);
+    dialog.createNewLaboratory.setValue(true);
+    dialog.newLaboratoryOrganization.setValue("");
+
+    presenter.save();
+
+    BinderValidationStatus<Laboratory> status = presenter.validateLaboratory();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, dialog.newLaboratoryOrganization);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    verify(userService, never()).save(any(), any());
+    verify(dialog, never()).close();
+    verify(dialog, never()).fireSavedEvent();
+  }
+
+  @Test
   public void save_NewLaboratoryNameEmpty() {
     when(authorizationService.hasAnyRole(any())).thenReturn(true);
     when(authorizationService.hasRole(any())).thenReturn(true);
@@ -747,6 +773,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isManager());
     assertNotNull(user.getLaboratory());
     assertNull(user.getLaboratory().getId());
+    assertEquals(newLaboratoryOrganization, user.getLaboratory().getOrganization());
     assertEquals(newLaboratoryName, user.getLaboratory().getName());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();

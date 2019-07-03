@@ -68,7 +68,7 @@ public class PasswordsFormTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(form.getContent().getClassNames().contains(CLASS_NAME));
+    assertTrue(form.getClassNames().contains(CLASS_NAME));
     assertTrue(form.password.getClassNames().contains(PASSWORD));
     assertTrue(form.passwordConfirm.getClassNames().contains(PASSWORD_CONFIRM));
   }

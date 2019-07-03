@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.user.LaboratoryProperties.ORGANIZATION;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -118,6 +119,8 @@ public class UserDialogPresenter {
         .withNullRepresentation(null).bind(LABORATORY);
     laboratoryBinder.forField(dialog.newLaboratoryName).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(LABORATORY_NAME);
+    laboratoryBinder.forField(dialog.newLaboratoryOrganization)
+        .asRequired(webResources.message(REQUIRED)).withNullRepresentation("").bind(ORGANIZATION);
     dialog.save.setText(webResources.message(SAVE));
     dialog.cancel.setText(webResources.message(CANCEL));
     updateReadOnly();
