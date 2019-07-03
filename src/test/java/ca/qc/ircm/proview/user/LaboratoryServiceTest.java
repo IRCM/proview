@@ -22,16 +22,19 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -47,6 +50,11 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
   private LaboratoryService service;
   @MockBean
   private PermissionEvaluator permissionEvaluator;
+
+  @Before
+  public void beforeTest() throws Throwable {
+    when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+  }
 
   @Test
   public void get_Id() throws Throwable {
@@ -74,7 +82,7 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
     assertEquals(4, laboratories.size());
   }
 
-  @Test
+  @Test(expected = AccessDeniedException.class)
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void all_AccessDenied() throws Throwable {
     service.all();
