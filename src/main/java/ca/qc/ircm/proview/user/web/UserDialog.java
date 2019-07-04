@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
 import static ca.qc.ircm.proview.user.AddressProperties.LINE;
@@ -157,7 +158,6 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   public void localeChange(LocaleChangeEvent event) {
     final MessageResource resources = new MessageResource(UserDialog.class, getLocale());
     final MessageResource userResources = new MessageResource(User.class, getLocale());
-    final MessageResource laboratoryResources = new MessageResource(Laboratory.class, getLocale());
     final MessageResource addressResources = new MessageResource(Address.class, getLocale());
     final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
     updateHeader();
@@ -167,7 +167,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     manager.setLabel(userResources.message(MANAGER));
     createNewLaboratory.setLabel(resources.message(CREATE_NEW_LABORATORY));
     laboratory.setLabel(userResources.message(LABORATORY));
-    laboratoryName.setLabel(laboratoryResources.message(LABORATORY_NAME));
+    laboratoryName.setLabel(resources.message(property(LABORATORY, LABORATORY_NAME)));
     addressLine.setLabel(addressResources.message(LINE));
     town.setLabel(addressResources.message(TOWN));
     state.setLabel(addressResources.message(STATE));

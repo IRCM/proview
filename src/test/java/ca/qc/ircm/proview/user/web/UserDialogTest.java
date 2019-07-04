@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
+import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
 import static ca.qc.ircm.proview.user.AddressProperties.LINE;
@@ -53,7 +54,6 @@ import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
-import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SavedEvent;
@@ -87,7 +87,6 @@ public class UserDialogTest extends AbstractViewTestCase {
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(UserDialog.class, locale);
   private MessageResource userResources = new MessageResource(User.class, locale);
-  private MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
   private MessageResource addressResources = new MessageResource(Address.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
 
@@ -152,7 +151,8 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
     assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.laboratoryName.getLabel());
+    assertEquals(resources.message(property(LABORATORY, LABORATORY_NAME)),
+        dialog.laboratoryName.getLabel());
     assertEquals(addressResources.message(LINE), dialog.addressLine.getLabel());
     assertEquals(addressResources.message(TOWN), dialog.town.getLabel());
     assertEquals(addressResources.message(STATE), dialog.state.getLabel());
@@ -171,7 +171,6 @@ public class UserDialogTest extends AbstractViewTestCase {
     Locale locale = Locale.FRENCH;
     final MessageResource resources = new MessageResource(UserDialog.class, locale);
     final MessageResource userResources = new MessageResource(User.class, locale);
-    final MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
     final MessageResource addressResources = new MessageResource(Address.class, locale);
     final MessageResource webResources = new MessageResource(WebConstants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
@@ -183,7 +182,8 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
     assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.laboratoryName.getLabel());
+    assertEquals(resources.message(property(LABORATORY, LABORATORY_NAME)),
+        dialog.laboratoryName.getLabel());
     assertEquals(addressResources.message(LINE), dialog.addressLine.getLabel());
     assertEquals(addressResources.message(TOWN), dialog.town.getLabel());
     assertEquals(addressResources.message(STATE), dialog.state.getLabel());
