@@ -54,12 +54,6 @@ public class Laboratory implements Data, Named, Serializable {
   @Size(max = 255)
   private String name;
   /**
-   * Organization / company.
-   */
-  @Column(nullable = false)
-  @Size(max = 255)
-  private String organization;
-  /**
    * Director.
    */
   @Column(nullable = false)
@@ -79,7 +73,7 @@ public class Laboratory implements Data, Named, Serializable {
 
   @Override
   public String toString() {
-    return "Laboratory [id=" + id + ", organization=" + organization + ", name=" + name + "]";
+    return "Laboratory [id=" + id + ", name=" + name + "]";
   }
 
   @Override
@@ -89,14 +83,6 @@ public class Laboratory implements Data, Named, Serializable {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getOrganization() {
-    return organization;
-  }
-
-  public void setOrganization(String organization) {
-    this.organization = organization;
   }
 
   @Override

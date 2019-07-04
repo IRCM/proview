@@ -111,7 +111,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     Laboratory laboratory = user.getLaboratory();
     assertEquals((Long) 2L, laboratory.getId());
     assertEquals("Translational Proteomics", laboratory.getName());
-    assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Benoit Coulombe", laboratory.getDirector());
     Address address = user.getAddress();
     assertEquals("110, avenue des Pins Ouest", address.getLine());
@@ -153,7 +152,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     Laboratory laboratory = user.getLaboratory();
     assertEquals((Long) 2L, laboratory.getId());
     assertEquals("Translational Proteomics", laboratory.getName());
-    assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Benoit Coulombe", laboratory.getDirector());
     Address address = user.getAddress();
     assertEquals("110, avenue des Pins Ouest", address.getLine());
@@ -409,7 +407,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Test
   public void save_Insert_NewLaboratory() throws Throwable {
     Laboratory laboratory = new Laboratory();
-    laboratory.setOrganization("IRCM");
     laboratory.setName("Ribonucleoprotein Biochemistry");
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
@@ -440,14 +437,12 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertNotNull(laboratory.getId());
     assertNotNull(user.getId());
     laboratory = laboratoryRepository.findById(laboratory.getId()).orElse(null);
-    assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Ribonucleoprotein Biochemistry", laboratory.getName());
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
     laboratory = user.getLaboratory();
-    assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Ribonucleoprotein Biochemistry", laboratory.getName());
     assertEquals("Christian Poitras", laboratory.getDirector());
     assertEquals(hashedPassword, user.getHashedPassword());
@@ -512,7 +507,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals((Integer) 1, user.getPasswordVersion());
     assertEquals((Long) 2L, user.getLaboratory().getId());
     assertEquals("Translational Proteomics", user.getLaboratory().getName());
-    assertEquals("IRCM", user.getLaboratory().getOrganization());
     assertEquals("Benoit Coulombe", user.getLaboratory().getDirector());
     assertEquals(Locale.US, user.getLocale());
     address = user.getAddress();
@@ -578,7 +572,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals((Integer) 1, user.getPasswordVersion());
     assertEquals((Long) 2L, user.getLaboratory().getId());
     assertEquals("Translational Proteomics", user.getLaboratory().getName());
-    assertEquals("IRCM", user.getLaboratory().getOrganization());
     assertEquals("Christian Poitras", user.getLaboratory().getDirector());
     assertEquals(Locale.US, user.getLocale());
     address = user.getAddress();
@@ -686,7 +679,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     user.setEmail("unit_test@ircm.qc.ca");
     user.getLaboratory().setName("lab test");
-    user.getLaboratory().setOrganization("organization test");
 
     service.save(user, null);
 
@@ -697,7 +689,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("lab test", user.getLaboratory().getName());
-    assertEquals("organization test", user.getLaboratory().getOrganization());
   }
 
   @Test

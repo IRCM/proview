@@ -70,13 +70,6 @@ public class UserFilterTest {
     return user;
   }
 
-  private User organization(String organization) {
-    User user = new User();
-    user.setLaboratory(new Laboratory());
-    user.getLaboratory().setOrganization(organization);
-    return user;
-  }
-
   @Test
   public void test_EmailContains() {
     filter.emailContains = "test";
@@ -164,27 +157,6 @@ public class UserFilterTest {
   }
 
   @Test
-  public void test_OrganizationContains() {
-    filter.organizationContains = "test";
-
-    assertTrue(filter.test(organization("Translational Test")));
-    assertTrue(filter.test(organization("Test Proteomics")));
-    assertTrue(filter.test(organization("Translational Test Proteomics")));
-    assertTrue(filter.test(organization("Translational Tést Proteomics")));
-    assertFalse(filter.test(organization("Translational Proteomics")));
-  }
-
-  @Test
-  public void test_OrganizationContainsNull() {
-    filter.organizationContains = null;
-
-    assertTrue(filter.test(organization("Translational Test")));
-    assertTrue(filter.test(organization("Test Proteomics")));
-    assertTrue(filter.test(organization("Translational Test Proteomics")));
-    assertTrue(filter.test(organization("Translational Proteomics")));
-  }
-
-  @Test
   public void test_EmailContainsAndActive() {
     filter.emailContains = "test";
     filter.active = true;
@@ -238,14 +210,5 @@ public class UserFilterTest {
     Predicate predicate = filter.predicate();
 
     assertEquals(predicate, user.laboratory.name.contains("test"));
-  }
-
-  @Test
-  public void predicate_OrganizationContains() {
-    filter.organizationContains = "test";
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, user.laboratory.organization.contains("test"));
   }
 }

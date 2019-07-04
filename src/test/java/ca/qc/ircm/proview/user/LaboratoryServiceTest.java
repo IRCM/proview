@@ -63,7 +63,6 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(READ));
     assertEquals((Long) 2L, laboratory.getId());
     assertEquals("Translational Proteomics", laboratory.getName());
-    assertEquals("IRCM", laboratory.getOrganization());
     assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 

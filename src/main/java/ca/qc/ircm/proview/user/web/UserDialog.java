@@ -23,7 +23,6 @@ import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
 import static ca.qc.ircm.proview.user.AddressProperties.STATE;
 import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
-import static ca.qc.ircm.proview.user.LaboratoryProperties.ORGANIZATION;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -75,7 +74,6 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   public static final String EMAIL_PLACEHOLDER = "john.smith@ircm.qc.ca";
   public static final String NAME_PLACEHOLDER = "John Smith";
   public static final String CREATE_NEW_LABORATORY = "createNewLaboratory";
-  public static final String ORGANIZATION_PLACEHOLDER = "IRCM";
   public static final String LABORATORY_NAME = LaboratoryProperties.NAME;
   public static final String LABORATORY_NAME_PLACEHOLDER = "Translational Proteomics";
   protected H2 header = new H2();
@@ -86,7 +84,6 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected Checkbox createNewLaboratory = new Checkbox();
   protected PasswordsForm passwords = new PasswordsForm();
   protected ComboBox<Laboratory> laboratory = new ComboBox<>();
-  protected TextField newLaboratoryOrganization = new TextField();
   protected TextField newLaboratoryName = new TextField();
   protected TextField addressLine = new TextField();
   protected TextField town = new TextField();
@@ -119,9 +116,8 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     FormLayout formLayout = new FormLayout();
     formLayout.setResponsiveSteps(new ResponsiveStep("20em", 1), new ResponsiveStep("20em", 2),
         new ResponsiveStep("20em", 3));
-    formLayout.add(
-        new FormLayout(email, name, admin, manager, passwords), new FormLayout(laboratory,
-            createNewLaboratory, newLaboratoryOrganization, newLaboratoryName),
+    formLayout.add(new FormLayout(email, name, admin, manager, passwords),
+        new FormLayout(laboratory, createNewLaboratory, newLaboratoryName),
         new FormLayout(addressLine, town, state, country, postalCode));
     layout.add(header, formLayout, buttonsLayout);
     buttonsLayout.add(save, cancel);
@@ -134,8 +130,6 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     manager.addClassName(MANAGER);
     createNewLaboratory.addClassName(CREATE_NEW_LABORATORY);
     laboratory.addClassName(LABORATORY);
-    newLaboratoryOrganization.addClassName(styleName(LABORATORY, ORGANIZATION));
-    newLaboratoryOrganization.setPlaceholder(ORGANIZATION_PLACEHOLDER);
     newLaboratoryName.addClassName(styleName(LABORATORY, LABORATORY_NAME));
     newLaboratoryName.setPlaceholder(LABORATORY_NAME_PLACEHOLDER);
     Address address = defaultAddressConfiguration.getAddress();
@@ -174,7 +168,6 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     createNewLaboratory.setLabel(resources.message(CREATE_NEW_LABORATORY));
     laboratory.setLabel(userResources.message(LABORATORY));
     newLaboratoryName.setLabel(laboratoryResources.message(LABORATORY_NAME));
-    newLaboratoryOrganization.setLabel(laboratoryResources.message(ORGANIZATION));
     addressLine.setLabel(addressResources.message(LINE));
     town.setLabel(addressResources.message(TOWN));
     state.setLabel(addressResources.message(STATE));

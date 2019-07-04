@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
 import static ca.qc.ircm.proview.user.AddressProperties.STATE;
 import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
-import static ca.qc.ircm.proview.user.LaboratoryProperties.ORGANIZATION;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -108,7 +107,6 @@ public class UserDialogPresenter {
     dialog.laboratory.setDataProvider(laboratoriesDataProvider);
     dialog.laboratory.setItemLabelGenerator(lab -> lab.getName());
     dialog.createNewLaboratory.setVisible(authorizationService.hasRole(UserRole.ADMIN));
-    dialog.newLaboratoryOrganization.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     dialog.newLaboratoryName.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     setUser(null);
     laboratoryBinder.setBean(new Laboratory());
@@ -130,8 +128,6 @@ public class UserDialogPresenter {
     binder.forField(dialog.laboratory)
         .withValidator(laboratoryRequiredValidator(webResources.message(REQUIRED)))
         .withNullRepresentation(null).bind(LABORATORY);
-    laboratoryBinder.forField(dialog.newLaboratoryOrganization)
-        .asRequired(webResources.message(REQUIRED)).withNullRepresentation("").bind(ORGANIZATION);
     laboratoryBinder.forField(dialog.newLaboratoryName).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(LABORATORY_NAME);
     addressBinder.forField(dialog.addressLine).asRequired(webResources.message(REQUIRED))
@@ -177,7 +173,6 @@ public class UserDialogPresenter {
   private void updateCreateNewLaboratory() {
     boolean visible = dialog.createNewLaboratory.getValue();
     dialog.laboratory.setEnabled(!visible);
-    dialog.newLaboratoryOrganization.setEnabled(visible);
     dialog.newLaboratoryName.setEnabled(visible);
   }
 

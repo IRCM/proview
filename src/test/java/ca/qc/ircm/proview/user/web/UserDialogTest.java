@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
 import static ca.qc.ircm.proview.user.AddressProperties.STATE;
 import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
-import static ca.qc.ircm.proview.user.LaboratoryProperties.ORGANIZATION;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -38,7 +37,6 @@ import static ca.qc.ircm.proview.user.web.UserDialog.HEADER;
 import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserDialog.NAME_PLACEHOLDER;
-import static ca.qc.ircm.proview.user.web.UserDialog.ORGANIZATION_PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
@@ -120,8 +118,6 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertTrue(dialog.laboratory.getClassNames().contains(LABORATORY));
     assertTrue(
         dialog.newLaboratoryName.getClassNames().contains(styleName(LABORATORY, LABORATORY_NAME)));
-    assertTrue(dialog.newLaboratoryOrganization.getClassNames()
-        .contains(styleName(LABORATORY, ORGANIZATION)));
     assertTrue(dialog.addressLine.getClassNames().contains(LINE));
     assertTrue(dialog.town.getClassNames().contains(TOWN));
     assertTrue(dialog.state.getClassNames().contains(STATE));
@@ -137,7 +133,6 @@ public class UserDialogTest extends AbstractViewTestCase {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(EMAIL_PLACEHOLDER, dialog.email.getPlaceholder());
     assertEquals(NAME_PLACEHOLDER, dialog.name.getPlaceholder());
-    assertEquals(ORGANIZATION_PLACEHOLDER, dialog.newLaboratoryOrganization.getPlaceholder());
     assertEquals(LABORATORY_NAME_PLACEHOLDER, dialog.newLaboratoryName.getPlaceholder());
     Address address = defaultAddressConfiguration.getAddress();
     assertEquals(address.getLine(), dialog.addressLine.getPlaceholder());
@@ -157,8 +152,6 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
     assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(laboratoryResources.message(ORGANIZATION),
-        dialog.newLaboratoryOrganization.getLabel());
     assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.newLaboratoryName.getLabel());
     assertEquals(addressResources.message(LINE), dialog.addressLine.getLabel());
     assertEquals(addressResources.message(TOWN), dialog.town.getLabel());
@@ -190,8 +183,6 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
     assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(laboratoryResources.message(ORGANIZATION),
-        dialog.newLaboratoryOrganization.getLabel());
     assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.newLaboratoryName.getLabel());
     assertEquals(addressResources.message(LINE), dialog.addressLine.getLabel());
     assertEquals(addressResources.message(TOWN), dialog.town.getLabel());

@@ -18,7 +18,6 @@
 CREATE TABLE IF NOT EXISTS laboratory (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
-  organization varchar(255) NOT NULL,
   director varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );

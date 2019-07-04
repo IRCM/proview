@@ -15,14 +15,14 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-INSERT INTO laboratory (id,name,organization,director)
-VALUES ('1', 'Admin', 'IRCM', 'Robot');
-INSERT INTO laboratory (id,name,organization,director)
-VALUES ('2', 'Translational Proteomics', 'IRCM', 'Benoit Coulombe');
-INSERT INTO laboratory (id,name,organization,director)
-VALUES ('4', 'Biochemistry of Epigenetic Inheritance', 'IRCM', 'Robert Williams');
-INSERT INTO laboratory (id,name,organization,director)
-VALUES ('5', 'Génétique moléculaire et développement', 'IRCM', 'Marie Trudel');
+INSERT INTO laboratory (id,name,director)
+VALUES ('1', 'Admin', 'Robot');
+INSERT INTO laboratory (id,name,director)
+VALUES ('2', 'Translational Proteomics', 'Benoit Coulombe');
+INSERT INTO laboratory (id,name,director)
+VALUES ('4', 'Biochemistry of Epigenetic Inheritance', 'Robert Williams');
+INSERT INTO laboratory (id,name,director)
+VALUES ('5', 'Génétique moléculaire et développement', 'Marie Trudel');
 INSERT INTO address (id,line,town,state,country,postalcode)
 VALUES ('1', '110, avenue des Pins Ouest', 'Montréal', 'Québec', 'Canada', 'H2W 1R7');
 INSERT INTO address (id,line,town,state,country,postalcode)
