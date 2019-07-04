@@ -29,7 +29,6 @@ import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
-import static ca.qc.ircm.proview.web.WebConstants.BORDER;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
@@ -48,6 +47,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -85,7 +86,6 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected Checkbox createNewLaboratory = new Checkbox();
   protected PasswordsForm passwords = new PasswordsForm();
   protected ComboBox<Laboratory> laboratory = new ComboBox<>();
-  protected VerticalLayout newLaboratoryLayout = new VerticalLayout();
   protected TextField newLaboratoryOrganization = new TextField();
   protected TextField newLaboratoryName = new TextField();
   protected TextField addressLine = new TextField();
@@ -113,23 +113,17 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected void init() {
     setId(CLASS_NAME);
     VerticalLayout layout = new VerticalLayout();
+    layout.setMaxWidth("70em");
+    layout.setMinWidth("22em");
     add(layout);
-    VerticalLayout userLayout = new VerticalLayout();
-    userLayout.setPadding(false);
-    userLayout.setSpacing(false);
-    userLayout.add(email, name, admin, manager);
-    VerticalLayout laboratoryLayout = new VerticalLayout();
-    laboratoryLayout.setPadding(false);
-    laboratoryLayout.setSpacing(false);
-    laboratoryLayout.add(createNewLaboratory, laboratory, newLaboratoryLayout);
-    VerticalLayout addressLayout = new VerticalLayout();
-    addressLayout.setPadding(false);
-    addressLayout.setSpacing(false);
-    addressLayout.add(addressLine, town, state, country, postalCode);
-    layout.add(header, userLayout, passwords, laboratoryLayout, addressLayout, buttonsLayout);
-    newLaboratoryLayout.setPadding(false);
-    newLaboratoryLayout.setSpacing(false);
-    newLaboratoryLayout.add(newLaboratoryOrganization, newLaboratoryName);
+    FormLayout formLayout = new FormLayout();
+    formLayout.setResponsiveSteps(new ResponsiveStep("20em", 1), new ResponsiveStep("20em", 2),
+        new ResponsiveStep("20em", 3));
+    formLayout.add(
+        new FormLayout(email, name, admin, manager, passwords), new FormLayout(laboratory,
+            createNewLaboratory, newLaboratoryOrganization, newLaboratoryName),
+        new FormLayout(addressLine, town, state, country, postalCode));
+    layout.add(header, formLayout, buttonsLayout);
     buttonsLayout.add(save, cancel);
     header.addClassName(HEADER);
     email.addClassName(EMAIL);
@@ -140,7 +134,6 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     manager.addClassName(MANAGER);
     createNewLaboratory.addClassName(CREATE_NEW_LABORATORY);
     laboratory.addClassName(LABORATORY);
-    newLaboratoryLayout.addClassName(BORDER);
     newLaboratoryOrganization.addClassName(styleName(LABORATORY, ORGANIZATION));
     newLaboratoryOrganization.setPlaceholder(ORGANIZATION_PLACEHOLDER);
     newLaboratoryName.addClassName(styleName(LABORATORY, LABORATORY_NAME));

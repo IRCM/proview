@@ -97,7 +97,6 @@ public class UserDialogPresenter {
     dialog.admin.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     dialog.manager.setVisible(authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
     dialog.manager.addValueChangeListener(e -> updateManager());
-    dialog.createNewLaboratory.setReadOnly(true);
     dialog.createNewLaboratory.addValueChangeListener(e -> updateCreateNewLaboratory());
     if (authorizationService.hasRole(UserRole.ADMIN)) {
       laboratoriesDataProvider = new LaboratoryDataProvider(laboratoryService.all());
@@ -108,10 +107,13 @@ public class UserDialogPresenter {
     }
     dialog.laboratory.setDataProvider(laboratoriesDataProvider);
     dialog.laboratory.setItemLabelGenerator(lab -> lab.getName());
-    dialog.newLaboratoryLayout.setVisible(false);
     dialog.createNewLaboratory.setVisible(authorizationService.hasRole(UserRole.ADMIN));
+    dialog.newLaboratoryOrganization.setVisible(authorizationService.hasRole(UserRole.ADMIN));
+    dialog.newLaboratoryName.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     setUser(null);
     laboratoryBinder.setBean(new Laboratory());
+    updateManager();
+    updateCreateNewLaboratory();
   }
 
   void localeChange(Locale locale) {
@@ -128,10 +130,10 @@ public class UserDialogPresenter {
     binder.forField(dialog.laboratory)
         .withValidator(laboratoryRequiredValidator(webResources.message(REQUIRED)))
         .withNullRepresentation(null).bind(LABORATORY);
-    laboratoryBinder.forField(dialog.newLaboratoryName).asRequired(webResources.message(REQUIRED))
-        .withNullRepresentation("").bind(LABORATORY_NAME);
     laboratoryBinder.forField(dialog.newLaboratoryOrganization)
         .asRequired(webResources.message(REQUIRED)).withNullRepresentation("").bind(ORGANIZATION);
+    laboratoryBinder.forField(dialog.newLaboratoryName).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(LABORATORY_NAME);
     addressBinder.forField(dialog.addressLine).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(LINE);
     addressBinder.forField(dialog.town).asRequired(webResources.message(REQUIRED))
@@ -164,18 +166,19 @@ public class UserDialogPresenter {
 
   private void updateManager() {
     if (authorizationService.hasRole(UserRole.ADMIN)) {
-      dialog.createNewLaboratory.setReadOnly(!dialog.manager.getValue());
+      dialog.createNewLaboratory.setEnabled(dialog.manager.getValue());
       if (!dialog.manager.getValue()) {
         dialog.createNewLaboratory.setValue(false);
-        dialog.laboratory.setVisible(true);
-        dialog.newLaboratoryLayout.setVisible(false);
+        updateCreateNewLaboratory();
       }
     }
   }
 
   private void updateCreateNewLaboratory() {
-    dialog.laboratory.setVisible(!dialog.createNewLaboratory.getValue());
-    dialog.newLaboratoryLayout.setVisible(dialog.createNewLaboratory.getValue());
+    boolean visible = dialog.createNewLaboratory.getValue();
+    dialog.laboratory.setEnabled(!visible);
+    dialog.newLaboratoryOrganization.setEnabled(visible);
+    dialog.newLaboratoryName.setEnabled(visible);
   }
 
   BinderValidationStatus<User> validateUser() {

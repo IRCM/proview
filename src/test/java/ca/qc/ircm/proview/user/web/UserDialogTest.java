@@ -39,7 +39,6 @@ import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserDialog.NAME_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserDialog.ORGANIZATION_PLACEHOLDER;
-import static ca.qc.ircm.proview.web.WebConstants.BORDER;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
@@ -119,7 +118,6 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertTrue(dialog.manager.getClassNames().contains(MANAGER));
     assertTrue(dialog.createNewLaboratory.getClassNames().contains(CREATE_NEW_LABORATORY));
     assertTrue(dialog.laboratory.getClassNames().contains(LABORATORY));
-    assertTrue(dialog.newLaboratoryLayout.getClassNames().contains(BORDER));
     assertTrue(
         dialog.newLaboratoryName.getClassNames().contains(styleName(LABORATORY, LABORATORY_NAME)));
     assertTrue(dialog.newLaboratoryOrganization.getClassNames()

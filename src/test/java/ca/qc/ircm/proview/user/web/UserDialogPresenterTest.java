@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
+import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
@@ -54,7 +55,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.GeneratedVaadinComboBox.CustomValueSetEvent;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -129,7 +130,6 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.createNewLaboratory = new Checkbox();
     dialog.passwords = mock(PasswordsForm.class);
     dialog.laboratory = new ComboBox<>();
-    dialog.newLaboratoryLayout = new VerticalLayout();
     dialog.newLaboratoryOrganization = new TextField();
     dialog.newLaboratoryName = new TextField();
     dialog.addressLine = new TextField();
@@ -171,22 +171,23 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(dialog.admin.isVisible());
     assertFalse(dialog.manager.isVisible());
     assertFalse(dialog.createNewLaboratory.isVisible());
-    assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isReadOnly());
-    assertFalse(dialog.newLaboratoryLayout.isVisible());
+    assertFalse(dialog.newLaboratoryOrganization.isVisible());
+    assertFalse(dialog.newLaboratoryName.isVisible());
   }
 
   @Test
   public void currentUser_Manager() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any()))
+        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     presenter.init(dialog);
     presenter.localeChange(locale);
     assertFalse(dialog.admin.isVisible());
     assertTrue(dialog.manager.isVisible());
     assertFalse(dialog.createNewLaboratory.isVisible());
-    assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isReadOnly());
-    assertFalse(dialog.newLaboratoryLayout.isVisible());
+    assertFalse(dialog.newLaboratoryOrganization.isVisible());
+    assertFalse(dialog.newLaboratoryName.isVisible());
   }
 
   @Test
@@ -199,10 +200,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.admin.isVisible());
     assertTrue(dialog.manager.isVisible());
     assertTrue(dialog.createNewLaboratory.isVisible());
-    assertTrue(dialog.createNewLaboratory.isReadOnly());
-    assertTrue(dialog.laboratory.isVisible());
+    assertFalse(dialog.createNewLaboratory.isEnabled());
     assertFalse(dialog.laboratory.isReadOnly());
-    assertFalse(dialog.newLaboratoryLayout.isVisible());
+    assertTrue(dialog.laboratory.isEnabled());
+    assertTrue(dialog.newLaboratoryOrganization.isVisible());
+    assertTrue(dialog.newLaboratoryName.isVisible());
+    assertFalse(dialog.newLaboratoryOrganization.isEnabled());
+    assertFalse(dialog.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -241,8 +245,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.admin.setValue(true);
     assertTrue(dialog.manager.isVisible());
     assertTrue(dialog.createNewLaboratory.isVisible());
-    assertTrue(dialog.laboratory.isVisible());
-    assertFalse(dialog.newLaboratoryLayout.isVisible());
+    assertFalse(dialog.createNewLaboratory.isEnabled());
+    assertFalse(dialog.laboratory.isReadOnly());
+    assertTrue(dialog.laboratory.isEnabled());
+    assertTrue(dialog.newLaboratoryOrganization.isVisible());
+    assertTrue(dialog.newLaboratoryName.isVisible());
+    assertFalse(dialog.newLaboratoryOrganization.isEnabled());
+    assertFalse(dialog.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -255,20 +264,26 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.admin.setValue(false);
     assertTrue(dialog.manager.isVisible());
     assertTrue(dialog.createNewLaboratory.isVisible());
-    assertTrue(dialog.laboratory.isVisible());
-    assertFalse(dialog.newLaboratoryLayout.isVisible());
+    assertFalse(dialog.createNewLaboratory.isEnabled());
+    assertFalse(dialog.laboratory.isReadOnly());
+    assertTrue(dialog.laboratory.isEnabled());
+    assertTrue(dialog.newLaboratoryOrganization.isVisible());
+    assertTrue(dialog.newLaboratoryName.isVisible());
+    assertFalse(dialog.newLaboratoryOrganization.isEnabled());
+    assertFalse(dialog.newLaboratoryName.isEnabled());
   }
 
   @Test
   public void checkManager_Manager() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any()))
+        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     presenter.init(dialog);
     presenter.localeChange(locale);
     dialog.manager.setValue(true);
     assertFalse(dialog.createNewLaboratory.isVisible());
-    assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isReadOnly());
-    assertFalse(dialog.newLaboratoryLayout.isVisible());
+    assertFalse(dialog.newLaboratoryOrganization.isVisible());
+    assertFalse(dialog.newLaboratoryName.isVisible());
   }
 
   @Test
@@ -279,10 +294,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     dialog.manager.setValue(true);
     assertTrue(dialog.createNewLaboratory.isVisible());
-    assertFalse(dialog.createNewLaboratory.isReadOnly());
-    assertTrue(dialog.laboratory.isVisible());
+    assertTrue(dialog.createNewLaboratory.isEnabled());
     assertFalse(dialog.laboratory.isReadOnly());
-    assertFalse(dialog.newLaboratoryLayout.isVisible());
+    assertTrue(dialog.laboratory.isEnabled());
+    assertTrue(dialog.newLaboratoryOrganization.isVisible());
+    assertTrue(dialog.newLaboratoryName.isVisible());
+    assertFalse(dialog.newLaboratoryOrganization.isEnabled());
+    assertFalse(dialog.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -294,10 +312,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.manager.setValue(true);
     dialog.createNewLaboratory.setValue(true);
     assertTrue(dialog.createNewLaboratory.isVisible());
-    assertFalse(dialog.createNewLaboratory.isReadOnly());
-    assertFalse(dialog.laboratory.isVisible());
+    assertTrue(dialog.createNewLaboratory.isEnabled());
     assertFalse(dialog.laboratory.isReadOnly());
-    assertTrue(dialog.newLaboratoryLayout.isVisible());
+    assertFalse(dialog.laboratory.isEnabled());
+    assertTrue(dialog.newLaboratoryOrganization.isVisible());
+    assertTrue(dialog.newLaboratoryName.isVisible());
+    assertTrue(dialog.newLaboratoryOrganization.isEnabled());
+    assertTrue(dialog.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -309,10 +330,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.manager.setValue(true);
     dialog.manager.setValue(false);
     assertTrue(dialog.createNewLaboratory.isVisible());
-    assertTrue(dialog.createNewLaboratory.isReadOnly());
-    assertTrue(dialog.laboratory.isVisible());
+    assertFalse(dialog.createNewLaboratory.isEnabled());
     assertFalse(dialog.laboratory.isReadOnly());
-    assertFalse(dialog.newLaboratoryLayout.isVisible());
+    assertTrue(dialog.laboratory.isEnabled());
+    assertTrue(dialog.newLaboratoryOrganization.isVisible());
+    assertTrue(dialog.newLaboratoryName.isVisible());
+    assertFalse(dialog.newLaboratoryOrganization.isEnabled());
+    assertFalse(dialog.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -326,10 +350,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.createNewLaboratory.setValue(true);
     dialog.manager.setValue(false);
     assertTrue(dialog.createNewLaboratory.isVisible());
-    assertTrue(dialog.createNewLaboratory.isReadOnly());
-    assertTrue(dialog.laboratory.isVisible());
+    assertFalse(dialog.createNewLaboratory.isEnabled());
     assertFalse(dialog.laboratory.isReadOnly());
-    assertFalse(dialog.newLaboratoryLayout.isVisible());
+    assertTrue(dialog.laboratory.isEnabled());
+    assertTrue(dialog.newLaboratoryOrganization.isVisible());
+    assertTrue(dialog.newLaboratoryName.isVisible());
+    assertFalse(dialog.newLaboratoryOrganization.isEnabled());
+    assertFalse(dialog.newLaboratoryName.isEnabled());
   }
 
   @Test

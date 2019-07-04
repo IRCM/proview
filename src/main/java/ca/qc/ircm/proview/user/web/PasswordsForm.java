@@ -5,7 +5,7 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -18,7 +18,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 /**
  * Passwords form.
  */
-public class PasswordsForm extends VerticalLayout implements LocaleChangeObserver {
+public class PasswordsForm extends FormLayout implements LocaleChangeObserver {
   public static final String CLASS_NAME = "passwords";
   public static final String PASSWORD = "password";
   public static final String PASSWORD_CONFIRM = PASSWORD + "Confirm";
@@ -35,8 +35,6 @@ public class PasswordsForm extends VerticalLayout implements LocaleChangeObserve
   public PasswordsForm() {
     addClassName(CLASS_NAME);
     add(password, passwordConfirm);
-    setPadding(false);
-    setSpacing(false);
     password.addClassName(PASSWORD);
     passwordConfirm.addClassName(PASSWORD_CONFIRM);
     passwordBinder.setBean(new Passwords());
