@@ -23,8 +23,8 @@ import static org.openqa.selenium.By.className;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.flow.component.html.testbench.AnchorElement;
-import com.vaadin.flow.component.html.testbench.H1Element;
 import com.vaadin.flow.component.html.testbench.H2Element;
+import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,8 +34,8 @@ public class GuidelinesViewPageObject extends AbstractTestBenchTestCase {
     openView(GuidelinesView.VIEW_NAME);
   }
 
-  protected H1Element header() {
-    return $(H1Element.class).id(HEADER);
+  protected H2Element header() {
+    return $(H2Element.class).id(HEADER);
   }
 
   protected List<VerticalLayoutElement> categories() {
@@ -43,8 +43,8 @@ public class GuidelinesViewPageObject extends AbstractTestBenchTestCase {
         .map(pe -> wrap(VerticalLayoutElement.class, pe)).collect(Collectors.toList());
   }
 
-  protected H2Element categoryHeader(VerticalLayoutElement category) {
-    return category.$(H2Element.class).first();
+  protected H3Element categoryHeader(VerticalLayoutElement category) {
+    return category.$(H3Element.class).first();
   }
 
   protected List<AnchorElement> categoryGuidelines(VerticalLayoutElement category) {

@@ -8,7 +8,7 @@ import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
-import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -28,7 +28,7 @@ public class GuidelinesView extends VerticalLayout
   public static final String VIEW_NAME = "guidelines";
   public static final String HEADER = "header";
   private static final long serialVersionUID = 1881767150748374598L;
-  protected H1 header = new H1();
+  protected H2 header = new H2();
   private GuidelinesConfiguration guidelinesConfiguration;
 
   @Autowired
