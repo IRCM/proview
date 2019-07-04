@@ -155,7 +155,8 @@ public class UserDialogPresenter {
     boolean readOnly =
         user.getId() != null && !authorizationService.hasPermission(user, BasePermission.WRITE);
     binder.setReadOnly(readOnly);
-    dialog.laboratoryName.setReadOnly(readOnly || !authorizationService.hasRole(UserRole.ADMIN));
+    dialog.laboratoryName.setReadOnly(
+        readOnly || !authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
     dialog.passwords.setVisible(!readOnly);
     addressBinder.setReadOnly(readOnly);
   }

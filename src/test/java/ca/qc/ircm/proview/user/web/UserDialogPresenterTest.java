@@ -182,7 +182,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.manager.isVisible());
     assertFalse(dialog.createNewLaboratory.isVisible());
     assertFalse(dialog.laboratory.isVisible());
-    assertTrue(dialog.laboratoryName.isReadOnly());
+    assertFalse(dialog.laboratoryName.isReadOnly());
   }
 
   @Test
@@ -271,7 +271,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.manager.setValue(true);
     assertFalse(dialog.createNewLaboratory.isVisible());
     assertFalse(dialog.laboratory.isVisible());
-    assertTrue(dialog.laboratoryName.isReadOnly());
+    assertFalse(dialog.laboratoryName.isReadOnly());
   }
 
   @Test
