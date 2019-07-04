@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.user.QUser.user;
+import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +49,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -531,7 +532,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void save_Update_CurrentManager() throws Throwable {
-    when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
+    when(authorizationService.hasAnyRole(any()))
+        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     User user = repository.findById(3L).orElse(null);
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
@@ -673,7 +675,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void save_Update_Lab() throws Throwable {
-    when(authorizationService.hasRole(UserRole.MANAGER)).thenReturn(true);
+    when(authorizationService.hasAnyRole(any()))
+        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     User user = repository.findById(3L).orElse(null);
     detach(user);
 
@@ -684,11 +687,53 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasRole(UserRole.MANAGER);
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasAnyRole(UserRole.MANAGER, UserRole.ADMIN);
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("lab test", user.getLaboratory().getName());
+  }
+
+  @Test
+  public void save_Update_CreateLab() throws Throwable {
+    when(authorizationService.hasAnyRole(any()))
+        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
+    User user = repository.findById(10L).orElse(null);
+    detach(user);
+
+    user.setManager(true);
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.setLaboratory(new Laboratory("lab test"));
+
+    service.save(user, null);
+
+    repository.flush();
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
+    verify(authorizationService).hasAnyRole(UserRole.MANAGER, UserRole.ADMIN);
+    user = repository.findById(user.getId()).orElse(null);
+    assertEquals(user.getId(), user.getId());
+    assertNotNull(user.getLaboratory().getId());
+    assertEquals("lab test", user.getLaboratory().getName());
+  }
+
+  @Test
+  public void save_Update_ChangeLab() throws Throwable {
+    when(authorizationService.hasAnyRole(any()))
+        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
+    User user = repository.findById(10L).orElse(null);
+    detach(user);
+
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.setLaboratory(laboratoryRepository.findById(4L).get());
+
+    service.save(user, null);
+
+    repository.flush();
+    verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
+    verify(authorizationService).hasAnyRole(UserRole.MANAGER, UserRole.ADMIN);
+    user = repository.findById(user.getId()).orElse(null);
+    assertEquals(user.getId(), user.getId());
+    assertEquals((Long) 4L, user.getLaboratory().getId());
+    assertEquals("Biochemistry of Epigenetic Inheritance", user.getLaboratory().getName());
   }
 
   @Test

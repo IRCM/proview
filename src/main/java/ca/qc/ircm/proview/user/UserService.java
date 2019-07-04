@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -231,16 +230,18 @@ public class UserService {
       setUserPassword(user, newPassword);
     }
 
+    boolean updateLaboratory = authorizationService.hasAnyRole(UserRole.MANAGER, UserRole.ADMIN);
+    if (updateLaboratory) {
+      laboratoryRepository.save(user.getLaboratory());
+    }
     repository.save(user);
+    if (updateLaboratory) {
+      updateDirectorName(user.getLaboratory(), user);
+      laboratoryRepository.save(user.getLaboratory());
+    }
 
     if (repository.findAllByLaboratoryAndManagerTrue(user.getLaboratory()).isEmpty()) {
       throw new UnmanagedLaboratoryException();
-    }
-
-    if (authorizationService.hasRole(UserRole.MANAGER)) {
-      authorizationService.hasPermission(user.getLaboratory(), BasePermission.WRITE);
-      updateDirectorName(user.getLaboratory(), user);
-      laboratoryRepository.save(user.getLaboratory());
     }
 
     logger.info("User {} updated", user);

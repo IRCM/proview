@@ -18,7 +18,7 @@
 CREATE TABLE IF NOT EXISTS laboratory (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
-  director varchar(255) NOT NULL,
+  director varchar(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS address (
