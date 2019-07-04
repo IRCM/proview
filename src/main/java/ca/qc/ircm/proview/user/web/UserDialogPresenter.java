@@ -96,7 +96,6 @@ public class UserDialogPresenter {
     dialog.admin.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     dialog.manager.setVisible(authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
     dialog.manager.addValueChangeListener(e -> updateManager());
-    dialog.createNewLaboratory.addValueChangeListener(e -> updateCreateNewLaboratory());
     if (authorizationService.hasRole(UserRole.ADMIN)) {
       laboratoriesDataProvider = new LaboratoryDataProvider(laboratoryService.all());
     } else {
@@ -106,10 +105,11 @@ public class UserDialogPresenter {
     }
     dialog.laboratory.setDataProvider(laboratoriesDataProvider);
     dialog.laboratory.setItemLabelGenerator(lab -> lab.getName());
+    dialog.laboratory.setVisible(authorizationService.hasRole(UserRole.ADMIN));
+    dialog.laboratory.addValueChangeListener(e -> laboratoryBinder.setBean(e.getValue()));
+    dialog.createNewLaboratory.addValueChangeListener(e -> updateCreateNewLaboratory());
     dialog.createNewLaboratory.setVisible(authorizationService.hasRole(UserRole.ADMIN));
-    dialog.newLaboratoryName.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     setUser(null);
-    laboratoryBinder.setBean(new Laboratory());
     updateManager();
     updateCreateNewLaboratory();
   }
@@ -128,7 +128,7 @@ public class UserDialogPresenter {
     binder.forField(dialog.laboratory)
         .withValidator(laboratoryRequiredValidator(webResources.message(REQUIRED)))
         .withNullRepresentation(null).bind(LABORATORY);
-    laboratoryBinder.forField(dialog.newLaboratoryName).asRequired(webResources.message(REQUIRED))
+    laboratoryBinder.forField(dialog.laboratoryName).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(LABORATORY_NAME);
     addressBinder.forField(dialog.addressLine).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(LINE);
@@ -155,7 +155,7 @@ public class UserDialogPresenter {
     boolean readOnly =
         user.getId() != null && !authorizationService.hasPermission(user, BasePermission.WRITE);
     binder.setReadOnly(readOnly);
-    dialog.laboratory.setReadOnly(readOnly || !authorizationService.hasRole(UserRole.ADMIN));
+    dialog.laboratoryName.setReadOnly(readOnly || !authorizationService.hasRole(UserRole.ADMIN));
     dialog.passwords.setVisible(!readOnly);
     addressBinder.setReadOnly(readOnly);
   }
@@ -171,9 +171,12 @@ public class UserDialogPresenter {
   }
 
   private void updateCreateNewLaboratory() {
-    boolean visible = dialog.createNewLaboratory.getValue();
-    dialog.laboratory.setEnabled(!visible);
-    dialog.newLaboratoryName.setEnabled(visible);
+    boolean createNew = dialog.createNewLaboratory.getValue();
+    dialog.laboratory.setEnabled(!createNew);
+    dialog.laboratoryName.setEnabled(createNew);
+    laboratoryBinder.setBean(createNew || user.getLaboratory() == null
+        ? new Laboratory(laboratoryBinder.getBean().getName())
+        : user.getLaboratory());
   }
 
   BinderValidationStatus<User> validateUser() {
@@ -192,18 +195,14 @@ public class UserDialogPresenter {
     boolean valid = true;
     valid = validateUser().isOk() && valid;
     valid = dialog.passwords.validate().isOk() && valid;
-    if (dialog.createNewLaboratory.getValue()) {
-      valid = validateLaboratory().isOk() && valid;
-    }
+    valid = validateLaboratory().isOk() && valid;
     valid = validateAddress().isOk() && valid;
     return valid;
   }
 
   void save() {
     if (validate()) {
-      if (dialog.createNewLaboratory.getValue()) {
-        user.setLaboratory(laboratoryBinder.getBean());
-      }
+      user.setLaboratory(laboratoryBinder.getBean());
       String password = dialog.passwords.getPassword();
       logger.debug("save user {} in laboratory {}", user, user.getLaboratory());
       userService.save(user, password);
@@ -239,6 +238,8 @@ public class UserDialogPresenter {
     this.user = user;
     binder.setBean(user);
     dialog.passwords.setRequired(user.getId() == null);
+    laboratoryBinder
+        .setBean(user.getLaboratory() != null ? user.getLaboratory() : new Laboratory());
     addressBinder.setBean(user.getAddress());
     updateReadOnly();
   }

@@ -117,7 +117,7 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertTrue(dialog.createNewLaboratory.getClassNames().contains(CREATE_NEW_LABORATORY));
     assertTrue(dialog.laboratory.getClassNames().contains(LABORATORY));
     assertTrue(
-        dialog.newLaboratoryName.getClassNames().contains(styleName(LABORATORY, LABORATORY_NAME)));
+        dialog.laboratoryName.getClassNames().contains(styleName(LABORATORY, LABORATORY_NAME)));
     assertTrue(dialog.addressLine.getClassNames().contains(LINE));
     assertTrue(dialog.town.getClassNames().contains(TOWN));
     assertTrue(dialog.state.getClassNames().contains(STATE));
@@ -133,7 +133,7 @@ public class UserDialogTest extends AbstractViewTestCase {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(EMAIL_PLACEHOLDER, dialog.email.getPlaceholder());
     assertEquals(NAME_PLACEHOLDER, dialog.name.getPlaceholder());
-    assertEquals(LABORATORY_NAME_PLACEHOLDER, dialog.newLaboratoryName.getPlaceholder());
+    assertEquals(LABORATORY_NAME_PLACEHOLDER, dialog.laboratoryName.getPlaceholder());
     Address address = defaultAddressConfiguration.getAddress();
     assertEquals(address.getLine(), dialog.addressLine.getPlaceholder());
     assertEquals(address.getTown(), dialog.town.getPlaceholder());
@@ -152,7 +152,7 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
     assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.newLaboratoryName.getLabel());
+    assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.laboratoryName.getLabel());
     assertEquals(addressResources.message(LINE), dialog.addressLine.getLabel());
     assertEquals(addressResources.message(TOWN), dialog.town.getLabel());
     assertEquals(addressResources.message(STATE), dialog.state.getLabel());
@@ -183,7 +183,7 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
     assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.newLaboratoryName.getLabel());
+    assertEquals(laboratoryResources.message(LABORATORY_NAME), dialog.laboratoryName.getLabel());
     assertEquals(addressResources.message(LINE), dialog.addressLine.getLabel());
     assertEquals(addressResources.message(TOWN), dialog.town.getLabel());
     assertEquals(addressResources.message(STATE), dialog.state.getLabel());

@@ -84,7 +84,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected Checkbox createNewLaboratory = new Checkbox();
   protected PasswordsForm passwords = new PasswordsForm();
   protected ComboBox<Laboratory> laboratory = new ComboBox<>();
-  protected TextField newLaboratoryName = new TextField();
+  protected TextField laboratoryName = new TextField();
   protected TextField addressLine = new TextField();
   protected TextField town = new TextField();
   protected TextField state = new TextField();
@@ -117,7 +117,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     formLayout.setResponsiveSteps(new ResponsiveStep("20em", 1), new ResponsiveStep("20em", 2),
         new ResponsiveStep("20em", 3));
     formLayout.add(new FormLayout(email, name, admin, manager, passwords),
-        new FormLayout(laboratory, createNewLaboratory, newLaboratoryName),
+        new FormLayout(laboratory, createNewLaboratory, laboratoryName),
         new FormLayout(addressLine, town, state, country, postalCode));
     layout.add(header, formLayout, buttonsLayout);
     buttonsLayout.add(save, cancel);
@@ -130,8 +130,8 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     manager.addClassName(MANAGER);
     createNewLaboratory.addClassName(CREATE_NEW_LABORATORY);
     laboratory.addClassName(LABORATORY);
-    newLaboratoryName.addClassName(styleName(LABORATORY, LABORATORY_NAME));
-    newLaboratoryName.setPlaceholder(LABORATORY_NAME_PLACEHOLDER);
+    laboratoryName.addClassName(styleName(LABORATORY, LABORATORY_NAME));
+    laboratoryName.setPlaceholder(LABORATORY_NAME_PLACEHOLDER);
     Address address = defaultAddressConfiguration.getAddress();
     addressLine.addClassName(LINE);
     addressLine.setPlaceholder(address.getLine());
@@ -167,7 +167,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     manager.setLabel(userResources.message(MANAGER));
     createNewLaboratory.setLabel(resources.message(CREATE_NEW_LABORATORY));
     laboratory.setLabel(userResources.message(LABORATORY));
-    newLaboratoryName.setLabel(laboratoryResources.message(LABORATORY_NAME));
+    laboratoryName.setLabel(laboratoryResources.message(LABORATORY_NAME));
     addressLine.setLabel(addressResources.message(LINE));
     town.setLabel(addressResources.message(TOWN));
     state.setLabel(addressResources.message(STATE));
