@@ -93,7 +93,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     add(header, users, error, buttonsLayout);
     buttonsLayout.add(add, switchUser);
-    header.addClassName(HEADER);
+    header.setId(HEADER);
     users.addClassName(USERS);
     users.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
     email = users.addColumn(user -> user.getEmail(), EMAIL).setKey(EMAIL)
@@ -122,10 +122,10 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     activeFilter.setItems(Optional.empty(), Optional.of(false), Optional.of(true));
     activeFilter.addValueChangeListener(e -> presenter.filterActive(e.getValue().orElse(null)));
     activeFilter.setSizeFull();
-    error.addClassName(ERROR_TEXT);
-    add.addClassName(ADD);
+    error.setId(ERROR_TEXT);
+    add.setId(ADD);
     add.addClickListener(e -> presenter.add());
-    switchUser.addClassName(SWITCH_USER);
+    switchUser.setId(SWITCH_USER);
     switchUser.addClickListener(e -> presenter.switchUser());
     presenter.init(this);
   }

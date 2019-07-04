@@ -163,11 +163,11 @@ public class UsersViewTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertTrue(view.getId().orElse("").equals(VIEW_NAME));
-    assertTrue(view.header.getClassNames().contains(HEADER));
+    assertTrue(view.header.getId().orElse("").contains(HEADER));
     assertTrue(view.users.getClassNames().contains(USERS));
-    assertTrue(view.error.getClassNames().contains(ERROR_TEXT));
-    assertTrue(view.add.getClassNames().contains(ADD));
-    assertTrue(view.switchUser.getClassNames().contains(SWITCH_USER));
+    assertTrue(view.error.getId().orElse("").contains(ERROR_TEXT));
+    assertTrue(view.add.getId().orElse("").contains(ADD));
+    assertTrue(view.switchUser.getId().orElse("").contains(SWITCH_USER));
   }
 
   @Test

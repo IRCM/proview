@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.web.ViewLayout.HOME;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.security.web.AccessDeniedError;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -76,15 +77,22 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
 
   protected Locale currentLocale() {
     Set<Locale> locales = WebConstants.getLocales();
-    TabElement home = optional(() -> $(TabsElement.class).first().$(TabElement.class).first())
-        .orElse(null);
-    Optional<Locale> optlocale = locales.stream()
-        .filter(locale -> new MessageResource(ViewLayout.class, locale).message(HOME)
-            .equals(home != null ? home.getText() : ""))
-        .findAny();
+    TabElement home =
+        optional(() -> $(TabsElement.class).first().$(TabElement.class).first()).orElse(null);
+    Optional<Locale> optlocale =
+        locales.stream().filter(locale -> new MessageResource(ViewLayout.class, locale)
+            .message(HOME).equals(home != null ? home.getText() : "")).findAny();
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
           .filter(locale -> new MessageResource(SigninView.class, locale)
+              .message(TITLE,
+                  new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME))
+              .equals(getDriver().getTitle()))
+          .findAny();
+    }
+    if (!optlocale.isPresent()) {
+      optlocale = locales.stream()
+          .filter(locale -> new MessageResource(AccessDeniedError.class, locale)
               .message(TITLE,
                   new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
