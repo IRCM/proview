@@ -33,9 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("integration-test")
-@TestExecutionListeners(
-    value = { TestBenchTestExecutionListener.class, TestBenchSecurityFilter.class },
-    mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
+@TestExecutionListeners(value = { TestBenchTestExecutionListener.class,
+    TestBenchSecurityFilter.class }, mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
+@Headless
 @Transactional
 @Sql({ "/drop-schema.sql", "/schema-h2.sql", "/database-before-insert.sql", "/user-data.sql",
     "/sample-data.sql", "/activity-data.sql", "/analysis-data.sql", "/database-after-insert.sql" })

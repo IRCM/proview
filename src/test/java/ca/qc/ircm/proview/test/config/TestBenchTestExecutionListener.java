@@ -48,10 +48,9 @@ import org.springframework.test.context.TestExecutionListener;
 @Order(0)
 public class TestBenchTestExecutionListener implements TestExecutionListener, InjectDependencies {
   @SuppressWarnings("checkstyle:linelength")
-  private static final String LICENSE_ERROR_MESSAGE =
-      "License for Vaadin TestBench not found. Skipping test class {0} .";
-  private static final String[] LICENSE_PATHS =
-      new String[] { "vaadin.testbench.developer.license", ".vaadin.testbench.developer.license" };
+  private static final String LICENSE_ERROR_MESSAGE = "License for Vaadin TestBench not found. Skipping test class {0} .";
+  private static final String[] LICENSE_PATHS = new String[] { "vaadin.testbench.developer.license",
+      ".vaadin.testbench.developer.license" };
   private static final String LICENSE_SYSTEM_PROPERTY = "vaadin.testbench.developer.license";
   private static final String SKIP_TESTS_ERROR_MESSAGE = "TestBench tests are skipped";
   private static final String SKIP_TESTS_SYSTEM_PROPERTY = "testbench.skip";
@@ -63,8 +62,8 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
   @SuppressWarnings("unused")
   private static final String OPERA_DRIVER = OperaDriver.class.getName();
   private static final String DEFAULT_DRIVER = CHROME_DRIVER;
-  private static final Logger logger =
-      LoggerFactory.getLogger(TestBenchTestExecutionListener.class);
+  private static final Logger logger = LoggerFactory
+      .getLogger(TestBenchTestExecutionListener.class);
   @Value("${download-home:${user.dir}/target}")
   protected String downloadHome;
 
@@ -78,12 +77,12 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
 
       boolean licenseFileExists = false;
       for (String licencePath : LICENSE_PATHS) {
-        licenseFileExists |=
-            Files.exists(Paths.get(System.getProperty("user.home")).resolve(licencePath));
+        licenseFileExists |= Files
+            .exists(Paths.get(System.getProperty("user.home")).resolve(licencePath));
       }
       if (!licenseFileExists && System.getProperty(LICENSE_SYSTEM_PROPERTY) == null) {
-        String message =
-            MessageFormat.format(LICENSE_ERROR_MESSAGE, testContext.getTestClass().getName());
+        String message = MessageFormat.format(LICENSE_ERROR_MESSAGE,
+            testContext.getTestClass().getName());
         logger.info(message);
         assumeTrue(message, false);
       }
@@ -112,7 +111,9 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
       target.getDriver().manage().deleteAllCookies();
       boolean useScreenshotRule = false;
       TestBenchTestAnnotations testBenchTestAnnotations = findAnnotation(target.getClass(),
-          testContext.getTestMethod(), TestBenchTestAnnotations.class);
+          testContext.getTestMethod(), TestBenchTestAnnotations.class).orElseThrow(
+              () -> new IllegalStateException(TestBenchTestAnnotations.class.getSimpleName()
+                  + " must be present on TestBench tests."));
       if (testBenchTestAnnotations != null) {
         useScreenshotRule = testBenchTestAnnotations.useScreenshotRule();
       }
@@ -135,13 +136,15 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
   }
 
   private WebDriver driver(TestContext testContext) {
+    final boolean headless = findAnnotation(testContext.getTestClass(), testContext.getTestMethod(),
+        Headless.class).map(an -> an.value()).orElse(false);
     String driverClass = System.getProperty(DRIVER_SYSTEM_PROPERTY);
     if (driverClass == null) {
       driverClass = DEFAULT_DRIVER;
     }
     if (driverClass.equals(CHROME_DRIVER)) {
-      Download downloadAnnotations =
-          findAnnotation(testContext.getTestClass(), testContext.getTestMethod(), Download.class);
+      Download downloadAnnotations = findAnnotation(testContext.getTestClass(),
+          testContext.getTestMethod(), Download.class).orElse(null);
       ChromeOptions options = new ChromeOptions();
       if (downloadAnnotations != null) {
         HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
@@ -149,7 +152,7 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
         chromePrefs.put("download.default_directory", downloadHome);
         options.setExperimentalOption("prefs", chromePrefs);
       } else {
-        options.setHeadless(true);
+        options.setHeadless(headless);
       }
       return new ChromeDriver(options);
     } else if (driverClass.equals(FIREFOX_DRIVER)) {
@@ -162,7 +165,7 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
       profile.setPreference("pdfjs.disabled", true);
       FirefoxOptions options = new FirefoxOptions();
       options.setProfile(profile);
-      options.setHeadless(true);
+      options.setHeadless(headless);
       return new FirefoxDriver(options);
     } else {
       try {

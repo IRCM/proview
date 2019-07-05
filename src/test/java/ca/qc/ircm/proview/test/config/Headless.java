@@ -23,9 +23,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Test type/method is downloading a file.
+ * Use headless mode for test, if {@link #headless()} is true.
  */
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Download {
+public @interface Headless {
+  /**
+   * Returns true if headless mode should be used, if available.
+   *
+   * @return true if headless mode should be used, if available
+   */
+  public boolean value() default true;
 }
