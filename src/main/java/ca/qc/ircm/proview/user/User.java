@@ -23,7 +23,7 @@ import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import javax.persistence.CascadeType;
@@ -109,12 +109,12 @@ public class User implements Data, Named, Serializable {
    * Last sign attempts (success or fail).
    */
   @Column
-  private Instant lastSignAttempt;
+  private LocalDateTime lastSignAttempt;
   /**
    * Register time.
    */
   @Column
-  private Instant registerTime;
+  private LocalDateTime registerTime;
   /**
    * User's prefered locale.
    */
@@ -266,19 +266,19 @@ public class User implements Data, Named, Serializable {
     this.signAttempts = signAttempts;
   }
 
-  public Instant getLastSignAttempt() {
+  public LocalDateTime getLastSignAttempt() {
     return lastSignAttempt;
   }
 
-  public void setLastSignAttempt(Instant lastSignAttempt) {
+  public void setLastSignAttempt(LocalDateTime lastSignAttempt) {
     this.lastSignAttempt = lastSignAttempt;
   }
 
-  public Instant getRegisterTime() {
+  public LocalDateTime getRegisterTime() {
     return registerTime;
   }
 
-  public void setRegisterTime(Instant registerTime) {
+  public void setRegisterTime(LocalDateTime registerTime) {
     this.registerTime = registerTime;
   }
 

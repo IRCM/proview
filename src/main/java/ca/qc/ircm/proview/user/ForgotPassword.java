@@ -22,7 +22,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -51,7 +51,7 @@ public class ForgotPassword implements Data, Serializable {
    * Moment where User requested a forgot password.
    */
   @Column
-  private Instant requestMoment;
+  private LocalDateTime requestMoment;
   /**
    * Confirm number for the forgot password request.
    */
@@ -102,11 +102,11 @@ public class ForgotPassword implements Data, Serializable {
     this.id = id;
   }
 
-  public Instant getRequestMoment() {
+  public LocalDateTime getRequestMoment() {
     return requestMoment;
   }
 
-  public void setRequestMoment(Instant requestMoment) {
+  public void setRequestMoment(LocalDateTime requestMoment) {
     this.requestMoment = requestMoment;
   }
 

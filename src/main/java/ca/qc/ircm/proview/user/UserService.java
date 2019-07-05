@@ -23,7 +23,7 @@ import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -192,7 +192,7 @@ public class UserService {
     }
     setUserPassword(user, password);
     user.setActive(true);
-    user.setRegisterTime(Instant.now());
+    user.setRegisterTime(LocalDateTime.now());
     if (authorizationService.hasPermission(user.getLaboratory(), BasePermission.WRITE)) {
       Laboratory laboratory = user.getLaboratory();
       laboratory.setDirector(user.getName());

@@ -38,7 +38,6 @@ import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import javax.persistence.EntityManager;
@@ -237,8 +236,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     assertNull(user.getSalt());
     assertNull(user.getLastSignAttempt());
     assertNull(user.getLocale());
-    assertTrue(user.getRegisterTime().isAfter(Instant.now().minusSeconds(60)));
-    assertTrue(user.getRegisterTime().isBefore(Instant.now().plusSeconds(60)));
+    assertTrue(user.getRegisterTime().isAfter(LocalDateTime.now().minusSeconds(60)));
+    assertTrue(user.getRegisterTime().isBefore(LocalDateTime.now().plusSeconds(60)));
     entityManager.refresh(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());

@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.user;
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.text.MessageResource;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Locale;
 import java.util.Random;
@@ -81,7 +81,7 @@ public class ForgotPasswordService {
 
     ForgotPassword forgotPassword = repository.findById(id).orElse(null);
     if (confirmNumber.equals(forgotPassword.getConfirmNumber()) && !forgotPassword.isUsed()
-        && forgotPassword.getRequestMoment().isAfter(Instant.now().minus(VALID_PERIOD))) {
+        && forgotPassword.getRequestMoment().isAfter(LocalDateTime.now().minus(VALID_PERIOD))) {
       return forgotPassword;
     } else {
       return null;
@@ -101,7 +101,7 @@ public class ForgotPasswordService {
     ForgotPassword forgotPassword = new ForgotPassword();
 
     // Set time.
-    forgotPassword.setRequestMoment(Instant.now());
+    forgotPassword.setRequestMoment(LocalDateTime.now());
 
     // Generate random confirm number.
     int rand = random.nextInt(Integer.MAX_VALUE);
@@ -132,18 +132,18 @@ public class ForgotPasswordService {
 
     // Prepare email content.
     MimeMessageHelper email = emailService.htmlEmail();
-    MessageResource resources =
-        new MessageResource(ForgotPasswordService.class.getName() + "_Email", locale);
+    MessageResource resources = new MessageResource(
+        ForgotPasswordService.class.getName() + "_Email", locale);
     String subject = resources.message("email.subject");
     email.setSubject(subject);
     email.addTo(emailAddress);
     Context context = new Context(locale);
     context.setVariable("url", url);
-    String htmlTemplateLocation =
-        ForgotPasswordService.class.getName().replace(".", "/") + "_Email.html";
+    String htmlTemplateLocation = ForgotPasswordService.class.getName().replace(".", "/")
+        + "_Email.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation =
-        ForgotPasswordService.class.getName().replace(".", "/") + "_Email.txt";
+    String textTemplateLocation = ForgotPasswordService.class.getName().replace(".", "/")
+        + "_Email.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
 
@@ -163,7 +163,7 @@ public class ForgotPasswordService {
    *           if forgotPassword has expired
    */
   public synchronized void updatePassword(ForgotPassword forgotPassword, String newPassword) {
-    if (Instant.now().isAfter(forgotPassword.getRequestMoment().plus(VALID_PERIOD))) {
+    if (LocalDateTime.now().isAfter(forgotPassword.getRequestMoment().plus(VALID_PERIOD))) {
       throw new IllegalArgumentException("ForgotPassword instance has expired.");
     }
 

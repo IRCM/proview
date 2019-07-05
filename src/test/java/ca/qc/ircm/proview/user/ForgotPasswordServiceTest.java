@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.text.MessageResource;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -109,9 +109,9 @@ public class ForgotPasswordServiceTest {
     assertEquals((Long) 9L, forgotPassword.getId());
     assertEquals(174407008, forgotPassword.getConfirmNumber());
     assertTrue(
-        Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
-    assertTrue(
-        Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(forgotPassword.getRequestMoment()));
+        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
+    assertTrue(LocalDateTime.now().minus(2, ChronoUnit.MINUTES)
+        .isBefore(forgotPassword.getRequestMoment()));
   }
 
   @Test
@@ -165,9 +165,9 @@ public class ForgotPasswordServiceTest {
     forgotPassword = repository.findById(forgotPassword.getId()).orElse(null);
     assertNotNull(forgotPassword.getConfirmNumber());
     assertTrue(
-        Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
-    assertTrue(
-        Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(forgotPassword.getRequestMoment()));
+        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
+    assertTrue(LocalDateTime.now().minus(2, ChronoUnit.MINUTES)
+        .isBefore(forgotPassword.getRequestMoment()));
   }
 
   @Test
@@ -190,8 +190,8 @@ public class ForgotPasswordServiceTest {
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo(user.getEmail());
-    MessageResource resources =
-        new MessageResource(ForgotPasswordService.class.getName() + "_Email", locale);
+    MessageResource resources = new MessageResource(
+        ForgotPasswordService.class.getName() + "_Email", locale);
     verify(email).setSubject(resources.message("email.subject"));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
