@@ -41,6 +41,7 @@ import ca.qc.ircm.text.MessageResource;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Locale;
+import javax.persistence.EntityManager;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +62,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   private LaboratoryRepository laboratoryRepository;
   @Autowired
   private PasswordEncoder passwordEncoder;
+  @Autowired
+  private EntityManager entityManager;
   @Value("${spring.application.name}")
   private String applicationName;
   private String email = "test@ircm.qc.ca";
@@ -156,7 +159,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
     assertEquals(TimeConverter.toInstant(LocalDateTime.of(2008, 8, 11, 13, 43, 51)),
         user.getRegisterTime());
-    assertEquals(laboratory, user.getLaboratory());
+    entityManager.refresh(user.getLaboratory());
+    assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(1, user.getPhoneNumbers().size());
     assertEquals(PhoneNumberType.WORK, user.getPhoneNumbers().get(0).getType());
@@ -235,7 +239,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     assertNull(user.getLocale());
     assertTrue(user.getRegisterTime().isAfter(Instant.now().minusSeconds(60)));
     assertTrue(user.getRegisterTime().isBefore(Instant.now().plusSeconds(60)));
-    assertEquals(laboratory, user.getLaboratory());
+    entityManager.refresh(user.getLaboratory());
+    assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
     assertTrue(user.getPhoneNumbers().isEmpty());
     assertEquals(addressLine, user.getAddress().getLine());

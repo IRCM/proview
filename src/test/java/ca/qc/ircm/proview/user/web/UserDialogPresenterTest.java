@@ -199,7 +199,6 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isEnabled());
     assertFalse(dialog.laboratoryName.isReadOnly());
-    assertFalse(dialog.laboratoryName.isEnabled());
   }
 
   @Test
@@ -242,7 +241,6 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isEnabled());
     assertFalse(dialog.laboratoryName.isReadOnly());
-    assertFalse(dialog.laboratoryName.isEnabled());
   }
 
   @Test
@@ -259,7 +257,6 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isEnabled());
     assertFalse(dialog.laboratoryName.isReadOnly());
-    assertFalse(dialog.laboratoryName.isEnabled());
   }
 
   @Test
@@ -286,7 +283,6 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isEnabled());
     assertFalse(dialog.laboratoryName.isReadOnly());
-    assertFalse(dialog.laboratoryName.isEnabled());
   }
 
   @Test
@@ -302,7 +298,6 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.laboratory.isVisible());
     assertFalse(dialog.laboratory.isEnabled());
     assertFalse(dialog.laboratoryName.isReadOnly());
-    assertTrue(dialog.laboratoryName.isEnabled());
   }
 
   @Test
@@ -318,7 +313,6 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isEnabled());
     assertFalse(dialog.laboratoryName.isReadOnly());
-    assertFalse(dialog.laboratoryName.isEnabled());
   }
 
   @Test
@@ -336,7 +330,6 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isEnabled());
     assertFalse(dialog.laboratoryName.isReadOnly());
-    assertFalse(dialog.laboratoryName.isEnabled());
   }
 
   @Test
@@ -676,8 +669,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.email);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -697,8 +690,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.email);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(INVALID_EMAIL)), error.getMessage());
@@ -718,8 +711,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.name);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.name);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -755,8 +748,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.laboratory);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.laboratory);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -779,8 +772,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.laboratory);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.laboratory);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -804,8 +797,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Laboratory> status = presenter.validateLaboratory();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.laboratoryName);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.laboratoryName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -828,8 +821,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Laboratory> status = presenter.validateLaboratory();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.laboratoryName);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.laboratoryName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -851,8 +844,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.addressLine);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.addressLine);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -874,8 +867,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.town);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.town);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -897,8 +890,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.state);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.state);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -920,8 +913,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.country);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.country);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -943,8 +936,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.postalCode);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.postalCode);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -1054,7 +1047,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     when(authorizationService.hasAnyRole(any())).thenReturn(true);
     when(authorizationService.hasRole(any())).thenReturn(true);
     presenter.init(dialog);
-    User user = userRepository.findById(10L).get();
+    User user = userRepository.findById(26L).get();
     when(authorizationService.hasPermission(any(), any())).thenReturn(true);
     presenter.setUser(user);
     presenter.localeChange(locale);

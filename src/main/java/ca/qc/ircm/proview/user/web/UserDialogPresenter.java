@@ -152,8 +152,8 @@ public class UserDialogPresenter {
   }
 
   private void updateReadOnly() {
-    boolean readOnly =
-        user.getId() != null && !authorizationService.hasPermission(user, BasePermission.WRITE);
+    boolean readOnly = user.getId() != null
+        && !authorizationService.hasPermission(user, BasePermission.WRITE);
     binder.setReadOnly(readOnly);
     dialog.laboratoryName.setReadOnly(
         readOnly || !authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
@@ -174,7 +174,6 @@ public class UserDialogPresenter {
   private void updateCreateNewLaboratory() {
     boolean createNew = dialog.createNewLaboratory.getValue();
     dialog.laboratory.setEnabled(!createNew);
-    dialog.laboratoryName.setEnabled(createNew);
     laboratoryBinder.setBean(createNew || user.getLaboratory() == null
         ? new Laboratory(laboratoryBinder.getBean().getName())
         : user.getLaboratory());
