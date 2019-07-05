@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.plate.QPlate.plate;
-import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +29,6 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.google.common.collect.Range;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.Test;
@@ -48,7 +47,7 @@ public class PlateFilterTest {
     return new Plate(null, name);
   }
 
-  private Plate insertTime(Instant instant) {
+  private Plate insertTime(LocalDateTime instant) {
     Plate plate = mock(Plate.class);
     when(plate.getInsertTime()).thenReturn(instant);
     return plate;
@@ -134,24 +133,24 @@ public class PlateFilterTest {
     LocalDate to = LocalDate.of(2011, 10, 9);
     filter.insertTimeRange = Range.closed(from, to);
 
-    assertFalse(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 1, 1, 9, 40)))));
-    assertTrue(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 1, 2, 9, 40)))));
-    assertTrue(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 10, 8, 23, 40)))));
-    assertTrue(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 10, 9, 23, 40)))));
-    assertFalse(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 12, 1, 0, 0)))));
-    assertFalse(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 1, 1, 0, 0)))));
+    assertFalse(filter.test(insertTime(LocalDateTime.of(2011, 1, 1, 9, 40))));
+    assertTrue(filter.test(insertTime(LocalDateTime.of(2011, 1, 2, 9, 40))));
+    assertTrue(filter.test(insertTime(LocalDateTime.of(2011, 10, 8, 23, 40))));
+    assertTrue(filter.test(insertTime(LocalDateTime.of(2011, 10, 9, 23, 40))));
+    assertFalse(filter.test(insertTime(LocalDateTime.of(2011, 12, 1, 0, 0))));
+    assertFalse(filter.test(insertTime(LocalDateTime.of(2011, 1, 1, 0, 0))));
   }
 
   @Test
   public void test_InsertTimeRange_Null() {
     filter.insertTimeRange = null;
 
-    assertTrue(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 1, 1, 9, 40)))));
-    assertTrue(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 1, 2, 9, 40)))));
-    assertTrue(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 10, 8, 23, 40)))));
-    assertTrue(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 10, 9, 23, 40)))));
-    assertTrue(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 12, 1, 0, 0)))));
-    assertTrue(filter.test(insertTime(toInstant(LocalDateTime.of(2011, 1, 1, 0, 0)))));
+    assertTrue(filter.test(insertTime(LocalDateTime.of(2011, 1, 1, 9, 40))));
+    assertTrue(filter.test(insertTime(LocalDateTime.of(2011, 1, 2, 9, 40))));
+    assertTrue(filter.test(insertTime(LocalDateTime.of(2011, 10, 8, 23, 40))));
+    assertTrue(filter.test(insertTime(LocalDateTime.of(2011, 10, 9, 23, 40))));
+    assertTrue(filter.test(insertTime(LocalDateTime.of(2011, 12, 1, 0, 0))));
+    assertTrue(filter.test(insertTime(LocalDateTime.of(2011, 1, 1, 0, 0))));
   }
 
   @Test
@@ -222,8 +221,8 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.insertTime.goe(toInstant(start.plusDays(1)))
-        .and(plate.insertTime.before(toInstant(end))), predicate);
+    assertEquals(plate.insertTime.goe(toLocalDateTime(start.plusDays(1)))
+        .and(plate.insertTime.before(toLocalDateTime(end))), predicate);
   }
 
   @Test
@@ -234,8 +233,8 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.insertTime.goe(toInstant(start))
-        .and(plate.insertTime.before(toInstant(end.plusDays(1)))), predicate);
+    assertEquals(plate.insertTime.goe(toLocalDateTime(start))
+        .and(plate.insertTime.before(toLocalDateTime(end.plusDays(1)))), predicate);
   }
 
   @Test
@@ -246,8 +245,8 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.insertTime.goe(toInstant(start.plusDays(1)))
-        .and(plate.insertTime.before(toInstant(end.plusDays(1)))), predicate);
+    assertEquals(plate.insertTime.goe(toLocalDateTime(start.plusDays(1)))
+        .and(plate.insertTime.before(toLocalDateTime(end.plusDays(1)))), predicate);
   }
 
   @Test
@@ -258,9 +257,8 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(
-        plate.insertTime.goe(toInstant(start)).and(plate.insertTime.before(toInstant(end))),
-        predicate);
+    assertEquals(plate.insertTime.goe(toLocalDateTime(start))
+        .and(plate.insertTime.before(toLocalDateTime(end))), predicate);
   }
 
   @Test
@@ -270,7 +268,7 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.insertTime.goe(toInstant(start)), predicate);
+    assertEquals(plate.insertTime.goe(toLocalDateTime(start)), predicate);
   }
 
   @Test
@@ -280,7 +278,7 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.insertTime.goe(toInstant(start.plusDays(1))), predicate);
+    assertEquals(plate.insertTime.goe(toLocalDateTime(start.plusDays(1))), predicate);
   }
 
   @Test
@@ -290,7 +288,7 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.insertTime.before(toInstant(end.plusDays(1))), predicate);
+    assertEquals(plate.insertTime.before(toLocalDateTime(end.plusDays(1))), predicate);
   }
 
   @Test
@@ -300,7 +298,7 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.insertTime.before(toInstant(end)), predicate);
+    assertEquals(plate.insertTime.before(toLocalDateTime(end)), predicate);
   }
 
   @Test

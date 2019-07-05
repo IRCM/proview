@@ -30,7 +30,6 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.Test;
@@ -54,9 +53,7 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 1L, msAnalysis.getId());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.NSI, msAnalysis.getSource());
-    assertEquals(
-        LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        msAnalysis.getInsertTime());
+    assertEquals(LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0), msAnalysis.getInsertTime());
     assertEquals(false, msAnalysis.isDeleted());
     assertEquals(null, msAnalysis.getDeletionExplanation());
   }

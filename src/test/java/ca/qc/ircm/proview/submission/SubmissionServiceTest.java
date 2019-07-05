@@ -19,8 +19,6 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
-import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
-import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -71,10 +69,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -142,8 +138,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private ArgumentCaptor<Submission> submissionCaptor;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
-  @Captor
-  private ArgumentCaptor<Instant> instantCaptor;
   private User user;
   private final Random random = new Random();
   private Optional<Activity> optionalActivity;
@@ -208,8 +202,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationComment());
     assertEquals("Philippe", submission.getComment());
-    assertEquals(toInstant(LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0)),
-        submission.getSubmissionDate());
+    assertEquals(LocalDateTime.of(2010, 10, 15, 0, 0, 0, 0), submission.getSubmissionDate());
     assertEquals(LocalDate.of(2010, 12, 9), submission.getSampleDeliveryDate());
     assertEquals(LocalDate.of(2010, 12, 11), submission.getDigestionDate());
     assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
@@ -297,8 +290,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationComment());
     assertEquals(null, submission.getComment());
-    assertEquals(toInstant(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0)),
-        submission.getSubmissionDate());
+    assertEquals(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0), submission.getSubmissionDate());
     assertNull(submission.getSampleDeliveryDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
@@ -381,8 +373,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 442L, sample.getId());
     assertEquals("CAP_20111013_01", sample.getName());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+    assertEquals(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0),
         sample.getSubmission().getSubmissionDate());
     submission = find(submissions, 33).get();
     assertEquals((Long) 33L, submission.getId());
@@ -390,8 +381,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 443L, sample.getId());
     assertEquals("CAP_20111013_05", sample.getName());
     assertEquals(SampleStatus.WAITING, sample.getStatus());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant(),
+    assertEquals(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0),
         sample.getSubmission().getSubmissionDate());
   }
 
@@ -679,7 +669,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private Submission submissionForPrint(Service service) {
     Submission submission = new Submission();
     submission.setService(service);
-    submission.setSubmissionDate(Instant.now().minus(2, ChronoUnit.DAYS));
+    submission.setSubmissionDate(LocalDateTime.now().minus(2, ChronoUnit.DAYS));
     submission.setUser(userRepository.findById(3L).orElse(null));
     submission.setLaboratory(laboratoryRepository.findById(2L).orElse(null));
     SubmissionSample sample1 = new SubmissionSample(1L, "first sample");
@@ -752,8 +742,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertFalse(content.contains("??"));
     assertTrue(content.contains("class=\"platform\""));
     assertTrue(content.contains(resources.message("platform")));
@@ -761,7 +751,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(submission.getService().getLabel(locale)));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
-    assertTrue(content.contains(dateFormatter.format(toLocalDate(submission.getSubmissionDate()))));
+    assertTrue(
+        content.contains(dateFormatter.format(submission.getSubmissionDate().toLocalDate())));
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
@@ -1089,8 +1080,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment")));
@@ -1105,8 +1096,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment")));
@@ -1120,8 +1111,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
@@ -1136,8 +1127,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
@@ -1152,8 +1143,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertFalse(content.contains("??"));
     assertTrue(content.contains("class=\"platform\""));
     assertTrue(content.contains(resources.message("platform")));
@@ -1161,7 +1152,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(submission.getService().getLabel(locale)));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
-    assertTrue(content.contains(dateFormatter.format(toLocalDate(submission.getSubmissionDate()))));
+    assertTrue(
+        content.contains(dateFormatter.format(submission.getSubmissionDate().toLocalDate())));
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
@@ -1349,8 +1341,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertFalse(content.contains("??"));
     assertTrue(content.contains("class=\"platform\""));
     assertTrue(content.contains(resources.message("platform")));
@@ -1358,7 +1350,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(submission.getService().getLabel(locale)));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
-    assertTrue(content.contains(dateFormatter.format(toLocalDate(submission.getSubmissionDate()))));
+    assertTrue(
+        content.contains(dateFormatter.format(submission.getSubmissionDate().toLocalDate())));
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
@@ -1508,8 +1501,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"highResolution\""));
     assertTrue(content.contains(resources.message("submission.highResolution.false")));
   }
@@ -1549,8 +1542,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertFalse(content.contains("??"));
     assertTrue(content.contains("class=\"platform\""));
     assertTrue(content.contains(resources.message("platform")));
@@ -1558,7 +1551,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(submission.getService().getLabel(locale)));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
-    assertTrue(content.contains(dateFormatter.format(toLocalDate(submission.getSubmissionDate()))));
+    assertTrue(
+        content.contains(dateFormatter.format(submission.getSubmissionDate().toLocalDate())));
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
@@ -1832,8 +1826,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("comment", submission.getComment());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertNotNull(submission.getSubmissionDate());
-    assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
-    assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertTrue(
+        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
+    assertTrue(
+        LocalDateTime.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
     assertNull(submission.getSampleDeliveryDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
@@ -1965,8 +1961,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
     assertEquals("comment", submission.getComment());
     assertNotNull(submission.getSubmissionDate());
-    assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
-    assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertTrue(
+        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
+    assertTrue(
+        LocalDateTime.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
     assertNull(submission.getSampleDeliveryDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
@@ -2116,8 +2114,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
     assertEquals("comment", submission.getComment());
     assertNotNull(submission.getSubmissionDate());
-    assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
-    assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertTrue(
+        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
+    assertTrue(
+        LocalDateTime.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
     assertNull(submission.getSampleDeliveryDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
@@ -2237,8 +2237,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertNotNull(submission.getSubmissionDate());
-    assertTrue(Instant.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
-    assertTrue(Instant.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertTrue(
+        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
+    assertTrue(
+        LocalDateTime.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
@@ -2446,8 +2448,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    Instant newInstant = Instant.now();
-    submission.setSubmissionDate(newInstant);
+    LocalDateTime newDate = LocalDateTime.now();
+    submission.setSubmissionDate(newDate);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
     service.update(submission, null);
@@ -2478,7 +2480,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(null, submission.getMudPitFraction());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
     assertEquals(null, submission.getComment());
-    assertEquals(newInstant, submission.getSubmissionDate());
+    assertEquals(newDate, submission.getSubmissionDate());
     assertEquals(1, submission.getVersion());
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(1, samples.size());
@@ -2873,8 +2875,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setFiles(files);
     User user = userRepository.findById(4L).orElse(null);
     submission.setUser(user);
-    Instant newInstant = Instant.now();
-    submission.setSubmissionDate(newInstant);
+    LocalDateTime newDate = LocalDateTime.now();
+    submission.setSubmissionDate(newDate);
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
@@ -2908,7 +2910,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(MudPitFraction.EIGHT, submission.getMudPitFraction());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
     assertEquals("comment", submission.getComment());
-    assertEquals(newInstant, submission.getSubmissionDate());
+    assertEquals(newDate, submission.getSubmissionDate());
     files = submission.getFiles();
     assertEquals(2, files.size());
     file = findFile(files, "my_file.docx").get();
@@ -2923,7 +2925,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 1L, submissionLogged.getId());
     assertEquals(user.getId(), submissionLogged.getUser().getId());
     assertEquals(user.getLaboratory().getId(), submissionLogged.getLaboratory().getId());
-    assertEquals(newInstant, submissionLogged.getSubmissionDate());
+    assertEquals(newDate, submissionLogged.getSubmissionDate());
   }
 
   @Test

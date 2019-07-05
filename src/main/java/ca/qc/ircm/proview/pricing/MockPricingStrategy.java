@@ -20,8 +20,8 @@ package ca.qc.ircm.proview.pricing;
 import ca.qc.ircm.proview.submission.Submission;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Pricing strategy to use for primary tests.
@@ -31,9 +31,9 @@ public class MockPricingStrategy implements PricingStrategy {
    * Instant to use for price computation.
    */
   @SuppressWarnings("unused")
-  private final Instant instant;
+  private final LocalDateTime instant;
 
-  protected MockPricingStrategy(Instant instant) {
+  protected MockPricingStrategy(LocalDateTime instant) {
     if (instant == null) {
       throw new NullPointerException("instant cannot be null");
     }

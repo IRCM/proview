@@ -28,7 +28,6 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.Test;
@@ -54,9 +53,7 @@ public class TreatmentServiceTest {
     assertEquals((Long) 1L, treatment.getId());
     assertEquals(TreatmentType.SOLUBILISATION, treatment.getType());
     assertEquals((Long) 4L, treatment.getUser().getId());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 13, 11, 45, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        treatment.getInsertTime());
+    assertEquals(LocalDateTime.of(2011, 10, 13, 11, 45, 0), treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
     assertEquals(null, treatment.getDeletionExplanation());
     assertEquals(true, treatment instanceof Treatment);
@@ -79,9 +76,7 @@ public class TreatmentServiceTest {
     assertEquals((Long) 2L, treatment.getId());
     assertEquals(TreatmentType.FRACTIONATION, treatment.getType());
     assertEquals((Long) 4L, treatment.getUser().getId());
-    assertEquals(
-        LocalDateTime.of(2011, 10, 19, 12, 20, 33, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        treatment.getInsertTime());
+    assertEquals(LocalDateTime.of(2011, 10, 19, 12, 20, 33, 0), treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
     assertEquals(null, treatment.getDeletionExplanation());
     assertEquals(true, treatment instanceof Treatment);

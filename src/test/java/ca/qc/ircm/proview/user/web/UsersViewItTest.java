@@ -28,7 +28,6 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.security.web.AccessDeniedError;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.PhoneNumberType;
@@ -38,7 +37,6 @@ import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import javax.persistence.EntityManager;
@@ -154,11 +152,9 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
     assertNull(user.getSalt());
-    assertEquals(TimeConverter.toInstant(LocalDateTime.of(2019, 5, 11, 13, 43, 51)),
-        user.getLastSignAttempt());
+    assertEquals(LocalDateTime.of(2019, 5, 11, 13, 43, 51), user.getLastSignAttempt());
     assertEquals(Locale.CANADA_FRENCH, user.getLocale());
-    assertEquals(TimeConverter.toInstant(LocalDateTime.of(2008, 8, 11, 13, 43, 51)),
-        user.getRegisterTime());
+    assertEquals(LocalDateTime.of(2008, 8, 11, 13, 43, 51), user.getRegisterTime());
     entityManager.refresh(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
@@ -237,8 +233,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     assertNull(user.getSalt());
     assertNull(user.getLastSignAttempt());
     assertNull(user.getLocale());
-    assertTrue(user.getRegisterTime().isAfter(Instant.now().minusSeconds(60)));
-    assertTrue(user.getRegisterTime().isBefore(Instant.now().plusSeconds(60)));
+    assertTrue(user.getRegisterTime().isAfter(LocalDateTime.now().minusSeconds(60)));
+    assertTrue(user.getRegisterTime().isBefore(LocalDateTime.now().plusSeconds(60)));
     entityManager.refresh(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());

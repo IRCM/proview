@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.plate.WellComparator.Compare;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import org.junit.Test;
 
 public class WellComparatorTest {
@@ -106,9 +105,8 @@ public class WellComparatorTest {
   public void compare_Timestamp() {
     Well well1 = new Well(1, 1);
     Well well2 = new Well(2, 1);
-    well1.setTimestamp(
-        LocalDateTime.now().minusMinutes(1).atZone(ZoneId.systemDefault()).toInstant());
-    well2.setTimestamp(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+    well1.setTimestamp(LocalDateTime.now().minusMinutes(1));
+    well2.setTimestamp(LocalDateTime.now());
     WellComparator comparator = new WellComparator(Compare.TIME_STAMP);
 
     int compare = comparator.compare(well1, well2);
@@ -120,9 +118,8 @@ public class WellComparatorTest {
   public void compare_Timestamp_Reverse() {
     Well well1 = new Well(2, 1);
     Well well2 = new Well(1, 1);
-    well1.setTimestamp(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-    well2.setTimestamp(
-        LocalDateTime.now().minusMinutes(1).atZone(ZoneId.systemDefault()).toInstant());
+    well1.setTimestamp(LocalDateTime.now());
+    well2.setTimestamp(LocalDateTime.now().minusMinutes(1));
     WellComparator comparator = new WellComparator(Compare.TIME_STAMP);
 
     int compare = comparator.compare(well1, well2);
@@ -134,10 +131,8 @@ public class WellComparatorTest {
   public void compare_Timestamp_Same() {
     Well well1 = new Well(1, 1);
     Well well2 = new Well(1, 1);
-    well1.setTimestamp(
-        LocalDateTime.of(2015, 5, 20, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
-    well2.setTimestamp(
-        LocalDateTime.of(2015, 5, 20, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+    well1.setTimestamp(LocalDateTime.of(2015, 5, 20, 0, 0, 0));
+    well2.setTimestamp(LocalDateTime.of(2015, 5, 20, 0, 0, 0));
     WellComparator comparator = new WellComparator(Compare.TIME_STAMP);
 
     int compare = comparator.compare(well1, well2);

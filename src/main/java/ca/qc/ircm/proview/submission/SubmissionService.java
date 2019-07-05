@@ -50,8 +50,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -224,8 +224,11 @@ public class SubmissionService {
     Context context = new Context();
     context.setLocale(locale);
     context.setVariable("submission", submission);
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     context.setVariable("submissionDate",
-        submission.getSubmissionDate() != null ? Date.from(submission.getSubmissionDate()) : null);
+        submission.getSubmissionDate() != null
+            ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
+            : null);
     context.setVariable("locale", locale);
     context.setVariable("user", submission.getUser());
     context.setVariable("laboratory", submission.getLaboratory());
@@ -259,7 +262,7 @@ public class SubmissionService {
 
     submission.setLaboratory(laboratory);
     submission.setUser(user);
-    submission.setSubmissionDate(Instant.now());
+    submission.setSubmissionDate(LocalDateTime.now());
     submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
     Plate plate = plate(submission);
     submission.getSamples().forEach(sample -> {
@@ -297,9 +300,9 @@ public class SubmissionService {
   }
 
   private void persistPlate(Submission submission, Plate plate) {
-    plate.setInsertTime(Instant.now());
+    plate.setInsertTime(LocalDateTime.now());
     plate.setSubmission(true);
-    plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
+    plate.getWells().forEach(well -> well.setTimestamp(LocalDateTime.now()));
     submission.getSamples().forEach(sample -> {
       sample.getOriginalContainer().setSample(sample);
     });
@@ -315,7 +318,7 @@ public class SubmissionService {
     Tube tube = new Tube();
     tube.setSample(sample);
     tube.setName(sample.getName());
-    tube.setTimestamp(Instant.now());
+    tube.setTimestamp(LocalDateTime.now());
     otherTubeNames.add(tube.getName());
     sample.setOriginalContainer(tube);
     tubeRepository.save(tube);

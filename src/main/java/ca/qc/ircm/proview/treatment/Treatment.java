@@ -24,7 +24,7 @@ import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.user.User;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -49,15 +49,15 @@ public class Treatment implements Data, Serializable {
    * Type of errors that forces Digestion to be deleted.
    */
   public static enum DeletionType {
-  /**
-   * Digestion information was not entered correctly.
-   */
-  ERRONEOUS,
-  /**
-   * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
-   * something went wrong.
-   */
-  FAILED;
+    /**
+     * Digestion information was not entered correctly.
+     */
+    ERRONEOUS,
+    /**
+     * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
+     * something went wrong.
+     */
+    FAILED;
   }
 
   public static final String TABLE_NAME = "treatment";
@@ -98,7 +98,7 @@ public class Treatment implements Data, Serializable {
    * Time when treatment took plate.
    */
   @Column(nullable = false)
-  private Instant insertTime;
+  private LocalDateTime insertTime;
   /**
    * True if treatment was deleted.
    */
@@ -172,11 +172,11 @@ public class Treatment implements Data, Serializable {
     this.treatedSamples = treatedSamples;
   }
 
-  public Instant getInsertTime() {
+  public LocalDateTime getInsertTime() {
     return insertTime;
   }
 
-  public void setInsertTime(Instant insertTime) {
+  public void setInsertTime(LocalDateTime insertTime) {
     this.insertTime = insertTime;
   }
 

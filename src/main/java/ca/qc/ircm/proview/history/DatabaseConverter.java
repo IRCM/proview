@@ -53,8 +53,11 @@ public class DatabaseConverter {
       converterValue = dateFormat.format((Date) value);
     } else if (value instanceof Instant) {
       DateTimeFormatter instantFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-      converterValue =
-          instantFormatter.format(LocalDateTime.ofInstant((Instant) value, ZoneId.systemDefault()));
+      converterValue = instantFormatter
+          .format(LocalDateTime.ofInstant((Instant) value, ZoneId.systemDefault()));
+    } else if (value instanceof LocalDateTime) {
+      DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+      converterValue = localDateTimeFormatter.format((LocalDateTime) value);
     } else if (value instanceof LocalDate) {
       DateTimeFormatter localDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
       converterValue = localDateFormatter.format((LocalDate) value);
@@ -63,8 +66,8 @@ public class DatabaseConverter {
       if (collection.isEmpty()) {
         return null;
       }
-      converterValue =
-          collection.stream().map(o -> Objects.toString(o, "")).collect(Collectors.joining(","));
+      converterValue = collection.stream().map(o -> Objects.toString(o, ""))
+          .collect(Collectors.joining(","));
     } else {
       converterValue = String.valueOf(value);
     }

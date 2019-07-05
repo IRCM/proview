@@ -38,6 +38,10 @@ public class TimeConverter {
     return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
   }
 
+  public static LocalDateTime toLocalDateTime(LocalDate date) {
+    return date.atTime(0, 0);
+  }
+
   public static LocalDate toLocalDate(Instant instant) {
     return toLocalDateTime(instant).toLocalDate();
   }

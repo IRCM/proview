@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,10 +47,8 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,7 +91,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   public void insert() {
     Submission submission = new Submission();
     submission.setId(123456L);
-    submission.setSubmissionDate(Instant.now());
+    submission.setSubmissionDate(LocalDateTime.now());
 
     Activity activity = submissionActivityService.insert(submission);
 
@@ -156,7 +154,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     newSubmission.setComment("new_comment");
     newSubmission.setLaboratory(newLaboratory);
     newSubmission.setUser(newUser);
-    newSubmission.setSubmissionDate(Instant.now());
+    newSubmission.setSubmissionDate(LocalDateTime.now());
     newSubmission.setSampleDeliveryDate(LocalDate.now().minusDays(3));
     newSubmission.setDigestionDate(LocalDate.now().minusDays(2));
     newSubmission.setAnalysisDate(LocalDate.now().minusDays(1));
@@ -167,8 +165,8 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     newSubmission.getFiles().add(new SubmissionFile("my_file.xlsx"));
     newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
 
-    Optional<Activity> optionalActivity =
-        submissionActivityService.update(newSubmission, "unit_test");
+    Optional<Activity> optionalActivity = submissionActivityService.update(newSubmission,
+        "unit_test");
 
     final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     assertEquals(true, optionalActivity.isPresent());
@@ -532,8 +530,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     submissionDateActivity.setColumn(qname(qsubmission.submissionDate));
     DateTimeFormatter instantFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     submissionDateActivity.setOldValue("2010-10-15T00:00:00");
-    submissionDateActivity.setNewValue(instantFormatter.format(
-        LocalDateTime.ofInstant(newSubmission.getSubmissionDate(), ZoneId.systemDefault())));
+    submissionDateActivity.setNewValue(instantFormatter.format(newSubmission.getSubmissionDate()));
     expectedUpdateActivities.add(submissionDateActivity);
     UpdateActivity sampleDeliveryDateActivity = new UpdateActivity();
     sampleDeliveryDateActivity.setActionType(ActionType.UPDATE);

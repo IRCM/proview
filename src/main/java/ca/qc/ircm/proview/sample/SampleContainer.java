@@ -24,7 +24,7 @@ import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -71,7 +71,7 @@ public abstract class SampleContainer implements Data, Named, Serializable {
    * Timestamp of this container. This property should not be set.
    */
   @Column(nullable = false)
-  private Instant timestamp;
+  private LocalDateTime timestamp;
   /**
    * True if container cannot receive a sample.
    */
@@ -113,11 +113,11 @@ public abstract class SampleContainer implements Data, Named, Serializable {
     this.sample = sample;
   }
 
-  public Instant getTimestamp() {
+  public LocalDateTime getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(Instant timestamp) {
+  public void setTimestamp(LocalDateTime timestamp) {
     this.timestamp = timestamp;
   }
 

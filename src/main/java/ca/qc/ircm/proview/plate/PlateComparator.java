@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.plate;
 
 import ca.qc.ircm.proview.NamedComparator;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Locale;
 
@@ -81,11 +81,11 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
         return compare;
       }
       case TIME_STAMP: {
-        Instant min1 = o1.getWells().get(0).getTimestamp();
+        LocalDateTime min1 = o1.getWells().get(0).getTimestamp();
         for (Well well : o1.getWells()) {
           min1 = min1.isBefore(well.getTimestamp()) ? well.getTimestamp() : min1;
         }
-        Instant min2 = o2.getWells().get(0).getTimestamp();
+        LocalDateTime min2 = o2.getWells().get(0).getTimestamp();
         for (Well well : o2.getWells()) {
           min2 = min2.isBefore(well.getTimestamp()) ? well.getTimestamp() : min2;
         }

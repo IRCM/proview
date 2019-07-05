@@ -24,7 +24,7 @@ import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.Sample;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,7 +86,7 @@ public class Plate implements Data, Serializable, Named {
    * Time when analysis was inserted.
    */
   @Column(nullable = false)
-  private Instant insertTime;
+  private LocalDateTime insertTime;
   /**
    * List of all treatments done on samples.
    */
@@ -174,12 +174,10 @@ public class Plate implements Data, Serializable, Named {
    * @return wells from the 'from' location up to the 'to' location
    */
   public List<Well> wells(WellLocation from, WellLocation to) {
-    Predicate<Well> afterOrEqualsFrom =
-        s -> (s.getColumn() == from.getColumn() && s.getRow() >= from.getRow())
-            || s.getColumn() > from.getColumn();
-    Predicate<Well> beforeOrEqualsTo =
-        s -> (s.getColumn() == to.getColumn() && s.getRow() <= to.getRow())
-            || s.getColumn() < to.getColumn();
+    Predicate<Well> afterOrEqualsFrom = s -> (s.getColumn() == from.getColumn()
+        && s.getRow() >= from.getRow()) || s.getColumn() > from.getColumn();
+    Predicate<Well> beforeOrEqualsTo = s -> (s.getColumn() == to.getColumn()
+        && s.getRow() <= to.getRow()) || s.getColumn() < to.getColumn();
     return wells.stream().filter(afterOrEqualsFrom.and(beforeOrEqualsTo))
         .collect(Collectors.toList());
   }
@@ -302,11 +300,11 @@ public class Plate implements Data, Serializable, Named {
     this.id = id;
   }
 
-  public Instant getInsertTime() {
+  public LocalDateTime getInsertTime() {
     return insertTime;
   }
 
-  public void setInsertTime(Instant insertTime) {
+  public void setInsertTime(LocalDateTime insertTime) {
     this.insertTime = insertTime;
   }
 

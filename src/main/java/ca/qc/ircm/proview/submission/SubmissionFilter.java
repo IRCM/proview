@@ -19,8 +19,7 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.text.Strings.normalize;
-import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
-import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -94,7 +93,7 @@ public class SubmissionFilter implements Predicate<Submission> {
       }
     }
     if (dateRange != null) {
-      test &= dateRange.contains(toLocalDate(submission.getSubmissionDate()));
+      test &= dateRange.contains(submission.getSubmissionDate().toLocalDate());
     }
     if (sampleDeliveryDateRange != null) {
       test &= submission.getSampleDeliveryDate() != null
@@ -154,14 +153,14 @@ public class SubmissionFilter implements Predicate<Submission> {
         if (dateRange.lowerBoundType() == BoundType.OPEN) {
           date = date.plusDays(1);
         }
-        predicate.and(submission.submissionDate.goe(toInstant(date)));
+        predicate.and(submission.submissionDate.goe(toLocalDateTime(date)));
       }
       if (dateRange.hasUpperBound()) {
         LocalDate date = dateRange.upperEndpoint();
         if (dateRange.upperBoundType() == BoundType.CLOSED) {
           date = date.plusDays(1);
         }
-        predicate.and(submission.submissionDate.before(toInstant(date)));
+        predicate.and(submission.submissionDate.before(toLocalDateTime(date)));
       }
     }
     if (digestionDateRange != null) {
@@ -267,14 +266,14 @@ public class SubmissionFilter implements Predicate<Submission> {
         if (dateRange.lowerBoundType() == BoundType.OPEN) {
           date = date.plusDays(1);
         }
-        query.where(submission.submissionDate.goe(toInstant(date)));
+        query.where(submission.submissionDate.goe(toLocalDateTime(date)));
       }
       if (dateRange.hasUpperBound()) {
         LocalDate date = dateRange.upperEndpoint();
         if (dateRange.upperBoundType() == BoundType.CLOSED) {
           date = date.plusDays(1);
         }
-        query.where(submission.submissionDate.before(toInstant(date)));
+        query.where(submission.submissionDate.before(toLocalDateTime(date)));
       }
     }
     if (digestionDateRange != null) {

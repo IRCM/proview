@@ -36,7 +36,7 @@ import com.google.common.collect.Lists;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.io.IOException;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -229,22 +229,22 @@ public class PlateService {
    *         recent
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public Instant lastTreatmentOrAnalysisDate(Plate plate) {
+  public LocalDateTime lastTreatmentOrAnalysisDate(Plate plate) {
     if (plate == null) {
       return null;
     }
 
-    Instant treatmentInstant = queryFactory.select(treatment.insertTime.max()).from(treatment)
+    LocalDateTime treatmentInstant = queryFactory.select(treatment.insertTime.max()).from(treatment)
         .where(treatment.treatedSamples.any().container.in(plate.getWells())
             .or(treatment.treatedSamples.any().destinationContainer.in(plate.getWells())))
         .where(treatment.deleted.eq(false)).fetchFirst();
-    Instant analysisInstant = queryFactory.select(msAnalysis.insertTime.max()).from(msAnalysis)
-        .where(msAnalysis.acquisitions.any().container.in(plate.getWells()))
+    LocalDateTime analysisInstant = queryFactory.select(msAnalysis.insertTime.max())
+        .from(msAnalysis).where(msAnalysis.acquisitions.any().container.in(plate.getWells()))
         .where(msAnalysis.deleted.eq(false)).fetchFirst();
     return max(treatmentInstant, analysisInstant);
   }
 
-  private Instant max(Instant... instants) {
+  private LocalDateTime max(LocalDateTime... instants) {
     return Arrays.asList(instants).stream().filter(instant -> instant != null)
         .sorted((i1, i2) -> i2.compareTo(i1)).findFirst().orElse(null);
   }
@@ -257,7 +257,7 @@ public class PlateService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void insert(Plate plate) {
-    plate.setInsertTime(Instant.now());
+    plate.setInsertTime(LocalDateTime.now());
     initWellList(plate);
     repository.saveAndFlush(plate);
 
@@ -268,7 +268,7 @@ public class PlateService {
 
   private void initWellList(Plate plate) {
     plate.initWells();
-    plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
+    plate.getWells().forEach(well -> well.setTimestamp(LocalDateTime.now()));
   }
 
   /**

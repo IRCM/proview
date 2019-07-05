@@ -24,7 +24,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.tube.Tube;
 import ca.qc.ircm.proview.tube.TubeRepository;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
@@ -104,7 +104,7 @@ public class ControlService {
     Tube tube = new Tube();
     tube.setSample(control);
     tube.setName(control.getName());
-    tube.setTimestamp(Instant.now());
+    tube.setTimestamp(LocalDateTime.now());
     control.setOriginalContainer(tube);
 
     repository.save(control);

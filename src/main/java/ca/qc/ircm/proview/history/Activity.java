@@ -23,7 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.user.User;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -76,7 +76,7 @@ public class Activity implements Data {
    * Moment where action was performed.
    */
   @Column(nullable = false)
-  private Instant timestamp;
+  private LocalDateTime timestamp;
   /**
    * Explanation of changes.
    */
@@ -153,11 +153,11 @@ public class Activity implements Data {
     this.explanation = explanation;
   }
 
-  public Instant getTimestamp() {
+  public LocalDateTime getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(Instant timestamp) {
+  public void setTimestamp(LocalDateTime timestamp) {
     this.timestamp = timestamp;
   }
 }

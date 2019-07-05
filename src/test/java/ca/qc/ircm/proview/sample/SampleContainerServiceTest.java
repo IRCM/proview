@@ -19,14 +19,13 @@ package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,9 +58,7 @@ public class SampleContainerServiceTest {
     assertEquals((Long) 1L, container.getId());
     assertEquals((Long) 1L, container.getSample().getId());
     assertEquals(SampleContainerType.TUBE, container.getType());
-    assertEquals(
-        LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        container.getTimestamp());
+    assertEquals(LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0), container.getTimestamp());
   }
 
   @Test
@@ -81,9 +78,7 @@ public class SampleContainerServiceTest {
     assertEquals((Long) 129L, container.getId());
     assertEquals((Long) 1L, container.getSample().getId());
     assertEquals(SampleContainerType.WELL, container.getType());
-    assertEquals(
-        LocalDateTime.of(2011, 11, 16, 15, 7, 34, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        container.getTimestamp());
+    assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34, 0), container.getTimestamp());
   }
 
   @Test

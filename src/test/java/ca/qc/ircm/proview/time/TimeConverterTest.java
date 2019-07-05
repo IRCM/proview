@@ -60,6 +60,15 @@ public class TimeConverterTest {
   }
 
   @Test
+  public void toLocalDateTime_LocalDate() {
+    LocalDate date1 = LocalDate.now();
+    LocalDate date2 = LocalDate.now().minusDays(10);
+
+    assertEquals(date1.atTime(0, 0), toLocalDateTime(date1));
+    assertEquals(date2.atTime(0, 0), toLocalDateTime(date2));
+  }
+
+  @Test
   public void toLocalDate_Instant() {
     Instant instant1 = Instant.now();
     Instant instant2 = Instant.now().minus(10, ChronoUnit.MINUTES);

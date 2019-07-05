@@ -30,9 +30,8 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
-import ca.qc.ircm.proview.time.TimeConverter;
 import ca.qc.ircm.proview.user.User;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,7 +87,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     plate.setName("unit_test");
     plate.setColumnCount(13);
     plate.setRowCount(9);
-    plate.setInsertTime(Instant.now());
+    plate.setInsertTime(LocalDateTime.now());
     plate.setSubmission(true);
 
     Optional<Activity> optionalActivity = plateActivityService.update(plate);
@@ -132,8 +131,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     insertTimeUpdate.setActionType(ActionType.UPDATE);
     insertTimeUpdate.setColumn("insertTime");
     insertTimeUpdate.setOldValue("2011-11-08T13:33:21");
-    insertTimeUpdate
-        .setNewValue(instantFormatter.format(TimeConverter.toLocalDateTime(plate.getInsertTime())));
+    insertTimeUpdate.setNewValue(instantFormatter.format(plate.getInsertTime()));
     expectedUpdateActivities.add(insertTimeUpdate);
     UpdateActivity submissionUpdate = new UpdateActivity();
     submissionUpdate.setTableName(Plate.TABLE_NAME);

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNull;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,9 +45,7 @@ public class WellServiceTest {
     assertEquals((Long) 129L, well.getId());
     assertEquals((Long) 26L, well.getPlate().getId());
     assertEquals((Long) 1L, well.getSample().getId());
-    assertEquals(
-        LocalDateTime.of(2011, 11, 16, 15, 7, 34).atZone(ZoneId.systemDefault()).toInstant(),
-        well.getTimestamp());
+    assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34), well.getTimestamp());
     assertEquals(false, well.isBanned());
     assertEquals(0, well.getRow());
     assertEquals(1, well.getColumn());
