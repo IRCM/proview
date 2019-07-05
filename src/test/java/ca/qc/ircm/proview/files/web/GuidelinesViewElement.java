@@ -19,35 +19,19 @@ package ca.qc.ircm.proview.files.web;
 
 import static ca.qc.ircm.proview.files.web.CategoryComponent.CATEGORY;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.HEADER;
-import static org.openqa.selenium.By.className;
 
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import com.vaadin.flow.component.html.testbench.AnchorElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
-import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
+import com.vaadin.testbench.elementsbase.Element;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class GuidelinesViewPageObject extends AbstractTestBenchTestCase {
-  protected void open() {
-    openView(GuidelinesView.VIEW_NAME);
-  }
-
+@Element("guidelines-view")
+public class GuidelinesViewElement extends VerticalLayoutElement {
   protected H2Element header() {
     return $(H2Element.class).id(HEADER);
   }
 
-  protected List<VerticalLayoutElement> categories() {
-    return findElements(className(CATEGORY)).stream()
-        .map(pe -> wrap(VerticalLayoutElement.class, pe)).collect(Collectors.toList());
-  }
-
-  protected H3Element categoryHeader(VerticalLayoutElement category) {
-    return category.$(H3Element.class).first();
-  }
-
-  protected List<AnchorElement> categoryGuidelines(VerticalLayoutElement category) {
-    return category.$(AnchorElement.class).all();
+  protected List<CategoryComponentElement> categories() {
+    return $(CategoryComponentElement.class).attributeContains("class", CATEGORY).all();
   }
 }

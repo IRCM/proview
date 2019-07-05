@@ -26,13 +26,13 @@ import static org.junit.Assert.assertTrue;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
+import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.Download;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.html.testbench.AnchorElement;
-import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,13 +50,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithMockUser
-public class GuidelinesViewItTest extends GuidelinesViewPageObject {
+public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   @Inject
   private GuidelinesConfiguration guidelinesConfiguration;
   @Value("${spring.application.name}")
   private String applicationName;
   @Value("${download-home}")
   protected Path downloadHome;
+
+  private void open() {
+    openView(GuidelinesView.VIEW_NAME);
+  }
 
   @Test
   @WithAnonymousUser
@@ -82,14 +86,15 @@ public class GuidelinesViewItTest extends GuidelinesViewPageObject {
   public void fieldsExistence() throws Throwable {
     open();
 
-    assertTrue(optional(() -> header()).isPresent());
+    GuidelinesViewElement view = $(GuidelinesViewElement.class).first();
+    assertTrue(optional(() -> view.header()).isPresent());
     List<Category> categories = guidelinesConfiguration.categories(currentLocale());
-    assertEquals(categories.size(), categories().size());
+    assertEquals(categories.size(), view.categories().size());
     for (int i = 0; i < categories.size(); i++) {
       Category category = categories.get(i);
-      VerticalLayoutElement categoryElement = categories().get(i);
-      assertTrue(optional(() -> categoryHeader(categoryElement)).isPresent());
-      assertEquals(category.guidelines().size(), categoryGuidelines(categoryElement).size());
+      CategoryComponentElement categoryElement = view.categories().get(i);
+      assertTrue(optional(() -> categoryElement.header()).isPresent());
+      assertEquals(category.guidelines().size(), categoryElement.guidelines().size());
     }
   }
 
@@ -107,7 +112,8 @@ public class GuidelinesViewItTest extends GuidelinesViewPageObject {
 
     open();
 
-    AnchorElement guidelineElement = categoryGuidelines(categories().get(0)).get(0);
+    GuidelinesViewElement view = $(GuidelinesViewElement.class).first();
+    AnchorElement guidelineElement = view.categories().get(0).guidelines().get(0);
     guidelineElement.click();
     // Wait for file to download.
     Thread.sleep(2000);
