@@ -70,7 +70,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserDialog extends Dialog implements LocaleChangeObserver {
   private static final long serialVersionUID = 3285639770914046262L;
-  public static final String CLASS_NAME = "user-dialog";
+  public static final String ID = "user-dialog";
   public static final String HEADER = "header";
   public static final String EMAIL_PLACEHOLDER = "john.smith@ircm.qc.ca";
   public static final String NAME_PLACEHOLDER = "John Smith";
@@ -82,8 +82,8 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected TextField name = new TextField();
   protected Checkbox admin = new Checkbox();
   protected Checkbox manager = new Checkbox();
-  protected Checkbox createNewLaboratory = new Checkbox();
   protected PasswordsForm passwords = new PasswordsForm();
+  protected Checkbox createNewLaboratory = new Checkbox();
   protected ComboBox<Laboratory> laboratory = new ComboBox<>();
   protected TextField laboratoryName = new TextField();
   protected TextField addressLine = new TextField();
@@ -109,7 +109,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
    */
   @PostConstruct
   protected void init() {
-    setId(CLASS_NAME);
+    setId(ID);
     VerticalLayout layout = new VerticalLayout();
     layout.setMaxWidth("70em");
     layout.setMinWidth("22em");

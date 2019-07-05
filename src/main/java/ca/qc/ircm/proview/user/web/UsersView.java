@@ -22,6 +22,7 @@ import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -51,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Users view.
  */
+@Tag("users-view")
 @Route(value = UsersView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ USER })
 public class UsersView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle,

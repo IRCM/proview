@@ -31,7 +31,7 @@ import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
-import static ca.qc.ircm.proview.user.web.UserDialog.CLASS_NAME;
+import static ca.qc.ircm.proview.user.web.UserDialog.ID;
 import static ca.qc.ircm.proview.user.web.UserDialog.CREATE_NEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserDialog.EMAIL_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserDialog.HEADER;
@@ -107,7 +107,7 @@ public class UserDialogTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertEquals(CLASS_NAME, dialog.getId().orElse(""));
+    assertEquals(ID, dialog.getId().orElse(""));
     assertTrue(dialog.header.getClassNames().contains(HEADER));
     assertTrue(dialog.email.getClassNames().contains(EMAIL));
     assertTrue(dialog.name.getClassNames().contains(NAME));

@@ -22,17 +22,16 @@ import static ca.qc.ircm.proview.user.web.UsersView.HEADER;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER;
 
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import com.vaadin.flow.component.button.testbench.ButtonElement;
-import com.vaadin.flow.component.dialog.testbench.DialogElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.DivElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
+import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
+import com.vaadin.testbench.elementsbase.Element;
 
-public class UsersViewPageObject extends AbstractTestBenchTestCase {
-  protected void open() {
-    openView(UsersView.VIEW_NAME);
-  }
+@Element("users-view")
+public class UsersViewElement extends VerticalLayoutElement {
+  private static final int EMAIL_COLUMN = 0;
 
   protected H2Element header() {
     return $(H2Element.class).id(HEADER);
@@ -48,6 +47,10 @@ public class UsersViewPageObject extends AbstractTestBenchTestCase {
 
   protected void doubleClickUser(int row) {
     users().getCell(row, 0).doubleClick();
+  }
+
+  protected String email(int row) {
+    return users().getCell(row, EMAIL_COLUMN).getText();
   }
 
   protected DivElement switchFailed() {
@@ -68,9 +71,5 @@ public class UsersViewPageObject extends AbstractTestBenchTestCase {
 
   protected void clickSwitchUser() {
     switchUserButton().click();
-  }
-
-  protected DialogElement userDialog() {
-    return $(DialogElement.class).id(UserDialog.CLASS_NAME);
   }
 }
