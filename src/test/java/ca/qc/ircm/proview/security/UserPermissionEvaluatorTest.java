@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import javax.inject.Inject;
@@ -47,6 +48,8 @@ public class UserPermissionEvaluatorTest {
   private UserPermissionEvaluator permissionEvaluator;
   @Inject
   private UserRepository userRepository;
+  @Inject
+  private LaboratoryRepository laboratoryRepository;
   @Inject
   private AuthorizationService authorizationService;
 
@@ -146,8 +149,18 @@ public class UserPermissionEvaluatorTest {
 
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
-  public void hasPermission_WriteNew_Manager() throws Throwable {
+  public void hasPermission_WriteNew_Manager_OwnLab() throws Throwable {
     User user = new User("new.user@ircm.qc.ca");
+    user.setLaboratory(laboratoryRepository.findById(2L).get());
+    assertTrue(permissionEvaluator.hasPermission(authentication(), user, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), user, BASE_WRITE));
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void hasPermission_WriteNew_Manager_NotOwnLab() throws Throwable {
+    User user = new User("new.user@ircm.qc.ca");
+    user.setLaboratory(laboratoryRepository.findById(4L).get());
     assertFalse(permissionEvaluator.hasPermission(authentication(), user, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), user, BASE_WRITE));
   }

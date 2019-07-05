@@ -72,6 +72,11 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
       return true;
     }
     if (user.getId() == null) {
+      if (authorizationService.hasRole(MANAGER) && user.getLaboratory() != null
+          && user.getLaboratory().getId() != null && currentUser.getLaboratory() != null
+          && user.getLaboratory().getId().equals(currentUser.getLaboratory().getId())) {
+        return true;
+      }
       return false;
     }
     if (user.getId().equals(currentUser.getId())) {
