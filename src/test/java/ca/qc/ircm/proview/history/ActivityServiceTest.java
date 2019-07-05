@@ -56,9 +56,7 @@ import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.text.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -523,9 +521,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(null, activity.getExplanation());
     assertEquals((Long) 26L, activity.getRecordId());
     assertEquals("plate", activity.getTableName());
-    assertEquals(
-        LocalDateTime.of(2011, 11, 8, 13, 33, 21).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
+    assertEquals(LocalDateTime.of(2011, 11, 8, 13, 33, 21), activity.getTimestamp());
     assertEquals(0, activity.getUpdates().size());
     assertEquals((Long) 2L, activity.getUser().getId());
   }
@@ -565,9 +561,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
     assertEquals("problem with wells", activity.getExplanation());
-    assertEquals(
-        LocalDateTime.of(2011, 11, 16, 13, 53, 16, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
+    assertEquals(LocalDateTime.of(2011, 11, 16, 13, 53, 16, 0), activity.getTimestamp());
     assertEquals(3, activity.getUpdates().size());
     assertEquals((Long) 2L, activity.getUser().getId());
     UpdateActivity updateActivity = activity.getUpdates().get(0);
@@ -615,9 +609,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 9L, activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(
-        LocalDateTime.of(2011, 11, 16, 15, 07, 34, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
+    assertEquals(LocalDateTime.of(2011, 11, 16, 15, 07, 34, 0), activity.getTimestamp());
     assertEquals(1, activity.getUpdates().size());
     assertEquals((Long) 4L, activity.getUser().getId());
     UpdateActivity updateActivity = activity.getUpdates().get(0);
@@ -634,9 +626,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 8L, activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(
-        LocalDateTime.of(2011, 11, 16, 13, 31, 13, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
+    assertEquals(LocalDateTime.of(2011, 11, 16, 13, 31, 13, 0), activity.getTimestamp());
     assertEquals(1, activity.getUpdates().size());
     assertEquals((Long) 2L, activity.getUser().getId());
     updateActivity = activity.getUpdates().get(0);
@@ -683,9 +673,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("msanalysis", activity.getTableName());
     assertEquals((Long) 20L, activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(
-        LocalDateTime.of(2014, 10, 15, 15, 53, 34).atZone(ZoneId.systemDefault()).toInstant(),
-        activity.getTimestamp());
+    assertEquals(LocalDateTime.of(2014, 10, 15, 15, 53, 34), activity.getTimestamp());
     assertEquals(1, activity.getUpdates().size());
     assertEquals((Long) 4L, activity.getUser().getId());
     UpdateActivity updateActivity = activity.getUpdates().get(0);
@@ -800,12 +788,10 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 45L, activity.getRecordId());
     assertEquals("sample", activity.getTableName());
-    Instant beforeInsert =
-        LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    LocalDateTime beforeInsert = LocalDateTime.now().minusMinutes(2);
     assertTrue(activity.getTimestamp().isAfter(beforeInsert)
         || activity.getTimestamp().equals(beforeInsert));
-    Instant afterInsert =
-        LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    LocalDateTime afterInsert = LocalDateTime.now().plusMinutes(2);
     assertTrue(activity.getTimestamp().isBefore(afterInsert)
         || activity.getTimestamp().equals(afterInsert));
     assertEquals(true, activity.getUpdates().isEmpty());
@@ -852,12 +838,10 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("unit_test", activity.getExplanation());
     assertEquals((Long) 45L, activity.getRecordId());
     assertEquals("sample", activity.getTableName());
-    Instant beforeInsert =
-        LocalDateTime.now().minusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    LocalDateTime beforeInsert = LocalDateTime.now().minusMinutes(2);
     assertTrue(activity.getTimestamp().isAfter(beforeInsert)
         || activity.getTimestamp().equals(beforeInsert));
-    Instant afterInsert =
-        LocalDateTime.now().plusMinutes(2).atZone(ZoneId.systemDefault()).toInstant();
+    LocalDateTime afterInsert = LocalDateTime.now().plusMinutes(2);
     assertTrue(activity.getTimestamp().isBefore(afterInsert)
         || activity.getTimestamp().equals(afterInsert));
     assertEquals(user.getId(), activity.getUser().getId());

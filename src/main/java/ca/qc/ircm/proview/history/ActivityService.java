@@ -62,7 +62,7 @@ import ca.qc.ircm.text.MessageResource;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,110 +105,110 @@ public class ActivityService {
 
   private Object record(String tableName, Long id) {
     switch (tableName) {
-      case Acquisition.TABLE_NAME: {
-        JPAQuery<Acquisition> query = queryFactory.select(acquisition);
-        query.from(acquisition);
-        query.where(acquisition.id.eq(id));
-        return query.fetchOne();
-      }
-      case MsAnalysis.TABLE_NAME: {
-        JPAQuery<MsAnalysis> query = queryFactory.select(msAnalysis);
-        query.from(msAnalysis);
-        query.where(msAnalysis.id.eq(id));
-        return query.fetchOne();
-      }
-      case Plate.TABLE_NAME: {
-        JPAQuery<Plate> query = queryFactory.select(plate);
-        query.from(plate);
-        query.where(plate.id.eq(id));
-        return query.fetchOne();
-      }
-      case Contaminant.TABLE_NAME: {
-        JPAQuery<Contaminant> query = queryFactory.select(contaminant);
-        query.from(contaminant);
-        query.where(contaminant.id.eq(id));
-        return query.fetchOne();
-      }
-      case Sample.TABLE_NAME: {
-        JPAQuery<Sample> query = queryFactory.select(sample);
-        query.from(sample);
-        query.where(sample.id.eq(id));
-        return query.fetchOne();
-      }
-      case SampleContainer.TABLE_NAME: {
-        JPAQuery<SampleContainer> query = queryFactory.select(sampleContainer);
-        query.from(sampleContainer);
-        query.where(sampleContainer.id.eq(id));
-        return query.fetchOne();
-      }
-      case Standard.TABLE_NAME: {
-        JPAQuery<Standard> query = queryFactory.select(standard);
-        query.from(standard);
-        query.where(standard.id.eq(id));
-        return query.fetchOne();
-      }
-      case Submission.TABLE_NAME: {
-        JPAQuery<Submission> query = queryFactory.select(submission);
-        query.from(submission);
-        query.where(submission.id.eq(id));
-        return query.fetchOne();
-      }
-      case SubmissionFile.TABLE_NAME: {
-        JPAQuery<SubmissionFile> query = queryFactory.select(submissionFile);
-        query.from(submissionFile);
-        query.where(submissionFile.id.eq(id));
-        return query.fetchOne();
-      }
-      case Protocol.TABLE_NAME: {
-        JPAQuery<Protocol> query = queryFactory.select(protocol);
-        query.from(protocol);
-        query.where(protocol.id.eq(id));
-        return query.fetchOne();
-      }
-      case TreatedSample.TABLE_NAME: {
-        JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
-        query.from(treatedSample);
-        query.where(treatedSample.id.eq(id));
-        return query.fetchOne();
-      }
-      case Treatment.TABLE_NAME: {
-        JPAQuery<Treatment> query = queryFactory.select(treatment);
-        query.from(treatment);
-        query.where(treatment.id.eq(id));
-        return query.fetchOne();
-      }
-      case Address.TABLE_NAME: {
-        JPAQuery<Address> query = queryFactory.select(address);
-        query.from(address);
-        query.where(address.id.eq(id));
-        return query.fetchOne();
-      }
-      case ForgotPassword.TABLE_NAME: {
-        JPAQuery<ForgotPassword> query = queryFactory.select(forgotPassword);
-        query.from(forgotPassword);
-        query.where(forgotPassword.id.eq(id));
-        return query.fetchOne();
-      }
-      case Laboratory.TABLE_NAME: {
-        JPAQuery<Laboratory> query = queryFactory.select(laboratory);
-        query.from(laboratory);
-        query.where(laboratory.id.eq(id));
-        return query.fetchOne();
-      }
-      case PhoneNumber.TABLE_NAME: {
-        JPAQuery<PhoneNumber> query = queryFactory.select(phoneNumber);
-        query.from(phoneNumber);
-        query.where(phoneNumber.id.eq(id));
-        return query.fetchOne();
-      }
-      case User.TABLE_NAME: {
-        JPAQuery<User> query = queryFactory.select(user);
-        query.from(user);
-        query.where(user.id.eq(id));
-        return query.fetchOne();
-      }
-      default:
-        throw new AssertionError("Record type " + tableName + " not covered in switch");
+    case Acquisition.TABLE_NAME: {
+      JPAQuery<Acquisition> query = queryFactory.select(acquisition);
+      query.from(acquisition);
+      query.where(acquisition.id.eq(id));
+      return query.fetchOne();
+    }
+    case MsAnalysis.TABLE_NAME: {
+      JPAQuery<MsAnalysis> query = queryFactory.select(msAnalysis);
+      query.from(msAnalysis);
+      query.where(msAnalysis.id.eq(id));
+      return query.fetchOne();
+    }
+    case Plate.TABLE_NAME: {
+      JPAQuery<Plate> query = queryFactory.select(plate);
+      query.from(plate);
+      query.where(plate.id.eq(id));
+      return query.fetchOne();
+    }
+    case Contaminant.TABLE_NAME: {
+      JPAQuery<Contaminant> query = queryFactory.select(contaminant);
+      query.from(contaminant);
+      query.where(contaminant.id.eq(id));
+      return query.fetchOne();
+    }
+    case Sample.TABLE_NAME: {
+      JPAQuery<Sample> query = queryFactory.select(sample);
+      query.from(sample);
+      query.where(sample.id.eq(id));
+      return query.fetchOne();
+    }
+    case SampleContainer.TABLE_NAME: {
+      JPAQuery<SampleContainer> query = queryFactory.select(sampleContainer);
+      query.from(sampleContainer);
+      query.where(sampleContainer.id.eq(id));
+      return query.fetchOne();
+    }
+    case Standard.TABLE_NAME: {
+      JPAQuery<Standard> query = queryFactory.select(standard);
+      query.from(standard);
+      query.where(standard.id.eq(id));
+      return query.fetchOne();
+    }
+    case Submission.TABLE_NAME: {
+      JPAQuery<Submission> query = queryFactory.select(submission);
+      query.from(submission);
+      query.where(submission.id.eq(id));
+      return query.fetchOne();
+    }
+    case SubmissionFile.TABLE_NAME: {
+      JPAQuery<SubmissionFile> query = queryFactory.select(submissionFile);
+      query.from(submissionFile);
+      query.where(submissionFile.id.eq(id));
+      return query.fetchOne();
+    }
+    case Protocol.TABLE_NAME: {
+      JPAQuery<Protocol> query = queryFactory.select(protocol);
+      query.from(protocol);
+      query.where(protocol.id.eq(id));
+      return query.fetchOne();
+    }
+    case TreatedSample.TABLE_NAME: {
+      JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
+      query.from(treatedSample);
+      query.where(treatedSample.id.eq(id));
+      return query.fetchOne();
+    }
+    case Treatment.TABLE_NAME: {
+      JPAQuery<Treatment> query = queryFactory.select(treatment);
+      query.from(treatment);
+      query.where(treatment.id.eq(id));
+      return query.fetchOne();
+    }
+    case Address.TABLE_NAME: {
+      JPAQuery<Address> query = queryFactory.select(address);
+      query.from(address);
+      query.where(address.id.eq(id));
+      return query.fetchOne();
+    }
+    case ForgotPassword.TABLE_NAME: {
+      JPAQuery<ForgotPassword> query = queryFactory.select(forgotPassword);
+      query.from(forgotPassword);
+      query.where(forgotPassword.id.eq(id));
+      return query.fetchOne();
+    }
+    case Laboratory.TABLE_NAME: {
+      JPAQuery<Laboratory> query = queryFactory.select(laboratory);
+      query.from(laboratory);
+      query.where(laboratory.id.eq(id));
+      return query.fetchOne();
+    }
+    case PhoneNumber.TABLE_NAME: {
+      JPAQuery<PhoneNumber> query = queryFactory.select(phoneNumber);
+      query.from(phoneNumber);
+      query.where(phoneNumber.id.eq(id));
+      return query.fetchOne();
+    }
+    case User.TABLE_NAME: {
+      JPAQuery<User> query = queryFactory.select(user);
+      query.from(user);
+      query.where(user.id.eq(id));
+      return query.fetchOne();
+    }
+    default:
+      throw new AssertionError("Record type " + tableName + " not covered in switch");
     }
   }
 
@@ -227,16 +227,16 @@ public class ActivityService {
 
     final List<Activity> activities = new ArrayList<>();
     final List<SubmissionSample> samples = submission.getSamples();
-    final List<Long> sampleIds =
-        samples.stream().map(sa -> sa.getId()).collect(Collectors.toList());
+    final List<Long> sampleIds = samples.stream().map(sa -> sa.getId())
+        .collect(Collectors.toList());
     // Inserts / updates.
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
     query.leftJoin(activity.updates, updateActivity).fetch();
-    BooleanExpression condition =
-        activity.recordId.eq(submission.getId()).and(activity.tableName.eq(Submission.TABLE_NAME));
-    condition =
-        condition.or(activity.recordId.in(sampleIds).and(activity.tableName.eq(Sample.TABLE_NAME)));
+    BooleanExpression condition = activity.recordId.eq(submission.getId())
+        .and(activity.tableName.eq(Submission.TABLE_NAME));
+    condition = condition
+        .or(activity.recordId.in(sampleIds).and(activity.tableName.eq(Sample.TABLE_NAME)));
     query.where(condition);
     activities.addAll(query.distinct().fetch());
     // Treatments.
@@ -411,7 +411,7 @@ public class ActivityService {
    *          activity to log
    */
   public void insert(Activity activity) {
-    activity.setTimestamp(Instant.now());
+    activity.setTimestamp(LocalDateTime.now());
 
     repository.save(activity);
   }
