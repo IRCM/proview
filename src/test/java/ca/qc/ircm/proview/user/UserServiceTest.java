@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.user;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.user.QUser.user;
-import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Stream;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -84,6 +83,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     hashedPassword = "da78f3a74658706/4ae8470fc73a83f369fed012";
     when(passwordEncoder.encode(any(String.class))).thenReturn(hashedPassword);
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
   }
 
   private <D extends PhoneNumber> D findPhoneNumber(Collection<D> datas, PhoneNumberType type) {
@@ -300,6 +300,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     user.setName("Christian Poitras");
     user.setLocale(Locale.CANADA_FRENCH);
     user.setAdmin(true);
+    user.setLaboratory(laboratoryRepository.findById(1L).get());
     Address address = new Address();
     address.setLine("110 av des Pins Ouest");
     address.setTown("Montréal");
@@ -319,7 +320,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).getCurrentUser();
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
     user = repository.findById(user.getId()).orElse(null);
@@ -368,13 +369,14 @@ public class UserServiceTest extends AbstractServiceTestCase {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
     user.setLaboratory(laboratoryRepository.findById(2L).get());
+    user.getLaboratory().setName("Ribonucleoprotein Biochemistry");
     when(authorizationService.getCurrentUser()).thenReturn(repository.findById(3L).get());
 
     service.save(user, "password");
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verifyZeroInteractions(authorizationService);
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
     user = repository.findById(user.getId()).orElse(null);
@@ -382,6 +384,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
     assertEquals("Christian Poitras", user.getName());
     assertEquals((Long) 2L, user.getLaboratory().getId());
+    assertEquals("Ribonucleoprotein Biochemistry", user.getLaboratory().getName());
     assertEquals(hashedPassword, user.getHashedPassword());
     assertNull(user.getSalt());
     assertNull(user.getPasswordVersion());
@@ -414,6 +417,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     user.setName("Christian Poitras");
     user.setLaboratory(laboratory);
     user.setLocale(Locale.CANADA);
+    user.setManager(true);
     Address address = new Address();
     address.setLine("110 av des Pins Ouest");
     address.setTown("Montréal");
@@ -433,7 +437,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verifyZeroInteractions(authorizationService);
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     verify(passwordEncoder).encode("password");
     assertNotNull(laboratory.getId());
     assertNotNull(user.getId());
@@ -464,6 +468,33 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
     assertEquals(false, user.isAdmin());
     assertEquals(true, user.isManager());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void save_Insert_NewLaboratoryNotManager() throws Throwable {
+    Laboratory laboratory = new Laboratory();
+    laboratory.setName("Ribonucleoprotein Biochemistry");
+    User user = new User();
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.setName("Christian Poitras");
+    user.setLaboratory(laboratory);
+    user.setLocale(Locale.CANADA);
+    Address address = new Address();
+    address.setLine("110 av des Pins Ouest");
+    address.setTown("Montréal");
+    address.setState("Québec");
+    address.setPostalCode("H2W 1R7");
+    address.setCountry("Canada");
+    user.setAddress(address);
+    PhoneNumber phoneNumber = new PhoneNumber();
+    phoneNumber.setType(PhoneNumberType.WORK);
+    phoneNumber.setNumber("514-555-5500");
+    phoneNumber.setExtension("3228");
+    List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    phoneNumbers.add(phoneNumber);
+    user.setPhoneNumbers(phoneNumbers);
+
+    service.save(user, "password");
   }
 
   @Test
@@ -497,6 +528,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
@@ -532,8 +564,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void save_Update_CurrentManager() throws Throwable {
-    when(authorizationService.hasAnyRole(any()))
-        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     User user = repository.findById(3L).orElse(null);
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
@@ -563,6 +593,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
@@ -606,6 +637,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(true, user.isManager());
   }
@@ -666,6 +698,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     verify(passwordEncoder).encode("unit_test_password");
     user = repository.findById(4L).orElse(null);
     assertEquals(hashedPassword, user.getHashedPassword());
@@ -675,8 +708,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void save_Update_Lab() throws Throwable {
-    when(authorizationService.hasAnyRole(any()))
-        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     User user = repository.findById(3L).orElse(null);
     detach(user);
 
@@ -687,7 +718,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasAnyRole(UserRole.MANAGER, UserRole.ADMIN);
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("lab test", user.getLaboratory().getName());
@@ -695,11 +726,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void save_Update_CreateLab() throws Throwable {
-    when(authorizationService.hasAnyRole(any()))
-        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     User user = repository.findById(10L).orElse(null);
     detach(user);
-
     user.setManager(true);
     user.setEmail("unit_test@ircm.qc.ca");
     user.setLaboratory(new Laboratory("lab test"));
@@ -708,17 +736,25 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasAnyRole(UserRole.MANAGER, UserRole.ADMIN);
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertNotNull(user.getLaboratory().getId());
     assertEquals("lab test", user.getLaboratory().getName());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void save_Update_CreateLabNotManager() throws Throwable {
+    User user = repository.findById(10L).orElse(null);
+    detach(user);
+    user.setEmail("unit_test@ircm.qc.ca");
+    user.setLaboratory(new Laboratory("lab test"));
+
+    service.save(user, null);
+  }
+
   @Test
   public void save_Update_ChangeLab() throws Throwable {
-    when(authorizationService.hasAnyRole(any()))
-        .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     User user = repository.findById(10L).orElse(null);
     detach(user);
 
@@ -729,7 +765,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasAnyRole(UserRole.MANAGER, UserRole.ADMIN);
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals((Long) 4L, user.getLaboratory().getId());

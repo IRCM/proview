@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -171,14 +172,7 @@ public class UserService {
   @PreAuthorize("hasPermission(#user, 'write')")
   public void save(User user, String password) {
     if (user.getId() == null) {
-      user.setRegisterTime(Instant.now());
-      if (user.isAdmin()) {
-        registerAdmin(user, password);
-      } else if (user.getLaboratory().getId() == null) {
-        registerNewLaboratory(user, password);
-      } else {
-        registerNewUser(user, password);
-      }
+      register(user, password);
     } else {
       update(user, password);
     }
@@ -191,53 +185,43 @@ public class UserService {
     user.setPasswordVersion(null);
   }
 
-  private void registerNewUser(User user, String password) {
+  private void register(User user, String password) {
+    if (user.getLaboratory().getId() == null && !user.isManager()) {
+      throw new IllegalArgumentException(
+          "user must be a manager when a new laboratory is to be created");
+    }
     setUserPassword(user, password);
     user.setActive(true);
+    user.setRegisterTime(Instant.now());
+    if (authorizationService.hasPermission(user.getLaboratory(), BasePermission.WRITE)) {
+      Laboratory laboratory = user.getLaboratory();
+      laboratory.setDirector(user.getName());
+      laboratoryRepository.save(laboratory);
+    }
     repository.saveAndFlush(user);
 
     logger.info("User {} of laboratory {} added to database", user, user.getLaboratory());
   }
 
-  private void registerNewLaboratory(User manager, String password) {
-    setUserPassword(manager, password);
-    manager.setManager(true);
-    manager.setActive(true);
-    Laboratory laboratory = manager.getLaboratory();
-    laboratory.setDirector(manager.getName());
-    laboratoryRepository.save(laboratory);
-    repository.saveAndFlush(manager);
-
-    logger.info("Laboratory {} with manager {} added to database", laboratory, manager);
-  }
-
-  private void registerAdmin(User user, String password) {
-    if (!user.isAdmin()) {
-      throw new IllegalArgumentException("Laboratory must be admin, use register instead.");
-    }
-
-    final User manager = authorizationService.getCurrentUser();
-    setUserPassword(user, password);
-    user.setActive(true);
-    user.setLaboratory(manager.getLaboratory());
-    repository.saveAndFlush(user);
-
-    logger.info("Admin user {} added to database", user);
-  }
-
   private void update(User user, String newPassword) {
+    if (user.getLaboratory().getId() == null && !user.isManager()) {
+      throw new IllegalArgumentException(
+          "user must be a manager when a new laboratory is to be created");
+    }
     if (newPassword != null) {
       setUserPassword(user, newPassword);
     }
 
-    boolean updateLaboratory = authorizationService.hasAnyRole(UserRole.MANAGER, UserRole.ADMIN);
+    boolean updateLaboratory = authorizationService.hasPermission(user.getLaboratory(),
+        BasePermission.WRITE);
     if (updateLaboratory) {
       laboratoryRepository.save(user.getLaboratory());
     }
     repository.save(user);
     if (updateLaboratory) {
-      updateDirectorName(user.getLaboratory(), user);
-      laboratoryRepository.save(user.getLaboratory());
+      Laboratory laboratory = user.getLaboratory();
+      updateDirectorName(laboratory, user);
+      laboratoryRepository.save(laboratory);
     }
 
     if (repository.findAllByLaboratoryAndManagerTrue(user.getLaboratory()).isEmpty()) {
