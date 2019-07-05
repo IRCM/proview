@@ -18,8 +18,7 @@
 package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.plate.QPlate.plate;
-import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
-import static ca.qc.ircm.proview.time.TimeConverter.toLocalDate;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 
 import ca.qc.ircm.proview.text.Strings;
 import com.google.common.collect.BoundType;
@@ -45,7 +44,7 @@ public class PlateFilter implements Predicate<Plate> {
       test &= name.contains(nameContainsNormalized);
     }
     if (insertTimeRange != null) {
-      test &= insertTimeRange.contains(toLocalDate(plate.getInsertTime()));
+      test &= insertTimeRange.contains(plate.getInsertTime().toLocalDate());
     }
     if (submission != null) {
       test &= submission == plate.isSubmission();
@@ -69,14 +68,14 @@ public class PlateFilter implements Predicate<Plate> {
         if (insertTimeRange.lowerBoundType() == BoundType.OPEN) {
           date = date.plusDays(1);
         }
-        predicate.and(plate.insertTime.goe(toInstant(date)));
+        predicate.and(plate.insertTime.goe(toLocalDateTime(date)));
       }
       if (insertTimeRange.hasUpperBound()) {
         LocalDate date = insertTimeRange.upperEndpoint();
         if (insertTimeRange.upperBoundType() == BoundType.CLOSED) {
           date = date.plusDays(1);
         }
-        predicate.and(plate.insertTime.before(toInstant(date)));
+        predicate.and(plate.insertTime.before(toLocalDateTime(date)));
       }
     }
     if (submission != null) {

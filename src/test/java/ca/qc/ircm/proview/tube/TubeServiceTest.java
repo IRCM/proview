@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +33,6 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -70,9 +69,7 @@ public class TubeServiceTest {
     assertEquals("FAM119A_band_01", tube.getName());
     assertEquals((Long) 1L, tube.getSample().getId());
     assertEquals(SampleContainerType.TUBE, tube.getType());
-    assertEquals(
-        LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0).atZone(ZoneId.systemDefault()).toInstant(),
-        tube.getTimestamp());
+    assertEquals(LocalDateTime.of(2010, 10, 15, 10, 44, 27, 0), tube.getTimestamp());
   }
 
   @Test

@@ -51,6 +51,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -297,9 +298,9 @@ public class SubmissionService {
   }
 
   private void persistPlate(Submission submission, Plate plate) {
-    plate.setInsertTime(Instant.now());
+    plate.setInsertTime(LocalDateTime.now());
     plate.setSubmission(true);
-    plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
+    plate.getWells().forEach(well -> well.setTimestamp(LocalDateTime.now()));
     submission.getSamples().forEach(sample -> {
       sample.getOriginalContainer().setSample(sample);
     });
@@ -315,7 +316,7 @@ public class SubmissionService {
     Tube tube = new Tube();
     tube.setSample(sample);
     tube.setName(sample.getName());
-    tube.setTimestamp(Instant.now());
+    tube.setTimestamp(LocalDateTime.now());
     otherTubeNames.add(tube.getName());
     sample.setOriginalContainer(tube);
     tubeRepository.save(tube);

@@ -36,7 +36,6 @@ import com.google.common.collect.Lists;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
@@ -258,7 +257,7 @@ public class PlateService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void insert(Plate plate) {
-    plate.setInsertTime(Instant.now());
+    plate.setInsertTime(LocalDateTime.now());
     initWellList(plate);
     repository.saveAndFlush(plate);
 
@@ -269,7 +268,7 @@ public class PlateService {
 
   private void initWellList(Plate plate) {
     plate.initWells();
-    plate.getWells().forEach(well -> well.setTimestamp(Instant.now()));
+    plate.getWells().forEach(well -> well.setTimestamp(LocalDateTime.now()));
   }
 
   /**
