@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.submission;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
@@ -51,9 +50,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -226,8 +224,11 @@ public class SubmissionService {
     Context context = new Context();
     context.setLocale(locale);
     context.setVariable("submission", submission);
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     context.setVariable("submissionDate",
-        submission.getSubmissionDate() != null ? Date.from(submission.getSubmissionDate()) : null);
+        submission.getSubmissionDate() != null
+            ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
+            : null);
     context.setVariable("locale", locale);
     context.setVariable("user", submission.getUser());
     context.setVariable("laboratory", submission.getLaboratory());
@@ -261,9 +262,8 @@ public class SubmissionService {
 
     submission.setLaboratory(laboratory);
     submission.setUser(user);
-    submission.setSubmissionDate(Instant.now());
-    submission.setPrice(
-        pricingEvaluator.computePrice(submission, toLocalDateTime(submission.getSubmissionDate())));
+    submission.setSubmissionDate(LocalDateTime.now());
+    submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
     Plate plate = plate(submission);
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);

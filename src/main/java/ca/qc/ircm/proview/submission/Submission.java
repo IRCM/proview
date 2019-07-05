@@ -35,8 +35,8 @@ import ca.qc.ircm.proview.user.LaboratoryData;
 import ca.qc.ircm.proview.user.User;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -335,7 +335,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    * Date of submission.
    */
   @Column
-  private Instant submissionDate;
+  private LocalDateTime submissionDate;
   /**
    * Sample delivery date.
    */
@@ -443,11 +443,11 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.user = user;
   }
 
-  public Instant getSubmissionDate() {
+  public LocalDateTime getSubmissionDate() {
     return submissionDate;
   }
 
-  public void setSubmissionDate(Instant submissionDate) {
+  public void setSubmissionDate(LocalDateTime submissionDate) {
     this.submissionDate = submissionDate;
   }
 

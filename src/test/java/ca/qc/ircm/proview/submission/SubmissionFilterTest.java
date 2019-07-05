@@ -23,11 +23,11 @@ import static ca.qc.ircm.proview.sample.SampleStatus.DIGESTED;
 import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
 import static ca.qc.ircm.proview.sample.SampleStatus.WAITING;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -43,7 +43,6 @@ import com.google.common.collect.Range;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -157,8 +156,8 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toInstant(start.plusDays(1)))
-        .and(submission.submissionDate.before(toInstant(end))));
+    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start.plusDays(1)))
+        .and(submission.submissionDate.before(toLocalDateTime(end))));
   }
 
   @Test
@@ -169,8 +168,8 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toInstant(start))
-        .and(submission.submissionDate.before(toInstant(end.plusDays(1)))));
+    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start))
+        .and(submission.submissionDate.before(toLocalDateTime(end.plusDays(1)))));
   }
 
   @Test
@@ -181,8 +180,8 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toInstant(start.plusDays(1)))
-        .and(submission.submissionDate.before(toInstant(end.plusDays(1)))));
+    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start.plusDays(1)))
+        .and(submission.submissionDate.before(toLocalDateTime(end.plusDays(1)))));
   }
 
   @Test
@@ -193,8 +192,8 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toInstant(start))
-        .and(submission.submissionDate.before(toInstant(end))));
+    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start))
+        .and(submission.submissionDate.before(toLocalDateTime(end))));
   }
 
   @Test
@@ -204,7 +203,7 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toInstant(start)));
+    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start)));
   }
 
   @Test
@@ -214,7 +213,7 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toInstant(start.plusDays(1))));
+    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
   }
 
   @Test
@@ -224,7 +223,7 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.before(toInstant(end.plusDays(1))));
+    assertEquals(predicate, submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
   @Test
@@ -234,7 +233,7 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.before(toInstant(end)));
+    assertEquals(predicate, submission.submissionDate.before(toLocalDateTime(end)));
   }
 
   @Test
@@ -700,8 +699,8 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start.plusDays(1))));
-    verify(query).where(submission.submissionDate.before(toInstant(end)));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
   @Test
@@ -712,8 +711,8 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start)));
-    verify(query).where(submission.submissionDate.before(toInstant(end.plusDays(1))));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
   @Test
@@ -724,8 +723,8 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start.plusDays(1))));
-    verify(query).where(submission.submissionDate.before(toInstant(end.plusDays(1))));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
   @Test
@@ -736,8 +735,8 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start)));
-    verify(query).where(submission.submissionDate.before(toInstant(end)));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
   @Test
@@ -747,7 +746,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start)));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
   }
 
   @Test
@@ -757,7 +756,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
   }
 
   @Test
@@ -767,7 +766,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.before(toInstant(end.plusDays(1))));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
   @Test
@@ -777,7 +776,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.before(toInstant(end)));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
   @Test
@@ -1299,8 +1298,8 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start.plusDays(1))));
-    verify(query).where(submission.submissionDate.before(toInstant(end)));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
   @Test
@@ -1311,8 +1310,8 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start)));
-    verify(query).where(submission.submissionDate.before(toInstant(end.plusDays(1))));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
   @Test
@@ -1323,8 +1322,8 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start.plusDays(1))));
-    verify(query).where(submission.submissionDate.before(toInstant(end.plusDays(1))));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
   @Test
@@ -1335,8 +1334,8 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start)));
-    verify(query).where(submission.submissionDate.before(toInstant(end)));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
   @Test
@@ -1346,7 +1345,7 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start)));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
   }
 
   @Test
@@ -1356,7 +1355,7 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toInstant(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
   }
 
   @Test
@@ -1366,7 +1365,7 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.before(toInstant(end.plusDays(1))));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
   @Test
@@ -1376,7 +1375,7 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.before(toInstant(end)));
+    verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
   @Test
@@ -1863,7 +1862,7 @@ public class SubmissionFilterTest {
     return submission;
   }
 
-  private Submission date(Instant date) {
+  private Submission date(LocalDateTime date) {
     Submission submission = new Submission();
     submission.setSubmissionDate(date);
     submission.setSamples(Collections.emptyList());
@@ -2099,24 +2098,24 @@ public class SubmissionFilterTest {
     LocalDate to = LocalDate.of(2011, 10, 9);
     filter.dateRange = Range.closed(from, to);
 
-    assertFalse(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 9, 40)))));
-    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 2, 9, 40)))));
-    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 10, 8, 23, 40)))));
-    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 10, 9, 23, 40)))));
-    assertFalse(filter.test(date(toInstant(LocalDateTime.of(2011, 12, 1, 0, 0)))));
-    assertFalse(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 0, 0)))));
+    assertFalse(filter.test(date(LocalDateTime.of(2011, 1, 1, 9, 40))));
+    assertTrue(filter.test(date(LocalDateTime.of(2011, 1, 2, 9, 40))));
+    assertTrue(filter.test(date(LocalDateTime.of(2011, 10, 8, 23, 40))));
+    assertTrue(filter.test(date(LocalDateTime.of(2011, 10, 9, 23, 40))));
+    assertFalse(filter.test(date(LocalDateTime.of(2011, 12, 1, 0, 0))));
+    assertFalse(filter.test(date(LocalDateTime.of(2011, 1, 1, 0, 0))));
   }
 
   @Test
   public void test_dateRange_Null() {
     filter.dateRange = null;
 
-    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 9, 40)))));
-    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 2, 9, 40)))));
-    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 10, 8, 23, 40)))));
-    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 10, 9, 23, 40)))));
-    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 12, 1, 0, 0)))));
-    assertTrue(filter.test(date(toInstant(LocalDateTime.of(2011, 1, 1, 0, 0)))));
+    assertTrue(filter.test(date(LocalDateTime.of(2011, 1, 1, 9, 40))));
+    assertTrue(filter.test(date(LocalDateTime.of(2011, 1, 2, 9, 40))));
+    assertTrue(filter.test(date(LocalDateTime.of(2011, 10, 8, 23, 40))));
+    assertTrue(filter.test(date(LocalDateTime.of(2011, 10, 9, 23, 40))));
+    assertTrue(filter.test(date(LocalDateTime.of(2011, 12, 1, 0, 0))));
+    assertTrue(filter.test(date(LocalDateTime.of(2011, 1, 1, 0, 0))));
   }
 
   @Test

@@ -160,7 +160,7 @@
       <div class="two-columns">
         <div class="right">
           <span class="label" th:text="#{submission.submissionDate}">Date:</span>
-          <span class="submissionDate" th:text="${#dates.format(submissionDate, 'yyyy-MM-dd')}" th:if="${submissionDate != null}">2018-03-07</span>
+          <span class="submissionDate" th:text="${submissionDate}" th:if="${submissionDate != null}">2018-03-07</span>
         </div>
         <div class="left">
           <span class="label" th:text="#{user.name}">Name:</span>
