@@ -43,6 +43,8 @@ import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.LaboratoryService;
+import ca.qc.ircm.proview.user.PhoneNumber;
+import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
@@ -61,6 +63,7 @@ import com.vaadin.flow.data.binder.BindingValidationStatus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import javax.inject.Inject;
@@ -110,6 +113,9 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
   private String state = "My State";
   private String country = "My Country";
   private String postalCode = "12345";
+  private PhoneNumberType phoneType = PhoneNumberType.MOBILE;
+  private String number = "514-555-1234";
+  private String extension = "443";
   private User currentUser;
   private List<Laboratory> laboratories;
   private Laboratory laboratory;
@@ -135,6 +141,10 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.state = new TextField();
     dialog.country = new TextField();
     dialog.postalCode = new TextField();
+    dialog.phoneType = new ComboBox<>();
+    dialog.phoneType.setItems(PhoneNumberType.values());
+    dialog.number = new TextField();
+    dialog.extension = new TextField();
     dialog.buttonsLayout = new HorizontalLayout();
     dialog.save = new Button();
     dialog.cancel = new Button();
@@ -159,6 +169,9 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     dialog.state.setValue(state);
     dialog.country.setValue(country);
     dialog.postalCode.setValue(postalCode);
+    dialog.phoneType.setValue(phoneType);
+    dialog.number.setValue(number);
+    dialog.extension.setValue(extension);
   }
 
   @Test
@@ -375,6 +388,12 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(dialog.country.isReadOnly());
     assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
     assertFalse(dialog.postalCode.isReadOnly());
+    assertEquals(PhoneNumberType.WORK, dialog.phoneType.getValue());
+    assertFalse(dialog.phoneType.isReadOnly());
+    assertEquals("", dialog.number.getValue());
+    assertFalse(dialog.number.isReadOnly());
+    assertEquals("", dialog.extension.getValue());
+    assertFalse(dialog.extension.isReadOnly());
   }
 
   @Test
@@ -414,6 +433,12 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(dialog.country.isReadOnly());
     assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
     assertFalse(dialog.postalCode.isReadOnly());
+    assertEquals(PhoneNumberType.WORK, dialog.phoneType.getValue());
+    assertFalse(dialog.phoneType.isReadOnly());
+    assertEquals("", dialog.number.getValue());
+    assertFalse(dialog.number.isReadOnly());
+    assertEquals("", dialog.extension.getValue());
+    assertFalse(dialog.extension.isReadOnly());
   }
 
   @Test
@@ -448,6 +473,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.country.isReadOnly());
     assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
     assertTrue(dialog.postalCode.isReadOnly());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(phoneNumber.getType(), dialog.phoneType.getValue());
+    assertTrue(dialog.phoneType.isReadOnly());
+    assertEquals(phoneNumber.getNumber(), dialog.number.getValue());
+    assertTrue(dialog.number.isReadOnly());
+    assertEquals(Objects.toString(phoneNumber.getExtension(), ""), dialog.extension.getValue());
+    assertTrue(dialog.extension.isReadOnly());
   }
 
   @Test
@@ -485,6 +517,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(dialog.country.isReadOnly());
     assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
     assertFalse(dialog.postalCode.isReadOnly());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(phoneNumber.getType(), dialog.phoneType.getValue());
+    assertFalse(dialog.phoneType.isReadOnly());
+    assertEquals(phoneNumber.getNumber(), dialog.number.getValue());
+    assertFalse(dialog.number.isReadOnly());
+    assertEquals(Objects.toString(phoneNumber.getExtension(), ""), dialog.extension.getValue());
+    assertFalse(dialog.extension.isReadOnly());
   }
 
   @Test
@@ -524,6 +563,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(dialog.country.isReadOnly());
     assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
     assertFalse(dialog.postalCode.isReadOnly());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(phoneNumber.getType(), dialog.phoneType.getValue());
+    assertFalse(dialog.phoneType.isReadOnly());
+    assertEquals(phoneNumber.getNumber(), dialog.number.getValue());
+    assertFalse(dialog.number.isReadOnly());
+    assertEquals(Objects.toString(phoneNumber.getExtension(), ""), dialog.extension.getValue());
+    assertFalse(dialog.extension.isReadOnly());
   }
 
   @Test
@@ -558,6 +604,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.country.isReadOnly());
     assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
     assertTrue(dialog.postalCode.isReadOnly());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(phoneNumber.getType(), dialog.phoneType.getValue());
+    assertTrue(dialog.phoneType.isReadOnly());
+    assertEquals(phoneNumber.getNumber(), dialog.number.getValue());
+    assertTrue(dialog.number.isReadOnly());
+    assertEquals(Objects.toString(phoneNumber.getExtension(), ""), dialog.extension.getValue());
+    assertTrue(dialog.extension.isReadOnly());
   }
 
   @Test
@@ -595,6 +648,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(dialog.country.isReadOnly());
     assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
     assertFalse(dialog.postalCode.isReadOnly());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(phoneNumber.getType(), dialog.phoneType.getValue());
+    assertFalse(dialog.phoneType.isReadOnly());
+    assertEquals(phoneNumber.getNumber(), dialog.number.getValue());
+    assertFalse(dialog.number.isReadOnly());
+    assertEquals(Objects.toString(phoneNumber.getExtension(), ""), dialog.extension.getValue());
+    assertFalse(dialog.extension.isReadOnly());
   }
 
   @Test
@@ -634,6 +694,13 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertFalse(dialog.country.isReadOnly());
     assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
     assertFalse(dialog.postalCode.isReadOnly());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(phoneNumber.getType(), dialog.phoneType.getValue());
+    assertFalse(dialog.phoneType.isReadOnly());
+    assertEquals(phoneNumber.getNumber(), dialog.number.getValue());
+    assertFalse(dialog.number.isReadOnly());
+    assertEquals(Objects.toString(phoneNumber.getExtension(), ""), dialog.extension.getValue());
+    assertFalse(dialog.extension.isReadOnly());
   }
 
   @Test
@@ -656,6 +723,12 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertEquals(address.getState(), dialog.state.getValue());
     assertEquals(address.getCountry(), dialog.country.getValue());
     assertEquals(address.getPostalCode(), dialog.postalCode.getValue());
+    assertEquals(PhoneNumberType.WORK, dialog.phoneType.getValue());
+    assertFalse(dialog.phoneType.isReadOnly());
+    assertEquals("", dialog.number.getValue());
+    assertFalse(dialog.number.isReadOnly());
+    assertEquals("", dialog.extension.getValue());
+    assertFalse(dialog.extension.isReadOnly());
   }
 
   @Test
@@ -947,6 +1020,29 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
+  public void save_NumberEmpty() {
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    presenter.init(dialog);
+    presenter.localeChange(locale);
+    fillForm();
+    dialog.number.setValue("");
+
+    presenter.save();
+
+    BinderValidationStatus<PhoneNumber> status = presenter.validatePhoneNumber();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.number);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    verify(userService, never()).save(any(), any());
+    verify(dialog, never()).close();
+    verify(dialog, never()).fireSavedEvent();
+  }
+
+  @Test
   public void save_NewUser() {
     when(dialog.passwords.getPassword()).thenReturn(password);
     presenter.init(dialog);
@@ -964,6 +1060,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }
@@ -987,6 +1091,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }
@@ -1013,6 +1125,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertNotNull(user.getLaboratory());
     assertNull(user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }
@@ -1037,6 +1157,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }
@@ -1063,6 +1191,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }
@@ -1087,6 +1223,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }
@@ -1112,6 +1256,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }
@@ -1138,6 +1290,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isManager());
     assertEquals((Long) 2L, user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }
@@ -1163,6 +1323,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isManager());
     assertEquals((Long) 2L, user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }
@@ -1190,6 +1358,14 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isManager());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
   }

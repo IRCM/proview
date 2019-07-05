@@ -23,6 +23,9 @@ import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
 import static ca.qc.ircm.proview.user.AddressProperties.STATE;
 import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.EXTENSION;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.NUMBER;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.TYPE;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -103,6 +106,18 @@ public class UserDialogElement extends DialogElement {
 
   public TextFieldElement postalCode() {
     return $(TextFieldElement.class).attributeContains("class", POSTAL_CODE).first();
+  }
+
+  public ComboBoxElement phoneType() {
+    return $(ComboBoxElement.class).attributeContains("class", TYPE).first();
+  }
+
+  public TextFieldElement number() {
+    return $(TextFieldElement.class).attributeContains("class", NUMBER).first();
+  }
+
+  public TextFieldElement extension() {
+    return $(TextFieldElement.class).attributeContains("class", EXTENSION).first();
   }
 
   public ButtonElement save() {

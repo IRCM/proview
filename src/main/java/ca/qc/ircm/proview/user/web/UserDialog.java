@@ -24,6 +24,9 @@ import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
 import static ca.qc.ircm.proview.user.AddressProperties.STATE;
 import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.EXTENSION;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.NUMBER;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.TYPE;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -38,6 +41,8 @@ import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
+import ca.qc.ircm.proview.user.PhoneNumber;
+import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -77,6 +82,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   public static final String CREATE_NEW_LABORATORY = "createNewLaboratory";
   public static final String LABORATORY_NAME = LaboratoryProperties.NAME;
   public static final String LABORATORY_NAME_PLACEHOLDER = "Translational Proteomics";
+  public static final String NUMBER_PLACEHOLDER = "514-987-5500";
   protected H2 header = new H2();
   protected TextField email = new TextField();
   protected TextField name = new TextField();
@@ -91,6 +97,9 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected TextField state = new TextField();
   protected TextField country = new TextField();
   protected TextField postalCode = new TextField();
+  protected ComboBox<PhoneNumberType> phoneType = new ComboBox<>();
+  protected TextField number = new TextField();
+  protected TextField extension = new TextField();
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected Button cancel = new Button();
@@ -116,10 +125,11 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     add(layout);
     FormLayout formLayout = new FormLayout();
     formLayout.setResponsiveSteps(new ResponsiveStep("20em", 1), new ResponsiveStep("20em", 2),
-        new ResponsiveStep("20em", 3));
+        new ResponsiveStep("20em", 3), new ResponsiveStep("20em", 4));
     formLayout.add(new FormLayout(email, name, admin, manager, passwords),
         new FormLayout(laboratory, createNewLaboratory, laboratoryName),
-        new FormLayout(addressLine, town, state, country, postalCode));
+        new FormLayout(addressLine, town, state, country, postalCode),
+        new FormLayout(phoneType, number, extension));
     layout.add(header, formLayout, buttonsLayout);
     buttonsLayout.add(save, cancel);
     header.addClassName(HEADER);
@@ -144,6 +154,13 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     country.setPlaceholder(address.getCountry());
     postalCode.addClassName(POSTAL_CODE);
     postalCode.setPlaceholder(address.getPostalCode());
+    phoneType.addClassName(TYPE);
+    phoneType.setItems(PhoneNumberType.values());
+    phoneType.setItemLabelGenerator(type -> type.getLabel(getLocale()));
+    phoneType.setValue(PhoneNumberType.WORK);
+    number.addClassName(NUMBER);
+    number.setPlaceholder(NUMBER_PLACEHOLDER);
+    extension.addClassName(EXTENSION);
     save.addClassName(SAVE);
     save.getElement().setAttribute(THEME, PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
@@ -159,6 +176,8 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     final MessageResource resources = new MessageResource(UserDialog.class, getLocale());
     final MessageResource userResources = new MessageResource(User.class, getLocale());
     final MessageResource addressResources = new MessageResource(Address.class, getLocale());
+    final MessageResource phoneNumberResources = new MessageResource(PhoneNumber.class,
+        getLocale());
     final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
     updateHeader();
     email.setLabel(userResources.message(EMAIL));
@@ -173,6 +192,9 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     state.setLabel(addressResources.message(STATE));
     country.setLabel(addressResources.message(COUNTRY));
     postalCode.setLabel(addressResources.message(POSTAL_CODE));
+    phoneType.setLabel(phoneNumberResources.message(TYPE));
+    number.setLabel(phoneNumberResources.message(NUMBER));
+    extension.setLabel(phoneNumberResources.message(EXTENSION));
     save.setText(webResources.message(SAVE));
     cancel.setText(webResources.message(CANCEL));
     presenter.localeChange(getLocale());

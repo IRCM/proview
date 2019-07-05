@@ -26,6 +26,9 @@ import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
 import static ca.qc.ircm.proview.user.AddressProperties.STATE;
 import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.EXTENSION;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.NUMBER;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.TYPE;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -38,6 +41,7 @@ import static ca.qc.ircm.proview.user.web.UserDialog.ID;
 import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserDialog.NAME_PLACEHOLDER;
+import static ca.qc.ircm.proview.user.web.UserDialog.NUMBER_PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
@@ -54,6 +58,7 @@ import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
+import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SavedEvent;
@@ -88,6 +93,7 @@ public class UserDialogTest extends AbstractViewTestCase {
   private MessageResource resources = new MessageResource(UserDialog.class, locale);
   private MessageResource userResources = new MessageResource(User.class, locale);
   private MessageResource addressResources = new MessageResource(Address.class, locale);
+  private MessageResource phoneNumberResources = new MessageResource(PhoneNumber.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
 
   /**
@@ -122,6 +128,9 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertTrue(dialog.state.getClassNames().contains(STATE));
     assertTrue(dialog.country.getClassNames().contains(COUNTRY));
     assertTrue(dialog.postalCode.getClassNames().contains(POSTAL_CODE));
+    assertTrue(dialog.phoneType.getClassNames().contains(TYPE));
+    assertTrue(dialog.number.getClassNames().contains(NUMBER));
+    assertTrue(dialog.extension.getClassNames().contains(EXTENSION));
     assertTrue(dialog.save.getClassNames().contains(SAVE));
     assertTrue(dialog.save.getElement().getAttribute(THEME).contains(PRIMARY));
     assertTrue(dialog.cancel.getClassNames().contains(CANCEL));
@@ -139,6 +148,7 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(address.getState(), dialog.state.getPlaceholder());
     assertEquals(address.getCountry(), dialog.country.getPlaceholder());
     assertEquals(address.getPostalCode(), dialog.postalCode.getPlaceholder());
+    assertEquals(NUMBER_PLACEHOLDER, dialog.number.getPlaceholder());
   }
 
   @Test
@@ -158,6 +168,9 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(addressResources.message(STATE), dialog.state.getLabel());
     assertEquals(addressResources.message(COUNTRY), dialog.country.getLabel());
     assertEquals(addressResources.message(POSTAL_CODE), dialog.postalCode.getLabel());
+    assertEquals(phoneNumberResources.message(TYPE), dialog.phoneType.getLabel());
+    assertEquals(phoneNumberResources.message(NUMBER), dialog.number.getLabel());
+    assertEquals(phoneNumberResources.message(EXTENSION), dialog.extension.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), dialog.save.getIcon());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -172,6 +185,7 @@ public class UserDialogTest extends AbstractViewTestCase {
     final MessageResource resources = new MessageResource(UserDialog.class, locale);
     final MessageResource userResources = new MessageResource(User.class, locale);
     final MessageResource addressResources = new MessageResource(Address.class, locale);
+    final MessageResource phoneNumberResources = new MessageResource(PhoneNumber.class, locale);
     final MessageResource webResources = new MessageResource(WebConstants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
@@ -189,6 +203,9 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(addressResources.message(STATE), dialog.state.getLabel());
     assertEquals(addressResources.message(COUNTRY), dialog.country.getLabel());
     assertEquals(addressResources.message(POSTAL_CODE), dialog.postalCode.getLabel());
+    assertEquals(phoneNumberResources.message(TYPE), dialog.phoneType.getLabel());
+    assertEquals(phoneNumberResources.message(NUMBER), dialog.number.getLabel());
+    assertEquals(phoneNumberResources.message(EXTENSION), dialog.extension.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
     verify(presenter).localeChange(locale);

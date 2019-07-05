@@ -22,6 +22,9 @@ import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
 import static ca.qc.ircm.proview.user.AddressProperties.STATE;
 import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.EXTENSION;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.NUMBER;
+import static ca.qc.ircm.proview.user.PhoneNumberProperties.TYPE;
 import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -38,6 +41,8 @@ import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
+import ca.qc.ircm.proview.user.PhoneNumber;
+import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
@@ -75,6 +80,7 @@ public class UserDialogPresenter {
   private ListDataProvider<Laboratory> laboratoriesDataProvider;
   private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
   private Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
+  private Binder<PhoneNumber> phoneNumberBinder = new BeanValidationBinder<>(PhoneNumber.class);
   private User user;
   private UserService userService;
   private LaboratoryService laboratoryService;
@@ -140,6 +146,11 @@ public class UserDialogPresenter {
         .withNullRepresentation("").bind(COUNTRY);
     addressBinder.forField(dialog.postalCode).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(POSTAL_CODE);
+    phoneNumberBinder.forField(dialog.phoneType).asRequired(webResources.message(REQUIRED))
+        .bind(TYPE);
+    phoneNumberBinder.forField(dialog.number).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(NUMBER);
+    phoneNumberBinder.forField(dialog.extension).withNullRepresentation("").bind(EXTENSION);
     dialog.save.setText(webResources.message(SAVE));
     dialog.cancel.setText(webResources.message(CANCEL));
     updateReadOnly();
@@ -159,6 +170,7 @@ public class UserDialogPresenter {
         readOnly || !authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
     dialog.passwords.setVisible(!readOnly);
     addressBinder.setReadOnly(readOnly);
+    phoneNumberBinder.setReadOnly(readOnly);
   }
 
   private void updateManager() {
@@ -191,12 +203,17 @@ public class UserDialogPresenter {
     return addressBinder.validate();
   }
 
+  BinderValidationStatus<PhoneNumber> validatePhoneNumber() {
+    return phoneNumberBinder.validate();
+  }
+
   private boolean validate() {
     boolean valid = true;
     valid = validateUser().isOk() && valid;
     valid = dialog.passwords.validate().isOk() && valid;
     valid = validateLaboratory().isOk() && valid;
     valid = validateAddress().isOk() && valid;
+    valid = validatePhoneNumber().isOk() && valid;
     return valid;
   }
 
@@ -235,12 +252,19 @@ public class UserDialogPresenter {
     if (user.getAddress() == null) {
       user.setAddress(defaultAddressConfiguration.getAddress());
     }
+    if (user.getPhoneNumbers() == null || user.getPhoneNumbers().isEmpty()) {
+      user.setPhoneNumbers(new ArrayList<>());
+      PhoneNumber phoneNumber = new PhoneNumber();
+      phoneNumber.setType(PhoneNumberType.WORK);
+      user.getPhoneNumbers().add(phoneNumber);
+    }
     this.user = user;
     binder.setBean(user);
     dialog.passwords.setRequired(user.getId() == null);
     laboratoryBinder
         .setBean(user.getLaboratory() != null ? user.getLaboratory() : new Laboratory());
     addressBinder.setBean(user.getAddress());
+    phoneNumberBinder.setBean(user.getPhoneNumbers().get(0));
     updateReadOnly();
   }
 

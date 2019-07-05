@@ -73,6 +73,9 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   private String state = "My State";
   private String country = "My Country";
   private String postalCode = "12345";
+  private PhoneNumberType phoneType = PhoneNumberType.MOBILE;
+  private String number = "514-555-1234";
+  private String extension = "443";
 
   private void open() {
     openView(UsersView.VIEW_NAME);
@@ -126,6 +129,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     open();
     UsersViewElement view = $(UsersViewElement.class).first();
     final int rows = view.users().getRowCount();
+    final Locale locale = currentLocale();
 
     view.doubleClickUser(0);
 
@@ -143,6 +147,9 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     dialog.state().setValue(state);
     dialog.country().setValue(country);
     dialog.postalCode().setValue(postalCode);
+    dialog.phoneType().selectByText(phoneType.getLabel(locale));
+    dialog.number().setValue(number);
+    dialog.extension().setValue(extension);
     dialog.save().click();
     waitUntil(driver -> !dialog.isOpen());
     User user = repository.findByEmail(email);
@@ -159,9 +166,9 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(1, user.getPhoneNumbers().size());
-    assertEquals(PhoneNumberType.WORK, user.getPhoneNumbers().get(0).getType());
-    assertEquals("514-555-5555", user.getPhoneNumbers().get(0).getNumber());
-    assertNull(user.getPhoneNumbers().get(0).getExtension());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -176,6 +183,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     open();
     UsersViewElement view = $(UsersViewElement.class).first();
     final int rows = view.users().getRowCount();
+    final Locale locale = currentLocale();
 
     view.doubleClickUser(0);
 
@@ -193,6 +201,9 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     dialog.state().setValue(state);
     dialog.country().setValue(country);
     dialog.postalCode().setValue(postalCode);
+    dialog.phoneType().selectByText(phoneType.getLabel(locale));
+    dialog.number().setValue(number);
+    dialog.extension().setValue(extension);
     dialog.cancel().click();
     waitUntil(driver -> !dialog.isOpen());
     User user = repository.findByEmail(email);
@@ -205,6 +216,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     open();
     UsersViewElement view = $(UsersViewElement.class).first();
     final int rows = view.users().getRowCount();
+    final Locale locale = currentLocale();
 
     view.clickAdd();
 
@@ -222,6 +234,9 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     dialog.state().setValue(state);
     dialog.country().setValue(country);
     dialog.postalCode().setValue(postalCode);
+    dialog.phoneType().selectByText(phoneType.getLabel(locale));
+    dialog.number().setValue(number);
+    dialog.extension().setValue(extension);
     dialog.save().click();
     waitUntil(driver -> !dialog.isOpen());
     User user = repository.findByEmail(email);
@@ -238,7 +253,10 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     entityManager.refresh(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
     assertEquals(laboratoryName, user.getLaboratory().getName());
-    assertTrue(user.getPhoneNumbers().isEmpty());
+    assertEquals(1, user.getPhoneNumbers().size());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -252,6 +270,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     open();
     UsersViewElement view = $(UsersViewElement.class).first();
     final int rows = view.users().getRowCount();
+    final Locale locale = currentLocale();
 
     view.clickAdd();
 
@@ -269,6 +288,9 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     dialog.state().setValue(state);
     dialog.country().setValue(country);
     dialog.postalCode().setValue(postalCode);
+    dialog.phoneType().selectByText(phoneType.getLabel(locale));
+    dialog.number().setValue(number);
+    dialog.extension().setValue(extension);
     dialog.cancel().click();
     waitUntil(driver -> !dialog.isOpen());
     User user = repository.findByEmail(email);
