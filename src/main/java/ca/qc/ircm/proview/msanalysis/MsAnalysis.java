@@ -23,7 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -68,7 +68,7 @@ public class MsAnalysis implements Data, Serializable {
    * Time when analysis was inserted.
    */
   @Column(nullable = false)
-  private Instant insertTime;
+  private LocalDateTime insertTime;
   /**
    * True if MS analysis was deleted.
    */
@@ -123,11 +123,11 @@ public class MsAnalysis implements Data, Serializable {
     this.massDetectionInstrument = massDetectionInstrument;
   }
 
-  public Instant getInsertTime() {
+  public LocalDateTime getInsertTime() {
     return insertTime;
   }
 
-  public void setInsertTime(Instant insertTime) {
+  public void setInsertTime(LocalDateTime insertTime) {
     this.insertTime = insertTime;
   }
 

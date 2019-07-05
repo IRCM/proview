@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.plate;
 import static ca.qc.ircm.proview.plate.PlateService.PLATE;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
-import static ca.qc.ircm.proview.time.TimeConverter.toInstant;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -333,8 +332,8 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     }
     assertEquals(well1.getSample().getName(),
         cellValue(sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)));
-    CellStyle style =
-        sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1).getCellStyle();
+    CellStyle style = sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)
+        .getCellStyle();
     assertEquals(HSSFColor.WHITE.index, style.getFillBackgroundColor());
     assertEquals(HSSFColor.BLACK.index, workbook.getFontAt(style.getFontIndex()).getColor());
     assertEquals(well2.getSample().getName(),
@@ -473,13 +472,13 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void lastTreatmentOrAnalysisDate() {
-    assertEquals(toInstant(LocalDateTime.of(2011, 11, 16, 15, 7, 34)),
+    assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34),
         service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null)));
-    assertEquals(toInstant(LocalDateTime.of(2014, 10, 15, 15, 53, 34)),
+    assertEquals(LocalDateTime.of(2014, 10, 15, 15, 53, 34),
         service.lastTreatmentOrAnalysisDate(repository.findById(115L).orElse(null)));
-    assertEquals(toInstant(LocalDateTime.of(2014, 10, 17, 11, 54, 22)),
+    assertEquals(LocalDateTime.of(2014, 10, 17, 11, 54, 22),
         service.lastTreatmentOrAnalysisDate(repository.findById(118L).orElse(null)));
-    assertEquals(toInstant(LocalDateTime.of(2014, 10, 22, 9, 57, 18)),
+    assertEquals(LocalDateTime.of(2014, 10, 22, 9, 57, 18),
         service.lastTreatmentOrAnalysisDate(repository.findById(121L).orElse(null)));
     assertNull(service.lastTreatmentOrAnalysisDate(repository.findById(122L).orElse(null)));
     assertNull(service.lastTreatmentOrAnalysisDate(repository.findById(123L).orElse(null)));
