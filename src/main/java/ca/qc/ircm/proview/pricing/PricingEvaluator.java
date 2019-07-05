@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.pricing;
 
 import ca.qc.ircm.proview.submission.Submission;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 /**
@@ -37,7 +37,7 @@ public class PricingEvaluator {
    *          instant of prices to use
    * @return submission's price
    */
-  public BigDecimal computePrice(Submission submission, Instant instant) {
+  public BigDecimal computePrice(Submission submission, LocalDateTime instant) {
     PricingStrategy strategy = this.getPriceStrategy(instant);
     return strategy.computePrice(submission);
   }
@@ -51,7 +51,7 @@ public class PricingEvaluator {
    * @throws NullPointerException
    *           if date is null
    */
-  public PricingStrategy getPriceStrategy(Instant instant) {
+  public PricingStrategy getPriceStrategy(LocalDateTime instant) {
     if (instant == null) {
       throw new NullPointerException("instant cannot be null");
     }

@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
@@ -261,7 +262,8 @@ public class SubmissionService {
     submission.setLaboratory(laboratory);
     submission.setUser(user);
     submission.setSubmissionDate(Instant.now());
-    submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
+    submission.setPrice(
+        pricingEvaluator.computePrice(submission, toLocalDateTime(submission.getSubmissionDate())));
     Plate plate = plate(submission);
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
