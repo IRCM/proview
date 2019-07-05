@@ -112,8 +112,6 @@ CREATE TABLE IF NOT EXISTS submission (
   quantification varchar(50) DEFAULT NULL,
   quantificationcomment clob DEFAULT NULL,
   comment clob,
-  price double DEFAULT NULL,
-  additionalprice double DEFAULT NULL,
   submissiondate datetime NOT NULL,
   sampledeliverydate date DEFAULT NULL,
   digestiondate date DEFAULT NULL,

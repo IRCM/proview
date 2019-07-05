@@ -228,9 +228,6 @@ public class SubmissionActivityService {
             .newValue(submission.getQuantificationComment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.comment))
         .oldValue(oldSubmission.getComment()).newValue(submission.getComment()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder()
-        .column(qname(qsubmission.additionalPrice)).oldValue(oldSubmission.getAdditionalPrice())
-        .newValue(submission.getAdditionalPrice()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.user) + "Id")
         .oldValue(oldSubmission.getUser().getId()).newValue(submission.getUser().getId()));
     updateBuilders
@@ -255,12 +252,12 @@ public class SubmissionActivityService {
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.hidden))
         .oldValue(oldSubmission.isHidden()).newValue(submission.isHidden()));
     // Sample.
-    Set<Long> oldSampleIds =
-        oldSubmission.getSamples().stream().filter(sample -> sample.getId() != null)
-            .map(sample -> sample.getId()).collect(Collectors.toSet());
-    Set<Long> newSampleIds =
-        submission.getSamples().stream().filter(sample -> sample.getId() != null)
-            .map(sample -> sample.getId()).collect(Collectors.toSet());
+    Set<Long> oldSampleIds = oldSubmission.getSamples().stream()
+        .filter(sample -> sample.getId() != null).map(sample -> sample.getId())
+        .collect(Collectors.toSet());
+    Set<Long> newSampleIds = submission.getSamples().stream()
+        .filter(sample -> sample.getId() != null).map(sample -> sample.getId())
+        .collect(Collectors.toSet());
     for (SubmissionSample sample : oldSubmission.getSamples()) {
       if (!newSampleIds.contains(sample.getId())) {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.DELETE)

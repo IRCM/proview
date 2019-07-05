@@ -34,7 +34,6 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryData;
 import ca.qc.ircm.proview.user.User;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -362,16 +361,6 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
   @Column
   private boolean hidden;
   /**
-   * Price charged when sample was first submitted.
-   */
-  @Column
-  private BigDecimal price;
-  /**
-   * Additional price charged by proteomic laboratory members due to change in sample's submission.
-   */
-  @Column
-  private BigDecimal additionalPrice;
-  /**
    * User who made the Submission.
    */
   @ManyToOne
@@ -697,22 +686,6 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
 
   public void setDevelopmentTime(String developmentTime) {
     this.developmentTime = developmentTime;
-  }
-
-  public BigDecimal getPrice() {
-    return price;
-  }
-
-  public void setPrice(BigDecimal price) {
-    this.price = price;
-  }
-
-  public BigDecimal getAdditionalPrice() {
-    return additionalPrice;
-  }
-
-  public void setAdditionalPrice(BigDecimal additionalPrice) {
-    this.additionalPrice = additionalPrice;
   }
 
   public String getFormula() {

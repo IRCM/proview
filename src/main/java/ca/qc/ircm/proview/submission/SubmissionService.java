@@ -32,7 +32,6 @@ import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.QPlate;
 import ca.qc.ircm.proview.plate.Well;
-import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -93,8 +92,6 @@ public class SubmissionService {
   private SubmissionActivityService submissionActivityService;
   @Inject
   private ActivityService activityService;
-  @Inject
-  private PricingEvaluator pricingEvaluator;
   @Inject
   private TemplateEngine emailTemplateEngine;
   @Inject
@@ -263,7 +260,6 @@ public class SubmissionService {
     submission.setLaboratory(laboratory);
     submission.setUser(user);
     submission.setSubmissionDate(LocalDateTime.now());
-    submission.setPrice(pricingEvaluator.computePrice(submission, submission.getSubmissionDate()));
     Plate plate = plate(submission);
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);

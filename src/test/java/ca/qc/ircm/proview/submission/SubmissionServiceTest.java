@@ -42,7 +42,6 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.Well;
-import ca.qc.ircm.proview.pricing.PricingEvaluator;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -128,8 +127,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private AuthorizationService authorizationService;
   @MockBean
   private PermissionEvaluator permissionEvaluator;
-  @MockBean
-  private PricingEvaluator pricingEvaluator;
   @Mock
   private Activity activity;
   @Mock
@@ -207,8 +204,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(LocalDate.of(2010, 12, 11), submission.getDigestionDate());
     assertEquals(LocalDate.of(2010, 12, 13), submission.getAnalysisDate());
     assertEquals(LocalDate.of(2010, 12, 15), submission.getDataAvailableDate());
-    assertEquals(null, submission.getPrice());
-    assertEquals(null, submission.getAdditionalPrice());
     assertEquals(0, submission.getVersion());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals((Long) 3L, submission.getUser().getId());
@@ -295,8 +290,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
     assertNull(submission.getDataAvailableDate());
-    assertEquals(null, submission.getPrice());
-    assertEquals(null, submission.getAdditionalPrice());
     assertEquals(0, submission.getVersion());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals((Long) 3L, submission.getUser().getId());
