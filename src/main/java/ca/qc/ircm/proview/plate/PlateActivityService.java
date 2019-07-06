@@ -98,8 +98,9 @@ public class PlateActivityService {
         .newValue(plate.getRowCount()));
     updateBuilders.add(updateActivity(plate).column("insertTime").oldValue(oldPlate.getInsertTime())
         .newValue(plate.getInsertTime()));
-    updateBuilders.add(updateActivity(plate).column("submission").oldValue(oldPlate.isSubmission())
-        .newValue(plate.isSubmission()));
+    updateBuilders.add(updateActivity(plate).column("submission")
+        .oldValue(oldPlate.getSubmission() != null ? oldPlate.getSubmission().getId() : null)
+        .newValue(plate.getSubmission() != null ? plate.getSubmission().getId() : null));
 
     // Keep updates that changed.
     final Collection<UpdateActivity> updates = new ArrayList<>();

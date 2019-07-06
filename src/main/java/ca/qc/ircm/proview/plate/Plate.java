@@ -23,6 +23,7 @@ import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.submission.Submission;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -80,8 +83,9 @@ public class Plate implements Data, Serializable, Named {
   /**
    * True if plate was submitted by a user.
    */
-  @Column
-  private boolean submission;
+  @ManyToOne
+  @JoinColumn
+  private Submission submission;
   /**
    * Time when analysis was inserted.
    */
@@ -174,10 +178,12 @@ public class Plate implements Data, Serializable, Named {
    * @return wells from the 'from' location up to the 'to' location
    */
   public List<Well> wells(WellLocation from, WellLocation to) {
-    Predicate<Well> afterOrEqualsFrom = s -> (s.getColumn() == from.getColumn()
-        && s.getRow() >= from.getRow()) || s.getColumn() > from.getColumn();
-    Predicate<Well> beforeOrEqualsTo = s -> (s.getColumn() == to.getColumn()
-        && s.getRow() <= to.getRow()) || s.getColumn() < to.getColumn();
+    Predicate<Well> afterOrEqualsFrom =
+        s -> (s.getColumn() == from.getColumn() && s.getRow() >= from.getRow())
+            || s.getColumn() > from.getColumn();
+    Predicate<Well> beforeOrEqualsTo =
+        s -> (s.getColumn() == to.getColumn() && s.getRow() <= to.getRow())
+            || s.getColumn() < to.getColumn();
     return wells.stream().filter(afterOrEqualsFrom.and(beforeOrEqualsTo))
         .collect(Collectors.toList());
   }
@@ -332,11 +338,11 @@ public class Plate implements Data, Serializable, Named {
     this.rowCount = rowCount;
   }
 
-  public boolean isSubmission() {
+  public Submission getSubmission() {
     return submission;
   }
 
-  public void setSubmission(boolean submission) {
+  public void setSubmission(Submission submission) {
     this.submission = submission;
   }
 }

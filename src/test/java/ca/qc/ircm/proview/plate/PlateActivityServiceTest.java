@@ -27,6 +27,7 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
@@ -88,7 +89,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     plate.setColumnCount(13);
     plate.setRowCount(9);
     plate.setInsertTime(LocalDateTime.now());
-    plate.setSubmission(true);
+    plate.setSubmission(new Submission(123L));
 
     Optional<Activity> optionalActivity = plateActivityService.update(plate);
 
@@ -138,8 +139,8 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     submissionUpdate.setRecordId(plate.getId());
     submissionUpdate.setActionType(ActionType.UPDATE);
     submissionUpdate.setColumn("submission");
-    submissionUpdate.setOldValue("0");
-    submissionUpdate.setNewValue("1");
+    submissionUpdate.setOldValue(null);
+    submissionUpdate.setNewValue("123");
     expectedUpdateActivities.add(submissionUpdate);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }

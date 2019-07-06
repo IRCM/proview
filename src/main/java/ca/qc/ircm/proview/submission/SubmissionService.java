@@ -126,6 +126,7 @@ public class SubmissionService {
    * @return submission related to this plate
    */
   @PreAuthorize("hasPermission(#plate, 'read')")
+  @Deprecated
   public Submission get(Plate plate) {
     if (plate == null) {
       return null;
@@ -135,7 +136,7 @@ public class SubmissionService {
     JPAQuery<Submission> query = queryFactory.select(submissionSample.submission);
     query.from(qplate, submissionSample);
     query.where(qplate.eq(plate));
-    query.where(qplate.submission.eq(true));
+    query.where(qplate.submission.isNotNull());
     query.where(submissionSample.originalContainer.in(qplate.wells));
     return query.fetchFirst();
   }
@@ -297,7 +298,7 @@ public class SubmissionService {
 
   private void persistPlate(Submission submission, Plate plate) {
     plate.setInsertTime(LocalDateTime.now());
-    plate.setSubmission(true);
+    plate.setSubmission(submission);
     plate.getWells().forEach(well -> well.setTimestamp(LocalDateTime.now()));
     submission.getSamples().forEach(sample -> {
       sample.getOriginalContainer().setSample(sample);

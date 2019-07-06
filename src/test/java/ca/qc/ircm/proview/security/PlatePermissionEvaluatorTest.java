@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.security;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -175,7 +175,7 @@ public class PlatePermissionEvaluatorTest {
   @WithAnonymousUser
   public void hasPermission_WriteNew_Anonymous_Submission() throws Throwable {
     Plate plate = new Plate();
-    plate.setSubmission(true);
+    plate.setSubmission(new Submission(1L));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
   }
@@ -192,7 +192,7 @@ public class PlatePermissionEvaluatorTest {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void hasPermission_WriteNew_User_Submission() throws Throwable {
     Plate plate = new Plate();
-    plate.setSubmission(true);
+    plate.setSubmission(new Submission(1L));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
   }
@@ -209,7 +209,7 @@ public class PlatePermissionEvaluatorTest {
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void hasPermission_WriteNew_Manager_Submission() throws Throwable {
     Plate plate = new Plate();
-    plate.setSubmission(true);
+    plate.setSubmission(new Submission(1L));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
   }
@@ -226,7 +226,7 @@ public class PlatePermissionEvaluatorTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void hasPermission_WriteNew_Admin_Submission() throws Throwable {
     Plate plate = new Plate();
-    plate.setSubmission(true);
+    plate.setSubmission(new Submission(1L));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
   }

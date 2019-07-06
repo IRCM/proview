@@ -110,7 +110,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertFalse(plate.isSubmission());
+    assertNull(plate.getSubmission());
     final List<Well> wells = plate.getWells();
     assertEquals(96, wells.size());
     final int rowCount = plate.getRowCount();
@@ -332,8 +332,8 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     }
     assertEquals(well1.getSample().getName(),
         cellValue(sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)));
-    CellStyle style = sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)
-        .getCellStyle();
+    CellStyle style =
+        sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1).getCellStyle();
     assertEquals(HSSFColor.WHITE.index, style.getFillBackgroundColor());
     assertEquals(HSSFColor.BLACK.index, workbook.getFontAt(style.getFontIndex()).getColor());
     assertEquals(well2.getSample().getName(),

@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.google.common.collect.Range;
 import com.querydsl.core.types.Predicate;
@@ -55,14 +56,14 @@ public class PlateFilterTest {
 
   private Plate submission(boolean submission) {
     Plate plate = mock(Plate.class);
-    when(plate.isSubmission()).thenReturn(submission);
+    when(plate.getSubmission()).thenReturn(submission ? new Submission() : null);
     return plate;
   }
 
   private Plate nameAndSubmission(String name, boolean submission) {
     Plate plate = mock(Plate.class);
     when(plate.getName()).thenReturn(name);
-    when(plate.isSubmission()).thenReturn(submission);
+    when(plate.getSubmission()).thenReturn(submission ? new Submission() : null);
     return plate;
   }
 
@@ -307,7 +308,7 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.submission.eq(true), predicate);
+    assertEquals(plate.submission.isNotNull(), predicate);
   }
 
   @Test
@@ -316,7 +317,7 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.submission.eq(false), predicate);
+    assertEquals(plate.submission.isNull(), predicate);
   }
 
   @Test
@@ -326,6 +327,6 @@ public class PlateFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(plate.name.contains("test").and(plate.submission.eq(true)), predicate);
+    assertEquals(plate.name.contains("test").and(plate.submission.isNotNull()), predicate);
   }
 }
