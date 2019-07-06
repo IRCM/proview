@@ -321,33 +321,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_Plate() throws Throwable {
-    Plate plate = plateRepository.findById(123L).orElse(null);
-
-    Submission submission = service.get(plate);
-
-    assertEquals((Long) 163L, submission.getId());
-    verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
-  }
-
-  @Test
-  public void get_PlateNotSubmision() throws Throwable {
-    Plate plate = plateRepository.findById(26L).orElse(null);
-
-    Submission submission = service.get(plate);
-
-    assertNull(submission);
-    verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
-  }
-
-  @Test
-  public void get_NullPlate() throws Throwable {
-    Submission submission = service.get((Plate) null);
-
-    assertNull(submission);
-  }
-
-  @Test
   public void all() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));

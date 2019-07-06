@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserRepository;
@@ -63,8 +62,6 @@ public class PlatePermissionEvaluatorTest {
   @Mock
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
   @Mock
-  private SubmissionService submissionService;
-  @Mock
   private Submission submission;
 
   /**
@@ -73,10 +70,9 @@ public class PlatePermissionEvaluatorTest {
   @Before
   public void beforeTest() {
     permissionEvaluator = new PlatePermissionEvaluator(plateRepository, userRepository,
-        authorizationService, submissionService, submissionPermissionEvaluator);
+        authorizationService, submissionPermissionEvaluator);
     when(submissionPermissionEvaluator.hasPermission(any(Submission.class), any(), any()))
         .thenReturn(true);
-    when(submissionService.get(any(Plate.class))).thenReturn(submission);
   }
 
   private Authentication authentication() {
@@ -131,7 +127,7 @@ public class PlatePermissionEvaluatorTest {
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, READ));
     assertTrue(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, BASE_READ));
-    verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(submission), any(),
+    verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_READ));
   }
 
@@ -147,7 +143,7 @@ public class PlatePermissionEvaluatorTest {
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, READ));
     assertFalse(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, BASE_READ));
-    verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(submission), any(),
+    verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_READ));
   }
 
@@ -175,7 +171,7 @@ public class PlatePermissionEvaluatorTest {
   @WithAnonymousUser
   public void hasPermission_WriteNew_Anonymous_Submission() throws Throwable {
     Plate plate = new Plate();
-    plate.setSubmission(new Submission(1L));
+    plate.setSubmission(submission);
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
   }
@@ -279,7 +275,7 @@ public class PlatePermissionEvaluatorTest {
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS,
         BASE_WRITE));
-    verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(submission), any(),
+    verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_WRITE));
   }
 
@@ -295,7 +291,7 @@ public class PlatePermissionEvaluatorTest {
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS,
         BASE_WRITE));
-    verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(submission), any(),
+    verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_WRITE));
   }
 

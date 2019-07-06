@@ -6,7 +6,6 @@ import static ca.qc.ircm.proview.user.UserRole.USER;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
@@ -20,16 +19,14 @@ import org.springframework.security.core.Authentication;
 public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
   private PlateRepository repository;
   private AuthorizationService authorizationService;
-  private SubmissionService submissionService;
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
 
   PlatePermissionEvaluator(PlateRepository repository, UserRepository userRepository,
-      AuthorizationService authorizationService, SubmissionService submissionService,
+      AuthorizationService authorizationService,
       SubmissionPermissionEvaluator submissionPermissionEvaluator) {
     super(userRepository);
     this.repository = repository;
     this.authorizationService = authorizationService;
-    this.submissionService = submissionService;
     this.submissionPermissionEvaluator = submissionPermissionEvaluator;
   }
 
@@ -74,7 +71,7 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
       if (plate.getId() == null) {
         return authorizationService.hasRole(USER);
       }
-      Submission submission = submissionService.get(plate);
+      Submission submission = plate.getSubmission();
       return submissionPermissionEvaluator.hasPermission(submission, currentUser, permission);
     }
     return false;
