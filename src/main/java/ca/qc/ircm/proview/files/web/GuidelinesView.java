@@ -31,7 +31,7 @@ public class GuidelinesView extends VerticalLayout
   public static final String HEADER = "header";
   private static final long serialVersionUID = 1881767150748374598L;
   protected H2 header = new H2();
-  private GuidelinesConfiguration guidelinesConfiguration;
+  private transient GuidelinesConfiguration guidelinesConfiguration;
 
   @Autowired
   protected GuidelinesView(GuidelinesConfiguration guidelinesConfiguration) {
