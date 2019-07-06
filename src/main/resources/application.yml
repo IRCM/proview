@@ -180,4 +180,7 @@ email:
 guidelines:
   home: ${user.dir}/target/guidelines
 
+logging:
+  file: test.log
+
 download-home: ${user.dir}/target/download

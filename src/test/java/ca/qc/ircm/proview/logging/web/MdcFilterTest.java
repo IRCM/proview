@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.logging.web;
 import static ca.qc.ircm.proview.logging.web.MdcFilter.USER_CONTEXT_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -65,7 +65,7 @@ public class MdcFilterTest {
     when(request.getSession()).thenReturn(session);
     when(session.getId()).thenReturn(sessionId);
     doAnswer(i -> {
-      assertEquals(sessionId, MDC.get(USER_CONTEXT_KEY));
+      assertNull(MDC.get(USER_CONTEXT_KEY));
       return null;
     }).when(filterChain).doFilter(any(), any());
 
@@ -81,7 +81,7 @@ public class MdcFilterTest {
     String email = "test@ircm.qc.ca";
     when(authorizationService.getCurrentUser()).thenReturn(new User(userId, email));
     doAnswer(i -> {
-      assertEquals(userId + ":" + email, MDC.get(USER_CONTEXT_KEY));
+      assertEquals("3:test", MDC.get(USER_CONTEXT_KEY));
       return null;
     }).when(filterChain).doFilter(any(), any());
 
