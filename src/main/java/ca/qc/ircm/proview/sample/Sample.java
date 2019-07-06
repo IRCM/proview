@@ -54,14 +54,14 @@ public abstract class Sample implements Data, Named, Serializable {
    * Sample category.
    */
   public static enum Category {
-  /**
-   * Submission of sample to analyse.
-   */
-  SUBMISSION,
-  /**
-   * Control.
-   */
-  CONTROL
+    /**
+     * Submission of sample to analyse.
+     */
+    SUBMISSION,
+    /**
+     * Control.
+     */
+    CONTROL
   }
 
   public static final String TABLE_NAME = "sample";
@@ -159,10 +159,12 @@ public abstract class Sample implements Data, Named, Serializable {
     this.name = name;
   }
 
+  @Deprecated
   public SampleContainer getOriginalContainer() {
     return originalContainer;
   }
 
+  @Deprecated
   public void setOriginalContainer(SampleContainer originalContainer) {
     this.originalContainer = originalContainer;
   }
