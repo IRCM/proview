@@ -239,8 +239,8 @@ public class SubmissionService {
       }
     }
 
-    String templateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Print.html";
+    String templateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Print.html";
     String content = emailTemplateEngine.process(templateLocation, context);
     return content;
   }
@@ -349,11 +349,11 @@ public class SubmissionService {
     final List<User> proteomicUsers = adminUsers();
     MimeMessageHelper email = emailService.htmlEmail();
     email.setSubject(resource.message("subject." + type.name()));
-    String htmlTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Email.html";
+    String htmlTemplateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Email.txt";
+    String textTemplateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
     for (User proteomicUser : proteomicUsers) {
@@ -388,8 +388,8 @@ public class SubmissionService {
           tube.setName(userSupplied.getSamples().get(i).getOriginalContainer().getName());
         } else {
           Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
-          Plate userSuppliedPlate = ((Well) userSupplied.getSamples().get(i).getOriginalContainer())
-              .getPlate();
+          Plate userSuppliedPlate =
+              ((Well) userSupplied.getSamples().get(i).getOriginalContainer()).getPlate();
           plate.setName(userSuppliedPlate.getName());
         }
       }
@@ -472,7 +472,7 @@ public class SubmissionService {
     Plate plate = plate(submission);
     Plate oldPlate = plate(old);
     if (oldPlate != null && (plate == null || !oldPlate.getId().equals(plate.getId()))) {
-      plateRepository.delete(plate);
+      plateRepository.delete(oldPlate);
     }
     Set<Long> sampleIds = submission.getSamples().stream().filter(sample -> sample.getId() != null)
         .map(sample -> sample.getId()).collect(Collectors.toSet());
