@@ -52,8 +52,6 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
   private SampleActivityService sampleActivityService;
   @Inject
   private SubmissionSampleRepository submissionSampleRepository;
-  @Inject
-  private ControlRepository controlRepository;
   @MockBean
   private AuthorizationService authorizationService;
   private User user;
@@ -433,172 +431,6 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_Control() {
-    Control control = controlRepository.findById(444L).orElse(null);
-    detach(control);
-    control.setName("nc_test_000001");
-    control.setControlType(ControlType.POSITIVE_CONTROL);
-    control.setType(SampleType.SOLUTION);
-    control.setVolume("2.0 μl");
-    control.setQuantity("40 μg");
-
-    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
-
-    assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals(Sample.TABLE_NAME, activity.getTableName());
-    assertEquals(control.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user.getId(), activity.getUser().getId());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
-    UpdateActivity nameActivity = new UpdateActivity();
-    nameActivity.setActionType(ActionType.UPDATE);
-    nameActivity.setTableName(Sample.TABLE_NAME);
-    nameActivity.setRecordId(control.getId());
-    nameActivity.setColumn("name");
-    nameActivity.setOldValue("control_01");
-    nameActivity.setNewValue("nc_test_000001");
-    expectedUpdateActivities.add(nameActivity);
-    UpdateActivity controlTypeActivity = new UpdateActivity();
-    controlTypeActivity.setActionType(ActionType.UPDATE);
-    controlTypeActivity.setTableName(Sample.TABLE_NAME);
-    controlTypeActivity.setRecordId(control.getId());
-    controlTypeActivity.setColumn("controlType");
-    controlTypeActivity.setOldValue("NEGATIVE_CONTROL");
-    controlTypeActivity.setNewValue("POSITIVE_CONTROL");
-    expectedUpdateActivities.add(controlTypeActivity);
-    UpdateActivity supportActivity = new UpdateActivity();
-    supportActivity.setActionType(ActionType.UPDATE);
-    supportActivity.setTableName(Sample.TABLE_NAME);
-    supportActivity.setRecordId(control.getId());
-    supportActivity.setColumn("support");
-    supportActivity.setOldValue(SampleType.GEL.name());
-    supportActivity.setNewValue(SampleType.SOLUTION.name());
-    expectedUpdateActivities.add(supportActivity);
-    UpdateActivity volumeActivity = new UpdateActivity();
-    volumeActivity.setActionType(ActionType.UPDATE);
-    volumeActivity.setTableName(Sample.TABLE_NAME);
-    volumeActivity.setRecordId(control.getId());
-    volumeActivity.setColumn("volume");
-    volumeActivity.setOldValue(null);
-    volumeActivity.setNewValue("2.0 μl");
-    expectedUpdateActivities.add(volumeActivity);
-    UpdateActivity quantityActivity = new UpdateActivity();
-    quantityActivity.setActionType(ActionType.UPDATE);
-    quantityActivity.setTableName(Sample.TABLE_NAME);
-    quantityActivity.setRecordId(control.getId());
-    quantityActivity.setColumn("quantity");
-    quantityActivity.setOldValue(null);
-    quantityActivity.setNewValue("40 μg");
-    expectedUpdateActivities.add(quantityActivity);
-    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
-  }
-
-  @Test
-  public void update_Control_AddStandard() {
-    Control control = controlRepository.findById(444L).orElse(null);
-    detach(control);
-    Standard standard = new Standard();
-    standard.setId(57894121L);
-    standard.setName("my_new_standard");
-    standard.setQuantity("3 μg");
-    standard.setComment("some_comment");
-    control.getStandards().add(standard);
-
-    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
-
-    assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals(Sample.TABLE_NAME, activity.getTableName());
-    assertEquals(control.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user.getId(), activity.getUser().getId());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
-    UpdateActivity addStandardActivity = new UpdateActivity();
-    addStandardActivity.setActionType(ActionType.INSERT);
-    addStandardActivity.setTableName("standard");
-    addStandardActivity.setRecordId(standard.getId());
-    expectedUpdateActivities.add(addStandardActivity);
-    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
-  }
-
-  @Test
-  public void update_Control_UpdateStandard() {
-    Control control = controlRepository.findById(448L).orElse(null);
-    detach(control);
-    for (Standard standard : control.getStandards()) {
-      detach(standard);
-    }
-    Standard standard = control.getStandards().get(0);
-    standard.setName("new_standard_name");
-    standard.setQuantity("1 pmol");
-    standard.setComment("new_comment");
-
-    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
-
-    assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals(Sample.TABLE_NAME, activity.getTableName());
-    assertEquals(control.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user.getId(), activity.getUser().getId());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
-    UpdateActivity nameActivity = new UpdateActivity();
-    nameActivity.setActionType(ActionType.UPDATE);
-    nameActivity.setTableName("standard");
-    nameActivity.setRecordId(standard.getId());
-    nameActivity.setColumn("name");
-    nameActivity.setOldValue("cap_standard");
-    nameActivity.setNewValue("new_standard_name");
-    expectedUpdateActivities.add(nameActivity);
-    UpdateActivity quantityActivity = new UpdateActivity();
-    quantityActivity.setActionType(ActionType.UPDATE);
-    quantityActivity.setTableName("standard");
-    quantityActivity.setRecordId(standard.getId());
-    quantityActivity.setColumn("quantity");
-    quantityActivity.setOldValue("3 μg");
-    quantityActivity.setNewValue("1 pmol");
-    expectedUpdateActivities.add(quantityActivity);
-    UpdateActivity commentActivity = new UpdateActivity();
-    commentActivity.setActionType(ActionType.UPDATE);
-    commentActivity.setTableName("standard");
-    commentActivity.setRecordId(standard.getId());
-    commentActivity.setColumn("comment");
-    commentActivity.setOldValue("some_comment");
-    commentActivity.setNewValue("new_comment");
-    expectedUpdateActivities.add(commentActivity);
-    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
-  }
-
-  @Test
-  public void update_Control_RemoveStandard() {
-    Control control = controlRepository.findById(448L).orElse(null);
-    detach(control);
-    final Standard standard = control.getStandards().get(0);
-    control.getStandards().remove(0);
-
-    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
-
-    assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals(Sample.TABLE_NAME, activity.getTableName());
-    assertEquals(control.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user.getId(), activity.getUser().getId());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
-    UpdateActivity removeActivity = new UpdateActivity();
-    removeActivity.setActionType(ActionType.DELETE);
-    removeActivity.setTableName("standard");
-    removeActivity.setRecordId(standard.getId());
-    expectedUpdateActivities.add(removeActivity);
-    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
-  }
-
-  @Test
   public void update_Submission_SampleDeliveryAndDigestionDateAndAnalysisDate() {
     SubmissionSample sample = submissionSampleRepository.findById(584L).orElse(null);
     Submission submission = sample.getSubmission();
@@ -636,10 +468,11 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_NoChange() {
-    Control control = controlRepository.findById(448L).orElse(null);
-    detach(control);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(442L).orElse(null);
+    detach(submissionSample);
 
-    Optional<Activity> optionalActivity = sampleActivityService.update(control, "unit_test");
+    Optional<Activity> optionalActivity =
+        sampleActivityService.update(submissionSample, "unit_test");
 
     assertEquals(false, optionalActivity.isPresent());
   }
