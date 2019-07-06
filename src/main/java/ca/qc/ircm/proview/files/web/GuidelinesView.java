@@ -17,6 +17,8 @@ import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -30,6 +32,7 @@ public class GuidelinesView extends VerticalLayout
   public static final String VIEW_NAME = "guidelines";
   public static final String HEADER = "header";
   private static final long serialVersionUID = 1881767150748374598L;
+  private static final Logger logger = LoggerFactory.getLogger(GuidelinesView.class);
   protected H2 header = new H2();
   private transient GuidelinesConfiguration guidelinesConfiguration;
 
@@ -40,6 +43,7 @@ public class GuidelinesView extends VerticalLayout
 
   @PostConstruct
   void init() {
+    logger.debug("guidelines view");
     add(header);
     header.setId(HEADER);
   }

@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Anchor;
@@ -19,6 +20,8 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main view.
@@ -34,6 +37,7 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
   public static final String PHONE = "phone";
   public static final String LINK = "link";
   private static final long serialVersionUID = -5066595299866514742L;
+  private static final Logger logger = LoggerFactory.getLogger(GuidelinesView.class);
   protected H2 header = new H2();
   protected H3 proteomicHeader = new H3();
   protected Anchor proteomicNameAnchor = new Anchor();
@@ -52,6 +56,7 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
 
   @PostConstruct
   void init() {
+    logger.debug("contact view");
     add(header);
     proteomicNameAnchor.add(addIcon(VaadinIcon.ENVELOPE.create(), proteomicName));
     proteomicAddressAnchor.add(addIcon(VaadinIcon.MAP_MARKER.create(), proteomicAddress));

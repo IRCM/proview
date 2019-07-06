@@ -47,6 +47,8 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -65,6 +67,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   public static final String SWITCH_FAILED = "switchFailed";
   public static final String ADD = "add";
   private static final long serialVersionUID = 1051684045824404864L;
+  private static final Logger logger = LoggerFactory.getLogger(UsersView.class);
   protected H2 header = new H2();
   protected Grid<User> users = new Grid<>();
   protected Column<User> email;
@@ -91,6 +94,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   @SuppressWarnings("unchecked")
   @PostConstruct
   void init() {
+    logger.debug("users view");
     setId(VIEW_NAME);
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     add(header, users, error, buttonsLayout);

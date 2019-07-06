@@ -44,7 +44,6 @@ public class SigninView extends LoginOverlay
   public static final String DISABLED = "disabled";
   public static final String LOCKED = "locked";
   private static final long serialVersionUID = -3000859016669509494L;
-  @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SigninView.class);
   protected LoginI18n i18n;
   protected String error;
@@ -57,6 +56,7 @@ public class SigninView extends LoginOverlay
 
   @PostConstruct
   void init() {
+    logger.debug("signin view");
     setId(VIEW_NAME);
     addLoginListener(e -> setError(false));
     setForgotPasswordButtonVisible(false);
