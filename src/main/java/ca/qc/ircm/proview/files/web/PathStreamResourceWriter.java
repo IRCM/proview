@@ -2,24 +2,24 @@ package ca.qc.ircm.proview.files.web;
 
 import com.vaadin.flow.server.StreamResourceWriter;
 import com.vaadin.flow.server.VaadinSession;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * A {@link StreamResourceWriter} that sends a file.
  */
 public class PathStreamResourceWriter implements StreamResourceWriter {
   private static final long serialVersionUID = 673747187193922551L;
-  private Path path;
+  private File file;
 
-  public PathStreamResourceWriter(Path path) {
-    this.path = path;
+  public PathStreamResourceWriter(File file) {
+    this.file = file;
   }
 
   @Override
   public void accept(OutputStream stream, VaadinSession session) throws IOException {
-    Files.copy(path, stream);
+    Files.copy(file.toPath(), stream);
   }
 }

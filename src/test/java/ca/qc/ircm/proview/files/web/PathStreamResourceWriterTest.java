@@ -45,7 +45,7 @@ public class PathStreamResourceWriterTest {
   @Before
   public void beforeTest() throws Throwable {
     path = Paths.get(getClass().getResource("/structure1.png").toURI());
-    writer = new PathStreamResourceWriter(path);
+    writer = new PathStreamResourceWriter(path.toFile());
   }
 
   @Test

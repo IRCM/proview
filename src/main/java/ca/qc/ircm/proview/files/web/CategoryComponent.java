@@ -29,7 +29,7 @@ public class CategoryComponent extends VerticalLayout {
       Anchor link = new Anchor();
       link.setText(guide.name());
       link.setHref(new StreamResource(guide.path().getFileName().toString(),
-          new PathStreamResourceWriter(guide.path())));
+          new PathStreamResourceWriter(guide.path().toFile())));
       add(link);
     });
   }
