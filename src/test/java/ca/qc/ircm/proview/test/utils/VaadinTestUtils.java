@@ -35,6 +35,9 @@ import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.data.renderer.BasicRenderer;
+import com.vaadin.flow.function.ValueProvider;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,9 +45,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VaadinTestUtils {
   private static final String ICON_ATTRIBUTE = "icon";
+  private static final Logger logger = LoggerFactory.getLogger(VaadinTestUtils.class);
 
   /**
    * Simulates a click on button.
@@ -219,5 +225,31 @@ public class VaadinTestUtils {
   public static void validateIcon(Icon expected, Component actual) {
     assertEquals(expected.getElement().getAttribute(ICON_ATTRIBUTE),
         actual.getElement().getAttribute(ICON_ATTRIBUTE));
+  }
+
+  /**
+   * Returns renderer's formatted value.
+   *
+   * @param renderer
+   *          renderer
+   * @param item
+   *          item
+   * @return renderer's formatted value
+   */
+  @SuppressWarnings("unchecked")
+  public static <I, R> String getFormattedValue(BasicRenderer<I, R> renderer, I item) {
+    try {
+      Field field = BasicRenderer.class.getDeclaredField("valueProvider");
+      field.setAccessible(true);
+      ValueProvider<I, R> vp = (ValueProvider<I, R>) field.get(renderer);
+      R value = vp.apply(item);
+      Method method = renderer.getClass().getDeclaredMethod("getFormattedValue", Object.class);
+      method.setAccessible(true);
+      return (String) method.invoke(renderer, value);
+    } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
+        | InvocationTargetException | NoSuchFieldException | SecurityException e) {
+      logger.warn("Exception caught whe formatting value {} with renderer {}", item, renderer, e);
+      return null;
+    }
   }
 }

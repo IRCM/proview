@@ -480,10 +480,12 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.source = source;
   }
 
+  @Deprecated
   public boolean isLowResolution() {
     return lowResolution;
   }
 
+  @Deprecated
   public void setLowResolution(boolean lowResolution) {
     this.lowResolution = lowResolution;
   }
@@ -496,18 +498,22 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.highResolution = highResolution;
   }
 
+  @Deprecated
   public boolean isMsms() {
     return msms;
   }
 
+  @Deprecated
   public void setMsms(boolean msms) {
     this.msms = msms;
   }
 
+  @Deprecated
   public boolean isExactMsms() {
     return exactMsms;
   }
 
+  @Deprecated
   public void setExactMsms(boolean exactMsms) {
     this.exactMsms = exactMsms;
   }
@@ -552,18 +558,22 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.proteinIdentificationLink = proteinIdentificationLink;
   }
 
+  @Deprecated
   public EnrichmentType getEnrichmentType() {
     return enrichmentType;
   }
 
+  @Deprecated
   public void setEnrichmentType(EnrichmentType enrichmentType) {
     this.enrichmentType = enrichmentType;
   }
 
+  @Deprecated
   public String getOtherEnrichmentType() {
     return otherEnrichmentType;
   }
 
+  @Deprecated
   public void setOtherEnrichmentType(String otherEnrichmentType) {
     this.otherEnrichmentType = otherEnrichmentType;
   }
@@ -584,10 +594,12 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.massDetectionInstrument = massDetectionInstrument;
   }
 
+  @Deprecated
   public MudPitFraction getMudPitFraction() {
     return mudPitFraction;
   }
 
+  @Deprecated
   public void setMudPitFraction(MudPitFraction mudPitFraction) {
     this.mudPitFraction = mudPitFraction;
   }
