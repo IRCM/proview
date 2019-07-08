@@ -138,9 +138,10 @@ CREATE TABLE IF NOT EXISTS plate (
   name varchar(100) NOT NULL,
   columncount int NOT NULL,
   rowcount int NOT NULL,
-  submission tinyint NOT NULL DEFAULT '0',
+  submission_id bigint(20) DEFAULT NULL,
   inserttime datetime NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  CONSTRAINT plateSubmission_ibfk_1 FOREIGN KEY (submission_id) REFERENCES submission (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE INDEX IF NOT EXISTS plateName ON plate (name);
 CREATE TABLE IF NOT EXISTS samplecontainer (

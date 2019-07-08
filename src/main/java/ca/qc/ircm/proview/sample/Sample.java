@@ -35,7 +35,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -54,14 +53,14 @@ public abstract class Sample implements Data, Named, Serializable {
    * Sample category.
    */
   public static enum Category {
-  /**
-   * Submission of sample to analyse.
-   */
-  SUBMISSION,
-  /**
-   * Control.
-   */
-  CONTROL
+    /**
+     * Submission of sample to analyse.
+     */
+    SUBMISSION,
+    /**
+     * Control.
+     */
+    CONTROL
   }
 
   public static final String TABLE_NAME = "sample";
@@ -104,12 +103,6 @@ public abstract class Sample implements Data, Named, Serializable {
   @Column(nullable = false)
   @Size(max = 100)
   private String quantity;
-  /**
-   * Container where sample was originally located.
-   */
-  @ManyToOne
-  @JoinColumn
-  private SampleContainer originalContainer;
   /**
    * Standards that are in the sample.
    */
@@ -157,14 +150,6 @@ public abstract class Sample implements Data, Named, Serializable {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public SampleContainer getOriginalContainer() {
-    return originalContainer;
-  }
-
-  public void setOriginalContainer(SampleContainer originalContainer) {
-    this.originalContainer = originalContainer;
   }
 
   public List<Standard> getStandards() {

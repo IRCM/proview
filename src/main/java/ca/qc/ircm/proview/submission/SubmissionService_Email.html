@@ -31,25 +31,12 @@
                     <th>
                         Sample name
                     </th>
-                    <th th:if="${containerType.name() == 'WELL'}">
-                        Plate
-                    </th>
-                    <th th:if="${containerType.name() == 'TUBE'}">
-                        Tube
-                    </th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="sample: ${samples}">
                     <td>
                         <span th:text="${sample.name}">my sample</span>
-                    </td>
-                    <td th:if="${containerType.name() == 'WELL'}">
-                        <span th:text="${sample.originalContainer.plate.name}">my plate</span>
-                        (<span th:text="${sample.originalContainer.name}">A-1</span>)
-                    </td>
-                    <td th:if="${containerType.name() == 'TUBE'}">
-                        <span th:text="${sample.originalContainer.name}">my tube</span>
                     </td>
                 </tr>
             </tbody>

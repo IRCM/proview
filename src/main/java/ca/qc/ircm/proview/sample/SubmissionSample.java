@@ -64,6 +64,11 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
   @Min(0)
   private Double molecularWeight;
   /**
+   * Used by Hibernate.
+   */
+  @Column
+  private int listIndex;
+  /**
    * Submission of this sample.
    */
   @ManyToOne
@@ -81,6 +86,10 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
 
   public SubmissionSample(Long id) {
     super(id);
+  }
+
+  public SubmissionSample(String name) {
+    super(null, name);
   }
 
   public SubmissionSample(Long id, String name) {
@@ -139,5 +148,13 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
 
   public void setMolecularWeight(Double molecularWeight) {
     this.molecularWeight = molecularWeight;
+  }
+
+  public int getListIndex() {
+    return listIndex;
+  }
+
+  public void setListIndex(int listIndex) {
+    this.listIndex = listIndex;
   }
 }

@@ -47,7 +47,7 @@ public class PlateFilter implements Predicate<Plate> {
       test &= insertTimeRange.contains(plate.getInsertTime().toLocalDate());
     }
     if (submission != null) {
-      test &= submission == plate.isSubmission();
+      test &= submission == (plate.getSubmission() != null);
     }
     return test;
   }
@@ -79,7 +79,11 @@ public class PlateFilter implements Predicate<Plate> {
       }
     }
     if (submission != null) {
-      predicate.and(plate.submission.eq(submission));
+      if (submission) {
+        predicate.and(plate.submission.isNotNull());
+      } else {
+        predicate.and(plate.submission.isNull());
+      }
     }
     return predicate.getValue();
   }

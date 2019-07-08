@@ -38,6 +38,7 @@ import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
@@ -110,7 +111,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
     assertEquals((Long) 26L, plate.getId());
     assertEquals("A_20111108", plate.getName());
-    assertFalse(plate.isSubmission());
+    assertNull(plate.getSubmission());
     final List<Well> wells = plate.getWells();
     assertEquals(96, wells.size());
     final int rowCount = plate.getRowCount();
@@ -129,6 +130,25 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void get_NullId() throws Exception {
     Plate plate = service.get((Long) null);
+
+    assertNull(plate);
+  }
+
+  @Test
+  public void get_Submission() throws Exception {
+    Submission submission = new Submission(163L);
+
+    Plate plate = service.get(submission);
+
+    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(READ));
+    assertEquals((Long) 123L, plate.getId());
+    assertEquals("Andrew-20171108", plate.getName());
+    assertEquals((Long) 163L, plate.getSubmission().getId());
+  }
+
+  @Test
+  public void get_NullSubmission() throws Exception {
+    Plate plate = service.get((Submission) null);
 
     assertNull(plate);
   }
@@ -332,8 +352,8 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     }
     assertEquals(well1.getSample().getName(),
         cellValue(sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)));
-    CellStyle style = sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)
-        .getCellStyle();
+    CellStyle style =
+        sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1).getCellStyle();
     assertEquals(HSSFColor.WHITE.index, style.getFillBackgroundColor());
     assertEquals(HSSFColor.BLACK.index, workbook.getFontAt(style.getFontIndex()).getColor());
     assertEquals(well2.getSample().getName(),

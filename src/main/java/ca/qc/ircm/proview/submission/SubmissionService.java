@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.submission;
 
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
-import static ca.qc.ircm.proview.sample.SampleContainerType.TUBE;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
@@ -28,17 +26,11 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
-import ca.qc.ircm.proview.plate.QPlate;
-import ca.qc.ircm.proview.plate.Well;
-import ca.qc.ircm.proview.sample.SampleContainerType;
+import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.tube.Tube;
-import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
@@ -51,12 +43,9 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
@@ -79,11 +68,9 @@ public class SubmissionService {
   @Inject
   private SubmissionRepository repository;
   @Inject
-  private SubmissionSampleRepository sampleRepository;
+  private SampleRepository sampleRepository;
   @Inject
   private PlateRepository plateRepository;
-  @Inject
-  private TubeRepository tubeRepository;
   @Inject
   private UserRepository userRepository;
   @Inject
@@ -116,28 +103,6 @@ public class SubmissionService {
     }
 
     return repository.findById(id).orElse(null);
-  }
-
-  /**
-   * Selects submission related to this plate.
-   *
-   * @param plate
-   *          plate
-   * @return submission related to this plate
-   */
-  @PreAuthorize("hasPermission(#plate, 'read')")
-  public Submission get(Plate plate) {
-    if (plate == null) {
-      return null;
-    }
-
-    QPlate qplate = QPlate.plate;
-    JPAQuery<Submission> query = queryFactory.select(submissionSample.submission);
-    query.from(qplate, submissionSample);
-    query.where(qplate.eq(plate));
-    query.where(qplate.submission.eq(true));
-    query.where(submissionSample.originalContainer.in(qplate.wells));
-    return query.fetchFirst();
   }
 
   /**
@@ -232,12 +197,9 @@ public class SubmissionService {
     if (submission.getSamples() != null && !submission.getSamples().isEmpty()) {
       SubmissionSample sample = submission.getSamples().get(0);
       context.setVariable("sample", sample);
-      if (sample.getOriginalContainer() != null
-          && sample.getOriginalContainer().getType() == SampleContainerType.WELL) {
-        Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
-        context.setVariable("plate", plate);
-      }
     }
+    plateRepository.findBySubmission(submission)
+        .ifPresent(plate -> context.setVariable("plate", plate));
 
     String templateLocation =
         "/" + SubmissionService.class.getName().replace(".", "/") + "_Print.html";
@@ -260,18 +222,12 @@ public class SubmissionService {
     submission.setLaboratory(laboratory);
     submission.setUser(user);
     submission.setSubmissionDate(LocalDateTime.now());
-    Plate plate = plate(submission);
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
       sample.setStatus(SampleStatus.WAITING);
     });
 
     repository.save(submission);
-    if (plate != null) {
-      persistPlate(submission, plate);
-    } else {
-      persistTubes(submission);
-    }
 
     logger.info("Submission {} added to database", submission);
 
@@ -286,38 +242,6 @@ public class SubmissionService {
     // Log insertion to database.
     Activity activity = submissionActivityService.insert(submission);
     activityService.insert(activity);
-  }
-
-  private Plate plate(Submission submission) {
-    return submission.getSamples().stream()
-        .filter(sample -> sample.getOriginalContainer() != null
-            && sample.getOriginalContainer().getType() == SampleContainerType.WELL)
-        .findAny().map(sample -> ((Well) sample.getOriginalContainer()).getPlate()).orElse(null);
-  }
-
-  private void persistPlate(Submission submission, Plate plate) {
-    plate.setInsertTime(LocalDateTime.now());
-    plate.setSubmission(true);
-    plate.getWells().forEach(well -> well.setTimestamp(LocalDateTime.now()));
-    submission.getSamples().forEach(sample -> {
-      sample.getOriginalContainer().setSample(sample);
-    });
-    plateRepository.save(plate);
-  }
-
-  private void persistTubes(Submission submission) {
-    Set<String> otherTubeNames = new HashSet<>();
-    submission.getSamples().forEach(sample -> persistTube(sample, otherTubeNames));
-  }
-
-  private void persistTube(SubmissionSample sample, Set<String> otherTubeNames) {
-    Tube tube = new Tube();
-    tube.setSample(sample);
-    tube.setName(sample.getName());
-    tube.setTimestamp(LocalDateTime.now());
-    otherTubeNames.add(tube.getName());
-    sample.setOriginalContainer(tube);
-    tubeRepository.save(tube);
   }
 
   private List<User> adminUsers() {
@@ -342,8 +266,6 @@ public class SubmissionService {
     context.setVariable("user", submission.getUser());
     context.setVariable("sampleCount", submission.getSamples().size());
     context.setVariable("samples", submission.getSamples());
-    context.setVariable("containerType",
-        submission.getSamples().get(0).getOriginalContainer().getType());
 
     MessageResource resource = new MessageResource(SubmissionService.class, Locale.ENGLISH);
     final List<User> proteomicUsers = adminUsers();
@@ -383,15 +305,6 @@ public class SubmissionService {
       for (int i = 0; i < submission.getSamples().size(); i++) {
         SubmissionSample sample = submission.getSamples().get(i);
         sample.setName(userSupplied.getSamples().get(i).getName());
-        if (sample.getOriginalContainer() instanceof Tube) {
-          Tube tube = (Tube) sample.getOriginalContainer();
-          tube.setName(userSupplied.getSamples().get(i).getOriginalContainer().getName());
-        } else {
-          Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
-          Plate userSuppliedPlate =
-              ((Well) userSupplied.getSamples().get(i).getOriginalContainer()).getPlate();
-          plate.setName(userSuppliedPlate.getName());
-        }
       }
     }
 
@@ -434,61 +347,27 @@ public class SubmissionService {
   }
 
   private void doUpdate(Submission submission) throws IllegalArgumentException {
-    Submission old = repository.findById(submission.getId()).orElse(null);
+    deleteOrphans(submission); // Hibernate does not do it automatically for an unknown reason.
     submission.setLaboratory(submission.getUser().getLaboratory());
 
-    removeUnusedContainers(submission, old);
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
       if (sample.getId() == null) {
         sample.setStatus(SampleStatus.WAITING);
-        sampleRepository.save(sample);
       }
+      sampleRepository.save(sample);
     });
 
-    repository.save(submission);
-    Plate plate = plate(submission);
-    if (plate != null) {
-      if (plate.getId() == null) {
-        persistPlate(submission, plate);
-      } else {
-        plateRepository.save(plate);
-      }
-    } else {
-      Set<String> otherTubeNames = new HashSet<>();
-      for (SubmissionSample sample : submission.getSamples()) {
-        Tube tube = (Tube) sample.getOriginalContainer();
-        if (tube == null || tube.getId() == null) {
-          persistTube(sample, otherTubeNames);
-        } else {
-          tube.setName(sample.getName());
-          tubeRepository.save(tube);
-        }
-      }
-    }
+    repository.saveAndFlush(submission);
   }
 
-  private void removeUnusedContainers(Submission submission, Submission old) {
-    Plate plate = plate(submission);
-    Plate oldPlate = plate(old);
-    if (oldPlate != null && (plate == null || !oldPlate.getId().equals(plate.getId()))) {
-      plateRepository.delete(oldPlate);
-    }
-    Set<Long> sampleIds = submission.getSamples().stream().filter(sample -> sample.getId() != null)
-        .map(sample -> sample.getId()).collect(Collectors.toSet());
-    old.getSamples().stream().filter(sample -> !sampleIds.contains(sample.getId())
-        && sample.getOriginalContainer().getType() == TUBE).forEach(sample -> {
-          logger.debug("Remove tube {}", sample.getOriginalContainer());
-          tubeRepository.delete((Tube) sample.getOriginalContainer());
-        });
-    // Populate tube ids.
-    submission.getSamples().stream()
-        .filter(sample -> sample.getId() != null && sample.getOriginalContainer().getType() == TUBE)
+  private void deleteOrphans(Submission submission) {
+    Submission old = repository.findById(submission.getId()).get();
+    old.getSamples().stream()
+        .filter(sample -> !submission.getSamples().stream()
+            .filter(s2 -> sample.getId().equals(s2.getId())).findAny().isPresent())
         .forEach(sample -> {
-          old.getSamples().stream().filter(oldSample -> oldSample.getId().equals(sample.getId()))
-              .findAny().ifPresent(oldSample -> {
-                sample.getOriginalContainer().setId(oldSample.getOriginalContainer().getId());
-              });
+          sampleRepository.delete(sample);
         });
   }
 

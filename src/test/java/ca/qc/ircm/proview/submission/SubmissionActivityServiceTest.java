@@ -30,9 +30,6 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
-import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.QPlate;
-import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.QSubmissionSample;
@@ -64,7 +61,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ServiceTestAnnotations
 public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   private static final QSubmission qsubmission = QSubmission.submission;
-  private static final QPlate qplate = QPlate.plate;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
   @Inject
   private SubmissionActivityService submissionActivityService;
@@ -163,8 +159,8 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     newSubmission.getFiles().add(new SubmissionFile("my_file.xlsx"));
     newSubmission.getFiles().add(new SubmissionFile("protocol.docx"));
 
-    Optional<Activity> optionalActivity = submissionActivityService.update(newSubmission,
-        "unit_test");
+    Optional<Activity> optionalActivity =
+        submissionActivityService.update(newSubmission, "unit_test");
 
     final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     assertEquals(true, optionalActivity.isPresent());
@@ -624,39 +620,6 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     addSampleActivity.setRecordId(640L);
     expectedUpdateActivities.add(addSampleActivity);
     expectedUpdateActivities.add(updateSampleNameActivity);
-    LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
-  }
-
-  @Test
-  public void update_PlateName() {
-    Submission submission = repository.findById(163L).orElse(null);
-    detach(submission);
-    submission.getSamples().forEach(sample -> {
-      detach(sample);
-      detach(sample.getOriginalContainer());
-    });
-    Plate plate = ((Well) submission.getSamples().get(0).getOriginalContainer()).getPlate();
-    detach(plate);
-    plate.setName("mynewplatename");
-
-    Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
-
-    assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
-    assertEquals(ActionType.UPDATE, activity.getActionType());
-    assertEquals(Submission.TABLE_NAME, activity.getTableName());
-    assertEquals(submission.getId(), activity.getRecordId());
-    assertEquals("unit_test", activity.getExplanation());
-    assertEquals(user.getId(), activity.getUser().getId());
-    final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
-    UpdateActivity plateNameActivity = new UpdateActivity();
-    plateNameActivity.setActionType(ActionType.UPDATE);
-    plateNameActivity.setTableName(Plate.TABLE_NAME);
-    plateNameActivity.setRecordId(plate.getId());
-    plateNameActivity.setColumn(qname(qplate.name));
-    plateNameActivity.setOldValue("Andrew-20171108");
-    plateNameActivity.setNewValue("mynewplatename");
-    expectedUpdateActivities.add(plateNameActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());
   }
 

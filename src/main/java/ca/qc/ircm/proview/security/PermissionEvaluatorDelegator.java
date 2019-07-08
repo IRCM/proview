@@ -6,7 +6,6 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
@@ -37,8 +36,6 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
   private SampleRepository sampleRepository;
   @Inject
   private PlateRepository plateRepository;
-  @Inject
-  private SubmissionService submissionService;
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
   private UserPermissionEvaluator userPermissionEvaluator;
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
@@ -55,7 +52,7 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
     samplePermissionEvaluator = new SamplePermissionEvaluator(sampleRepository, userRepository,
         authorizationService, submissionPermissionEvaluator);
     platePermissionEvaluator = new PlatePermissionEvaluator(plateRepository, userRepository,
-        authorizationService, submissionService, submissionPermissionEvaluator);
+        authorizationService, submissionPermissionEvaluator);
   }
 
   @Override
