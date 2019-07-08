@@ -29,6 +29,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.text.MessageResource;
@@ -101,6 +102,22 @@ public class PlateService {
     }
 
     return repository.findById(id).orElse(null);
+  }
+
+  /**
+   * Returns submission's plate.
+   *
+   * @param submission
+   *          submission
+   * @return submission's plate
+   */
+  @PreAuthorize("hasPermission(#submission, 'read')")
+  public Plate get(Submission submission) {
+    if (submission == null) {
+      return null;
+    }
+
+    return repository.findBySubmission(submission).orElse(null);
   }
 
   /**
