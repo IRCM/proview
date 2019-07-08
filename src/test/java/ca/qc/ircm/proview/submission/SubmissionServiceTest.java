@@ -41,7 +41,6 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
-import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -55,8 +54,6 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
-import ca.qc.ircm.proview.tube.Tube;
-import ca.qc.ircm.proview.tube.TubeRepository;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
@@ -79,7 +76,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.IntStream;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -113,8 +109,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private UserRepository userRepository;
   @Inject
   private LaboratoryRepository laboratoryRepository;
-  @Inject
-  private TubeRepository tubeRepository;
   @Inject
   private PlateRepository plateRepository;
   @MockBean
@@ -212,8 +206,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     SubmissionSample sample = samples.get(0);
     assertEquals((Long) 1L, sample.getId());
     assertEquals("FAM119A_band_01", sample.getName());
-    assertEquals((Long) 1L, sample.getOriginalContainer().getId());
-    assertEquals(true, sample.getOriginalContainer() instanceof Tube);
     assertEquals(SampleType.GEL, sample.getType());
     assertEquals(Sample.Category.SUBMISSION, sample.getCategory());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
@@ -298,8 +290,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     SubmissionSample sample = samples.get(0);
     assertEquals((Long) 443L, sample.getId());
     assertEquals("CAP_20111013_05", sample.getName());
-    assertEquals((Long) 3L, sample.getOriginalContainer().getId());
-    assertEquals(true, sample.getOriginalContainer() instanceof Tube);
     assertEquals(SampleType.SOLUTION, sample.getType());
     assertEquals(Sample.Category.SUBMISSION, sample.getCategory());
     assertEquals(SampleStatus.WAITING, sample.getStatus());
@@ -638,20 +628,18 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setSubmissionDate(LocalDateTime.now().minus(2, ChronoUnit.DAYS));
     submission.setUser(userRepository.findById(3L).orElse(null));
     submission.setLaboratory(laboratoryRepository.findById(2L).orElse(null));
-    SubmissionSample sample1 = new SubmissionSample(1L, "first sample");
+    SubmissionSample sample1 = new SubmissionSample("first sample");
     sample1.setQuantity("15 ug");
     sample1.setVolume("10 ul");
     sample1.setType(SampleType.SOLUTION);
     sample1.setMolecularWeight(150.0);
-    sample1.setOriginalContainer(new Tube(1L, "first sample"));
     sample1.setNumberProtein(5);
     sample1.setMolecularWeight(8.9);
-    SubmissionSample sample2 = new SubmissionSample(2L, "second sample");
+    SubmissionSample sample2 = new SubmissionSample("second sample");
     sample2.setQuantity("15 ug");
     sample2.setVolume("10 ul");
     sample2.setType(SampleType.SOLUTION);
     sample2.setMolecularWeight(150.0);
-    sample2.setOriginalContainer(new Tube(2L, "second sample"));
     sample2.setNumberProtein(6);
     sample2.setMolecularWeight(9.3);
     if (service == Service.SMALL_MOLECULE) {
@@ -704,6 +692,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_LcmsmsSolution() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -794,30 +783,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoDate() throws Exception {
-    Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setSubmissionDate(null);
-    Locale locale = Locale.getDefault();
-
-    String content = service.print(submission, locale);
-    assertFalse(content.contains("class=\"submissionDate\""));
-  }
-
-  @Test
-  public void print_LcmsmsSolution_NoLaboratory() throws Exception {
-    Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setLaboratory(null);
-    Locale locale = Locale.getDefault();
-
-    String content = service.print(submission, locale);
-    assertFalse(content.contains("class=\"laboratory-name\""));
-    assertFalse(content.contains("class=\"laboratory-director\""));
-  }
-
-  @Test
   public void print_LcmsmsSolution_NoUser() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setUser(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -829,6 +798,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_LcmsmsSolution_NoPhone() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
     submission.getUser().getPhoneNumbers().clear();
 
@@ -841,6 +811,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     Locale locale = Locale.getDefault();
     submission.setExperiment(null);
+    repository.save(submission);
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"experiment\""));
@@ -852,6 +823,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     Locale locale = Locale.getDefault();
     submission.setGoal(null);
+    repository.save(submission);
 
     String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"goal\""));
@@ -861,6 +833,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoProteinName() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProtein(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -872,6 +845,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoMolecularWeight() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setMolecularWeight(null));
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -883,6 +857,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoPostTranslationModification() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setPostTranslationModification(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -894,6 +869,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoSampleQuantity() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setQuantity(null));
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -904,6 +880,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoSampleVolume() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setVolume(null));
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -914,6 +891,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsDry() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.DRY));
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -924,6 +902,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsBeads() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.BIOID_BEADS));
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -934,6 +913,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoDigestion() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProteolyticDigestionMethod(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -946,6 +926,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_Digested() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.DIGESTED);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -960,6 +941,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_OtherDigestion() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProteolyticDigestionMethod(ProteolyticDigestion.OTHER);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -974,6 +956,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoProteinContent() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProteinContent(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -984,6 +967,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoMassDetectionInstrument() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setMassDetectionInstrument(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -996,6 +980,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoProteinIdentification() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProteinIdentification(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1007,6 +992,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_OtherProteinIdentificationLink() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProteinIdentification(ProteinIdentification.OTHER);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1020,6 +1006,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProteinIdentification(ProteinIdentification.OTHER);
     submission.setProteinIdentificationLink(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1032,6 +1019,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_NoQuantification() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1043,6 +1031,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_SilacQuantification() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(Quantification.SILAC);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1059,6 +1048,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(Quantification.SILAC);
     submission.setQuantificationComment(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1074,6 +1064,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsSolution_TmtQuantification() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(Quantification.TMT);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1090,6 +1081,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(Quantification.TMT);
     submission.setQuantificationComment(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1105,6 +1097,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_LcmsmsGel() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1204,6 +1197,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setSeparation(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1216,6 +1210,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setThickness(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1228,6 +1223,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setColoration(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1240,6 +1236,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setColoration(GelColoration.OTHER);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1255,6 +1252,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setColoration(GelColoration.OTHER);
     submission.setOtherColoration(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1269,6 +1267,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setDevelopmentTime(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1281,6 +1280,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setWeightMarkerQuantity(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1293,6 +1293,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setProteinQuantity(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1303,6 +1304,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_SmallMolecule() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1394,6 +1396,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_SmallMolecule_NoSolutionSolvent() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setSolutionSolvent(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1404,6 +1407,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_SmallMolecule_NoFormula() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setFormula(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1414,6 +1418,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_SmallMolecule_NoMonoisotopicMass() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setMonoisotopicMass(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1424,6 +1429,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_SmallMolecule_NoAverageMass() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setAverageMass(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1434,6 +1440,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_SmallMolecule_NoToxicity() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setToxicity(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1444,6 +1451,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_SmallMolecule_NotLightSensitive() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setLightSensitive(false);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1454,6 +1462,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_SmallMolecule_NoStorageTemperature() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setStorageTemperature(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1464,6 +1473,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_SmallMolecule_NotHighResolution() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setHighResolution(false);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1477,6 +1487,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_SmallMolecule_NoSolvent() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setSolvents(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1488,6 +1499,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     Solvent ssolvent = Solvent.OTHER;
     submission.getSolvents().add(ssolvent);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1504,6 +1516,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_IntactProtein() throws Exception {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1598,6 +1611,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_IntactProtein_NoInjectionType() throws Exception {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
     submission.setInjectionType(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1609,6 +1623,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_IntactProtein_NoSource() throws Exception {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
     submission.setSource(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1618,13 +1633,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void print_Plate() throws Exception {
-    Submission submission = submissionForPrint(Service.LC_MS_MS);
-    Plate plate = new Plate(1L, "my plate");
-    plate.initWells();
-    IntStream.range(0, submission.getSamples().size()).forEach(i -> {
-      submission.getSamples().get(i).setOriginalContainer(plate.getWells().get(i));
-      plate.getWells().get(i).setSample(submission.getSamples().get(i));
-    });
+    Submission submission = repository.findById(163L).get();
+    Plate plate = plateRepository.findBySubmission(submission).get();
     plate.getWells().get(0).setBanned(true);
     plate.getWells().get(36).setBanned(true);
     Locale locale = Locale.getDefault();
@@ -1654,6 +1664,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_NoService() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setService(null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1664,6 +1675,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_NoSample() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().clear();
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1674,6 +1686,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_FirstSampleNull() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().set(0, null);
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1684,6 +1697,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_NoSampleType() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(null));
+    repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
@@ -1807,12 +1821,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("unit_test_gel_01", submissionSample.getName());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
     assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
-    Tube tube = (Tube) submissionSample.getOriginalContainer();
-    assertNotNull(tube);
-    assertEquals("unit_test_gel_01", tube.getName());
-    assertEquals(submissionSample, tube.getSample());
-    assertEquals(false, tube.isBanned());
-    assertEquals(0, tube.getVersion());
     files = submission.getFiles();
     assertEquals(2, files.size());
     file = findFile(files, "my_file.docx").get();
@@ -1957,12 +1965,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("standard1", standard.getName());
     assertEquals("1.0 μg", standard.getQuantity());
     assertEquals("comment", standard.getComment());
-    Tube tube = (Tube) submissionSample.getOriginalContainer();
-    assertNotNull(tube);
-    assertEquals("unit_test_eluate_01", tube.getName());
-    assertEquals(submissionSample, tube.getSample());
-    assertEquals(false, tube.isBanned());
-    assertEquals(0, tube.getVersion());
     assertEquals("unit_test_eluate_02", submission.getSamples().get(1).getName());
     files = submission.getFiles();
     assertEquals(1, files.size());
@@ -1990,7 +1992,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     sample.setType(SampleType.SOLUTION);
     sample.setVolume("10.0 μl");
     sample.setQuantity("2.0 μg");
-    sample.setOriginalContainer(plate.well(0, 0));
     sample.setNumberProtein(10);
     sample.setMolecularWeight(120.0);
     SubmissionSample sample2 = new SubmissionSample();
@@ -1998,7 +1999,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     sample2.setType(SampleType.SOLUTION);
     sample2.setVolume("10.0 μl");
     sample2.setQuantity("2.0 μg");
-    sample2.setOriginalContainer(plate.well(1, 0));
     sample2.setNumberProtein(10);
     sample2.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
@@ -2110,23 +2110,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("standard1", standard.getName());
     assertEquals("1.0 μg", standard.getQuantity());
     assertEquals("comment", standard.getComment());
-    Well well = (Well) submissionSample.getOriginalContainer();
-    assertNotNull(well);
-    assertEquals("unit_test_plate", well.getPlate().getName());
-    assertNotNull(well.getPlate().getSubmission().getId());
-    assertEquals(96, well.getPlate().getWells().size());
-    for (Well plateWell : well.getPlate().getWells()) {
-      if (plateWell != well.getPlate().well(0, 0) && plateWell != well.getPlate().well(1, 0)) {
-        assertNull(plateWell.getSample());
-      }
-      assertEquals(0, plateWell.getVersion());
-    }
-    assertEquals(submissionSample, well.getSample());
-    assertEquals(sample2, well.getPlate().well(1, 0).getSample());
-    assertEquals(0, well.getRow());
-    assertEquals(0, well.getColumn());
-    assertEquals(false, well.isBanned());
-    assertEquals(0, well.getVersion());
     assertEquals("unit_test_eluate_02", submission.getSamples().get(1).getName());
     files = submission.getFiles();
     assertEquals(1, files.size());
@@ -2238,12 +2221,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     SubmissionSample submissionSample = samples.get(0);
     assertEquals("unit_test_molecule_01", submissionSample.getName());
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
-    Tube tube = (Tube) submissionSample.getOriginalContainer();
-    assertNotNull(tube);
-    assertEquals("unit_test_molecule_01", tube.getName());
-    assertEquals(submissionSample, tube.getSample());
-    assertEquals(false, tube.isBanned());
-    assertEquals(0, tube.getVersion());
     files = submission.getFiles();
     assertEquals(2, files.size());
     file = findFile(files, "my_file.docx").get();
@@ -2410,7 +2387,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
-      detach(sa.getOriginalContainer());
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
@@ -2472,11 +2448,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("cap_standard", standard.getName());
     assertEquals("3 μg", standard.getQuantity());
     assertEquals("some_comment", standard.getComment());
-    Tube tube = (Tube) submissionSample.getOriginalContainer();
-    assertEquals((Long) 9L, tube.getId());
-    assertEquals("CAP_20111116_01", tube.getName());
-    assertEquals(submissionSample, tube.getSample());
-    assertEquals(false, tube.isBanned());
     assertEquals(0, submission.getFiles().size());
 
     // Validate log.
@@ -2490,7 +2461,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(sample -> {
       detach(sample);
-      detach(sample.getOriginalContainer());
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
@@ -2530,11 +2500,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("cap_standard", standard.getName());
     assertEquals("3 μg", standard.getQuantity());
     assertEquals("some_comment", standard.getComment());
-    Tube tube = (Tube) submissionSample.getOriginalContainer();
-    assertEquals((Long) 9L, tube.getId());
-    assertEquals("unit_test_01", tube.getName());
-    assertEquals(submissionSample, tube.getSample());
-    assertEquals(false, tube.isBanned());
     assertEquals(0, submission.getFiles().size());
 
     // Validate log.
@@ -2580,7 +2545,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
-      detach(sa.getOriginalContainer());
     });
     submission.setSamples(samples);
 
@@ -2613,110 +2577,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("standard1", standard.getName());
     assertEquals("1.0 μg", standard.getQuantity());
     assertEquals("comment", standard.getComment());
-    Tube tube = (Tube) submissionSample.getOriginalContainer();
-    assertNotNull(tube);
-    assertEquals("unit_test_eluate_01", tube.getName());
-    assertEquals(submissionSample, tube.getSample());
-    assertEquals(false, tube.isBanned());
-    assertEquals(0, tube.getVersion());
     assertNull(sampleRepository.findById(447L).orElse(null));
-    assertNull(tubeRepository.findById(9L).orElse(null));
-
-    // Validate log.
-    Submission submissionLogged = submissionCaptor.getValue();
-    assertEquals(submission.getId(), submissionLogged.getId());
-  }
-
-  @Test
-  public void update_NewSample_Plate() throws Exception {
-    // Create new submission.
-    Plate plate = new Plate();
-    plate.initWells();
-    plate.setName("unit_test_plate");
-    SubmissionSample sample = new SubmissionSample();
-    sample.setName("unit_test_eluate_01");
-    sample.setType(SampleType.SOLUTION);
-    sample.setVolume("10.0 μl");
-    sample.setQuantity("2.0 μg");
-    sample.setOriginalContainer(plate.well(0, 0));
-    sample.setNumberProtein(10);
-    sample.setMolecularWeight(120.0);
-    SubmissionSample sample2 = new SubmissionSample();
-    sample2.setName("unit_test_eluate_02");
-    sample2.setType(SampleType.SOLUTION);
-    sample2.setVolume("10.0 μl");
-    sample2.setQuantity("2.0 μg");
-    sample2.setOriginalContainer(plate.well(1, 0));
-    sample2.setNumberProtein(10);
-    sample2.setMolecularWeight(120.0);
-    List<SubmissionSample> samples = new LinkedList<>();
-    samples.add(sample);
-    samples.add(sample2);
-    Contaminant contaminant = new Contaminant();
-    contaminant.setName("contaminant1");
-    contaminant.setQuantity("1.0 μg");
-    contaminant.setComment("comment");
-    List<Contaminant> contaminants = new ArrayList<>();
-    contaminants.add(contaminant);
-    sample.setContaminants(contaminants);
-    Standard standard = new Standard();
-    standard.setName("standard1");
-    standard.setQuantity("1.0 μg");
-    standard.setComment("comment");
-    List<Standard> standards = new ArrayList<>();
-    standards.add(standard);
-    sample.setStandards(standards);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
-    Submission submission = repository.findById(36L).orElse(null);
-    detach(submission);
-    submission.getSamples().forEach(sa -> {
-      detach(sa);
-      detach(sa.getOriginalContainer());
-    });
-    submission.setSamples(samples);
-
-    service.update(submission, null);
-
-    repository.flush();
-    verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
-    verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
-    verify(activityService).insert(activity);
-    submission = repository.findById(submission.getId()).orElse(null);
-    assertEquals((Long) 10L, submission.getUser().getId());
-    assertEquals((Long) 2L, submission.getLaboratory().getId());
-    samples = submission.getSamples();
-    assertEquals(2, samples.size());
-    assertTrue(find(samples, "unit_test_eluate_01").isPresent());
-    SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
-    assertEquals("unit_test_eluate_01", submissionSample.getName());
-    assertEquals(SampleType.SOLUTION, submissionSample.getType());
-    assertEquals("10.0 μl", submissionSample.getVolume());
-    assertEquals("2.0 μg", submissionSample.getQuantity());
-    assertEquals(new Integer(10), submissionSample.getNumberProtein());
-    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
-    contaminants = submissionSample.getContaminants();
-    assertEquals(1, contaminants.size());
-    contaminant = contaminants.get(0);
-    assertEquals("contaminant1", contaminant.getName());
-    assertEquals("1.0 μg", contaminant.getQuantity());
-    assertEquals("comment", contaminant.getComment());
-    standards = submissionSample.getStandards();
-    assertEquals(1, standards.size());
-    standard = standards.get(0);
-    assertEquals("standard1", standard.getName());
-    assertEquals("1.0 μg", standard.getQuantity());
-    assertEquals("comment", standard.getComment());
-    Well well = (Well) submissionSample.getOriginalContainer();
-    assertNotNull(well);
-    assertEquals("unit_test_plate", well.getPlate().getName());
-    assertEquals(96, well.getPlate().getWells().size());
-    assertEquals(submissionSample, well.getSample());
-    assertEquals(0, well.getRow());
-    assertEquals(0, well.getColumn());
-    assertEquals(false, well.isBanned());
-    assertEquals(0, well.getVersion());
-    assertNull(sampleRepository.findById(447L).orElse(null));
-    assertNull(tubeRepository.findById(9L).orElse(null));
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();
@@ -2729,7 +2590,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
-      detach(sa.getOriginalContainer());
     });
     User user = userRepository.findById(4L).orElse(null);
     submission.setUser(user);
@@ -2744,7 +2604,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
-      detach(sa.getOriginalContainer());
     });
 
     service.update(submission, null);
@@ -2756,7 +2615,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
-      detach(sa.getOriginalContainer());
     });
 
     service.update(submission, null);
@@ -2768,7 +2626,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
-      detach(sa.getOriginalContainer());
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
@@ -2800,7 +2657,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
-      detach(sa.getOriginalContainer());
     });
     submission.setService(Service.LC_MS_MS);
     submission.setTaxonomy("human");
@@ -2921,7 +2777,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
-      detach(sa.getOriginalContainer());
     });
     submission.getSamples().add(sample);
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
@@ -2938,6 +2793,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(3, samples.size());
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
     SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
+    assertNotNull(submissionSample.getId());
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
@@ -2956,11 +2812,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("standard1", standard.getName());
     assertEquals("1.0 μg", standard.getQuantity());
     assertEquals("comment", standard.getComment());
-    Tube tube = (Tube) submissionSample.getOriginalContainer();
-    assertNotNull(tube);
-    assertEquals("unit_test_eluate_01", tube.getName());
-    assertEquals(submissionSample, tube.getSample());
-    assertEquals(false, tube.isBanned());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getAllValues().get(0);

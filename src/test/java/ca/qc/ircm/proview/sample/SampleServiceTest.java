@@ -20,8 +20,8 @@ package ca.qc.ircm.proview.sample;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,7 +59,6 @@ public class SampleServiceTest {
     SubmissionSample gelSample = (SubmissionSample) sample;
     assertEquals((Long) 1L, gelSample.getId());
     assertEquals("FAM119A_band_01", gelSample.getName());
-    assertEquals((Long) 1L, gelSample.getOriginalContainer().getId());
     assertEquals(SampleType.GEL, gelSample.getType());
     assertEquals(Sample.Category.SUBMISSION, gelSample.getCategory());
     assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
@@ -75,7 +74,6 @@ public class SampleServiceTest {
     SubmissionSample eluateSample = (SubmissionSample) sample;
     assertEquals((Long) 442L, eluateSample.getId());
     assertEquals("CAP_20111013_01", eluateSample.getName());
-    assertEquals((Long) 2L, eluateSample.getOriginalContainer().getId());
     assertEquals(SampleType.SOLUTION, eluateSample.getType());
     assertEquals(Sample.Category.SUBMISSION, eluateSample.getCategory());
     assertEquals(SampleStatus.ANALYSED, eluateSample.getStatus());
@@ -93,7 +91,6 @@ public class SampleServiceTest {
     Control control = (Control) sample;
     assertEquals((Long) 444L, control.getId());
     assertEquals("control_01", control.getName());
-    assertEquals((Long) 4L, control.getOriginalContainer().getId());
     assertEquals(SampleType.GEL, control.getType());
     assertEquals(Sample.Category.CONTROL, control.getCategory());
     assertEquals(ControlType.NEGATIVE_CONTROL, control.getControlType());

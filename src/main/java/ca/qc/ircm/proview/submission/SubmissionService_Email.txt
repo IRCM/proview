@@ -8,8 +8,8 @@ Submission experiment is [[${submission.experiment}]]
 Submission [[${submission.experiment}]] was updated by [[${user.email}]]
 [/]
 
-Sample name	[# th:if="${containerType.name() == 'TUBE'}"]Tube[/][# th:if="${containerType.name() == 'WELL'}"]Plate[/]
+Sample name
 [# th:each="sample: ${samples}"]
-[[${sample.name}]]	[# th:if="${containerType.name() == 'WELL'}"][[${sample.originalContainer.plate.name}]][/][[${sample.originalContainer.name}]]
+[[${sample.name}]]
 [/]
 </html>

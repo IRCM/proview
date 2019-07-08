@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
-import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
@@ -154,10 +153,8 @@ public class PlateService {
     } else {
       JPAQuery<Long> query = queryFactory.select(plate.id);
       query.from(plate);
-      query.from(submissionSample);
       query.where(plate.name.eq(name));
-      query.where(submissionSample.submission.user.eq(user));
-      query.where(plate.wells.any().id.eq(submissionSample.originalContainer.id));
+      query.where(plate.submission.user.eq(user));
       return query.fetchCount() == 0;
     }
   }

@@ -23,10 +23,6 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
-import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateRepository;
-import ca.qc.ircm.proview.plate.QPlate;
-import ca.qc.ircm.proview.plate.Well;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -53,13 +49,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SubmissionActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
-  private static final QPlate qplate = QPlate.plate;
   @Inject
   private SampleActivityService sampleActivityService;
   @Inject
   private SubmissionRepository repository;
-  @Inject
-  private PlateRepository plateRepository;
   @Inject
   private AuthorizationService authorizationService;
 
@@ -252,12 +245,12 @@ public class SubmissionActivityService {
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.hidden))
         .oldValue(oldSubmission.isHidden()).newValue(submission.isHidden()));
     // Sample.
-    Set<Long> oldSampleIds = oldSubmission.getSamples().stream()
-        .filter(sample -> sample.getId() != null).map(sample -> sample.getId())
-        .collect(Collectors.toSet());
-    Set<Long> newSampleIds = submission.getSamples().stream()
-        .filter(sample -> sample.getId() != null).map(sample -> sample.getId())
-        .collect(Collectors.toSet());
+    Set<Long> oldSampleIds =
+        oldSubmission.getSamples().stream().filter(sample -> sample.getId() != null)
+            .map(sample -> sample.getId()).collect(Collectors.toSet());
+    Set<Long> newSampleIds =
+        submission.getSamples().stream().filter(sample -> sample.getId() != null)
+            .map(sample -> sample.getId()).collect(Collectors.toSet());
     for (SubmissionSample sample : oldSubmission.getSamples()) {
       if (!newSampleIds.contains(sample.getId())) {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.DELETE)
@@ -269,12 +262,6 @@ public class SubmissionActivityService {
         Optional<Activity> optionalActivity = sampleActivityService.update(sample, explanation);
         optionalActivity.ifPresent(activity -> updateBuilders.addAll(activity.getUpdates().stream()
             .map(ua -> new UpdateActivityBuilder(ua)).collect(Collectors.toList())));
-        if (sample.getOriginalContainer() instanceof Well) {
-          Plate plate = ((Well) sample.getOriginalContainer()).getPlate();
-          Plate oldPlate = plateRepository.findById(plate.getId()).orElse(null);
-          updateBuilders.add(plateUpdate(plate).column(qname(qplate.name))
-              .oldValue(oldPlate.getName()).newValue(plate.getName()));
-        }
       } else {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.INSERT)
             .tableName(Sample.TABLE_NAME).recordId(sample.getId()));
@@ -315,13 +302,5 @@ public class SubmissionActivityService {
     } else {
       return Optional.empty();
     }
-  }
-
-  private UpdateActivityBuilder plateUpdate(Plate plate) {
-    UpdateActivityBuilder builder = new UpdateActivityBuilder();
-    builder.tableName(Plate.TABLE_NAME);
-    builder.actionType(ActionType.UPDATE);
-    builder.recordId(plate.getId());
-    return builder;
   }
 }
