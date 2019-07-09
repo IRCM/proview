@@ -17,7 +17,10 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
+import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
+import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
 import static ca.qc.ircm.proview.web.ViewLayout.HOME;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
@@ -77,8 +80,11 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HOME), view.home.getLabel());
     assertEquals(resources.message(USERS), view.users.getLabel());
+    assertEquals(resources.message(EXIT_SWITCH_USER), view.exitSwitchUser.getLabel());
     assertEquals(resources.message(SIGNOUT), view.signout.getLabel());
+    assertEquals(resources.message(CHANGE_LANGUAGE), view.changeLanguage.getLabel());
     assertEquals(resources.message(CONTACT), view.contact.getLabel());
+    assertEquals(resources.message(GUIDELINES), view.guidelines.getLabel());
   }
 
   @Test
@@ -90,8 +96,11 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HOME), view.home.getLabel());
     assertEquals(resources.message(USERS), view.users.getLabel());
+    assertEquals(resources.message(EXIT_SWITCH_USER), view.exitSwitchUser.getLabel());
     assertEquals(resources.message(SIGNOUT), view.signout.getLabel());
+    assertEquals(resources.message(CHANGE_LANGUAGE), view.changeLanguage.getLabel());
     assertEquals(resources.message(CONTACT), view.contact.getLabel());
+    assertEquals(resources.message(GUIDELINES), view.guidelines.getLabel());
   }
 
   @Test
@@ -237,6 +246,46 @@ public class ViewLayoutTest extends AbstractViewTestCase {
 
     verify(ui, never()).navigate(any(String.class));
     verify(page).executeJs("location.assign('" + WebSecurityConfiguration.SIGNOUT_URL + "')");
+  }
+
+  @Test
+  public void tabs_ChangeLanguage_ToFrench() {
+    Location location = new Location(MainView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+    view.afterNavigation(afterNavigationEvent);
+
+    view.tabs.setSelectedTab(view.changeLanguage);
+
+    verify(ui, never()).navigate(any(String.class));
+    verify(ui).setLocale(Locale.FRENCH);
+    assertEquals(view.home, view.tabs.getSelectedTab());
+  }
+
+  @Test
+  public void tabs_ChangeLanguage_ToEnglish() {
+    when(ui.getLocale()).thenReturn(Locale.FRENCH);
+    Location location = new Location(MainView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+    view.afterNavigation(afterNavigationEvent);
+
+    view.tabs.setSelectedTab(view.changeLanguage);
+
+    verify(ui, never()).navigate(any(String.class));
+    verify(ui).setLocale(Locale.ENGLISH);
+    assertEquals(view.home, view.tabs.getSelectedTab());
+  }
+
+  @Test
+  public void tabs_ChangeLanguage_ToFrenchFromUsers() {
+    Location location = new Location(UsersView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+    view.afterNavigation(afterNavigationEvent);
+
+    view.tabs.setSelectedTab(view.changeLanguage);
+
+    verify(ui, never()).navigate(any(String.class));
+    verify(ui).setLocale(Locale.FRENCH);
+    assertEquals(view.users, view.tabs.getSelectedTab());
   }
 
   @Test
