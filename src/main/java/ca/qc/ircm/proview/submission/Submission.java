@@ -157,44 +157,10 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
   @Size(max = 255)
   private String proteinIdentificationLink;
   /**
-   * Peptide enrichmentType.
-   */
-  @Column
-  @Enumerated(STRING)
-  private EnrichmentType enrichmentType;
-  /**
-   * Other peptide enrichmentType.
-   */
-  @Column
-  @Size(max = 100)
-  private String otherEnrichmentType;
-  /**
-   * Low resolution mass detection for sample.
-   */
-  @Column(nullable = false)
-  private boolean lowResolution;
-  /**
    * High resolution mass detection for sample.
    */
   @Column(nullable = false)
   private boolean highResolution;
-  /**
-   * True if Small molecule should have an msms analysis.
-   */
-  @Column(nullable = false)
-  private boolean msms;
-  /**
-   * True if Small molecule should have an exact msms analysis. High resolution mass detection ir
-   * required for this.
-   */
-  @Column(nullable = false)
-  private boolean exactMsms;
-  /**
-   * 2 dimension liquid chromatographie with MudPit.
-   */
-  @Column
-  @Enumerated(STRING)
-  private MudPitFraction mudPitFraction;
   /**
    * Number of Proteins in samples.
    */
@@ -480,42 +446,12 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.source = source;
   }
 
-  @Deprecated
-  public boolean isLowResolution() {
-    return lowResolution;
-  }
-
-  @Deprecated
-  public void setLowResolution(boolean lowResolution) {
-    this.lowResolution = lowResolution;
-  }
-
   public boolean isHighResolution() {
     return highResolution;
   }
 
   public void setHighResolution(boolean highResolution) {
     this.highResolution = highResolution;
-  }
-
-  @Deprecated
-  public boolean isMsms() {
-    return msms;
-  }
-
-  @Deprecated
-  public void setMsms(boolean msms) {
-    this.msms = msms;
-  }
-
-  @Deprecated
-  public boolean isExactMsms() {
-    return exactMsms;
-  }
-
-  @Deprecated
-  public void setExactMsms(boolean exactMsms) {
-    this.exactMsms = exactMsms;
   }
 
   public ProteolyticDigestion getProteolyticDigestionMethod() {
@@ -558,26 +494,6 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.proteinIdentificationLink = proteinIdentificationLink;
   }
 
-  @Deprecated
-  public EnrichmentType getEnrichmentType() {
-    return enrichmentType;
-  }
-
-  @Deprecated
-  public void setEnrichmentType(EnrichmentType enrichmentType) {
-    this.enrichmentType = enrichmentType;
-  }
-
-  @Deprecated
-  public String getOtherEnrichmentType() {
-    return otherEnrichmentType;
-  }
-
-  @Deprecated
-  public void setOtherEnrichmentType(String otherEnrichmentType) {
-    this.otherEnrichmentType = otherEnrichmentType;
-  }
-
   public Service getService() {
     return service;
   }
@@ -592,16 +508,6 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
 
   public void setMassDetectionInstrument(MassDetectionInstrument massDetectionInstrument) {
     this.massDetectionInstrument = massDetectionInstrument;
-  }
-
-  @Deprecated
-  public MudPitFraction getMudPitFraction() {
-    return mudPitFraction;
-  }
-
-  @Deprecated
-  public void setMudPitFraction(MudPitFraction mudPitFraction) {
-    this.mudPitFraction = mudPitFraction;
   }
 
   public ProteinContent getProteinContent() {

@@ -142,31 +142,14 @@ public class SubmissionActivityService {
             .oldValue(oldSubmission.getProteinIdentificationLink())
             .newValue(submission.getProteinIdentificationLink()));
     updateBuilders
-        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.enrichmentType))
-            .oldValue(oldSubmission.getEnrichmentType()).newValue(submission.getEnrichmentType()));
-    updateBuilders
-        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.otherEnrichmentType))
-            .oldValue(oldSubmission.getOtherEnrichmentType())
-            .newValue(submission.getOtherEnrichmentType()));
-    updateBuilders
-        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.lowResolution))
-            .oldValue(oldSubmission.isLowResolution()).newValue(submission.isLowResolution()));
-    updateBuilders
         .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.highResolution))
             .oldValue(oldSubmission.isHighResolution()).newValue(submission.isHighResolution()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.msms))
-        .oldValue(oldSubmission.isMsms()).newValue(submission.isMsms()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.exactMsms))
-        .oldValue(oldSubmission.isExactMsms()).newValue(submission.isExactMsms()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.protein))
         .oldValue(oldSubmission.getProtein()).newValue(submission.getProtein()));
     updateBuilders.add(
         new SubmissionUpdateActivityBuilder().column(qname(qsubmission.postTranslationModification))
             .oldValue(oldSubmission.getPostTranslationModification())
             .newValue(submission.getPostTranslationModification()));
-    updateBuilders
-        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.mudPitFraction))
-            .oldValue(oldSubmission.getMudPitFraction()).newValue(submission.getMudPitFraction()));
     updateBuilders
         .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.proteinContent))
             .oldValue(oldSubmission.getProteinContent()).newValue(submission.getProteinContent()));
