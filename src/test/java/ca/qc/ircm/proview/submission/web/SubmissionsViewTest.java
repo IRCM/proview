@@ -17,35 +17,54 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_VALUE;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.getFormattedValue;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
+import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
 import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.web.WebConstants.ERROR;
+import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
@@ -59,9 +78,10 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Element;
@@ -71,6 +91,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,17 +110,19 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
-  private ArgumentCaptor<LocalDateRenderer<Submission>> dateRendererCaptor;
+  private ArgumentCaptor<ComponentRenderer<Span, Submission>> spanRendererCaptor;
   @Captor
   private ArgumentCaptor<ComponentRenderer<Button, Submission>> buttonRendererCaptor;
   @Captor
   private ArgumentCaptor<Comparator<Submission>> comparatorCaptor;
   @Autowired
-  private SubmissionRepository submissionRepository;
+  private SubmissionRepository repository;
   private Locale locale = Locale.ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionsView.class, locale);
   private MessageResource submissionResources = new MessageResource(Submission.class, locale);
   private MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
+  private MessageResource submissionSampleResources =
+      new MessageResource(SubmissionSample.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private List<Submission> submissions;
 
@@ -111,7 +134,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(ui.getLocale()).thenReturn(locale);
     view = new SubmissionsView(presenter);
     view.init();
-    submissions = submissionRepository.findAll();
+    submissions = repository.findAll();
   }
 
   @SuppressWarnings("unchecked")
@@ -137,30 +160,62 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(view.director.setComparator(any(Comparator.class))).thenReturn(view.director);
     when(view.director.setHeader(any(String.class))).thenReturn(view.director);
     view.sampleDeliveryDate = mock(Column.class);
-    when(view.submissions.addColumn(any(LocalDateRenderer.class), eq(SAMPLE_DELIVERY_DATE)))
+    when(view.submissions.addColumn(any(ValueProvider.class), eq(SAMPLE_DELIVERY_DATE)))
         .thenReturn(view.sampleDeliveryDate);
     when(view.sampleDeliveryDate.setKey(any())).thenReturn(view.sampleDeliveryDate);
     when(view.sampleDeliveryDate.setHeader(any(String.class))).thenReturn(view.sampleDeliveryDate);
     view.digestionDate = mock(Column.class);
-    when(view.submissions.addColumn(any(LocalDateRenderer.class), eq(DIGESTION_DATE)))
+    when(view.submissions.addColumn(any(ValueProvider.class), eq(DIGESTION_DATE)))
         .thenReturn(view.digestionDate);
     when(view.digestionDate.setKey(any())).thenReturn(view.digestionDate);
     when(view.digestionDate.setHeader(any(String.class))).thenReturn(view.digestionDate);
     view.analysisDate = mock(Column.class);
-    when(view.submissions.addColumn(any(LocalDateRenderer.class), eq(ANALYSIS_DATE)))
+    when(view.submissions.addColumn(any(ValueProvider.class), eq(ANALYSIS_DATE)))
         .thenReturn(view.analysisDate);
     when(view.analysisDate.setKey(any())).thenReturn(view.analysisDate);
     when(view.analysisDate.setHeader(any(String.class))).thenReturn(view.analysisDate);
     view.dataAvailableDate = mock(Column.class);
-    when(view.submissions.addColumn(any(LocalDateRenderer.class), eq(DATA_AVAILABLE_DATE)))
+    when(view.submissions.addColumn(any(ValueProvider.class), eq(DATA_AVAILABLE_DATE)))
         .thenReturn(view.dataAvailableDate);
     when(view.dataAvailableDate.setKey(any())).thenReturn(view.dataAvailableDate);
     when(view.dataAvailableDate.setHeader(any(String.class))).thenReturn(view.dataAvailableDate);
     view.date = mock(Column.class);
-    when(view.submissions.addColumn(any(LocalDateRenderer.class), eq(SUBMISSION_DATE)))
+    when(view.submissions.addColumn(any(ValueProvider.class), eq(SUBMISSION_DATE)))
         .thenReturn(view.date);
     when(view.date.setKey(any())).thenReturn(view.date);
     when(view.date.setHeader(any(String.class))).thenReturn(view.date);
+    view.instrument = mock(Column.class);
+    when(view.submissions.addColumn(any(ValueProvider.class), eq(MASS_DETECTION_INSTRUMENT)))
+        .thenReturn(view.instrument);
+    when(view.instrument.setKey(any())).thenReturn(view.instrument);
+    when(view.instrument.setHeader(any(String.class))).thenReturn(view.instrument);
+    view.service = mock(Column.class);
+    when(view.submissions.addColumn(any(ValueProvider.class), eq(SERVICE)))
+        .thenReturn(view.service);
+    when(view.service.setKey(any())).thenReturn(view.service);
+    when(view.service.setHeader(any(String.class))).thenReturn(view.service);
+    view.samplesCount = mock(Column.class);
+    when(view.submissions.addColumn(any(ValueProvider.class), eq(SAMPLES_COUNT)))
+        .thenReturn(view.samplesCount);
+    when(view.samplesCount.setKey(any())).thenReturn(view.samplesCount);
+    when(view.samplesCount.setHeader(any(String.class))).thenReturn(view.samplesCount);
+    view.samples = mock(Column.class);
+    when(view.submissions.addColumn(any(ComponentRenderer.class), eq(SAMPLES)))
+        .thenReturn(view.samples);
+    when(view.samples.setKey(any())).thenReturn(view.samples);
+    when(view.samples.setHeader(any(String.class))).thenReturn(view.samples);
+    when(view.samples.setSortable(anyBoolean())).thenReturn(view.samples);
+    view.status = mock(Column.class);
+    when(view.submissions.addColumn(any(ComponentRenderer.class), eq(STATUS)))
+        .thenReturn(view.status);
+    when(view.status.setKey(any())).thenReturn(view.status);
+    when(view.status.setHeader(any(String.class))).thenReturn(view.status);
+    when(view.status.setSortable(anyBoolean())).thenReturn(view.status);
+    view.hidden = mock(Column.class);
+    when(view.submissions.addColumn(any(ComponentRenderer.class), eq(HIDDEN)))
+        .thenReturn(view.hidden);
+    when(view.hidden.setKey(any())).thenReturn(view.hidden);
+    when(view.hidden.setHeader(any(String.class))).thenReturn(view.hidden);
     HeaderRow filtersRow = mock(HeaderRow.class);
     when(view.submissions.appendHeaderRow()).thenReturn(filtersRow);
     HeaderCell experienceFilterCell = mock(HeaderCell.class);
@@ -169,6 +224,16 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(filtersRow.getCell(view.user)).thenReturn(userFilterCell);
     HeaderCell directorFilterCell = mock(HeaderCell.class);
     when(filtersRow.getCell(view.director)).thenReturn(directorFilterCell);
+    HeaderCell serviceFilterCell = mock(HeaderCell.class);
+    when(filtersRow.getCell(view.service)).thenReturn(serviceFilterCell);
+    HeaderCell instrumentFilterCell = mock(HeaderCell.class);
+    when(filtersRow.getCell(view.instrument)).thenReturn(instrumentFilterCell);
+    HeaderCell samplesFilterCell = mock(HeaderCell.class);
+    when(filtersRow.getCell(view.samples)).thenReturn(samplesFilterCell);
+    HeaderCell statusFilterCell = mock(HeaderCell.class);
+    when(filtersRow.getCell(view.status)).thenReturn(statusFilterCell);
+    HeaderCell hiddenFilterCell = mock(HeaderCell.class);
+    when(filtersRow.getCell(view.hidden)).thenReturn(hiddenFilterCell);
   }
 
   @Test
@@ -193,8 +258,13 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void labels() {
     mockColumns();
+    when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
+    view.instrumentFilter.setDataProvider(mock(DataProvider.class));
+    view.statusFilter.setDataProvider(mock(DataProvider.class));
+    view.hiddenFilter.setDataProvider(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     verify(view.experiment).setHeader(submissionResources.message(EXPERIMENT));
@@ -213,22 +283,46 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.dataAvailableDate).setFooter(submissionResources.message(DATA_AVAILABLE_DATE));
     verify(view.date).setHeader(submissionResources.message(SUBMISSION_DATE));
     verify(view.date).setFooter(submissionResources.message(SUBMISSION_DATE));
+    verify(view.instrument).setHeader(submissionResources.message(MASS_DETECTION_INSTRUMENT));
+    verify(view.instrument).setFooter(submissionResources.message(MASS_DETECTION_INSTRUMENT));
+    verify(view.service).setHeader(submissionResources.message(SERVICE));
+    verify(view.service).setFooter(submissionResources.message(SERVICE));
+    verify(view.samplesCount).setHeader(resources.message(SAMPLES_COUNT));
+    verify(view.samplesCount).setFooter(resources.message(SAMPLES_COUNT));
+    verify(view.samples).setHeader(submissionResources.message(SAMPLES));
+    verify(view.samples).setFooter(submissionResources.message(SAMPLES));
+    verify(view.status).setHeader(submissionSampleResources.message(STATUS));
+    verify(view.status).setFooter(submissionSampleResources.message(STATUS));
+    verify(view.hidden).setHeader(submissionResources.message(HIDDEN));
+    verify(view.hidden).setFooter(submissionResources.message(HIDDEN));
     assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
     assertEquals(resources.message(ADD), view.add.getText());
     validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void localeChange() {
     view = new SubmissionsView(presenter);
     mockColumns();
     view.init();
+    when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
+    view.instrumentFilter.setDataProvider(mock(DataProvider.class));
+    view.statusFilter.setDataProvider(mock(DataProvider.class));
+    view.hiddenFilter.setDataProvider(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = Locale.FRENCH;
     final MessageResource resources = new MessageResource(SubmissionsView.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     final MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
-    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
+    final MessageResource submissionSampleResources =
+        new MessageResource(SubmissionSample.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
@@ -250,9 +344,31 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.dataAvailableDate).setFooter(submissionResources.message(DATA_AVAILABLE_DATE));
     verify(view.date, atLeastOnce()).setHeader(submissionResources.message(SUBMISSION_DATE));
     verify(view.date, atLeastOnce()).setFooter(submissionResources.message(SUBMISSION_DATE));
+    verify(view.instrument).setHeader(submissionResources.message(MASS_DETECTION_INSTRUMENT));
+    verify(view.instrument).setFooter(submissionResources.message(MASS_DETECTION_INSTRUMENT));
+    verify(view.service).setHeader(submissionResources.message(SERVICE));
+    verify(view.service).setFooter(submissionResources.message(SERVICE));
+    verify(view.samplesCount).setHeader(resources.message(SAMPLES_COUNT));
+    verify(view.samplesCount).setFooter(resources.message(SAMPLES_COUNT));
+    verify(view.samples).setHeader(submissionResources.message(SAMPLES));
+    verify(view.samples).setFooter(submissionResources.message(SAMPLES));
+    verify(view.status).setHeader(submissionSampleResources.message(STATUS));
+    verify(view.status).setFooter(submissionSampleResources.message(STATUS));
+    verify(view.hidden).setHeader(submissionResources.message(HIDDEN));
+    verify(view.hidden).setFooter(submissionResources.message(HIDDEN));
     assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
     assertEquals(resources.message(ADD), view.add.getText());
     validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
+    verify(view.submissions.getDataProvider(), times(2)).refreshAll();
+    verify(view.instrumentFilter.getDataProvider(), times(2)).refreshAll();
+    verify(view.statusFilter.getDataProvider(), times(2)).refreshAll();
+    verify(view.hiddenFilter.getDataProvider(), times(2)).refreshAll();
   }
 
   @Test
@@ -268,7 +384,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
 
   @Test
   public void submissions_Columns() {
-    assertEquals(8, view.submissions.getColumns().size());
+    assertEquals(14, view.submissions.getColumns().size());
     assertNotNull(view.submissions.getColumnByKey(EXPERIMENT));
     assertTrue(view.submissions.getColumnByKey(EXPERIMENT).isSortable());
     assertNotNull(view.submissions.getColumnByKey(USER));
@@ -285,6 +401,18 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertTrue(view.submissions.getColumnByKey(DATA_AVAILABLE_DATE).isSortable());
     assertNotNull(view.submissions.getColumnByKey(SUBMISSION_DATE));
     assertTrue(view.submissions.getColumnByKey(SUBMISSION_DATE).isSortable());
+    assertNotNull(view.submissions.getColumnByKey(SERVICE));
+    assertTrue(view.submissions.getColumnByKey(SERVICE).isSortable());
+    assertNotNull(view.submissions.getColumnByKey(MASS_DETECTION_INSTRUMENT));
+    assertTrue(view.submissions.getColumnByKey(MASS_DETECTION_INSTRUMENT).isSortable());
+    assertNotNull(view.submissions.getColumnByKey(SAMPLES_COUNT));
+    assertTrue(view.submissions.getColumnByKey(SAMPLES_COUNT).isSortable());
+    assertNotNull(view.submissions.getColumnByKey(SAMPLES));
+    assertFalse(view.submissions.getColumnByKey(SAMPLES).isSortable());
+    assertNotNull(view.submissions.getColumnByKey(STATUS));
+    assertFalse(view.submissions.getColumnByKey(STATUS).isSortable());
+    assertNotNull(view.submissions.getColumnByKey(HIDDEN));
+    assertTrue(view.submissions.getColumnByKey(HIDDEN).isSortable());
   }
 
   @Test
@@ -338,42 +466,94 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertTrue(comparator.compare(director("Test"), director("abc")) > 0);
     assertTrue(comparator.compare(director("tést"), director("test")) == 0);
     assertTrue(comparator.compare(director("tèst"), director("test")) == 0);
-    verify(view.submissions).addColumn(dateRendererCaptor.capture(), eq(SAMPLE_DELIVERY_DATE));
+    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SAMPLE_DELIVERY_DATE));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    LocalDateRenderer<Submission> dateRenderer = dateRendererCaptor.getValue();
+    valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
       assertEquals(submission.getSampleDeliveryDate() != null
           ? dateFormatter.format(submission.getSampleDeliveryDate())
-          : null, getFormattedValue(dateRenderer, submission));
+          : "", valueProvider.apply(submission));
     }
-    verify(view.submissions).addColumn(dateRendererCaptor.capture(), eq(DIGESTION_DATE));
-    dateRenderer = dateRendererCaptor.getValue();
+    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(DIGESTION_DATE));
+    valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
       assertEquals(submission.getDigestionDate() != null
           ? dateFormatter.format(submission.getDigestionDate())
-          : null, getFormattedValue(dateRenderer, submission));
+          : "", valueProvider.apply(submission));
     }
-    verify(view.submissions).addColumn(dateRendererCaptor.capture(), eq(ANALYSIS_DATE));
-    dateRenderer = dateRendererCaptor.getValue();
+    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(ANALYSIS_DATE));
+    valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
       assertEquals(
           submission.getAnalysisDate() != null ? dateFormatter.format(submission.getAnalysisDate())
-              : null,
-          getFormattedValue(dateRenderer, submission));
+              : "",
+          valueProvider.apply(submission));
     }
-    verify(view.submissions).addColumn(dateRendererCaptor.capture(), eq(DATA_AVAILABLE_DATE));
-    dateRenderer = dateRendererCaptor.getValue();
+    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(DATA_AVAILABLE_DATE));
+    valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
       assertEquals(submission.getDataAvailableDate() != null
           ? dateFormatter.format(submission.getDataAvailableDate())
-          : null, getFormattedValue(dateRenderer, submission));
+          : "", valueProvider.apply(submission));
     }
-    verify(view.submissions).addColumn(dateRendererCaptor.capture(), eq(SUBMISSION_DATE));
-    dateRenderer = dateRendererCaptor.getValue();
+    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SUBMISSION_DATE));
+    valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
       assertEquals(submission.getSubmissionDate() != null
           ? dateFormatter.format(submission.getSubmissionDate())
-          : null, getFormattedValue(dateRenderer, submission));
+          : "", valueProvider.apply(submission));
+    }
+    verify(view.submissions).addColumn(valueProviderCaptor.capture(),
+        eq(MASS_DETECTION_INSTRUMENT));
+    valueProvider = valueProviderCaptor.getValue();
+    for (Submission submission : submissions) {
+      assertEquals(submission.getMassDetectionInstrument() != null
+          ? submission.getMassDetectionInstrument().getLabel(locale)
+          : MassDetectionInstrument.getNullLabel(locale), valueProvider.apply(submission));
+    }
+    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SERVICE));
+    valueProvider = valueProviderCaptor.getValue();
+    for (Submission submission : submissions) {
+      assertEquals(submission.getService().getLabel(locale), valueProvider.apply(submission));
+    }
+    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SAMPLES_COUNT));
+    valueProvider = valueProviderCaptor.getValue();
+    for (Submission submission : submissions) {
+      assertEquals(submission.getSamples().size(), valueProvider.apply(submission));
+    }
+    verify(view.submissions).addColumn(spanRendererCaptor.capture(), eq(SAMPLES));
+    ComponentRenderer<Span, Submission> spanRenderer = spanRendererCaptor.getValue();
+    for (Submission submission : submissions) {
+      Span span = spanRenderer.createComponent(submission);
+      assertEquals(resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
+          submission.getSamples().size()), span.getText());
+      assertEquals(submission.getSamples().stream().map(SubmissionSample::getName)
+          .collect(Collectors.joining("\n")), span.getTitle().orElse(""));
+    }
+    verify(view.submissions).addColumn(spanRendererCaptor.capture(), eq(STATUS));
+    spanRenderer = spanRendererCaptor.getValue();
+    for (Submission submission : submissions) {
+      List<SampleStatus> statuses = submission.getSamples().stream()
+          .map(SubmissionSample::getStatus).distinct().collect(Collectors.toList());
+      Span span = spanRenderer.createComponent(submission);
+      assertEquals(
+          resources.message(STATUS_VALUE, statuses.get(0).getLabel(locale), statuses.size()),
+          span.getText());
+      assertEquals(statuses.stream().map(status -> status.getLabel(locale))
+          .collect(Collectors.joining("\n")), span.getTitle().orElse(""));
+    }
+    verify(view.submissions).addColumn(buttonRendererCaptor.capture(), eq(HIDDEN));
+    ComponentRenderer<Button, Submission> buttonRenderer = buttonRendererCaptor.getValue();
+    for (Submission submission : submissions) {
+      Button button = buttonRenderer.createComponent(submission);
+      assertTrue(button.getClassName().contains(HIDDEN));
+      assertTrue(button.getThemeName().contains(submission.isHidden() ? ERROR : SUCCESS));
+      assertEquals(submissionResources.message(property(HIDDEN, submission.isHidden())),
+          button.getText());
+      validateIcon(submission.isHidden() ? VaadinIcon.EYE_SLASH.create() : VaadinIcon.EYE.create(),
+          button.getIcon());
+      button.click();
+      verify(presenter).toggleHidden(submission);
     }
   }
 
@@ -444,6 +624,95 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     view.directorFilter.setValue("test");
 
     verify(presenter).filterDirector("test");
+  }
+
+  @Test
+  public void instrumentFilter() {
+    assertEquals(null, view.instrumentFilter.getValue());
+    assertTrue(view.instrumentFilter.isClearButtonVisible());
+    List<MassDetectionInstrument> instruments = items(view.instrumentFilter);
+    assertArrayEquals(MassDetectionInstrument.values(),
+        instruments.toArray(new MassDetectionInstrument[0]));
+    for (MassDetectionInstrument instrument : instruments) {
+      assertEquals(instrument.getLabel(locale),
+          view.instrumentFilter.getItemLabelGenerator().apply(instrument));
+    }
+  }
+
+  @Test
+  public void filterInstrument() {
+    view.instrumentFilter.setValue(MassDetectionInstrument.VELOS);
+
+    verify(presenter).filterInstrument(MassDetectionInstrument.VELOS);
+  }
+
+  @Test
+  public void serviceFilter() {
+    assertEquals(null, view.serviceFilter.getValue());
+    assertTrue(view.serviceFilter.isClearButtonVisible());
+    List<Service> values = items(view.serviceFilter);
+    assertArrayEquals(Service.values(), values.toArray(new Service[0]));
+    for (Service value : values) {
+      assertEquals(value.getLabel(locale), view.serviceFilter.getItemLabelGenerator().apply(value));
+    }
+  }
+
+  @Test
+  public void filterService() {
+    view.serviceFilter.setValue(Service.INTACT_PROTEIN);
+
+    verify(presenter).filterService(Service.INTACT_PROTEIN);
+  }
+
+  @Test
+  public void samplesFilter() {
+    assertEquals("", view.samplesFilter.getValue());
+    assertEquals(ValueChangeMode.EAGER, view.samplesFilter.getValueChangeMode());
+  }
+
+  @Test
+  public void filterSamples() {
+    view.samplesFilter.setValue("test");
+
+    verify(presenter).filterSamples("test");
+  }
+
+  @Test
+  public void statusFilter() {
+    assertEquals(null, view.statusFilter.getValue());
+    assertTrue(view.statusFilter.isClearButtonVisible());
+    List<SampleStatus> statuses = items(view.statusFilter);
+    assertArrayEquals(SampleStatus.values(), statuses.toArray(new SampleStatus[0]));
+    for (SampleStatus status : statuses) {
+      assertEquals(status.getLabel(locale),
+          view.statusFilter.getItemLabelGenerator().apply(status));
+    }
+  }
+
+  @Test
+  public void filterStatus() {
+    view.statusFilter.setValue(SampleStatus.ANALYSED);
+
+    verify(presenter).filterStatus(SampleStatus.ANALYSED);
+  }
+
+  @Test
+  public void hiddenFilter() {
+    assertEquals(null, view.hiddenFilter.getValue());
+    assertTrue(view.hiddenFilter.isClearButtonVisible());
+    List<Boolean> values = items(view.hiddenFilter);
+    assertArrayEquals(new Boolean[] { false, true }, values.toArray(new Boolean[0]));
+    for (Boolean value : values) {
+      assertEquals(submissionResources.message(property(HIDDEN, value)),
+          view.hiddenFilter.getItemLabelGenerator().apply(value));
+    }
+  }
+
+  @Test
+  public void filterHidden() {
+    view.hiddenFilter.setValue(true);
+
+    verify(presenter).filterHidden(true);
   }
 
   @Test
