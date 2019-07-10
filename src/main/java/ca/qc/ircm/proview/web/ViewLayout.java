@@ -6,6 +6,7 @@ import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -27,6 +28,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 /**
  * Main layout.
  */
+@HtmlImport("styles/shared-styles.html")
 public class ViewLayout extends VerticalLayout
     implements RouterLayout, LocaleChangeObserver, AfterNavigationObserver {
   public static final String HOME = "home";
