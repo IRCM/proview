@@ -8,7 +8,6 @@ import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
-import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Guidelines view.
  */
-@Tag("guidelines-view")
 @Route(value = GuidelinesView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ USER })
 public class GuidelinesView extends VerticalLayout
@@ -44,6 +42,7 @@ public class GuidelinesView extends VerticalLayout
   @PostConstruct
   void init() {
     logger.debug("guidelines view");
+    setId(VIEW_NAME);
     add(header);
     header.setId(HEADER);
   }

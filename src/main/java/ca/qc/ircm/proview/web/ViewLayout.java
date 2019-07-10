@@ -60,6 +60,9 @@ public class ViewLayout extends VerticalLayout
 
   @PostConstruct
   void init() {
+    setSizeFull();
+    setPadding(false);
+    setSpacing(false);
     add(tabs);
     tabs.add(home, users, exitSwitchUser, signout, changeLanguage, contact, guidelines);
     exitSwitchUser

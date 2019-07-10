@@ -29,7 +29,6 @@ import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
-import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -53,12 +52,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Submissions view.
  */
-@Tag("submissions-view")
 @Route(value = SubmissionsView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ UserRole.USER })
 public class SubmissionsView extends VerticalLayout
@@ -71,6 +71,7 @@ public class SubmissionsView extends VerticalLayout
   public static final String STATUS_VALUE = property(STATUS, "value");
   public static final String ADD = "add";
   private static final long serialVersionUID = 4399000178746918928L;
+  private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
   protected H2 header = new H2();
   protected Grid<Submission> submissions = new Grid<>();
   protected Column<Submission> experiment;
@@ -105,10 +106,13 @@ public class SubmissionsView extends VerticalLayout
 
   @PostConstruct
   void init() {
+    logger.debug("submissions view");
     setId(VIEW_NAME);
-    add(header, submissions);
+    setSizeFull();
+    add(header, submissions, add);
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
+    submissions.setSizeFull();
     submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
     ValueProvider<Submission, String> submissionExperiment =
         submission -> Objects.toString(submission.getExperiment(), "");

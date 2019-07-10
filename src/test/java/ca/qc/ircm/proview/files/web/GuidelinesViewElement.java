@@ -25,7 +25,7 @@ import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.elementsbase.Element;
 import java.util.List;
 
-@Element("guidelines-view")
+@Element("vaadin-vertical-layout")
 public class GuidelinesViewElement extends VerticalLayoutElement {
   protected H2Element header() {
     return $(H2Element.class).id(HEADER);

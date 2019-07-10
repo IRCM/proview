@@ -29,7 +29,7 @@ import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.elementsbase.Element;
 
-@Element("users-view")
+@Element("vaadin-vertical-layout")
 public class UsersViewElement extends VerticalLayoutElement {
   private static final int EMAIL_COLUMN = 0;
 

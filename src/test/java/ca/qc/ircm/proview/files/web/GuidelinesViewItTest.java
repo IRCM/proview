@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.files.web;
 
+import static ca.qc.ircm.proview.files.web.GuidelinesView.VIEW_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertArrayEquals;
@@ -59,7 +60,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   protected Path downloadHome;
 
   private void open() {
-    openView(GuidelinesView.VIEW_NAME);
+    openView(VIEW_NAME);
   }
 
   @Test
@@ -86,7 +87,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
 
-    GuidelinesViewElement view = $(GuidelinesViewElement.class).first();
+    GuidelinesViewElement view = $(GuidelinesViewElement.class).id(VIEW_NAME);
     assertTrue(optional(() -> view.header()).isPresent());
     List<Category> categories = guidelinesConfiguration.categories(currentLocale());
     assertEquals(categories.size(), view.categories().size());
@@ -102,8 +103,8 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   @Download
   public void download() throws Throwable {
     Files.createDirectories(downloadHome);
-    Guideline guideline = guidelinesConfiguration.categories(currentLocale()).get(0).guidelines()
-        .get(0);
+    Guideline guideline =
+        guidelinesConfiguration.categories(currentLocale()).get(0).guidelines().get(0);
     Path downloaded = downloadHome.resolve(guideline.path().getFileName().toString());
     Files.deleteIfExists(downloaded);
     Path source = Paths.get(getClass().getResource("/structure1.png").toURI());
@@ -112,7 +113,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
 
     open();
 
-    GuidelinesViewElement view = $(GuidelinesViewElement.class).first();
+    GuidelinesViewElement view = $(GuidelinesViewElement.class).id(VIEW_NAME);
     AnchorElement guidelineElement = view.categories().get(0).guidelines().get(0);
     guidelineElement.click();
     // Wait for file to download.
