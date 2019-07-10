@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.files.web;
 
+import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class GuidelinesView extends VerticalLayout
     implements LocaleChangeObserver, HasDynamicTitle {
   public static final String VIEW_NAME = "guidelines";
+  public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
   private static final long serialVersionUID = 1881767150748374598L;
   private static final Logger logger = LoggerFactory.getLogger(GuidelinesView.class);
@@ -42,7 +44,7 @@ public class GuidelinesView extends VerticalLayout
   @PostConstruct
   void init() {
     logger.debug("guidelines view");
-    setId(VIEW_NAME);
+    setId(ID);
     add(header);
     header.setId(HEADER);
   }

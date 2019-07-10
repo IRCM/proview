@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.user.web.UsersView.ADD;
 import static ca.qc.ircm.proview.user.web.UsersView.HEADER;
+import static ca.qc.ircm.proview.user.web.UsersView.ID;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS;
@@ -162,12 +163,12 @@ public class UsersViewTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(view.getId().orElse("").equals(VIEW_NAME));
-    assertTrue(view.header.getId().orElse("").contains(HEADER));
-    assertTrue(view.users.getClassNames().contains(USERS));
-    assertTrue(view.error.getId().orElse("").contains(ERROR_TEXT));
-    assertTrue(view.add.getId().orElse("").contains(ADD));
-    assertTrue(view.switchUser.getId().orElse("").contains(SWITCH_USER));
+    assertEquals(ID, view.getId().orElse(""));
+    assertEquals(HEADER, view.header.getId().orElse(""));
+    assertEquals(USERS, view.users.getId().orElse(""));
+    assertEquals(ERROR_TEXT, view.error.getId().orElse(""));
+    assertEquals(ADD, view.add.getId().orElse(""));
+    assertEquals(SWITCH_USER, view.switchUser.getId().orElse(""));
   }
 
   @Test

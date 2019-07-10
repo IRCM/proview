@@ -14,6 +14,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.text.Strings.normalize;
 import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
 import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
@@ -64,6 +65,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SubmissionsView extends VerticalLayout
     implements HasDynamicTitle, LocaleChangeObserver {
   public static final String VIEW_NAME = "submissions";
+  public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
   public static final String SUBMISSIONS = "submissions";
   public static final String SAMPLES_COUNT = SAMPLES + "Count";
@@ -107,7 +109,7 @@ public class SubmissionsView extends VerticalLayout
   @PostConstruct
   void init() {
     logger.debug("submissions view");
-    setId(VIEW_NAME);
+    setId(ID);
     setSizeFull();
     add(header, submissions, add);
     header.setId(HEADER);

@@ -31,11 +31,11 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
@@ -242,19 +242,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void columns_User() {
-    assertTrue(view.getId().orElse("").equals(VIEW_NAME));
-    assertTrue(view.header.getId().orElse("").contains(HEADER));
-    assertTrue(view.submissions.getId().orElse("").contains(SUBMISSIONS));
-    assertTrue(view.add.getId().orElse("").contains(ADD));
-  }
-
-  @Test
   public void styles() {
-    assertTrue(view.getId().orElse("").equals(VIEW_NAME));
-    assertTrue(view.header.getId().orElse("").contains(HEADER));
-    assertTrue(view.submissions.getId().orElse("").contains(SUBMISSIONS));
-    assertTrue(view.add.getId().orElse("").contains(ADD));
+    assertEquals(ID, view.getId().orElse(""));
+    assertEquals(HEADER, view.header.getId().orElse(""));
+    assertEquals(SUBMISSIONS, view.submissions.getId().orElse(""));
+    assertEquals(ADD, view.add.getId().orElse(""));
   }
 
   @Test

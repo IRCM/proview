@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.files.web;
 
+import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.VIEW_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
@@ -87,7 +88,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
 
-    GuidelinesViewElement view = $(GuidelinesViewElement.class).id(VIEW_NAME);
+    GuidelinesViewElement view = $(GuidelinesViewElement.class).id(ID);
     assertTrue(optional(() -> view.header()).isPresent());
     List<Category> categories = guidelinesConfiguration.categories(currentLocale());
     assertEquals(categories.size(), view.categories().size());
@@ -113,7 +114,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
 
     open();
 
-    GuidelinesViewElement view = $(GuidelinesViewElement.class).id(VIEW_NAME);
+    GuidelinesViewElement view = $(GuidelinesViewElement.class).id(ID);
     AnchorElement guidelineElement = view.categories().get(0).guidelines().get(0);
     guidelineElement.click();
     // Wait for file to download.

@@ -17,8 +17,9 @@
 
 package ca.qc.ircm.proview.files.web;
 
+import static ca.qc.ircm.proview.files.web.GuidelinesView.HEADER;
+import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
-import static ca.qc.ircm.proview.web.ContactView.HEADER;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
@@ -67,6 +68,7 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
 
   @Test
   public void ids() {
+    assertEquals(ID, view.getId().orElse(null));
     assertEquals(HEADER, view.header.getId().orElse(null));
   }
 

@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.user.web.UsersView.ID;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
@@ -117,7 +118,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(VIEW_NAME);
+    UsersViewElement view = $(UsersViewElement.class).id(ID);
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
     assertFalse(optional(() -> view.switchFailed()).isPresent());
@@ -128,7 +129,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void update() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(VIEW_NAME);
+    UsersViewElement view = $(UsersViewElement.class).id(ID);
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
@@ -182,7 +183,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void update_Cancel() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(VIEW_NAME);
+    UsersViewElement view = $(UsersViewElement.class).id(ID);
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
@@ -215,7 +216,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void add() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(VIEW_NAME);
+    UsersViewElement view = $(UsersViewElement.class).id(ID);
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
@@ -269,7 +270,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void add_Cancel() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(VIEW_NAME);
+    UsersViewElement view = $(UsersViewElement.class).id(ID);
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
@@ -302,7 +303,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void switchUser() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(VIEW_NAME);
+    UsersViewElement view = $(UsersViewElement.class).id(ID);
     view.clickUser(1);
 
     view.clickSwitchUser();
@@ -318,7 +319,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Ignore("Admins are allowed to switch to another admin right now")
   public void switchUser_Fail() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(VIEW_NAME);
+    UsersViewElement view = $(UsersViewElement.class).id(ID);
     view.clickUser(0);
 
     view.clickSwitchUser();
