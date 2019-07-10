@@ -46,12 +46,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
-@WithMockUser
+@WithUserDetails("proview@ircm.qc.ca")
 public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   @Inject
   private GuidelinesConfiguration guidelinesConfiguration;
@@ -104,8 +104,8 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   @Download
   public void download() throws Throwable {
     Files.createDirectories(downloadHome);
-    Guideline guideline =
-        guidelinesConfiguration.categories(currentLocale()).get(0).guidelines().get(0);
+    Guideline guideline = guidelinesConfiguration.categories(currentLocale()).get(0).guidelines()
+        .get(0);
     Path downloaded = downloadHome.resolve(guideline.path().getFileName().toString());
     Files.deleteIfExists(downloaded);
     Path source = Paths.get(getClass().getResource("/structure1.png").toURI());
