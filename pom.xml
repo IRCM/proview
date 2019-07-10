@@ -332,19 +332,6 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <configuration>
-            <filesets>
-              <fileset>
-                <directory>${webapp.directory}/frontend-es5</directory>
-              </fileset>
-              <fileset>
-                <directory>${webapp.directory}/frontend-es6</directory>
-              </fileset>
-            </filesets>
-          </configuration>
-        </plugin>
-        <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <excludes>
