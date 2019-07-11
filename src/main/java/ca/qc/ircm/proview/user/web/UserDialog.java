@@ -124,8 +124,8 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     layout.setMinWidth("22em");
     add(layout);
     FormLayout formLayout = new FormLayout();
-    formLayout.setResponsiveSteps(new ResponsiveStep("20em", 1), new ResponsiveStep("20em", 2),
-        new ResponsiveStep("20em", 3), new ResponsiveStep("20em", 4));
+    formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
+        new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
     formLayout.add(new FormLayout(email, name, admin, manager, passwords),
         new FormLayout(laboratory, createNewLaboratory, laboratoryName),
         new FormLayout(addressLine, town, state, country, postalCode),
