@@ -61,6 +61,9 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -82,6 +85,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER = property(WEIGHT_MARKER_QUANTITY,
       PLACEHOLDER);
   public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
+  private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
   protected H2 header = new H2();
   protected RadioButtonGroup<Service> service = new RadioButtonGroup<>();
   protected TextField experiment = new TextField();
@@ -109,13 +113,20 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   protected RadioButtonGroup<ProteinContent> proteinContent = new RadioButtonGroup<>();
   protected RadioButtonGroup<MassDetectionInstrument> instrument = new RadioButtonGroup<>();
   protected RadioButtonGroup<ProteinIdentification> identification = new RadioButtonGroup<>();
-  protected TextField proteinIdentificationLink = new TextField();
+  protected TextField identificationLink = new TextField();
   protected ComboBox<Quantification> quantification = new ComboBox<>();
   protected TextArea quantificationComment = new TextArea();
   protected TextArea comment = new TextArea();
+  private SubmissionDialogPresenter presenter;
+
+  @Autowired
+  protected SubmissionDialog(SubmissionDialogPresenter presenter) {
+    this.presenter = presenter;
+  }
 
   @PostConstruct
   void init() {
+    logger.debug("Submission dialog");
     setId(ID);
     VerticalLayout layout = new VerticalLayout();
     layout.setMaxWidth("90em");
@@ -124,13 +135,14 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     FormLayout formLayout = new FormLayout();
     formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
-    formLayout.add(new FormLayout(service, experiment, goal, taxonomy, protein),
+    formLayout.add(
+        new FormLayout(service, experiment, goal, taxonomy, protein, molecularWeight,
+            postTranslationModification),
         new FormLayout(sampleType, samplesCount, samplesNames, quantity, volume, separation,
             thickness, coloration, otherColoration, developmentTime, destained,
             weightMarkerQuantity),
         new FormLayout(digestion, usedDigestion, otherDigestion, proteinContent, instrument,
-            identification, proteinIdentificationLink, quantification,
-            quantificationComment),
+            identification, identificationLink, quantification, quantificationComment),
         new FormLayout(comment));
     layout.add(header, formLayout);
     header.addClassName(HEADER);
@@ -155,13 +167,13 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     samplesNames.setMinHeight("10em");
     separation.addClassName(SEPARATION);
     separation.setItems(GelSeparation.values());
-    separation.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    separation.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     thickness.addClassName(THICKNESS);
     thickness.setItems(GelThickness.values());
-    thickness.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    thickness.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     coloration.addClassName(COLORATION);
     coloration.setItems(GelColoration.values());
-    coloration.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    coloration.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     otherColoration.addClassName(OTHER_COLORATION);
     developmentTime.addClassName(DEVELOPMENT_TIME);
     destained.addClassName(DECOLORATION);
@@ -169,7 +181,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     proteinQuantity.addClassName(PROTEIN_QUANTITY);
     digestion.addClassName(PROTEOLYTIC_DIGESTION_METHOD);
     digestion.setItems(ProteolyticDigestion.values());
-    digestion.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    digestion.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     usedDigestion.addClassName(USED_PROTEOLYTIC_DIGESTION_METHOD);
     otherDigestion.addClassName(OTHER_PROTEOLYTIC_DIGESTION_METHOD);
     proteinContent.addClassName(PROTEIN_CONTENT);
@@ -184,13 +196,15 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     identification.setItems(ProteinIdentification.availables());
     identification.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    proteinIdentificationLink.addClassName(PROTEIN_IDENTIFICATION_LINK);
+    identificationLink.addClassName(PROTEIN_IDENTIFICATION_LINK);
     quantification.addClassName(QUANTIFICATION);
     quantification.setItems(Quantification.values());
     quantification.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    quantification.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     quantificationComment.addClassName(QUANTIFICATION_COMMENT);
     comment.addClassName(COMMENT);
     comment.setMinHeight("20em");
+    presenter.init(this);
   }
 
   @Override
@@ -233,9 +247,10 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     proteinContent.setLabel(submissionResources.message(PROTEIN_CONTENT));
     instrument.setLabel(submissionResources.message(MASS_DETECTION_INSTRUMENT));
     identification.setLabel(submissionResources.message(PROTEIN_IDENTIFICATION));
-    proteinIdentificationLink.setLabel(submissionResources.message(PROTEIN_IDENTIFICATION_LINK));
+    identificationLink.setLabel(submissionResources.message(PROTEIN_IDENTIFICATION_LINK));
     quantification.setLabel(submissionResources.message(QUANTIFICATION));
     quantificationComment.setLabel(submissionResources.message(QUANTIFICATION_COMMENT));
     comment.setLabel(submissionResources.message(COMMENT));
+    presenter.localeChange(getLocale());
   }
 }
