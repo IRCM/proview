@@ -53,7 +53,7 @@ public class MainViewTest {
 
     view.beforeEnter(event);
 
-    verify(event).rerouteTo(SubmissionsView.class);
+    verify(event).forwardTo(SubmissionsView.class);
   }
 
   @Test
@@ -63,7 +63,7 @@ public class MainViewTest {
 
     view.beforeEnter(event);
 
-    verify(event).rerouteTo(SubmissionsView.class);
+    verify(event).forwardTo(SubmissionsView.class);
   }
 
   @Test
@@ -73,7 +73,7 @@ public class MainViewTest {
 
     view.beforeEnter(event);
 
-    verify(event).rerouteTo(SubmissionsView.class);
+    verify(event).forwardTo(SubmissionsView.class);
   }
 
   @Test

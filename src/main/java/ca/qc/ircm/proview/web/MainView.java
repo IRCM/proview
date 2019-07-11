@@ -20,6 +20,6 @@ public class MainView extends VerticalLayout implements BeforeEnterObserver {
 
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
-    event.rerouteTo(SubmissionsView.class);
+    event.forwardTo(SubmissionsView.class);
   }
 }
