@@ -1,5 +1,7 @@
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.text.Strings.styleName;
+
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
@@ -31,6 +33,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 @HtmlImport("styles/shared-styles.html")
 public class ViewLayout extends VerticalLayout
     implements RouterLayout, LocaleChangeObserver, AfterNavigationObserver {
+  public static final String ID = "view-layout";
   public static final String HOME = "home";
   public static final String USERS = "users";
   public static final String EXIT_SWITCH_USER = "exitSwitchUser";
@@ -38,6 +41,7 @@ public class ViewLayout extends VerticalLayout
   public static final String CHANGE_LANGUAGE = "changeLanguage";
   public static final String CONTACT = "contact";
   public static final String GUIDELINES = "guidelines";
+  public static final String TAB = "tab";
   private static final long serialVersionUID = 710800815636494374L;
   private static final Logger logger = LoggerFactory.getLogger(ViewLayout.class);
   protected Tabs tabs = new Tabs();
@@ -62,13 +66,21 @@ public class ViewLayout extends VerticalLayout
 
   @PostConstruct
   void init() {
+    setId(ID);
     setSizeFull();
     setPadding(false);
     setSpacing(false);
     add(tabs);
     tabs.add(home, users, exitSwitchUser, signout, changeLanguage, contact, guidelines);
+    home.setId(styleName(HOME, TAB));
+    users.setId(styleName(USERS, TAB));
+    exitSwitchUser.setId(styleName(EXIT_SWITCH_USER, TAB));
     exitSwitchUser
         .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
+    signout.setId(styleName(SIGNOUT, TAB));
+    changeLanguage.setId(styleName(CHANGE_LANGUAGE, TAB));
+    contact.setId(styleName(CONTACT, TAB));
+    guidelines.setId(styleName(GUIDELINES, TAB));
     tabsHref.put(home, MainView.VIEW_NAME);
     tabsHref.put(users, UsersView.VIEW_NAME);
     tabsHref.put(contact, ContactView.VIEW_NAME);

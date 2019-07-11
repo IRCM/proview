@@ -17,12 +17,15 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
 import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
 import static ca.qc.ircm.proview.web.ViewLayout.HOME;
+import static ca.qc.ircm.proview.web.ViewLayout.ID;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
+import static ca.qc.ircm.proview.web.ViewLayout.TAB;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -73,6 +76,18 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view = new ViewLayout(authorizationService);
     when(authorizationService.getCurrentUser()).thenReturn(user);
     view.init();
+  }
+
+  @Test
+  public void styles() {
+    assertEquals(ID, view.getId().orElse(""));
+    assertEquals(styleName(HOME, TAB), view.home.getId().orElse(""));
+    assertEquals(styleName(USERS, TAB), view.users.getId().orElse(""));
+    assertEquals(styleName(EXIT_SWITCH_USER, TAB), view.exitSwitchUser.getId().orElse(""));
+    assertEquals(styleName(SIGNOUT, TAB), view.signout.getId().orElse(""));
+    assertEquals(styleName(CHANGE_LANGUAGE, TAB), view.changeLanguage.getId().orElse(""));
+    assertEquals(styleName(CONTACT, TAB), view.contact.getId().orElse(""));
+    assertEquals(styleName(GUIDELINES, TAB), view.guidelines.getId().orElse(""));
   }
 
   @Test
