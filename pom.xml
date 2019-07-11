@@ -390,6 +390,7 @@
                 <goal>package-for-production</goal>
               </goals>
               <configuration>
+                <bundle>true</bundle>
                 <transpileOutputDirectory>${project.build.directory}/classes/static</transpileOutputDirectory>
               </configuration>
             </execution>
@@ -584,9 +585,7 @@
       <id>testbench</id>
       <properties>
         <testbench.skip>false</testbench.skip>
-        <!-- TODO Temporary fix for https://github.com/vaadin/skeleton-starter-flow/issues/93.
         <argLine>-Dvaadin.productionMode=true</argLine>
-        -->
       </properties>
       <build>
         <plugins>
