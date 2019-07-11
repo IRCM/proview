@@ -99,11 +99,13 @@ public class SubmissionsView extends VerticalLayout
   protected ComboBox<SampleStatus> statusFilter = new ComboBox<>();
   protected ComboBox<Boolean> hiddenFilter = new ComboBox<>();
   protected Button add = new Button();
+  protected SubmissionDialog dialog;
   private SubmissionsViewPresenter presenter;
 
   @Autowired
-  protected SubmissionsView(SubmissionsViewPresenter presenter) {
+  protected SubmissionsView(SubmissionsViewPresenter presenter, SubmissionDialog dialog) {
     this.presenter = presenter;
+    this.dialog = dialog;
   }
 
   @PostConstruct
@@ -116,8 +118,8 @@ public class SubmissionsView extends VerticalLayout
     submissions.setId(SUBMISSIONS);
     submissions.setSizeFull();
     submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
-    ValueProvider<Submission, String> submissionExperiment =
-        submission -> Objects.toString(submission.getExperiment(), "");
+    ValueProvider<Submission, String> submissionExperiment = submission -> Objects
+        .toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
         .setComparator((s1, s2) -> normalize(submissionExperiment.apply(s1))
             .compareToIgnoreCase(normalize(submissionExperiment.apply(s2))));
@@ -127,26 +129,28 @@ public class SubmissionsView extends VerticalLayout
     user = submissions.addColumn(submissionUser, USER).setKey(USER)
         .setComparator((s1, s2) -> normalize(submissionUser.apply(s1))
             .compareToIgnoreCase(normalize(submissionUser.apply(s2))));
-    ValueProvider<Submission, String> submissionDirector =
-        submission -> Objects.toString(submission.getLaboratory().getDirector(), "");
+    ValueProvider<Submission, String> submissionDirector = submission -> Objects
+        .toString(submission.getLaboratory().getDirector(), "");
     director = submissions.addColumn(submissionDirector, DIRECTOR).setKey(DIRECTOR)
         .setComparator((s1, s2) -> normalize(submissionDirector.apply(s1))
             .compareToIgnoreCase(normalize(submissionDirector.apply(s2))));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    sampleDeliveryDate =
-        submissions.addColumn(submission -> submission.getSampleDeliveryDate() != null
+    sampleDeliveryDate = submissions
+        .addColumn(submission -> submission.getSampleDeliveryDate() != null
             ? dateFormatter.format(submission.getSampleDeliveryDate())
-            : "", SAMPLE_DELIVERY_DATE).setKey(SAMPLE_DELIVERY_DATE);
+            : "", SAMPLE_DELIVERY_DATE)
+        .setKey(SAMPLE_DELIVERY_DATE);
     digestionDate = submissions.addColumn(submission -> submission.getDigestionDate() != null
         ? dateFormatter.format(submission.getDigestionDate())
         : "", DIGESTION_DATE).setKey(DIGESTION_DATE);
     analysisDate = submissions.addColumn(submission -> submission.getAnalysisDate() != null
         ? dateFormatter.format(submission.getAnalysisDate())
         : "", ANALYSIS_DATE).setKey(ANALYSIS_DATE);
-    dataAvailableDate =
-        submissions.addColumn(submission -> submission.getDataAvailableDate() != null
+    dataAvailableDate = submissions
+        .addColumn(submission -> submission.getDataAvailableDate() != null
             ? dateFormatter.format(submission.getDataAvailableDate())
-            : "", DATA_AVAILABLE_DATE).setKey(DATA_AVAILABLE_DATE);
+            : "", DATA_AVAILABLE_DATE)
+        .setKey(DATA_AVAILABLE_DATE);
     date = submissions.addColumn(submission -> submission.getSubmissionDate().toLocalDate() != null
         ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
         : "", SUBMISSION_DATE).setKey(SUBMISSION_DATE);
@@ -158,18 +162,18 @@ public class SubmissionsView extends VerticalLayout
     service = submissions.addColumn(submission -> submission.getService() != null
         ? submission.getService().getLabel(getLocale())
         : Service.getNullLabel(getLocale()), SERVICE).setKey(SERVICE);
-    samplesCount =
-        submissions.addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
-            .setKey(SAMPLES_COUNT);
-    samples =
-        submissions.addColumn(new ComponentRenderer<>(submission -> samples(submission)), SAMPLES)
-            .setKey(SAMPLES).setSortable(false);
-    status =
-        submissions.addColumn(new ComponentRenderer<>(submission -> status(submission)), STATUS)
-            .setKey(STATUS).setSortable(false);
-    hidden =
-        submissions.addColumn(new ComponentRenderer<>(submission -> hidden(submission)), HIDDEN)
-            .setKey(HIDDEN);
+    samplesCount = submissions
+        .addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
+        .setKey(SAMPLES_COUNT);
+    samples = submissions
+        .addColumn(new ComponentRenderer<>(submission -> samples(submission)), SAMPLES)
+        .setKey(SAMPLES).setSortable(false);
+    status = submissions
+        .addColumn(new ComponentRenderer<>(submission -> status(submission)), STATUS).setKey(STATUS)
+        .setSortable(false);
+    hidden = submissions
+        .addColumn(new ComponentRenderer<>(submission -> hidden(submission)), HIDDEN)
+        .setKey(HIDDEN);
     submissions.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = submissions.appendHeaderRow();
     filtersRow.getCell(experiment).setComponent(experimentFilter);
@@ -264,8 +268,8 @@ public class SubmissionsView extends VerticalLayout
     final MessageResource resources = new MessageResource(getClass(), getLocale());
     final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
     final MessageResource laboratoryResources = new MessageResource(Laboratory.class, getLocale());
-    final MessageResource submissionSampleResources =
-        new MessageResource(SubmissionSample.class, getLocale());
+    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
+        getLocale());
     header.setText(resources.message(HEADER));
     String experimentHeader = submissionResources.message(EXPERIMENT);
     experiment.setHeader(experimentHeader).setFooter(experimentHeader);

@@ -74,7 +74,6 @@ public class SubmissionsViewPresenterTest {
   @Before
   @SuppressWarnings("unchecked")
   public void beforeTest() {
-    view = new SubmissionsView(presenter);
     view.header = new H2();
     view.submissions = mock(Grid.class);
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
@@ -100,6 +99,7 @@ public class SubmissionsViewPresenterTest {
     view.statusFilter = new ComboBox<>();
     view.hiddenFilter = new ComboBox<>();
     view.add = new Button();
+    view.dialog = new SubmissionDialog();
     submissions = repository.findAll();
     when(service.all(any())).thenReturn(submissions);
   }

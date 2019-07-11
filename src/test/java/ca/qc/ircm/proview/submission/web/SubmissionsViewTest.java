@@ -107,6 +107,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   private SubmissionsView view;
   @Mock
   private SubmissionsViewPresenter presenter;
+  @Mock
+  private SubmissionDialog dialog;
   @Captor
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
@@ -121,8 +123,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   private MessageResource resources = new MessageResource(SubmissionsView.class, locale);
   private MessageResource submissionResources = new MessageResource(Submission.class, locale);
   private MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
-  private MessageResource submissionSampleResources =
-      new MessageResource(SubmissionSample.class, locale);
+  private MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
+      locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private List<Submission> submissions;
 
@@ -132,7 +134,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new SubmissionsView(presenter);
+    view = new SubmissionsView(presenter, dialog);
     view.init();
     submissions = repository.findAll();
   }
@@ -301,7 +303,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void localeChange() {
-    view = new SubmissionsView(presenter);
+    view = new SubmissionsView(presenter, dialog);
     mockColumns();
     view.init();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
@@ -313,8 +315,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     final MessageResource resources = new MessageResource(SubmissionsView.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     final MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
-    final MessageResource submissionSampleResources =
-        new MessageResource(SubmissionSample.class, locale);
+    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
+        locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
@@ -409,7 +411,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
 
   @Test
   public void submissions_ColumnsValueProvider() {
-    view = new SubmissionsView(presenter);
+    view = new SubmissionsView(presenter, dialog);
     mockColumns();
     view.init();
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(EXPERIMENT));
