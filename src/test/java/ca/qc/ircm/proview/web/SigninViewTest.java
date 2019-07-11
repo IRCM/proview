@@ -229,7 +229,7 @@ public class SigninViewTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void afterNavigationEvent_ExcessiveAttempts() {
+  public void afterNavigationEvent_Locked() {
     parameters.put(LOCKED, null);
 
     view.afterNavigation(afterNavigationEvent);
