@@ -20,8 +20,10 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.ContactView.ADDRESS;
 import static ca.qc.ircm.proview.web.ContactView.HEADER;
+import static ca.qc.ircm.proview.web.ContactView.ID;
 import static ca.qc.ircm.proview.web.ContactView.LINK;
 import static ca.qc.ircm.proview.web.ContactView.NAME;
 import static ca.qc.ircm.proview.web.ContactView.PHONE;
@@ -61,6 +63,20 @@ public class ContactViewTest extends AbstractViewTestCase {
     when(ui.getLocale()).thenReturn(locale);
     view = new ContactView();
     view.init();
+  }
+
+  @Test
+  public void styles() {
+    assertEquals(ID, view.getId().orElse(""));
+    assertEquals(HEADER, view.header.getId().orElse(""));
+    assertEquals(styleName(PROTEOMIC, HEADER), view.proteomicHeader.getId().orElse(""));
+    assertEquals(styleName(PROTEOMIC, NAME), view.proteomicNameAnchor.getId().orElse(""));
+    assertEquals(styleName(PROTEOMIC, ADDRESS), view.proteomicAddressAnchor.getId().orElse(""));
+    assertEquals(styleName(PROTEOMIC, PHONE), view.proteomicPhoneAnchor.getId().orElse(""));
+    assertEquals(styleName(WEBSITE, HEADER), view.websiteHeader.getId().orElse(""));
+    assertEquals(styleName(WEBSITE, NAME), view.websiteNameAnchor.getId().orElse(""));
+    assertEquals(styleName(WEBSITE, ADDRESS), view.websiteAddressAnchor.getId().orElse(""));
+    assertEquals(styleName(WEBSITE, PHONE), view.websitePhoneAnchor.getId().orElse(""));
   }
 
   @Test

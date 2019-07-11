@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 @Route(value = ContactView.VIEW_NAME, layout = ViewLayout.class)
 public class ContactView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle {
   public static final String VIEW_NAME = "contact";
+  public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
   public static final String PROTEOMIC = "proteomic";
   public static final String WEBSITE = "website";
@@ -57,15 +59,25 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
   @PostConstruct
   void init() {
     logger.debug("contact view");
+    setId(ID);
     add(header);
-    proteomicNameAnchor.add(addIcon(VaadinIcon.ENVELOPE.create(), proteomicName));
-    proteomicAddressAnchor.add(addIcon(VaadinIcon.MAP_MARKER.create(), proteomicAddress));
-    proteomicPhoneAnchor.add(addIcon(VaadinIcon.PHONE.create(), proteomicPhone));
     add(proteomicHeader, proteomicNameAnchor, proteomicAddressAnchor, proteomicPhoneAnchor);
-    websiteNameAnchor.add(addIcon(VaadinIcon.ENVELOPE.create(), websiteName));
-    websiteAddressAnchor.add(addIcon(VaadinIcon.MAP_MARKER.create(), websiteAddress));
-    websitePhoneAnchor.add(addIcon(VaadinIcon.PHONE.create(), websitePhone));
     add(websiteHeader, websiteNameAnchor, websiteAddressAnchor, websitePhoneAnchor);
+    header.setId(HEADER);
+    proteomicHeader.setId(styleName(PROTEOMIC, HEADER));
+    proteomicNameAnchor.setId(styleName(PROTEOMIC, NAME));
+    proteomicNameAnchor.add(addIcon(VaadinIcon.ENVELOPE.create(), proteomicName));
+    proteomicAddressAnchor.setId(styleName(PROTEOMIC, ADDRESS));
+    proteomicAddressAnchor.add(addIcon(VaadinIcon.MAP_MARKER.create(), proteomicAddress));
+    proteomicPhoneAnchor.setId(styleName(PROTEOMIC, PHONE));
+    proteomicPhoneAnchor.add(addIcon(VaadinIcon.PHONE.create(), proteomicPhone));
+    websiteHeader.setId(styleName(WEBSITE, HEADER));
+    websiteNameAnchor.setId(styleName(WEBSITE, NAME));
+    websiteNameAnchor.add(addIcon(VaadinIcon.ENVELOPE.create(), websiteName));
+    websiteAddressAnchor.setId(styleName(WEBSITE, ADDRESS));
+    websiteAddressAnchor.add(addIcon(VaadinIcon.MAP_MARKER.create(), websiteAddress));
+    websitePhoneAnchor.setId(styleName(WEBSITE, PHONE));
+    websitePhoneAnchor.add(addIcon(VaadinIcon.PHONE.create(), websitePhone));
   }
 
   private HorizontalLayout addIcon(Icon icon, Component component) {
