@@ -25,11 +25,11 @@ import java.util.List;
 
 @Element("vaadin-vertical-layout")
 public class CategoryComponentElement extends VerticalLayoutElement {
-  protected H3Element header() {
+  public H3Element header() {
     return $(H3Element.class).first();
   }
 
-  protected List<AnchorElement> guidelines() {
+  public List<AnchorElement> guidelines() {
     return $(AnchorElement.class).all();
   }
 }

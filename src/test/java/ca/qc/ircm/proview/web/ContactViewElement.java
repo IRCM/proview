@@ -16,39 +16,39 @@ import com.vaadin.testbench.elementsbase.Element;
 
 @Element("vaadin-vertical-layout")
 public class ContactViewElement extends VerticalLayoutElement {
-  protected H2Element header() {
+  public H2Element header() {
     return $(H2Element.class).id(HEADER);
   }
 
-  protected H3Element proteomicHeader() {
+  public H3Element proteomicHeader() {
     return $(H3Element.class).id(styleName(PROTEOMIC, HEADER));
   }
 
-  protected AnchorElement proteomicName() {
+  public AnchorElement proteomicName() {
     return $(AnchorElement.class).id(styleName(PROTEOMIC, NAME));
   }
 
-  protected AnchorElement proteomicAddress() {
+  public AnchorElement proteomicAddress() {
     return $(AnchorElement.class).id(styleName(PROTEOMIC, ADDRESS));
   }
 
-  protected AnchorElement proteomicPhone() {
+  public AnchorElement proteomicPhone() {
     return $(AnchorElement.class).id(styleName(PROTEOMIC, PHONE));
   }
 
-  protected H3Element websiteHeader() {
+  public H3Element websiteHeader() {
     return $(H3Element.class).id(styleName(WEBSITE, HEADER));
   }
 
-  protected AnchorElement websiteName() {
+  public AnchorElement websiteName() {
     return $(AnchorElement.class).id(styleName(WEBSITE, NAME));
   }
 
-  protected AnchorElement websiteAddress() {
+  public AnchorElement websiteAddress() {
     return $(AnchorElement.class).id(styleName(WEBSITE, ADDRESS));
   }
 
-  protected AnchorElement websitePhone() {
+  public AnchorElement websitePhone() {
     return $(AnchorElement.class).id(styleName(WEBSITE, PHONE));
   }
 }

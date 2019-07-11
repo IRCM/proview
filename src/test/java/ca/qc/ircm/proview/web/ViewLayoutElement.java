@@ -34,35 +34,35 @@ import com.vaadin.testbench.elementsbase.Element;
 
 @Element("vaadin-vertical-layout")
 public class ViewLayoutElement extends VerticalLayoutElement {
-  protected TabsElement tabs() {
+  public TabsElement tabs() {
     return $(TabsElement.class).first();
   }
 
-  protected TabElement home() {
+  public TabElement home() {
     return $(TabElement.class).id(styleName(HOME, TAB));
   }
 
-  protected TabElement users() {
+  public TabElement users() {
     return $(TabElement.class).id(styleName(USERS, TAB));
   }
 
-  protected TabElement exitSwitchUser() {
+  public TabElement exitSwitchUser() {
     return $(TabElement.class).id(styleName(EXIT_SWITCH_USER, TAB));
   }
 
-  protected TabElement signout() {
+  public TabElement signout() {
     return $(TabElement.class).id(styleName(SIGNOUT, TAB));
   }
 
-  protected TabElement changeLanguage() {
+  public TabElement changeLanguage() {
     return $(TabElement.class).id(styleName(CHANGE_LANGUAGE, TAB));
   }
 
-  protected TabElement contact() {
+  public TabElement contact() {
     return $(TabElement.class).id(styleName(CONTACT, TAB));
   }
 
-  protected TabElement guidelines() {
+  public TabElement guidelines() {
     return $(TabElement.class).id(styleName(GUIDELINES, TAB));
   }
 }

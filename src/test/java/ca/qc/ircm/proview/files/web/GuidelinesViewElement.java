@@ -27,11 +27,11 @@ import java.util.List;
 
 @Element("vaadin-vertical-layout")
 public class GuidelinesViewElement extends VerticalLayoutElement {
-  protected H2Element header() {
+  public H2Element header() {
     return $(H2Element.class).id(HEADER);
   }
 
-  protected List<CategoryComponentElement> categories() {
+  public List<CategoryComponentElement> categories() {
     return $(CategoryComponentElement.class).attributeContains("class", CATEGORY).all();
   }
 }
