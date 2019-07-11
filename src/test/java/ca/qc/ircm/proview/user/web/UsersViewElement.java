@@ -33,43 +33,43 @@ import com.vaadin.testbench.elementsbase.Element;
 public class UsersViewElement extends VerticalLayoutElement {
   private static final int EMAIL_COLUMN = 0;
 
-  protected H2Element header() {
+  public H2Element header() {
     return $(H2Element.class).id(HEADER);
   }
 
-  protected GridElement users() {
+  public GridElement users() {
     return $(GridElement.class).first();
   }
 
-  protected void clickUser(int row) {
+  public void clickUser(int row) {
     users().getCell(row, 0).click();
   }
 
-  protected void doubleClickUser(int row) {
+  public void doubleClickUser(int row) {
     users().getCell(row, 0).doubleClick();
   }
 
-  protected String email(int row) {
+  public String email(int row) {
     return users().getCell(row, EMAIL_COLUMN).getText();
   }
 
-  protected DivElement switchFailed() {
+  public DivElement switchFailed() {
     return $(DivElement.class).id(SWITCH_FAILED);
   }
 
-  protected ButtonElement addButton() {
+  public ButtonElement addButton() {
     return $(ButtonElement.class).id(ADD);
   }
 
-  protected void clickAdd() {
+  public void clickAdd() {
     addButton().click();
   }
 
-  protected ButtonElement switchUserButton() {
+  public ButtonElement switchUserButton() {
     return $(ButtonElement.class).id(SWITCH_USER);
   }
 
-  protected void clickSwitchUser() {
+  public void clickSwitchUser() {
     switchUserButton().click();
   }
 }
