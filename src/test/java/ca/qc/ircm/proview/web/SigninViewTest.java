@@ -25,17 +25,20 @@ import static ca.qc.ircm.proview.web.SigninView.DISABLED;
 import static ca.qc.ircm.proview.web.SigninView.FAIL;
 import static ca.qc.ircm.proview.web.SigninView.FORM_TITLE;
 import static ca.qc.ircm.proview.web.SigninView.HEADER;
+import static ca.qc.ircm.proview.web.SigninView.ID;
 import static ca.qc.ircm.proview.web.SigninView.LOCKED;
 import static ca.qc.ircm.proview.web.SigninView.SIGNIN;
-import static ca.qc.ircm.proview.web.SigninView.VIEW_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
@@ -43,6 +46,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.Location;
 import com.vaadin.flow.router.QueryParameters;
 import java.util.HashMap;
@@ -54,6 +58,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -62,8 +67,12 @@ public class SigninViewTest extends AbstractViewTestCase {
   private SigninView view;
   @Autowired
   private SecurityConfiguration configuration;
+  @MockBean
+  private AuthorizationService authorizationService;
   @Mock
   private AfterNavigationEvent afterNavigationEvent;
+  @Mock
+  private BeforeEnterEvent beforeEnterEvent;
   @Mock
   private Location location;
   @Mock
@@ -80,7 +89,7 @@ public class SigninViewTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new SigninView(configuration);
+    view = new SigninView(configuration, authorizationService);
     view.init();
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     when(location.getQueryParameters()).thenReturn(queryParameters);
@@ -89,7 +98,7 @@ public class SigninViewTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(view.getId().orElse("").equals(VIEW_NAME));
+    assertEquals(ID, view.getId().orElse(""));
     assertFalse(view.isForgotPasswordButtonVisible());
   }
 
@@ -176,6 +185,20 @@ public class SigninViewTest extends AbstractViewTestCase {
   public void getPageTitle() {
     assertEquals(resources.message(TITLE, generalResources.message(APPLICATION_NAME)),
         view.getPageTitle());
+  }
+
+  @Test
+  public void beforeEnter_Anonymous() {
+    when(authorizationService.isAnonymous()).thenReturn(true);
+    view.beforeEnter(beforeEnterEvent);
+    verifyZeroInteractions(beforeEnterEvent);
+  }
+
+  @Test
+  public void beforeEnter_User() {
+    when(authorizationService.isAnonymous()).thenReturn(false);
+    view.beforeEnter(beforeEnterEvent);
+    verify(beforeEnterEvent).forwardTo(MainView.class);
   }
 
   @Test

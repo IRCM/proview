@@ -1,11 +1,13 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.HASHED_PASSWORD;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.text.MessageResource;
@@ -34,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SigninView extends LoginOverlay
     implements LocaleChangeObserver, HasDynamicTitle, AfterNavigationObserver, BeforeEnterObserver {
   public static final String VIEW_NAME = "signin";
+  public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
   public static final String DESCRIPTION = "description";
   public static final String FORM_TITLE = "form.title";
@@ -48,16 +51,19 @@ public class SigninView extends LoginOverlay
   protected LoginI18n i18n;
   protected String error;
   private transient SecurityConfiguration configuration;
+  private transient AuthorizationService authorizationService;
 
   @Autowired
-  protected SigninView(SecurityConfiguration configuration) {
+  protected SigninView(SecurityConfiguration configuration,
+      AuthorizationService authorizationService) {
     this.configuration = configuration;
+    this.authorizationService = authorizationService;
   }
 
   @PostConstruct
   void init() {
     logger.debug("signin view");
-    setId(VIEW_NAME);
+    setId(ID);
     addLoginListener(e -> setError(false));
     setForgotPasswordButtonVisible(false);
     setAction(VIEW_NAME);
@@ -66,13 +72,10 @@ public class SigninView extends LoginOverlay
 
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
-    // TODO Redirect to main view if user is known.
-    /*
+    // Redirect to main view if user is known.
     if (!authorizationService.isAnonymous()) {
-      UI.getCurrent().getPage().getHistory().replaceState(null, "");
-      event.rerouteTo(MainView.class);
+      event.forwardTo(MainView.class);
     }
-    */
   }
 
   @Override
