@@ -1,6 +1,8 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -74,6 +76,7 @@ public class ViewLayout extends VerticalLayout
     tabs.add(home, users, exitSwitchUser, signout, changeLanguage, contact, guidelines);
     home.setId(styleName(HOME, TAB));
     users.setId(styleName(USERS, TAB));
+    users.setVisible(authorizationService.hasAnyRole(MANAGER, ADMIN));
     exitSwitchUser.setId(styleName(EXIT_SWITCH_USER, TAB));
     exitSwitchUser
         .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));

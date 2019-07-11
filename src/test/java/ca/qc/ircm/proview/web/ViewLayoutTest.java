@@ -18,6 +18,8 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
@@ -122,6 +124,30 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   public void tabs() {
     view.init();
     assertTrue(view.home.isVisible());
+    assertFalse(view.users.isVisible());
+    assertFalse(view.exitSwitchUser.isVisible());
+    assertTrue(view.signout.isVisible());
+    assertTrue(view.contact.isVisible());
+    assertTrue(view.guidelines.isVisible());
+  }
+
+  @Test
+  public void tabs_Manager() {
+    when(authorizationService.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
+    view.init();
+    assertTrue(view.home.isVisible());
+    assertTrue(view.users.isVisible());
+    assertFalse(view.exitSwitchUser.isVisible());
+    assertTrue(view.signout.isVisible());
+    assertTrue(view.contact.isVisible());
+    assertTrue(view.guidelines.isVisible());
+  }
+
+  @Test
+  public void tabs_Admin() {
+    when(authorizationService.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
+    view.init();
+    assertTrue(view.home.isVisible());
     assertTrue(view.users.isVisible());
     assertFalse(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
@@ -135,7 +161,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
         .thenReturn(true);
     view.init();
     assertTrue(view.home.isVisible());
-    assertTrue(view.users.isVisible());
+    assertFalse(view.users.isVisible());
     assertTrue(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
     assertTrue(view.contact.isVisible());
