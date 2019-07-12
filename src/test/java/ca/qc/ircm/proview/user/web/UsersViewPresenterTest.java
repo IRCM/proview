@@ -274,8 +274,8 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   @Test
   public void view() {
     presenter.init(view);
-    User user = new User();
-    user.setId(2L);
+    User user = mock(User.class);
+    when(user.getId()).thenReturn(2L);
     User databaseUser = userRepository.findById(2L).orElse(null);
     when(userService.get(any(Long.class))).thenReturn(databaseUser);
     presenter.view(user);
