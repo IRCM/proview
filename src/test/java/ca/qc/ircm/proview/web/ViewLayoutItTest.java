@@ -56,7 +56,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_User() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
-    assertTrue(optional(() -> view.home()).isPresent());
+    assertTrue(optional(() -> view.submissions()).isPresent());
     assertFalse(optional(() -> view.users()).isPresent());
     assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
     assertTrue(optional(() -> view.signout()).isPresent());
@@ -70,7 +70,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Manager() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
-    assertTrue(optional(() -> view.home()).isPresent());
+    assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
     assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
     assertTrue(optional(() -> view.signout()).isPresent());
@@ -84,7 +84,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Admin() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
-    assertTrue(optional(() -> view.home()).isPresent());
+    assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
     assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
     assertTrue(optional(() -> view.signout()).isPresent());
@@ -104,7 +104,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     usersView.clickUser(1);
     usersView.clickSwitchUser();
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
-    assertTrue(optional(() -> view.home()).isPresent());
+    assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
     assertTrue(optional(() -> view.exitSwitchUser()).isPresent());
     assertTrue(optional(() -> view.signout()).isPresent());
@@ -115,10 +115,10 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
-  public void home() throws Throwable {
+  public void submissions() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
-    view.home().click();
+    view.submissions().click();
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 

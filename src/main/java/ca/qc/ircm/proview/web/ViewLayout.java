@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.UI;
@@ -36,7 +37,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 public class ViewLayout extends VerticalLayout
     implements RouterLayout, LocaleChangeObserver, AfterNavigationObserver {
   public static final String ID = "view-layout";
-  public static final String HOME = "home";
+  public static final String SUBMISSIONS = "submissions";
   public static final String USERS = "users";
   public static final String EXIT_SWITCH_USER = "exitSwitchUser";
   public static final String SIGNOUT = "signout";
@@ -47,7 +48,7 @@ public class ViewLayout extends VerticalLayout
   private static final long serialVersionUID = 710800815636494374L;
   private static final Logger logger = LoggerFactory.getLogger(ViewLayout.class);
   protected Tabs tabs = new Tabs();
-  protected Tab home = new Tab();
+  protected Tab submissions = new Tab();
   protected Tab users = new Tab();
   protected Tab exitSwitchUser = new Tab();
   protected Tab signout = new Tab();
@@ -73,8 +74,8 @@ public class ViewLayout extends VerticalLayout
     setPadding(false);
     setSpacing(false);
     add(tabs);
-    tabs.add(home, users, exitSwitchUser, signout, changeLanguage, contact, guidelines);
-    home.setId(styleName(HOME, TAB));
+    tabs.add(submissions, users, exitSwitchUser, signout, changeLanguage, contact, guidelines);
+    submissions.setId(styleName(SUBMISSIONS, TAB));
     users.setId(styleName(USERS, TAB));
     users.setVisible(authorizationService.hasAnyRole(MANAGER, ADMIN));
     exitSwitchUser.setId(styleName(EXIT_SWITCH_USER, TAB));
@@ -84,7 +85,7 @@ public class ViewLayout extends VerticalLayout
     changeLanguage.setId(styleName(CHANGE_LANGUAGE, TAB));
     contact.setId(styleName(CONTACT, TAB));
     guidelines.setId(styleName(GUIDELINES, TAB));
-    tabsHref.put(home, MainView.VIEW_NAME);
+    tabsHref.put(submissions, SubmissionsView.VIEW_NAME);
     tabsHref.put(users, UsersView.VIEW_NAME);
     tabsHref.put(contact, ContactView.VIEW_NAME);
     tabsHref.put(guidelines, GuidelinesView.VIEW_NAME);
@@ -94,7 +95,7 @@ public class ViewLayout extends VerticalLayout
   @Override
   public void localeChange(LocaleChangeEvent event) {
     MessageResource resources = new MessageResource(ViewLayout.class, getLocale());
-    home.setLabel(resources.message(HOME));
+    submissions.setLabel(resources.message(SUBMISSIONS));
     users.setLabel(resources.message(USERS));
     exitSwitchUser.setLabel(resources.message(EXIT_SWITCH_USER));
     signout.setLabel(resources.message(SIGNOUT));

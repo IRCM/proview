@@ -24,9 +24,9 @@ import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
 import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
-import static ca.qc.ircm.proview.web.ViewLayout.HOME;
 import static ca.qc.ircm.proview.web.ViewLayout.ID;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
+import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.ViewLayout.TAB;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 import static org.junit.Assert.assertEquals;
@@ -41,6 +41,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
@@ -83,7 +84,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
-    assertEquals(styleName(HOME, TAB), view.home.getId().orElse(""));
+    assertEquals(styleName(SUBMISSIONS, TAB), view.submissions.getId().orElse(""));
     assertEquals(styleName(USERS, TAB), view.users.getId().orElse(""));
     assertEquals(styleName(EXIT_SWITCH_USER, TAB), view.exitSwitchUser.getId().orElse(""));
     assertEquals(styleName(SIGNOUT, TAB), view.signout.getId().orElse(""));
@@ -95,7 +96,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   @Test
   public void labels() {
     view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HOME), view.home.getLabel());
+    assertEquals(resources.message(SUBMISSIONS), view.submissions.getLabel());
     assertEquals(resources.message(USERS), view.users.getLabel());
     assertEquals(resources.message(EXIT_SWITCH_USER), view.exitSwitchUser.getLabel());
     assertEquals(resources.message(SIGNOUT), view.signout.getLabel());
@@ -111,7 +112,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     final MessageResource resources = new MessageResource(ViewLayout.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HOME), view.home.getLabel());
+    assertEquals(resources.message(SUBMISSIONS), view.submissions.getLabel());
     assertEquals(resources.message(USERS), view.users.getLabel());
     assertEquals(resources.message(EXIT_SWITCH_USER), view.exitSwitchUser.getLabel());
     assertEquals(resources.message(SIGNOUT), view.signout.getLabel());
@@ -123,7 +124,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   @Test
   public void tabs() {
     view.init();
-    assertTrue(view.home.isVisible());
+    assertTrue(view.submissions.isVisible());
     assertFalse(view.users.isVisible());
     assertFalse(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
@@ -135,7 +136,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   public void tabs_Manager() {
     when(authorizationService.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
     view.init();
-    assertTrue(view.home.isVisible());
+    assertTrue(view.submissions.isVisible());
     assertTrue(view.users.isVisible());
     assertFalse(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
@@ -147,7 +148,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   public void tabs_Admin() {
     when(authorizationService.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
     view.init();
-    assertTrue(view.home.isVisible());
+    assertTrue(view.submissions.isVisible());
     assertTrue(view.users.isVisible());
     assertFalse(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
@@ -160,7 +161,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     when(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR))
         .thenReturn(true);
     view.init();
-    assertTrue(view.home.isVisible());
+    assertTrue(view.submissions.isVisible());
     assertFalse(view.users.isVisible());
     assertTrue(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
@@ -169,24 +170,24 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void tabs_SelectHome() {
+  public void tabs_SelectSubmissions() {
     Location location = new Location(UsersView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
 
-    view.tabs.setSelectedTab(view.home);
+    view.tabs.setSelectedTab(view.submissions);
 
-    verify(ui).navigate(MainView.VIEW_NAME);
+    verify(ui).navigate(SubmissionsView.VIEW_NAME);
     verify(page, never()).executeJs(any());
   }
 
   @Test
-  public void tabs_SelectHomeNoChange() {
-    Location location = new Location(MainView.VIEW_NAME);
+  public void tabs_SelectSubmissionsNoChange() {
+    Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
 
-    view.tabs.setSelectedTab(view.home);
+    view.tabs.setSelectedTab(view.submissions);
 
     verify(ui, never()).navigate(any(String.class));
     verify(page, never()).executeJs(any());
@@ -194,7 +195,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
 
   @Test
   public void tabs_SelectUsers() {
-    Location location = new Location(MainView.VIEW_NAME);
+    Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
 
@@ -218,7 +219,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
 
   @Test
   public void tabs_SelectContact() {
-    Location location = new Location(MainView.VIEW_NAME);
+    Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
 
@@ -242,7 +243,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
 
   @Test
   public void tabs_SelectGuidelines() {
-    Location location = new Location(MainView.VIEW_NAME);
+    Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
 
@@ -266,7 +267,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
 
   @Test
   public void tabs_SelectExitSwitchUser() {
-    Location location = new Location(MainView.VIEW_NAME);
+    Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
 
@@ -279,7 +280,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
 
   @Test
   public void tabs_SelectSignout() {
-    Location location = new Location(MainView.VIEW_NAME);
+    Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
 
@@ -291,7 +292,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
 
   @Test
   public void tabs_ChangeLanguage_ToFrench() {
-    Location location = new Location(MainView.VIEW_NAME);
+    Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
 
@@ -299,13 +300,13 @@ public class ViewLayoutTest extends AbstractViewTestCase {
 
     verify(ui, never()).navigate(any(String.class));
     verify(ui).setLocale(Locale.FRENCH);
-    assertEquals(view.home, view.tabs.getSelectedTab());
+    assertEquals(view.submissions, view.tabs.getSelectedTab());
   }
 
   @Test
   public void tabs_ChangeLanguage_ToEnglish() {
     when(ui.getLocale()).thenReturn(Locale.FRENCH);
-    Location location = new Location(MainView.VIEW_NAME);
+    Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
 
@@ -313,7 +314,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
 
     verify(ui, never()).navigate(any(String.class));
     verify(ui).setLocale(Locale.ENGLISH);
-    assertEquals(view.home, view.tabs.getSelectedTab());
+    assertEquals(view.submissions, view.tabs.getSelectedTab());
   }
 
   @Test
@@ -330,13 +331,13 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void afterNavigation_Home() {
-    Location location = new Location(MainView.VIEW_NAME);
+  public void afterNavigation_Submissions() {
+    Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
 
     view.afterNavigation(afterNavigationEvent);
 
-    assertEquals(view.home, view.tabs.getSelectedTab());
+    assertEquals(view.submissions, view.tabs.getSelectedTab());
   }
 
   @Test

@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.test.config;
 
-import static ca.qc.ircm.proview.web.ViewLayout.HOME;
+import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
@@ -81,7 +81,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
         optional(() -> $(TabsElement.class).first().$(TabElement.class).first()).orElse(null);
     Optional<Locale> optlocale =
         locales.stream().filter(locale -> new MessageResource(ViewLayout.class, locale)
-            .message(HOME).equals(home != null ? home.getText() : "")).findAny();
+            .message(SUBMISSIONS).equals(home != null ? home.getText() : "")).findAny();
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
           .filter(locale -> new MessageResource(SigninView.class, locale)

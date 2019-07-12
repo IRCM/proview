@@ -22,8 +22,8 @@ import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
 import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
-import static ca.qc.ircm.proview.web.ViewLayout.HOME;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
+import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.ViewLayout.TAB;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 
@@ -38,8 +38,8 @@ public class ViewLayoutElement extends VerticalLayoutElement {
     return $(TabsElement.class).first();
   }
 
-  public TabElement home() {
-    return $(TabElement.class).id(styleName(HOME, TAB));
+  public TabElement submissions() {
+    return $(TabElement.class).id(styleName(SUBMISSIONS, TAB));
   }
 
   public TabElement users() {
