@@ -82,8 +82,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   public static final String QUANTITY_PLACEHOLDER = property(QUANTITY, PLACEHOLDER);
   public static final String VOLUME_PLACEHOLDER = property(VOLUME, PLACEHOLDER);
   public static final String DEVELOPMENT_TIME_PLACEHOLDER = property(DEVELOPMENT_TIME, PLACEHOLDER);
-  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER = property(WEIGHT_MARKER_QUANTITY,
-      PLACEHOLDER);
+  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER =
+      property(WEIGHT_MARKER_QUANTITY, PLACEHOLDER);
   public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
   protected H2 header = new H2();
@@ -212,8 +212,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     final MessageResource resources = new MessageResource(SubmissionDialog.class, getLocale());
     final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
     final MessageResource sampleResources = new MessageResource(Sample.class, getLocale());
-    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-        getLocale());
+    final MessageResource submissionSampleResources =
+        new MessageResource(SubmissionSample.class, getLocale());
     header.setText(resources.message(HEADER));
     service.setLabel(submissionResources.message(SERVICE));
     experiment.setLabel(submissionResources.message(EXPERIMENT));
@@ -252,5 +252,13 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     quantificationComment.setLabel(submissionResources.message(QUANTIFICATION_COMMENT));
     comment.setLabel(submissionResources.message(COMMENT));
     presenter.localeChange(getLocale());
+  }
+
+  public Submission getSubmission() {
+    return presenter.getSubmission();
+  }
+
+  public void setSubmission(Submission submission) {
+    presenter.setSubmission(submission);
   }
 }

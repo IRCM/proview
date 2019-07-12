@@ -95,8 +95,8 @@ public class SubmissionsViewPresenter {
   }
 
   private DataProvider<Submission, Void> dataProvider() {
-    Function<Query<Submission, SubmissionFilter>, List<OrderSpecifier<?>>> filterSortOrders = query -> query
-        .getSortOrders() != null
+    Function<Query<Submission, SubmissionFilter>, List<OrderSpecifier<?>>> filterSortOrders =
+        query -> query.getSortOrders() != null
             ? query.getSortOrders().stream()
                 .filter(order -> columnProperties.containsKey(order.getSorted()))
                 .map(order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
@@ -116,10 +116,10 @@ public class SubmissionsViewPresenter {
       int count = service.count(filter);
       return count;
     };
-    DataProvider<Submission, SubmissionFilter> dataProvider = new CallbackDataProvider<>(
-        fetchCallback, countCallback);
-    ConfigurableFilterDataProvider<Submission, Void, SubmissionFilter> wrapper = dataProvider
-        .withConfigurableFilter();
+    DataProvider<Submission, SubmissionFilter> dataProvider =
+        new CallbackDataProvider<>(fetchCallback, countCallback);
+    ConfigurableFilterDataProvider<Submission, Void, SubmissionFilter> wrapper =
+        dataProvider.withConfigurableFilter();
     wrapper.setFilter(filter);
     return wrapper;
   }
@@ -165,9 +165,13 @@ public class SubmissionsViewPresenter {
   }
 
   void view(Submission submission) {
+    Submission database = service.get(submission.getId());
+    view.dialog.setSubmission(database);
+    view.dialog.open();
   }
 
   void add() {
+    view.dialog.setSubmission(new Submission());
     view.dialog.open();
   }
 

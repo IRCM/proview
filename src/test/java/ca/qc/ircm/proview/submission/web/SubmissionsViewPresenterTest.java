@@ -21,8 +21,8 @@ import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -45,9 +45,10 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -66,6 +67,8 @@ public class SubmissionsViewPresenterTest {
   private AuthorizationService authorizationService;
   @Autowired
   private SubmissionRepository repository;
+  @Captor
+  private ArgumentCaptor<Submission> submissionCaptor;
   private List<Submission> submissions;
 
   /**
@@ -205,17 +208,28 @@ public class SubmissionsViewPresenterTest {
   }
 
   @Test
-  @Ignore("No SubmissionDialog yet")
   public void view() {
     presenter.init(view);
-    fail("Program test");
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(2L);
+    Submission databaseSubmission = repository.findById(2L).orElse(null);
+    when(service.get(any(Long.class))).thenReturn(databaseSubmission);
+    presenter.view(submission);
+    verify(service).get(2L);
+    verify(view.dialog).setSubmission(databaseSubmission);
+    verify(view.dialog).open();
   }
 
   @Test
-  @Ignore("No SubmissionDialog yet")
   public void add() {
     presenter.init(view);
-    fail("Program test");
+    presenter.add();
+    verify(view.dialog).setSubmission(submissionCaptor.capture());
+    Submission submission = submissionCaptor.getValue();
+    assertNull(submission.getId());
+    assertNull(submission.getExperiment());
+    assertNull(submission.getSamples());
+    verify(view.dialog).open();
   }
 
   @Test
