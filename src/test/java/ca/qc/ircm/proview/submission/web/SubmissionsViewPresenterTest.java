@@ -99,7 +99,7 @@ public class SubmissionsViewPresenterTest {
     view.statusFilter = new ComboBox<>();
     view.hiddenFilter = new ComboBox<>();
     view.add = new Button();
-    view.dialog = new SubmissionDialog();
+    view.dialog = mock(SubmissionDialog.class);
     submissions = repository.findAll();
     when(service.all(any())).thenReturn(submissions);
   }
