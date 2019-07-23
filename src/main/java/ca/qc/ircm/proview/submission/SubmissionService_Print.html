@@ -20,142 +20,11 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8">
-    <style type="text/css">
-      h1 {
-        font-size: 2em;
-        margin: 1em 0;
-        padding: 0;
-      }
-      h2 {
-        font-size: 1.5em;
-        margin: 1em 0;
-        padding: 0;
-      }
-      h3 {
-        font-size: 1.2em;
-        margin: 0 0 1em 0;
-        padding: 0;
-      }
-      .section {
-        border-style: solid;
-        margin: 1em 0;
-        padding: 1em;
-      }
-      .section > div {
-        margin: 0.3em 0;
-      }
-      .two-columns {
-        height: auto;
-        overflow: hidden;
-      }
-      .two-columns span {
-        display: inline-block;
-      }
-      .two-columns .left {
-        width: auto;
-        overflow: hidden;
-      }
-      .two-columns .right {
-        width: 25em;
-        float: right;
-      }
-      .user-information .label {
-        min-width: 5em;
-      }
-      .sample-information .label {
-        min-width: 10em;
-      }
-      .sample-information span {
-        display: inline-block;
-      }
-      .sample-name-separator {
-        margin-right: 0.3em;
-      }
-      .service-information .label {
-        vertical-align: top;
-        min-width: 15em;
-      }
-      .service-information span {
-        display: inline-block;
-      }
-      .solvent-separator {
-        margin-right: 0.3em;
-      }
-      .comment .label {
-        vertical-align: top;
-        min-width: 5em;
-      }
-      .comment span {
-        display: inline-block;
-        margin: 0;
-        padding: 0;
-      }
-      .plate-information table {
-        border-collapse: collapse;
-      }
-      .plate-information th, .plate-information td {
-        border-style: solid;
-        border-width: 0 1px 1px 0;
-        border-color: black;
-      }
-      .plate-information tbody tr th:first-child {
-        border-width: 0 1px 1px 1px;
-      }
-      .plate-information tbody tr:first-child th {
-        border-width: 1px 1px 1px 0;
-      }
-      .plate-information tbody tr:first-child th:first-child {
-        border-width: 1px;
-      }
-      .plate-information td {
-        width: 102px;
-        height: 102px;
-        margin: 0;
-        padding: 0;
-      }
-      .plate-information td.banned {
-        color: white;
-        background-color: red;
-      }
-      .plate-information span {
-        margin: 1px;
-        display: inline-block;
-        width: 96px;
-        height: 96px;
-        word-wrap: break-word;
-        overflow: hidden;
-      }
-    </style>
-    <style type="text/css" media="print">
-      body {
-        color-adjust: exact;
-        -webkit-print-color-adjust: exact;
-      }
-      .section {
-        width: 11in;
-      }
-      .plate-information {
-        width: 13in;
-        transform: rotate(90deg) translateX(2.1in); 
-      }
-      .plate-information td {
-        width: 1.05in;
-        height: 1.05in;
-      }
-      .plate-information span {
-        width: 0.8in;
-        height: 0.8in;
-      }
-      .pagebreak {
-        page-break-before: always;
-      }
-    </style>
-  </head>
-  <body>
+  <div>
+    <!--
     <h1 class="platform" th:text="#{platform}">IRCM Proteomic Discovery Platform</h1>
     <h2 class="service" th:text="${submission.service.getLabel(locale)}">Proteomics analysis form</h2>
+    -->
     <div class="user-information section">
       <div class="two-columns">
         <div class="right">
@@ -404,5 +273,5 @@
         </tbody>
       </table>
     </div>
-  </body>
+  </div>
 </html>
