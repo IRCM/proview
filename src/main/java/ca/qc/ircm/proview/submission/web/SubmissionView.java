@@ -64,7 +64,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
+import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -78,7 +80,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Route(value = SubmissionView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ UserRole.USER })
 public class SubmissionView extends VerticalLayout
-    implements HasDynamicTitle, LocaleChangeObserver {
+    implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver {
   public static final String VIEW_NAME = "submission";
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
@@ -266,5 +268,10 @@ public class SubmissionView extends VerticalLayout
     final MessageResource resources = new MessageResource(getClass(), getLocale());
     final MessageResource generalResources = new MessageResource(WebConstants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+  }
+
+  @Override
+  public void setParameter(BeforeEvent event, Long parameter) {
+    // TODO Auto-generated method stub
   }
 }

@@ -51,6 +51,7 @@ public class WebConstants {
   public static final String ERROR = "error";
   public static final String ERROR_TEXT = "error-text";
   public static final String BORDER = "border";
+  public static final String RIGHT = "right";
   public static final String CANCEL = "cancel";
   public static final String BUTTON_SKIP_ROW = "skip-row";
   public static final String UPLOAD_STATUS = "uploadStatus";
@@ -58,6 +59,8 @@ public class WebConstants {
   public static final String BANNED = "banned";
   public static final String ALL = "all";
   public static final String SAVE = "save";
+  public static final String EDIT = "edit";
+  public static final String PRINT = "print";
   public static final String SAVED_SUBMISSIONS = "savedSubmissions";
   public static final String SAVED_SAMPLES = "savedSamples";
   public static final String SAVED_CONTAINERS = "savedContainers";
