@@ -368,7 +368,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     if (experiment != null) {
       return experiment;
     } else {
-      return !samples.isEmpty() ? samples.get(0).getName() : "";
+      return samples != null && !samples.isEmpty() ? samples.get(0).getName() : "";
     }
   }
 
