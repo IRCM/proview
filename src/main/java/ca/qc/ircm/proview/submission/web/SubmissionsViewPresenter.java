@@ -34,7 +34,7 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,13 +96,13 @@ public class SubmissionsViewPresenter {
 
   private DataProvider<Submission, Void> dataProvider() {
     Function<Query<Submission, SubmissionFilter>, List<OrderSpecifier<?>>> filterSortOrders =
-        query -> query.getSortOrders() != null
+        query -> query.getSortOrders() != null && !query.getSortOrders().isEmpty()
             ? query.getSortOrders().stream()
                 .filter(order -> columnProperties.containsKey(order.getSorted()))
                 .map(order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
                     order.getDirection() == SortDirection.DESCENDING))
                 .collect(Collectors.toList())
-            : Collections.emptyList();
+            : Arrays.asList(submission.id.desc());
     FetchCallback<Submission, SubmissionFilter> fetchCallback = query -> {
       SubmissionFilter filter = query.getFilter().orElse(new SubmissionFilter());
       filter.sortOrders = filterSortOrders.apply(query);

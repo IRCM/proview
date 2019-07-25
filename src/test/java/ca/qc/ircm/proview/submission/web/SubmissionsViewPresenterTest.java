@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static org.junit.Assert.assertEquals;
@@ -31,8 +33,10 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -43,7 +47,12 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.provider.SortDirection;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,6 +78,10 @@ public class SubmissionsViewPresenterTest {
   private SubmissionRepository repository;
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
+  @Captor
+  private ArgumentCaptor<SubmissionFilter> filterCaptor;
+  @Captor
+  private ArgumentCaptor<DataProvider<Submission, ?>> dataProviderCaptor;
   private List<Submission> submissions;
 
   /**
@@ -141,6 +154,37 @@ public class SubmissionsViewPresenterTest {
     verify(view.service).setVisible(true);
     verify(view.instrument).setVisible(true);
     verify(view.hidden).setVisible(true);
+  }
+
+  @Test
+  public void submissions() {
+    presenter.init(view);
+    verify(view.submissions).setDataProvider(dataProviderCaptor.capture());
+    List<Submission> submissions = dataProviderCaptor.getValue()
+        .fetch(new Query<>(0, Integer.MAX_VALUE, null, null, null)).collect(Collectors.toList());
+    assertEquals(this.submissions, submissions);
+    verify(service).all(filterCaptor.capture());
+    SubmissionFilter filter = filterCaptor.getValue();
+    assertEquals(1, filter.sortOrders.size());
+    assertEquals(QSubmission.submission.id.desc(), filter.sortOrders.get(0));
+  }
+
+  @Test
+  public void submissions_SortOrder() {
+    presenter.init(view);
+    verify(view.submissions).setDataProvider(dataProviderCaptor.capture());
+    List<QuerySortOrder> sortOrders =
+        Arrays.asList(new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
+            new QuerySortOrder(USER, SortDirection.DESCENDING));
+    List<Submission> submissions = dataProviderCaptor.getValue()
+        .fetch(new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null))
+        .collect(Collectors.toList());
+    assertEquals(this.submissions, submissions);
+    verify(service).all(filterCaptor.capture());
+    SubmissionFilter filter = filterCaptor.getValue();
+    assertEquals(2, filter.sortOrders.size());
+    assertEquals(QSubmission.submission.experiment.asc(), filter.sortOrders.get(0));
+    assertEquals(QSubmission.submission.user.name.desc(), filter.sortOrders.get(1));
   }
 
   @Test
