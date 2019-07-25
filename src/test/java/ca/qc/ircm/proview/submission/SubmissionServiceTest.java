@@ -229,7 +229,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 33L, submission.getId());
     assertEquals(Service.SMALL_MOLECULE, submission.getService());
     assertEquals(null, submission.getTaxonomy());
-    assertEquals(null, submission.getExperiment());
+    assertEquals("CAP_20111013_05", submission.getExperiment());
     assertEquals(null, submission.getGoal());
     assertEquals(null, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
@@ -685,8 +685,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -792,18 +792,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertFalse(content.contains("class=\"user-phone\""));
-  }
-
-  @Test
-  public void print_LcmsmsSolution_NoExperiment() throws Exception {
-    Submission submission = submissionForPrint(Service.LC_MS_MS);
-    Locale locale = Locale.getDefault();
-    submission.setExperiment(null);
-    repository.save(submission);
-
-    String content = service.print(submission, locale);
-    assertTrue(content.contains("class=\"experiment\""));
-    assertFalse(content.contains("null"));
   }
 
   @Test
@@ -1023,8 +1011,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment")));
@@ -1040,8 +1028,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment")));
@@ -1056,8 +1044,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
@@ -1073,8 +1061,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
@@ -1090,8 +1078,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -1297,8 +1285,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -1465,8 +1453,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertTrue(content.contains("class=\"highResolution\""));
     assertTrue(content.contains(resources.message("submission.highResolution.false")));
   }
@@ -1509,8 +1497,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
+        locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -2106,9 +2094,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     samples.add(sample);
     when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
     Submission submission = new Submission();
-    submission.setService(Service.LC_MS_MS);
-    submission.setExperiment("experiment");
-    submission.setGoal("goal");
+    submission.setService(Service.SMALL_MOLECULE);
+    submission.setExperiment(null);
+    submission.setGoal(null);
     submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setInjectionType(InjectionType.LC_MS);
@@ -2157,9 +2145,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
         LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
     assertTrue(
         LocalDateTime.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
-    assertEquals(Service.LC_MS_MS, submission.getService());
-    assertEquals("experiment", submission.getExperiment());
-    assertEquals("goal", submission.getGoal());
+    assertEquals(Service.SMALL_MOLECULE, submission.getService());
+    assertEquals("unit_test_molecule_01", submission.getExperiment());
+    assertEquals(null, submission.getGoal());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(InjectionType.LC_MS, submission.getInjectionType());

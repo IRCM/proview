@@ -93,7 +93,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
   /**
    * User's experiment.
    */
-  @Column
+  @Column(nullable = false)
   @Size(max = 100)
   private String experiment;
   /**

@@ -201,8 +201,8 @@ public class SubmissionService {
     plateRepository.findBySubmission(submission)
         .ifPresent(plate -> context.setVariable("plate", plate));
 
-    String templateLocation =
-        "/" + SubmissionService.class.getName().replace(".", "/") + "_Print.html";
+    String templateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
+        + "_Print.html";
     String content = emailTemplateEngine.process(templateLocation, context);
     return content;
   }
@@ -226,6 +226,9 @@ public class SubmissionService {
       sample.setSubmission(submission);
       sample.setStatus(SampleStatus.WAITING);
     });
+    if (submission.getExperiment() == null && !submission.getSamples().isEmpty()) {
+      submission.setExperiment(submission.getSamples().get(0).getName());
+    }
 
     repository.save(submission);
 
@@ -271,11 +274,11 @@ public class SubmissionService {
     final List<User> proteomicUsers = adminUsers();
     MimeMessageHelper email = emailService.htmlEmail();
     email.setSubject(resource.message("subject." + type.name()));
-    String htmlTemplateLocation =
-        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.html";
+    String htmlTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
+        + "_Email.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation =
-        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.txt";
+    String textTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
+        + "_Email.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
     for (User proteomicUser : proteomicUsers) {
