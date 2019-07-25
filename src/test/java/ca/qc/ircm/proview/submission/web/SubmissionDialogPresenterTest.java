@@ -77,7 +77,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   @Test
   public void setSubmission() {
     String name = "test submission";
-    when(submission.getName()).thenReturn(name);
+    when(submission.getExperiment()).thenReturn(name);
     presenter.setSubmission(submission);
     assertEquals(name, dialog.header.getText());
   }

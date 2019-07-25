@@ -365,11 +365,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
 
   @Override
   public String getName() {
-    if (experiment != null) {
-      return experiment;
-    } else {
-      return samples != null && !samples.isEmpty() ? samples.get(0).getName() : "";
-    }
+    return experiment;
   }
 
   @Override

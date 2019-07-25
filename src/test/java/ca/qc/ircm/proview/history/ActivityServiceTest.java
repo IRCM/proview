@@ -716,7 +716,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     String description = activityService.description(activity, locale);
 
     assertEquals(resources.message("activity", activity.getActionType().ordinal(),
-        activity.getTableName(), submission.getName(), activity.getRecordId()), description);
+        activity.getTableName(), submission.getExperiment(), activity.getRecordId()), description);
   }
 
   @Test
@@ -728,13 +728,13 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     String[] descriptionLines = description.split("\n", -1);
     assertEquals(resources.message("activity", activity.getActionType().ordinal(),
-        activity.getTableName(), submission.getName(), activity.getRecordId()),
+        activity.getTableName(), submission.getExperiment(), activity.getRecordId()),
         descriptionLines[0]);
     for (int i = 0; i < activity.getUpdates().size(); i++) {
       UpdateActivity update = activity.getUpdates().get(i);
       String name = null;
       if (update.getTableName().equals(Submission.TABLE_NAME)) {
-        name = submissionRepository.findById(update.getRecordId()).map(su -> su.getName())
+        name = submissionRepository.findById(update.getRecordId()).map(su -> su.getExperiment())
             .orElse(null);
       } else if (update.getTableName().equals(Sample.TABLE_NAME)) {
         name = sampleRepository.findById(update.getRecordId()).map(su -> su.getName()).orElse(null);

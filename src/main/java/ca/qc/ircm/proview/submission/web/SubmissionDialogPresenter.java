@@ -63,7 +63,7 @@ public class SubmissionDialogPresenter {
     }
     binder.setBean(submission);
     if (submission.getId() != null) {
-      dialog.header.setText(submission.getName());
+      dialog.header.setText(submission.getExperiment());
     }
     dialog.printContent.setSubmission(submission);
   }

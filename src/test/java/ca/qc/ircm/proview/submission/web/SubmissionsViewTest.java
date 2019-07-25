@@ -123,8 +123,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   private MessageResource resources = new MessageResource(SubmissionsView.class, locale);
   private MessageResource submissionResources = new MessageResource(Submission.class, locale);
   private MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
-  private MessageResource submissionSampleResources =
-      new MessageResource(SubmissionSample.class, locale);
+  private MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
+      locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private List<Submission> submissions;
 
@@ -315,8 +315,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     final MessageResource resources = new MessageResource(SubmissionsView.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     final MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
-    final MessageResource submissionSampleResources =
-        new MessageResource(SubmissionSample.class, locale);
+    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
+        locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
@@ -417,7 +417,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(EXPERIMENT));
     ValueProvider<Submission, String> valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
-      assertEquals(submission.getName() != null ? submission.getName() : "",
+      assertEquals(submission.getExperiment() != null ? submission.getExperiment() : "",
           valueProvider.apply(submission));
     }
     verify(view.experiment).setComparator(comparatorCaptor.capture());
