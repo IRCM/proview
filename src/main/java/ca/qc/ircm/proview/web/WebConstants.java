@@ -19,9 +19,11 @@ package ca.qc.ircm.proview.web;
 
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
+import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.internal.ReflectTools;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,5 +82,35 @@ public class WebConstants {
     locales.add(ENGLISH);
     locales.add(FRENCH);
     return locales;
+  }
+
+  /**
+   * Returns {@link DatePickerI18n} for English.
+   * 
+   * @return {@link DatePickerI18n} for English
+   */
+  public static DatePickerI18n englishDatePickerI18n() {
+    return new DatePickerI18n().setWeek("Week").setCalendar("Calendar").setClear("Clear")
+        .setToday("Today").setCancel("Cancel").setFirstDayOfWeek(0)
+        .setMonthNames(Arrays.asList("January", "February", "March", "April", "May", "June", "July",
+            "August", "September", "October", "November", "December"))
+        .setWeekdays(Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+            "Saturday"))
+        .setWeekdaysShort(Arrays.asList("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"));
+  }
+
+  /**
+   * Returns {@link DatePickerI18n} for French.
+   * 
+   * @return {@link DatePickerI18n} for French
+   */
+  public static DatePickerI18n frenchDatePickerI18n() {
+    return new DatePickerI18n().setWeek("Semaine").setCalendar("Calendrier").setClear("Effacer")
+        .setToday("Aujourd'hui").setCancel("Annuler").setFirstDayOfWeek(0)
+        .setMonthNames(Arrays.asList("Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"))
+        .setWeekdays(
+            Arrays.asList("Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"))
+        .setWeekdaysShort(Arrays.asList("Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"));
   }
 }

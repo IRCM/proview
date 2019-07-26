@@ -1,14 +1,21 @@
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateEquals;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
+import static ca.qc.ircm.proview.web.WebConstants.englishDatePickerI18n;
+import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -44,6 +51,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionDialog.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
+  private MessageResource submissionResources = new MessageResource(Submission.class, locale);
 
   /**
    * Before tests.
@@ -69,6 +77,10 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
     assertTrue(dialog.header.getClassName().contains(HEADER));
+    assertTrue(dialog.sampleDeliveryDate.getClassName().contains(SAMPLE_DELIVERY_DATE));
+    assertTrue(dialog.digestionDate.getClassName().contains(DIGESTION_DATE));
+    assertTrue(dialog.analysisDate.getClassName().contains(ANALYSIS_DATE));
+    assertTrue(dialog.dataAvailableDate.getClassName().contains(DATA_AVAILABLE_DATE));
     assertTrue(dialog.edit.getClassName().contains(EDIT));
     assertTrue(dialog.edit.getThemeName().contains(PRIMARY));
     validateIcon(VaadinIcon.EDIT.create(), dialog.edit.getIcon());
@@ -80,6 +92,20 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   public void labels() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(submissionResources.message(SAMPLE_DELIVERY_DATE),
+        dialog.sampleDeliveryDate.getLabel());
+    assertEquals(ENGLISH, dialog.sampleDeliveryDate.getLocale());
+    validateEquals(englishDatePickerI18n(), dialog.sampleDeliveryDate.getI18n());
+    assertEquals(submissionResources.message(DIGESTION_DATE), dialog.digestionDate.getLabel());
+    assertEquals(ENGLISH, dialog.digestionDate.getLocale());
+    validateEquals(englishDatePickerI18n(), dialog.digestionDate.getI18n());
+    assertEquals(submissionResources.message(ANALYSIS_DATE), dialog.analysisDate.getLabel());
+    assertEquals(ENGLISH, dialog.analysisDate.getLocale());
+    validateEquals(englishDatePickerI18n(), dialog.analysisDate.getI18n());
+    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+        dialog.dataAvailableDate.getLabel());
+    assertEquals(ENGLISH, dialog.dataAvailableDate.getLocale());
+    validateEquals(englishDatePickerI18n(), dialog.dataAvailableDate.getI18n());
     assertEquals(webResources.message(EDIT), dialog.edit.getText());
     assertEquals(webResources.message(PRINT), dialog.print.getText());
     verify(presenter).localeChange(locale);
@@ -91,9 +117,24 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
     Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(SubmissionDialog.class, locale);
     final MessageResource webResources = new MessageResource(WebConstants.class, locale);
+    final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(submissionResources.message(SAMPLE_DELIVERY_DATE),
+        dialog.sampleDeliveryDate.getLabel());
+    assertEquals(ENGLISH, dialog.sampleDeliveryDate.getLocale());
+    validateEquals(frenchDatePickerI18n(), dialog.sampleDeliveryDate.getI18n());
+    assertEquals(submissionResources.message(DIGESTION_DATE), dialog.digestionDate.getLabel());
+    assertEquals(ENGLISH, dialog.digestionDate.getLocale());
+    validateEquals(frenchDatePickerI18n(), dialog.digestionDate.getI18n());
+    assertEquals(submissionResources.message(ANALYSIS_DATE), dialog.analysisDate.getLabel());
+    assertEquals(ENGLISH, dialog.analysisDate.getLocale());
+    validateEquals(frenchDatePickerI18n(), dialog.analysisDate.getI18n());
+    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+        dialog.dataAvailableDate.getLabel());
+    assertEquals(ENGLISH, dialog.dataAvailableDate.getLocale());
+    validateEquals(frenchDatePickerI18n(), dialog.dataAvailableDate.getI18n());
     assertEquals(webResources.message(EDIT), dialog.edit.getText());
     assertEquals(webResources.message(PRINT), dialog.print.getText());
     verify(presenter).localeChange(locale);

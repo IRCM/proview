@@ -1,13 +1,22 @@
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
+import static ca.qc.ircm.proview.web.WebConstants.englishDatePickerI18n;
+import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
@@ -18,6 +27,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +47,10 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
   protected H2 header = new H2();
   protected PrintSubmission printContent;
+  protected DatePicker sampleDeliveryDate = new DatePicker();
+  protected DatePicker digestionDate = new DatePicker();
+  protected DatePicker analysisDate = new DatePicker();
+  protected DatePicker dataAvailableDate = new DatePicker();
   protected Button print = new Button();
   protected Button edit = new Button();
   private SubmissionDialogPresenter presenter;
@@ -57,14 +71,18 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     add(layout);
     FormLayout formLayout = new FormLayout();
     formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
-        new ResponsiveStep("15em", 3)//, new ResponsiveStep("15em", 4)
-    );
+        new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
     formLayout.add(printContent, 3);
-    //formLayout.add(new FormLayout(new Span("test")));
+    formLayout
+        .add(new FormLayout(sampleDeliveryDate, digestionDate, analysisDate, dataAvailableDate));
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
     buttons.setWidthFull();
     layout.add(header, formLayout, buttons);
     header.addClassName(HEADER);
+    sampleDeliveryDate.addClassName(SAMPLE_DELIVERY_DATE);
+    digestionDate.addClassName(DIGESTION_DATE);
+    analysisDate.addClassName(ANALYSIS_DATE);
+    dataAvailableDate.addClassName(DATA_AVAILABLE_DATE);
     print.addClassName(PRINT);
     print.setIcon(VaadinIcon.PRINT.create());
     print.addClickListener(e -> presenter.print());
@@ -79,8 +97,25 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   @Override
   public void localeChange(LocaleChangeEvent event) {
     final MessageResource resources = new MessageResource(SubmissionDialog.class, getLocale());
+    final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
     final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
     header.setText(resources.message(HEADER));
+    DatePickerI18n dateI18n = englishDatePickerI18n();
+    if (FRENCH.equals(getLocale())) {
+      dateI18n = frenchDatePickerI18n();
+    }
+    sampleDeliveryDate.setLabel(submissionResources.message(SAMPLE_DELIVERY_DATE));
+    sampleDeliveryDate.setI18n(dateI18n);
+    sampleDeliveryDate.setLocale(Locale.CANADA); // ISO format.
+    digestionDate.setLabel(submissionResources.message(DIGESTION_DATE));
+    digestionDate.setI18n(dateI18n);
+    digestionDate.setLocale(Locale.CANADA); // ISO format.
+    analysisDate.setLabel(submissionResources.message(ANALYSIS_DATE));
+    analysisDate.setI18n(dateI18n);
+    analysisDate.setLocale(Locale.CANADA); // ISO format.
+    dataAvailableDate.setLabel(submissionResources.message(DATA_AVAILABLE_DATE));
+    dataAvailableDate.setI18n(dateI18n);
+    dataAvailableDate.setLocale(Locale.CANADA); // ISO format.
     edit.setText(webResources.message(EDIT));
     print.setText(webResources.message(PRINT));
     presenter.localeChange(getLocale());
