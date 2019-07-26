@@ -43,6 +43,8 @@ import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME_PLACEHOLDER
 import static ca.qc.ircm.proview.user.web.UserDialog.NAME_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserDialog.NUMBER_PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.THEME;
@@ -89,7 +91,7 @@ public class UserDialogTest extends AbstractViewTestCase {
   private UserRepository userRepository;
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(UserDialog.class, locale);
   private MessageResource userResources = new MessageResource(User.class, locale);
   private MessageResource addressResources = new MessageResource(Address.class, locale);
@@ -181,7 +183,7 @@ public class UserDialogTest extends AbstractViewTestCase {
   @Test
   public void localeChange() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    Locale locale = Locale.FRENCH;
+    Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(UserDialog.class, locale);
     final MessageResource userResources = new MessageResource(User.class, locale);
     final MessageResource addressResources = new MessageResource(Address.class, locale);

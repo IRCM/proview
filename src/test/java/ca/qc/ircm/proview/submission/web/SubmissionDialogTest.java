@@ -5,6 +5,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 import static org.junit.Assert.assertEquals;
@@ -39,7 +41,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   private PrintSubmission printContent;
   @Mock
   private Submission submission;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionDialog.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
 
@@ -86,7 +88,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   @Test
   public void localeChange() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    Locale locale = Locale.FRENCH;
+    Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(SubmissionDialog.class, locale);
     final MessageResource webResources = new MessageResource(WebConstants.class, locale);
     when(ui.getLocale()).thenReturn(locale);

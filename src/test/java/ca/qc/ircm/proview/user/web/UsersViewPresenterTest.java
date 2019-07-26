@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS_REQUIRED;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -86,7 +87,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   private UserRepository userRepository;
   private List<User> users;
   private User currentUser;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(UsersView.class, locale);
 
   /**

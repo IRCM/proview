@@ -44,7 +44,9 @@ import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
 import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.ERROR;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertArrayEquals;
@@ -119,12 +121,12 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   private ArgumentCaptor<Comparator<Submission>> comparatorCaptor;
   @Autowired
   private SubmissionRepository repository;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionsView.class, locale);
   private MessageResource submissionResources = new MessageResource(Submission.class, locale);
   private MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
-  private MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-      locale);
+  private MessageResource submissionSampleResources =
+      new MessageResource(SubmissionSample.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private List<Submission> submissions;
 
@@ -311,12 +313,12 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     view.statusFilter.setDataProvider(mock(DataProvider.class));
     view.hiddenFilter.setDataProvider(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
-    Locale locale = Locale.FRENCH;
+    Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(SubmissionsView.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     final MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
-    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-        locale);
+    final MessageResource submissionSampleResources =
+        new MessageResource(SubmissionSample.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());

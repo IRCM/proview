@@ -2,6 +2,8 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.PrintSubmission.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +36,7 @@ public class PrintSubmissionTest extends AbstractViewTestCase {
   private SubmissionService service;
   @Mock
   private Submission submission;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
 
   @Before
   public void beforeTest() {
@@ -66,7 +68,7 @@ public class PrintSubmissionTest extends AbstractViewTestCase {
     when(service.print(any(), any())).thenReturn(content);
     component.localeChange(mock(LocaleChangeEvent.class));
     component.setSubmission(submission);
-    Locale locale = Locale.FRENCH;
+    Locale locale = FRENCH;
     when(ui.getLocale()).thenReturn(locale);
     String frenchcontent = "<div id=\"test-div\">test de contenu</div>";
     when(service.print(any(), eq(locale))).thenReturn(frenchcontent);

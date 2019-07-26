@@ -29,6 +29,8 @@ import static ca.qc.ircm.proview.web.SigninView.ID;
 import static ca.qc.ircm.proview.web.SigninView.LOCKED;
 import static ca.qc.ircm.proview.web.SigninView.SIGNIN;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -77,7 +79,7 @@ public class SigninViewTest extends AbstractViewTestCase {
   private Location location;
   @Mock
   private QueryParameters queryParameters;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(SigninView.class, locale);
   private MessageResource userResources = new MessageResource(User.class, locale);
   private MessageResource generalResources = new MessageResource(WebConstants.class, locale);
@@ -166,7 +168,7 @@ public class SigninViewTest extends AbstractViewTestCase {
   @Test
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
-    Locale locale = Locale.FRENCH;
+    Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(SigninView.class, locale);
     final MessageResource userResources = new MessageResource(User.class, locale);
     when(ui.getLocale()).thenReturn(locale);

@@ -30,9 +30,9 @@ import com.vaadin.flow.component.tabs.testbench.TabElement;
 import com.vaadin.flow.component.tabs.testbench.TabsElement;
 import com.vaadin.testbench.TestBenchTestCase;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
@@ -76,7 +76,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   }
 
   protected Locale currentLocale() {
-    Set<Locale> locales = WebConstants.getLocales();
+    List<Locale> locales = WebConstants.getLocales();
     TabElement home =
         optional(() -> $(TabsElement.class).first().$(TabElement.class).first()).orElse(null);
     Optional<Locale> optlocale =

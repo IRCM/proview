@@ -22,6 +22,8 @@ import static ca.qc.ircm.proview.user.web.PasswordsForm.CLASS_NAME;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORD;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORDS_NOT_MATCH;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORD_CONFIRM;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -47,7 +49,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ServiceTestAnnotations
 public class PasswordsFormTest extends AbstractViewTestCase {
   private PasswordsForm form;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(PasswordsForm.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private String password = "test_password";
@@ -83,7 +85,7 @@ public class PasswordsFormTest extends AbstractViewTestCase {
   @Test
   public void localeChange() {
     form.localeChange(mock(LocaleChangeEvent.class));
-    Locale locale = Locale.FRENCH;
+    Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(UserDialog.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     form.localeChange(mock(LocaleChangeEvent.class));

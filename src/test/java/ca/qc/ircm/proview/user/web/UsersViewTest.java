@@ -35,8 +35,10 @@ import static ca.qc.ircm.proview.user.web.UsersView.USERS;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.ERROR;
 import static ca.qc.ircm.proview.web.WebConstants.ERROR_TEXT;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.THEME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
@@ -102,7 +104,7 @@ public class UsersViewTest extends AbstractViewTestCase {
   private ArgumentCaptor<Comparator<User>> comparatorCaptor;
   @Autowired
   private UserRepository userRepository;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(UsersView.class, locale);
   private MessageResource userResources = new MessageResource(User.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
@@ -206,7 +208,7 @@ public class UsersViewTest extends AbstractViewTestCase {
     mockColumns();
     view.init();
     view.localeChange(mock(LocaleChangeEvent.class));
-    Locale locale = Locale.FRENCH;
+    Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(UsersView.class, locale);
     final MessageResource userResources = new MessageResource(User.class, locale);
     final MessageResource webResources = new MessageResource(WebConstants.class, locale);

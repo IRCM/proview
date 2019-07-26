@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.security.web;
 
 import static ca.qc.ircm.proview.security.web.AccessDeniedError.TEXT;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -45,7 +46,7 @@ public class AccessDeniedErrorTest extends AbstractViewTestCase {
   private BeforeEnterEvent event;
   @Mock
   private ErrorParameter<AccessDeniedException> parameter;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(AccessDeniedError.class, locale);
   private MessageResource generalResources = new MessageResource(WebConstants.class, locale);
 

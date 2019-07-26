@@ -21,6 +21,8 @@ import static ca.qc.ircm.proview.files.web.GuidelinesView.HEADER;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -52,7 +54,7 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
   private GuidelinesView view;
   @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(GuidelinesView.class, locale);
   private MessageResource generalResources = new MessageResource(WebConstants.class, locale);
 
@@ -94,7 +96,7 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
   @Test
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
-    Locale locale = Locale.FRENCH;
+    Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(GuidelinesView.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));

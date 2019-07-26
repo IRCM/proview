@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
@@ -31,7 +32,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   private SubmissionDialog dialog;
   @Mock
   private Submission submission;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionDialog.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
 

@@ -29,6 +29,8 @@ import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.ViewLayout.TAB;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
+import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -66,7 +68,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   private AuthorizationService authorizationService;
   @Mock
   private AfterNavigationEvent afterNavigationEvent;
-  private Locale locale = Locale.ENGLISH;
+  private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(ViewLayout.class, locale);
   private User user = new User(1L, "myuser");
 
@@ -108,7 +110,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   @Test
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
-    Locale locale = Locale.FRENCH;
+    Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(ViewLayout.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
@@ -299,13 +301,13 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.tabs.setSelectedTab(view.changeLanguage);
 
     verify(ui, never()).navigate(any(String.class));
-    verify(ui).setLocale(Locale.FRENCH);
+    verify(ui).setLocale(FRENCH);
     assertEquals(view.submissions, view.tabs.getSelectedTab());
   }
 
   @Test
   public void tabs_ChangeLanguage_ToEnglish() {
-    when(ui.getLocale()).thenReturn(Locale.FRENCH);
+    when(ui.getLocale()).thenReturn(FRENCH);
     Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     view.afterNavigation(afterNavigationEvent);
@@ -313,7 +315,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.tabs.setSelectedTab(view.changeLanguage);
 
     verify(ui, never()).navigate(any(String.class));
-    verify(ui).setLocale(Locale.ENGLISH);
+    verify(ui).setLocale(ENGLISH);
     assertEquals(view.submissions, view.tabs.getSelectedTab());
   }
 
@@ -326,7 +328,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.tabs.setSelectedTab(view.changeLanguage);
 
     verify(ui, never()).navigate(any(String.class));
-    verify(ui).setLocale(Locale.FRENCH);
+    verify(ui).setLocale(FRENCH);
     assertEquals(view.users, view.tabs.getSelectedTab());
   }
 
