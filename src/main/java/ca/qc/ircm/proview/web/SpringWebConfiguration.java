@@ -36,8 +36,6 @@ import org.springframework.web.util.IntrospectorCleanupListener;
  */
 @Configuration
 public class SpringWebConfiguration implements WebMvcConfigurer {
-  public static final String SHIRO_FILTER_NAME = "ShiroFilter";
-
   @Bean(name = MdcFilter.BEAN_NAME)
   public MdcFilter mdcFilter() {
     return new MdcFilter();
