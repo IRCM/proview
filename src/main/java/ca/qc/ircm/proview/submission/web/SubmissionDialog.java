@@ -56,9 +56,9 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   private SubmissionDialogPresenter presenter;
 
   @Autowired
-  protected SubmissionDialog(SubmissionDialogPresenter presenter, PrintSubmission print) {
+  protected SubmissionDialog(SubmissionDialogPresenter presenter, PrintSubmission printContent) {
     this.presenter = presenter;
-    this.printContent = print;
+    this.printContent = printContent;
   }
 
   @PostConstruct
@@ -130,8 +130,9 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   }
 
   private void updateHeader() {
-    if (presenter.getSubmission() != null && presenter.getSubmission().getId() != null) {
-      header.setText(presenter.getSubmission().getExperiment());
+    Submission submission = presenter.getSubmission();
+    if (submission != null && submission.getId() != null) {
+      header.setText(submission.getExperiment());
     } else {
       final MessageResource resources = new MessageResource(SubmissionDialog.class, getLocale());
       header.setText(resources.message(HEADER));
