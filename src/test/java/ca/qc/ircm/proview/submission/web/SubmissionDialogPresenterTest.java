@@ -17,7 +17,6 @@ import com.vaadin.flow.component.html.H2;
 import java.time.LocalDate;
 import java.util.Locale;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -98,8 +97,18 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
-  @Ignore("Does nothing right now")
   public void print() {
+    long id = 12;
+    when(submission.getId()).thenReturn(id);
+    presenter.setSubmission(submission);
+    presenter.print();
+    verify(ui).navigate(PrintSubmissionView.class, id);
+  }
+
+  @Test
+  public void print_New() {
+    presenter.print();
+    verify(ui).navigate(PrintSubmissionView.class, null);
   }
 
   @Test
