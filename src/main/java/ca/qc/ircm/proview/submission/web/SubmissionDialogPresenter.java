@@ -1,12 +1,16 @@
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
+
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.Locale;
 import org.slf4j.Logger;
@@ -21,6 +25,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionDialogPresenter {
+  @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialogPresenter.class);
   private SubmissionDialog dialog;
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
@@ -43,7 +48,24 @@ public class SubmissionDialogPresenter {
   }
 
   void localeChange(Locale locale) {
-    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
+    binder.forField(dialog.sampleDeliveryDate).bind(SAMPLE_DELIVERY_DATE);
+    binder.forField(dialog.digestionDate).bind(DIGESTION_DATE);
+    binder.forField(dialog.analysisDate).bind(ANALYSIS_DATE);
+    binder.forField(dialog.dataAvailableDate).bind(DATA_AVAILABLE_DATE);
+  }
+
+  private boolean validate() {
+    return validateSubmission().isOk();
+  }
+
+  BinderValidationStatus<Submission> validateSubmission() {
+    return binder.validate();
+  }
+
+  void save() {
+    if (validate()) {
+      service.update(binder.getBean(), null);
+    }
   }
 
   void edit() {
