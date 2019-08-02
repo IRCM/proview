@@ -162,7 +162,57 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
 
   @Test
   public void setSubmission() {
+    Submission submission = new Submission(1L);
+    String experiment = "test submission";
+    submission.setExperiment(experiment);
+    dialog.localeChange(mock(LocaleChangeEvent.class));
+    when(presenter.getSubmission()).thenReturn(submission);
+
     dialog.setSubmission(submission);
+
     verify(presenter).setSubmission(submission);
+    assertEquals(experiment, dialog.header.getText());
+  }
+
+  @Test
+  public void setSubmission_BeforeLocalChange() {
+    Submission submission = new Submission(1L);
+    String experiment = "test submission";
+    submission.setExperiment(experiment);
+    when(presenter.getSubmission()).thenReturn(submission);
+
+    dialog.setSubmission(submission);
+    dialog.localeChange(mock(LocaleChangeEvent.class));
+
+    verify(presenter).setSubmission(submission);
+    assertEquals(experiment, dialog.header.getText());
+  }
+
+  @Test
+  public void setSubmission_NoId() {
+    Submission submission = new Submission();
+    dialog.localeChange(mock(LocaleChangeEvent.class));
+    when(presenter.getSubmission()).thenReturn(submission);
+    dialog.setSubmission(submission);
+
+    verify(presenter).setSubmission(submission);
+    assertEquals(resources.message(HEADER), dialog.header.getText());
+  }
+
+  @Test
+  public void setSubmission_IdThenNoId() {
+    dialog.localeChange(mock(LocaleChangeEvent.class));
+    Submission submission = new Submission(1L);
+    String experiment = "test submission";
+    submission.setExperiment(experiment);
+    when(presenter.getSubmission()).thenReturn(submission);
+    dialog.setSubmission(submission);
+    submission = new Submission();
+    when(presenter.getSubmission()).thenReturn(submission);
+
+    dialog.setSubmission(submission);
+
+    verify(presenter).setSubmission(submission);
+    assertEquals(resources.message(HEADER), dialog.header.getText());
   }
 }

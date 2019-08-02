@@ -110,9 +110,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void setSubmission() {
-    Submission submission = new Submission(1L);
-    String experiment = "test submission";
-    submission.setExperiment(experiment);
+    Submission submission = new Submission();
     submission.setSampleDeliveryDate(sampleDeliveryDate);
     submission.setDigestionDate(digestionDate);
     submission.setAnalysisDate(analysisDate);
@@ -121,7 +119,6 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
 
     presenter.setSubmission(submission);
 
-    assertEquals(experiment, dialog.header.getText());
     assertEquals(sampleDeliveryDate, dialog.sampleDeliveryDate.getValue());
     assertEquals(digestionDate, dialog.digestionDate.getValue());
     assertEquals(analysisDate, dialog.analysisDate.getValue());
@@ -130,9 +127,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void setSubmission_BeforeLocalChange() {
-    Submission submission = new Submission(1L);
-    String name = "test submission";
-    submission.setExperiment(name);
+    Submission submission = new Submission();
     submission.setSampleDeliveryDate(sampleDeliveryDate);
     submission.setDigestionDate(digestionDate);
     submission.setAnalysisDate(analysisDate);
@@ -141,7 +136,6 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     presenter.setSubmission(submission);
     presenter.localeChange(locale);
 
-    assertEquals(name, dialog.header.getText());
     assertEquals(sampleDeliveryDate, dialog.sampleDeliveryDate.getValue());
     assertEquals(digestionDate, dialog.digestionDate.getValue());
     assertEquals(analysisDate, dialog.analysisDate.getValue());

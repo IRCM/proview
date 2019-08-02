@@ -96,10 +96,9 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(SubmissionDialog.class, getLocale());
     final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
     final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
-    header.setText(resources.message(HEADER));
+    updateHeader();
     DatePickerI18n dateI18n = englishDatePickerI18n();
     if (FRENCH.equals(getLocale())) {
       dateI18n = frenchDatePickerI18n();
@@ -127,5 +126,15 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
 
   public void setSubmission(Submission submission) {
     presenter.setSubmission(submission);
+    updateHeader();
+  }
+
+  private void updateHeader() {
+    if (presenter.getSubmission() != null && presenter.getSubmission().getId() != null) {
+      header.setText(presenter.getSubmission().getExperiment());
+    } else {
+      final MessageResource resources = new MessageResource(SubmissionDialog.class, getLocale());
+      header.setText(resources.message(HEADER));
+    }
   }
 }
