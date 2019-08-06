@@ -3,10 +3,12 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
+import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
+import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.text.MessageResource;
@@ -55,6 +57,7 @@ public class ViewLayout extends VerticalLayout
   protected Tab changeLanguage = new Tab();
   protected Tab contact = new Tab();
   protected Tab guidelines = new Tab();
+  protected Tab print = new Tab();
   private Map<Tab, String> tabsHref = new HashMap<>();
   private String currentHref;
   @Inject
@@ -74,7 +77,8 @@ public class ViewLayout extends VerticalLayout
     setPadding(false);
     setSpacing(false);
     add(tabs);
-    tabs.add(submissions, users, exitSwitchUser, signout, changeLanguage, contact, guidelines);
+    tabs.add(submissions, users, exitSwitchUser, signout, changeLanguage, contact, guidelines,
+        print);
     submissions.setId(styleName(SUBMISSIONS, TAB));
     users.setId(styleName(USERS, TAB));
     users.setVisible(authorizationService.hasAnyRole(MANAGER, ADMIN));
@@ -85,10 +89,13 @@ public class ViewLayout extends VerticalLayout
     changeLanguage.setId(styleName(CHANGE_LANGUAGE, TAB));
     contact.setId(styleName(CONTACT, TAB));
     guidelines.setId(styleName(GUIDELINES, TAB));
+    print.setId(styleName(PRINT, TAB));
+    print.setVisible(false);
     tabsHref.put(submissions, SubmissionsView.VIEW_NAME);
     tabsHref.put(users, UsersView.VIEW_NAME);
     tabsHref.put(contact, ContactView.VIEW_NAME);
     tabsHref.put(guidelines, GuidelinesView.VIEW_NAME);
+    tabsHref.put(print, PrintSubmissionView.VIEW_NAME);
     tabs.addSelectedChangeListener(e -> selectTab(e.getPreviousTab()));
   }
 
@@ -102,6 +109,7 @@ public class ViewLayout extends VerticalLayout
     changeLanguage.setLabel(resources.message(CHANGE_LANGUAGE));
     contact.setLabel(resources.message(CONTACT));
     guidelines.setLabel(resources.message(GUIDELINES));
+    print.setLabel(resources.message(PRINT));
   }
 
   private void selectTab(Tab previous) {
@@ -123,7 +131,8 @@ public class ViewLayout extends VerticalLayout
       UI.getCurrent().setLocale(newLocale);
       tabs.setSelectedTab(previous);
     } else {
-      if (!currentHref.equals(tabsHref.get(tabs.getSelectedTab()))) {
+      if (print != tabs.getSelectedTab()
+          && !currentHref.equals(tabsHref.get(tabs.getSelectedTab()))) {
         logger.debug("Navigate to {}", tabsHref.get(tabs.getSelectedTab()));
         UI.getCurrent().navigate(tabsHref.get(tabs.getSelectedTab()));
       }
@@ -132,9 +141,18 @@ public class ViewLayout extends VerticalLayout
 
   @Override
   public void afterNavigation(AfterNavigationEvent event) {
-    currentHref = event.getLocation().getFirstSegment();
+    print.setVisible(false);
+    currentHref = event.getLocation().getPath();
     Optional<Tab> currentTab = tabsHref.entrySet().stream()
         .filter(e -> e.getValue().equals(currentHref)).map(e -> e.getKey()).findFirst();
-    currentTab.ifPresent(tab -> tabs.setSelectedTab(tab));
+    if (!currentTab.isPresent()) {
+      if (tabsHref.get(print).equals(currentHref.replaceFirst("/[^/]*$", ""))) {
+        currentTab = Optional.of(print);
+      }
+    }
+    currentTab.ifPresent(tab -> {
+      tabs.setSelectedTab(tab);
+      tab.setVisible(true);
+    });
   }
 }

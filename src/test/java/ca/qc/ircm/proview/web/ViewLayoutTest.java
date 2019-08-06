@@ -31,6 +31,7 @@ import static ca.qc.ircm.proview.web.ViewLayout.TAB;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
+import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -43,6 +44,8 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
+import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
+import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
@@ -93,6 +96,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertEquals(styleName(CHANGE_LANGUAGE, TAB), view.changeLanguage.getId().orElse(""));
     assertEquals(styleName(CONTACT, TAB), view.contact.getId().orElse(""));
     assertEquals(styleName(GUIDELINES, TAB), view.guidelines.getId().orElse(""));
+    assertEquals(styleName(PRINT, TAB), view.print.getId().orElse(""));
   }
 
   @Test
@@ -105,6 +109,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertEquals(resources.message(CHANGE_LANGUAGE), view.changeLanguage.getLabel());
     assertEquals(resources.message(CONTACT), view.contact.getLabel());
     assertEquals(resources.message(GUIDELINES), view.guidelines.getLabel());
+    assertEquals(resources.message(PRINT), view.print.getLabel());
   }
 
   @Test
@@ -121,6 +126,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertEquals(resources.message(CHANGE_LANGUAGE), view.changeLanguage.getLabel());
     assertEquals(resources.message(CONTACT), view.contact.getLabel());
     assertEquals(resources.message(GUIDELINES), view.guidelines.getLabel());
+    assertEquals(resources.message(PRINT), view.print.getLabel());
   }
 
   @Test
@@ -132,6 +138,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertTrue(view.signout.isVisible());
     assertTrue(view.contact.isVisible());
     assertTrue(view.guidelines.isVisible());
+    assertFalse(view.print.isVisible());
   }
 
   @Test
@@ -144,6 +151,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertTrue(view.signout.isVisible());
     assertTrue(view.contact.isVisible());
     assertTrue(view.guidelines.isVisible());
+    assertFalse(view.print.isVisible());
   }
 
   @Test
@@ -156,6 +164,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertTrue(view.signout.isVisible());
     assertTrue(view.contact.isVisible());
     assertTrue(view.guidelines.isVisible());
+    assertFalse(view.print.isVisible());
   }
 
   @Test
@@ -169,6 +178,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertTrue(view.signout.isVisible());
     assertTrue(view.contact.isVisible());
     assertTrue(view.guidelines.isVisible());
+    assertFalse(view.print.isVisible());
   }
 
   @Test
@@ -340,6 +350,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.afterNavigation(afterNavigationEvent);
 
     assertEquals(view.submissions, view.tabs.getSelectedTab());
+    verify(ui, never()).navigate(any(String.class));
   }
 
   @Test
@@ -350,6 +361,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.afterNavigation(afterNavigationEvent);
 
     assertEquals(view.users, view.tabs.getSelectedTab());
+    verify(ui, never()).navigate(any(String.class));
   }
 
   @Test
@@ -360,6 +372,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.afterNavigation(afterNavigationEvent);
 
     assertEquals(view.contact, view.tabs.getSelectedTab());
+    verify(ui, never()).navigate(any(String.class));
   }
 
   @Test
@@ -370,6 +383,31 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.afterNavigation(afterNavigationEvent);
 
     assertEquals(view.guidelines, view.tabs.getSelectedTab());
+    verify(ui, never()).navigate(any(String.class));
+  }
+
+  @Test
+  public void afterNavigation_Print() {
+    Location location = new Location(PrintSubmissionView.VIEW_NAME + "/12");
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+
+    view.afterNavigation(afterNavigationEvent);
+
+    assertEquals(view.print, view.tabs.getSelectedTab());
+    assertTrue(view.print.isVisible());
+    verify(ui, never()).navigate(any(String.class));
+  }
+
+  @Test
+  public void afterNavigation_PrintHideAfterChange() {
+    Location location1 = new Location(PrintSubmissionView.VIEW_NAME + "/12");
+    Location location2 = new Location(SubmissionView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location1, location2);
+
+    view.afterNavigation(afterNavigationEvent);
+    view.afterNavigation(afterNavigationEvent);
+
+    assertFalse(view.print.isVisible());
   }
 
   public static class ViewTest {
