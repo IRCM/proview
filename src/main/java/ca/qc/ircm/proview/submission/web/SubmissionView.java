@@ -67,6 +67,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -271,7 +272,7 @@ public class SubmissionView extends VerticalLayout
   }
 
   @Override
-  public void setParameter(BeforeEvent event, Long parameter) {
+  public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
     // TODO Auto-generated method stub
   }
 }
