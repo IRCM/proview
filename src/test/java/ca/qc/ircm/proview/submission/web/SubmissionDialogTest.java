@@ -14,6 +14,8 @@ import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
+import static ca.qc.ircm.proview.web.WebConstants.SAVE;
+import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.englishDatePickerI18n;
 import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 import static org.junit.Assert.assertEquals;
@@ -81,6 +83,8 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
     assertTrue(dialog.digestionDate.getClassName().contains(DIGESTION_DATE));
     assertTrue(dialog.analysisDate.getClassName().contains(ANALYSIS_DATE));
     assertTrue(dialog.dataAvailableDate.getClassName().contains(DATA_AVAILABLE_DATE));
+    assertTrue(dialog.save.getClassName().contains(SAVE));
+    assertTrue(dialog.save.getThemeName().contains(SUCCESS));
     assertTrue(dialog.edit.getClassName().contains(EDIT));
     assertTrue(dialog.edit.getThemeName().contains(PRIMARY));
     validateIcon(VaadinIcon.EDIT.create(), dialog.edit.getIcon());
@@ -106,6 +110,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
         dialog.dataAvailableDate.getLabel());
     assertEquals(ENGLISH, dialog.dataAvailableDate.getLocale());
     validateEquals(englishDatePickerI18n(), dialog.dataAvailableDate.getI18n());
+    assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(EDIT), dialog.edit.getText());
     assertEquals(webResources.message(PRINT), dialog.print.getText());
     verify(presenter).localeChange(locale);
@@ -135,9 +140,16 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
         dialog.dataAvailableDate.getLabel());
     assertEquals(ENGLISH, dialog.dataAvailableDate.getLocale());
     validateEquals(frenchDatePickerI18n(), dialog.dataAvailableDate.getI18n());
+    assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(EDIT), dialog.edit.getText());
     assertEquals(webResources.message(PRINT), dialog.print.getText());
     verify(presenter).localeChange(locale);
+  }
+
+  @Test
+  public void save() {
+    dialog.save.click();
+    verify(presenter).save();
   }
 
   @Test

@@ -8,6 +8,8 @@ import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
+import static ca.qc.ircm.proview.web.WebConstants.SAVE;
+import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.englishDatePickerI18n;
 import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 
@@ -51,6 +53,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   protected DatePicker digestionDate = new DatePicker();
   protected DatePicker analysisDate = new DatePicker();
   protected DatePicker dataAvailableDate = new DatePicker();
+  protected Button save = new Button();
   protected Button print = new Button();
   protected Button edit = new Button();
   private SubmissionDialogPresenter presenter;
@@ -73,8 +76,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
     formLayout.add(printContent, 3);
-    formLayout
-        .add(new FormLayout(sampleDeliveryDate, digestionDate, analysisDate, dataAvailableDate));
+    formLayout.add(
+        new FormLayout(sampleDeliveryDate, digestionDate, analysisDate, dataAvailableDate, save));
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
     buttons.setWidthFull();
     layout.add(header, formLayout, buttons);
@@ -83,6 +86,10 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     digestionDate.addClassName(DIGESTION_DATE);
     analysisDate.addClassName(ANALYSIS_DATE);
     dataAvailableDate.addClassName(DATA_AVAILABLE_DATE);
+    save.addThemeName(SUCCESS);
+    save.addClassName(SAVE);
+    save.setIcon(VaadinIcon.CHECK.create());
+    save.addClickListener(e -> presenter.save());
     print.addClassName(PRINT);
     print.setIcon(VaadinIcon.PRINT.create());
     print.addClickListener(e -> presenter.print());
@@ -115,6 +122,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     dataAvailableDate.setLabel(submissionResources.message(DATA_AVAILABLE_DATE));
     dataAvailableDate.setI18n(dateI18n);
     dataAvailableDate.setLocale(Locale.CANADA); // ISO format.
+    save.setText(webResources.message(SAVE));
     edit.setText(webResources.message(EDIT));
     print.setText(webResources.message(PRINT));
     presenter.localeChange(getLocale());

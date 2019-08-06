@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
+import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.datepicker.testbench.DatePickerElement;
@@ -51,6 +52,14 @@ public class SubmissionDialogElement extends DialogElement {
 
   public DatePickerElement dataAvailableDate() {
     return $(DatePickerElement.class).attributeContains("class", DATA_AVAILABLE_DATE).first();
+  }
+
+  public ButtonElement save() {
+    return $(ButtonElement.class).attributeContains("class", SAVE).first();
+  }
+
+  public void clickSave() {
+    save().click();
   }
 
   public ButtonElement print() {
