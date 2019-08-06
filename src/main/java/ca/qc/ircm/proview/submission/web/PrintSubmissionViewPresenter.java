@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -14,9 +15,11 @@ import org.springframework.context.annotation.Scope;
 public class PrintSubmissionViewPresenter {
   private PrintSubmissionView view;
   private Submission submission;
+  private SubmissionService service;
 
   @Autowired
-  protected PrintSubmissionViewPresenter() {
+  protected PrintSubmissionViewPresenter(SubmissionService service) {
+    this.service = service;
   }
 
   void init(PrintSubmissionView view) {
@@ -24,7 +27,10 @@ public class PrintSubmissionViewPresenter {
   }
 
   void setParameter(Long parameter) {
-    // TODO Auto-generated method stub
+    if (parameter != null) {
+      submission = service.get(parameter);
+    }
+    view.printContent.setSubmission(submission);
   }
 
   Submission getSubmission() {
