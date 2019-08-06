@@ -3,12 +3,15 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
+import static ca.qc.ircm.proview.web.WebConstants.ADD;
+import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
+import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.text.MessageResource;
@@ -26,6 +29,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import org.slf4j.Logger;
@@ -58,6 +62,8 @@ public class ViewLayout extends VerticalLayout
   protected Tab changeLanguage = new Tab();
   protected Tab contact = new Tab();
   protected Tab guidelines = new Tab();
+  protected Tab add = new Tab();
+  protected Tab edit = new Tab();
   protected Tab print = new Tab();
   private Map<Tab, String> tabsHref = new HashMap<>();
   private String currentHref;
@@ -79,8 +85,8 @@ public class ViewLayout extends VerticalLayout
     setSpacing(false);
     add(tabs);
     tabs.setId(TABS);
-    tabs.add(submissions, users, exitSwitchUser, signout, changeLanguage, contact, guidelines,
-        print);
+    tabs.add(submissions, users, exitSwitchUser, signout, changeLanguage, contact, guidelines, add,
+        edit, print);
     submissions.setId(styleName(SUBMISSIONS, TAB));
     users.setId(styleName(USERS, TAB));
     users.setVisible(authorizationService.hasAnyRole(MANAGER, ADMIN));
@@ -91,13 +97,19 @@ public class ViewLayout extends VerticalLayout
     changeLanguage.setId(styleName(CHANGE_LANGUAGE, TAB));
     contact.setId(styleName(CONTACT, TAB));
     guidelines.setId(styleName(GUIDELINES, TAB));
+    add.setId(styleName(ADD, TAB));
+    add.setVisible(false);
+    edit.setId(styleName(EDIT, TAB));
+    edit.setVisible(false);
     print.setId(styleName(PRINT, TAB));
     print.setVisible(false);
     tabsHref.put(submissions, SubmissionsView.VIEW_NAME);
     tabsHref.put(users, UsersView.VIEW_NAME);
     tabsHref.put(contact, ContactView.VIEW_NAME);
     tabsHref.put(guidelines, GuidelinesView.VIEW_NAME);
-    tabsHref.put(print, PrintSubmissionView.VIEW_NAME);
+    tabsHref.put(add, SubmissionView.VIEW_NAME);
+    tabsHref.put(edit, SubmissionView.VIEW_NAME + "/\\d+");
+    tabsHref.put(print, PrintSubmissionView.VIEW_NAME + "/\\d+");
     tabs.addSelectedChangeListener(e -> selectTab(e.getPreviousTab()));
   }
 
@@ -111,6 +123,8 @@ public class ViewLayout extends VerticalLayout
     changeLanguage.setLabel(resources.message(CHANGE_LANGUAGE));
     contact.setLabel(resources.message(CONTACT));
     guidelines.setLabel(resources.message(GUIDELINES));
+    add.setLabel(resources.message(ADD));
+    edit.setLabel(resources.message(EDIT));
     print.setLabel(resources.message(PRINT));
   }
 
@@ -132,9 +146,11 @@ public class ViewLayout extends VerticalLayout
       logger.debug("Change locale to {}", newLocale);
       UI.getCurrent().setLocale(newLocale);
       tabs.setSelectedTab(previous);
+    } else if (add == tabs.getSelectedTab() || edit == tabs.getSelectedTab()
+        || print == tabs.getSelectedTab()) {
+      // Do nothing.
     } else {
-      if (print != tabs.getSelectedTab()
-          && !currentHref.equals(tabsHref.get(tabs.getSelectedTab()))) {
+      if (!currentHref.equals(tabsHref.get(tabs.getSelectedTab()))) {
         logger.debug("Navigate to {}", tabsHref.get(tabs.getSelectedTab()));
         UI.getCurrent().navigate(tabsHref.get(tabs.getSelectedTab()));
       }
@@ -143,15 +159,12 @@ public class ViewLayout extends VerticalLayout
 
   @Override
   public void afterNavigation(AfterNavigationEvent event) {
+    add.setVisible(false);
+    edit.setVisible(false);
     print.setVisible(false);
     currentHref = event.getLocation().getPath();
     Optional<Tab> currentTab = tabsHref.entrySet().stream()
-        .filter(e -> e.getValue().equals(currentHref)).map(e -> e.getKey()).findFirst();
-    if (!currentTab.isPresent()) {
-      if (tabsHref.get(print).equals(currentHref.replaceFirst("/[^/]*$", ""))) {
-        currentTab = Optional.of(print);
-      }
-    }
+        .filter(e -> Pattern.matches(e.getValue(), currentHref)).map(e -> e.getKey()).findFirst();
     currentTab.ifPresent(tab -> {
       tabs.setSelectedTab(tab);
       tab.setVisible(true);

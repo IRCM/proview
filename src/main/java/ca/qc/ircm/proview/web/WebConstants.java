@@ -63,14 +63,15 @@ public class WebConstants {
   public static final String BANNED = "banned";
   public static final String ALL = "all";
   public static final String SAVE = "save";
+  public static final String ADD = "add";
   public static final String EDIT = "edit";
   public static final String PRINT = "print";
   public static final String SAVED_SUBMISSIONS = "savedSubmissions";
   public static final String SAVED_SAMPLES = "savedSamples";
   public static final String SAVED_CONTAINERS = "savedContainers";
   public static final String SAVED_SAMPLE_FROM_MULTIPLE_USERS = "savedSamplesFromMultipleUsers";
-  public static final Method VALUE_CHANGE_LISTENER_METHOD =
-      ReflectTools.findMethod(ValueChangeListener.class, "valueChanged", ValueChangeEvent.class);
+  public static final Method VALUE_CHANGE_LISTENER_METHOD = ReflectTools
+      .findMethod(ValueChangeListener.class, "valueChanged", ValueChangeEvent.class);
 
   /**
    * Returns all valid locales for program.
@@ -86,7 +87,7 @@ public class WebConstants {
 
   /**
    * Returns {@link DatePickerI18n} for English.
-   * 
+   *
    * @return {@link DatePickerI18n} for English
    */
   public static DatePickerI18n englishDatePickerI18n() {
@@ -101,7 +102,7 @@ public class WebConstants {
 
   /**
    * Returns {@link DatePickerI18n} for French.
-   * 
+   *
    * @return {@link DatePickerI18n} for French
    */
   public static DatePickerI18n frenchDatePickerI18n() {
