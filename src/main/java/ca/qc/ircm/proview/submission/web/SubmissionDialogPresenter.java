@@ -70,6 +70,7 @@ public class SubmissionDialogPresenter {
 
   void edit() {
     UI.getCurrent().navigate(SubmissionView.class, binder.getBean().getId());
+    dialog.close();
   }
 
   void print() {
