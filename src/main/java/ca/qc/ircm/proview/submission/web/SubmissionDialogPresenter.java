@@ -74,6 +74,7 @@ public class SubmissionDialogPresenter {
 
   void print() {
     UI.getCurrent().navigate(PrintSubmissionView.class, binder.getBean().getId());
+    dialog.close();
   }
 
   Submission getSubmission() {

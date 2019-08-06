@@ -103,12 +103,14 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     presenter.setSubmission(submission);
     presenter.print();
     verify(ui).navigate(PrintSubmissionView.class, id);
+    verify(dialog).close();
   }
 
   @Test
   public void print_New() {
     presenter.print();
     verify(ui).navigate(PrintSubmissionView.class, null);
+    verify(dialog).close();
   }
 
   @Test
