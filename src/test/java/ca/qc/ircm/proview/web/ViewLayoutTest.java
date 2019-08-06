@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.web.ViewLayout.ID;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.ViewLayout.TAB;
+import static ca.qc.ircm.proview.web.ViewLayout.TABS;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
@@ -89,6 +90,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
+    assertEquals(TABS, view.tabs.getId().orElse(""));
     assertEquals(styleName(SUBMISSIONS, TAB), view.submissions.getId().orElse(""));
     assertEquals(styleName(USERS, TAB), view.users.getId().orElse(""));
     assertEquals(styleName(EXIT_SWITCH_USER, TAB), view.exitSwitchUser.getId().orElse(""));

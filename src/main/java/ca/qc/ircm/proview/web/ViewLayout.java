@@ -39,6 +39,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 public class ViewLayout extends VerticalLayout
     implements RouterLayout, LocaleChangeObserver, AfterNavigationObserver {
   public static final String ID = "view-layout";
+  public static final String TABS = styleName(ID, "tabs");
   public static final String SUBMISSIONS = "submissions";
   public static final String USERS = "users";
   public static final String EXIT_SWITCH_USER = "exitSwitchUser";
@@ -77,6 +78,7 @@ public class ViewLayout extends VerticalLayout
     setPadding(false);
     setSpacing(false);
     add(tabs);
+    tabs.setId(TABS);
     tabs.add(submissions, users, exitSwitchUser, signout, changeLanguage, contact, guidelines,
         print);
     submissions.setId(styleName(SUBMISSIONS, TAB));
