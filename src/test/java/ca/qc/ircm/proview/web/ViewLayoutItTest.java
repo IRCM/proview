@@ -206,9 +206,9 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
     submissionsView.doubleClickSubmission(0);
-    SubmissionDialogElement submissionDialogView = $(SubmissionDialogElement.class)
+    SubmissionDialogElement submissionDialog = $(SubmissionDialogElement.class)
         .id(SubmissionDialog.ID);
-    submissionDialogView.clickPrint();
+    submissionDialog.clickPrint();
     assertEquals(viewUrl(PrintSubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.print()).isPresent());
     view.guidelines().click();
