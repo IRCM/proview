@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @RolesAllowed({ UserRole.USER })
 public class PrintSubmissionView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver {
-  public static final String VIEW_NAME = "submission/print";
+  public static final String VIEW_NAME = "print-submission";
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
   public static final String SECOND_HEADER = "header-2";
