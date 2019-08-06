@@ -34,7 +34,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-dialog")
 public class SubmissionDialogElement extends DialogElement {
   public H2Element header() {
-    return $(H2Element.class).id(HEADER);
+    return $(H2Element.class).attributeContains("class", HEADER).first();
   }
 
   public DatePickerElement sampleDeliveryDate() {

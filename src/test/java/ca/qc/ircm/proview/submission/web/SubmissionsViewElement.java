@@ -29,6 +29,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-vertical-layout")
 public class SubmissionsViewElement extends VerticalLayoutElement {
   private static final int EXPERIMENT_COLUMN = 0;
+  private static final int VISIBLE_COLUMN = 13;
 
   public H2Element header() {
     return $(H2Element.class).id(HEADER);
@@ -42,6 +43,14 @@ public class SubmissionsViewElement extends VerticalLayoutElement {
     submissions().getCell(row, 0).click();
   }
 
+  public ButtonElement visible(int row) {
+    return submissions().getCell(row, VISIBLE_COLUMN).$(ButtonElement.class).first();
+  }
+
+  public void clickVisible(int row) {
+    visible(row).click();
+  }
+
   public void doubleClickSubmission(int row) {
     submissions().getCell(row, 0).doubleClick();
   }
@@ -50,11 +59,11 @@ public class SubmissionsViewElement extends VerticalLayoutElement {
     return submissions().getCell(row, EXPERIMENT_COLUMN).getText();
   }
 
-  public ButtonElement addButton() {
+  public ButtonElement add() {
     return $(ButtonElement.class).id(ADD);
   }
 
   public void clickAdd() {
-    addButton().click();
+    add().click();
   }
 }
