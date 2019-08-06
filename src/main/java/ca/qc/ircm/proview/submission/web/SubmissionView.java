@@ -90,8 +90,8 @@ public class SubmissionView extends VerticalLayout
   public static final String QUANTITY_PLACEHOLDER = property(QUANTITY, PLACEHOLDER);
   public static final String VOLUME_PLACEHOLDER = property(VOLUME, PLACEHOLDER);
   public static final String DEVELOPMENT_TIME_PLACEHOLDER = property(DEVELOPMENT_TIME, PLACEHOLDER);
-  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER =
-      property(WEIGHT_MARKER_QUANTITY, PLACEHOLDER);
+  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER = property(WEIGHT_MARKER_QUANTITY,
+      PLACEHOLDER);
   public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionView.class);
@@ -135,7 +135,7 @@ public class SubmissionView extends VerticalLayout
 
   @PostConstruct
   void init() {
-    logger.debug("Submission dialog");
+    logger.debug("Submission view");
     setId(ID);
     VerticalLayout layout = new VerticalLayout();
     layout.setMaxWidth("90em");
@@ -221,8 +221,8 @@ public class SubmissionView extends VerticalLayout
     final MessageResource resources = new MessageResource(SubmissionView.class, getLocale());
     final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
     final MessageResource sampleResources = new MessageResource(Sample.class, getLocale());
-    final MessageResource submissionSampleResources =
-        new MessageResource(SubmissionSample.class, getLocale());
+    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
+        getLocale());
     header.setText(resources.message(HEADER));
     service.setLabel(submissionResources.message(SERVICE));
     experiment.setLabel(submissionResources.message(EXPERIMENT));
