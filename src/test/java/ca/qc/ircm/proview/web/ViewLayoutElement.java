@@ -26,6 +26,7 @@ import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.ViewLayout.TAB;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
+import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.flow.component.tabs.testbench.TabElement;
@@ -64,5 +65,9 @@ public class ViewLayoutElement extends VerticalLayoutElement {
 
   public TabElement guidelines() {
     return $(TabElement.class).id(styleName(GUIDELINES, TAB));
+  }
+
+  public TabElement print() {
+    return $(TabElement.class).id(styleName(PRINT, TAB));
   }
 }
