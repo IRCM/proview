@@ -248,19 +248,12 @@ public class SubmissionsView extends VerticalLayout
   private Button hidden(Submission submission) {
     Button button = new Button();
     button.addClassName(HIDDEN);
-    updateHiddenButton(button, submission);
-    button.addClickListener(e -> {
-      presenter.toggleHidden(submission);
-      updateHiddenButton(button, submission);
-    });
-    return button;
-  }
-
-  private void updateHiddenButton(Button button, Submission submission) {
     final MessageResource resources = new MessageResource(Submission.class, getLocale());
     button.setText(resources.message(property(HIDDEN, submission.isHidden())));
     button.setIcon(submission.isHidden() ? VaadinIcon.EYE_SLASH.create() : VaadinIcon.EYE.create());
     button.addThemeName(submission.isHidden() ? WebConstants.ERROR : WebConstants.SUCCESS);
+    button.addClickListener(e -> presenter.toggleHidden(submission));
+    return button;
   }
 
   @Override

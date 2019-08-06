@@ -179,6 +179,7 @@ public class SubmissionsViewPresenter {
     submission.setHidden(!submission.isHidden());
     logger.debug("Change submission {} hidden to {}", submission, submission.isHidden());
     service.update(submission, null);
+    view.submissions.getDataProvider().refreshAll();
   }
 
   SubmissionFilter filter() {

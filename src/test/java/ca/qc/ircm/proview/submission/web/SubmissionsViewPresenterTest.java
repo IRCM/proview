@@ -279,6 +279,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     presenter.toggleHidden(submission);
     verify(service).update(submission, null);
     assertFalse(submission.isHidden());
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
@@ -288,5 +289,6 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     presenter.toggleHidden(submission);
     verify(service).update(submission, null);
     assertTrue(submission.isHidden());
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 }
