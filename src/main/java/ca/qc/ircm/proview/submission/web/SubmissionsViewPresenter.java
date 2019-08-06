@@ -26,6 +26,7 @@ import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.CallbackDataProvider.CountCallback;
 import com.vaadin.flow.data.provider.CallbackDataProvider.FetchCallback;
@@ -171,8 +172,7 @@ public class SubmissionsViewPresenter {
   }
 
   void add() {
-    view.dialog.setSubmission(new Submission());
-    view.dialog.open();
+    UI.getCurrent().navigate(SubmissionView.class);
   }
 
   void toggleHidden(Submission submission) {

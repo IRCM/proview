@@ -23,7 +23,6 @@ import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -39,6 +38,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -65,7 +65,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class SubmissionsViewPresenterTest {
+public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   @Autowired
   private SubmissionsViewPresenter presenter;
   @Mock
@@ -268,12 +268,7 @@ public class SubmissionsViewPresenterTest {
   public void add() {
     presenter.init(view);
     presenter.add();
-    verify(view.dialog).setSubmission(submissionCaptor.capture());
-    Submission submission = submissionCaptor.getValue();
-    assertNull(submission.getId());
-    assertNull(submission.getExperiment());
-    assertNull(submission.getSamples());
-    verify(view.dialog).open();
+    verify(ui).navigate(SubmissionView.class);
   }
 
   @Test
