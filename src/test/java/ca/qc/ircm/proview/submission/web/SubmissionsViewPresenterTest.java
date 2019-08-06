@@ -173,9 +173,9 @@ public class SubmissionsViewPresenterTest {
   public void submissions_SortOrder() {
     presenter.init(view);
     verify(view.submissions).setDataProvider(dataProviderCaptor.capture());
-    List<QuerySortOrder> sortOrders =
-        Arrays.asList(new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
-            new QuerySortOrder(USER, SortDirection.DESCENDING));
+    List<QuerySortOrder> sortOrders = Arrays.asList(
+        new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
+        new QuerySortOrder(USER, SortDirection.DESCENDING));
     List<Submission> submissions = dataProviderCaptor.getValue()
         .fetch(new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null))
         .collect(Collectors.toList());
@@ -284,6 +284,7 @@ public class SubmissionsViewPresenterTest {
     presenter.toggleHidden(submission);
     verify(service).update(submission, null);
     assertFalse(submission.isHidden());
+    verify(view.submissions.getDataProvider()).refreshItem(submission);
   }
 
   @Test
@@ -293,5 +294,6 @@ public class SubmissionsViewPresenterTest {
     presenter.toggleHidden(submission);
     verify(service).update(submission, null);
     assertTrue(submission.isHidden());
+    verify(view.submissions.getDataProvider()).refreshItem(submission);
   }
 }
