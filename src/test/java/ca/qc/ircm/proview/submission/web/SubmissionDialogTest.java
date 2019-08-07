@@ -9,6 +9,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateEquals;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
@@ -19,12 +20,16 @@ import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.englishDatePickerI18n;
 import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -49,6 +54,8 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   @Autowired
   private PrintSubmission printContent;
   @Mock
+  private AuthorizationService authorizationService;
+  @Mock
   private Submission submission;
   private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionDialog.class, locale);
@@ -61,13 +68,25 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    dialog = new SubmissionDialog(presenter, printContent);
+    dialog = new SubmissionDialog(presenter, printContent, authorizationService);
     dialog.init();
   }
 
   @Test
-  public void init() {
+  public void init_User() {
     verify(presenter).init(dialog);
+    verify(authorizationService, atLeastOnce()).hasRole(ADMIN);
+    assertFalse(dialog.datesForm.isVisible());
+  }
+
+  @Test
+  public void init_Admin() {
+    when(authorizationService.hasRole(ADMIN)).thenReturn(true);
+    dialog.init();
+
+    verify(presenter, times(2)).init(dialog);
+    verify(authorizationService, atLeastOnce()).hasRole(ADMIN);
+    assertTrue(dialog.datesForm.isVisible());
   }
 
   @Test

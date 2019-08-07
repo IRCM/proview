@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
@@ -13,6 +14,7 @@ import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.englishDatePickerI18n;
 import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
@@ -49,6 +51,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
   protected H2 header = new H2();
   protected PrintSubmission printContent;
+  protected FormLayout datesForm = new FormLayout();
   protected DatePicker sampleDeliveryDate = new DatePicker();
   protected DatePicker digestionDate = new DatePicker();
   protected DatePicker analysisDate = new DatePicker();
@@ -57,11 +60,14 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   protected Button print = new Button();
   protected Button edit = new Button();
   private SubmissionDialogPresenter presenter;
+  private AuthorizationService authorizationService;
 
   @Autowired
-  protected SubmissionDialog(SubmissionDialogPresenter presenter, PrintSubmission printContent) {
+  protected SubmissionDialog(SubmissionDialogPresenter presenter, PrintSubmission printContent,
+      AuthorizationService authorizationService) {
     this.presenter = presenter;
     this.printContent = printContent;
+    this.authorizationService = authorizationService;
   }
 
   @PostConstruct
@@ -73,11 +79,17 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     layout.setMinWidth("22em");
     add(layout);
     FormLayout formLayout = new FormLayout();
-    formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
-        new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
-    formLayout.add(printContent, 3);
-    formLayout.add(
-        new FormLayout(sampleDeliveryDate, digestionDate, analysisDate, dataAvailableDate, save));
+    if (authorizationService.hasRole(ADMIN)) {
+      formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
+          new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
+      formLayout.add(printContent, 3);
+    } else {
+      formLayout.setResponsiveSteps(new ResponsiveStep("45em", 1));
+      formLayout.add(printContent);
+    }
+    formLayout.add(datesForm);
+    datesForm.add(sampleDeliveryDate, digestionDate, analysisDate, dataAvailableDate, save);
+    datesForm.setVisible(authorizationService.hasRole(ADMIN));
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
     buttons.setWidthFull();
     layout.add(header, formLayout, buttons);
