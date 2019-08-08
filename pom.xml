@@ -57,6 +57,7 @@
     <shiro.version>1.3.2</shiro.version>
     <vaadin.version>14.0.0.beta3</vaadin.version>
     <vaadin.theme>${project.artifactId}</vaadin.theme>
+    <scrolllayout.version>2.0.2</scrolllayout.version>
     <guava.version>25.0-jre</guava.version>
     <commons-lang3.version>3.8.1</commons-lang3.version>
     <commons-email.version>1.5</commons-email.version>
@@ -230,6 +231,11 @@
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-confirm-dialog-flow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.carnet.kasparscherrer</groupId>
+      <artifactId>scrolllayout</artifactId>
+      <version>${scrolllayout.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>

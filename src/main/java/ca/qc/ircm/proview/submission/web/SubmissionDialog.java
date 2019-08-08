@@ -18,6 +18,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
+import ch.carnet.kasparscherrer.VerticalScrollLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
@@ -79,13 +80,15 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     layout.setMinWidth("22em");
     add(layout);
     FormLayout formLayout = new FormLayout();
+    VerticalScrollLayout printContentLayout = new VerticalScrollLayout(printContent);
+    printContentLayout.setHeight("45em");
     if (authorizationService.hasRole(ADMIN)) {
       formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
           new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
-      formLayout.add(printContent, 3);
+      formLayout.add(printContentLayout, 3);
     } else {
       formLayout.setResponsiveSteps(new ResponsiveStep("45em", 1));
-      formLayout.add(printContent);
+      formLayout.add(printContentLayout);
     }
     formLayout.add(datesForm);
     datesForm.add(sampleDeliveryDate, digestionDate, analysisDate, dataAvailableDate, save);
