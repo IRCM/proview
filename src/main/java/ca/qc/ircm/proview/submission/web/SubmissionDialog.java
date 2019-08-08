@@ -16,9 +16,11 @@ import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import ch.carnet.kasparscherrer.VerticalScrollLayout;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
@@ -31,6 +33,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.Locale;
 import javax.annotation.PostConstruct;
@@ -141,6 +144,23 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     edit.setText(webResources.message(EDIT));
     print.setText(webResources.message(PRINT));
     presenter.localeChange(getLocale());
+  }
+
+  /**
+   * Adds listener to be informed when a submission was saved.
+   *
+   * @param listener
+   *          listener
+   * @return listener registration
+   */
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public Registration addSavedListener(
+      ComponentEventListener<SavedEvent<SubmissionDialog>> listener) {
+    return addListener((Class) SavedEvent.class, listener);
+  }
+
+  void fireSavedEvent() {
+    fireEvent(new SavedEvent<>(this, true));
   }
 
   public Submission getSubmission() {

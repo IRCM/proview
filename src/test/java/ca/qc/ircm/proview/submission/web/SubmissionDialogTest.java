@@ -23,8 +23,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,8 +35,10 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Locale;
@@ -57,6 +61,8 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   private AuthorizationService authorizationService;
   @Mock
   private Submission submission;
+  @Mock
+  private ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener;
   private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionDialog.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
@@ -163,6 +169,20 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
     assertEquals(webResources.message(EDIT), dialog.edit.getText());
     assertEquals(webResources.message(PRINT), dialog.print.getText());
     verify(presenter).localeChange(locale);
+  }
+
+  @Test
+  public void savedListener() {
+    dialog.addSavedListener(savedListener);
+    dialog.fireSavedEvent();
+    verify(savedListener).onComponentEvent(any());
+  }
+
+  @Test
+  public void savedListener_Remove() {
+    dialog.addSavedListener(savedListener).remove();
+    dialog.fireSavedEvent();
+    verify(savedListener, never()).onComponentEvent(any());
   }
 
   @Test

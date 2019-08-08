@@ -66,6 +66,7 @@ public class SubmissionDialogPresenter {
     if (validate()) {
       service.update(binder.getBean(), null);
       dialog.close();
+      dialog.fireSavedEvent();
     }
   }
 

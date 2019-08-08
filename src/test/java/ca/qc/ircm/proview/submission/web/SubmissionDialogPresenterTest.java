@@ -80,6 +80,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     assertEquals(analysisDate, submission.getAnalysisDate());
     assertEquals(dataAvailableDate, submission.getDataAvailableDate());
     verify(dialog).close();
+    verify(dialog).fireSavedEvent();
   }
 
   @Test
