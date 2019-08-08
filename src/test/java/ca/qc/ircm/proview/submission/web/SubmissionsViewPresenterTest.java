@@ -26,6 +26,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +41,8 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.SavedEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -82,6 +85,9 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   private ArgumentCaptor<SubmissionFilter> filterCaptor;
   @Captor
   private ArgumentCaptor<DataProvider<Submission, ?>> dataProviderCaptor;
+  @Captor
+  @SuppressWarnings("checkstyle:linelength")
+  private ArgumentCaptor<ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
   private List<Submission> submissions;
 
   /**
@@ -262,6 +268,18 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     verify(service).get(2L);
     verify(view.dialog).setSubmission(databaseSubmission);
     verify(view.dialog).open();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void refreshOnSaved() {
+    presenter.init(view);
+    verify(view.dialog).addSavedListener(submissionSavedListenerCaptor.capture());
+    @SuppressWarnings("checkstyle:linelength")
+    ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener = submissionSavedListenerCaptor
+        .getValue();
+    savedListener.onComponentEvent(mock(SavedEvent.class));
+    verify(view.submissions, times(2)).setDataProvider(any());
   }
 
   @Test

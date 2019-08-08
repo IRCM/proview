@@ -87,15 +87,21 @@ public class SubmissionsViewPresenter {
     columnProperties.put(SAMPLES_COUNT, submission.samples.size());
     columnProperties.put(SUBMISSION_DATE, submission.submissionDate);
     columnProperties.put(HIDDEN, submission.hidden);
-    view.submissions.setDataProvider(dataProvider());
     view.user.setVisible(authorizationService.hasAnyRole(MANAGER, ADMIN));
     view.director.setVisible(authorizationService.hasRole(ADMIN));
     view.service.setVisible(authorizationService.hasRole(ADMIN));
     view.instrument.setVisible(authorizationService.hasRole(ADMIN));
     view.hidden.setVisible(authorizationService.hasRole(ADMIN));
+    loadSubmissions();
+    view.dialog.addSavedListener(e -> loadSubmissions());
+  }
+
+  private void loadSubmissions() {
+    view.submissions.setDataProvider(dataProvider());
   }
 
   private DataProvider<Submission, Void> dataProvider() {
+    @SuppressWarnings("checkstyle:linelength")
     Function<Query<Submission, SubmissionFilter>, List<OrderSpecifier<?>>> filterSortOrders = query -> query
         .getSortOrders() != null && !query.getSortOrders().isEmpty()
             ? query.getSortOrders().stream()

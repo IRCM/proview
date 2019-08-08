@@ -287,11 +287,11 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void refreshExperimentsOnUserSaved() {
+  public void refreshOnSaved() {
     presenter.init(view);
     verify(view.userDialog).addSavedListener(userSavedListenerCaptor.capture());
-    ComponentEventListener<SavedEvent<UserDialog>> savedListener =
-        userSavedListenerCaptor.getValue();
+    ComponentEventListener<SavedEvent<UserDialog>> savedListener = userSavedListenerCaptor
+        .getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
     verify(userService, times(2)).all(null, currentUser.getLaboratory());
   }
