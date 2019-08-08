@@ -61,6 +61,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.PhoneNumber;
+import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SavedEvent;
@@ -171,6 +172,9 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(addressResources.message(COUNTRY), dialog.country.getLabel());
     assertEquals(addressResources.message(POSTAL_CODE), dialog.postalCode.getLabel());
     assertEquals(phoneNumberResources.message(TYPE), dialog.phoneType.getLabel());
+    for (PhoneNumberType type : PhoneNumberType.values()) {
+      assertEquals(type.getLabel(locale), dialog.phoneType.getItemLabelGenerator().apply(type));
+    }
     assertEquals(phoneNumberResources.message(NUMBER), dialog.number.getLabel());
     assertEquals(phoneNumberResources.message(EXTENSION), dialog.extension.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
@@ -206,6 +210,9 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(addressResources.message(COUNTRY), dialog.country.getLabel());
     assertEquals(addressResources.message(POSTAL_CODE), dialog.postalCode.getLabel());
     assertEquals(phoneNumberResources.message(TYPE), dialog.phoneType.getLabel());
+    for (PhoneNumberType type : PhoneNumberType.values()) {
+      assertEquals(type.getLabel(locale), dialog.phoneType.getItemLabelGenerator().apply(type));
+    }
     assertEquals(phoneNumberResources.message(NUMBER), dialog.number.getLabel());
     assertEquals(phoneNumberResources.message(EXTENSION), dialog.extension.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
