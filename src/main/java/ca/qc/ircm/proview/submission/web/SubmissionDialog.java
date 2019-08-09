@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
@@ -14,6 +15,7 @@ import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.englishDatePickerI18n;
 import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.SavedEvent;
@@ -22,6 +24,7 @@ import ca.qc.ircm.text.MessageResource;
 import ch.carnet.kasparscherrer.VerticalScrollLayout;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -55,7 +58,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
   protected H2 header = new H2();
   protected PrintSubmission printContent;
-  protected FormLayout datesForm = new FormLayout();
+  protected FormLayout submissionForm = new FormLayout();
+  protected ComboBox<MassDetectionInstrument> instrument = new ComboBox<>();
   protected DatePicker sampleDeliveryDate = new DatePicker();
   protected DatePicker digestionDate = new DatePicker();
   protected DatePicker analysisDate = new DatePicker();
@@ -93,13 +97,17 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
       formLayout.setResponsiveSteps(new ResponsiveStep("45em", 1));
       formLayout.add(printContentLayout);
     }
-    formLayout.add(datesForm);
-    datesForm.add(sampleDeliveryDate, digestionDate, analysisDate, dataAvailableDate, save);
-    datesForm.setVisible(authorizationService.hasRole(ADMIN));
+    formLayout.add(submissionForm);
+    submissionForm.add(instrument, sampleDeliveryDate, digestionDate, analysisDate,
+        dataAvailableDate, save);
+    submissionForm.setVisible(authorizationService.hasRole(ADMIN));
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
     buttons.setWidthFull();
     layout.add(header, formLayout, buttons);
     header.addClassName(HEADER);
+    instrument.addClassName(MASS_DETECTION_INSTRUMENT);
+    instrument.setItems(MassDetectionInstrument.userChoices());
+    instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     sampleDeliveryDate.addClassName(SAMPLE_DELIVERY_DATE);
     digestionDate.addClassName(DIGESTION_DATE);
     analysisDate.addClassName(ANALYSIS_DATE);
@@ -128,6 +136,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     if (FRENCH.equals(getLocale())) {
       dateI18n = frenchDatePickerI18n();
     }
+    instrument.setLabel(submissionResources.message(MASS_DETECTION_INSTRUMENT));
     sampleDeliveryDate.setLabel(submissionResources.message(SAMPLE_DELIVERY_DATE));
     sampleDeliveryDate.setI18n(dateI18n);
     sampleDeliveryDate.setLocale(Locale.CANADA); // ISO format.
@@ -154,8 +163,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
    * @return listener registration
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public Registration addSavedListener(
-      ComponentEventListener<SavedEvent<SubmissionDialog>> listener) {
+  public Registration
+      addSavedListener(ComponentEventListener<SavedEvent<SubmissionDialog>> listener) {
     return addListener((Class) SavedEvent.class, listener);
   }
 

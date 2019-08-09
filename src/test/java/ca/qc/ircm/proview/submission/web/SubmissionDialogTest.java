@@ -3,10 +3,12 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateEquals;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
@@ -31,6 +33,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
@@ -41,6 +44,7 @@ import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
+import java.util.List;
 import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,7 +86,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   public void init_User() {
     verify(presenter).init(dialog);
     verify(authorizationService, atLeastOnce()).hasRole(ADMIN);
-    assertFalse(dialog.datesForm.isVisible());
+    assertFalse(dialog.submissionForm.isVisible());
   }
 
   @Test
@@ -92,7 +96,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
 
     verify(presenter, times(2)).init(dialog);
     verify(authorizationService, atLeastOnce()).hasRole(ADMIN);
-    assertTrue(dialog.datesForm.isVisible());
+    assertTrue(dialog.submissionForm.isVisible());
   }
 
   @Test
@@ -104,6 +108,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
     assertTrue(dialog.header.getClassName().contains(HEADER));
+    assertTrue(dialog.instrument.getClassName().contains(MASS_DETECTION_INSTRUMENT));
     assertTrue(dialog.sampleDeliveryDate.getClassName().contains(SAMPLE_DELIVERY_DATE));
     assertTrue(dialog.digestionDate.getClassName().contains(DIGESTION_DATE));
     assertTrue(dialog.analysisDate.getClassName().contains(ANALYSIS_DATE));
@@ -121,6 +126,12 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   public void labels() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(submissionResources.message(MASS_DETECTION_INSTRUMENT),
+        dialog.instrument.getLabel());
+    for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
+      assertEquals(instrument.getLabel(locale),
+          dialog.instrument.getItemLabelGenerator().apply(instrument));
+    }
     assertEquals(submissionResources.message(SAMPLE_DELIVERY_DATE),
         dialog.sampleDeliveryDate.getLabel());
     assertEquals(ENGLISH, dialog.sampleDeliveryDate.getLocale());
@@ -151,6 +162,12 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
     when(ui.getLocale()).thenReturn(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(submissionResources.message(MASS_DETECTION_INSTRUMENT),
+        dialog.instrument.getLabel());
+    for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
+      assertEquals(instrument.getLabel(locale),
+          dialog.instrument.getItemLabelGenerator().apply(instrument));
+    }
     assertEquals(submissionResources.message(SAMPLE_DELIVERY_DATE),
         dialog.sampleDeliveryDate.getLabel());
     assertEquals(ENGLISH, dialog.sampleDeliveryDate.getLocale());
@@ -169,6 +186,12 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
     assertEquals(webResources.message(EDIT), dialog.edit.getText());
     assertEquals(webResources.message(PRINT), dialog.print.getText());
     verify(presenter).localeChange(locale);
+  }
+
+  @Test
+  public void instrument() {
+    List<MassDetectionInstrument> instruments = items(dialog.instrument);
+    assertEquals(MassDetectionInstrument.userChoices(), instruments);
   }
 
   @Test

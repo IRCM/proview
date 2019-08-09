@@ -23,11 +23,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import java.time.LocalDate;
+import java.util.Locale;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -47,6 +49,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   private SubmissionRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
+  private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
   private LocalDate sampleDeliveryDate = LocalDate.now().minusDays(8);
   private LocalDate digestionDate = LocalDate.now().minusDays(5);
   private LocalDate analysisDate = LocalDate.now().minusDays(3);
@@ -60,6 +63,8 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   }
 
   private void setFields(SubmissionDialogElement dialog) {
+    Locale locale = this.currentLocale();
+    dialog.instrument().selectByText(instrument.getLabel(locale));
     dialog.sampleDeliveryDate().setDate(sampleDeliveryDate);
     dialog.digestionDate().setDate(digestionDate);
     dialog.analysisDate().setDate(analysisDate);
@@ -71,6 +76,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
     openDialog(0);
     SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
     assertTrue(optional(() -> dialog.header()).isPresent());
+    assertFalse(optional(() -> dialog.instrument()).isPresent());
     assertFalse(optional(() -> dialog.sampleDeliveryDate()).isPresent());
     assertFalse(optional(() -> dialog.digestionDate()).isPresent());
     assertFalse(optional(() -> dialog.analysisDate()).isPresent());
@@ -86,6 +92,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
     openDialog(0);
     SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
     assertTrue(optional(() -> dialog.header()).isPresent());
+    assertTrue(optional(() -> dialog.instrument()).isPresent());
     assertTrue(optional(() -> dialog.sampleDeliveryDate()).isPresent());
     assertTrue(optional(() -> dialog.digestionDate()).isPresent());
     assertTrue(optional(() -> dialog.analysisDate()).isPresent());
@@ -106,6 +113,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
     dialog.clickSave();
     waitUntil(driver -> $(SubmissionDialogElement.class).all().isEmpty());
     Submission submission = repository.findById(164L).get();
+    assertEquals(instrument, submission.getMassDetectionInstrument());
     assertEquals(sampleDeliveryDate, submission.getSampleDeliveryDate());
     assertEquals(digestionDate, submission.getDigestionDate());
     assertEquals(analysisDate, submission.getAnalysisDate());

@@ -2,16 +2,19 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.H2;
 import java.time.LocalDate;
@@ -36,6 +39,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   @Mock
   private Submission submission;
   private Locale locale = ENGLISH;
+  private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
   private LocalDate sampleDeliveryDate = LocalDate.of(2019, 7, 28);
   private LocalDate digestionDate = LocalDate.of(2019, 7, 30);
   private LocalDate analysisDate = LocalDate.of(2019, 8, 1);
@@ -49,6 +53,8 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     when(ui.getLocale()).thenReturn(locale);
     dialog.header = new H2();
     dialog.printContent = mock(PrintSubmission.class);
+    dialog.instrument = new ComboBox<>();
+    dialog.instrument.setItems(MassDetectionInstrument.platformChoices());
     dialog.sampleDeliveryDate = new DatePicker();
     dialog.digestionDate = new DatePicker();
     dialog.analysisDate = new DatePicker();
@@ -59,6 +65,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   }
 
   private void setFields() {
+    dialog.instrument.setValue(instrument);
     dialog.sampleDeliveryDate.setValue(sampleDeliveryDate);
     dialog.digestionDate.setValue(digestionDate);
     dialog.analysisDate.setValue(analysisDate);
@@ -75,6 +82,27 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     presenter.save();
 
     verify(service).update(submission, null);
+    assertEquals(instrument, submission.getMassDetectionInstrument());
+    assertEquals(sampleDeliveryDate, submission.getSampleDeliveryDate());
+    assertEquals(digestionDate, submission.getDigestionDate());
+    assertEquals(analysisDate, submission.getAnalysisDate());
+    assertEquals(dataAvailableDate, submission.getDataAvailableDate());
+    verify(dialog).close();
+    verify(dialog).fireSavedEvent();
+  }
+
+  @Test
+  public void save_NullInstrument() {
+    Submission submission = new Submission();
+    presenter.localeChange(locale);
+    presenter.setSubmission(submission);
+    setFields();
+    dialog.instrument.setValue(MassDetectionInstrument.NULL);
+
+    presenter.save();
+
+    verify(service).update(submission, null);
+    assertNull(submission.getMassDetectionInstrument());
     assertEquals(sampleDeliveryDate, submission.getSampleDeliveryDate());
     assertEquals(digestionDate, submission.getDigestionDate());
     assertEquals(analysisDate, submission.getAnalysisDate());
@@ -126,6 +154,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   @Test
   public void setSubmission() {
     Submission submission = new Submission();
+    submission.setMassDetectionInstrument(instrument);
     submission.setSampleDeliveryDate(sampleDeliveryDate);
     submission.setDigestionDate(digestionDate);
     submission.setAnalysisDate(analysisDate);
@@ -134,6 +163,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
 
     presenter.setSubmission(submission);
 
+    assertEquals(instrument, dialog.instrument.getValue());
     assertEquals(sampleDeliveryDate, dialog.sampleDeliveryDate.getValue());
     assertEquals(digestionDate, dialog.digestionDate.getValue());
     assertEquals(analysisDate, dialog.analysisDate.getValue());
@@ -143,6 +173,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   @Test
   public void setSubmission_BeforeLocalChange() {
     Submission submission = new Submission();
+    submission.setMassDetectionInstrument(instrument);
     submission.setSampleDeliveryDate(sampleDeliveryDate);
     submission.setDigestionDate(digestionDate);
     submission.setAnalysisDate(analysisDate);
@@ -151,6 +182,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     presenter.setSubmission(submission);
     presenter.localeChange(locale);
 
+    assertEquals(instrument, dialog.instrument.getValue());
     assertEquals(sampleDeliveryDate, dialog.sampleDeliveryDate.getValue());
     assertEquals(digestionDate, dialog.digestionDate.getValue());
     assertEquals(analysisDate, dialog.analysisDate.getValue());
@@ -164,6 +196,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
 
     presenter.setSubmission(submission);
 
+    assertEquals(MassDetectionInstrument.NULL, dialog.instrument.getValue());
     assertEquals(null, dialog.sampleDeliveryDate.getValue());
     assertEquals(null, dialog.digestionDate.getValue());
     assertEquals(null, dialog.analysisDate.getValue());

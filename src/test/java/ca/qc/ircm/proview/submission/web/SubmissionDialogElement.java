@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
@@ -27,6 +28,7 @@ import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
+import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
 import com.vaadin.flow.component.datepicker.testbench.DatePickerElement;
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
@@ -36,6 +38,10 @@ import com.vaadin.testbench.elementsbase.Element;
 public class SubmissionDialogElement extends DialogElement {
   public H2Element header() {
     return $(H2Element.class).attributeContains("class", HEADER).first();
+  }
+
+  public ComboBoxElement instrument() {
+    return $(ComboBoxElement.class).attributeContains("class", MASS_DETECTION_INSTRUMENT).first();
   }
 
   public DatePickerElement sampleDeliveryDate() {
