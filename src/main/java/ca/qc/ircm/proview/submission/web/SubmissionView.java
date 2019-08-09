@@ -3,31 +3,41 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEIGHT;
+import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
+import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
+import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.FORMULA;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.GOAL;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INJECTION_TYPE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.LIGHT_SENSITIVE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.MONOISOTOPIC_MASS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_COLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.POST_TRANSLATION_MODIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_CONTENT;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_QUANTITY;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION_COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SEPARATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOURCE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.text.Strings.property;
@@ -42,6 +52,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
+import ca.qc.ircm.proview.sample.SampleProperties;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.GelColoration;
@@ -49,7 +60,7 @@ import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
-import ca.qc.ircm.proview.submission.Service;
+import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
@@ -63,6 +74,8 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.TextRenderer;
@@ -92,16 +105,21 @@ public class SubmissionView extends VerticalLayout
   public static final String SAMPLES_TYPE = SAMPLES + "Type";
   public static final String SAMPLES_COUNT = SAMPLES + "Count";
   public static final String SAMPLES_NAMES = SAMPLES + "Names";
+  public static final String SAMPLE = "sample";
+  public static final String SAMPLE_NAME = property(SAMPLE, SampleProperties.NAME);
   public static final String QUANTITY_PLACEHOLDER = property(QUANTITY, PLACEHOLDER);
   public static final String VOLUME_PLACEHOLDER = property(VOLUME, PLACEHOLDER);
   public static final String DEVELOPMENT_TIME_PLACEHOLDER = property(DEVELOPMENT_TIME, PLACEHOLDER);
-  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER = property(WEIGHT_MARKER_QUANTITY,
-      PLACEHOLDER);
+  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER =
+      property(WEIGHT_MARKER_QUANTITY, PLACEHOLDER);
   public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionView.class);
   protected H2 header = new H2();
-  protected RadioButtonGroup<Service> service = new RadioButtonGroup<>();
+  protected Tabs service = new Tabs();
+  protected Tab lcmsms = new Tab();
+  protected Tab smallMolecule = new Tab();
+  protected Tab intactProtein = new Tab();
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
   protected TextField taxonomy = new TextField();
@@ -113,6 +131,14 @@ public class SubmissionView extends VerticalLayout
   protected TextArea samplesNames = new TextArea();
   protected TextField quantity = new TextField();
   protected TextField volume = new TextField();
+  protected TextField solvent = new TextField();
+  protected TextField sampleName = new TextField();
+  protected TextField formula = new TextField();
+  protected TextField monoisotopicMass = new TextField();
+  protected TextField averageMass = new TextField();
+  protected TextField toxicity = new TextField();
+  protected Checkbox lightSensitive = new Checkbox();
+  protected RadioButtonGroup<StorageTemperature> storageTemperature = new RadioButtonGroup<>();
   protected ComboBox<GelSeparation> separation = new ComboBox<>();
   protected ComboBox<GelThickness> thickness = new ComboBox<>();
   protected ComboBox<GelColoration> coloration = new ComboBox<>();
@@ -132,6 +158,12 @@ public class SubmissionView extends VerticalLayout
   protected TextField identificationLink = new TextField();
   protected ComboBox<Quantification> quantification = new ComboBox<>();
   protected TextArea quantificationComment = new TextArea();
+  protected RadioButtonGroup<Boolean> highResolution = new RadioButtonGroup<>();
+  // TODO Create Custom field for solvents.
+  protected Checkbox solventAcetonitrile = new Checkbox();
+  protected Checkbox solventMethanol = new Checkbox();
+  protected Checkbox solventChcl3 = new Checkbox();
+  protected Checkbox solventOther = new Checkbox();
   protected TextArea comment = new TextArea();
   private SubmissionViewPresenter presenter;
 
@@ -144,10 +176,6 @@ public class SubmissionView extends VerticalLayout
   void init() {
     logger.debug("Submission view");
     setId(ID);
-    VerticalLayout layout = new VerticalLayout();
-    layout.setMaxWidth("90em");
-    layout.setMinWidth("22em");
-    add(layout);
     FormLayout formLayout = new FormLayout();
     formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
@@ -158,14 +186,16 @@ public class SubmissionView extends VerticalLayout
             thickness, coloration, otherColoration, developmentTime, destained,
             weightMarkerQuantity),
         new FormLayout(digestion, usedDigestion, otherDigestion, proteinContent, injection, source,
-            instrument, identification, identificationLink, quantification, quantificationComment),
+            instrument, identification, identificationLink, quantification, quantificationComment,
+            highResolution),
         new FormLayout(comment));
-    layout.add(header, formLayout);
+    add(header, service, formLayout);
     header.setId(HEADER);
     service.setId(SERVICE);
-    service.setItems(Service.availables());
-    service.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
-    service.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+    service.add(lcmsms, smallMolecule, intactProtein);
+    lcmsms.setId(LC_MS_MS.name());
+    smallMolecule.setId(SMALL_MOLECULE.name());
+    intactProtein.setId(INTACT_PROTEIN.name());
     experiment.setId(EXPERIMENT);
     goal.setId(GOAL);
     taxonomy.setId(TAXONOMY);
@@ -181,6 +211,13 @@ public class SubmissionView extends VerticalLayout
     samplesCount.setId(SAMPLES_COUNT);
     samplesNames.setId(SAMPLES_NAMES);
     samplesNames.setMinHeight("10em");
+    sampleName.setId(SAMPLE_NAME);
+    formula.setId(FORMULA);
+    monoisotopicMass.setId(MONOISOTOPIC_MASS);
+    averageMass.setId(AVERAGE_MASS);
+    toxicity.setId(TOXICITY);
+    lightSensitive.setId(LIGHT_SENSITIVE);
+    storageTemperature.setId(STORAGE_TEMPERATURE);
     separation.setId(SEPARATION);
     separation.setItems(GelSeparation.values());
     separation.setItemLabelGenerator(value -> value.getLabel(getLocale()));
@@ -222,9 +259,14 @@ public class SubmissionView extends VerticalLayout
     identificationLink.setId(IDENTIFICATION_LINK);
     quantification.setId(QUANTIFICATION);
     quantification.setItems(Quantification.values());
-    quantification.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     quantification.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     quantificationComment.setId(QUANTIFICATION_COMMENT);
+    highResolution.setId(HIGH_RESOLUTION);
+    highResolution.setItems(false, true);
+    highResolution
+        .setRenderer(new TextRenderer<>(value -> new MessageResource(Submission.class, getLocale())
+            .message(property(HIGH_RESOLUTION, value))));
+    identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     comment.setId(COMMENT);
     comment.setMinHeight("20em");
     presenter.init(this);
@@ -235,10 +277,12 @@ public class SubmissionView extends VerticalLayout
     final MessageResource resources = new MessageResource(SubmissionView.class, getLocale());
     final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
     final MessageResource sampleResources = new MessageResource(Sample.class, getLocale());
-    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-        getLocale());
+    final MessageResource submissionSampleResources =
+        new MessageResource(SubmissionSample.class, getLocale());
     header.setText(resources.message(HEADER));
-    service.setLabel(submissionResources.message(SERVICE));
+    lcmsms.setLabel(LC_MS_MS.getLabel(getLocale()));
+    smallMolecule.setLabel(SMALL_MOLECULE.getLabel(getLocale()));
+    intactProtein.setLabel(INTACT_PROTEIN.getLabel(getLocale()));
     experiment.setLabel(submissionResources.message(EXPERIMENT));
     goal.setLabel(submissionResources.message(GOAL));
     taxonomy.setLabel(submissionResources.message(TAXONOMY));
@@ -253,6 +297,13 @@ public class SubmissionView extends VerticalLayout
     sampleType.setLabel(resources.message(SAMPLES_TYPE));
     samplesCount.setLabel(resources.message(SAMPLES_COUNT));
     samplesNames.setLabel(resources.message(SAMPLES_NAMES));
+    sampleName.setLabel(sampleResources.message(SampleProperties.NAME));
+    formula.setLabel(submissionResources.message(FORMULA));
+    monoisotopicMass.setLabel(submissionResources.message(MONOISOTOPIC_MASS));
+    averageMass.setLabel(submissionResources.message(AVERAGE_MASS));
+    toxicity.setLabel(submissionResources.message(TOXICITY));
+    lightSensitive.setLabel(submissionResources.message(LIGHT_SENSITIVE));
+    storageTemperature.setLabel(submissionResources.message(STORAGE_TEMPERATURE));
     separation.setLabel(submissionResources.message(SEPARATION));
     thickness.setLabel(submissionResources.message(THICKNESS));
     coloration.setLabel(submissionResources.message(COLORATION));
@@ -275,6 +326,7 @@ public class SubmissionView extends VerticalLayout
     identificationLink.setLabel(submissionResources.message(IDENTIFICATION_LINK));
     quantification.setLabel(submissionResources.message(QUANTIFICATION));
     quantificationComment.setLabel(submissionResources.message(QUANTIFICATION_COMMENT));
+    highResolution.setLabel(submissionResources.message(HIGH_RESOLUTION));
     comment.setLabel(submissionResources.message(COMMENT));
     presenter.localeChange(getLocale());
   }
@@ -288,6 +340,6 @@ public class SubmissionView extends VerticalLayout
 
   @Override
   public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
-    // TODO Auto-generated method stub
+    presenter.setParameter(parameter);
   }
 }

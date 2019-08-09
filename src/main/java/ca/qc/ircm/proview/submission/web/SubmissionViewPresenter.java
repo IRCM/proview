@@ -7,20 +7,19 @@ import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEI
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.GOAL;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_COLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.POST_TRANSLATION_MODIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_QUANTITY;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SEPARATION;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
@@ -43,6 +42,7 @@ import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -68,9 +68,11 @@ public class SubmissionViewPresenter {
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   private Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
+  private SubmissionService service;
 
   @Autowired
-  protected SubmissionViewPresenter() {
+  protected SubmissionViewPresenter(SubmissionService service) {
+    this.service = service;
   }
 
   /**
@@ -81,7 +83,7 @@ public class SubmissionViewPresenter {
    */
   void init(SubmissionView view) {
     this.view = view;
-    view.service.addValueChangeListener(e -> serviceChanged());
+    view.service.addSelectedChangeListener(e -> serviceChanged());
     view.sampleType.addValueChangeListener(e -> sampleTypeChanged());
     view.coloration.addValueChangeListener(e -> colorationChanged());
     view.digestion.addValueChangeListener(e -> digestionChanged());
@@ -92,7 +94,6 @@ public class SubmissionViewPresenter {
 
   void localeChange(Locale locale) {
     final MessageResource webResources = new MessageResource(WebConstants.class, locale);
-    binder.forField(view.service).asRequired(webResources.message(REQUIRED)).bind(SERVICE);
     binder.forField(view.experiment).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(EXPERIMENT);
     binder.forField(view.goal).withNullRepresentation("").bind(GOAL);
@@ -116,8 +117,7 @@ public class SubmissionViewPresenter {
         .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
         .bind(WEIGHT_MARKER_QUANTITY);
     binder.forField(view.proteinQuantity).bind(PROTEIN_QUANTITY);
-    binder.forField(view.digestion).asRequired(webResources.message(REQUIRED))
-        .bind(DIGESTION);
+    binder.forField(view.digestion).asRequired(webResources.message(REQUIRED)).bind(DIGESTION);
     binder.forField(view.usedDigestion).asRequired(webResources.message(REQUIRED))
         .bind(USED_DIGESTION);
     binder.forField(view.otherDigestion).asRequired(webResources.message(REQUIRED))
@@ -138,7 +138,8 @@ public class SubmissionViewPresenter {
   }
 
   private void serviceChanged() {
-    Service service = view.service.getValue();
+    Service service =
+        Service.valueOf(view.service.getSelectedTab().getId().orElse(Service.LC_MS_MS.name()));
   }
 
   private void sampleTypeChanged() {
@@ -207,5 +208,11 @@ public class SubmissionViewPresenter {
     }
     binder.setBean(submission);
     firstSampleBinder.setBean(submission.getSamples().get(0));
+  }
+
+  public void setParameter(Long parameter) {
+    if (parameter != null) {
+      setSubmission(service.get(parameter));
+    }
   }
 }
