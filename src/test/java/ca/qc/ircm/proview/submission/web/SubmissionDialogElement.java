@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
@@ -41,7 +41,7 @@ public class SubmissionDialogElement extends DialogElement {
   }
 
   public ComboBoxElement instrument() {
-    return $(ComboBoxElement.class).attributeContains("class", MASS_DETECTION_INSTRUMENT).first();
+    return $(ComboBoxElement.class).attributeContains("class", INSTRUMENT).first();
   }
 
   public DatePickerElement sampleDeliveryDate() {

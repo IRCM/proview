@@ -113,7 +113,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
     dialog.clickSave();
     waitUntil(driver -> $(SubmissionDialogElement.class).all().isEmpty());
     Submission submission = repository.findById(164L).get();
-    assertEquals(instrument, submission.getMassDetectionInstrument());
+    assertEquals(instrument, submission.getInstrument());
     assertEquals(sampleDeliveryDate, submission.getSampleDeliveryDate());
     assertEquals(digestionDate, submission.getDigestionDate());
     assertEquals(analysisDate, submission.getAnalysisDate());

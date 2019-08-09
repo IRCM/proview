@@ -6,7 +6,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
@@ -155,10 +155,10 @@ public class SubmissionsView extends VerticalLayout
         ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
         : "", SUBMISSION_DATE).setKey(SUBMISSION_DATE);
     instrument = submissions
-        .addColumn(submission -> submission.getMassDetectionInstrument() != null
-            ? submission.getMassDetectionInstrument().getLabel(getLocale())
-            : MassDetectionInstrument.getNullLabel(getLocale()), MASS_DETECTION_INSTRUMENT)
-        .setKey(MASS_DETECTION_INSTRUMENT);
+        .addColumn(submission -> submission.getInstrument() != null
+            ? submission.getInstrument().getLabel(getLocale())
+            : MassDetectionInstrument.getNullLabel(getLocale()), INSTRUMENT)
+        .setKey(INSTRUMENT);
     service = submissions.addColumn(submission -> submission.getService() != null
         ? submission.getService().getLabel(getLocale())
         : Service.getNullLabel(getLocale()), SERVICE).setKey(SERVICE);
@@ -280,7 +280,7 @@ public class SubmissionsView extends VerticalLayout
     dataAvailableDate.setHeader(dataAvailableDateHeader).setFooter(dataAvailableDateHeader);
     String dateHeader = submissionResources.message(SUBMISSION_DATE);
     date.setHeader(dateHeader).setFooter(dateHeader);
-    String instrumentHeader = submissionResources.message(MASS_DETECTION_INSTRUMENT);
+    String instrumentHeader = submissionResources.message(INSTRUMENT);
     instrument.setHeader(instrumentHeader).setFooter(instrumentHeader);
     String serviceHeader = submissionResources.message(SERVICE);
     service.setHeader(serviceHeader).setFooter(serviceHeader);

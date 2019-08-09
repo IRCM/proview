@@ -26,16 +26,16 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.GOAL;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INJECTION_TYPE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_COLORATION;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_PROTEOLYTIC_DIGESTION_METHOD;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.POST_TRANSLATION_MODIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_CONTENT;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_IDENTIFICATION;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_IDENTIFICATION_LINK;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_QUANTITY;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEOLYTIC_DIGESTION_METHOD;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION_COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SEPARATION;
@@ -43,7 +43,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOURCE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_PROTEOLYTIC_DIGESTION_METHOD;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.DEVELOPMENT_TIME_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.HEADER;
@@ -147,15 +147,15 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     assertEquals(DECOLORATION, view.destained.getId().orElse(""));
     assertEquals(WEIGHT_MARKER_QUANTITY, view.weightMarkerQuantity.getId().orElse(""));
     assertEquals(PROTEIN_QUANTITY, view.proteinQuantity.getId().orElse(""));
-    assertEquals(PROTEOLYTIC_DIGESTION_METHOD, view.digestion.getId().orElse(""));
-    assertEquals(USED_PROTEOLYTIC_DIGESTION_METHOD, view.usedDigestion.getId().orElse(""));
-    assertEquals(OTHER_PROTEOLYTIC_DIGESTION_METHOD, view.otherDigestion.getId().orElse(""));
+    assertEquals(DIGESTION, view.digestion.getId().orElse(""));
+    assertEquals(USED_DIGESTION, view.usedDigestion.getId().orElse(""));
+    assertEquals(OTHER_DIGESTION, view.otherDigestion.getId().orElse(""));
     assertEquals(PROTEIN_CONTENT, view.proteinContent.getId().orElse(""));
     assertEquals(INJECTION_TYPE, view.injection.getId().orElse(""));
     assertEquals(SOURCE, view.source.getId().orElse(""));
-    assertEquals(MASS_DETECTION_INSTRUMENT, view.instrument.getId().orElse(""));
-    assertEquals(PROTEIN_IDENTIFICATION, view.identification.getId().orElse(""));
-    assertEquals(PROTEIN_IDENTIFICATION_LINK, view.identificationLink.getId().orElse(""));
+    assertEquals(INSTRUMENT, view.instrument.getId().orElse(""));
+    assertEquals(IDENTIFICATION, view.identification.getId().orElse(""));
+    assertEquals(IDENTIFICATION_LINK, view.identificationLink.getId().orElse(""));
     assertEquals(QUANTIFICATION, view.quantification.getId().orElse(""));
     assertEquals(QUANTIFICATION_COMMENT, view.quantificationComment.getId().orElse(""));
     assertEquals(COMMENT, view.comment.getId().orElse(""));
@@ -215,15 +215,15 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     assertEquals(submissionResources.message(PROTEIN_QUANTITY), view.proteinQuantity.getLabel());
     assertEquals(resources.message(PROTEIN_QUANTITY_PLACEHOLDER),
         view.proteinQuantity.getPlaceholder());
-    assertEquals(submissionResources.message(PROTEOLYTIC_DIGESTION_METHOD),
+    assertEquals(submissionResources.message(DIGESTION),
         view.digestion.getLabel());
     for (ProteolyticDigestion digestion : ProteolyticDigestion.values()) {
       assertEquals(digestion.getLabel(locale),
           view.digestion.getItemLabelGenerator().apply(digestion));
     }
-    assertEquals(submissionResources.message(USED_PROTEOLYTIC_DIGESTION_METHOD),
+    assertEquals(submissionResources.message(USED_DIGESTION),
         view.usedDigestion.getLabel());
-    assertEquals(submissionResources.message(OTHER_PROTEOLYTIC_DIGESTION_METHOD),
+    assertEquals(submissionResources.message(OTHER_DIGESTION),
         view.otherDigestion.getLabel());
     assertEquals(submissionResources.message(PROTEIN_CONTENT), view.proteinContent.getLabel());
     for (ProteinContent content : ProteinContent.values()) {
@@ -240,19 +240,19 @@ public class SubmissionViewTest extends AbstractViewTestCase {
       assertEquals(source.getLabel(locale),
           view.source.getItemRenderer().createComponent(source).getElement().getText());
     }
-    assertEquals(submissionResources.message(MASS_DETECTION_INSTRUMENT),
+    assertEquals(submissionResources.message(INSTRUMENT),
         view.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
           view.instrument.getItemLabelGenerator().apply(instrument));
     }
-    assertEquals(submissionResources.message(PROTEIN_IDENTIFICATION),
+    assertEquals(submissionResources.message(IDENTIFICATION),
         view.identification.getLabel());
     for (ProteinIdentification identification : ProteinIdentification.availables()) {
       assertEquals(identification.getLabel(locale), view.identification.getItemRenderer()
           .createComponent(identification).getElement().getText());
     }
-    assertEquals(submissionResources.message(PROTEIN_IDENTIFICATION_LINK),
+    assertEquals(submissionResources.message(IDENTIFICATION_LINK),
         view.identificationLink.getLabel());
     assertEquals(submissionResources.message(QUANTIFICATION), view.quantification.getLabel());
     assertEquals(submissionResources.message(QUANTIFICATION_COMMENT),
@@ -324,15 +324,15 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     assertEquals(submissionResources.message(PROTEIN_QUANTITY), view.proteinQuantity.getLabel());
     assertEquals(resources.message(PROTEIN_QUANTITY_PLACEHOLDER),
         view.proteinQuantity.getPlaceholder());
-    assertEquals(submissionResources.message(PROTEOLYTIC_DIGESTION_METHOD),
+    assertEquals(submissionResources.message(DIGESTION),
         view.digestion.getLabel());
     for (ProteolyticDigestion digestion : ProteolyticDigestion.values()) {
       assertEquals(digestion.getLabel(locale),
           view.digestion.getItemLabelGenerator().apply(digestion));
     }
-    assertEquals(submissionResources.message(USED_PROTEOLYTIC_DIGESTION_METHOD),
+    assertEquals(submissionResources.message(USED_DIGESTION),
         view.usedDigestion.getLabel());
-    assertEquals(submissionResources.message(OTHER_PROTEOLYTIC_DIGESTION_METHOD),
+    assertEquals(submissionResources.message(OTHER_DIGESTION),
         view.otherDigestion.getLabel());
     assertEquals(submissionResources.message(PROTEIN_CONTENT), view.proteinContent.getLabel());
     for (ProteinContent content : ProteinContent.values()) {
@@ -349,19 +349,19 @@ public class SubmissionViewTest extends AbstractViewTestCase {
       assertEquals(source.getLabel(locale),
           view.source.getItemRenderer().createComponent(source).getElement().getText());
     }
-    assertEquals(submissionResources.message(MASS_DETECTION_INSTRUMENT),
+    assertEquals(submissionResources.message(INSTRUMENT),
         view.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
           view.instrument.getItemLabelGenerator().apply(instrument));
     }
-    assertEquals(submissionResources.message(PROTEIN_IDENTIFICATION),
+    assertEquals(submissionResources.message(IDENTIFICATION),
         view.identification.getLabel());
     for (ProteinIdentification identification : ProteinIdentification.availables()) {
       assertEquals(identification.getLabel(locale), view.identification.getItemRenderer()
           .createComponent(identification).getElement().getText());
     }
-    assertEquals(submissionResources.message(PROTEIN_IDENTIFICATION_LINK),
+    assertEquals(submissionResources.message(IDENTIFICATION_LINK),
         view.identificationLink.getLabel());
     assertEquals(submissionResources.message(QUANTIFICATION), view.quantification.getLabel());
     assertEquals(submissionResources.message(QUANTIFICATION_COMMENT),

@@ -164,14 +164,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("Human", submission.getTaxonomy());
     assertEquals("G100429", submission.getExperiment());
     assertEquals(null, submission.getGoal());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(null, submission.getInjectionType());
-    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
-    assertEquals(null, submission.getUsedProteolyticDigestionMethod());
-    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, submission.getProteinIdentification());
-    assertEquals(null, submission.getProteinIdentificationLink());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getDigestion());
+    assertEquals(null, submission.getUsedDigestion());
+    assertEquals(null, submission.getOtherDigestion());
+    assertEquals(ProteinIdentification.NCBINR, submission.getIdentification());
+    assertEquals(null, submission.getIdentificationLink());
     assertEquals(false, submission.isHighResolution());
     assertEquals(ProteinContent.XLARGE, submission.getProteinContent());
     assertEquals(null, submission.getProtein());
@@ -231,14 +231,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(null, submission.getTaxonomy());
     assertEquals("CAP_20111013_05", submission.getExperiment());
     assertEquals(null, submission.getGoal());
-    assertEquals(null, submission.getMassDetectionInstrument());
+    assertEquals(null, submission.getInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(null, submission.getInjectionType());
-    assertEquals(null, submission.getProteolyticDigestionMethod());
-    assertEquals(null, submission.getUsedProteolyticDigestionMethod());
-    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
-    assertEquals(null, submission.getProteinIdentification());
-    assertEquals(null, submission.getProteinIdentificationLink());
+    assertEquals(null, submission.getDigestion());
+    assertEquals(null, submission.getUsedDigestion());
+    assertEquals(null, submission.getOtherDigestion());
+    assertEquals(null, submission.getIdentification());
+    assertEquals(null, submission.getIdentificationLink());
     assertEquals(false, submission.isHighResolution());
     assertEquals(null, submission.getProteinContent());
     assertEquals(null, submission.getProtein());
@@ -655,15 +655,15 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setToxicity("can kill");
     submission.setLightSensitive(true);
     submission.setStorageTemperature(StorageTemperature.MEDIUM);
-    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
-    submission.setUsedProteolyticDigestionMethod("my trypsin");
-    submission.setOtherProteolyticDigestionMethod("other trypsin");
+    submission.setDigestion(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedDigestion("my trypsin");
+    submission.setOtherDigestion("other trypsin");
     submission.setInjectionType(InjectionType.DIRECT_INFUSION);
     submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setProteinContent(ProteinContent.LARGE);
-    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
-    submission.setProteinIdentification(ProteinIdentification.REFSEQ);
-    submission.setProteinIdentificationLink("https://www.ncbi.nlm.nih.gov/home/download/");
+    submission.setInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setIdentification(ProteinIdentification.REFSEQ);
+    submission.setIdentificationLink("https://www.ncbi.nlm.nih.gov/home/download/");
     submission.setQuantification(Quantification.LABEL_FREE);
     submission.setQuantificationComment("quantification comment\nsecond line");
     submission.setHighResolution(true);
@@ -746,19 +746,19 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"toxicity\""));
     assertFalse(content.contains("class=\"lightSensitive\""));
     assertFalse(content.contains("class=\"storageTemperature\""));
-    assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
-    assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
-    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
-    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertTrue(content.contains("class=\"digestion\""));
+    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertFalse(content.contains("class=\"usedDigestion\""));
+    assertFalse(content.contains("class=\"otherDigestion\""));
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
     assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
-    assertTrue(content.contains("class=\"massDetectionInstrument\""));
-    assertTrue(content.contains(submission.getMassDetectionInstrument().getLabel(locale)));
-    assertTrue(content.contains("class=\"proteinIdentification\""));
-    assertTrue(content.contains(submission.getProteinIdentification().getLabel(locale)));
-    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+    assertTrue(content.contains("class=\"instrument\""));
+    assertTrue(content.contains(submission.getInstrument().getLabel(locale)));
+    assertTrue(content.contains("class=\"identification\""));
+    assertTrue(content.contains(submission.getIdentification().getLabel(locale)));
+    assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains(submission.getQuantification().getLabel(locale)));
     assertFalse(content.contains("class=\"quantificationComment\""));
@@ -888,44 +888,44 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_LcmsmsSolution_NoDigestion() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setProteolyticDigestionMethod(null);
+    submission.setDigestion(null);
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    assertFalse(content.contains("class=\"proteolyticDigestionMethod\""));
-    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
-    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"digestion\""));
+    assertFalse(content.contains("class=\"usedDigestion\""));
+    assertFalse(content.contains("class=\"otherDigestion\""));
   }
 
   @Test
   public void print_LcmsmsSolution_Digested() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setProteolyticDigestionMethod(ProteolyticDigestion.DIGESTED);
+    submission.setDigestion(ProteolyticDigestion.DIGESTED);
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
-    assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
-    assertTrue(content.contains("class=\"usedProteolyticDigestionMethod\""));
-    assertTrue(content.contains(submission.getUsedProteolyticDigestionMethod()));
-    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertTrue(content.contains("class=\"digestion\""));
+    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertTrue(content.contains("class=\"usedDigestion\""));
+    assertTrue(content.contains(submission.getUsedDigestion()));
+    assertFalse(content.contains("class=\"otherDigestion\""));
   }
 
   @Test
   public void print_LcmsmsSolution_OtherDigestion() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setProteolyticDigestionMethod(ProteolyticDigestion.OTHER);
+    submission.setDigestion(ProteolyticDigestion.OTHER);
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
-    assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
-    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
-    assertTrue(content.contains("class=\"otherProteolyticDigestionMethod\""));
-    assertTrue(content.contains(submission.getOtherProteolyticDigestionMethod()));
+    assertTrue(content.contains("class=\"digestion\""));
+    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertFalse(content.contains("class=\"usedDigestion\""));
+    assertTrue(content.contains("class=\"otherDigestion\""));
+    assertTrue(content.contains(submission.getOtherDigestion()));
   }
 
   @Test
@@ -942,12 +942,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_LcmsmsSolution_NoMassDetectionInstrument() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setMassDetectionInstrument(null);
+    submission.setInstrument(null);
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    assertTrue(content.contains("class=\"massDetectionInstrument\""));
+    assertTrue(content.contains("class=\"instrument\""));
     assertTrue(
         content.contains(MassDetectionInstrument.getNullLabel(locale).replaceAll("'", "&#39;")));
   }
@@ -955,39 +955,39 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_LcmsmsSolution_NoProteinIdentification() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setProteinIdentification(null);
+    submission.setIdentification(null);
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    assertFalse(content.contains("class=\"proteinIdentification\""));
-    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+    assertFalse(content.contains("class=\"identification\""));
+    assertFalse(content.contains("class=\"identificationLink\""));
   }
 
   @Test
   public void print_LcmsmsSolution_OtherProteinIdentificationLink() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setProteinIdentification(ProteinIdentification.OTHER);
+    submission.setIdentification(ProteinIdentification.OTHER);
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    assertTrue(content.contains("class=\"proteinIdentification\""));
-    assertTrue(content.contains("class=\"proteinIdentificationLink\""));
-    assertTrue(content.contains(submission.getProteinIdentificationLink()));
+    assertTrue(content.contains("class=\"identification\""));
+    assertTrue(content.contains("class=\"identificationLink\""));
+    assertTrue(content.contains(submission.getIdentificationLink()));
   }
 
   @Test
   public void print_LcmsmsSolution_NoProteinIdentificationLink() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setProteinIdentification(ProteinIdentification.OTHER);
-    submission.setProteinIdentificationLink(null);
+    submission.setIdentification(ProteinIdentification.OTHER);
+    submission.setIdentificationLink(null);
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    assertTrue(content.contains("class=\"proteinIdentification\""));
-    assertTrue(content.contains("class=\"proteinIdentificationLink\""));
+    assertTrue(content.contains("class=\"identification\""));
+    assertTrue(content.contains("class=\"identificationLink\""));
     assertFalse(content.contains("null"));
   }
 
@@ -1144,19 +1144,19 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"toxicity\""));
     assertFalse(content.contains("class=\"lightSensitive\""));
     assertFalse(content.contains("class=\"storageTemperature\""));
-    assertTrue(content.contains("class=\"proteolyticDigestionMethod\""));
-    assertTrue(content.contains(submission.getProteolyticDigestionMethod().getLabel(locale)));
-    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
-    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertTrue(content.contains("class=\"digestion\""));
+    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertFalse(content.contains("class=\"usedDigestion\""));
+    assertFalse(content.contains("class=\"otherDigestion\""));
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
     assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
-    assertTrue(content.contains("class=\"massDetectionInstrument\""));
-    assertTrue(content.contains(submission.getMassDetectionInstrument().getLabel(locale)));
-    assertTrue(content.contains("class=\"proteinIdentification\""));
-    assertTrue(content.contains(submission.getProteinIdentification().getLabel(locale)));
-    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+    assertTrue(content.contains("class=\"instrument\""));
+    assertTrue(content.contains(submission.getInstrument().getLabel(locale)));
+    assertTrue(content.contains("class=\"identification\""));
+    assertTrue(content.contains(submission.getIdentification().getLabel(locale)));
+    assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains(submission.getQuantification().getLabel(locale)));
     assertFalse(content.contains("class=\"quantificationComment\""));
@@ -1343,15 +1343,15 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(resources.message("submission.lightSensitive.true")));
     assertTrue(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains(submission.getStorageTemperature().getLabel(locale)));
-    assertFalse(content.contains("class=\"proteolyticDigestionMethod\""));
-    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
-    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"digestion\""));
+    assertFalse(content.contains("class=\"usedDigestion\""));
+    assertFalse(content.contains("class=\"otherDigestion\""));
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertFalse(content.contains("class=\"proteinContent\""));
-    assertFalse(content.contains("class=\"massDetectionInstrument\""));
-    assertFalse(content.contains("class=\"proteinIdentification\""));
-    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+    assertFalse(content.contains("class=\"instrument\""));
+    assertFalse(content.contains("class=\"identification\""));
+    assertFalse(content.contains("class=\"identificationLink\""));
     assertFalse(content.contains("class=\"quantification\""));
     assertFalse(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains("class=\"highResolution\""));
@@ -1556,18 +1556,18 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"toxicity\""));
     assertFalse(content.contains("class=\"lightSensitive\""));
     assertFalse(content.contains("class=\"storageTemperature\""));
-    assertFalse(content.contains("class=\"proteolyticDigestionMethod\""));
-    assertFalse(content.contains("class=\"usedProteolyticDigestionMethod\""));
-    assertFalse(content.contains("class=\"otherProteolyticDigestionMethod\""));
+    assertFalse(content.contains("class=\"digestion\""));
+    assertFalse(content.contains("class=\"usedDigestion\""));
+    assertFalse(content.contains("class=\"otherDigestion\""));
     assertTrue(content.contains("class=\"injectionType\""));
     assertTrue(content.contains(submission.getInjectionType().getLabel(locale)));
     assertTrue(content.contains("class=\"source\""));
     assertTrue(content.contains(submission.getSource().getLabel(locale)));
     assertFalse(content.contains("class=\"proteinContent\""));
-    assertTrue(content.contains("class=\"massDetectionInstrument\""));
-    assertTrue(content.contains(submission.getMassDetectionInstrument().getLabel(locale)));
-    assertFalse(content.contains("class=\"proteinIdentification\""));
-    assertFalse(content.contains("class=\"proteinIdentificationLink\""));
+    assertTrue(content.contains("class=\"instrument\""));
+    assertTrue(content.contains(submission.getInstrument().getLabel(locale)));
+    assertFalse(content.contains("class=\"identification\""));
+    assertFalse(content.contains("class=\"identificationLink\""));
     assertFalse(content.contains("class=\"quantification\""));
     assertFalse(content.contains("class=\"quantification\""));
     assertFalse(content.contains("class=\"quantificationComment\""));
@@ -1702,14 +1702,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setTaxonomy("human");
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setInjectionType(InjectionType.LC_MS);
-    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
-    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
-    submission.setOtherProteolyticDigestionMethod("other digestion");
-    submission.setProteinIdentification(ProteinIdentification.NCBINR);
-    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setDigestion(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedDigestion("trypsine was not used");
+    submission.setOtherDigestion("other digestion");
+    submission.setIdentification(ProteinIdentification.NCBINR);
+    submission.setIdentificationLink("http://localhost/my_site");
     submission.setProtein("protein");
     submission.setPostTranslationModification("my_modification");
     submission.setProteinContent(ProteinContent.MEDIUM);
@@ -1754,14 +1754,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("human", submission.getTaxonomy());
     assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(InjectionType.LC_MS, submission.getInjectionType());
-    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
-    assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
-    assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, submission.getProteinIdentification());
-    assertEquals("http://localhost/my_site", submission.getProteinIdentificationLink());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getDigestion());
+    assertEquals("trypsine was not used", submission.getUsedDigestion());
+    assertEquals("other digestion", submission.getOtherDigestion());
+    assertEquals(ProteinIdentification.NCBINR, submission.getIdentification());
+    assertEquals("http://localhost/my_site", submission.getIdentificationLink());
     assertEquals("protein", submission.getProtein());
     assertEquals("my_modification", submission.getPostTranslationModification());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
@@ -1849,14 +1849,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setTaxonomy("human");
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setInjectionType(InjectionType.LC_MS);
-    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
-    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
-    submission.setOtherProteolyticDigestionMethod("other digestion");
-    submission.setProteinIdentification(ProteinIdentification.NCBINR);
-    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setDigestion(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedDigestion("trypsine was not used");
+    submission.setOtherDigestion("other digestion");
+    submission.setIdentification(ProteinIdentification.NCBINR);
+    submission.setIdentificationLink("http://localhost/my_site");
     submission.setProtein("protein");
     submission.setPostTranslationModification("my_modification");
     submission.setProteinContent(ProteinContent.MEDIUM);
@@ -1886,14 +1886,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("human", submission.getTaxonomy());
     assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(InjectionType.LC_MS, submission.getInjectionType());
-    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
-    assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
-    assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, submission.getProteinIdentification());
-    assertEquals("http://localhost/my_site", submission.getProteinIdentificationLink());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getDigestion());
+    assertEquals("trypsine was not used", submission.getUsedDigestion());
+    assertEquals("other digestion", submission.getOtherDigestion());
+    assertEquals(ProteinIdentification.NCBINR, submission.getIdentification());
+    assertEquals("http://localhost/my_site", submission.getIdentificationLink());
     assertEquals("protein", submission.getProtein());
     assertEquals("my_modification", submission.getPostTranslationModification());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
@@ -1988,14 +1988,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setTaxonomy("human");
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setInjectionType(InjectionType.LC_MS);
-    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
-    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
-    submission.setOtherProteolyticDigestionMethod("other digestion");
-    submission.setProteinIdentification(ProteinIdentification.NCBINR);
-    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setDigestion(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedDigestion("trypsine was not used");
+    submission.setOtherDigestion("other digestion");
+    submission.setIdentification(ProteinIdentification.NCBINR);
+    submission.setIdentificationLink("http://localhost/my_site");
     submission.setProtein("protein");
     submission.setPostTranslationModification("my_modification");
     submission.setProteinContent(ProteinContent.MEDIUM);
@@ -2025,14 +2025,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("human", submission.getTaxonomy());
     assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(InjectionType.LC_MS, submission.getInjectionType());
-    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
-    assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
-    assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, submission.getProteinIdentification());
-    assertEquals("http://localhost/my_site", submission.getProteinIdentificationLink());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getDigestion());
+    assertEquals("trypsine was not used", submission.getUsedDigestion());
+    assertEquals("other digestion", submission.getOtherDigestion());
+    assertEquals(ProteinIdentification.NCBINR, submission.getIdentification());
+    assertEquals("http://localhost/my_site", submission.getIdentificationLink());
     assertEquals("protein", submission.getProtein());
     assertEquals("my_modification", submission.getPostTranslationModification());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
@@ -2097,7 +2097,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setService(Service.SMALL_MOLECULE);
     submission.setExperiment(null);
     submission.setGoal(null);
-    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setInjectionType(InjectionType.LC_MS);
     submission.setHighResolution(true);
@@ -2148,7 +2148,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(Service.SMALL_MOLECULE, submission.getService());
     assertEquals("unit_test_molecule_01", submission.getExperiment());
     assertEquals(null, submission.getGoal());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(InjectionType.LC_MS, submission.getInjectionType());
     assertEquals(true, submission.isHighResolution());
@@ -2222,14 +2222,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setTaxonomy("human");
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setInjectionType(InjectionType.LC_MS);
-    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
-    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
-    submission.setOtherProteolyticDigestionMethod("other digestion");
-    submission.setProteinIdentification(ProteinIdentification.NCBINR);
-    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setDigestion(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedDigestion("trypsine was not used");
+    submission.setOtherDigestion("other digestion");
+    submission.setIdentification(ProteinIdentification.NCBINR);
+    submission.setIdentificationLink("http://localhost/my_site");
     submission.setProtein("protein");
     submission.setPostTranslationModification("my_modification");
     submission.setProteinContent(ProteinContent.MEDIUM);
@@ -2284,14 +2284,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setTaxonomy("human");
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setInjectionType(InjectionType.LC_MS);
-    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
-    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
-    submission.setOtherProteolyticDigestionMethod("other digestion");
-    submission.setProteinIdentification(ProteinIdentification.NCBINR);
-    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setDigestion(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedDigestion("trypsine was not used");
+    submission.setOtherDigestion("other digestion");
+    submission.setIdentification(ProteinIdentification.NCBINR);
+    submission.setIdentificationLink("http://localhost/my_site");
     submission.setProtein("protein");
     submission.setPostTranslationModification("my_modification");
     submission.setProteinContent(ProteinContent.MEDIUM);
@@ -2353,14 +2353,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("human", submission.getTaxonomy());
     assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getInstrument());
     assertEquals(null, submission.getSource());
     assertEquals(null, submission.getInjectionType());
-    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
-    assertEquals(null, submission.getUsedProteolyticDigestionMethod());
-    assertEquals(null, submission.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, submission.getProteinIdentification());
-    assertEquals(null, submission.getProteinIdentificationLink());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getDigestion());
+    assertEquals(null, submission.getUsedDigestion());
+    assertEquals(null, submission.getOtherDigestion());
+    assertEquals(ProteinIdentification.NCBINR, submission.getIdentification());
+    assertEquals(null, submission.getIdentificationLink());
     assertEquals(null, submission.getProtein());
     assertEquals(null, submission.getPostTranslationModification());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
@@ -2605,14 +2605,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setTaxonomy("human");
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    submission.setMassDetectionInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
+    submission.setInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);
     submission.setInjectionType(InjectionType.LC_MS);
-    submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
-    submission.setUsedProteolyticDigestionMethod("trypsine was not used");
-    submission.setOtherProteolyticDigestionMethod("other digestion");
-    submission.setProteinIdentification(ProteinIdentification.NCBINR);
-    submission.setProteinIdentificationLink("http://localhost/my_site");
+    submission.setDigestion(ProteolyticDigestion.TRYPSIN);
+    submission.setUsedDigestion("trypsine was not used");
+    submission.setOtherDigestion("other digestion");
+    submission.setIdentification(ProteinIdentification.NCBINR);
+    submission.setIdentificationLink("http://localhost/my_site");
     submission.setProtein("protein");
     submission.setPostTranslationModification("my_modification");
     submission.setProteinContent(ProteinContent.MEDIUM);
@@ -2657,14 +2657,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("human", submission.getTaxonomy());
     assertEquals("experiment", submission.getExperiment());
     assertEquals("goal", submission.getGoal());
-    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getMassDetectionInstrument());
+    assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, submission.getInstrument());
     assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
     assertEquals(InjectionType.LC_MS, submission.getInjectionType());
-    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getProteolyticDigestionMethod());
-    assertEquals("trypsine was not used", submission.getUsedProteolyticDigestionMethod());
-    assertEquals("other digestion", submission.getOtherProteolyticDigestionMethod());
-    assertEquals(ProteinIdentification.NCBINR, submission.getProteinIdentification());
-    assertEquals("http://localhost/my_site", submission.getProteinIdentificationLink());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getDigestion());
+    assertEquals("trypsine was not used", submission.getUsedDigestion());
+    assertEquals("other digestion", submission.getOtherDigestion());
+    assertEquals(ProteinIdentification.NCBINR, submission.getIdentification());
+    assertEquals("http://localhost/my_site", submission.getIdentificationLink());
     assertEquals("protein", submission.getProtein());
     assertEquals("my_modification", submission.getPostTranslationModification());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());

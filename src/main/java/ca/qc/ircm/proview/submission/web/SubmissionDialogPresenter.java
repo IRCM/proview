@@ -3,7 +3,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -51,7 +51,7 @@ public class SubmissionDialogPresenter {
 
   void localeChange(Locale locale) {
     binder.forField(dialog.instrument).withNullRepresentation(MassDetectionInstrument.NULL)
-        .bind(MASS_DETECTION_INSTRUMENT);
+        .bind(INSTRUMENT);
     binder.forField(dialog.sampleDeliveryDate).bind(SAMPLE_DELIVERY_DATE);
     binder.forField(dialog.digestionDate).bind(DIGESTION_DATE);
     binder.forField(dialog.analysisDate).bind(ANALYSIS_DATE);

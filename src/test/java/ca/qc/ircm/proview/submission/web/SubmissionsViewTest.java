@@ -23,7 +23,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
@@ -189,7 +189,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(view.date.setKey(any())).thenReturn(view.date);
     when(view.date.setHeader(any(String.class))).thenReturn(view.date);
     view.instrument = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(MASS_DETECTION_INSTRUMENT)))
+    when(view.submissions.addColumn(any(ValueProvider.class), eq(INSTRUMENT)))
         .thenReturn(view.instrument);
     when(view.instrument.setKey(any())).thenReturn(view.instrument);
     when(view.instrument.setHeader(any(String.class))).thenReturn(view.instrument);
@@ -279,8 +279,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.dataAvailableDate).setFooter(submissionResources.message(DATA_AVAILABLE_DATE));
     verify(view.date).setHeader(submissionResources.message(SUBMISSION_DATE));
     verify(view.date).setFooter(submissionResources.message(SUBMISSION_DATE));
-    verify(view.instrument).setHeader(submissionResources.message(MASS_DETECTION_INSTRUMENT));
-    verify(view.instrument).setFooter(submissionResources.message(MASS_DETECTION_INSTRUMENT));
+    verify(view.instrument).setHeader(submissionResources.message(INSTRUMENT));
+    verify(view.instrument).setFooter(submissionResources.message(INSTRUMENT));
     verify(view.service).setHeader(submissionResources.message(SERVICE));
     verify(view.service).setFooter(submissionResources.message(SERVICE));
     verify(view.samplesCount).setHeader(resources.message(SAMPLES_COUNT));
@@ -340,8 +340,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.dataAvailableDate).setFooter(submissionResources.message(DATA_AVAILABLE_DATE));
     verify(view.date, atLeastOnce()).setHeader(submissionResources.message(SUBMISSION_DATE));
     verify(view.date, atLeastOnce()).setFooter(submissionResources.message(SUBMISSION_DATE));
-    verify(view.instrument).setHeader(submissionResources.message(MASS_DETECTION_INSTRUMENT));
-    verify(view.instrument).setFooter(submissionResources.message(MASS_DETECTION_INSTRUMENT));
+    verify(view.instrument).setHeader(submissionResources.message(INSTRUMENT));
+    verify(view.instrument).setFooter(submissionResources.message(INSTRUMENT));
     verify(view.service).setHeader(submissionResources.message(SERVICE));
     verify(view.service).setFooter(submissionResources.message(SERVICE));
     verify(view.samplesCount).setHeader(resources.message(SAMPLES_COUNT));
@@ -399,8 +399,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertTrue(view.submissions.getColumnByKey(SUBMISSION_DATE).isSortable());
     assertNotNull(view.submissions.getColumnByKey(SERVICE));
     assertTrue(view.submissions.getColumnByKey(SERVICE).isSortable());
-    assertNotNull(view.submissions.getColumnByKey(MASS_DETECTION_INSTRUMENT));
-    assertTrue(view.submissions.getColumnByKey(MASS_DETECTION_INSTRUMENT).isSortable());
+    assertNotNull(view.submissions.getColumnByKey(INSTRUMENT));
+    assertTrue(view.submissions.getColumnByKey(INSTRUMENT).isSortable());
     assertNotNull(view.submissions.getColumnByKey(SAMPLES_COUNT));
     assertTrue(view.submissions.getColumnByKey(SAMPLES_COUNT).isSortable());
     assertNotNull(view.submissions.getColumnByKey(SAMPLES));
@@ -500,11 +500,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
           : "", valueProvider.apply(submission));
     }
     verify(view.submissions).addColumn(valueProviderCaptor.capture(),
-        eq(MASS_DETECTION_INSTRUMENT));
+        eq(INSTRUMENT));
     valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
-      assertEquals(submission.getMassDetectionInstrument() != null
-          ? submission.getMassDetectionInstrument().getLabel(locale)
+      assertEquals(submission.getInstrument() != null
+          ? submission.getInstrument().getLabel(locale)
           : MassDetectionInstrument.getNullLabel(locale), valueProvider.apply(submission));
     }
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SERVICE));

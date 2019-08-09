@@ -136,7 +136,7 @@ public class SubmissionFilterTest {
     Predicate predicate = filter.predicate();
 
     assertEquals(predicate,
-        submission.massDetectionInstrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
+        submission.instrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
   }
 
   @Test
@@ -145,7 +145,7 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.massDetectionInstrument.isNull());
+    assertEquals(predicate, submission.instrument.isNull());
   }
 
   @Test
@@ -679,7 +679,7 @@ public class SubmissionFilterTest {
     filter.addConditions(query);
 
     verify(query)
-        .where(submission.massDetectionInstrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
+        .where(submission.instrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
   }
 
   @Test
@@ -688,7 +688,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.massDetectionInstrument.isNull());
+    verify(query).where(submission.instrument.isNull());
   }
 
   @Test
@@ -1278,7 +1278,7 @@ public class SubmissionFilterTest {
     filter.addCountConditions(query);
 
     verify(query)
-        .where(submission.massDetectionInstrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
+        .where(submission.instrument.eq(MassDetectionInstrument.LTQ_ORBI_TRAP));
   }
 
   @Test
@@ -1287,7 +1287,7 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.massDetectionInstrument.isNull());
+    verify(query).where(submission.instrument.isNull());
   }
 
   @Test
@@ -1858,7 +1858,7 @@ public class SubmissionFilterTest {
 
   private Submission instrument(MassDetectionInstrument instrument) {
     Submission submission = mock(Submission.class);
-    when(submission.getMassDetectionInstrument()).thenReturn(instrument);
+    when(submission.getInstrument()).thenReturn(instrument);
     return submission;
   }
 

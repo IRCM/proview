@@ -86,10 +86,10 @@ public class SubmissionFilter implements Predicate<Submission> {
     }
     if (instrument != null) {
       if (instrument == MassDetectionInstrument.NULL) {
-        test &= submission.getMassDetectionInstrument() == null
-            || instrument == submission.getMassDetectionInstrument();
+        test &= submission.getInstrument() == null
+            || instrument == submission.getInstrument();
       } else {
-        test &= instrument == submission.getMassDetectionInstrument();
+        test &= instrument == submission.getInstrument();
       }
     }
     if (dateRange != null) {
@@ -142,9 +142,9 @@ public class SubmissionFilter implements Predicate<Submission> {
     }
     if (instrument != null) {
       if (instrument == MassDetectionInstrument.NULL) {
-        predicate.and(submission.massDetectionInstrument.isNull());
+        predicate.and(submission.instrument.isNull());
       } else {
-        predicate.and(submission.massDetectionInstrument.eq(instrument));
+        predicate.and(submission.instrument.eq(instrument));
       }
     }
     if (dateRange != null) {
@@ -255,9 +255,9 @@ public class SubmissionFilter implements Predicate<Submission> {
     }
     if (instrument != null) {
       if (instrument == MassDetectionInstrument.NULL) {
-        query.where(submission.massDetectionInstrument.isNull());
+        query.where(submission.instrument.isNull());
       } else {
-        query.where(submission.massDetectionInstrument.eq(instrument));
+        query.where(submission.instrument.eq(instrument));
       }
     }
     if (dateRange != null) {

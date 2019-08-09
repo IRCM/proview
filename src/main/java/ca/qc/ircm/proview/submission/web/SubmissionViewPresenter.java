@@ -9,21 +9,21 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.GOAL;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_COLORATION;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_PROTEOLYTIC_DIGESTION_METHOD;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.POST_TRANSLATION_MODIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_IDENTIFICATION;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_IDENTIFICATION_LINK;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.IDENTIFICATION_LINK;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_QUANTITY;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEOLYTIC_DIGESTION_METHOD;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SEPARATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_PROTEOLYTIC_DIGESTION_METHOD;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
@@ -117,18 +117,18 @@ public class SubmissionViewPresenter {
         .bind(WEIGHT_MARKER_QUANTITY);
     binder.forField(view.proteinQuantity).bind(PROTEIN_QUANTITY);
     binder.forField(view.digestion).asRequired(webResources.message(REQUIRED))
-        .bind(PROTEOLYTIC_DIGESTION_METHOD);
+        .bind(DIGESTION);
     binder.forField(view.usedDigestion).asRequired(webResources.message(REQUIRED))
-        .bind(USED_PROTEOLYTIC_DIGESTION_METHOD);
+        .bind(USED_DIGESTION);
     binder.forField(view.otherDigestion).asRequired(webResources.message(REQUIRED))
-        .bind(OTHER_PROTEOLYTIC_DIGESTION_METHOD);
+        .bind(OTHER_DIGESTION);
     binder.forField(view.proteinQuantity).asRequired(webResources.message(REQUIRED))
         .bind(PROTEIN_QUANTITY);
-    binder.forField(view.instrument).bind(MASS_DETECTION_INSTRUMENT);
+    binder.forField(view.instrument).bind(INSTRUMENT);
     binder.forField(view.identification).asRequired(webResources.message(REQUIRED))
-        .bind(PROTEIN_IDENTIFICATION);
+        .bind(IDENTIFICATION);
     binder.forField(view.identificationLink).asRequired(webResources.message(REQUIRED))
-        .bind(PROTEIN_IDENTIFICATION_LINK);
+        .bind(IDENTIFICATION_LINK);
     binder.forField(view.quantification).bind(QUANTIFICATION);
     serviceChanged();
     sampleTypeChanged();
@@ -168,8 +168,8 @@ public class SubmissionViewPresenter {
   }
 
   private void identificationChanged() {
-    ProteinIdentification proteinIdentification = view.identification.getValue();
-    view.identificationLink.setVisible(proteinIdentification == ProteinIdentification.OTHER);
+    ProteinIdentification identification = view.identification.getValue();
+    view.identificationLink.setVisible(identification == ProteinIdentification.OTHER);
   }
 
   private void quantificationChanged() {
@@ -189,12 +189,12 @@ public class SubmissionViewPresenter {
       submission.setStorageTemperature(StorageTemperature.LOW);
       submission.setSeparation(GelSeparation.ONE_DIMENSION);
       submission.setThickness(GelThickness.ONE);
-      submission.setProteolyticDigestionMethod(ProteolyticDigestion.TRYPSIN);
+      submission.setDigestion(ProteolyticDigestion.TRYPSIN);
       submission.setProteinContent(ProteinContent.SMALL);
       submission.setInjectionType(InjectionType.LC_MS);
       submission.setSource(MassDetectionInstrumentSource.ESI);
-      submission.setMassDetectionInstrument(MassDetectionInstrument.NULL);
-      submission.setProteinIdentification(ProteinIdentification.REFSEQ);
+      submission.setInstrument(MassDetectionInstrument.NULL);
+      submission.setIdentification(ProteinIdentification.REFSEQ);
       submission.setQuantification(Quantification.NULL);
     }
     if (submission.getSamples() == null) {

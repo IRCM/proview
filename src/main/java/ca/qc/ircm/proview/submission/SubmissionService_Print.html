@@ -177,17 +177,17 @@
       </div>
     </div>
     <div class="service-information section">
-      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteolyticDigestionMethod != null}">
-        <span class="label" th:text="#{submission.proteolyticDigestionMethod}">Proteolytic digestion:</span>
-        <span class="proteolyticDigestionMethod" th:text="${submission.proteolyticDigestionMethod.getLabel(locale)}">Trypsin</span>
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.digestion != null}">
+        <span class="label" th:text="#{submission.digestion}">Proteolytic digestion:</span>
+        <span class="digestion" th:text="${submission.digestion.getLabel(locale)}">Trypsin</span>
       </div>
-      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteolyticDigestionMethod != null && submission.proteolyticDigestionMethod.name() == 'DIGESTED' && submission.usedProteolyticDigestionMethod != null}">
-        <span class="label" th:text="#{submission.usedProteolyticDigestionMethod}">Used enzyme:</span>
-        <span class="usedProteolyticDigestionMethod" th:text="${submission.usedProteolyticDigestionMethod}">Trypsin</span>
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.digestion != null && submission.digestion.name() == 'DIGESTED' && submission.usedDigestion != null}">
+        <span class="label" th:text="#{submission.usedDigestion}">Used enzyme:</span>
+        <span class="usedDigestion" th:text="${submission.usedDigestion}">Trypsin</span>
       </div>
-      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteolyticDigestionMethod != null && submission.proteolyticDigestionMethod.name() == 'OTHER' && submission.otherProteolyticDigestionMethod != null}">
-        <span class="label" th:text="#{submission.otherProteolyticDigestionMethod}">Enzyme to use:</span>
-        <span class="otherProteolyticDigestionMethod" th:text="${submission.otherProteolyticDigestionMethod}">Trypsin</span>
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.digestion != null && submission.digestion.name() == 'OTHER' && submission.otherDigestion != null}">
+        <span class="label" th:text="#{submission.otherDigestion}">Enzyme to use:</span>
+        <span class="otherDigestion" th:text="${submission.otherDigestion}">Trypsin</span>
       </div>
       <div th:if="${submission.service.name() == 'INTACT_PROTEIN' && submission.injectionType != null}">
         <span class="label" th:text="#{submission.injectionType}">Injection:</span>
@@ -202,17 +202,17 @@
         <span class="proteinContent" th:text="${submission.proteinContent.getLabel(locale)}">1 to 4</span>
       </div>
       <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
-        <span class="label" th:text="#{submission.massDetectionInstrument}">Instrument selection:</span>
-        <span class="massDetectionInstrument" th:if="${submission.massDetectionInstrument != null}" th:text="${submission.massDetectionInstrument.getLabel(locale)}">Velos</span>
-        <span class="massDetectionInstrument" th:if="${submission.massDetectionInstrument == null}" th:text="${@ca.qc.ircm.proview.msanalysis.MassDetectionInstrument@getNullLabel(locale)}">Velos</span>
+        <span class="label" th:text="#{submission.instrument}">Instrument selection:</span>
+        <span class="instrument" th:if="${submission.instrument != null}" th:text="${submission.instrument.getLabel(locale)}">Velos</span>
+        <span class="instrument" th:if="${submission.instrument == null}" th:text="${@ca.qc.ircm.proview.msanalysis.MassDetectionInstrument@getNullLabel(locale)}">Velos</span>
       </div>
-      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteinIdentification != null}">
-        <span class="label" th:text="#{submission.proteinIdentification}">Protein identification database:</span>
-        <span class="proteinIdentification" th:text="${submission.proteinIdentification.getLabel(locale)}">Refseq</span>
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.identification != null}">
+        <span class="label" th:text="#{submission.identification}">Protein identification database:</span>
+        <span class="identification" th:text="${submission.identification.getLabel(locale)}">Refseq</span>
       </div>
-      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteinIdentification != null && submission.proteinIdentification.name() == 'OTHER'}">
-        <span class="label" th:text="#{submission.proteinIdentificationLink}">Protein identification database:</span>
-        <span class="proteinIdentificationLink" th:text="${submission.proteinIdentificationLink}">http://refseq.org</span>
+      <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.identification != null && submission.identification.name() == 'OTHER'}">
+        <span class="label" th:text="#{submission.identificationLink}">Protein identification database:</span>
+        <span class="identificationLink" th:text="${submission.identificationLink}">http://refseq.org</span>
       </div>
       <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.quantification != null}">
         <span class="label" th:text="#{submission.quantification}">Quantification:</span>

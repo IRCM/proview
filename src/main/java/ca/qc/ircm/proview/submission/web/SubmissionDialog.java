@@ -3,7 +3,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
@@ -105,7 +105,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     buttons.setWidthFull();
     layout.add(header, formLayout, buttons);
     header.addClassName(HEADER);
-    instrument.addClassName(MASS_DETECTION_INSTRUMENT);
+    instrument.addClassName(INSTRUMENT);
     instrument.setItems(MassDetectionInstrument.userChoices());
     instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     sampleDeliveryDate.addClassName(SAMPLE_DELIVERY_DATE);
@@ -136,7 +136,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     if (FRENCH.equals(getLocale())) {
       dateI18n = frenchDatePickerI18n();
     }
-    instrument.setLabel(submissionResources.message(MASS_DETECTION_INSTRUMENT));
+    instrument.setLabel(submissionResources.message(INSTRUMENT));
     sampleDeliveryDate.setLabel(submissionResources.message(SAMPLE_DELIVERY_DATE));
     sampleDeliveryDate.setI18n(dateI18n);
     sampleDeliveryDate.setLocale(Locale.CANADA); // ISO format.

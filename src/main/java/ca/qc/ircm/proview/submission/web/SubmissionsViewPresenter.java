@@ -6,7 +6,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
@@ -83,7 +83,7 @@ public class SubmissionsViewPresenter {
     columnProperties.put(ANALYSIS_DATE, submission.analysisDate);
     columnProperties.put(DATA_AVAILABLE_DATE, submission.dataAvailableDate);
     columnProperties.put(SERVICE, submission.service);
-    columnProperties.put(MASS_DETECTION_INSTRUMENT, submission.massDetectionInstrument);
+    columnProperties.put(INSTRUMENT, submission.instrument);
     columnProperties.put(SAMPLES_COUNT, submission.samples.size());
     columnProperties.put(SUBMISSION_DATE, submission.submissionDate);
     columnProperties.put(HIDDEN, submission.hidden);

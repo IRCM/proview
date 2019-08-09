@@ -3,7 +3,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.MASS_DETECTION_INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
@@ -108,7 +108,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
     assertTrue(dialog.header.getClassName().contains(HEADER));
-    assertTrue(dialog.instrument.getClassName().contains(MASS_DETECTION_INSTRUMENT));
+    assertTrue(dialog.instrument.getClassName().contains(INSTRUMENT));
     assertTrue(dialog.sampleDeliveryDate.getClassName().contains(SAMPLE_DELIVERY_DATE));
     assertTrue(dialog.digestionDate.getClassName().contains(DIGESTION_DATE));
     assertTrue(dialog.analysisDate.getClassName().contains(ANALYSIS_DATE));
@@ -126,7 +126,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   public void labels() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
-    assertEquals(submissionResources.message(MASS_DETECTION_INSTRUMENT),
+    assertEquals(submissionResources.message(INSTRUMENT),
         dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
@@ -162,7 +162,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
     when(ui.getLocale()).thenReturn(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
-    assertEquals(submissionResources.message(MASS_DETECTION_INSTRUMENT),
+    assertEquals(submissionResources.message(INSTRUMENT),
         dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),

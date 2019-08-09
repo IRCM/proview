@@ -82,7 +82,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     presenter.save();
 
     verify(service).update(submission, null);
-    assertEquals(instrument, submission.getMassDetectionInstrument());
+    assertEquals(instrument, submission.getInstrument());
     assertEquals(sampleDeliveryDate, submission.getSampleDeliveryDate());
     assertEquals(digestionDate, submission.getDigestionDate());
     assertEquals(analysisDate, submission.getAnalysisDate());
@@ -102,7 +102,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     presenter.save();
 
     verify(service).update(submission, null);
-    assertNull(submission.getMassDetectionInstrument());
+    assertNull(submission.getInstrument());
     assertEquals(sampleDeliveryDate, submission.getSampleDeliveryDate());
     assertEquals(digestionDate, submission.getDigestionDate());
     assertEquals(analysisDate, submission.getAnalysisDate());
@@ -154,7 +154,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   @Test
   public void setSubmission() {
     Submission submission = new Submission();
-    submission.setMassDetectionInstrument(instrument);
+    submission.setInstrument(instrument);
     submission.setSampleDeliveryDate(sampleDeliveryDate);
     submission.setDigestionDate(digestionDate);
     submission.setAnalysisDate(analysisDate);
@@ -173,7 +173,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   @Test
   public void setSubmission_BeforeLocalChange() {
     Submission submission = new Submission();
-    submission.setMassDetectionInstrument(instrument);
+    submission.setInstrument(instrument);
     submission.setSampleDeliveryDate(sampleDeliveryDate);
     submission.setDigestionDate(digestionDate);
     submission.setAnalysisDate(analysisDate);

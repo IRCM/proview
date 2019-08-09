@@ -107,7 +107,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    */
   @Column
   @Enumerated(STRING)
-  private MassDetectionInstrument massDetectionInstrument;
+  private MassDetectionInstrument instrument;
   /**
    * Intact protein ionization source for mass detection instrument.
    */
@@ -125,7 +125,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    */
   @Column
   @Enumerated(STRING)
-  private ProteolyticDigestion proteolyticDigestionMethod;
+  private ProteolyticDigestion digestion;
   /**
    * Proteolytic digestion method supplied by User if ProteolyticDigestion is
    * {@link ProteolyticDigestion#DIGESTED DIGESTED}.
@@ -134,7 +134,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    */
   @Column
   @Size(max = 100)
-  private String usedProteolyticDigestionMethod;
+  private String usedDigestion;
   /**
    * Proteolytic digestion method supplied by User if ProteolyticDigestion is
    * {@link ProteolyticDigestion#OTHER OTHER}.
@@ -143,19 +143,19 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    */
   @Column
   @Size(max = 100)
-  private String otherProteolyticDigestionMethod;
+  private String otherDigestion;
   /**
    * Database on which Protein identification will be made.
    */
   @Column
   @Enumerated(STRING)
-  private ProteinIdentification proteinIdentification;
+  private ProteinIdentification identification;
   /**
    * Link to non-conventional Protein identification database.
    */
   @Column
   @Size(max = 255)
-  private String proteinIdentificationLink;
+  private String identificationLink;
   /**
    * High resolution mass detection for sample.
    */
@@ -450,44 +450,44 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.highResolution = highResolution;
   }
 
-  public ProteolyticDigestion getProteolyticDigestionMethod() {
-    return proteolyticDigestionMethod;
+  public ProteolyticDigestion getDigestion() {
+    return digestion;
   }
 
-  public void setProteolyticDigestionMethod(ProteolyticDigestion proteolyticDigestionMethod) {
-    this.proteolyticDigestionMethod = proteolyticDigestionMethod;
+  public void setDigestion(ProteolyticDigestion digestion) {
+    this.digestion = digestion;
   }
 
-  public String getUsedProteolyticDigestionMethod() {
-    return usedProteolyticDigestionMethod;
+  public String getUsedDigestion() {
+    return usedDigestion;
   }
 
-  public void setUsedProteolyticDigestionMethod(String usedProteolyticDigestionMethod) {
-    this.usedProteolyticDigestionMethod = usedProteolyticDigestionMethod;
+  public void setUsedDigestion(String usedDigestion) {
+    this.usedDigestion = usedDigestion;
   }
 
-  public String getOtherProteolyticDigestionMethod() {
-    return otherProteolyticDigestionMethod;
+  public String getOtherDigestion() {
+    return otherDigestion;
   }
 
-  public void setOtherProteolyticDigestionMethod(String otherProteolyticDigestionMethod) {
-    this.otherProteolyticDigestionMethod = otherProteolyticDigestionMethod;
+  public void setOtherDigestion(String otherDigestion) {
+    this.otherDigestion = otherDigestion;
   }
 
-  public ProteinIdentification getProteinIdentification() {
-    return proteinIdentification;
+  public ProteinIdentification getIdentification() {
+    return identification;
   }
 
-  public void setProteinIdentification(ProteinIdentification proteinIdentification) {
-    this.proteinIdentification = proteinIdentification;
+  public void setIdentification(ProteinIdentification identification) {
+    this.identification = identification;
   }
 
-  public String getProteinIdentificationLink() {
-    return proteinIdentificationLink;
+  public String getIdentificationLink() {
+    return identificationLink;
   }
 
-  public void setProteinIdentificationLink(String proteinIdentificationLink) {
-    this.proteinIdentificationLink = proteinIdentificationLink;
+  public void setIdentificationLink(String identificationLink) {
+    this.identificationLink = identificationLink;
   }
 
   public Service getService() {
@@ -498,12 +498,12 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.service = service;
   }
 
-  public MassDetectionInstrument getMassDetectionInstrument() {
-    return massDetectionInstrument;
+  public MassDetectionInstrument getInstrument() {
+    return instrument;
   }
 
-  public void setMassDetectionInstrument(MassDetectionInstrument massDetectionInstrument) {
-    this.massDetectionInstrument = massDetectionInstrument;
+  public void setInstrument(MassDetectionInstrument instrument) {
+    this.instrument = instrument;
   }
 
   public ProteinContent getProteinContent() {

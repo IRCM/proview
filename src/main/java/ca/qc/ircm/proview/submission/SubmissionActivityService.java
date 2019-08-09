@@ -113,34 +113,34 @@ public class SubmissionActivityService {
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.goal))
         .oldValue(oldSubmission.getGoal()).newValue(submission.getGoal()));
     updateBuilders.add(
-        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.massDetectionInstrument))
-            .oldValue(oldSubmission.getMassDetectionInstrument())
-            .newValue(submission.getMassDetectionInstrument()));
+        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.instrument))
+            .oldValue(oldSubmission.getInstrument())
+            .newValue(submission.getInstrument()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.source))
         .oldValue(oldSubmission.getSource()).newValue(submission.getSource()));
     updateBuilders
         .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.injectionType))
             .oldValue(oldSubmission.getInjectionType()).newValue(submission.getInjectionType()));
     updateBuilders.add(
-        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.proteolyticDigestionMethod))
-            .oldValue(oldSubmission.getProteolyticDigestionMethod())
-            .newValue(submission.getProteolyticDigestionMethod()));
+        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.digestion))
+            .oldValue(oldSubmission.getDigestion())
+            .newValue(submission.getDigestion()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder()
-        .column(qname(qsubmission.usedProteolyticDigestionMethod))
-        .oldValue(oldSubmission.getUsedProteolyticDigestionMethod())
-        .newValue(submission.getUsedProteolyticDigestionMethod()));
+        .column(qname(qsubmission.usedDigestion))
+        .oldValue(oldSubmission.getUsedDigestion())
+        .newValue(submission.getUsedDigestion()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder()
-        .column(qname(qsubmission.otherProteolyticDigestionMethod))
-        .oldValue(oldSubmission.getOtherProteolyticDigestionMethod())
-        .newValue(submission.getOtherProteolyticDigestionMethod()));
+        .column(qname(qsubmission.otherDigestion))
+        .oldValue(oldSubmission.getOtherDigestion())
+        .newValue(submission.getOtherDigestion()));
     updateBuilders
-        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.proteinIdentification))
-            .oldValue(oldSubmission.getProteinIdentification())
-            .newValue(submission.getProteinIdentification()));
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.identification))
+            .oldValue(oldSubmission.getIdentification())
+            .newValue(submission.getIdentification()));
     updateBuilders.add(
-        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.proteinIdentificationLink))
-            .oldValue(oldSubmission.getProteinIdentificationLink())
-            .newValue(submission.getProteinIdentificationLink()));
+        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.identificationLink))
+            .oldValue(oldSubmission.getIdentificationLink())
+            .newValue(submission.getIdentificationLink()));
     updateBuilders
         .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.highResolution))
             .oldValue(oldSubmission.isHighResolution()).newValue(submission.isHighResolution()));
