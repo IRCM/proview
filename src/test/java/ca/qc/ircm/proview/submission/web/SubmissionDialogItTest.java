@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.submission.Submission;
@@ -66,7 +67,22 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence_User() throws Throwable {
+    openDialog(0);
+    SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
+    assertTrue(optional(() -> dialog.header()).isPresent());
+    assertFalse(optional(() -> dialog.sampleDeliveryDate()).isPresent());
+    assertFalse(optional(() -> dialog.digestionDate()).isPresent());
+    assertFalse(optional(() -> dialog.analysisDate()).isPresent());
+    assertFalse(optional(() -> dialog.dataAvailableDate()).isPresent());
+    assertFalse(optional(() -> dialog.save()).isPresent());
+    assertTrue(optional(() -> dialog.print()).isPresent());
+    assertTrue(optional(() -> dialog.edit()).isPresent());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void fieldsExistence_Admin() throws Throwable {
     openDialog(0);
     SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
     assertTrue(optional(() -> dialog.header()).isPresent());
