@@ -75,6 +75,10 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER = property(WEIGHT_MARKER_QUANTITY,
       PLACEHOLDER);
   public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
+  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER = property(QUANTIFICATION_COMMENT,
+      PLACEHOLDER);
+  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT = property(
+      QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
   private static final long serialVersionUID = 1460183864073097086L;
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
@@ -172,6 +176,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     quantification.addClassName(QUANTIFICATION);
     quantification.setItems(Quantification.values());
     quantification.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    quantification.addValueChangeListener(e -> updateQuantificationComment());
     quantificationComment.addClassName(QUANTIFICATION_COMMENT);
     identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     presenter.init(this);
@@ -218,7 +223,18 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     identificationLink.setLabel(submissionResources.message(IDENTIFICATION_LINK));
     quantification.setLabel(submissionResources.message(QUANTIFICATION));
     quantificationComment.setLabel(submissionResources.message(QUANTIFICATION_COMMENT));
+    quantificationComment.setPlaceholder(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER));
     presenter.localeChange(getLocale());
+  }
+
+  private void updateQuantificationComment() {
+    final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, getLocale());
+    if (quantification.getValue() == Quantification.TMT) {
+      quantificationComment
+          .setPlaceholder(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER_TMT));
+    } else {
+      quantificationComment.setPlaceholder(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER));
+    }
   }
 
   public Submission getSubmission() {

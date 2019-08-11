@@ -44,6 +44,8 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_Q
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.CLASS_NAME;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.DEVELOPMENT_TIME_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.PROTEIN_QUANTITY_PLACEHOLDER;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.QUANTIFICATION_COMMENT_PLACEHOLDER;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.QUANTIFICATION_COMMENT_PLACEHOLDER_TMT;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.QUANTITY_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES;
@@ -189,6 +191,8 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     assertEquals(submissionResources.message(QUANTIFICATION), form.quantification.getLabel());
     assertEquals(submissionResources.message(QUANTIFICATION_COMMENT),
         form.quantificationComment.getLabel());
+    assertEquals(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER),
+        form.quantificationComment.getPlaceholder());
     verify(presenter).localeChange(locale);
   }
 
@@ -243,6 +247,8 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     assertEquals(submissionResources.message(QUANTIFICATION), form.quantification.getLabel());
     assertEquals(submissionResources.message(QUANTIFICATION_COMMENT),
         form.quantificationComment.getLabel());
+    assertEquals(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER),
+        form.quantificationComment.getPlaceholder());
     verify(presenter).localeChange(locale);
   }
 
@@ -338,6 +344,16 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
       assertEquals(value.getLabel(locale),
           form.quantification.getItemLabelGenerator().apply(value));
     }
+  }
+
+  @Test
+  public void quantificationComment() {
+    form.quantification.setValue(Quantification.TMT);
+    assertEquals(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER_TMT),
+        form.quantificationComment.getPlaceholder());
+    form.quantification.setValue(Quantification.SILAC);
+    assertEquals(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER),
+        form.quantificationComment.getPlaceholder());
   }
 
   @Test

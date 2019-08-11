@@ -30,6 +30,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES;
+import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
@@ -42,11 +43,15 @@ import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.web.IgnoreConversionIfDisabledConverter;
+import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.Locale;
 import java.util.Objects;
@@ -98,43 +103,69 @@ public class LcmsmsSubmissionFormPresenter {
         .withNullRepresentation("").bind(TAXONOMY);
     binder.forField(form.protein).withNullRepresentation("").bind(PROTEIN);
     firstSampleBinder.forField(form.molecularWeight).withNullRepresentation("")
+        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
         .bind(MOLECULAR_WEIGHT);
     binder.forField(form.postTranslationModification).withNullRepresentation("")
         .bind(POST_TRANSLATION_MODIFICATION);
     firstSampleBinder.forField(form.sampleType).asRequired(webResources.message(REQUIRED))
         .bind(TYPE);
     samplesBinder.forField(form.samplesCount).asRequired(webResources.message(REQUIRED))
-        .withNullRepresentation("").bind(SAMPLES_COUNT);
+        .withNullRepresentation("")
+        .withConverter(new StringToIntegerConverter(webResources.message(INVALID_INTEGER)))
+        .bind(SAMPLES_COUNT);
     samplesBinder.forField(form.samplesNames).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(SAMPLES_NAMES);
     firstSampleBinder.forField(form.quantity).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(QUANTITY);
-    firstSampleBinder.forField(form.volume).asRequired(webResources.message(REQUIRED))
+    form.volume.setRequiredIndicatorVisible(true);
+    firstSampleBinder.forField(form.volume)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
         .withNullRepresentation("").bind(VOLUME);
-    binder.forField(form.separation).asRequired(webResources.message(REQUIRED)).bind(SEPARATION);
-    binder.forField(form.thickness).asRequired(webResources.message(REQUIRED)).bind(THICKNESS);
-    binder.forField(form.coloration).asRequired(webResources.message(REQUIRED)).bind(COLORATION);
-    binder.forField(form.otherColoration).bind(OTHER_COLORATION);
+    form.separation.setRequiredIndicatorVisible(true);
+    binder.forField(form.separation)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(SEPARATION);
+    form.thickness.setRequiredIndicatorVisible(true);
+    binder.forField(form.thickness)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(THICKNESS);
+    form.coloration.setRequiredIndicatorVisible(true);
+    binder.forField(form.coloration)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(COLORATION);
+    form.otherColoration.setRequiredIndicatorVisible(true);
+    binder.forField(form.otherColoration)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(OTHER_COLORATION);
     binder.forField(form.developmentTime).bind(DEVELOPMENT_TIME);
     binder.forField(form.destained).bind(DECOLORATION);
     binder.forField(form.weightMarkerQuantity).withNullRepresentation("")
-        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .withConverter(new IgnoreConversionIfDisabledConverter<>(
+            new StringToDoubleConverter(webResources.message(INVALID_NUMBER))))
         .bind(WEIGHT_MARKER_QUANTITY);
     binder.forField(form.proteinQuantity).bind(PROTEIN_QUANTITY);
     binder.forField(form.digestion).asRequired(webResources.message(REQUIRED)).bind(DIGESTION);
-    binder.forField(form.usedDigestion).asRequired(webResources.message(REQUIRED))
+    form.usedDigestion.setRequiredIndicatorVisible(true);
+    binder.forField(form.usedDigestion)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
         .bind(USED_DIGESTION);
-    binder.forField(form.otherDigestion).asRequired(webResources.message(REQUIRED))
+    form.otherDigestion.setRequiredIndicatorVisible(true);
+    binder.forField(form.otherDigestion)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
         .bind(OTHER_DIGESTION);
     binder.forField(form.proteinContent).asRequired(webResources.message(REQUIRED))
         .bind(PROTEIN_CONTENT);
     binder.forField(form.instrument).bind(INSTRUMENT);
     binder.forField(form.identification).asRequired(webResources.message(REQUIRED))
         .bind(IDENTIFICATION);
-    binder.forField(form.identificationLink).asRequired(webResources.message(REQUIRED))
+    form.identificationLink.setRequiredIndicatorVisible(true);
+    binder.forField(form.identificationLink)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
         .bind(IDENTIFICATION_LINK);
     binder.forField(form.quantification).bind(QUANTIFICATION);
-    binder.forField(form.quantificationComment).asRequired(webResources.message(REQUIRED))
+    form.quantificationComment.setRequiredIndicatorVisible(true);
+    binder.forField(form.quantificationComment)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
         .bind(QUANTIFICATION_COMMENT);
     sampleTypeChanged();
     digestionChanged();
@@ -179,6 +210,25 @@ public class LcmsmsSubmissionFormPresenter {
         .setEnabled(quantification == Quantification.SILAC || quantification == Quantification.TMT);
   }
 
+  BinderValidationStatus<Submission> validateSubmission() {
+    return binder.validate();
+  }
+
+  BinderValidationStatus<SubmissionSample> validateFirstSample() {
+    return firstSampleBinder.validate();
+  }
+
+  BinderValidationStatus<Samples> validateSamples() {
+    return samplesBinder.validate();
+  }
+
+  boolean isValid() {
+    boolean valid = validateSubmission().isOk();
+    valid = validateFirstSample().isOk() && valid;
+    valid = validateSamples().isOk() && valid;
+    return valid;
+  }
+
   Submission getSubmission() {
     return binder.getBean();
   }
@@ -197,7 +247,7 @@ public class LcmsmsSubmissionFormPresenter {
     samplesBinder.setBean(samples);
   }
 
-  private static class Samples {
+  public static class Samples {
     private int samplesCount;
     private String samplesNames;
 
