@@ -41,7 +41,6 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
-import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
@@ -264,6 +263,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(StorageTemperature.MEDIUM, submission.getStorageTemperature());
     assertEquals(null, submission.getQuantification());
     assertEquals(null, submission.getQuantificationComment());
+    assertEquals(null, submission.getContaminants());
     assertEquals(null, submission.getComment());
     assertEquals(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0), submission.getSubmissionDate());
     assertNull(submission.getSampleDeliveryDate());
@@ -685,8 +685,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
-        locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -1011,8 +1011,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
-        locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment")));
@@ -1028,8 +1028,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
-        locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment")));
@@ -1044,8 +1044,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
-        locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
@@ -1061,8 +1061,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
-        locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
@@ -1078,8 +1078,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
-        locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -1285,8 +1285,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
-        locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -1453,8 +1453,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
-        locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertTrue(content.contains("class=\"highResolution\""));
     assertTrue(content.contains(resources.message("submission.highResolution.false")));
   }
@@ -1497,8 +1497,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources = new MessageResource(SubmissionService.class.getName() + "_Print",
-        locale);
+    MessageResource resources =
+        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -1829,13 +1829,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     samples.add(sample2);
-    Contaminant contaminant = new Contaminant();
-    contaminant.setName("contaminant1");
-    contaminant.setQuantity("1.0 μg");
-    contaminant.setComment("comment");
-    List<Contaminant> contaminants = new ArrayList<>();
-    contaminants.add(contaminant);
-    sample.setContaminants(contaminants);
     Standard standard = new Standard();
     standard.setName("standard1");
     standard.setQuantity("1.0 μg");
@@ -1860,6 +1853,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setProtein("protein");
     submission.setPostTranslationModification("my_modification");
     submission.setProteinContent(ProteinContent.MEDIUM);
+    submission.setContaminants("contaminant1 - 1.0 μg (comment)");
     submission.setComment("comment");
     submission.setSamples(samples);
     SubmissionFile file = new SubmissionFile();
@@ -1897,6 +1891,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("protein", submission.getProtein());
     assertEquals("my_modification", submission.getPostTranslationModification());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
+    assertEquals("contaminant1 - 1.0 μg (comment)", submission.getContaminants());
     assertEquals("comment", submission.getComment());
     assertNotNull(submission.getSubmissionDate());
     assertTrue(
@@ -1917,12 +1912,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
     assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
-    contaminants = submissionSample.getContaminants();
-    assertEquals(1, contaminants.size());
-    contaminant = contaminants.get(0);
-    assertEquals("contaminant1", contaminant.getName());
-    assertEquals("1.0 μg", contaminant.getQuantity());
-    assertEquals("comment", contaminant.getComment());
     standards = submissionSample.getStandards();
     assertEquals(1, standards.size());
     standard = standards.get(0);
@@ -1968,13 +1957,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     samples.add(sample2);
-    Contaminant contaminant = new Contaminant();
-    contaminant.setName("contaminant1");
-    contaminant.setQuantity("1.0 μg");
-    contaminant.setComment("comment");
-    List<Contaminant> contaminants = new ArrayList<>();
-    contaminants.add(contaminant);
-    sample.setContaminants(contaminants);
     Standard standard = new Standard();
     standard.setName("standard1");
     standard.setQuantity("1.0 μg");
@@ -1999,6 +1981,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setProtein("protein");
     submission.setPostTranslationModification("my_modification");
     submission.setProteinContent(ProteinContent.MEDIUM);
+    submission.setContaminants("contaminant1 - 1.0 μg (comment)");
     submission.setComment("comment");
     submission.setSamples(samples);
     SubmissionFile file = new SubmissionFile();
@@ -2036,6 +2019,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("protein", submission.getProtein());
     assertEquals("my_modification", submission.getPostTranslationModification());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
+    assertEquals("contaminant1 - 1.0 μg (comment)", submission.getContaminants());
     assertEquals("comment", submission.getComment());
     assertNotNull(submission.getSubmissionDate());
     assertTrue(
@@ -2056,12 +2040,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
     assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
-    contaminants = submissionSample.getContaminants();
-    assertEquals(1, contaminants.size());
-    contaminant = contaminants.get(0);
-    assertEquals("contaminant1", contaminant.getName());
-    assertEquals("1.0 μg", contaminant.getQuantity());
-    assertEquals("comment", contaminant.getComment());
     standards = submissionSample.getStandards();
     assertEquals(1, standards.size());
     standard = standards.get(0);
@@ -2202,13 +2180,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     sample.setMolecularWeight(120.0);
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
-    Contaminant contaminant = new Contaminant();
-    contaminant.setName("contaminant1");
-    contaminant.setQuantity("1.0 μg");
-    contaminant.setComment("comment");
-    List<Contaminant> contaminants = new ArrayList<>();
-    contaminants.add(contaminant);
-    sample.setContaminants(contaminants);
     Standard standard = new Standard();
     standard.setName("standard1");
     standard.setQuantity("1.0 μg");
@@ -2233,6 +2204,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setProtein("protein");
     submission.setPostTranslationModification("my_modification");
     submission.setProteinContent(ProteinContent.MEDIUM);
+    submission.setContaminants("contaminant1 - 1.0 μg (comment)");
     submission.setComment("comment");
     submission.setSamples(samples);
     SubmissionFile file = new SubmissionFile();
@@ -2364,6 +2336,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(null, submission.getProtein());
     assertEquals(null, submission.getPostTranslationModification());
     assertEquals(ProteinContent.MEDIUM, submission.getProteinContent());
+    assertEquals("cap_contaminant - 3 μg (some_comment)", submission.getContaminants());
     assertEquals(null, submission.getComment());
     assertEquals(newDate, submission.getSubmissionDate());
     assertEquals(1, submission.getVersion());
@@ -2377,13 +2350,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("1.5 μg", submissionSample.getQuantity());
     assertEquals(null, submissionSample.getNumberProtein());
     assertEquals(null, submissionSample.getMolecularWeight());
-    List<Contaminant> contaminants = submissionSample.getContaminants();
-    assertEquals(1, submissionSample.getContaminants().size());
-    Contaminant contaminant = contaminants.get(0);
-    assertEquals((Long) 3L, contaminant.getId());
-    assertEquals("cap_contaminant", contaminant.getName());
-    assertEquals("3 μg", contaminant.getQuantity());
-    assertEquals("some_comment", contaminant.getComment());
     List<Standard> standards = submissionSample.getStandards();
     assertEquals(1, standards.size());
     Standard standard = standards.get(0);
@@ -2429,13 +2395,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(null, submissionSample.getNumberProtein());
     assertEquals(null, submissionSample.getMolecularWeight());
-    List<Contaminant> contaminants = submissionSample.getContaminants();
-    assertEquals(1, submissionSample.getContaminants().size());
-    Contaminant contaminant = contaminants.get(0);
-    assertEquals((Long) 3L, contaminant.getId());
-    assertEquals("cap_contaminant", contaminant.getName());
-    assertEquals("3 μg", contaminant.getQuantity());
-    assertEquals("some_comment", contaminant.getComment());
     List<Standard> standards = submissionSample.getStandards();
     assertEquals(1, standards.size());
     Standard standard = standards.get(0);
@@ -2469,13 +2428,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     samples.add(sample2);
-    Contaminant contaminant = new Contaminant();
-    contaminant.setName("contaminant1");
-    contaminant.setQuantity("1.0 μg");
-    contaminant.setComment("comment");
-    List<Contaminant> contaminants = new ArrayList<>();
-    contaminants.add(contaminant);
-    sample.setContaminants(contaminants);
     Standard standard = new Standard();
     standard.setName("standard1");
     standard.setQuantity("1.0 μg");
@@ -2508,12 +2460,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
     assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
-    contaminants = submissionSample.getContaminants();
-    assertEquals(1, contaminants.size());
-    contaminant = contaminants.get(0);
-    assertEquals("contaminant1", contaminant.getName());
-    assertEquals("1.0 μg", contaminant.getQuantity());
-    assertEquals("comment", contaminant.getComment());
     standards = submissionSample.getStandards();
     assertEquals(1, standards.size());
     standard = standards.get(0);
@@ -2696,13 +2642,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     sample.setQuantity("2.0 μg");
     sample.setNumberProtein(10);
     sample.setMolecularWeight(120.0);
-    Contaminant contaminant = new Contaminant();
-    contaminant.setName("contaminant1");
-    contaminant.setQuantity("1.0 μg");
-    contaminant.setComment("comment");
-    List<Contaminant> contaminants = new ArrayList<>();
-    contaminants.add(contaminant);
-    sample.setContaminants(contaminants);
     Standard standard = new Standard();
     standard.setName("standard1");
     standard.setQuantity("1.0 μg");
@@ -2737,12 +2676,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals(new Integer(10), submissionSample.getNumberProtein());
     assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
-    contaminants = submissionSample.getContaminants();
-    assertEquals(1, contaminants.size());
-    contaminant = contaminants.get(0);
-    assertEquals("contaminant1", contaminant.getName());
-    assertEquals("1.0 μg", contaminant.getQuantity());
-    assertEquals("comment", contaminant.getComment());
     standards = submissionSample.getStandards();
     assertEquals(1, standards.size());
     standard = standards.get(0);

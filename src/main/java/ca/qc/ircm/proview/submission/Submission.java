@@ -292,6 +292,11 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
   @Column
   private String quantificationComment;
   /**
+   * Contaminants.
+   */
+  @Column
+  private String contaminants;
+  /**
    * Any comment on this sample.
    */
   @Column
@@ -752,5 +757,13 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
 
   public void setVersion(int version) {
     this.version = version;
+  }
+
+  public String getContaminants() {
+    return contaminants;
+  }
+
+  public void setContaminants(String contaminants) {
+    this.contaminants = contaminants;
   }
 }

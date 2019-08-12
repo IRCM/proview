@@ -25,15 +25,12 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryData;
 import ca.qc.ircm.proview.user.User;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 
 /**
@@ -74,12 +71,6 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
   @ManyToOne
   @JoinColumn
   private Submission submission;
-  /**
-   * Contaminants that are in the same at submission.
-   */
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(updatable = false, nullable = false)
-  private List<Contaminant> contaminants;
 
   public SubmissionSample() {
   }
@@ -124,14 +115,6 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
 
   public void setStatus(SampleStatus status) {
     this.status = status;
-  }
-
-  public List<Contaminant> getContaminants() {
-    return contaminants;
-  }
-
-  public void setContaminants(List<Contaminant> contaminants) {
-    this.contaminants = contaminants;
   }
 
   public Integer getNumberProtein() {

@@ -112,33 +112,26 @@ public class SubmissionActivityService {
         .oldValue(oldSubmission.getExperiment()).newValue(submission.getExperiment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.goal))
         .oldValue(oldSubmission.getGoal()).newValue(submission.getGoal()));
-    updateBuilders.add(
-        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.instrument))
-            .oldValue(oldSubmission.getInstrument())
-            .newValue(submission.getInstrument()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.instrument))
+        .oldValue(oldSubmission.getInstrument()).newValue(submission.getInstrument()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.source))
         .oldValue(oldSubmission.getSource()).newValue(submission.getSource()));
     updateBuilders
         .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.injectionType))
             .oldValue(oldSubmission.getInjectionType()).newValue(submission.getInjectionType()));
-    updateBuilders.add(
-        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.digestion))
-            .oldValue(oldSubmission.getDigestion())
-            .newValue(submission.getDigestion()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder()
-        .column(qname(qsubmission.usedDigestion))
-        .oldValue(oldSubmission.getUsedDigestion())
-        .newValue(submission.getUsedDigestion()));
-    updateBuilders.add(new SubmissionUpdateActivityBuilder()
-        .column(qname(qsubmission.otherDigestion))
-        .oldValue(oldSubmission.getOtherDigestion())
-        .newValue(submission.getOtherDigestion()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.digestion))
+        .oldValue(oldSubmission.getDigestion()).newValue(submission.getDigestion()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.usedDigestion))
+            .oldValue(oldSubmission.getUsedDigestion()).newValue(submission.getUsedDigestion()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.otherDigestion))
+            .oldValue(oldSubmission.getOtherDigestion()).newValue(submission.getOtherDigestion()));
     updateBuilders
         .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.identification))
-            .oldValue(oldSubmission.getIdentification())
-            .newValue(submission.getIdentification()));
-    updateBuilders.add(
-        new SubmissionUpdateActivityBuilder().column(qname(qsubmission.identificationLink))
+            .oldValue(oldSubmission.getIdentification()).newValue(submission.getIdentification()));
+    updateBuilders
+        .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.identificationLink))
             .oldValue(oldSubmission.getIdentificationLink())
             .newValue(submission.getIdentificationLink()));
     updateBuilders
@@ -202,6 +195,8 @@ public class SubmissionActivityService {
         .add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.quantificationComment))
             .oldValue(oldSubmission.getQuantificationComment())
             .newValue(submission.getQuantificationComment()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.contaminants))
+        .oldValue(oldSubmission.getContaminants()).newValue(submission.getContaminants()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.comment))
         .oldValue(oldSubmission.getComment()).newValue(submission.getComment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.user) + "Id")

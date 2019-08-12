@@ -31,7 +31,6 @@
     <class>ca.qc.ircm.proview.persistence.LocaleConverter</class>
     <class>ca.qc.ircm.proview.plate.Plate</class>
     <class>ca.qc.ircm.proview.plate.Well</class>
-    <class>ca.qc.ircm.proview.sample.Contaminant</class>
     <class>ca.qc.ircm.proview.sample.Control</class>
     <class>ca.qc.ircm.proview.sample.Sample</class>
     <class>ca.qc.ircm.proview.sample.SampleContainer</class>

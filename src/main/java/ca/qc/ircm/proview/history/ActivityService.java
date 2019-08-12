@@ -23,7 +23,6 @@ import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.plate.QWell.well;
-import static ca.qc.ircm.proview.sample.QContaminant.contaminant;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSampleContainer.sampleContainer;
 import static ca.qc.ircm.proview.sample.QStandard.standard;
@@ -43,7 +42,6 @@ import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.Standard;
@@ -121,12 +119,6 @@ public class ActivityService {
         JPAQuery<Plate> query = queryFactory.select(plate);
         query.from(plate);
         query.where(plate.id.eq(id));
-        return query.fetchOne();
-      }
-      case Contaminant.TABLE_NAME: {
-        JPAQuery<Contaminant> query = queryFactory.select(contaminant);
-        query.from(contaminant);
-        query.where(contaminant.id.eq(id));
         return query.fetchOne();
       }
       case Sample.TABLE_NAME: {

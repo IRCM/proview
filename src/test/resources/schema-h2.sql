@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS submission (
   storagetemperature varchar(50) DEFAULT NULL,
   quantification varchar(50) DEFAULT NULL,
   quantificationcomment clob DEFAULT NULL,
+  contaminants clob,
   comment clob,
   submissiondate datetime NOT NULL,
   sampledeliverydate date DEFAULT NULL,
@@ -185,16 +186,6 @@ CREATE TABLE IF NOT EXISTS standard (
   deleted tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   CONSTRAINT standard_ibfk_1 FOREIGN KEY (standards_id) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-CREATE TABLE IF NOT EXISTS contaminant (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  name varchar(100) DEFAULT NULL,
-  quantity varchar(100) DEFAULT NULL,
-  contaminants_id bigint(20) DEFAULT NULL,
-  comment clob,
-  deleted tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (id),
-  CONSTRAINT contaminant_ibfk_1 FOREIGN KEY (contaminants_id) REFERENCES sample (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS solvent (
   id bigint(20) NOT NULL AUTO_INCREMENT,

@@ -28,7 +28,6 @@ DROP TABLE IF EXISTS treatedsample;
 DROP TABLE IF EXISTS treatment;
 DROP TABLE IF EXISTS protocol;
 DROP TABLE IF EXISTS solvent;
-DROP TABLE IF EXISTS contaminant;
 DROP TABLE IF EXISTS standard;
 DROP TABLE IF EXISTS sample;
 DROP TABLE IF EXISTS samplecontainer;

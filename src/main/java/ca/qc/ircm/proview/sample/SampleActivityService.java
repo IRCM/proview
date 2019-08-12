@@ -143,23 +143,6 @@ public class SampleActivityService {
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
 
-    class ContaminantUpdateActivityBuilder extends UpdateActivityBuilder {
-      {
-        tableName("contaminant");
-        actionType(ActionType.UPDATE);
-      }
-
-      ContaminantUpdateActivityBuilder oldContaminant(Contaminant oldContaminant) {
-        recordId(oldContaminant.getId());
-        return this;
-      }
-
-      ContaminantUpdateActivityBuilder newContaminant(Contaminant newContaminant) {
-        recordId(newContaminant.getId());
-        return this;
-      }
-    }
-
     class StandardUpdateActivityBuilder extends UpdateActivityBuilder {
       {
         tableName("standard");
@@ -239,52 +222,6 @@ public class SampleActivityService {
       updateBuilders.add(sampleUpdateActivity(newSample).column("molecularWeight")
           .oldValue(oldSubmissionSample.getMolecularWeight())
           .newValue(newSubmissionSample.getMolecularWeight()));
-      // Contaminants.
-      List<Contaminant> oldContaminants =
-          oldSubmissionSample.getContaminants() != null ? oldSubmissionSample.getContaminants()
-              : new ArrayList<>();
-      List<Contaminant> newContaminants =
-          newSubmissionSample.getContaminants() != null ? newSubmissionSample.getContaminants()
-              : new ArrayList<>();
-      for (Contaminant oldContaminant : oldContaminants) {
-        boolean deleted = true;
-        for (Contaminant newContaminant : newContaminants) {
-          if (newContaminant.getId().equals(oldContaminant.getId())) {
-            deleted = false;
-          }
-        }
-        if (deleted) {
-          updateBuilders.add(new ContaminantUpdateActivityBuilder().oldContaminant(oldContaminant)
-              .actionType(ActionType.DELETE));
-        }
-      }
-      for (Contaminant oldContaminant : oldContaminants) {
-        for (Contaminant newContaminant : newContaminants) {
-          if (newContaminant.getId().equals(oldContaminant.getId())) {
-            updateBuilders.add(
-                new ContaminantUpdateActivityBuilder().newContaminant(newContaminant).column("name")
-                    .oldValue(oldContaminant.getName()).newValue(newContaminant.getName()));
-            updateBuilders.add(new ContaminantUpdateActivityBuilder().newContaminant(newContaminant)
-                .column("quantity").oldValue(oldContaminant.getQuantity())
-                .newValue(newContaminant.getQuantity()));
-            updateBuilders.add(new ContaminantUpdateActivityBuilder().newContaminant(newContaminant)
-                .column("comment").oldValue(oldContaminant.getComment())
-                .newValue(newContaminant.getComment()));
-          }
-        }
-      }
-      for (Contaminant newContaminant : newContaminants) {
-        boolean inserted = true;
-        for (Contaminant oldContaminant : oldContaminants) {
-          if (newContaminant.getId().equals(oldContaminant.getId())) {
-            inserted = false;
-          }
-        }
-        if (inserted) {
-          updateBuilders.add(new ContaminantUpdateActivityBuilder().newContaminant(newContaminant)
-              .actionType(ActionType.INSERT));
-        }
-      }
     }
     if (newSample instanceof Control) {
       Control oldControl = (Control) oldSample;

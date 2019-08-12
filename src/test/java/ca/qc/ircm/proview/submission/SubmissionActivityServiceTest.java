@@ -140,6 +140,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     newSubmission.setStorageTemperature(StorageTemperature.LOW);
     newSubmission.setQuantification(Quantification.LABEL_FREE);
     newSubmission.setQuantificationComment("Heavy:Lys8,Arg10\nMedium:Lys4,Arg6\nLight:None");
+    newSubmission.setContaminants("new contaminants");
     newSubmission.setComment("new_comment");
     newSubmission.setLaboratory(newLaboratory);
     newSubmission.setUser(newUser);
@@ -233,8 +234,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     usedDigestionActivity.setActionType(ActionType.UPDATE);
     usedDigestionActivity.setTableName(Submission.TABLE_NAME);
     usedDigestionActivity.setRecordId(newSubmission.getId());
-    usedDigestionActivity
-        .setColumn(qname(qsubmission.usedDigestion));
+    usedDigestionActivity.setColumn(qname(qsubmission.usedDigestion));
     usedDigestionActivity.setOldValue(null);
     usedDigestionActivity.setNewValue("Trypsine");
     expectedUpdateActivities.add(usedDigestionActivity);
@@ -242,8 +242,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     otherDigestionActivity.setActionType(ActionType.UPDATE);
     otherDigestionActivity.setTableName(Submission.TABLE_NAME);
     otherDigestionActivity.setRecordId(newSubmission.getId());
-    otherDigestionActivity
-        .setColumn(qname(qsubmission.otherDigestion));
+    otherDigestionActivity.setColumn(qname(qsubmission.otherDigestion));
     otherDigestionActivity.setOldValue(null);
     otherDigestionActivity.setNewValue("None");
     expectedUpdateActivities.add(otherDigestionActivity);
@@ -439,6 +438,14 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     quantificationCommentActivity.setOldValue(null);
     quantificationCommentActivity.setNewValue("Heavy:Lys8,Arg10\nMedium:Lys4,Arg6\nLight:None");
     expectedUpdateActivities.add(quantificationCommentActivity);
+    UpdateActivity contaminantsActivity = new UpdateActivity();
+    contaminantsActivity.setActionType(ActionType.UPDATE);
+    contaminantsActivity.setTableName(Submission.TABLE_NAME);
+    contaminantsActivity.setRecordId(newSubmission.getId());
+    contaminantsActivity.setColumn(qname(qsubmission.contaminants));
+    contaminantsActivity.setOldValue(null);
+    contaminantsActivity.setNewValue(newSubmission.getContaminants());
+    expectedUpdateActivities.add(contaminantsActivity);
     UpdateActivity commentActivity = new UpdateActivity();
     commentActivity.setActionType(ActionType.UPDATE);
     commentActivity.setTableName(Submission.TABLE_NAME);

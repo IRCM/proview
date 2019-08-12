@@ -30,7 +30,6 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.plate.Well;
-import ca.qc.ircm.proview.sample.Contaminant;
 import ca.qc.ircm.proview.sample.Control;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -176,19 +175,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertTrue(object instanceof Well);
     Well well = (Well) object;
     assertEquals((Long) 128L, well.getId());
-  }
-
-  @Test
-  public void record_Contaminant() throws Exception {
-    Activity activity = mock(Activity.class);
-    when(activity.getTableName()).thenReturn(Contaminant.TABLE_NAME);
-    when(activity.getRecordId()).thenReturn(2L);
-
-    Object object = activityService.record(activity);
-
-    assertTrue(object instanceof Contaminant);
-    Contaminant contaminant = (Contaminant) object;
-    assertEquals((Long) 2L, contaminant.getId());
   }
 
   @Test
