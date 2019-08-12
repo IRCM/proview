@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES_DUPLICATES;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES_EXISTS;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES_WRONG_COUNT;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
@@ -25,13 +28,14 @@ import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
@@ -53,11 +57,14 @@ import com.vaadin.flow.data.binder.BindingValidationStatus;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -67,9 +74,12 @@ public class LcmsmsSubmissionFormPresenterTest {
   private LcmsmsSubmissionFormPresenter presenter;
   @Mock
   private LcmsmsSubmissionForm form;
+  @MockBean
+  private SubmissionSampleService sampleService;
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
+  private MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private Submission newSubmission;
   private String experiment = "my experiment";
@@ -249,8 +259,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.experiment);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.experiment);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -265,8 +275,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.taxonomy);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.taxonomy);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -292,8 +302,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.molecularWeight);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.molecularWeight);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(INVALID_NUMBER)), error.getMessage());
@@ -308,8 +318,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.sampleType);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.sampleType);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -324,8 +334,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.samplesCount);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -340,8 +350,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.samplesCount);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(INVALID_INTEGER)), error.getMessage());
@@ -356,61 +366,78 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_DuplicatedSamplesNames() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesCount.setValue("3");
+    form.samplesNames.setValue(
+        Stream.of(sampleName1, sampleName2, sampleName2).collect(Collectors.joining(", ")));
+
+    assertFalse(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.samplesNames);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_DUPLICATES, sampleName2)),
+        error.getMessage());
   }
 
   @Test
   public void isValid_WrongNumberOfSamplesNames() {
     presenter.setSubmission(newSubmission);
     setFields();
-    form.samplesNames.setValue("my sample 1");
+    form.samplesNames.setValue(sampleName1);
 
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    fail("Program right error message");
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+        error.getMessage());
   }
 
   @Test
-  public void isValid_InvalidSamplesNames() {
-    presenter.setSubmission(newSubmission);
-    setFields();
-    form.samplesNames.setValue("&#, my sample 2");
-
-    assertFalse(presenter.isValid());
-    BinderValidationStatus<Samples> status = presenter.validateSamples();
-    assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.samplesNames);
-    assertTrue(optionalError.isPresent());
-    BindingValidationStatus<?> error = optionalError.get();
-    fail("Program right error message");
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
-  }
-
-  @Test
-  public void isValid_AlreadyUsedSamplesNames() {
-    fail("Program test and validation");
+  public void isValid_AlreadyExistsSamplesNames() {
+    when(sampleService.exists(sampleName2)).thenReturn(true);
     presenter.setSubmission(newSubmission);
     setFields();
 
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_EXISTS, sampleName2)),
+        error.getMessage());
+  }
+
+  @Test
+  public void isValid_AlreadyExistsSamplesNamesInSubmission() {
+    when(sampleService.exists(sampleName2)).thenReturn(true);
+    SubmissionSample sample = new SubmissionSample();
+    sample.setName(sampleName2);
+    newSubmission.getSamples().add(sample);
+    presenter.setSubmission(newSubmission);
+    setFields();
+
+    assertTrue(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertTrue(status.isOk());
   }
 
   @Test
@@ -422,8 +449,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.quantity);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.quantity);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -438,8 +465,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.volume);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.volume);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -467,8 +494,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.volume);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.volume);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -484,8 +511,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.separation);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.separation);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -512,8 +539,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.thickness);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.thickness);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -540,8 +567,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.coloration);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.coloration);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -569,8 +596,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.otherColoration);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.otherColoration);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -611,8 +638,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.weightMarkerQuantity);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.weightMarkerQuantity);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(INVALID_NUMBER)), error.getMessage());
@@ -638,8 +665,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.digestion);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.digestion);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -655,8 +682,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.usedDigestion);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.usedDigestion);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -684,8 +711,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.otherDigestion);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.otherDigestion);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -712,8 +739,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.proteinContent);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.proteinContent);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -728,8 +755,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.identification);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.identification);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -745,8 +772,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.identificationLink);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.identificationLink);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -774,8 +801,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.quantificationComment);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.quantificationComment);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -791,8 +818,8 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
-        form.quantificationComment);
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.quantificationComment);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
