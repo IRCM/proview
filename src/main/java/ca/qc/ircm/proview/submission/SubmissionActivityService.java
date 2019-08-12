@@ -197,6 +197,8 @@ public class SubmissionActivityService {
             .newValue(submission.getQuantificationComment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.contaminants))
         .oldValue(oldSubmission.getContaminants()).newValue(submission.getContaminants()));
+    updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.standards))
+        .oldValue(oldSubmission.getStandards()).newValue(submission.getStandards()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.comment))
         .oldValue(oldSubmission.getComment()).newValue(submission.getComment()));
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.user) + "Id")

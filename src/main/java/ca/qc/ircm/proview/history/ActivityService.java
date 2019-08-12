@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.plate.QWell.well;
 import static ca.qc.ircm.proview.sample.QSample.sample;
 import static ca.qc.ircm.proview.sample.QSampleContainer.sampleContainer;
-import static ca.qc.ircm.proview.sample.QStandard.standard;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.QSubmissionFile.submissionFile;
 import static ca.qc.ircm.proview.treatment.QProtocol.protocol;
@@ -44,7 +43,6 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
-import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
@@ -131,12 +129,6 @@ public class ActivityService {
         JPAQuery<SampleContainer> query = queryFactory.select(sampleContainer);
         query.from(sampleContainer);
         query.where(sampleContainer.id.eq(id));
-        return query.fetchOne();
-      }
-      case Standard.TABLE_NAME: {
-        JPAQuery<Standard> query = queryFactory.select(standard);
-        query.from(standard);
-        query.where(standard.id.eq(id));
         return query.fetchOne();
       }
       case Submission.TABLE_NAME: {

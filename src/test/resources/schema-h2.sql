@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS submission (
   quantification varchar(50) DEFAULT NULL,
   quantificationcomment clob DEFAULT NULL,
   contaminants clob,
+  standards clob,
   comment clob,
   submissiondate datetime NOT NULL,
   sampledeliverydate date DEFAULT NULL,

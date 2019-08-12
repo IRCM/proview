@@ -297,6 +297,11 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
   @Column
   private String contaminants;
   /**
+   * Standards.
+   */
+  @Column
+  private String standards;
+  /**
    * Any comment on this sample.
    */
   @Column
@@ -765,5 +770,13 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
 
   public void setContaminants(String contaminants) {
     this.contaminants = contaminants;
+  }
+
+  public String getStandards() {
+    return standards;
+  }
+
+  public void setStandards(String standards) {
+    this.standards = standards;
   }
 }

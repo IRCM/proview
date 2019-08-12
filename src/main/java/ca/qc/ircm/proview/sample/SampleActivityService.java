@@ -30,7 +30,6 @@ import ca.qc.ircm.proview.user.User;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
@@ -143,23 +142,6 @@ public class SampleActivityService {
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
 
-    class StandardUpdateActivityBuilder extends UpdateActivityBuilder {
-      {
-        tableName("standard");
-        actionType(ActionType.UPDATE);
-      }
-
-      StandardUpdateActivityBuilder oldStandard(Standard oldStandard) {
-        recordId(oldStandard.getId());
-        return this;
-      }
-
-      StandardUpdateActivityBuilder newStandard(Standard newStandard) {
-        recordId(newStandard.getId());
-        return this;
-      }
-    }
-
     updateBuilders.add(sampleUpdateActivity(newSample).column("name").oldValue(oldSample.getName())
         .newValue(newSample.getName()));
     updateBuilders.add(sampleUpdateActivity(newSample).column("support")
@@ -168,49 +150,6 @@ public class SampleActivityService {
         .oldValue(oldSample.getVolume()).newValue(newSample.getVolume()));
     updateBuilders.add(sampleUpdateActivity(newSample).column("quantity")
         .oldValue(oldSample.getQuantity()).newValue(newSample.getQuantity()));
-    // Standards.
-    List<Standard> oldStandards =
-        oldSample.getStandards() != null ? oldSample.getStandards() : new ArrayList<>();
-    List<Standard> newStandards =
-        newSample.getStandards() != null ? newSample.getStandards() : new ArrayList<>();
-    for (Standard oldStandard : oldStandards) {
-      boolean deleted = true;
-      for (Standard newStandard : newStandards) {
-        if (newStandard.getId().equals(oldStandard.getId())) {
-          deleted = false;
-        }
-      }
-      if (deleted) {
-        updateBuilders.add(new StandardUpdateActivityBuilder().oldStandard(oldStandard)
-            .actionType(ActionType.DELETE));
-      }
-    }
-    for (Standard oldStandard : oldStandards) {
-      for (Standard newStandard : newStandards) {
-        if (newStandard.getId().equals(oldStandard.getId())) {
-          updateBuilders.add(new StandardUpdateActivityBuilder().newStandard(newStandard)
-              .column("name").oldValue(oldStandard.getName()).newValue(newStandard.getName()));
-          updateBuilders
-              .add(new StandardUpdateActivityBuilder().newStandard(newStandard).column("quantity")
-                  .oldValue(oldStandard.getQuantity()).newValue(newStandard.getQuantity()));
-          updateBuilders
-              .add(new StandardUpdateActivityBuilder().newStandard(newStandard).column("comment")
-                  .oldValue(oldStandard.getComment()).newValue(newStandard.getComment()));
-        }
-      }
-    }
-    for (Standard newStandard : newStandards) {
-      boolean inserted = true;
-      for (Standard oldStandard : oldStandards) {
-        if (newStandard.getId().equals(oldStandard.getId())) {
-          inserted = false;
-        }
-      }
-      if (inserted) {
-        updateBuilders.add(new StandardUpdateActivityBuilder().newStandard(newStandard)
-            .actionType(ActionType.INSERT));
-      }
-    }
     if (newSample instanceof SubmissionSample) {
       SubmissionSample oldSubmissionSample = (SubmissionSample) oldSample;
       SubmissionSample newSubmissionSample = (SubmissionSample) newSample;

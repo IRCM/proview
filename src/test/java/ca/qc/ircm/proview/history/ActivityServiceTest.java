@@ -35,7 +35,6 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.sample.Standard;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
@@ -212,19 +211,6 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertTrue(object instanceof SampleContainer);
     SampleContainer container = (SampleContainer) object;
     assertEquals((Long) 1L, container.getId());
-  }
-
-  @Test
-  public void record_Standard() throws Exception {
-    Activity activity = mock(Activity.class);
-    when(activity.getTableName()).thenReturn(Standard.TABLE_NAME);
-    when(activity.getRecordId()).thenReturn(4L);
-
-    Object object = activityService.record(activity);
-
-    assertTrue(object instanceof Standard);
-    Standard standard = (Standard) object;
-    assertEquals((Long) 4L, standard.getId());
   }
 
   @Test

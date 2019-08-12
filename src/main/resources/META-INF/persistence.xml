@@ -34,7 +34,6 @@
     <class>ca.qc.ircm.proview.sample.Control</class>
     <class>ca.qc.ircm.proview.sample.Sample</class>
     <class>ca.qc.ircm.proview.sample.SampleContainer</class>
-    <class>ca.qc.ircm.proview.sample.Standard</class>
     <class>ca.qc.ircm.proview.sample.SubmissionSample</class>
     <class>ca.qc.ircm.proview.submission.Submission</class>
     <class>ca.qc.ircm.proview.submission.SubmissionFile</class>

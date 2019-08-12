@@ -141,6 +141,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     newSubmission.setQuantification(Quantification.LABEL_FREE);
     newSubmission.setQuantificationComment("Heavy:Lys8,Arg10\nMedium:Lys4,Arg6\nLight:None");
     newSubmission.setContaminants("new contaminants");
+    newSubmission.setStandards("new standards");
     newSubmission.setComment("new_comment");
     newSubmission.setLaboratory(newLaboratory);
     newSubmission.setUser(newUser);
@@ -446,6 +447,14 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     contaminantsActivity.setOldValue(null);
     contaminantsActivity.setNewValue(newSubmission.getContaminants());
     expectedUpdateActivities.add(contaminantsActivity);
+    UpdateActivity standardsActivity = new UpdateActivity();
+    standardsActivity.setActionType(ActionType.UPDATE);
+    standardsActivity.setTableName(Submission.TABLE_NAME);
+    standardsActivity.setRecordId(newSubmission.getId());
+    standardsActivity.setColumn(qname(qsubmission.standards));
+    standardsActivity.setOldValue(null);
+    standardsActivity.setNewValue(newSubmission.getStandards());
+    expectedUpdateActivities.add(standardsActivity);
     UpdateActivity commentActivity = new UpdateActivity();
     commentActivity.setActionType(ActionType.UPDATE);
     commentActivity.setTableName(Submission.TABLE_NAME);

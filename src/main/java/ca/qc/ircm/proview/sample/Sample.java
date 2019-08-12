@@ -25,8 +25,6 @@ import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -34,8 +32,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
@@ -103,12 +99,6 @@ public abstract class Sample implements Data, Named, Serializable {
   @Column(nullable = false)
   @Size(max = 100)
   private String quantity;
-  /**
-   * Standards that are in the sample.
-   */
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(updatable = false, nullable = false)
-  private List<Standard> standards;
 
   public Sample() {
   }
@@ -150,14 +140,6 @@ public abstract class Sample implements Data, Named, Serializable {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public List<Standard> getStandards() {
-    return standards;
-  }
-
-  public void setStandards(List<Standard> standards) {
-    this.standards = standards;
   }
 
   public String getQuantity() {
