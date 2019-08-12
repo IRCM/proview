@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEIGHT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COLORATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION;
@@ -22,6 +23,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION_COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SEPARATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.STANDARDS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
@@ -74,6 +76,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   public static final String SAMPLES_NAMES_WRONG_COUNT = property(SAMPLES + "Names", "wrongCount");
   public static final String QUANTITY_PLACEHOLDER = property(QUANTITY, PLACEHOLDER);
   public static final String VOLUME_PLACEHOLDER = property(VOLUME, PLACEHOLDER);
+  public static final String CONTAMINANTS_PLACEHOLDER = property(CONTAMINANTS, PLACEHOLDER);
+  public static final String STANDARDS_PLACEHOLDER = property(STANDARDS, PLACEHOLDER);
   public static final String DEVELOPMENT_TIME_PLACEHOLDER = property(DEVELOPMENT_TIME, PLACEHOLDER);
   public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER =
       property(WEIGHT_MARKER_QUANTITY, PLACEHOLDER);
@@ -94,6 +98,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   protected TextArea samplesNames = new TextArea();
   protected TextField quantity = new TextField();
   protected TextField volume = new TextField();
+  protected TextArea contaminants = new TextArea();
+  protected TextArea standards = new TextArea();
   protected ComboBox<GelSeparation> separation = new ComboBox<>();
   protected ComboBox<GelThickness> thickness = new ComboBox<>();
   protected ComboBox<GelColoration> coloration = new ComboBox<>();
@@ -139,6 +145,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     postTranslationModification.addClassName(POST_TRANSLATION_MODIFICATION);
     quantity.addClassName(QUANTITY);
     volume.addClassName(VOLUME);
+    contaminants.addClassName(CONTAMINANTS);
+    standards.addClassName(STANDARDS);
     sampleType.addClassName(SAMPLES_TYPE);
     sampleType.setItems(SampleType.values());
     sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
@@ -204,6 +212,10 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     quantity.setPlaceholder(resources.message(QUANTITY_PLACEHOLDER));
     volume.setLabel(sampleResources.message(VOLUME));
     volume.setPlaceholder(resources.message(VOLUME_PLACEHOLDER));
+    contaminants.setLabel(submissionResources.message(CONTAMINANTS));
+    contaminants.setPlaceholder(resources.message(CONTAMINANTS_PLACEHOLDER));
+    standards.setLabel(submissionResources.message(STANDARDS));
+    standards.setPlaceholder(resources.message(STANDARDS_PLACEHOLDER));
     sampleType.setLabel(resources.message(SAMPLES_TYPE));
     samplesCount.setLabel(resources.message(SAMPLES_COUNT));
     samplesNames.setLabel(resources.message(SAMPLES_NAMES));

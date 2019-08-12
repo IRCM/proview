@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEIGHT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COLORATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION;
@@ -37,11 +38,13 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_QUANTIT
 import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.QUANTIFICATION_COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SEPARATION;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.STANDARDS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.CLASS_NAME;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.CONTAMINANTS_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.DEVELOPMENT_TIME_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.PROTEIN_QUANTITY_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.QUANTIFICATION_COMMENT_PLACEHOLDER;
@@ -50,6 +53,7 @@ import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.QUANTITY_PL
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_TYPE;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.STANDARDS_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.VOLUME_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.WEIGHT_MARKER_QUANTITY_PLACEHOLDER;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
@@ -97,8 +101,8 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
   private MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, locale);
   private MessageResource submissionResources = new MessageResource(Submission.class, locale);
   private MessageResource sampleResources = new MessageResource(Sample.class, locale);
-  private MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-      locale);
+  private MessageResource submissionSampleResources =
+      new MessageResource(SubmissionSample.class, locale);
 
   /**
    * Before test.
@@ -129,6 +133,8 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     assertTrue(form.samplesNames.getClassName().contains(SAMPLES_NAMES));
     assertTrue(form.quantity.getClassName().contains(QUANTITY));
     assertTrue(form.volume.getClassName().contains(VOLUME));
+    assertTrue(form.contaminants.getClassName().contains(CONTAMINANTS));
+    assertTrue(form.standards.getClassName().contains(STANDARDS));
     assertTrue(form.separation.getClassName().contains(SEPARATION));
     assertTrue(form.thickness.getClassName().contains(THICKNESS));
     assertTrue(form.coloration.getClassName().contains(COLORATION));
@@ -165,6 +171,10 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
     assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
     assertEquals(resources.message(VOLUME_PLACEHOLDER), form.volume.getPlaceholder());
+    assertEquals(submissionResources.message(CONTAMINANTS), form.contaminants.getLabel());
+    assertEquals(resources.message(CONTAMINANTS_PLACEHOLDER), form.contaminants.getPlaceholder());
+    assertEquals(submissionResources.message(STANDARDS), form.standards.getLabel());
+    assertEquals(resources.message(STANDARDS_PLACEHOLDER), form.standards.getPlaceholder());
     assertEquals(submissionResources.message(SEPARATION), form.separation.getLabel());
     assertEquals(submissionResources.message(THICKNESS), form.thickness.getLabel());
     assertEquals(submissionResources.message(COLORATION), form.coloration.getLabel());
@@ -203,8 +213,8 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     final MessageResource sampleResources = new MessageResource(Sample.class, locale);
-    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-        locale);
+    final MessageResource submissionSampleResources =
+        new MessageResource(SubmissionSample.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
@@ -221,6 +231,10 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
     assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
     assertEquals(resources.message(VOLUME_PLACEHOLDER), form.volume.getPlaceholder());
+    assertEquals(submissionResources.message(CONTAMINANTS), form.contaminants.getLabel());
+    assertEquals(resources.message(CONTAMINANTS_PLACEHOLDER), form.contaminants.getPlaceholder());
+    assertEquals(submissionResources.message(STANDARDS), form.standards.getLabel());
+    assertEquals(resources.message(STANDARDS_PLACEHOLDER), form.standards.getPlaceholder());
     assertEquals(submissionResources.message(SEPARATION), form.separation.getLabel());
     assertEquals(submissionResources.message(THICKNESS), form.thickness.getLabel());
     assertEquals(submissionResources.message(COLORATION), form.coloration.getLabel());
