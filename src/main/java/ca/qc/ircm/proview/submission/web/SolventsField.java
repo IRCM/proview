@@ -39,7 +39,9 @@ public class SolventsField extends CustomField<List<Solvent>> implements LocaleC
   @Override
   protected void setPresentationValue(List<Solvent> values) {
     fields.values().forEach(field -> field.setValue(false));
-    values.stream().forEach(solvent -> fields.get(solvent).setValue(true));
+    if (values != null) {
+      values.stream().forEach(solvent -> fields.get(solvent).setValue(true));
+    }
   }
 
   @Override

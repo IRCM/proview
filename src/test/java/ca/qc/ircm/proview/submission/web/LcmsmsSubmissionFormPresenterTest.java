@@ -253,6 +253,7 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertTrue(form.usedDigestion.isRequiredIndicatorVisible());
     assertTrue(form.otherDigestion.isRequiredIndicatorVisible());
     assertTrue(form.proteinContent.isRequiredIndicatorVisible());
+    assertFalse(form.instrument.isRequiredIndicatorVisible());
     assertTrue(form.identification.isRequiredIndicatorVisible());
     assertTrue(form.identificationLink.isRequiredIndicatorVisible());
     assertFalse(form.quantification.isRequiredIndicatorVisible());
@@ -275,6 +276,7 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertFalse(form.usedDigestion.isEnabled());
     assertFalse(form.otherDigestion.isEnabled());
     assertTrue(form.proteinContent.isEnabled());
+    assertTrue(form.instrument.isEnabled());
     assertTrue(form.identification.isEnabled());
     assertFalse(form.identificationLink.isEnabled());
     assertTrue(form.quantification.isEnabled());

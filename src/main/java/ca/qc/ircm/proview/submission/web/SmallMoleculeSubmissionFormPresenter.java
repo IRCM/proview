@@ -8,20 +8,28 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.FORMULA;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.LIGHT_SENSITIVE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.MONOISOTOPIC_MASS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_SOLVENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLUTION_SOLVENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLVENTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
+import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.treatment.Solvent;
+import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -36,12 +44,13 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SmallMoleculeSubmissionFormPresenter {
-  private static final Logger logger = LoggerFactory
-      .getLogger(SmallMoleculeSubmissionFormPresenter.class);
+  @SuppressWarnings("unused")
+  private static final Logger logger =
+      LoggerFactory.getLogger(SmallMoleculeSubmissionFormPresenter.class);
   private SmallMoleculeSubmissionForm form;
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private Binder<SubmissionSample> firstSampleBinder = new BeanValidationBinder<>(
-      SubmissionSample.class);
+  private Binder<SubmissionSample> firstSampleBinder =
+      new BeanValidationBinder<>(SubmissionSample.class);
 
   @Autowired
   protected SmallMoleculeSubmissionFormPresenter() {
@@ -56,6 +65,7 @@ public class SmallMoleculeSubmissionFormPresenter {
   void init(SmallMoleculeSubmissionForm form) {
     this.form = form;
     form.sampleType.addValueChangeListener(e -> sampleTypeChanged());
+    form.solvents.addValueChangeListener(e -> solventsChanged());
   }
 
   void localeChange(Locale locale) {
@@ -64,25 +74,57 @@ public class SmallMoleculeSubmissionFormPresenter {
         .bind(TYPE);
     firstSampleBinder.forField(form.sampleName).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(NAME);
-    binder.forField(form.solvent).asRequired(webResources.message(REQUIRED))
+    form.solvent.setRequiredIndicatorVisible(true);
+    binder.forField(form.solvent)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
         .withNullRepresentation("").bind(SOLUTION_SOLVENT);
     binder.forField(form.formula).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(FORMULA);
     binder.forField(form.monoisotopicMass).asRequired(webResources.message(REQUIRED))
-        .withNullRepresentation("").bind(MONOISOTOPIC_MASS);
-    binder.forField(form.averageMass).withNullRepresentation("").bind(AVERAGE_MASS);
+        .withNullRepresentation("")
+        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .bind(MONOISOTOPIC_MASS);
+    binder.forField(form.averageMass).withNullRepresentation("")
+        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .bind(AVERAGE_MASS);
     binder.forField(form.toxicity).withNullRepresentation("").bind(TOXICITY);
     binder.forField(form.lightSensitive).bind(LIGHT_SENSITIVE);
     binder.forField(form.storageTemperature).asRequired(webResources.message(REQUIRED))
         .bind(STORAGE_TEMPERATURE);
     binder.forField(form.highResolution).asRequired(webResources.message(REQUIRED))
         .bind(HIGH_RESOLUTION);
+    binder.forField(form.solvents).asRequired(webResources.message(REQUIRED)).bind(SOLVENTS);
+    form.otherSolvent.setRequiredIndicatorVisible(true);
+    binder.forField(form.otherSolvent)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(OTHER_SOLVENT);
     sampleTypeChanged();
+    solventsChanged();
   }
 
   private void sampleTypeChanged() {
     SampleType type = form.sampleType.getValue();
     form.solvent.setEnabled(type == SOLUTION);
+  }
+
+  private void solventsChanged() {
+    List<Solvent> solvents = form.solvents.getValue();
+    form.otherSolvent.setEnabled(solvents != null && solvents.contains(Solvent.OTHER));
+  }
+
+  BinderValidationStatus<Submission> validateSubmission() {
+    return binder.validate();
+  }
+
+  BinderValidationStatus<SubmissionSample> validateFirstSample() {
+    return firstSampleBinder.validate();
+  }
+
+  boolean isValid() {
+    boolean valid = true;
+    valid = validateSubmission().isOk() && valid;
+    valid = validateFirstSample().isOk() && valid;
+    return valid;
   }
 
   Submission getSubmission() {

@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -105,6 +106,15 @@ public class SolventsFieldTest extends AbstractViewTestCase {
 
     for (Solvent value : Solvent.values()) {
       assertEquals(expected.contains(value), fields.fields.get(value).getValue());
+    }
+  }
+
+  @Test
+  public void setValue_Null() {
+    fields.setValue(null);
+
+    for (Solvent value : Solvent.values()) {
+      assertFalse(fields.fields.get(value).getValue());
     }
   }
 }
