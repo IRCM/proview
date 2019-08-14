@@ -7,7 +7,9 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.FORMULA;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.LIGHT_SENSITIVE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.MONOISOTOPIC_MASS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_SOLVENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLUTION_SOLVENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLVENTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
 import static ca.qc.ircm.proview.text.Strings.property;
@@ -52,11 +54,8 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   protected Checkbox lightSensitive = new Checkbox();
   protected RadioButtonGroup<StorageTemperature> storageTemperature = new RadioButtonGroup<>();
   protected RadioButtonGroup<Boolean> highResolution = new RadioButtonGroup<>();
-  // TODO Create Custom field for solvents.
-  protected Checkbox solventAcetonitrile = new Checkbox();
-  protected Checkbox solventMethanol = new Checkbox();
-  protected Checkbox solventChcl3 = new Checkbox();
-  protected Checkbox solventOther = new Checkbox();
+  protected SolventsField solvents = new SolventsField();
+  protected TextField otherSolvent = new TextField();
   private SmallMoleculeSubmissionFormPresenter presenter;
 
   @Autowired
@@ -67,11 +66,12 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   @PostConstruct
   void init() {
     addClassName(CLASS_NAME);
+    setMaxWidth("80em");
     setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3));
     add(new FormLayout(sampleType, sampleName, solvent, formula),
         new FormLayout(monoisotopicMass, averageMass, toxicity, lightSensitive, storageTemperature),
-        new FormLayout(highResolution));
+        new FormLayout(highResolution, solvents, otherSolvent));
     sampleType.addClassName(SAMPLE_TYPE);
     sampleType.setItems(DRY, SOLUTION);
     sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
@@ -93,13 +93,14 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
         .setRenderer(new TextRenderer<>(value -> new MessageResource(Submission.class, getLocale())
             .message(property(HIGH_RESOLUTION, value))));
     highResolution.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+    otherSolvent.addClassName(OTHER_SOLVENT);
     presenter.init(this);
   }
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(SmallMoleculeSubmissionForm.class,
-        getLocale());
+    final MessageResource resources =
+        new MessageResource(SmallMoleculeSubmissionForm.class, getLocale());
     final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
     sampleType.setLabel(resources.message(SAMPLE_TYPE));
     sampleName.setLabel(resources.message(SAMPLE_NAME));
@@ -111,6 +112,8 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     lightSensitive.setLabel(submissionResources.message(LIGHT_SENSITIVE));
     storageTemperature.setLabel(submissionResources.message(STORAGE_TEMPERATURE));
     highResolution.setLabel(submissionResources.message(HIGH_RESOLUTION));
+    solvents.setLabel(submissionResources.message(SOLVENTS));
+    otherSolvent.setLabel(submissionResources.message(OTHER_SOLVENT));
     presenter.localeChange(getLocale());
   }
 

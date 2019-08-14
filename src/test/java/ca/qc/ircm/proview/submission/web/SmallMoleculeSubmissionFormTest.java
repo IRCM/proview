@@ -24,7 +24,9 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.FORMULA;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.LIGHT_SENSITIVE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.MONOISOTOPIC_MASS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_SOLVENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLUTION_SOLVENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLVENTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.CLASS_NAME;
@@ -64,8 +66,8 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
   @Mock
   private Submission submission;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(SmallMoleculeSubmissionForm.class,
-      locale);
+  private MessageResource resources =
+      new MessageResource(SmallMoleculeSubmissionForm.class, locale);
   private MessageResource submissionResources = new MessageResource(Submission.class, locale);
 
   /**
@@ -96,6 +98,7 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
     assertTrue(view.lightSensitive.getClassName().contains(LIGHT_SENSITIVE));
     assertTrue(view.storageTemperature.getClassName().contains(STORAGE_TEMPERATURE));
     assertTrue(view.highResolution.getClassName().contains(HIGH_RESOLUTION));
+    assertTrue(view.otherSolvent.getClassName().contains(OTHER_SOLVENT));
   }
 
   @Test
@@ -112,6 +115,8 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
     assertEquals(submissionResources.message(STORAGE_TEMPERATURE),
         view.storageTemperature.getLabel());
     assertEquals(submissionResources.message(HIGH_RESOLUTION), view.highResolution.getLabel());
+    assertEquals(submissionResources.message(SOLVENTS), view.solvents.getLabel());
+    assertEquals(submissionResources.message(OTHER_SOLVENT), view.otherSolvent.getLabel());
     verify(presenter).localeChange(locale);
   }
 
@@ -119,8 +124,8 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(SmallMoleculeSubmissionForm.class,
-        locale);
+    final MessageResource resources =
+        new MessageResource(SmallMoleculeSubmissionForm.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
@@ -135,6 +140,8 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
     assertEquals(submissionResources.message(STORAGE_TEMPERATURE),
         view.storageTemperature.getLabel());
     assertEquals(submissionResources.message(HIGH_RESOLUTION), view.highResolution.getLabel());
+    assertEquals(submissionResources.message(SOLVENTS), view.solvents.getLabel());
+    assertEquals(submissionResources.message(OTHER_SOLVENT), view.otherSolvent.getLabel());
     verify(presenter).localeChange(locale);
   }
 
