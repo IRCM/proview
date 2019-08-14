@@ -55,6 +55,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.data.binder.ValueContext;
@@ -294,7 +295,37 @@ public class LcmsmsSubmissionFormPresenter {
     boolean valid = validateSubmission().isOk();
     valid = validateFirstSample().isOk() && valid;
     valid = validateSamples().isOk() && valid;
+    if (valid) {
+      try {
+        updateSubmissionSamples();
+      } catch (ValidationException e) {
+        return false;
+      }
+    }
     return valid;
+  }
+
+  private void updateSubmissionSamples() throws ValidationException {
+    Submission submission = binder.getBean();
+    Samples samples = samplesBinder.getBean();
+    submission.getSamples().get(0).setName(samples.getSamplesNames().get(0));
+    while (submission.getSamples().size() < samples.samplesCount) {
+      submission.getSamples().add(new SubmissionSample());
+    }
+    while (submission.getSamples().size() > samples.samplesCount) {
+      submission.getSamples().remove(submission.getSamples().size() - 1);
+    }
+    for (int i = 0; i < samples.samplesCount; i++) {
+      SubmissionSample sample = submission.getSamples().get(i);
+      try {
+        firstSampleBinder.writeBean(sample);
+      } catch (ValidationException e) {
+        logger.warn(
+            "firstSampleBinder validation passed, but failed when writing to sample " + sample);
+        throw e;
+      }
+      submission.getSamples().get(i).setName(samples.getSamplesNames().get(i));
+    }
   }
 
   Submission getSubmission() {

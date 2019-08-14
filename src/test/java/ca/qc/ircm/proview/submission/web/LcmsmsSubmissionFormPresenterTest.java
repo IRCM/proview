@@ -849,10 +849,11 @@ public class LcmsmsSubmissionFormPresenterTest {
   }
 
   @Test
-  public void getSubmission() {
+  public void getSubmission_NoChanges() {
     Submission database = repository.findById(34L).orElse(null);
     presenter.setSubmission(database);
 
+    assertTrue(presenter.isValid());
     Submission submission = presenter.getSubmission();
     assertEquals(database.getId(), submission.getId());
     assertEquals(database.getExperiment(), submission.getExperiment());
@@ -890,6 +891,46 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertEquals(database.getIdentificationLink(), submission.getIdentificationLink());
     assertEquals(database.getQuantification(), submission.getQuantification());
     assertEquals(database.getQuantificationComment(), submission.getQuantificationComment());
+  }
+
+  @Test
+  public void getSubmission_ModifiedFields() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+
+    assertTrue(presenter.isValid());
+    Submission submission = presenter.getSubmission();
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(goal, submission.getGoal());
+    assertEquals(taxonomy, submission.getTaxonomy());
+    assertEquals(protein, submission.getProtein());
+    assertEquals(postTranslationModification, submission.getPostTranslationModification());
+    assertEquals(samplesCount, submission.getSamples().size());
+    assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    assertEquals(sampleName2, submission.getSamples().get(1).getName());
+    for (int i = 0; i < samplesCount; i++) {
+      assertEquals(sampleType, submission.getSamples().get(i).getType());
+      assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
+      assertEquals(quantity, submission.getSamples().get(0).getQuantity());
+      assertEquals(volume, submission.getSamples().get(0).getVolume());
+    }
+    assertEquals(separation, submission.getSeparation());
+    assertEquals(thickness, submission.getThickness());
+    assertEquals(coloration, submission.getColoration());
+    assertEquals(otherColoration, submission.getOtherColoration());
+    assertEquals(developmentTime, submission.getDevelopmentTime());
+    assertEquals(destained, submission.isDecoloration());
+    assertEquals(weightMarkerQuantity, submission.getWeightMarkerQuantity());
+    assertEquals(proteinQuantity, submission.getProteinQuantity());
+    assertEquals(digestion, submission.getDigestion());
+    assertEquals(usedDigestion, submission.getUsedDigestion());
+    assertEquals(otherDigestion, submission.getOtherDigestion());
+    assertEquals(proteinContent, submission.getProteinContent());
+    assertEquals(instrument, submission.getInstrument());
+    assertEquals(identification, submission.getIdentification());
+    assertEquals(identificationLink, submission.getIdentificationLink());
+    assertEquals(quantification, submission.getQuantification());
+    assertEquals(quantificationComment, submission.getQuantificationComment());
   }
 
   @Test
