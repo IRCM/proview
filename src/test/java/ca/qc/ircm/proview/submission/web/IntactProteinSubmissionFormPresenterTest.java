@@ -565,4 +565,13 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertEquals(source, form.source.getValue());
     assertEquals(instrument, form.instrument.getValue());
   }
+
+  @Test
+  public void setSubmission_NullInstrument() {
+    Submission submission = submission();
+    submission.setInstrument(null);
+    presenter.setSubmission(submission);
+
+    assertEquals(MassDetectionInstrument.NULL, form.instrument.getValue());
+  }
 }

@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -118,7 +119,8 @@ public class IntactProteinSubmissionFormPresenter {
         .withNullRepresentation("").bind(VOLUME);
     binder.forField(form.injection).asRequired(webResources.message(REQUIRED)).bind(INJECTION_TYPE);
     binder.forField(form.source).asRequired(webResources.message(REQUIRED)).bind(SOURCE);
-    binder.forField(form.instrument).bind(INSTRUMENT);
+    binder.forField(form.instrument).withNullRepresentation(MassDetectionInstrument.NULL)
+        .bind(INSTRUMENT);
     sampleTypeChanged();
   }
 
