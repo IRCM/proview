@@ -1,23 +1,14 @@
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
-import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_QUANTITY;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
-import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
-import ca.qc.ircm.proview.sample.SampleProperties;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
@@ -54,17 +45,6 @@ public class SubmissionView extends VerticalLayout
   public static final String VIEW_NAME = "submission";
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
-  public static final String SAMPLES_TYPE = SAMPLES + "Type";
-  public static final String SAMPLES_COUNT = SAMPLES + "Count";
-  public static final String SAMPLES_NAMES = SAMPLES + "Names";
-  public static final String SAMPLE = "sample";
-  public static final String SAMPLE_NAME = property(SAMPLE, SampleProperties.NAME);
-  public static final String QUANTITY_PLACEHOLDER = property(QUANTITY, PLACEHOLDER);
-  public static final String VOLUME_PLACEHOLDER = property(VOLUME, PLACEHOLDER);
-  public static final String DEVELOPMENT_TIME_PLACEHOLDER = property(DEVELOPMENT_TIME, PLACEHOLDER);
-  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER = property(WEIGHT_MARKER_QUANTITY,
-      PLACEHOLDER);
-  public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionView.class);
   protected H2 header = new H2();
@@ -73,11 +53,11 @@ public class SubmissionView extends VerticalLayout
   protected Tab smallMolecule = new Tab();
   protected Tab intactProtein = new Tab();
   protected TextArea comment = new TextArea();
+  protected LcmsmsSubmissionForm lcmsmsSubmissionForm;
+  protected SmallMoleculeSubmissionForm smallMoleculeSubmissionForm;
+  protected IntactProteinSubmissionForm intactProteinSubmissionForm;
   private Map<Tab, Component> tabsToComponents = new HashMap<>();
   private SubmissionViewPresenter presenter;
-  private LcmsmsSubmissionForm lcmsmsSubmissionForm;
-  private SmallMoleculeSubmissionForm smallMoleculeSubmissionForm;
-  private IntactProteinSubmissionForm intactProteinSubmissionForm;
 
   @Autowired
   protected SubmissionView(SubmissionViewPresenter presenter,
