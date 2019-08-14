@@ -1,25 +1,55 @@
---
---    Copyright 2010-2016 the original author or authors.
---
---    Licensed under the Apache License, Version 2.0 (the "License");
---    you may not use this file except in compliance with the License.
---    You may obtain a copy of the License at
---
---       http://www.apache.org/licenses/LICENSE-2.0
---
---    Unless required by applicable law or agreed to in writing, software
---    distributed under the License is distributed on an "AS IS" BASIS,
---    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
---    See the License for the specific language governing permissions and
---    limitations under the License.
---
-
 -- // make standards a text field
 -- Migration SQL that makes the change goes here.
 
+ALTER TABLE submission
+ADD COLUMN standards TEXT AFTER contaminants;
 
+-- @DELIMITER $
+CREATE FUNCTION standards(submissionid BIGINT) RETURNS TEXT
+BEGIN
+  DECLARE finished BOOLEAN DEFAULT false;
+  DECLARE name varchar(255) DEFAULT "";
+  DECLARE quantity varchar(255) DEFAULT "";
+  DECLARE comment TEXT DEFAULT "";
+  DECLARE standards TEXT DEFAULT "";
+  DECLARE standard_info CURSOR FOR
+  SELECT DISTINCT standard.name, standard.quantity, standard.comment
+  FROM standard
+  JOIN sample ON standard.standards_id = sample.id
+  WHERE sample.submission_id = submissionid;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+  OPEN standard_info;
+  standard_loop: LOOP
+    FETCH standard_info INTO name, quantity, comment;
+    IF finished THEN
+      LEAVE standard_loop;
+    END IF;
+    SELECT CONCAT(standards, ", ", name, " - ", quantity, " (", comment, ")") INTO standards;
+  END LOOP standard_loop;
+  CLOSE standard_info;
+  
+  IF LENGTH(standards) > 0 THEN
+    SELECT SUBSTRING(standards, 3) INTO standards;
+  END IF;
+  
+  RETURN standards;
+END $
+-- @DELIMITER ;
+
+UPDATE submission
+SET standards = standards(submission.id);
+
+DROP FUNCTION standards;
+
+ALTER TABLE standard
+DROP FOREIGN KEY standard_sample_ibfk;
+RENAME TABLE standard TO old_standard;
 
 -- //@UNDO
 -- SQL to undo the change goes here.
 
-
+RENAME TABLE old_standard TO standard;
+ALTER TABLE standard
+ADD CONSTRAINT standard_sample_ibfk FOREIGN KEY standards_id REFERENCES sample(id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE submission
+DROP COLUMN standards;
