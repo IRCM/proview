@@ -231,7 +231,11 @@ public class LcmsmsSubmissionFormPresenterTest {
   @Test
   public void required() {
     assertTrue(form.experiment.isRequiredIndicatorVisible());
+    assertFalse(form.goal.isRequiredIndicatorVisible());
     assertTrue(form.taxonomy.isRequiredIndicatorVisible());
+    assertFalse(form.protein.isRequiredIndicatorVisible());
+    assertFalse(form.molecularWeight.isRequiredIndicatorVisible());
+    assertFalse(form.postTranslationModification.isRequiredIndicatorVisible());
     assertTrue(form.sampleType.isRequiredIndicatorVisible());
     assertTrue(form.samplesCount.isRequiredIndicatorVisible());
     assertTrue(form.samplesNames.isRequiredIndicatorVisible());
@@ -241,13 +245,140 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertTrue(form.thickness.isRequiredIndicatorVisible());
     assertTrue(form.coloration.isRequiredIndicatorVisible());
     assertTrue(form.otherColoration.isRequiredIndicatorVisible());
+    assertFalse(form.developmentTime.isRequiredIndicatorVisible());
+    assertFalse(form.destained.isRequiredIndicatorVisible());
+    assertFalse(form.weightMarkerQuantity.isRequiredIndicatorVisible());
+    assertFalse(form.proteinQuantity.isRequiredIndicatorVisible());
     assertTrue(form.digestion.isRequiredIndicatorVisible());
     assertTrue(form.usedDigestion.isRequiredIndicatorVisible());
     assertTrue(form.otherDigestion.isRequiredIndicatorVisible());
     assertTrue(form.proteinContent.isRequiredIndicatorVisible());
     assertTrue(form.identification.isRequiredIndicatorVisible());
     assertTrue(form.identificationLink.isRequiredIndicatorVisible());
+    assertFalse(form.quantification.isRequiredIndicatorVisible());
     assertTrue(form.quantificationComment.isRequiredIndicatorVisible());
+  }
+
+  @Test
+  public void enabled() {
+    assertTrue(form.experiment.isEnabled());
+    assertTrue(form.goal.isEnabled());
+    assertTrue(form.taxonomy.isEnabled());
+    assertTrue(form.protein.isEnabled());
+    assertTrue(form.molecularWeight.isEnabled());
+    assertTrue(form.postTranslationModification.isEnabled());
+    assertTrue(form.sampleType.isEnabled());
+    assertTrue(form.samplesCount.isEnabled());
+    assertTrue(form.samplesNames.isEnabled());
+    assertTrue(form.quantity.isEnabled());
+    assertTrue(form.digestion.isEnabled());
+    assertFalse(form.usedDigestion.isEnabled());
+    assertFalse(form.otherDigestion.isEnabled());
+    assertTrue(form.proteinContent.isEnabled());
+    assertTrue(form.identification.isEnabled());
+    assertFalse(form.identificationLink.isEnabled());
+    assertTrue(form.quantification.isEnabled());
+    assertFalse(form.quantificationComment.isEnabled());
+  }
+
+  @Test
+  public void enabled_Solution() {
+    form.sampleType.setValue(SampleType.SOLUTION);
+    assertTrue(form.volume.isEnabled());
+    assertFalse(form.separation.isEnabled());
+    assertFalse(form.thickness.isEnabled());
+    assertFalse(form.coloration.isEnabled());
+    assertFalse(form.otherColoration.isEnabled());
+    assertFalse(form.developmentTime.isEnabled());
+    assertFalse(form.destained.isEnabled());
+    assertFalse(form.weightMarkerQuantity.isEnabled());
+    assertFalse(form.proteinQuantity.isEnabled());
+  }
+
+  @Test
+  public void enabled_Dry() {
+    form.sampleType.setValue(SampleType.DRY);
+    assertFalse(form.volume.isEnabled());
+    assertFalse(form.separation.isEnabled());
+    assertFalse(form.thickness.isEnabled());
+    assertFalse(form.coloration.isEnabled());
+    assertFalse(form.otherColoration.isEnabled());
+    assertFalse(form.developmentTime.isEnabled());
+    assertFalse(form.destained.isEnabled());
+    assertFalse(form.weightMarkerQuantity.isEnabled());
+    assertFalse(form.proteinQuantity.isEnabled());
+  }
+
+  @Test
+  public void enabled_Gel() {
+    form.sampleType.setValue(SampleType.GEL);
+    assertFalse(form.volume.isEnabled());
+    assertTrue(form.separation.isEnabled());
+    assertTrue(form.thickness.isEnabled());
+    assertTrue(form.coloration.isEnabled());
+    assertFalse(form.otherColoration.isEnabled());
+    assertTrue(form.developmentTime.isEnabled());
+    assertTrue(form.destained.isEnabled());
+    assertTrue(form.weightMarkerQuantity.isEnabled());
+    assertTrue(form.proteinQuantity.isEnabled());
+  }
+
+  @Test
+  public void enabled_Beads() {
+    form.sampleType.setValue(SampleType.AGAROSE_BEADS);
+    assertTrue(form.volume.isEnabled());
+    assertFalse(form.separation.isEnabled());
+    assertFalse(form.thickness.isEnabled());
+    assertFalse(form.coloration.isEnabled());
+    assertFalse(form.otherColoration.isEnabled());
+    assertFalse(form.developmentTime.isEnabled());
+    assertFalse(form.destained.isEnabled());
+    assertFalse(form.weightMarkerQuantity.isEnabled());
+    assertFalse(form.proteinQuantity.isEnabled());
+  }
+
+  @Test
+  public void enabled_UsedDigestion() {
+    form.digestion.setValue(ProteolyticDigestion.DIGESTED);
+    assertTrue(form.usedDigestion.isEnabled());
+    assertFalse(form.otherDigestion.isEnabled());
+  }
+
+  @Test
+  public void enabled_OtherDigestion() {
+    form.digestion.setValue(ProteolyticDigestion.OTHER);
+    assertFalse(form.usedDigestion.isEnabled());
+    assertTrue(form.otherDigestion.isEnabled());
+  }
+
+  @Test
+  public void enabled_RefseqIdentification() {
+    form.identification.setValue(ProteinIdentification.REFSEQ);
+    assertFalse(form.identificationLink.isEnabled());
+  }
+
+  @Test
+  public void enabled_OtherIdentification() {
+    form.identification.setValue(ProteinIdentification.OTHER);
+    assertTrue(form.identificationLink.isEnabled());
+  }
+
+  @Test
+  public void enabled_LabelFreeQuantification() {
+    form.quantification.setValue(Quantification.LABEL_FREE);
+    assertFalse(form.quantificationComment.isEnabled());
+  }
+
+  @Test
+  public void enabled_SilacQuantification() {
+    form.quantification.setValue(Quantification.SILAC);
+    assertTrue(form.quantificationComment.isEnabled());
+  }
+
+  @Test
+  public void enabled_TmtQuantification() {
+    form.quantification.setValue(Quantification.TMT);
+    assertTrue(form.quantificationComment.isEnabled());
   }
 
   @Test
@@ -867,6 +998,7 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertEquals(database.getSamples().get(0).getType(), submission.getSamples().get(0).getType());
     assertEquals(database.getSamples().size(), submission.getSamples().size());
     for (int i = 0; i < database.getSamples().size(); i++) {
+      assertEquals(database.getSamples().get(i).getId(), submission.getSamples().get(i).getId());
       assertEquals(database.getSamples().get(i).getName(),
           submission.getSamples().get(i).getName());
     }
