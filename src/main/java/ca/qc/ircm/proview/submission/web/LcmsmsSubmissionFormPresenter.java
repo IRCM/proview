@@ -89,7 +89,6 @@ public class LcmsmsSubmissionFormPresenter {
   private Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
   private Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
-  @Autowired
   private SubmissionSampleService sampleService;
 
   @Autowired
