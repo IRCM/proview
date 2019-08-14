@@ -60,7 +60,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
-  private SmallMoleculeSubmissionForm view;
+  private SmallMoleculeSubmissionForm form;
   @Mock
   private SmallMoleculeSubmissionFormPresenter presenter;
   @Mock
@@ -76,119 +76,119 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new SmallMoleculeSubmissionForm(presenter);
-    view.init();
+    form = new SmallMoleculeSubmissionForm(presenter);
+    form.init();
   }
 
   @Test
   public void presenter_Init() {
-    verify(presenter).init(view);
+    verify(presenter).init(form);
   }
 
   @Test
   public void styles() {
-    assertTrue(view.getClassName().contains(CLASS_NAME));
-    assertTrue(view.sampleType.getClassName().contains(SAMPLE_TYPE));
-    assertTrue(view.sampleName.getClassName().contains(SAMPLE_NAME));
-    assertTrue(view.solvent.getClassName().contains(SOLUTION_SOLVENT));
-    assertTrue(view.formula.getClassName().contains(FORMULA));
-    assertTrue(view.monoisotopicMass.getClassName().contains(MONOISOTOPIC_MASS));
-    assertTrue(view.averageMass.getClassName().contains(AVERAGE_MASS));
-    assertTrue(view.toxicity.getClassName().contains(TOXICITY));
-    assertTrue(view.lightSensitive.getClassName().contains(LIGHT_SENSITIVE));
-    assertTrue(view.storageTemperature.getClassName().contains(STORAGE_TEMPERATURE));
-    assertTrue(view.highResolution.getClassName().contains(HIGH_RESOLUTION));
-    assertTrue(view.otherSolvent.getClassName().contains(OTHER_SOLVENT));
+    assertTrue(form.getClassName().contains(CLASS_NAME));
+    assertTrue(form.sampleType.getClassName().contains(SAMPLE_TYPE));
+    assertTrue(form.sampleName.getClassName().contains(SAMPLE_NAME));
+    assertTrue(form.solvent.getClassName().contains(SOLUTION_SOLVENT));
+    assertTrue(form.formula.getClassName().contains(FORMULA));
+    assertTrue(form.monoisotopicMass.getClassName().contains(MONOISOTOPIC_MASS));
+    assertTrue(form.averageMass.getClassName().contains(AVERAGE_MASS));
+    assertTrue(form.toxicity.getClassName().contains(TOXICITY));
+    assertTrue(form.lightSensitive.getClassName().contains(LIGHT_SENSITIVE));
+    assertTrue(form.storageTemperature.getClassName().contains(STORAGE_TEMPERATURE));
+    assertTrue(form.highResolution.getClassName().contains(HIGH_RESOLUTION));
+    assertTrue(form.otherSolvent.getClassName().contains(OTHER_SOLVENT));
   }
 
   @Test
   public void labels() {
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(SAMPLE_TYPE), view.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLE_NAME), view.sampleName.getLabel());
-    assertEquals(submissionResources.message(SOLUTION_SOLVENT), view.solvent.getLabel());
-    assertEquals(submissionResources.message(FORMULA), view.formula.getLabel());
-    assertEquals(submissionResources.message(MONOISOTOPIC_MASS), view.monoisotopicMass.getLabel());
-    assertEquals(submissionResources.message(AVERAGE_MASS), view.averageMass.getLabel());
-    assertEquals(submissionResources.message(TOXICITY), view.toxicity.getLabel());
-    assertEquals(submissionResources.message(LIGHT_SENSITIVE), view.lightSensitive.getLabel());
+    form.localeChange(mock(LocaleChangeEvent.class));
+    assertEquals(resources.message(SAMPLE_TYPE), form.sampleType.getLabel());
+    assertEquals(resources.message(SAMPLE_NAME), form.sampleName.getLabel());
+    assertEquals(submissionResources.message(SOLUTION_SOLVENT), form.solvent.getLabel());
+    assertEquals(submissionResources.message(FORMULA), form.formula.getLabel());
+    assertEquals(submissionResources.message(MONOISOTOPIC_MASS), form.monoisotopicMass.getLabel());
+    assertEquals(submissionResources.message(AVERAGE_MASS), form.averageMass.getLabel());
+    assertEquals(submissionResources.message(TOXICITY), form.toxicity.getLabel());
+    assertEquals(submissionResources.message(LIGHT_SENSITIVE), form.lightSensitive.getLabel());
     assertEquals(submissionResources.message(STORAGE_TEMPERATURE),
-        view.storageTemperature.getLabel());
-    assertEquals(submissionResources.message(HIGH_RESOLUTION), view.highResolution.getLabel());
-    assertEquals(submissionResources.message(SOLVENTS), view.solvents.getLabel());
-    assertEquals(submissionResources.message(OTHER_SOLVENT), view.otherSolvent.getLabel());
+        form.storageTemperature.getLabel());
+    assertEquals(submissionResources.message(HIGH_RESOLUTION), form.highResolution.getLabel());
+    assertEquals(submissionResources.message(SOLVENTS), form.solvents.getLabel());
+    assertEquals(submissionResources.message(OTHER_SOLVENT), form.otherSolvent.getLabel());
     verify(presenter).localeChange(locale);
   }
 
   @Test
   public void localeChange() {
-    view.localeChange(mock(LocaleChangeEvent.class));
+    form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final MessageResource resources =
         new MessageResource(SmallMoleculeSubmissionForm.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     when(ui.getLocale()).thenReturn(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(SAMPLE_TYPE), view.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLE_NAME), view.sampleName.getLabel());
-    assertEquals(submissionResources.message(SOLUTION_SOLVENT), view.solvent.getLabel());
-    assertEquals(submissionResources.message(FORMULA), view.formula.getLabel());
-    assertEquals(submissionResources.message(MONOISOTOPIC_MASS), view.monoisotopicMass.getLabel());
-    assertEquals(submissionResources.message(AVERAGE_MASS), view.averageMass.getLabel());
-    assertEquals(submissionResources.message(TOXICITY), view.toxicity.getLabel());
-    assertEquals(submissionResources.message(LIGHT_SENSITIVE), view.lightSensitive.getLabel());
+    form.localeChange(mock(LocaleChangeEvent.class));
+    assertEquals(resources.message(SAMPLE_TYPE), form.sampleType.getLabel());
+    assertEquals(resources.message(SAMPLE_NAME), form.sampleName.getLabel());
+    assertEquals(submissionResources.message(SOLUTION_SOLVENT), form.solvent.getLabel());
+    assertEquals(submissionResources.message(FORMULA), form.formula.getLabel());
+    assertEquals(submissionResources.message(MONOISOTOPIC_MASS), form.monoisotopicMass.getLabel());
+    assertEquals(submissionResources.message(AVERAGE_MASS), form.averageMass.getLabel());
+    assertEquals(submissionResources.message(TOXICITY), form.toxicity.getLabel());
+    assertEquals(submissionResources.message(LIGHT_SENSITIVE), form.lightSensitive.getLabel());
     assertEquals(submissionResources.message(STORAGE_TEMPERATURE),
-        view.storageTemperature.getLabel());
-    assertEquals(submissionResources.message(HIGH_RESOLUTION), view.highResolution.getLabel());
-    assertEquals(submissionResources.message(SOLVENTS), view.solvents.getLabel());
-    assertEquals(submissionResources.message(OTHER_SOLVENT), view.otherSolvent.getLabel());
+        form.storageTemperature.getLabel());
+    assertEquals(submissionResources.message(HIGH_RESOLUTION), form.highResolution.getLabel());
+    assertEquals(submissionResources.message(SOLVENTS), form.solvents.getLabel());
+    assertEquals(submissionResources.message(OTHER_SOLVENT), form.otherSolvent.getLabel());
     verify(presenter).localeChange(locale);
   }
 
   @Test
   public void sampleTypes() {
-    List<SampleType> items = items(view.sampleType);
+    List<SampleType> items = items(form.sampleType);
     assertEquals(2, items.size());
     for (SampleType value : new SampleType[] { DRY, SOLUTION }) {
       assertTrue(items.contains(value));
       assertEquals(value.getLabel(locale),
-          view.sampleType.getItemRenderer().createComponent(value).getElement().getText());
+          form.sampleType.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
 
   @Test
   public void storageTemperatures() {
-    List<StorageTemperature> items = items(view.storageTemperature);
+    List<StorageTemperature> items = items(form.storageTemperature);
     assertEquals(StorageTemperature.values().length, items.size());
     for (StorageTemperature value : StorageTemperature.values()) {
       assertTrue(items.contains(value));
       assertEquals(value.getLabel(locale),
-          view.storageTemperature.getItemRenderer().createComponent(value).getElement().getText());
+          form.storageTemperature.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
 
   @Test
   public void highResolution() {
-    List<Boolean> items = items(view.highResolution);
+    List<Boolean> items = items(form.highResolution);
     assertEquals(2, items.size());
     for (Boolean value : new Boolean[] { false, true }) {
       assertTrue(items.contains(value));
       assertEquals(submissionResources.message(property(HIGH_RESOLUTION, value)),
-          view.highResolution.getItemRenderer().createComponent(value).getElement().getText());
+          form.highResolution.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
 
   @Test
   public void getSubmission() {
     when(presenter.getSubmission()).thenReturn(submission);
-    Submission submission = view.getSubmission();
+    Submission submission = form.getSubmission();
     verify(presenter).getSubmission();
     assertEquals(this.submission, submission);
   }
 
   @Test
   public void setSubmission() {
-    view.setSubmission(submission);
+    form.setSubmission(submission);
     verify(presenter).setSubmission(submission);
   }
 }
