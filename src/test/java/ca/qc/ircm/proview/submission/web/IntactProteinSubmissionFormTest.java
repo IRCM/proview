@@ -66,7 +66,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
-  private IntactProteinSubmissionForm view;
+  private IntactProteinSubmissionForm form;
   @Mock
   private IntactProteinSubmissionFormPresenter presenter;
   @Mock
@@ -85,60 +85,60 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new IntactProteinSubmissionForm(presenter);
-    view.init();
+    form = new IntactProteinSubmissionForm(presenter);
+    form.init();
   }
 
   @Test
   public void presenter_Init() {
-    verify(presenter).init(view);
+    verify(presenter).init(form);
   }
 
   @Test
   public void styles() {
-    assertTrue(view.getClassName().contains(CLASS_NAME));
-    assertTrue(view.goal.getClassName().contains(GOAL));
-    assertTrue(view.taxonomy.getClassName().contains(TAXONOMY));
-    assertTrue(view.protein.getClassName().contains(PROTEIN));
-    assertTrue(view.molecularWeight.getClassName().contains(MOLECULAR_WEIGHT));
+    assertTrue(form.getClassName().contains(CLASS_NAME));
+    assertTrue(form.goal.getClassName().contains(GOAL));
+    assertTrue(form.taxonomy.getClassName().contains(TAXONOMY));
+    assertTrue(form.protein.getClassName().contains(PROTEIN));
+    assertTrue(form.molecularWeight.getClassName().contains(MOLECULAR_WEIGHT));
     assertTrue(
-        view.postTranslationModification.getClassName().contains(POST_TRANSLATION_MODIFICATION));
-    assertTrue(view.sampleType.getClassName().contains(SAMPLES_TYPE));
-    assertTrue(view.samplesCount.getClassName().contains(SAMPLES_COUNT));
-    assertTrue(view.samplesNames.getClassName().contains(SAMPLES_NAMES));
-    assertTrue(view.quantity.getClassName().contains(QUANTITY));
-    assertTrue(view.volume.getClassName().contains(VOLUME));
-    assertTrue(view.injection.getClassName().contains(INJECTION_TYPE));
-    assertTrue(view.source.getClassName().contains(SOURCE));
-    assertTrue(view.instrument.getClassName().contains(INSTRUMENT));
+        form.postTranslationModification.getClassName().contains(POST_TRANSLATION_MODIFICATION));
+    assertTrue(form.sampleType.getClassName().contains(SAMPLES_TYPE));
+    assertTrue(form.samplesCount.getClassName().contains(SAMPLES_COUNT));
+    assertTrue(form.samplesNames.getClassName().contains(SAMPLES_NAMES));
+    assertTrue(form.quantity.getClassName().contains(QUANTITY));
+    assertTrue(form.volume.getClassName().contains(VOLUME));
+    assertTrue(form.injection.getClassName().contains(INJECTION_TYPE));
+    assertTrue(form.source.getClassName().contains(SOURCE));
+    assertTrue(form.instrument.getClassName().contains(INSTRUMENT));
   }
 
   @Test
   public void labels() {
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(submissionResources.message(GOAL), view.goal.getLabel());
-    assertEquals(submissionResources.message(TAXONOMY), view.taxonomy.getLabel());
-    assertEquals(submissionResources.message(PROTEIN), view.protein.getLabel());
+    form.localeChange(mock(LocaleChangeEvent.class));
+    assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
+    assertEquals(submissionResources.message(TAXONOMY), form.taxonomy.getLabel());
+    assertEquals(submissionResources.message(PROTEIN), form.protein.getLabel());
     assertEquals(submissionSampleResources.message(MOLECULAR_WEIGHT),
-        view.molecularWeight.getLabel());
+        form.molecularWeight.getLabel());
     assertEquals(submissionResources.message(POST_TRANSLATION_MODIFICATION),
-        view.postTranslationModification.getLabel());
-    assertEquals(resources.message(SAMPLES_TYPE), view.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLES_COUNT), view.samplesCount.getLabel());
-    assertEquals(resources.message(SAMPLES_NAMES), view.samplesNames.getLabel());
-    assertEquals(sampleResources.message(QUANTITY), view.quantity.getLabel());
-    assertEquals(resources.message(QUANTITY_PLACEHOLDER), view.quantity.getPlaceholder());
-    assertEquals(sampleResources.message(VOLUME), view.volume.getLabel());
-    assertEquals(resources.message(VOLUME_PLACEHOLDER), view.volume.getPlaceholder());
-    assertEquals(submissionResources.message(INJECTION_TYPE), view.injection.getLabel());
-    assertEquals(submissionResources.message(SOURCE), view.source.getLabel());
-    assertEquals(submissionResources.message(INSTRUMENT), view.instrument.getLabel());
+        form.postTranslationModification.getLabel());
+    assertEquals(resources.message(SAMPLES_TYPE), form.sampleType.getLabel());
+    assertEquals(resources.message(SAMPLES_COUNT), form.samplesCount.getLabel());
+    assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
+    assertEquals(sampleResources.message(QUANTITY), form.quantity.getLabel());
+    assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
+    assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
+    assertEquals(resources.message(VOLUME_PLACEHOLDER), form.volume.getPlaceholder());
+    assertEquals(submissionResources.message(INJECTION_TYPE), form.injection.getLabel());
+    assertEquals(submissionResources.message(SOURCE), form.source.getLabel());
+    assertEquals(submissionResources.message(INSTRUMENT), form.instrument.getLabel());
     verify(presenter).localeChange(locale);
   }
 
   @Test
   public void localeChange() {
-    view.localeChange(mock(LocaleChangeEvent.class));
+    form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(IntactProteinSubmissionForm.class,
         locale);
@@ -147,81 +147,81 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
     final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
         locale);
     when(ui.getLocale()).thenReturn(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(submissionResources.message(GOAL), view.goal.getLabel());
-    assertEquals(submissionResources.message(TAXONOMY), view.taxonomy.getLabel());
-    assertEquals(submissionResources.message(PROTEIN), view.protein.getLabel());
+    form.localeChange(mock(LocaleChangeEvent.class));
+    assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
+    assertEquals(submissionResources.message(TAXONOMY), form.taxonomy.getLabel());
+    assertEquals(submissionResources.message(PROTEIN), form.protein.getLabel());
     assertEquals(submissionSampleResources.message(MOLECULAR_WEIGHT),
-        view.molecularWeight.getLabel());
+        form.molecularWeight.getLabel());
     assertEquals(submissionResources.message(POST_TRANSLATION_MODIFICATION),
-        view.postTranslationModification.getLabel());
-    assertEquals(resources.message(SAMPLES_TYPE), view.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLES_COUNT), view.samplesCount.getLabel());
-    assertEquals(resources.message(SAMPLES_NAMES), view.samplesNames.getLabel());
-    assertEquals(sampleResources.message(QUANTITY), view.quantity.getLabel());
-    assertEquals(resources.message(QUANTITY_PLACEHOLDER), view.quantity.getPlaceholder());
-    assertEquals(sampleResources.message(VOLUME), view.volume.getLabel());
-    assertEquals(resources.message(VOLUME_PLACEHOLDER), view.volume.getPlaceholder());
-    assertEquals(submissionResources.message(INJECTION_TYPE), view.injection.getLabel());
-    assertEquals(submissionResources.message(SOURCE), view.source.getLabel());
-    assertEquals(submissionResources.message(INSTRUMENT), view.instrument.getLabel());
+        form.postTranslationModification.getLabel());
+    assertEquals(resources.message(SAMPLES_TYPE), form.sampleType.getLabel());
+    assertEquals(resources.message(SAMPLES_COUNT), form.samplesCount.getLabel());
+    assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
+    assertEquals(sampleResources.message(QUANTITY), form.quantity.getLabel());
+    assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
+    assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
+    assertEquals(resources.message(VOLUME_PLACEHOLDER), form.volume.getPlaceholder());
+    assertEquals(submissionResources.message(INJECTION_TYPE), form.injection.getLabel());
+    assertEquals(submissionResources.message(SOURCE), form.source.getLabel());
+    assertEquals(submissionResources.message(INSTRUMENT), form.instrument.getLabel());
     verify(presenter).localeChange(locale);
   }
 
   @Test
   public void sampleTypes() {
-    List<SampleType> items = items(view.sampleType);
+    List<SampleType> items = items(form.sampleType);
     assertEquals(2, items.size());
     for (SampleType value : new SampleType[] { DRY, SOLUTION }) {
       assertTrue(items.contains(value));
       assertEquals(value.getLabel(locale),
-          view.sampleType.getItemRenderer().createComponent(value).getElement().getText());
+          form.sampleType.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
 
   @Test
   public void injectionTypes() {
-    List<InjectionType> items = items(view.injection);
+    List<InjectionType> items = items(form.injection);
     assertEquals(InjectionType.values().length, items.size());
     for (InjectionType value : InjectionType.values()) {
       assertTrue(items.contains(value));
       assertEquals(value.getLabel(locale),
-          view.injection.getItemRenderer().createComponent(value).getElement().getText());
+          form.injection.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
 
   @Test
   public void sources() {
-    List<MassDetectionInstrumentSource> items = items(view.source);
+    List<MassDetectionInstrumentSource> items = items(form.source);
     assertEquals(MassDetectionInstrumentSource.availables().size(), items.size());
     for (MassDetectionInstrumentSource value : MassDetectionInstrumentSource.availables()) {
       assertTrue(items.contains(value));
       assertEquals(value.getLabel(locale),
-          view.source.getItemRenderer().createComponent(value).getElement().getText());
+          form.source.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
 
   @Test
   public void instruments() {
-    List<MassDetectionInstrument> items = items(view.instrument);
+    List<MassDetectionInstrument> items = items(form.instrument);
     assertEquals(MassDetectionInstrument.userChoices().size(), items.size());
     for (MassDetectionInstrument value : MassDetectionInstrument.userChoices()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale), view.instrument.getItemLabelGenerator().apply(value));
+      assertEquals(value.getLabel(locale), form.instrument.getItemLabelGenerator().apply(value));
     }
   }
 
   @Test
   public void getSubmission() {
     when(presenter.getSubmission()).thenReturn(submission);
-    Submission submission = view.getSubmission();
+    Submission submission = form.getSubmission();
     verify(presenter).getSubmission();
     assertEquals(this.submission, submission);
   }
 
   @Test
   public void setSubmission() {
-    view.setSubmission(submission);
+    form.setSubmission(submission);
     verify(presenter).setSubmission(submission);
   }
 }
