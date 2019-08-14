@@ -1101,4 +1101,22 @@ public class LcmsmsSubmissionFormPresenterTest {
     assertEquals(quantification, form.quantification.getValue());
     assertEquals(quantificationComment, form.quantificationComment.getValue());
   }
+
+  @Test
+  public void setSubmission_NullInstrument() {
+    Submission submission = submission();
+    submission.setInstrument(null);
+    presenter.setSubmission(submission);
+
+    assertEquals(MassDetectionInstrument.NULL, form.instrument.getValue());
+  }
+
+  @Test
+  public void setSubmission_NullQuantification() {
+    Submission submission = submission();
+    submission.setQuantification(null);
+    presenter.setSubmission(submission);
+
+    assertEquals(Quantification.NULL, form.quantification.getValue());
+  }
 }

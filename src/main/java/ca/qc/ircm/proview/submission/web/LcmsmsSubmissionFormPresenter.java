@@ -37,6 +37,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
@@ -176,14 +177,16 @@ public class LcmsmsSubmissionFormPresenter {
         .bind(OTHER_DIGESTION);
     binder.forField(form.proteinContent).asRequired(webResources.message(REQUIRED))
         .bind(PROTEIN_CONTENT);
-    binder.forField(form.instrument).bind(INSTRUMENT);
+    binder.forField(form.instrument).withNullRepresentation(MassDetectionInstrument.NULL)
+        .bind(INSTRUMENT);
     binder.forField(form.identification).asRequired(webResources.message(REQUIRED))
         .bind(IDENTIFICATION);
     form.identificationLink.setRequiredIndicatorVisible(true);
     binder.forField(form.identificationLink)
         .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
         .bind(IDENTIFICATION_LINK);
-    binder.forField(form.quantification).bind(QUANTIFICATION);
+    binder.forField(form.quantification).withNullRepresentation(Quantification.NULL)
+        .bind(QUANTIFICATION);
     form.quantificationComment.setRequiredIndicatorVisible(true);
     binder.forField(form.quantificationComment)
         .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
