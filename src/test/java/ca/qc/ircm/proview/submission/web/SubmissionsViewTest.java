@@ -499,12 +499,10 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
           ? dateFormatter.format(submission.getSubmissionDate())
           : "", valueProvider.apply(submission));
     }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(),
-        eq(INSTRUMENT));
+    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(INSTRUMENT));
     valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
-      assertEquals(submission.getInstrument() != null
-          ? submission.getInstrument().getLabel(locale)
+      assertEquals(submission.getInstrument() != null ? submission.getInstrument().getLabel(locale)
           : MassDetectionInstrument.getNullLabel(locale), valueProvider.apply(submission));
     }
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SERVICE));

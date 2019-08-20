@@ -7,15 +7,20 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
+import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
+import ca.qc.ircm.proview.web.component.NotificationComponent;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -41,10 +46,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Route(value = SubmissionView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ UserRole.USER })
 public class SubmissionView extends VerticalLayout
-    implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver {
+    implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver, NotificationComponent {
   public static final String VIEW_NAME = "submission";
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
+  public static final String SAVED = "saved";
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionView.class);
   protected H2 header = new H2();
@@ -53,6 +59,7 @@ public class SubmissionView extends VerticalLayout
   protected Tab smallMolecule = new Tab();
   protected Tab intactProtein = new Tab();
   protected TextArea comment = new TextArea();
+  protected Button save = new Button();
   protected LcmsmsSubmissionForm lcmsmsSubmissionForm;
   protected SmallMoleculeSubmissionForm smallMoleculeSubmissionForm;
   protected IntactProteinSubmissionForm intactProteinSubmissionForm;
@@ -75,7 +82,7 @@ public class SubmissionView extends VerticalLayout
     logger.debug("Submission view");
     setId(ID);
     add(header, service, lcmsmsSubmissionForm, smallMoleculeSubmissionForm,
-        intactProteinSubmissionForm, comment);
+        intactProteinSubmissionForm, comment, save);
     expand(lcmsmsSubmissionForm, smallMoleculeSubmissionForm, intactProteinSubmissionForm, comment);
     header.setId(HEADER);
     service.setId(SERVICE);
@@ -96,6 +103,10 @@ public class SubmissionView extends VerticalLayout
     comment.setId(COMMENT);
     comment.setMinHeight("20em");
     comment.setMinWidth("40em");
+    save.setId(SAVE);
+    save.addThemeName(PRIMARY);
+    save.setIcon(VaadinIcon.CHECK.create());
+    save.addClickListener(e -> presenter.save(getLocale()));
     presenter.init(this);
   }
 
@@ -103,11 +114,13 @@ public class SubmissionView extends VerticalLayout
   public void localeChange(LocaleChangeEvent event) {
     final MessageResource resources = new MessageResource(SubmissionView.class, getLocale());
     final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
+    final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
     header.setText(resources.message(HEADER));
     lcmsms.setLabel(LC_MS_MS.getLabel(getLocale()));
     smallMolecule.setLabel(SMALL_MOLECULE.getLabel(getLocale()));
     intactProtein.setLabel(INTACT_PROTEIN.getLabel(getLocale()));
     comment.setLabel(submissionResources.message(COMMENT));
+    save.setText(webResources.message(SAVE));
     presenter.localeChange(getLocale());
   }
 

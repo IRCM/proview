@@ -24,11 +24,15 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.ID;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
+import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
+import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,6 +42,7 @@ import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
 import java.util.Locale;
@@ -53,12 +58,12 @@ public class SubmissionViewTest extends AbstractViewTestCase {
   private SubmissionView view;
   @Mock
   private SubmissionViewPresenter presenter;
-  private LcmsmsSubmissionForm lcmsmsSubmissionForm = new LcmsmsSubmissionForm(
-      mock(LcmsmsSubmissionFormPresenter.class));
-  private SmallMoleculeSubmissionForm smallMoleculeSubmissionForm = new SmallMoleculeSubmissionForm(
-      mock(SmallMoleculeSubmissionFormPresenter.class));
-  private IntactProteinSubmissionForm intactProteinSubmissionForm = new IntactProteinSubmissionForm(
-      mock(IntactProteinSubmissionFormPresenter.class));
+  private LcmsmsSubmissionForm lcmsmsSubmissionForm =
+      new LcmsmsSubmissionForm(mock(LcmsmsSubmissionFormPresenter.class));
+  private SmallMoleculeSubmissionForm smallMoleculeSubmissionForm =
+      new SmallMoleculeSubmissionForm(mock(SmallMoleculeSubmissionFormPresenter.class));
+  private IntactProteinSubmissionForm intactProteinSubmissionForm =
+      new IntactProteinSubmissionForm(mock(IntactProteinSubmissionFormPresenter.class));
   @Mock
   private BeforeEvent beforeEvent;
   private Locale locale = ENGLISH;
@@ -91,6 +96,9 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     assertEquals(SMALL_MOLECULE.name(), view.smallMolecule.getId().orElse(""));
     assertEquals(INTACT_PROTEIN.name(), view.intactProtein.getId().orElse(""));
     assertEquals(COMMENT, view.comment.getId().orElse(""));
+    assertEquals(SAVE, view.save.getId().orElse(""));
+    assertTrue(view.save.getThemeName().contains(PRIMARY));
+    validateIcon(VaadinIcon.CHECK.create(), view.save.getIcon());
   }
 
   @Test
@@ -101,6 +109,7 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     assertEquals(SMALL_MOLECULE.getLabel(locale), view.smallMolecule.getLabel());
     assertEquals(INTACT_PROTEIN.getLabel(locale), view.intactProtein.getLabel());
     assertEquals(submissionResources.message(COMMENT), view.comment.getLabel());
+    assertEquals(webResources.message(SAVE), view.save.getText());
     verify(presenter).localeChange(locale);
   }
 
@@ -110,6 +119,7 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     Locale locale = FRENCH;
     final MessageResource resources = new MessageResource(SubmissionView.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
+    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
@@ -117,6 +127,7 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     assertEquals(SMALL_MOLECULE.getLabel(locale), view.smallMolecule.getLabel());
     assertEquals(INTACT_PROTEIN.getLabel(locale), view.intactProtein.getLabel());
     assertEquals(submissionResources.message(COMMENT), view.comment.getLabel());
+    assertEquals(webResources.message(SAVE), view.save.getText());
     verify(presenter).localeChange(locale);
   }
 
@@ -126,6 +137,12 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     assertEquals(view.lcmsms, view.service.getComponentAt(0));
     assertEquals(view.smallMolecule, view.service.getComponentAt(1));
     assertEquals(view.intactProtein, view.service.getComponentAt(2));
+  }
+
+  @Test
+  public void save() {
+    view.save.click();
+    verify(presenter).save(locale);
   }
 
   @Test

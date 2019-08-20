@@ -17,12 +17,16 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -73,8 +77,11 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
   private Locale locale = ENGLISH;
+  private MessageResource resources = new MessageResource(SubmissionView.class, locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private Submission submission;
+  private String experiment = "my test experiment";
+  private String comment = "comment first line\nSecond line";
 
   /**
    * Before test.
@@ -86,6 +93,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     view.lcmsms = new Tab();
     view.smallMolecule = new Tab();
     view.intactProtein = new Tab();
+    view.service.add(view.lcmsms, view.smallMolecule, view.intactProtein);
     view.comment = new TextArea();
     view.lcmsmsSubmissionForm = mock(LcmsmsSubmissionForm.class);
     view.smallMoleculeSubmissionForm = mock(SmallMoleculeSubmissionForm.class);
@@ -96,18 +104,223 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
   }
 
+  private void setFields() {
+    view.comment.setValue(comment);
+  }
+
   @Test
-  public void save() {
+  public void save_LcmsmsValidationFail() {
+    view.service.setSelectedTab(view.lcmsms);
+    when(view.smallMoleculeSubmissionForm.isValid()).thenReturn(true);
+    when(view.intactProteinSubmissionForm.isValid()).thenReturn(true);
+
+    presenter.save(locale);
+
+    verify(view.lcmsmsSubmissionForm).isValid();
+    verify(service, never()).insert(any());
+    verify(service, never()).update(any(), any());
+  }
+
+  @Test
+  public void save_LcmsmsAndOtherValidationsFail() {
+    view.service.setSelectedTab(view.lcmsms);
+    when(view.lcmsmsSubmissionForm.isValid()).thenReturn(true);
+
+    presenter.save(locale);
+
+    verify(view.lcmsmsSubmissionForm).isValid();
+    verify(service).insert(any());
+    verify(service, never()).update(any(), any());
+  }
+
+  @Test
+  public void save_SmallMoleculeValidationFail() {
+    view.service.setSelectedTab(view.smallMolecule);
+    when(view.lcmsmsSubmissionForm.isValid()).thenReturn(true);
+    when(view.intactProteinSubmissionForm.isValid()).thenReturn(true);
+
+    presenter.save(locale);
+
+    verify(view.smallMoleculeSubmissionForm).isValid();
+    verify(service, never()).insert(any());
+    verify(service, never()).update(any(), any());
+  }
+
+  @Test
+  public void save_SmallMoleculeAndOtherValidationsFail() {
+    view.service.setSelectedTab(view.smallMolecule);
+    when(view.smallMoleculeSubmissionForm.isValid()).thenReturn(true);
+
+    presenter.save(locale);
+
+    verify(view.smallMoleculeSubmissionForm).isValid();
+    verify(service).insert(any());
+    verify(service, never()).update(any(), any());
+  }
+
+  @Test
+  public void save_IntactProteinValidationFail() {
+    view.service.setSelectedTab(view.intactProtein);
+    when(view.lcmsmsSubmissionForm.isValid()).thenReturn(true);
+    when(view.smallMoleculeSubmissionForm.isValid()).thenReturn(true);
+
+    presenter.save(locale);
+
+    verify(view.intactProteinSubmissionForm).isValid();
+    verify(service, never()).insert(any());
+    verify(service, never()).update(any(), any());
+  }
+
+  @Test
+  public void save_IntactProteinAndOtherValidationsFail() {
+    view.service.setSelectedTab(view.intactProtein);
+    when(view.intactProteinSubmissionForm.isValid()).thenReturn(true);
+
+    presenter.save(locale);
+
+    verify(view.intactProteinSubmissionForm).isValid();
+    verify(service).insert(any());
+    verify(service, never()).update(any(), any());
+  }
+
+  @Test
+  public void save_NewLcmsms() {
+    view.service.setSelectedTab(view.lcmsms);
+    setFields();
+    when(view.lcmsmsSubmissionForm.isValid()).thenReturn(true);
+    doAnswer(i -> {
+      ((Submission) i.getArgument(0)).setExperiment(experiment);
+      return null;
+    }).when(service).insert(any());
+
+    presenter.save(locale);
+
+    verify(view.lcmsmsSubmissionForm).isValid();
+    verify(service).insert(submissionCaptor.capture());
+    verify(service, never()).update(any(), any());
+    Submission submission = submissionCaptor.getValue();
+    assertNull(submission.getId());
+    assertEquals(Service.LC_MS_MS, submission.getService());
+    assertEquals(comment, submission.getComment());
+    verify(ui).navigate(SubmissionsView.class);
+    verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
+  }
+
+  @Test
+  public void save_UpdateLcmsms() {
+    presenter.setParameter(34L);
+    view.service.setSelectedTab(view.lcmsms);
+    setFields();
+    when(view.lcmsmsSubmissionForm.isValid()).thenReturn(true);
+
+    presenter.save(locale);
+
+    verify(view.lcmsmsSubmissionForm).isValid();
+    verify(service, never()).insert(any());
+    verify(service).update(submissionCaptor.capture(), eq(null));
+    Submission submission = submissionCaptor.getValue();
+    assertEquals(Service.LC_MS_MS, submission.getService());
+    assertEquals(comment, submission.getComment());
+    verify(ui).navigate(SubmissionsView.class);
+    verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
+  }
+
+  @Test
+  public void save_NewSmallMolecule() {
+    view.service.setSelectedTab(view.smallMolecule);
+    setFields();
+    when(view.smallMoleculeSubmissionForm.isValid()).thenReturn(true);
+    doAnswer(i -> {
+      ((Submission) i.getArgument(0)).setExperiment(experiment);
+      return null;
+    }).when(service).insert(any());
+
+    presenter.save(locale);
+
+    verify(view.smallMoleculeSubmissionForm).isValid();
+    verify(service).insert(submissionCaptor.capture());
+    verify(service, never()).update(any(), any());
+    Submission submission = submissionCaptor.getValue();
+    assertNull(submission.getId());
+    assertEquals(Service.SMALL_MOLECULE, submission.getService());
+    assertEquals(comment, submission.getComment());
+    verify(ui).navigate(SubmissionsView.class);
+    verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
+  }
+
+  @Test
+  public void save_UpdateSmallMolecule() {
+    presenter.setParameter(34L);
+    view.service.setSelectedTab(view.smallMolecule);
+    setFields();
+    when(view.smallMoleculeSubmissionForm.isValid()).thenReturn(true);
+
+    presenter.save(locale);
+
+    verify(view.smallMoleculeSubmissionForm).isValid();
+    verify(service, never()).insert(any());
+    verify(service).update(submissionCaptor.capture(), eq(null));
+    Submission submission = submissionCaptor.getValue();
+    assertEquals(Service.SMALL_MOLECULE, submission.getService());
+    assertEquals(comment, submission.getComment());
+    verify(ui).navigate(SubmissionsView.class);
+    verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
+  }
+
+  @Test
+  public void save_NewIntactProtein() {
+    view.service.setSelectedTab(view.intactProtein);
+    setFields();
+    when(view.intactProteinSubmissionForm.isValid()).thenReturn(true);
+    doAnswer(i -> {
+      ((Submission) i.getArgument(0)).setExperiment(experiment);
+      return null;
+    }).when(service).insert(any());
+
+    presenter.save(locale);
+
+    verify(view.intactProteinSubmissionForm).isValid();
+    verify(service).insert(submissionCaptor.capture());
+    verify(service, never()).update(any(), any());
+    Submission submission = submissionCaptor.getValue();
+    assertNull(submission.getId());
+    assertEquals(Service.INTACT_PROTEIN, submission.getService());
+    assertEquals(comment, submission.getComment());
+    verify(ui).navigate(SubmissionsView.class);
+    verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
+  }
+
+  @Test
+  public void save_UpdateIntactProtein() {
+    presenter.setParameter(34L);
+    view.service.setSelectedTab(view.intactProtein);
+    setFields();
+    when(view.intactProteinSubmissionForm.isValid()).thenReturn(true);
+
+    presenter.save(locale);
+
+    verify(view.intactProteinSubmissionForm).isValid();
+    verify(service, never()).insert(any());
+    verify(service).update(submissionCaptor.capture(), eq(null));
+    Submission submission = submissionCaptor.getValue();
+    assertEquals(Service.INTACT_PROTEIN, submission.getService());
+    assertEquals(comment, submission.getComment());
+    verify(ui).navigate(SubmissionsView.class);
+    verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
   @Test
   public void setParameter() {
+    String comment = "my test comment";
+    submission.setComment(comment);
+
     presenter.setParameter(34L);
 
     verify(service).get(34L);
     verify(view.lcmsmsSubmissionForm).setSubmission(submission);
     verify(view.smallMoleculeSubmissionForm).setSubmission(submission);
     verify(view.intactProteinSubmissionForm).setSubmission(submission);
+    assertEquals(comment, view.comment.getValue());
   }
 
   @Test
@@ -134,5 +347,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     assertEquals(ProteinIdentification.REFSEQ, submission.getIdentification());
     assertEquals(1, submission.getSamples().size());
     assertEquals(SampleType.SOLUTION, submission.getSamples().get(0).getType());
+    assertNull(submission.getComment());
+    assertEquals("", view.comment.getValue());
   }
 }
