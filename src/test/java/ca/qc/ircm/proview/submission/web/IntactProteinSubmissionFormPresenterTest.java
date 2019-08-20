@@ -73,8 +73,8 @@ public class IntactProteinSubmissionFormPresenterTest {
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
-  private MessageResource resources =
-      new MessageResource(IntactProteinSubmissionForm.class, locale);
+  private MessageResource resources = new MessageResource(IntactProteinSubmissionForm.class,
+      locale);
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private Submission newSubmission;
   private String experiment = "my experiment";
@@ -218,8 +218,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.experiment);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.experiment);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -234,8 +234,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.taxonomy);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.taxonomy);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -261,8 +261,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.molecularWeight);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.molecularWeight);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(INVALID_NUMBER)), error.getMessage());
@@ -277,8 +277,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.sampleType);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.sampleType);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -293,8 +293,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesCount);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -309,11 +309,101 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesCount);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(INVALID_INTEGER)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_SamplesNamesCommaSeparator() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue(sampleName1 + "," + sampleName2);
+
+    assertTrue(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertTrue(status.isOk());
+    Submission submission = presenter.getSubmission();
+    assertEquals(2, submission.getSamples().size());
+    assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    assertEquals(sampleName2, submission.getSamples().get(1).getName());
+  }
+
+  @Test
+  public void isValid_SamplesNamesCommaSpaceSeparator() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue(sampleName1 + ", " + sampleName2);
+
+    assertTrue(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertTrue(status.isOk());
+    Submission submission = presenter.getSubmission();
+    assertEquals(2, submission.getSamples().size());
+    assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    assertEquals(sampleName2, submission.getSamples().get(1).getName());
+  }
+
+  @Test
+  public void isValid_SamplesNamesSemicolonSeparator() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue(sampleName1 + ";" + sampleName2);
+
+    assertTrue(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertTrue(status.isOk());
+    Submission submission = presenter.getSubmission();
+    assertEquals(2, submission.getSamples().size());
+    assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    assertEquals(sampleName2, submission.getSamples().get(1).getName());
+  }
+
+  @Test
+  public void isValid_SamplesNamesSemicolonSpaceSeparator() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue(sampleName1 + "; " + sampleName2);
+
+    assertTrue(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertTrue(status.isOk());
+    Submission submission = presenter.getSubmission();
+    assertEquals(2, submission.getSamples().size());
+    assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    assertEquals(sampleName2, submission.getSamples().get(1).getName());
+  }
+
+  @Test
+  public void isValid_SamplesNamesTabSeparator() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue(sampleName1 + "\t" + sampleName2);
+
+    assertTrue(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertTrue(status.isOk());
+    Submission submission = presenter.getSubmission();
+    assertEquals(2, submission.getSamples().size());
+    assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    assertEquals(sampleName2, submission.getSamples().get(1).getName());
+  }
+
+  @Test
+  public void isValid_SamplesNamesNewlineSeparator() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue(sampleName1 + "\n" + sampleName2);
+
+    assertTrue(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertTrue(status.isOk());
+    Submission submission = presenter.getSubmission();
+    assertEquals(2, submission.getSamples().size());
+    assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    assertEquals(sampleName2, submission.getSamples().get(1).getName());
   }
 
   @Test
@@ -325,11 +415,60 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_EmptyFirstSampleName() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue(", abc");
+
+    assertFalse(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+        error.getMessage());
+  }
+
+  @Test
+  public void isValid_EmptySecondSampleName() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue("abc, ");
+
+    assertFalse(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+        error.getMessage());
+  }
+
+  @Test
+  public void isValid_LastEmptySamplesNames() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue(sampleName1 + "," + sampleName2 + ",");
+
+    assertTrue(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertTrue(status.isOk());
+    Submission submission = presenter.getSubmission();
+    assertEquals(2, submission.getSamples().size());
+    assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    assertEquals(sampleName2, submission.getSamples().get(1).getName());
   }
 
   @Test
@@ -343,8 +482,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(resources.message(SAMPLES_NAMES_DUPLICATES, sampleName2)),
@@ -352,7 +491,7 @@ public class IntactProteinSubmissionFormPresenterTest {
   }
 
   @Test
-  public void isValid_WrongNumberOfSamplesNames() {
+  public void isValid_WrongNumberOfSamplesNames_Below() {
     presenter.setSubmission(newSubmission);
     setFields();
     form.samplesNames.setValue(sampleName1);
@@ -360,11 +499,28 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+        error.getMessage());
+  }
+
+  @Test
+  public void isValid_WrongNumberOfSamplesNames_Above() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.samplesNames.setValue(sampleName1 + "," + sampleName2 + ",other_sample_name");
+
+    assertFalse(presenter.isValid());
+    BinderValidationStatus<Samples> status = presenter.validateSamples();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 3, samplesCount)),
         error.getMessage());
   }
 
@@ -377,8 +533,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Samples> status = presenter.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(resources.message(SAMPLES_NAMES_EXISTS, sampleName2)),
@@ -408,8 +564,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.quantity);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.quantity);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -424,8 +580,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.volume);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.volume);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -452,8 +608,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.injection);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.injection);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -468,8 +624,8 @@ public class IntactProteinSubmissionFormPresenterTest {
     assertFalse(presenter.isValid());
     BinderValidationStatus<Submission> status = presenter.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.source);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.source);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
