@@ -253,6 +253,10 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     }
   }
 
+  public boolean isValid() {
+    return presenter.isValid();
+  }
+
   public Submission getSubmission() {
     return presenter.getSubmission();
   }

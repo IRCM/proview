@@ -39,6 +39,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -72,12 +73,12 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
   @Mock
   private Submission submission;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(IntactProteinSubmissionForm.class,
-      locale);
+  private MessageResource resources =
+      new MessageResource(IntactProteinSubmissionForm.class, locale);
   private MessageResource submissionResources = new MessageResource(Submission.class, locale);
   private MessageResource sampleResources = new MessageResource(Sample.class, locale);
-  private MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-      locale);
+  private MessageResource submissionSampleResources =
+      new MessageResource(SubmissionSample.class, locale);
 
   /**
    * Before test.
@@ -140,12 +141,12 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
   public void localeChange() {
     form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(IntactProteinSubmissionForm.class,
-        locale);
+    final MessageResource resources =
+        new MessageResource(IntactProteinSubmissionForm.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     final MessageResource sampleResources = new MessageResource(Sample.class, locale);
-    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-        locale);
+    final MessageResource submissionSampleResources =
+        new MessageResource(SubmissionSample.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
@@ -209,6 +210,20 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
       assertTrue(items.contains(value));
       assertEquals(value.getLabel(locale), form.instrument.getItemLabelGenerator().apply(value));
     }
+  }
+
+  @Test
+  public void isValid_True() {
+    when(presenter.isValid()).thenReturn(true);
+    assertTrue(form.isValid());
+    verify(presenter).isValid();
+  }
+
+  @Test
+  public void isValid_False() {
+    when(presenter.isValid()).thenReturn(false);
+    assertFalse(form.isValid());
+    verify(presenter).isValid();
   }
 
   @Test

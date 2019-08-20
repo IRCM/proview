@@ -60,6 +60,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -368,6 +369,20 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     form.quantification.setValue(Quantification.SILAC);
     assertEquals(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER),
         form.quantificationComment.getPlaceholder());
+  }
+
+  @Test
+  public void isValid_True() {
+    when(presenter.isValid()).thenReturn(true);
+    assertTrue(form.isValid());
+    verify(presenter).isValid();
+  }
+
+  @Test
+  public void isValid_False() {
+    when(presenter.isValid()).thenReturn(false);
+    assertFalse(form.isValid());
+    verify(presenter).isValid();
   }
 
   @Test

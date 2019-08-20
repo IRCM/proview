@@ -117,6 +117,10 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     presenter.localeChange(getLocale());
   }
 
+  public boolean isValid() {
+    return presenter.isValid();
+  }
+
   public Submission getSubmission() {
     return presenter.getSubmission();
   }
