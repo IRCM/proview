@@ -87,8 +87,8 @@ public class LcmsmsSubmissionFormPresenter {
   private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionFormPresenter.class);
   private LcmsmsSubmissionForm form;
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private Binder<SubmissionSample> firstSampleBinder =
-      new BeanValidationBinder<>(SubmissionSample.class);
+  private Binder<SubmissionSample> firstSampleBinder = new BeanValidationBinder<>(
+      SubmissionSample.class);
   private Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
   private SubmissionSampleService sampleService;
 
@@ -245,8 +245,8 @@ public class LcmsmsSubmissionFormPresenter {
   private Validator<List<String>> samplesNamesDuplicates(Locale locale) {
     return (values, context) -> {
       Set<String> duplicates = new HashSet<>();
-      Optional<String> duplicate =
-          values.stream().filter(name -> !duplicates.add(name)).findFirst();
+      Optional<String> duplicate = values.stream().filter(name -> !duplicates.add(name))
+          .findFirst();
       if (duplicate.isPresent()) {
         final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, locale);
         return ValidationResult.error(resources.message(SAMPLES_NAMES_DUPLICATES, duplicate.get()));
@@ -257,8 +257,8 @@ public class LcmsmsSubmissionFormPresenter {
 
   private Validator<List<String>> samplesNamesExists(Locale locale) {
     return (values, context) -> {
-      Set<String> oldNames =
-          binder.getBean().getSamples().stream().map(Sample::getName).collect(Collectors.toSet());
+      Set<String> oldNames = binder.getBean().getSamples().stream().map(Sample::getName)
+          .collect(Collectors.toSet());
       Optional<String> exists = values.stream()
           .filter(name -> sampleService.exists(name) && !oldNames.contains(name)).findFirst();
       if (exists.isPresent()) {
@@ -374,12 +374,13 @@ public class LcmsmsSubmissionFormPresenter {
 
     @Override
     public Result<List<String>> convertToModel(String value, ValueContext context) {
-      return Result.ok(Arrays.asList(value.split("\\s*[,;\\t\\n]\\s*")));
+      return Result.ok(Arrays.asList(value.split("\\s*[,;\\t\\n]\\s*")).stream()
+          .filter(val -> !val.isEmpty()).collect(Collectors.toList()));
     }
 
     @Override
     public String convertToPresentation(List<String> value, ValueContext context) {
-      return value.stream().collect(Collectors.joining(", "));
+      return value.stream().map(val -> Objects.toString(val, "")).collect(Collectors.joining(", "));
     }
   }
 }
