@@ -49,6 +49,7 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.user.web.UserDialogPresenter.LaboratoryContainer;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -68,6 +69,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,6 +105,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
   private LaboratoryRepository laboratoryRepository;
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
+  @Inject
+  private EntityManager entityManager;
   private Locale locale = ENGLISH;
   private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private String email = "test@ircm.qc.ca";
@@ -152,7 +156,10 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     currentUser = userRepository.findById(3L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(currentUser);
     laboratories = laboratoryRepository.findAll();
+    laboratories.forEach(lab -> entityManager.detach(lab));
     when(laboratoryService.all()).thenReturn(laboratories);
+    when(laboratoryService.get(any()))
+        .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)).orElse(null));
     laboratory = laboratoryRepository.findById(2L).orElse(null);
     when(dialog.passwords.validate()).thenReturn(passwordsValidationStatus);
     when(passwordsValidationStatus.isOk()).thenReturn(true);
@@ -220,6 +227,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     presenter.init(dialog);
     presenter.localeChange(locale);
     assertFalse(dialog.laboratory.isAllowCustomValue());
+    assertTrue(dialog.laboratory.isRequiredIndicatorVisible());
     List<Laboratory> values = items(dialog.laboratory);
     assertEquals(1, values.size());
     assertEquals(currentUser.getLaboratory(), values.get(0));
@@ -233,6 +241,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     presenter.init(dialog);
     presenter.localeChange(locale);
     assertFalse(dialog.laboratory.isAllowCustomValue());
+    assertTrue(dialog.laboratory.isRequiredIndicatorVisible());
     List<Laboratory> values = items(dialog.laboratory);
     assertEquals(laboratories.size(), values.size());
     for (Laboratory laboratory : laboratories) {
@@ -344,6 +353,26 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.laboratory.isVisible());
     assertTrue(dialog.laboratory.isEnabled());
     assertFalse(dialog.laboratoryName.isReadOnly());
+  }
+
+  @Test
+  public void checkThenUncheckCreateNewLaboratory() {
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    presenter.init(dialog);
+    presenter.localeChange(locale);
+    User user = userRepository.findById(10L).get();
+    Laboratory laboratory = laboratoryRepository.findById(4L).get();
+    presenter.setUser(user);
+    dialog.laboratory.setValue(laboratory);
+    dialog.manager.setValue(true);
+    dialog.createNewLaboratory.setValue(true);
+    dialog.laboratoryName.setValue(laboratoryName);
+    dialog.createNewLaboratory.setValue(false);
+    assertEquals(laboratory, dialog.laboratory.getValue());
+    assertEquals(laboratory.getId(), dialog.laboratory.getValue().getId());
+    assertEquals(laboratory.getName(), dialog.laboratoryName.getValue());
   }
 
   @Test
@@ -460,7 +489,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.manager.isReadOnly());
     verify(dialog.passwords, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
+    assertEquals(user.getLaboratory().getId(), dialog.laboratory.getValue().getId());
     assertEquals(user.getLaboratory().getName(), dialog.laboratoryName.getValue());
     assertTrue(dialog.laboratoryName.isReadOnly());
     Address address = user.getAddress();
@@ -504,7 +533,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(booleanCaptor.getValue());
     verify(dialog.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
+    assertEquals(user.getLaboratory().getId(), dialog.laboratory.getValue().getId());
     assertEquals(user.getLaboratory().getName(), dialog.laboratoryName.getValue());
     assertTrue(dialog.laboratoryName.isReadOnly());
     Address address = user.getAddress();
@@ -550,7 +579,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(booleanCaptor.getValue());
     verify(dialog.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
+    assertEquals(user.getLaboratory().getId(), dialog.laboratory.getValue().getId());
     assertEquals(user.getLaboratory().getName(), dialog.laboratoryName.getValue());
     assertFalse(dialog.laboratoryName.isReadOnly());
     Address address = user.getAddress();
@@ -591,7 +620,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(dialog.manager.isReadOnly());
     verify(dialog.passwords, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
+    assertEquals(user.getLaboratory().getId(), dialog.laboratory.getValue().getId());
     assertEquals(user.getLaboratory().getName(), dialog.laboratoryName.getValue());
     assertTrue(dialog.laboratoryName.isReadOnly());
     Address address = user.getAddress();
@@ -635,7 +664,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(booleanCaptor.getValue());
     verify(dialog.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
+    assertEquals(user.getLaboratory().getId(), dialog.laboratory.getValue().getId());
     assertEquals(user.getLaboratory().getName(), dialog.laboratoryName.getValue());
     assertTrue(dialog.laboratoryName.isReadOnly());
     Address address = user.getAddress();
@@ -681,7 +710,7 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
     assertTrue(booleanCaptor.getValue());
     verify(dialog.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
-    assertEquals(user.getLaboratory(), dialog.laboratory.getValue());
+    assertEquals(user.getLaboratory().getId(), dialog.laboratory.getValue().getId());
     assertEquals(user.getLaboratory().getName(), dialog.laboratoryName.getValue());
     assertFalse(dialog.laboratoryName.isReadOnly());
     Address address = user.getAddress();
@@ -743,8 +772,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.email);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -764,8 +793,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.email);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(INVALID_EMAIL)), error.getMessage());
@@ -785,8 +814,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.name);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.name);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -820,10 +849,10 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     presenter.save();
 
-    BinderValidationStatus<User> status = presenter.validateUser();
+    BinderValidationStatus<LaboratoryContainer> status = presenter.validateLaboratoryContainer();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.laboratory);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.laboratory);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -844,10 +873,10 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     presenter.save();
 
-    BinderValidationStatus<User> status = presenter.validateUser();
+    BinderValidationStatus<LaboratoryContainer> status = presenter.validateLaboratoryContainer();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.laboratory);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.laboratory);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -871,8 +900,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Laboratory> status = presenter.validateLaboratory();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.laboratoryName);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.laboratoryName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -895,8 +924,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Laboratory> status = presenter.validateLaboratory();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.laboratoryName);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.laboratoryName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -918,8 +947,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.addressLine);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.addressLine);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -941,8 +970,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.town);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.town);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -964,8 +993,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.state);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.state);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -987,8 +1016,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.country);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.country);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -1010,8 +1039,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<Address> status = presenter.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.postalCode);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.postalCode);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -1033,8 +1062,8 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     BinderValidationStatus<PhoneNumber> status = presenter.validatePhoneNumber();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.number);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.number);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -1380,5 +1409,21 @@ public class UserDialogPresenterTest extends AbstractViewTestCase {
 
     verify(dialog).close();
     verify(dialog, never()).fireSavedEvent();
+  }
+
+  @Test
+  public void cancel_ChangeLaboratoryName() {
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    presenter.init(dialog);
+    presenter.setUser(new User());
+    presenter.localeChange(locale);
+    final String expectedLaboratoryName = dialog.laboratory.getValue().getName();
+    dialog.laboratoryName.setValue(laboratoryName);
+
+    presenter.cancel();
+    presenter.setUser(new User());
+
+    assertEquals(expectedLaboratoryName, dialog.laboratory.getValue().getName());
   }
 }

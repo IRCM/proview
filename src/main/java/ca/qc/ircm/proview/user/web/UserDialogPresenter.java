@@ -53,13 +53,12 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.Validator;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Locale;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +78,8 @@ public class UserDialogPresenter {
   private Binder<User> binder = new BeanValidationBinder<>(User.class);
   private ListDataProvider<Laboratory> laboratoriesDataProvider;
   private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
+  private Binder<LaboratoryContainer> laboratoryContainerBinder = new BeanValidationBinder<>(
+      LaboratoryContainer.class);
   private Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
   private Binder<PhoneNumber> phoneNumberBinder = new BeanValidationBinder<>(PhoneNumber.class);
   private User user;
@@ -103,16 +104,17 @@ public class UserDialogPresenter {
     dialog.manager.setVisible(authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
     dialog.manager.addValueChangeListener(e -> updateManager());
     if (authorizationService.hasRole(UserRole.ADMIN)) {
-      laboratoriesDataProvider = new LaboratoryDataProvider(laboratoryService.all());
+      laboratoriesDataProvider = DataProvider.ofCollection(laboratoryService.all());
     } else {
-      laboratoriesDataProvider = new LaboratoryDataProvider(
-          Stream.of(authorizationService.getCurrentUser().getLaboratory())
-              .collect(Collectors.toCollection(ArrayList::new)));
+      laboratoriesDataProvider = DataProvider
+          .fromStream(Stream.of(authorizationService.getCurrentUser().getLaboratory()));
     }
     dialog.laboratory.setDataProvider(laboratoriesDataProvider);
     dialog.laboratory.setItemLabelGenerator(lab -> lab.getName());
     dialog.laboratory.setVisible(authorizationService.hasRole(UserRole.ADMIN));
-    dialog.laboratory.addValueChangeListener(e -> laboratoryBinder.setBean(e.getValue()));
+    dialog.laboratory.addValueChangeListener(e -> {
+      laboratoryBinder.readBean(e.getValue());
+    });
     dialog.createNewLaboratory.addValueChangeListener(e -> updateCreateNewLaboratory());
     dialog.createNewLaboratory.setVisible(authorizationService.hasRole(UserRole.ADMIN));
     setUser(null);
@@ -121,7 +123,6 @@ public class UserDialogPresenter {
   }
 
   void localeChange(Locale locale) {
-    final MessageResource userResources = new MessageResource(User.class, locale);
     final MessageResource webResources = new MessageResource(WebConstants.class, locale);
     binder.forField(dialog.email).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("")
@@ -130,8 +131,10 @@ public class UserDialogPresenter {
         .withNullRepresentation("").bind(NAME);
     binder.forField(dialog.admin).bind(ADMIN);
     binder.forField(dialog.manager).bind(MANAGER);
-    dialog.laboratory.setLabel(userResources.message(LABORATORY));
-    binder.forField(dialog.laboratory)
+    if (!laboratoriesDataProvider.getItems().isEmpty()) {
+      dialog.laboratory.setRequiredIndicatorVisible(true);
+    }
+    laboratoryContainerBinder.forField(dialog.laboratory)
         .withValidator(laboratoryRequiredValidator(webResources.message(REQUIRED)))
         .withNullRepresentation(null).bind(LABORATORY);
     laboratoryBinder.forField(dialog.laboratoryName).asRequired(webResources.message(REQUIRED))
@@ -186,13 +189,18 @@ public class UserDialogPresenter {
   private void updateCreateNewLaboratory() {
     boolean createNew = dialog.createNewLaboratory.getValue();
     dialog.laboratory.setEnabled(!createNew);
-    laboratoryBinder.setBean(createNew || user.getLaboratory() == null
-        ? new Laboratory(laboratoryBinder.getBean().getName())
-        : user.getLaboratory());
+    laboratoryBinder
+        .setBean(createNew || user.getLaboratory() == null || dialog.laboratory.getValue() == null
+            ? new Laboratory(laboratoryBinder.getBean().getName())
+            : laboratoryService.get(dialog.laboratory.getValue().getId()));
   }
 
   BinderValidationStatus<User> validateUser() {
     return binder.validate();
+  }
+
+  BinderValidationStatus<LaboratoryContainer> validateLaboratoryContainer() {
+    return laboratoryContainerBinder.validate();
   }
 
   BinderValidationStatus<Laboratory> validateLaboratory() {
@@ -211,6 +219,7 @@ public class UserDialogPresenter {
     boolean valid = true;
     valid = validateUser().isOk() && valid;
     valid = dialog.passwords.validate().isOk() && valid;
+    valid = validateLaboratoryContainer().isOk() && valid;
     valid = validateLaboratory().isOk() && valid;
     valid = validateAddress().isOk() && valid;
     valid = validatePhoneNumber().isOk() && valid;
@@ -219,7 +228,12 @@ public class UserDialogPresenter {
 
   void save() {
     if (validate()) {
-      user.setLaboratory(laboratoryBinder.getBean());
+      if (dialog.laboratory.getValue() != null
+          && (!dialog.createNewLaboratory.isEnabled() || !dialog.createNewLaboratory.getValue())) {
+        user.getLaboratory().setId(dialog.laboratory.getValue().getId());
+      } else {
+        user.getLaboratory().setId(null);
+      }
       String password = dialog.passwords.getPassword();
       logger.debug("save user {} in laboratory {}", user, user.getLaboratory());
       userService.save(user, password);
@@ -246,8 +260,15 @@ public class UserDialogPresenter {
     if (user == null) {
       user = new User();
     }
-    if (user.getLaboratory() == null && !laboratoriesDataProvider.getItems().isEmpty()) {
-      user.setLaboratory(laboratoriesDataProvider.getItems().iterator().next());
+    if (user.getLaboratory() == null) {
+      user.setLaboratory(new Laboratory());
+    }
+    if (!laboratoriesDataProvider.getItems().isEmpty()) {
+      final Laboratory laboratory = user.getLaboratory();
+      dialog.laboratory.setValue(laboratoriesDataProvider.getItems().stream()
+          .filter(lab -> lab.getId().equals(laboratory.getId())).findAny()
+          .orElse(laboratoriesDataProvider.getItems().iterator().next()));
+      user.setLaboratory(laboratoryService.get(dialog.laboratory.getValue().getId()));
     }
     if (user.getAddress() == null) {
       user.setAddress(defaultAddressConfiguration.getAddress());
@@ -261,26 +282,21 @@ public class UserDialogPresenter {
     this.user = user;
     binder.setBean(user);
     dialog.passwords.setRequired(user.getId() == null);
-    laboratoryBinder
-        .setBean(user.getLaboratory() != null ? user.getLaboratory() : new Laboratory());
+    laboratoryBinder.setBean(user.getLaboratory());
     addressBinder.setBean(user.getAddress());
     phoneNumberBinder.setBean(user.getPhoneNumbers().get(0));
     updateReadOnly();
   }
 
-  ListDataProvider<Laboratory> laboratoryDataProvider() {
-    return laboratoriesDataProvider;
-  }
+  static class LaboratoryContainer {
+    private Laboratory laboratory;
 
-  @SuppressWarnings("serial")
-  private static class LaboratoryDataProvider extends ListDataProvider<Laboratory> {
-    public LaboratoryDataProvider(Collection<Laboratory> items) {
-      super(items);
+    public Laboratory getLaboratory() {
+      return laboratory;
     }
 
-    @Override
-    public Object getId(Laboratory item) {
-      return item.getId();
+    public void setLaboratory(Laboratory laboratory) {
+      this.laboratory = laboratory;
     }
   }
 }
