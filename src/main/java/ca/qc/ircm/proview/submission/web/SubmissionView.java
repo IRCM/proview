@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.SubmissionFileProperties.FILENAME;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.FILES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
@@ -13,6 +14,7 @@ import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static ca.qc.ircm.proview.web.WebConstants.UPLOAD;
+import static ca.qc.ircm.proview.web.WebConstants.uploadI18N;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
@@ -62,7 +64,6 @@ public class SubmissionView extends VerticalLayout
   public static final String VIEW_NAME = "submission";
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
-  public static final String FILES = "files";
   public static final String FILES_IOEXCEPTION = property(FILES, "ioexception");
   public static final String FILES_OVER_MAXIMUM = property(FILES, "overmaximum");
   public static final String REMOVE = "remove";
@@ -171,7 +172,7 @@ public class SubmissionView extends VerticalLayout
     smallMolecule.setLabel(SMALL_MOLECULE.getLabel(getLocale()));
     intactProtein.setLabel(INTACT_PROTEIN.getLabel(getLocale()));
     comment.setLabel(submissionResources.message(COMMENT));
-    //upload.setI18n(uploadI18N(getLocale()));
+    upload.setI18n(uploadI18N(getLocale()));
     filename.setHeader(resources.message(FILENAME));
     remove.setHeader(resources.message(REMOVE));
     save.setText(webResources.message(SAVE));
