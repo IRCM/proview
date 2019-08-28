@@ -1,6 +1,9 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
+import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_IOEXCEPTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_OVER_MAXIMUM;
+import static ca.qc.ircm.proview.submission.web.SubmissionView.MAXIMUM_FILES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 
 import ca.qc.ircm.proview.msanalysis.InjectionType;
@@ -15,14 +18,19 @@ import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import org.slf4j.Logger;
@@ -30,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.util.FileCopyUtils;
 
 /**
  * Submission view presenter.
@@ -40,6 +49,8 @@ public class SubmissionViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewPresenter.class);
   private SubmissionView view;
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+  private ListDataProvider<SubmissionFile> filesDataProvider =
+      DataProvider.ofCollection(new ArrayList<>());
   private SubmissionService service;
 
   @Autowired
@@ -55,11 +66,11 @@ public class SubmissionViewPresenter {
    */
   void init(SubmissionView view) {
     this.view = view;
+    view.files.setDataProvider(filesDataProvider);
     setSubmission(null);
   }
 
   void localeChange(Locale locale) {
-    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
     binder.forField(view.comment).withNullRepresentation("").bind(COMMENT);
   }
 
@@ -71,6 +82,30 @@ public class SubmissionViewPresenter {
       return Service.INTACT_PROTEIN;
     }
     return Service.LC_MS_MS;
+  }
+
+  void addFile(String filename, InputStream input, Locale locale) {
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename(filename);
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    try {
+      FileCopyUtils.copy(input, output);
+    } catch (IOException e) {
+      MessageResource resources = new MessageResource(SubmissionView.class, locale);
+      view.showNotification(resources.message(FILES_IOEXCEPTION, filename));
+    }
+    file.setContent(output.toByteArray());
+    if (filesDataProvider.getItems().size() > MAXIMUM_FILES_COUNT) {
+      MessageResource resources = new MessageResource(SubmissionView.class, locale);
+      view.showNotification(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
+    }
+    filesDataProvider.getItems().add(file);
+    filesDataProvider.refreshAll();
+  }
+
+  void removeFile(SubmissionFile file) {
+    filesDataProvider.getItems().remove(file);
+    filesDataProvider.refreshAll();
   }
 
   boolean valid() {
@@ -98,6 +133,7 @@ public class SubmissionViewPresenter {
     if (valid()) {
       Submission submission = binder.getBean();
       submission.setService(service());
+      submission.setFiles(new ArrayList<>(filesDataProvider.getItems()));
       if (submission.getId() == null) {
         logger.debug("save new submission {}", submission);
         service.insert(submission);
@@ -132,7 +168,13 @@ public class SubmissionViewPresenter {
       sample.setType(SampleType.SOLUTION);
       submission.getSamples().add(sample);
     }
+    if (submission.getFiles() == null) {
+      submission.setFiles(new ArrayList<>());
+    }
     binder.setBean(submission);
+    filesDataProvider.getItems().clear();
+    filesDataProvider.getItems().addAll(submission.getFiles());
+    filesDataProvider.refreshAll();
     view.lcmsmsSubmissionForm.setSubmission(submission);
     view.smallMoleculeSubmissionForm.setSubmission(submission);
     view.intactProteinSubmissionForm.setSubmission(submission);

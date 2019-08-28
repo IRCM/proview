@@ -18,9 +18,12 @@
 package ca.qc.ircm.proview.test.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventBus;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
@@ -31,6 +34,7 @@ import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.grid.editor.EditorImpl;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.upload.UploadI18N;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -54,21 +58,33 @@ public class VaadinTestUtils {
   private static final Logger logger = LoggerFactory.getLogger(VaadinTestUtils.class);
 
   /**
+   * Fires an event on component.
+   *
+   * @param component
+   *          component
+   * @param event
+   *          event
+   */
+  public static <C extends Component> void fireEvent(C component, ComponentEvent<C> event) {
+    try {
+      Method method = Component.class.getDeclaredMethod("getEventBus");
+      method.setAccessible(true);
+      ComponentEventBus eventBus = (ComponentEventBus) method.invoke(component);
+      eventBus.fireEvent(event);
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+        | IllegalArgumentException | InvocationTargetException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  /**
    * Simulates a click on button.
    *
    * @param button
    *          button
    */
   public static void clickButton(Button button) {
-    try {
-      Method method = Component.class.getDeclaredMethod("getEventBus");
-      method.setAccessible(true);
-      ComponentEventBus eventBus = (ComponentEventBus) method.invoke(button);
-      eventBus.fireEvent(new ClickEvent<>(button));
-    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
-        | IllegalArgumentException | InvocationTargetException e) {
-      throw new IllegalStateException(e);
-    }
+    fireEvent(button, new ClickEvent<>(button));
   }
 
   /**
@@ -256,7 +272,7 @@ public class VaadinTestUtils {
 
   /**
    * Validates that two {@link DatePickerI18n} are identical.
-   * 
+   *
    * @param expected
    *          expected
    * @param actual
@@ -272,5 +288,84 @@ public class VaadinTestUtils {
     assertEquals(expected.getMonthNames(), actual.getMonthNames());
     assertEquals(expected.getWeekdays(), actual.getWeekdays());
     assertEquals(expected.getWeekdaysShort(), actual.getWeekdaysShort());
+  }
+
+  /**
+   * Validates that two {@link UploadI18N} are identical.
+   *
+   * @param expected
+   *          expected
+   * @param actual
+   *          actual
+   */
+  public static void validateEquals(UploadI18N expected, UploadI18N actual) {
+    if (expected.getAddFiles() != null) {
+      assertNotNull(actual.getAddFiles());
+      assertEquals(expected.getAddFiles().getOne(), actual.getAddFiles().getOne());
+      assertEquals(expected.getAddFiles().getMany(), actual.getAddFiles().getMany());
+    } else {
+      assertNull(actual.getAddFiles());
+    }
+    assertEquals(expected.getCancel(), actual.getCancel());
+    if (expected.getDropFiles() != null) {
+      assertNotNull(actual.getDropFiles());
+      assertEquals(expected.getDropFiles().getOne(), actual.getDropFiles().getOne());
+      assertEquals(expected.getDropFiles().getMany(), actual.getDropFiles().getMany());
+    } else {
+      assertNull(actual.getDropFiles());
+    }
+    if (expected.getError() != null) {
+      assertNotNull(actual.getError());
+      assertEquals(expected.getError().getFileIsTooBig(), actual.getError().getFileIsTooBig());
+      assertEquals(expected.getError().getIncorrectFileType(),
+          actual.getError().getIncorrectFileType());
+      assertEquals(expected.getError().getTooManyFiles(), actual.getError().getTooManyFiles());
+    } else {
+      assertNull(actual.getError());
+    }
+    if (expected.getUnits() != null) {
+      assertNotNull(actual.getUnits());
+      assertEquals(expected.getUnits().getSize(), actual.getUnits().getSize());
+    } else {
+      assertNull(actual.getUnits());
+    }
+    if (expected.getUploading() != null) {
+      assertNotNull(actual.getUploading());
+      if (expected.getUploading().getError() != null) {
+        assertNotNull(actual.getUploading().getError());
+        assertEquals(expected.getUploading().getError().getForbidden(),
+            actual.getUploading().getError().getForbidden());
+        assertEquals(expected.getUploading().getError().getServerUnavailable(),
+            actual.getUploading().getError().getServerUnavailable());
+        assertEquals(expected.getUploading().getError().getUnexpectedServerError(),
+            actual.getUploading().getError().getUnexpectedServerError());
+      } else {
+        assertNull(actual.getUploading().getError());
+      }
+      if (expected.getUploading().getRemainingTime() != null) {
+        assertNotNull(actual.getUploading().getRemainingTime());
+        assertEquals(expected.getUploading().getRemainingTime().getPrefix(),
+            actual.getUploading().getRemainingTime().getPrefix());
+        assertEquals(expected.getUploading().getRemainingTime().getUnknown(),
+            actual.getUploading().getRemainingTime().getUnknown());
+      } else {
+        assertNull(actual.getUploading().getRemainingTime());
+      }
+      if (expected.getUploading().getStatus() != null) {
+        assertNotNull(actual.getUploading().getStatus());
+        assertEquals(expected.getUploading().getStatus().getConnecting(),
+            actual.getUploading().getStatus().getConnecting());
+        assertEquals(expected.getUploading().getStatus().getHeld(),
+            actual.getUploading().getStatus().getHeld());
+        assertEquals(expected.getUploading().getStatus().getProcessing(),
+            actual.getUploading().getStatus().getProcessing());
+        assertEquals(expected.getUploading().getStatus().getStalled(),
+            actual.getUploading().getStatus().getStalled());
+      } else {
+        assertNull(actual.getUploading().getStatus());
+      }
+    } else {
+      assertNull(actual.getUploading());
+    }
   }
 }

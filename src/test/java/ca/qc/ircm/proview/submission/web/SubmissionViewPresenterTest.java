@@ -17,8 +17,13 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_IOEXCEPTION;
+import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_OVER_MAXIMUM;
+import static ca.qc.ircm.proview.submission.web.SubmissionView.MAXIMUM_FILES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -42,17 +47,26 @@ import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.text.MessageResource;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,10 +92,11 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
   private ArgumentCaptor<Submission> submissionCaptor;
   private Locale locale = ENGLISH;
   private MessageResource resources = new MessageResource(SubmissionView.class, locale);
-  private MessageResource webResources = new MessageResource(WebConstants.class, locale);
   private Submission submission;
   private String experiment = "my test experiment";
+  private List<SubmissionFile> files;
   private String comment = "comment first line\nSecond line";
+  private Random random = new Random();
 
   /**
    * Before test.
@@ -94,18 +109,86 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     view.smallMolecule = new Tab();
     view.intactProtein = new Tab();
     view.service.add(view.lcmsms, view.smallMolecule, view.intactProtein);
+    view.files = new Grid<>();
     view.comment = new TextArea();
     view.lcmsmsSubmissionForm = mock(LcmsmsSubmissionForm.class);
     view.smallMoleculeSubmissionForm = mock(SmallMoleculeSubmissionForm.class);
     view.intactProteinSubmissionForm = mock(IntactProteinSubmissionForm.class);
-    submission = repository.findById(34L).orElse(null);
+    submission = repository.findById(1L).orElse(null);
     when(service.get(any())).thenReturn(submission);
     presenter.init(view);
     presenter.localeChange(locale);
+    files = IntStream.range(0, 2).mapToObj(i -> {
+      SubmissionFile file = new SubmissionFile();
+      file.setFilename(RandomStringUtils.randomAlphanumeric(10));
+      byte[] content = new byte[1024];
+      random.nextBytes(content);
+      file.setContent(content);
+      return file;
+    }).collect(Collectors.toList());
   }
 
   private void setFields() {
     view.comment.setValue(comment);
+    files.forEach(file -> presenter.addFile(file.getFilename(),
+        new ByteArrayInputStream(file.getContent()), locale));
+  }
+
+  @Test
+  public void addFile() {
+    SubmissionFile file = files.get(0);
+    presenter.addFile(file.getFilename(), new ByteArrayInputStream(file.getContent()), locale);
+    List<SubmissionFile> files = items(view.files);
+    assertEquals(1, files.size());
+    assertEquals(file.getFilename(), files.get(0).getFilename());
+    assertArrayEquals(file.getContent(), files.get(0).getContent());
+  }
+
+  @Test
+  public void addFile_IoException() throws IOException {
+    SubmissionFile file = files.get(0);
+    InputStream input = new InputStream() {
+      @Override
+      public int read() throws IOException {
+        throw new IOException("test");
+      }
+    };
+    presenter.addFile(file.getFilename(), input, locale);
+    verify(view).showNotification(resources.message(FILES_IOEXCEPTION, file.getFilename()));
+  }
+
+  @Test
+  public void addFile_OverMaximumCount() {
+    SubmissionFile file = files.get(0);
+    IntStream.range(0, MAXIMUM_FILES_COUNT + 1).forEach(i -> {
+      presenter.addFile(file.getFilename(), new ByteArrayInputStream(file.getContent()), locale);
+    });
+    verify(view).showNotification(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
+  }
+
+  @Test
+  public void removeFile_New() {
+    files.forEach(file -> presenter.addFile(file.getFilename(),
+        new ByteArrayInputStream(file.getContent()), locale));
+    presenter.removeFile(items(view.files).get(0));
+    List<SubmissionFile> files = items(view.files);
+    assertEquals(this.files.size() - 1, files.size());
+    for (int i = 0; i < files.size(); i++) {
+      assertEquals(this.files.get(i + 1).getFilename(), files.get(i).getFilename());
+      assertArrayEquals(this.files.get(i + 1).getContent(), files.get(i).getContent());
+    }
+  }
+
+  @Test
+  public void removeFile_Existing() {
+    presenter.setParameter(1L);
+    presenter.removeFile(submission.getFiles().get(0));
+    List<SubmissionFile> files = items(view.files);
+    assertEquals(submission.getFiles().size() - 1, files.size());
+    for (int i = 0; i < files.size(); i++) {
+      assertEquals(submission.getFiles().get(i + 1).getFilename(), files.get(i).getFilename());
+      assertArrayEquals(submission.getFiles().get(i + 1).getContent(), files.get(i).getContent());
+    }
   }
 
   @Test
@@ -202,12 +285,18 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     assertNull(submission.getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals(comment, submission.getComment());
+    assertEquals(files.size(), submission.getFiles().size());
+    for (int i = 0; i < files.size(); i++) {
+      assertEquals(files.get(i).getFilename(), submission.getFiles().get(i).getFilename());
+      assertArrayEquals(files.get(i).getContent(), submission.getFiles().get(i).getContent());
+    }
     verify(ui).navigate(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
   @Test
   public void save_UpdateLcmsms() {
+    final List<SubmissionFile> oldFiles = submission.getFiles();
     presenter.setParameter(34L);
     view.service.setSelectedTab(view.lcmsms);
     setFields();
@@ -221,6 +310,13 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     Submission submission = submissionCaptor.getValue();
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals(comment, submission.getComment());
+    assertEquals(oldFiles.size() + files.size(), submission.getFiles().size());
+    for (int i = 0; i < submission.getFiles().size(); i++) {
+      SubmissionFile expected =
+          i < oldFiles.size() ? oldFiles.get(i) : files.get(i - oldFiles.size());
+      assertEquals(expected.getFilename(), submission.getFiles().get(i).getFilename());
+      assertArrayEquals(expected.getContent(), submission.getFiles().get(i).getContent());
+    }
     verify(ui).navigate(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
@@ -244,12 +340,18 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     assertNull(submission.getId());
     assertEquals(Service.SMALL_MOLECULE, submission.getService());
     assertEquals(comment, submission.getComment());
+    assertEquals(files.size(), submission.getFiles().size());
+    for (int i = 0; i < files.size(); i++) {
+      assertEquals(files.get(i).getFilename(), submission.getFiles().get(i).getFilename());
+      assertArrayEquals(files.get(i).getContent(), submission.getFiles().get(i).getContent());
+    }
     verify(ui).navigate(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
   @Test
   public void save_UpdateSmallMolecule() {
+    final List<SubmissionFile> oldFiles = submission.getFiles();
     presenter.setParameter(34L);
     view.service.setSelectedTab(view.smallMolecule);
     setFields();
@@ -263,6 +365,13 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     Submission submission = submissionCaptor.getValue();
     assertEquals(Service.SMALL_MOLECULE, submission.getService());
     assertEquals(comment, submission.getComment());
+    assertEquals(oldFiles.size() + files.size(), submission.getFiles().size());
+    for (int i = 0; i < submission.getFiles().size(); i++) {
+      SubmissionFile expected =
+          i < oldFiles.size() ? oldFiles.get(i) : files.get(i - oldFiles.size());
+      assertEquals(expected.getFilename(), submission.getFiles().get(i).getFilename());
+      assertArrayEquals(expected.getContent(), submission.getFiles().get(i).getContent());
+    }
     verify(ui).navigate(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
@@ -286,12 +395,18 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     assertNull(submission.getId());
     assertEquals(Service.INTACT_PROTEIN, submission.getService());
     assertEquals(comment, submission.getComment());
+    assertEquals(files.size(), submission.getFiles().size());
+    for (int i = 0; i < files.size(); i++) {
+      assertEquals(files.get(i).getFilename(), submission.getFiles().get(i).getFilename());
+      assertArrayEquals(files.get(i).getContent(), submission.getFiles().get(i).getContent());
+    }
     verify(ui).navigate(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
   @Test
   public void save_UpdateIntactProtein() {
+    final List<SubmissionFile> oldFiles = submission.getFiles();
     presenter.setParameter(34L);
     view.service.setSelectedTab(view.intactProtein);
     setFields();
@@ -305,6 +420,13 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     Submission submission = submissionCaptor.getValue();
     assertEquals(Service.INTACT_PROTEIN, submission.getService());
     assertEquals(comment, submission.getComment());
+    assertEquals(oldFiles.size() + files.size(), submission.getFiles().size());
+    for (int i = 0; i < submission.getFiles().size(); i++) {
+      SubmissionFile expected =
+          i < oldFiles.size() ? oldFiles.get(i) : files.get(i - oldFiles.size());
+      assertEquals(expected.getFilename(), submission.getFiles().get(i).getFilename());
+      assertArrayEquals(expected.getContent(), submission.getFiles().get(i).getContent());
+    }
     verify(ui).navigate(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
@@ -321,6 +443,12 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     verify(view.smallMoleculeSubmissionForm).setSubmission(submission);
     verify(view.intactProteinSubmissionForm).setSubmission(submission);
     assertEquals(comment, view.comment.getValue());
+    List<SubmissionFile> files = items(view.files);
+    assertEquals(submission.getFiles().size(), files.size());
+    for (int i = 0; i < files.size(); i++) {
+      assertEquals(submission.getFiles().get(i).getFilename(), files.get(i).getFilename());
+      assertArrayEquals(submission.getFiles().get(i).getContent(), files.get(i).getContent());
+    }
   }
 
   @Test
