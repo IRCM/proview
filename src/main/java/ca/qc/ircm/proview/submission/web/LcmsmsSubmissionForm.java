@@ -30,6 +30,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.WebConstants.PLACEHOLDER;
+import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
@@ -71,6 +72,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   public static final String SAMPLES_TYPE = SAMPLES + "Type";
   public static final String SAMPLES_COUNT = SAMPLES + "Count";
   public static final String SAMPLES_NAMES = SAMPLES + "Names";
+  public static final String SAMPLES_NAMES_PLACEHOLDER = property(SAMPLES_NAMES, PLACEHOLDER);
+  public static final String SAMPLES_NAMES_TITLE = property(SAMPLES_NAMES, TITLE);
   public static final String SAMPLES_NAMES_DUPLICATES = property(SAMPLES + "Names", "duplicate");
   public static final String SAMPLES_NAMES_EXISTS = property(SAMPLES + "Names", "exists");
   public static final String SAMPLES_NAMES_WRONG_COUNT = property(SAMPLES + "Names", "wrongCount");
@@ -79,13 +82,13 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   public static final String CONTAMINANTS_PLACEHOLDER = property(CONTAMINANTS, PLACEHOLDER);
   public static final String STANDARDS_PLACEHOLDER = property(STANDARDS, PLACEHOLDER);
   public static final String DEVELOPMENT_TIME_PLACEHOLDER = property(DEVELOPMENT_TIME, PLACEHOLDER);
-  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER =
-      property(WEIGHT_MARKER_QUANTITY, PLACEHOLDER);
+  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER = property(WEIGHT_MARKER_QUANTITY,
+      PLACEHOLDER);
   public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
-  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER =
-      property(QUANTIFICATION_COMMENT, PLACEHOLDER);
-  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT =
-      property(QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
+  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER = property(QUANTIFICATION_COMMENT,
+      PLACEHOLDER);
+  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT = property(
+      QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
   private static final long serialVersionUID = 1460183864073097086L;
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
@@ -199,8 +202,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, getLocale());
     final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
     final MessageResource sampleResources = new MessageResource(Sample.class, getLocale());
-    final MessageResource submissionSampleResources =
-        new MessageResource(SubmissionSample.class, getLocale());
+    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
+        getLocale());
     experiment.setLabel(submissionResources.message(EXPERIMENT));
     goal.setLabel(submissionResources.message(GOAL));
     taxonomy.setLabel(submissionResources.message(TAXONOMY));
@@ -219,6 +222,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     sampleType.setLabel(resources.message(SAMPLES_TYPE));
     samplesCount.setLabel(resources.message(SAMPLES_COUNT));
     samplesNames.setLabel(resources.message(SAMPLES_NAMES));
+    samplesNames.setPlaceholder(resources.message(SAMPLES_NAMES_PLACEHOLDER));
+    samplesNames.getElement().setAttribute(TITLE, resources.message(SAMPLES_NAMES_TITLE));
     separation.setLabel(submissionResources.message(SEPARATION));
     thickness.setLabel(submissionResources.message(THICKNESS));
     coloration.setLabel(submissionResources.message(COLORATION));

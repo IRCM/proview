@@ -52,6 +52,8 @@ import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.QUANTIFICAT
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.QUANTITY_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES_PLACEHOLDER;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES_TITLE;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_TYPE;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.STANDARDS_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.VOLUME_PLACEHOLDER;
@@ -59,6 +61,7 @@ import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.WEIGHT_MARK
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
+import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -102,8 +105,8 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
   private MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, locale);
   private MessageResource submissionResources = new MessageResource(Submission.class, locale);
   private MessageResource sampleResources = new MessageResource(Sample.class, locale);
-  private MessageResource submissionSampleResources =
-      new MessageResource(SubmissionSample.class, locale);
+  private MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
+      locale);
 
   /**
    * Before test.
@@ -168,6 +171,10 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     assertEquals(resources.message(SAMPLES_TYPE), form.sampleType.getLabel());
     assertEquals(resources.message(SAMPLES_COUNT), form.samplesCount.getLabel());
     assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
+    assertEquals(resources.message(SAMPLES_NAMES_PLACEHOLDER), form.samplesNames.getPlaceholder());
+    assertEquals(resources.message(SAMPLES_NAMES_TITLE),
+        form.samplesNames.getElement().getAttribute(TITLE));
+    assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
     assertEquals(sampleResources.message(QUANTITY), form.quantity.getLabel());
     assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
     assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
@@ -214,8 +221,8 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, locale);
     final MessageResource submissionResources = new MessageResource(Submission.class, locale);
     final MessageResource sampleResources = new MessageResource(Sample.class, locale);
-    final MessageResource submissionSampleResources =
-        new MessageResource(SubmissionSample.class, locale);
+    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
+        locale);
     when(ui.getLocale()).thenReturn(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
@@ -228,6 +235,9 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     assertEquals(resources.message(SAMPLES_TYPE), form.sampleType.getLabel());
     assertEquals(resources.message(SAMPLES_COUNT), form.samplesCount.getLabel());
     assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
+    assertEquals(resources.message(SAMPLES_NAMES_PLACEHOLDER), form.samplesNames.getPlaceholder());
+    assertEquals(resources.message(SAMPLES_NAMES_TITLE),
+        form.samplesNames.getElement().getAttribute(TITLE));
     assertEquals(sampleResources.message(QUANTITY), form.quantity.getLabel());
     assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
     assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
