@@ -1,4 +1,4 @@
-package ca.qc.ircm.proview.files.web;
+package ca.qc.ircm.proview.web;
 
 import com.vaadin.flow.server.StreamResourceWriter;
 import com.vaadin.flow.server.VaadinSession;

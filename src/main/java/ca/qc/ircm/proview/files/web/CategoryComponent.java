@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.files.web;
 
 import ca.qc.ircm.proview.files.Category;
+import ca.qc.ircm.proview.web.PathStreamResourceWriter;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
