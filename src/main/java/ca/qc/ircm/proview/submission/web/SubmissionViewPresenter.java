@@ -95,7 +95,7 @@ public class SubmissionViewPresenter {
       view.showNotification(resources.message(FILES_IOEXCEPTION, filename));
     }
     file.setContent(output.toByteArray());
-    if (filesDataProvider.getItems().size() > MAXIMUM_FILES_COUNT) {
+    if (filesDataProvider.getItems().size() >= MAXIMUM_FILES_COUNT) {
       MessageResource resources = new MessageResource(SubmissionView.class, locale);
       view.showNotification(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
     }
