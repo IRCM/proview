@@ -37,6 +37,7 @@ import static ca.qc.ircm.proview.user.QPhoneNumber.phoneNumber;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
@@ -54,7 +55,6 @@ import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.text.MessageResource;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -369,7 +369,7 @@ public class ActivityService {
       return null;
     }
 
-    MessageResource resources = new MessageResource(ActivityService.class, locale);
+    AppResources resources = new AppResources(ActivityService.class, locale);
     StringBuilder builder = new StringBuilder();
     Object record = record(activity.getTableName(), activity.getRecordId());
     String name = record instanceof Named ? ((Named) record).getName() : "";

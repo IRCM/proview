@@ -32,6 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
@@ -42,7 +43,6 @@ import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SavedEvent;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -88,7 +88,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   private List<User> users;
   private User currentUser;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(UsersView.class, locale);
+  private AppResources resources = new AppResources(UsersView.class, locale);
 
   /**
    * Before test.
@@ -290,8 +290,8 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   public void refreshOnSaved() {
     presenter.init(view);
     verify(view.userDialog).addSavedListener(userSavedListenerCaptor.capture());
-    ComponentEventListener<SavedEvent<UserDialog>> savedListener = userSavedListenerCaptor
-        .getValue();
+    ComponentEventListener<SavedEvent<UserDialog>> savedListener =
+        userSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
     verify(userService, times(2)).all(null, currentUser.getLaboratory());
   }

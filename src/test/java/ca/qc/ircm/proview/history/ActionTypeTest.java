@@ -28,7 +28,7 @@ import org.junit.Test;
 public class ActionTypeTest {
   @Test
   public void getNullLabel() {
-    assertEquals("Not determined", ActionType.getNullLabel(Locale.ENGLISH));
+    assertEquals("Undetermined", ActionType.getNullLabel(Locale.ENGLISH));
     assertEquals("Indéterminé", ActionType.getNullLabel(Locale.FRENCH));
   }
 

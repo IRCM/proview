@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.submission;
 
-import ca.qc.ircm.text.MessageResource;
+import ca.qc.ircm.proview.AppResources;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -59,17 +59,17 @@ public enum Service {
         .collect(Collectors.toList());
   }
 
-  private static MessageResource getResources(Locale locale) {
-    return new MessageResource(Service.class, locale);
+  private static AppResources getResources(Locale locale) {
+    return new AppResources(Service.class, locale);
   }
 
   public static String getNullLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message("NULL");
   }
 
   public String getLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message(name());
   }
 }

@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
@@ -34,7 +35,6 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextField;
@@ -65,7 +65,7 @@ public class SmallMoleculeSubmissionFormPresenterTest {
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
-  private MessageResource webResources = new MessageResource(WebConstants.class, locale);
+  private AppResources webResources = new AppResources(WebConstants.class, locale);
   private Submission newSubmission;
   private SampleType sampleType = SampleType.SOLUTION;
   private String sampleName = "my sample";

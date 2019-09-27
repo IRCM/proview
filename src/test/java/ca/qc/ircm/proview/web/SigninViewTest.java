@@ -40,12 +40,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -80,9 +80,9 @@ public class SigninViewTest extends AbstractViewTestCase {
   @Mock
   private QueryParameters queryParameters;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(SigninView.class, locale);
-  private MessageResource userResources = new MessageResource(User.class, locale);
-  private MessageResource generalResources = new MessageResource(WebConstants.class, locale);
+  private AppResources resources = new AppResources(SigninView.class, locale);
+  private AppResources userResources = new AppResources(User.class, locale);
+  private AppResources generalResources = new AppResources(WebConstants.class, locale);
   private Map<String, List<String>> parameters = new HashMap<>();
 
   /**
@@ -169,8 +169,8 @@ public class SigninViewTest extends AbstractViewTestCase {
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(SigninView.class, locale);
-    final MessageResource userResources = new MessageResource(User.class, locale);
+    final AppResources resources = new AppResources(SigninView.class, locale);
+    final AppResources userResources = new AppResources(User.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());

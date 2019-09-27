@@ -28,13 +28,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.net.URLEncoder;
@@ -55,8 +55,8 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
   @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(GuidelinesView.class, locale);
-  private MessageResource generalResources = new MessageResource(WebConstants.class, locale);
+  private AppResources resources = new AppResources(GuidelinesView.class, locale);
+  private AppResources generalResources = new AppResources(WebConstants.class, locale);
 
   /**
    * Before test.
@@ -97,7 +97,7 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(GuidelinesView.class, locale);
+    final AppResources resources = new AppResources(GuidelinesView.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     view.localeChange(mock(LocaleChangeEvent.class));

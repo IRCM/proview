@@ -71,7 +71,7 @@ public class SampleStatusTest {
 
   @Test
   public void getLabel_Analysed() {
-    assertEquals("Analysed", ANALYSED.getLabel(Locale.ENGLISH));
+    assertEquals("Analyzed", ANALYSED.getLabel(Locale.ENGLISH));
     assertEquals("Analysé", ANALYSED.getLabel(Locale.FRENCH));
   }
 

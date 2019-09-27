@@ -25,6 +25,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
@@ -33,7 +34,6 @@ import ca.qc.ircm.proview.test.config.Download;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.html.testbench.AnchorElement;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,8 +71,8 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
 
     Locale locale = currentLocale();
     assertEquals(
-        new MessageResource(SigninView.class, locale).message(TITLE,
-            new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME)),
+        new AppResources(SigninView.class, locale).message(TITLE,
+            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -104,8 +104,8 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   @Download
   public void download() throws Throwable {
     Files.createDirectories(downloadHome);
-    Guideline guideline = guidelinesConfiguration.categories(currentLocale()).get(0).guidelines()
-        .get(0);
+    Guideline guideline =
+        guidelinesConfiguration.categories(currentLocale()).get(0).guidelines().get(0);
     Path downloaded = downloadHome.resolve(guideline.path().getFileName().toString());
     Files.deleteIfExists(downloaded);
     Path source = Paths.get(getClass().getResource("/structure1.png").toURI());

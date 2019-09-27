@@ -21,7 +21,7 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.text.MessageResource;
+import ca.qc.ircm.proview.AppResources;
 import java.io.Serializable;
 import java.util.Locale;
 import javax.persistence.Column;
@@ -88,7 +88,7 @@ public class PhoneNumber implements Serializable {
    * @return value to show in user interface for this phone number
    */
   public String getValue(Locale locale) {
-    MessageResource resources = new MessageResource(PhoneNumber.class, locale);
+    AppResources resources = new AppResources(PhoneNumber.class, locale);
     return resources.message("value", number, extension != null && !extension.isEmpty() ? 1 : 0,
         extension);
   }

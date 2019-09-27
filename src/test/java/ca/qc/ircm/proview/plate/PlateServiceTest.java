@@ -32,6 +32,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Control;
@@ -43,7 +44,6 @@ import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.text.MessageResource;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -319,7 +319,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     Well well4 = plate.well(1, 0);
     well4.setSample(new SubmissionSample(4L, "test control 4"));
     well4.setBanned(true);
-    MessageResource resources = new MessageResource(PlateService.class, locale);
+    AppResources resources = new AppResources(PlateService.class, locale);
 
     Workbook workbook = service.workbook(plate, locale);
 
@@ -376,7 +376,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void workbook_NullPlate() throws Exception {
     Locale locale = Locale.CANADA;
-    MessageResource resources = new MessageResource(PlateService.class, locale);
+    AppResources resources = new AppResources(PlateService.class, locale);
 
     Workbook workbook = service.workbook(null, locale);
 
@@ -419,7 +419,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     Well well4 = plate.well(1, 0);
     well4.setSample(new SubmissionSample(4L, "test control 4"));
     Locale locale = Locale.CANADA;
-    MessageResource resources = new MessageResource(PlateService.class, locale);
+    AppResources resources = new AppResources(PlateService.class, locale);
 
     Workbook workbook = service.workbook(plate, null);
 

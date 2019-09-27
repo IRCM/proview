@@ -17,11 +17,11 @@ import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.THEME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -150,7 +150,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   }
 
   private void updateActiveButton(Button button, User user) {
-    final MessageResource userResources = new MessageResource(User.class, getLocale());
+    final AppResources userResources = new AppResources(User.class, getLocale());
     button.setIcon(user.isActive() ? VaadinIcon.EYE.create() : VaadinIcon.EYE_SLASH.create());
     button.setText(userResources.message(property(ACTIVE, user.isActive())));
     button.getElement().setAttribute(THEME, user.isActive() ? SUCCESS : ERROR);
@@ -158,9 +158,9 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(UsersView.class, getLocale());
-    final MessageResource userResources = new MessageResource(User.class, getLocale());
-    final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(UsersView.class, getLocale());
+    final AppResources userResources = new AppResources(User.class, getLocale());
+    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
     header.setText(resources.message(HEADER));
     String emailHeader = userResources.message(EMAIL);
     email.setHeader(emailHeader).setFooter(emailHeader);
@@ -192,8 +192,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
 
   @Override
   public String getPageTitle() {
-    MessageResource resources = new MessageResource(UsersView.class, getLocale());
-    MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
+    AppResources resources = new AppResources(UsersView.class, getLocale());
+    AppResources webResources = new AppResources(WebConstants.class, getLocale());
     return resources.message(TITLE, webResources.message(APPLICATION_NAME));
   }
 

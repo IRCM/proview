@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -35,7 +36,6 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.text.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -201,8 +201,8 @@ public class SubmissionService {
     plateRepository.findBySubmission(submission)
         .ifPresent(plate -> context.setVariable("plate", plate));
 
-    String templateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Print.html";
+    String templateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Print.html";
     String content = emailTemplateEngine.process(templateLocation, context);
     return content;
   }
@@ -270,15 +270,15 @@ public class SubmissionService {
     context.setVariable("sampleCount", submission.getSamples().size());
     context.setVariable("samples", submission.getSamples());
 
-    MessageResource resource = new MessageResource(SubmissionService.class, Locale.ENGLISH);
+    AppResources resource = new AppResources(SubmissionService.class, Locale.ENGLISH);
     final List<User> proteomicUsers = adminUsers();
     MimeMessageHelper email = emailService.htmlEmail();
     email.setSubject(resource.message("subject." + type.name()));
-    String htmlTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Email.html";
+    String htmlTemplateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation = "/" + SubmissionService.class.getName().replace(".", "/")
-        + "_Email.txt";
+    String textTemplateLocation =
+        "/" + SubmissionService.class.getName().replace(".", "/") + "_Email.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
     for (User proteomicUser : proteomicUsers) {

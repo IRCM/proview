@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
@@ -51,7 +52,6 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.text.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDateTime;
@@ -82,7 +82,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   @Inject
   private PlateRepository plateRepository;
   private Locale locale = Locale.ENGLISH;
-  private MessageResource resources = new MessageResource(ActivityService.class, locale);
+  private AppResources resources = new AppResources(ActivityService.class, locale);
 
   @Test
   public void record_Digestion() throws Exception {

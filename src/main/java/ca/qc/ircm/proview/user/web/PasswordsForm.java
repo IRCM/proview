@@ -3,8 +3,8 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -42,8 +42,8 @@ public class PasswordsForm extends FormLayout implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(PasswordsForm.class, getLocale());
-    final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(PasswordsForm.class, getLocale());
+    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
     password.setLabel(resources.message(PASSWORD));
     passwordConfirm.setLabel(resources.message(PASSWORD_CONFIRM));
     passwordBinder.forField(password)

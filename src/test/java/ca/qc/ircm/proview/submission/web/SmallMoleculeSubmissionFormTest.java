@@ -43,12 +43,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.List;
 import java.util.Locale;
@@ -67,9 +67,8 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
   @Mock
   private Submission submission;
   private Locale locale = ENGLISH;
-  private MessageResource resources =
-      new MessageResource(SmallMoleculeSubmissionForm.class, locale);
-  private MessageResource submissionResources = new MessageResource(Submission.class, locale);
+  private AppResources resources = new AppResources(SmallMoleculeSubmissionForm.class, locale);
+  private AppResources submissionResources = new AppResources(Submission.class, locale);
 
   /**
    * Before test.
@@ -125,9 +124,8 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
   public void localeChange() {
     form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources =
-        new MessageResource(SmallMoleculeSubmissionForm.class, locale);
-    final MessageResource submissionResources = new MessageResource(Submission.class, locale);
+    final AppResources resources = new AppResources(SmallMoleculeSubmissionForm.class, locale);
+    final AppResources submissionResources = new AppResources(Submission.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(SAMPLE_TYPE), form.sampleType.getLabel());

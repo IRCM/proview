@@ -4,12 +4,12 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
@@ -64,15 +64,15 @@ public class PrintSubmissionView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(PrintSubmissionView.class, getLocale());
+    final AppResources resources = new AppResources(PrintSubmissionView.class, getLocale());
     header.setText(resources.message(HEADER));
     updateSecondHeader();
   }
 
   @Override
   public String getPageTitle() {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
-    final MessageResource generalResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
+    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 

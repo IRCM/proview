@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
-import ca.qc.ircm.text.MessageResource;
+import ca.qc.ircm.proview.AppResources;
 import java.util.Locale;
 
 /**
@@ -36,17 +36,17 @@ public enum SampleType {
    * Sample is in a Gel.
    */
   GEL, BIOID_BEADS, MAGNETIC_BEADS, AGAROSE_BEADS;
-  private static MessageResource getResources(Locale locale) {
-    return new MessageResource(SampleType.class, locale);
+  private static AppResources getResources(Locale locale) {
+    return new AppResources(SampleType.class, locale);
   }
 
   public static String getNullLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message("NULL");
   }
 
   public String getLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message(name());
   }
 

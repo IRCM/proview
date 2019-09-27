@@ -17,22 +17,25 @@
 
 package ca.qc.ircm.proview.treatment;
 
+import ca.qc.ircm.proview.AppResources;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * Solvents used in our lab.
  */
 public enum Solvent {
   ACETONITRILE, METHANOL, CHCL3, OTHER;
+  private static AppResources getResources(Locale locale) {
+    return new AppResources(Solvent.class, locale);
+  }
 
   public String getLabel(Locale locale) {
-    ResourceBundle bundle = ResourceBundle.getBundle(Solvent.class.getName(), locale);
-    return bundle.getString(name());
+    AppResources resources = getResources(locale);
+    return resources.message(name());
   }
 
   public static String getNullLabel(Locale locale) {
-    ResourceBundle bundle = ResourceBundle.getBundle(Solvent.class.getName(), locale);
-    return bundle.getString("NULL");
+    AppResources resources = getResources(locale);
+    return resources.message("NULL");
   }
 }

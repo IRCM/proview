@@ -5,10 +5,10 @@ import static ca.qc.ircm.proview.user.UserRole.USER;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -51,7 +51,7 @@ public class GuidelinesView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
     removeAll();
     add(header);
     header.setText(resources.message(HEADER));
@@ -61,8 +61,8 @@ public class GuidelinesView extends VerticalLayout
 
   @Override
   public String getPageTitle() {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
-    final MessageResource generalResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
+    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 }

@@ -222,8 +222,8 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
     submissionsView.doubleClickSubmission(0);
-    SubmissionDialogElement submissionDialog = $(SubmissionDialogElement.class)
-        .id(SubmissionDialog.ID);
+    SubmissionDialogElement submissionDialog =
+        $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
     submissionDialog.clickEdit();
     assertEquals(viewUrl(SubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.edit()).isPresent());
@@ -240,8 +240,8 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
     submissionsView.doubleClickSubmission(0);
-    SubmissionDialogElement submissionDialog = $(SubmissionDialogElement.class)
-        .id(SubmissionDialog.ID);
+    SubmissionDialogElement submissionDialog =
+        $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
     submissionDialog.clickPrint();
     assertEquals(viewUrl(PrintSubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.print()).isPresent());

@@ -63,6 +63,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -74,7 +75,6 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -122,12 +122,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(SubmissionsView.class, locale);
-  private MessageResource submissionResources = new MessageResource(Submission.class, locale);
-  private MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
-  private MessageResource submissionSampleResources =
-      new MessageResource(SubmissionSample.class, locale);
-  private MessageResource webResources = new MessageResource(WebConstants.class, locale);
+  private AppResources resources = new AppResources(SubmissionsView.class, locale);
+  private AppResources submissionResources = new AppResources(Submission.class, locale);
+  private AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
+  private AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
+  private AppResources webResources = new AppResources(WebConstants.class, locale);
   private List<Submission> submissions;
 
   /**
@@ -314,11 +313,10 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     view.hiddenFilter.setDataProvider(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(SubmissionsView.class, locale);
-    final MessageResource submissionResources = new MessageResource(Submission.class, locale);
-    final MessageResource laboratoryResources = new MessageResource(Laboratory.class, locale);
-    final MessageResource submissionSampleResources =
-        new MessageResource(SubmissionSample.class, locale);
+    final AppResources resources = new AppResources(SubmissionsView.class, locale);
+    final AppResources submissionResources = new AppResources(Submission.class, locale);
+    final AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
+    final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());

@@ -24,10 +24,10 @@ import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS_REQUIRED;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -133,7 +133,7 @@ public class UsersViewPresenter {
     clearError();
     User user = view.users.getSelectedItems().stream().findFirst().orElse(null);
     if (user == null) {
-      MessageResource resources = new MessageResource(UsersView.class, locale);
+      AppResources resources = new AppResources(UsersView.class, locale);
       view.error.setText(resources.message(USERS_REQUIRED));
       view.error.setVisible(true);
     } else {
@@ -158,7 +158,7 @@ public class UsersViewPresenter {
   }
 
   void showError(Map<String, List<String>> parameters, Locale locale) {
-    MessageResource resources = new MessageResource(UsersView.class, locale);
+    AppResources resources = new AppResources(UsersView.class, locale);
     if (parameters.containsKey(SWITCH_FAILED)) {
       view.showNotification(resources.message(SWITCH_FAILED));
     }

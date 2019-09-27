@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -31,7 +32,6 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.text.MessageResource;
 import com.google.common.collect.Lists;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -179,7 +179,7 @@ public class PlateService {
     if (locale == null) {
       locale = Locale.getDefault();
     }
-    final MessageResource resources = new MessageResource(PlateService.class, locale);
+    final AppResources resources = new AppResources(PlateService.class, locale);
     Workbook workbook = new XSSFWorkbook(applicationConfiguration.getPlateTemplate());
     Font normalFont = workbook.createFont();
     normalFont.setColor(HSSFColor.BLACK.index);

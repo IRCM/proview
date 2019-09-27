@@ -27,13 +27,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import java.util.Locale;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,8 +67,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
     Locale locale = currentLocale();
     assertEquals(
-        new MessageResource(SigninView.class, locale).message(TITLE,
-            new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME)),
+        new AppResources(SigninView.class, locale).message(TITLE,
+            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -125,8 +125,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     view.doubleClickSubmission(0);
 
     waitUntil(driver -> $(SubmissionDialogElement.class).id(SubmissionDialog.ID));
-    SubmissionDialogElement submissionDialog = $(SubmissionDialogElement.class)
-        .id(SubmissionDialog.ID);
+    SubmissionDialogElement submissionDialog =
+        $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
     assertEquals("POLR3B-Flag", submissionDialog.header().getText());
   }
 

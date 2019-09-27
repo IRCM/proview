@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
-import ca.qc.ircm.text.MessageResource;
+import ca.qc.ircm.proview.AppResources;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
@@ -73,8 +73,8 @@ public class WebConstants {
   public static final String SAVED_SAMPLES = "savedSamples";
   public static final String SAVED_CONTAINERS = "savedContainers";
   public static final String SAVED_SAMPLE_FROM_MULTIPLE_USERS = "savedSamplesFromMultipleUsers";
-  public static final Method VALUE_CHANGE_LISTENER_METHOD = ReflectTools
-      .findMethod(ValueChangeListener.class, "valueChanged", ValueChangeEvent.class);
+  public static final Method VALUE_CHANGE_LISTENER_METHOD =
+      ReflectTools.findMethod(ValueChangeListener.class, "valueChanged", ValueChangeEvent.class);
 
   /**
    * Returns all valid locales for program.
@@ -146,7 +146,7 @@ public class WebConstants {
    * @return {@link UploadI18N} for French
    */
   public static UploadI18N frenchUploadI18N() {
-    final MessageResource resources = new MessageResource(WebConstants.class, FRENCH);
+    final AppResources resources = new AppResources(WebConstants.class, FRENCH);
     return new UploadI18N()
         .setAddFiles(new UploadI18N.AddFiles()
             .setOne("Ajouter un fichier...").setMany("Ajouter fichiers..."))

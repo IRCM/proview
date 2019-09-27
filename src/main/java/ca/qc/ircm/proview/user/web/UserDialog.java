@@ -37,6 +37,7 @@ import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.THEME;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -46,7 +47,6 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -173,12 +173,11 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(UserDialog.class, getLocale());
-    final MessageResource userResources = new MessageResource(User.class, getLocale());
-    final MessageResource addressResources = new MessageResource(Address.class, getLocale());
-    final MessageResource phoneNumberResources = new MessageResource(PhoneNumber.class,
-        getLocale());
-    final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(UserDialog.class, getLocale());
+    final AppResources userResources = new AppResources(User.class, getLocale());
+    final AppResources addressResources = new AppResources(Address.class, getLocale());
+    final AppResources phoneNumberResources = new AppResources(PhoneNumber.class, getLocale());
+    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
     updateHeader();
     email.setLabel(userResources.message(EMAIL));
     name.setLabel(userResources.message(NAME));
@@ -201,7 +200,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   }
 
   private void updateHeader() {
-    final MessageResource resources = new MessageResource(UserDialog.class, getLocale());
+    final AppResources resources = new AppResources(UserDialog.class, getLocale());
     if (presenter.getUser() != null && presenter.getUser().getId() != null) {
       header.setText(resources.message(HEADER, 1, presenter.getUser().getName()));
     } else {

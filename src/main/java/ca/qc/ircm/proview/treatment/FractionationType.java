@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.treatment;
 
-import ca.qc.ircm.text.MessageResource;
+import ca.qc.ircm.proview.AppResources;
 import java.util.Locale;
 
 /**
@@ -32,17 +32,17 @@ public enum FractionationType {
    * Split by pI.
    */
   PI;
-  private static MessageResource getResources(Locale locale) {
-    return new MessageResource(FractionationType.class, locale);
+  private static AppResources getResources(Locale locale) {
+    return new AppResources(FractionationType.class, locale);
   }
 
   public static String getNullLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message("NULL");
   }
 
   public String getLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message(name());
   }
 }

@@ -36,6 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
@@ -52,7 +53,6 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.tabs.Tab;
@@ -91,7 +91,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(SubmissionView.class, locale);
+  private AppResources resources = new AppResources(SubmissionView.class, locale);
   private Submission submission;
   private String experiment = "my test experiment";
   private List<SubmissionFile> files;

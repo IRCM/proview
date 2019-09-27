@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.msanalysis;
 
-import ca.qc.ircm.text.MessageResource;
+import ca.qc.ircm.proview.AppResources;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -73,12 +73,12 @@ public enum MassDetectionInstrument {
     return USER_CHOICES.contains(this);
   }
 
-  private MessageResource getResources(Locale locale) {
-    return new MessageResource(MassDetectionInstrument.class, locale);
+  private AppResources getResources(Locale locale) {
+    return new AppResources(MassDetectionInstrument.class, locale);
   }
 
   public String getLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message(name());
   }
 }

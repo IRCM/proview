@@ -41,7 +41,7 @@ public class ProteolyticDigestionTest {
   @Test
   public void getLabel_Digested() {
     assertEquals("Already digested", DIGESTED.getLabel(Locale.ENGLISH));
-    assertEquals("Déjà digéré", DIGESTED.getLabel(Locale.FRENCH));
+    assertEquals("Déjà digérées", DIGESTED.getLabel(Locale.FRENCH));
   }
 
   @Test

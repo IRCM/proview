@@ -20,6 +20,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_Q
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.WebConstants.PLACEHOLDER;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -28,7 +29,6 @@ import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -125,12 +125,11 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources =
-        new MessageResource(IntactProteinSubmissionForm.class, getLocale());
-    final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
-    final MessageResource sampleResources = new MessageResource(Sample.class, getLocale());
-    final MessageResource submissionSampleResources =
-        new MessageResource(SubmissionSample.class, getLocale());
+    final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, getLocale());
+    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
+    final AppResources sampleResources = new AppResources(Sample.class, getLocale());
+    final AppResources submissionSampleResources =
+        new AppResources(SubmissionSample.class, getLocale());
     experiment.setLabel(submissionResources.message(EXPERIMENT));
     goal.setLabel(submissionResources.message(GOAL));
     taxonomy.setLabel(submissionResources.message(TAXONOMY));

@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_OVER_MAXIMU
 import static ca.qc.ircm.proview.submission.web.SubmissionView.MAXIMUM_FILES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
@@ -20,7 +21,6 @@ import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -91,12 +91,12 @@ public class SubmissionViewPresenter {
     try {
       FileCopyUtils.copy(input, output);
     } catch (IOException e) {
-      MessageResource resources = new MessageResource(SubmissionView.class, locale);
+      AppResources resources = new AppResources(SubmissionView.class, locale);
       view.showNotification(resources.message(FILES_IOEXCEPTION, filename));
     }
     file.setContent(output.toByteArray());
     if (filesDataProvider.getItems().size() >= MAXIMUM_FILES_COUNT) {
-      MessageResource resources = new MessageResource(SubmissionView.class, locale);
+      AppResources resources = new AppResources(SubmissionView.class, locale);
       view.showNotification(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
     }
     filesDataProvider.getItems().add(file);
@@ -141,7 +141,7 @@ public class SubmissionViewPresenter {
         logger.debug("save submission {}", submission);
         service.update(submission, null);
       }
-      final MessageResource resources = new MessageResource(SubmissionView.class, locale);
+      final AppResources resources = new AppResources(SubmissionView.class, locale);
       view.showNotification(resources.message(SAVED, submission.getExperiment()));
       UI.getCurrent().navigate(SubmissionsView.class);
     }

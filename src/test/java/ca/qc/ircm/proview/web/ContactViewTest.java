@@ -37,9 +37,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -54,8 +54,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ContactViewTest extends AbstractViewTestCase {
   private ContactView view;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(ContactView.class, locale);
-  private MessageResource generalResources = new MessageResource(WebConstants.class, locale);
+  private AppResources resources = new AppResources(ContactView.class, locale);
+  private AppResources generalResources = new AppResources(WebConstants.class, locale);
 
   /**
    * Before test.
@@ -99,7 +99,7 @@ public class ContactViewTest extends AbstractViewTestCase {
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(ContactView.class, locale);
+    final AppResources resources = new AppResources(ContactView.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());

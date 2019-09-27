@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.submission;
 
-import ca.qc.ircm.text.MessageResource;
+import ca.qc.ircm.proview.AppResources;
 import java.util.Locale;
 
 /**
@@ -30,12 +30,12 @@ public enum Quantification {
     return NULL.getLabel(locale);
   }
 
-  private MessageResource getResources(Locale locale) {
-    return new MessageResource(Quantification.class, locale);
+  private AppResources getResources(Locale locale) {
+    return new AppResources(Quantification.class, locale);
   }
 
   public String getLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message(name());
   }
 }

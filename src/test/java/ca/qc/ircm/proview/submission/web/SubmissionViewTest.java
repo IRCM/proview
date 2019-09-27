@@ -50,12 +50,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -101,9 +101,9 @@ public class SubmissionViewTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<ComponentRenderer<Button, SubmissionFile>> buttonRendererCaptor;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(SubmissionView.class, locale);
-  private MessageResource submissionResources = new MessageResource(Submission.class, locale);
-  private MessageResource webResources = new MessageResource(WebConstants.class, locale);
+  private AppResources resources = new AppResources(SubmissionView.class, locale);
+  private AppResources submissionResources = new AppResources(Submission.class, locale);
+  private AppResources webResources = new AppResources(WebConstants.class, locale);
   private List<SubmissionFile> files;
   private Random random = new Random();
 
@@ -186,9 +186,9 @@ public class SubmissionViewTest extends AbstractViewTestCase {
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(SubmissionView.class, locale);
-    final MessageResource submissionResources = new MessageResource(Submission.class, locale);
-    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
+    final AppResources resources = new AppResources(SubmissionView.class, locale);
+    final AppResources submissionResources = new AppResources(Submission.class, locale);
+    final AppResources webResources = new AppResources(WebConstants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.filename = mock(Column.class);
     view.remove = mock(Column.class);

@@ -18,11 +18,11 @@
 package ca.qc.ircm.proview.plate;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
-import ca.qc.ircm.text.MessageResource;
 import java.io.Serializable;
 import java.util.Locale;
 import javax.persistence.Column;
@@ -94,7 +94,7 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
 
   @Override
   public String getFullName() {
-    MessageResource resources = new MessageResource(Well.class, Locale.getDefault());
+    AppResources resources = new AppResources(Well.class, Locale.getDefault());
     return resources.message("fullname", plate.getName(), Plate.rowLabel(row),
         Plate.columnLabel(column));
   }

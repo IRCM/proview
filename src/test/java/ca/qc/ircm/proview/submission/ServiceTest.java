@@ -70,7 +70,7 @@ public class ServiceTest {
     assertEquals("LC/MS/MS", LC_MS_MS.getLabel(locale));
     assertEquals("2D-LC/MS/MS (MudPit)", TWO_DIMENSION_LC_MS_MS.getLabel(locale));
     assertEquals("MALDI/MS", MALDI_MS.getLabel(locale));
-    assertEquals("Petite molecule", SMALL_MOLECULE.getLabel(locale));
+    assertEquals("Petite molécule", SMALL_MOLECULE.getLabel(locale));
     assertEquals("Protéine intacte", INTACT_PROTEIN.getLabel(locale));
   }
 }

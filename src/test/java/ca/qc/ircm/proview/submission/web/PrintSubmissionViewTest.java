@@ -29,12 +29,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
 import java.util.Locale;
@@ -54,8 +54,8 @@ public class PrintSubmissionViewTest extends AbstractViewTestCase {
   @Autowired
   private PrintSubmission printContent;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(PrintSubmissionView.class, locale);
-  private MessageResource webResources = new MessageResource(WebConstants.class, locale);
+  private AppResources resources = new AppResources(PrintSubmissionView.class, locale);
+  private AppResources webResources = new AppResources(WebConstants.class, locale);
 
   /**
    * Before test.
@@ -90,7 +90,7 @@ public class PrintSubmissionViewTest extends AbstractViewTestCase {
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    MessageResource resources = new MessageResource(PrintSubmissionView.class, locale);
+    AppResources resources = new AppResources(PrintSubmissionView.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());

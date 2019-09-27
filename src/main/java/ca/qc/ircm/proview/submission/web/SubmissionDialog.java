@@ -15,12 +15,12 @@ import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.englishDatePickerI18n;
 import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import ch.carnet.kasparscherrer.VerticalScrollLayout;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -129,8 +129,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
-    final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
+    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
     updateHeader();
     DatePickerI18n dateI18n = englishDatePickerI18n();
     if (FRENCH.equals(getLocale())) {
@@ -186,7 +186,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     if (submission != null && submission.getId() != null) {
       header.setText(submission.getExperiment());
     } else {
-      final MessageResource resources = new MessageResource(SubmissionDialog.class, getLocale());
+      final AppResources resources = new AppResources(SubmissionDialog.class, getLocale());
       header.setText(resources.message(HEADER));
     }
   }

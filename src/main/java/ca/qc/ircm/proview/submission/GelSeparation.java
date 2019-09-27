@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.submission;
 
-import ca.qc.ircm.text.MessageResource;
+import ca.qc.ircm.proview.AppResources;
 import java.util.Locale;
 
 /**
@@ -26,17 +26,17 @@ import java.util.Locale;
 public enum GelSeparation {
   ONE_DIMENSION, TWO_DIMENSION;
 
-  private static MessageResource getResources(Locale locale) {
-    return new MessageResource(GelSeparation.class, locale);
+  private static AppResources getResources(Locale locale) {
+    return new AppResources(GelSeparation.class, locale);
   }
 
   public static String getNullLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message("NULL");
   }
 
   public String getLabel(Locale locale) {
-    MessageResource resources = getResources(locale);
+    AppResources resources = getResources(locale);
     return resources.message(name());
   }
 }

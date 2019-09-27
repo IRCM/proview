@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.web.WebConstants.ADD;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
@@ -14,7 +15,6 @@ import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.web.UsersView;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -115,7 +115,7 @@ public class ViewLayout extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    MessageResource resources = new MessageResource(ViewLayout.class, getLocale());
+    AppResources resources = new AppResources(ViewLayout.class, getLocale());
     submissions.setLabel(resources.message(SUBMISSIONS));
     users.setLabel(resources.message(USERS));
     exitSwitchUser.setLabel(resources.message(EXIT_SWITCH_USER));

@@ -14,11 +14,11 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERA
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
 import static ca.qc.ircm.proview.text.Strings.property;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -90,7 +90,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     highResolution.addClassName(HIGH_RESOLUTION);
     highResolution.setItems(false, true);
     highResolution
-        .setRenderer(new TextRenderer<>(value -> new MessageResource(Submission.class, getLocale())
+        .setRenderer(new TextRenderer<>(value -> new AppResources(Submission.class, getLocale())
             .message(property(HIGH_RESOLUTION, value))));
     highResolution.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     otherSolvent.addClassName(OTHER_SOLVENT);
@@ -99,9 +99,8 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources =
-        new MessageResource(SmallMoleculeSubmissionForm.class, getLocale());
-    final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
+    final AppResources resources = new AppResources(SmallMoleculeSubmissionForm.class, getLocale());
+    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
     sampleType.setLabel(resources.message(SAMPLE_TYPE));
     sampleName.setLabel(resources.message(SAMPLE_NAME));
     solvent.setLabel(submissionResources.message(SOLUTION_SOLVENT));

@@ -20,6 +20,7 @@ import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -29,7 +30,6 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -118,8 +118,8 @@ public class SubmissionsView extends VerticalLayout
     submissions.setId(SUBMISSIONS);
     submissions.setSizeFull();
     submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
-    ValueProvider<Submission, String> submissionExperiment = submission -> Objects
-        .toString(submission.getExperiment(), "");
+    ValueProvider<Submission, String> submissionExperiment =
+        submission -> Objects.toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
         .setComparator((s1, s2) -> normalize(submissionExperiment.apply(s1))
             .compareToIgnoreCase(normalize(submissionExperiment.apply(s2))));
@@ -129,51 +129,47 @@ public class SubmissionsView extends VerticalLayout
     user = submissions.addColumn(submissionUser, USER).setKey(USER)
         .setComparator((s1, s2) -> normalize(submissionUser.apply(s1))
             .compareToIgnoreCase(normalize(submissionUser.apply(s2))));
-    ValueProvider<Submission, String> submissionDirector = submission -> Objects
-        .toString(submission.getLaboratory().getDirector(), "");
+    ValueProvider<Submission, String> submissionDirector =
+        submission -> Objects.toString(submission.getLaboratory().getDirector(), "");
     director = submissions.addColumn(submissionDirector, DIRECTOR).setKey(DIRECTOR)
         .setComparator((s1, s2) -> normalize(submissionDirector.apply(s1))
             .compareToIgnoreCase(normalize(submissionDirector.apply(s2))));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    sampleDeliveryDate = submissions
-        .addColumn(submission -> submission.getSampleDeliveryDate() != null
+    sampleDeliveryDate =
+        submissions.addColumn(submission -> submission.getSampleDeliveryDate() != null
             ? dateFormatter.format(submission.getSampleDeliveryDate())
-            : "", SAMPLE_DELIVERY_DATE)
-        .setKey(SAMPLE_DELIVERY_DATE);
+            : "", SAMPLE_DELIVERY_DATE).setKey(SAMPLE_DELIVERY_DATE);
     digestionDate = submissions.addColumn(submission -> submission.getDigestionDate() != null
         ? dateFormatter.format(submission.getDigestionDate())
         : "", DIGESTION_DATE).setKey(DIGESTION_DATE);
     analysisDate = submissions.addColumn(submission -> submission.getAnalysisDate() != null
         ? dateFormatter.format(submission.getAnalysisDate())
         : "", ANALYSIS_DATE).setKey(ANALYSIS_DATE);
-    dataAvailableDate = submissions
-        .addColumn(submission -> submission.getDataAvailableDate() != null
+    dataAvailableDate =
+        submissions.addColumn(submission -> submission.getDataAvailableDate() != null
             ? dateFormatter.format(submission.getDataAvailableDate())
-            : "", DATA_AVAILABLE_DATE)
-        .setKey(DATA_AVAILABLE_DATE);
+            : "", DATA_AVAILABLE_DATE).setKey(DATA_AVAILABLE_DATE);
     date = submissions.addColumn(submission -> submission.getSubmissionDate().toLocalDate() != null
         ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
         : "", SUBMISSION_DATE).setKey(SUBMISSION_DATE);
-    instrument = submissions
-        .addColumn(submission -> submission.getInstrument() != null
-            ? submission.getInstrument().getLabel(getLocale())
-            : MassDetectionInstrument.getNullLabel(getLocale()), INSTRUMENT)
-        .setKey(INSTRUMENT);
+    instrument = submissions.addColumn(submission -> submission.getInstrument() != null
+        ? submission.getInstrument().getLabel(getLocale())
+        : MassDetectionInstrument.getNullLabel(getLocale()), INSTRUMENT).setKey(INSTRUMENT);
     service = submissions.addColumn(submission -> submission.getService() != null
         ? submission.getService().getLabel(getLocale())
         : Service.getNullLabel(getLocale()), SERVICE).setKey(SERVICE);
-    samplesCount = submissions
-        .addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
-        .setKey(SAMPLES_COUNT);
-    samples = submissions
-        .addColumn(new ComponentRenderer<>(submission -> samples(submission)), SAMPLES)
-        .setKey(SAMPLES).setSortable(false);
-    status = submissions
-        .addColumn(new ComponentRenderer<>(submission -> status(submission)), STATUS).setKey(STATUS)
-        .setSortable(false);
-    hidden = submissions
-        .addColumn(new ComponentRenderer<>(submission -> hidden(submission)), HIDDEN)
-        .setKey(HIDDEN);
+    samplesCount =
+        submissions.addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
+            .setKey(SAMPLES_COUNT);
+    samples =
+        submissions.addColumn(new ComponentRenderer<>(submission -> samples(submission)), SAMPLES)
+            .setKey(SAMPLES).setSortable(false);
+    status =
+        submissions.addColumn(new ComponentRenderer<>(submission -> status(submission)), STATUS)
+            .setKey(STATUS).setSortable(false);
+    hidden =
+        submissions.addColumn(new ComponentRenderer<>(submission -> hidden(submission)), HIDDEN)
+            .setKey(HIDDEN);
     submissions.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = submissions.appendHeaderRow();
     filtersRow.getCell(experiment).setComponent(experimentFilter);
@@ -212,8 +208,8 @@ public class SubmissionsView extends VerticalLayout
     statusFilter.setSizeFull();
     filtersRow.getCell(hidden).setComponent(hiddenFilter);
     hiddenFilter.setItems(false, true);
-    hiddenFilter.setItemLabelGenerator(value -> new MessageResource(Submission.class, getLocale())
-        .message(property(HIDDEN, value)));
+    hiddenFilter.setItemLabelGenerator(
+        value -> new AppResources(Submission.class, getLocale()).message(property(HIDDEN, value)));
     hiddenFilter.setClearButtonVisible(true);
     hiddenFilter.addValueChangeListener(e -> presenter.filterHidden(e.getValue()));
     hiddenFilter.setSizeFull();
@@ -224,7 +220,7 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private Span samples(Submission submission) {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
     Span span = new Span();
     span.setText(resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
         submission.getSamples().size()));
@@ -234,7 +230,7 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private Span status(Submission submission) {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
     List<SampleStatus> statuses = submission.getSamples().stream().map(sample -> sample.getStatus())
         .distinct().collect(Collectors.toList());
     Span span = new Span();
@@ -248,7 +244,7 @@ public class SubmissionsView extends VerticalLayout
   private Button hidden(Submission submission) {
     Button button = new Button();
     button.addClassName(HIDDEN);
-    final MessageResource resources = new MessageResource(Submission.class, getLocale());
+    final AppResources resources = new AppResources(Submission.class, getLocale());
     button.setText(resources.message(property(HIDDEN, submission.isHidden())));
     button.setIcon(submission.isHidden() ? VaadinIcon.EYE_SLASH.create() : VaadinIcon.EYE.create());
     button.addThemeName(submission.isHidden() ? WebConstants.ERROR : WebConstants.SUCCESS);
@@ -258,11 +254,11 @@ public class SubmissionsView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
-    final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
-    final MessageResource laboratoryResources = new MessageResource(Laboratory.class, getLocale());
-    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-        getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
+    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
+    final AppResources laboratoryResources = new AppResources(Laboratory.class, getLocale());
+    final AppResources submissionSampleResources =
+        new AppResources(SubmissionSample.class, getLocale());
     header.setText(resources.message(HEADER));
     String experimentHeader = submissionResources.message(EXPERIMENT);
     experiment.setHeader(experimentHeader).setFooter(experimentHeader);
@@ -308,8 +304,8 @@ public class SubmissionsView extends VerticalLayout
 
   @Override
   public String getPageTitle() {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
-    final MessageResource generalResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
+    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 }

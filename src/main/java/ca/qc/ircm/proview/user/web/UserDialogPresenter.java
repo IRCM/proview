@@ -36,6 +36,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
@@ -47,7 +48,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -78,8 +78,8 @@ public class UserDialogPresenter {
   private Binder<User> binder = new BeanValidationBinder<>(User.class);
   private ListDataProvider<Laboratory> laboratoriesDataProvider;
   private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
-  private Binder<LaboratoryContainer> laboratoryContainerBinder = new BeanValidationBinder<>(
-      LaboratoryContainer.class);
+  private Binder<LaboratoryContainer> laboratoryContainerBinder =
+      new BeanValidationBinder<>(LaboratoryContainer.class);
   private Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
   private Binder<PhoneNumber> phoneNumberBinder = new BeanValidationBinder<>(PhoneNumber.class);
   private User user;
@@ -106,8 +106,8 @@ public class UserDialogPresenter {
     if (authorizationService.hasRole(UserRole.ADMIN)) {
       laboratoriesDataProvider = DataProvider.ofCollection(laboratoryService.all());
     } else {
-      laboratoriesDataProvider = DataProvider
-          .fromStream(Stream.of(authorizationService.getCurrentUser().getLaboratory()));
+      laboratoriesDataProvider =
+          DataProvider.fromStream(Stream.of(authorizationService.getCurrentUser().getLaboratory()));
     }
     dialog.laboratory.setDataProvider(laboratoriesDataProvider);
     dialog.laboratory.setItemLabelGenerator(lab -> lab.getName());
@@ -123,7 +123,7 @@ public class UserDialogPresenter {
   }
 
   void localeChange(Locale locale) {
-    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
+    final AppResources webResources = new AppResources(WebConstants.class, locale);
     binder.forField(dialog.email).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("")
         .withValidator(new EmailValidator(webResources.message(INVALID_EMAIL))).bind(EMAIL);
@@ -166,8 +166,8 @@ public class UserDialogPresenter {
   }
 
   private void updateReadOnly() {
-    boolean readOnly = user.getId() != null
-        && !authorizationService.hasPermission(user, BasePermission.WRITE);
+    boolean readOnly =
+        user.getId() != null && !authorizationService.hasPermission(user, BasePermission.WRITE);
     binder.setReadOnly(readOnly);
     dialog.laboratoryName.setReadOnly(
         readOnly || !authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));

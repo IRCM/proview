@@ -24,10 +24,10 @@ import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.ErrorParameter;
 import java.util.Locale;
@@ -47,8 +47,8 @@ public class AccessDeniedErrorTest extends AbstractViewTestCase {
   @Mock
   private ErrorParameter<AccessDeniedException> parameter;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(AccessDeniedError.class, locale);
-  private MessageResource generalResources = new MessageResource(WebConstants.class, locale);
+  private AppResources resources = new AppResources(AccessDeniedError.class, locale);
+  private AppResources generalResources = new AppResources(WebConstants.class, locale);
 
   /**
    * Before test.

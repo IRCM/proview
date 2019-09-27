@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleType;
@@ -30,7 +31,6 @@ import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -63,12 +63,12 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class IntactProteinSubmissionFormPresenter {
-  private static final Logger logger = LoggerFactory
-      .getLogger(IntactProteinSubmissionFormPresenter.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(IntactProteinSubmissionFormPresenter.class);
   private IntactProteinSubmissionForm form;
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private Binder<SubmissionSample> firstSampleBinder = new BeanValidationBinder<>(
-      SubmissionSample.class);
+  private Binder<SubmissionSample> firstSampleBinder =
+      new BeanValidationBinder<>(SubmissionSample.class);
   private Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
   private SubmissionSampleService sampleService;
 
@@ -89,7 +89,7 @@ public class IntactProteinSubmissionFormPresenter {
   }
 
   void localeChange(Locale locale) {
-    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
+    final AppResources webResources = new AppResources(WebConstants.class, locale);
     binder.forField(form.experiment).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(EXPERIMENT);
     binder.forField(form.goal).withNullRepresentation("").bind(GOAL);
@@ -140,10 +140,10 @@ public class IntactProteinSubmissionFormPresenter {
   private Validator<List<String>> samplesNamesDuplicates(Locale locale) {
     return (values, context) -> {
       Set<String> duplicates = new HashSet<>();
-      Optional<String> duplicate = values.stream().filter(name -> !duplicates.add(name))
-          .findFirst();
+      Optional<String> duplicate =
+          values.stream().filter(name -> !duplicates.add(name)).findFirst();
       if (duplicate.isPresent()) {
-        final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, locale);
+        final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
         return ValidationResult.error(resources.message(SAMPLES_NAMES_DUPLICATES, duplicate.get()));
       }
       return ValidationResult.ok();
@@ -152,12 +152,12 @@ public class IntactProteinSubmissionFormPresenter {
 
   private Validator<List<String>> samplesNamesExists(Locale locale) {
     return (values, context) -> {
-      Set<String> oldNames = binder.getBean().getSamples().stream().map(Sample::getName)
-          .collect(Collectors.toSet());
+      Set<String> oldNames =
+          binder.getBean().getSamples().stream().map(Sample::getName).collect(Collectors.toSet());
       Optional<String> exists = values.stream()
           .filter(name -> sampleService.exists(name) && !oldNames.contains(name)).findFirst();
       if (exists.isPresent()) {
-        final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, locale);
+        final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
         return ValidationResult.error(resources.message(SAMPLES_NAMES_EXISTS, exists.get()));
       }
       return ValidationResult.ok();
@@ -168,7 +168,7 @@ public class IntactProteinSubmissionFormPresenter {
     return (values, context) -> {
       Optional<Integer> samplesCount = samplesCount();
       if (samplesCount.isPresent() && samplesCount.get() != values.size()) {
-        final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, locale);
+        final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
         return ValidationResult
             .error(resources.message(SAMPLES_NAMES_WRONG_COUNT, values.size(), samplesCount.get()));
       }

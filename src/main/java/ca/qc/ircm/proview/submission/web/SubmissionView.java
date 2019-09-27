@@ -16,6 +16,7 @@ import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static ca.qc.ircm.proview.web.WebConstants.UPLOAD;
 import static ca.qc.ircm.proview.web.WebConstants.uploadI18N;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.user.UserRole;
@@ -23,7 +24,6 @@ import ca.qc.ircm.proview.web.ByteArrayStreamResourceWriter;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -164,9 +164,9 @@ public class SubmissionView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(SubmissionView.class, getLocale());
-    final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
-    final MessageResource webResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(SubmissionView.class, getLocale());
+    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
+    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
     header.setText(resources.message(HEADER));
     lcmsms.setLabel(LC_MS_MS.getLabel(getLocale()));
     smallMolecule.setLabel(SMALL_MOLECULE.getLabel(getLocale()));
@@ -181,8 +181,8 @@ public class SubmissionView extends VerticalLayout
 
   @Override
   public String getPageTitle() {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
-    final MessageResource generalResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
+    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 

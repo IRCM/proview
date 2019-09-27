@@ -27,7 +27,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.web.AccessDeniedError;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -35,10 +37,8 @@ import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
-import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import javax.persistence.EntityManager;
@@ -90,8 +90,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
 
     Locale locale = currentLocale();
     assertEquals(
-        new MessageResource(SigninView.class, locale).message(TITLE,
-            new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME)),
+        new AppResources(SigninView.class, locale).message(TITLE,
+            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -102,8 +102,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
 
     Locale locale = currentLocale();
     assertEquals(
-        new MessageResource(AccessDeniedError.class, locale).message(TITLE,
-            new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME)),
+        new AppResources(AccessDeniedError.class, locale).message(TITLE,
+            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -310,8 +310,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
 
     Locale locale = currentLocale();
     assertEquals(
-        new MessageResource(MainView.class, locale).message(TITLE,
-            new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME)),
+        new AppResources(SubmissionsView.class, locale).message(TITLE,
+            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 

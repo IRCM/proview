@@ -21,11 +21,11 @@ import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.web.AccessDeniedError;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.tabs.testbench.TabElement;
 import com.vaadin.flow.component.tabs.testbench.TabsElement;
 import com.vaadin.testbench.TestBenchTestCase;
@@ -80,29 +80,29 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     TabElement home =
         optional(() -> $(TabsElement.class).first().$(TabElement.class).first()).orElse(null);
     Optional<Locale> optlocale =
-        locales.stream().filter(locale -> new MessageResource(ViewLayout.class, locale)
+        locales.stream().filter(locale -> new AppResources(ViewLayout.class, locale)
             .message(SUBMISSIONS).equals(home != null ? home.getText() : "")).findAny();
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
-          .filter(locale -> new MessageResource(SigninView.class, locale)
+          .filter(locale -> new AppResources(SigninView.class, locale)
               .message(TITLE,
-                  new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME))
+                  new AppResources(WebConstants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
           .findAny();
     }
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
-          .filter(locale -> new MessageResource(AccessDeniedError.class, locale)
+          .filter(locale -> new AppResources(AccessDeniedError.class, locale)
               .message(TITLE,
-                  new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME))
+                  new AppResources(WebConstants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
           .findAny();
     }
     return optlocale.orElse(null);
   }
 
-  protected MessageResource resources(Class<?> baseClass) {
-    return new MessageResource(baseClass, currentLocale());
+  protected AppResources resources(Class<?> baseClass) {
+    return new AppResources(baseClass, currentLocale());
   }
 
   protected <T> Optional<T> optional(Supplier<T> supplier) {

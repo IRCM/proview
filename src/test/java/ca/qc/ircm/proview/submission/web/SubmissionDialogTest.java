@@ -33,6 +33,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -40,7 +41,6 @@ import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -68,9 +68,9 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   @Mock
   private ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(SubmissionDialog.class, locale);
-  private MessageResource webResources = new MessageResource(WebConstants.class, locale);
-  private MessageResource submissionResources = new MessageResource(Submission.class, locale);
+  private AppResources resources = new AppResources(SubmissionDialog.class, locale);
+  private AppResources webResources = new AppResources(WebConstants.class, locale);
+  private AppResources submissionResources = new AppResources(Submission.class, locale);
 
   /**
    * Before tests.
@@ -126,8 +126,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   public void labels() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
-    assertEquals(submissionResources.message(INSTRUMENT),
-        dialog.instrument.getLabel());
+    assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
           dialog.instrument.getItemLabelGenerator().apply(instrument));
@@ -156,14 +155,13 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   public void localeChange() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(SubmissionDialog.class, locale);
-    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
-    final MessageResource submissionResources = new MessageResource(Submission.class, locale);
+    final AppResources resources = new AppResources(SubmissionDialog.class, locale);
+    final AppResources webResources = new AppResources(WebConstants.class, locale);
+    final AppResources submissionResources = new AppResources(Submission.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
-    assertEquals(submissionResources.message(INSTRUMENT),
-        dialog.instrument.getLabel());
+    assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
           dialog.instrument.getItemLabelGenerator().apply(instrument));

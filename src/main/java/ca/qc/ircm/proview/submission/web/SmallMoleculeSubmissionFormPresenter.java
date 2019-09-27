@@ -16,6 +16,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Service;
@@ -23,7 +24,6 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -69,7 +69,7 @@ public class SmallMoleculeSubmissionFormPresenter {
   }
 
   void localeChange(Locale locale) {
-    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
+    final AppResources webResources = new AppResources(WebConstants.class, locale);
     firstSampleBinder.forField(form.sampleType).asRequired(webResources.message(REQUIRED))
         .bind(TYPE);
     firstSampleBinder.forField(form.sampleName).asRequired(webResources.message(REQUIRED))

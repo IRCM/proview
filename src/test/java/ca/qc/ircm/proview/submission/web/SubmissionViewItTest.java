@@ -26,6 +26,7 @@ import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -45,7 +46,6 @@ import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -159,7 +159,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
 
   private void setFields(SmallMoleculeSubmissionFormElement form) {
     Locale locale = currentLocale();
-    MessageResource submissionResource = new MessageResource(Submission.class, locale);
+    AppResources submissionResource = new AppResources(Submission.class, locale);
     form.sampleType().selectByText(sampleType.getLabel(locale));
     form.sampleName().setValue(sampleName1);
     form.solvent().setValue(solvent);
@@ -201,8 +201,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
 
     Locale locale = currentLocale();
     assertEquals(
-        new MessageResource(SigninView.class, locale).message(TITLE,
-            new MessageResource(WebConstants.class, locale).message(APPLICATION_NAME)),
+        new AppResources(SigninView.class, locale).message(TITLE,
+            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 

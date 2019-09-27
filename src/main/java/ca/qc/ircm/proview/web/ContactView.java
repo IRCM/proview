@@ -5,8 +5,8 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H2;
@@ -88,7 +88,7 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
     header.setText(resources.message(HEADER));
     proteomicHeader.setText(resources.message(property(PROTEOMIC)));
     proteomicName.setText(resources.message(property(PROTEOMIC, NAME)));
@@ -108,8 +108,8 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
 
   @Override
   public String getPageTitle() {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
-    final MessageResource generalResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
+    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 }

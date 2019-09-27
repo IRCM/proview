@@ -27,11 +27,11 @@ import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.text.MessageResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +73,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     view.getPasswordField().setValue("notright");
     view.getSubmitButton().click();
-    assertEquals(new MessageResource(SigninView.class, currentLocale()).message(FAIL),
+    assertEquals(new AppResources(SigninView.class, currentLocale()).message(FAIL),
         view.getErrorMessage());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
   }
@@ -85,7 +85,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getUsernameField().setValue("robert.stlouis@ircm.qc.ca");
     view.getPasswordField().setValue("password");
     view.getSubmitButton().click();
-    assertEquals(new MessageResource(SigninView.class, currentLocale()).message(DISABLED),
+    assertEquals(new AppResources(SigninView.class, currentLocale()).message(DISABLED),
         view.getErrorMessage());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
   }
@@ -99,7 +99,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
       view.getPasswordField().setValue("notright");
       view.getSubmitButton().click();
     }
-    assertEquals(new MessageResource(SigninView.class, currentLocale()).message(LOCKED,
+    assertEquals(new AppResources(SigninView.class, currentLocale()).message(LOCKED,
         configuration.getLockDuration().getSeconds() / 60), view.getErrorMessage());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
   }

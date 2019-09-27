@@ -31,10 +31,10 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -50,8 +50,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class PasswordsFormTest extends AbstractViewTestCase {
   private PasswordsForm form;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(PasswordsForm.class, locale);
-  private MessageResource webResources = new MessageResource(WebConstants.class, locale);
+  private AppResources resources = new AppResources(PasswordsForm.class, locale);
+  private AppResources webResources = new AppResources(WebConstants.class, locale);
   private String password = "test_password";
 
   /**
@@ -86,7 +86,7 @@ public class PasswordsFormTest extends AbstractViewTestCase {
   public void localeChange() {
     form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(UserDialog.class, locale);
+    final AppResources resources = new AppResources(UserDialog.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(PASSWORD), form.password.getLabel());

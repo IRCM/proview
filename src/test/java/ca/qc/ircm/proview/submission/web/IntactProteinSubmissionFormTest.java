@@ -45,6 +45,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -54,7 +55,6 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.List;
 import java.util.Locale;
@@ -73,12 +73,10 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
   @Mock
   private Submission submission;
   private Locale locale = ENGLISH;
-  private MessageResource resources =
-      new MessageResource(IntactProteinSubmissionForm.class, locale);
-  private MessageResource submissionResources = new MessageResource(Submission.class, locale);
-  private MessageResource sampleResources = new MessageResource(Sample.class, locale);
-  private MessageResource submissionSampleResources =
-      new MessageResource(SubmissionSample.class, locale);
+  private AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
+  private AppResources submissionResources = new AppResources(Submission.class, locale);
+  private AppResources sampleResources = new AppResources(Sample.class, locale);
+  private AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
 
   /**
    * Before test.
@@ -141,12 +139,10 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
   public void localeChange() {
     form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources =
-        new MessageResource(IntactProteinSubmissionForm.class, locale);
-    final MessageResource submissionResources = new MessageResource(Submission.class, locale);
-    final MessageResource sampleResources = new MessageResource(Sample.class, locale);
-    final MessageResource submissionSampleResources =
-        new MessageResource(SubmissionSample.class, locale);
+    final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
+    final AppResources submissionResources = new AppResources(Submission.class, locale);
+    final AppResources sampleResources = new AppResources(Sample.class, locale);
+    final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(submissionResources.message(GOAL), form.goal.getLabel());

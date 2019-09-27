@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.WebConstants.PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -45,7 +46,6 @@ import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -82,13 +82,13 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   public static final String CONTAMINANTS_PLACEHOLDER = property(CONTAMINANTS, PLACEHOLDER);
   public static final String STANDARDS_PLACEHOLDER = property(STANDARDS, PLACEHOLDER);
   public static final String DEVELOPMENT_TIME_PLACEHOLDER = property(DEVELOPMENT_TIME, PLACEHOLDER);
-  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER = property(WEIGHT_MARKER_QUANTITY,
-      PLACEHOLDER);
+  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER =
+      property(WEIGHT_MARKER_QUANTITY, PLACEHOLDER);
   public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
-  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER = property(QUANTIFICATION_COMMENT,
-      PLACEHOLDER);
-  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT = property(
-      QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
+  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER =
+      property(QUANTIFICATION_COMMENT, PLACEHOLDER);
+  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT =
+      property(QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
   private static final long serialVersionUID = 1460183864073097086L;
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
@@ -199,11 +199,11 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, getLocale());
-    final MessageResource submissionResources = new MessageResource(Submission.class, getLocale());
-    final MessageResource sampleResources = new MessageResource(Sample.class, getLocale());
-    final MessageResource submissionSampleResources = new MessageResource(SubmissionSample.class,
-        getLocale());
+    final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, getLocale());
+    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
+    final AppResources sampleResources = new AppResources(Sample.class, getLocale());
+    final AppResources submissionSampleResources =
+        new AppResources(SubmissionSample.class, getLocale());
     experiment.setLabel(submissionResources.message(EXPERIMENT));
     goal.setLabel(submissionResources.message(GOAL));
     taxonomy.setLabel(submissionResources.message(TAXONOMY));
@@ -249,7 +249,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   }
 
   private void updateQuantificationComment() {
-    final MessageResource resources = new MessageResource(LcmsmsSubmissionForm.class, getLocale());
+    final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, getLocale());
     if (quantification.getValue() == Quantification.TMT) {
       quantificationComment
           .setPlaceholder(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER_TMT));

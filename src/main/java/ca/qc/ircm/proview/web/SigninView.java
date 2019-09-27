@@ -7,10 +7,10 @@ import static ca.qc.ircm.proview.user.UserProperties.HASHED_PASSWORD;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginI18n.ErrorMessage;
 import com.vaadin.flow.component.login.LoginOverlay;
@@ -80,8 +80,8 @@ public class SigninView extends LoginOverlay
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
-    final MessageResource userResources = new MessageResource(User.class, getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
+    final AppResources userResources = new AppResources(User.class, getLocale());
     i18n = LoginI18n.createDefault();
     i18n.setHeader(new LoginI18n.Header());
     i18n.getHeader().setTitle(resources.message(HEADER));
@@ -104,8 +104,8 @@ public class SigninView extends LoginOverlay
 
   @Override
   public String getPageTitle() {
-    final MessageResource resources = new MessageResource(getClass(), getLocale());
-    final MessageResource generalResources = new MessageResource(WebConstants.class, getLocale());
+    final AppResources resources = new AppResources(getClass(), getLocale());
+    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 

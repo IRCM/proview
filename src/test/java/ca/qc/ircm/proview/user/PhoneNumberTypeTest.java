@@ -24,12 +24,12 @@ import static java.util.Locale.ENGLISH;
 import static java.util.Locale.FRENCH;
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.text.MessageResource;
+import ca.qc.ircm.proview.AppResources;
 import org.junit.Test;
 
 public class PhoneNumberTypeTest {
-  MessageResource englishResource = new MessageResource(PhoneNumberType.class, ENGLISH);
-  MessageResource frenchResource = new MessageResource(PhoneNumberType.class, FRENCH);
+  AppResources englishResource = new AppResources(PhoneNumberType.class, ENGLISH);
+  AppResources frenchResource = new AppResources(PhoneNumberType.class, FRENCH);
 
   @Test
   public void getLabel_WorkEnglish() {

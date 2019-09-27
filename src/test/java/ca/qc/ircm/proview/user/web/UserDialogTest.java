@@ -56,6 +56,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
@@ -66,7 +67,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.WebConstants;
-import ca.qc.ircm.text.MessageResource;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -93,11 +93,11 @@ public class UserDialogTest extends AbstractViewTestCase {
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
   private Locale locale = ENGLISH;
-  private MessageResource resources = new MessageResource(UserDialog.class, locale);
-  private MessageResource userResources = new MessageResource(User.class, locale);
-  private MessageResource addressResources = new MessageResource(Address.class, locale);
-  private MessageResource phoneNumberResources = new MessageResource(PhoneNumber.class, locale);
-  private MessageResource webResources = new MessageResource(WebConstants.class, locale);
+  private AppResources resources = new AppResources(UserDialog.class, locale);
+  private AppResources userResources = new AppResources(User.class, locale);
+  private AppResources addressResources = new AppResources(Address.class, locale);
+  private AppResources phoneNumberResources = new AppResources(PhoneNumber.class, locale);
+  private AppResources webResources = new AppResources(WebConstants.class, locale);
 
   /**
    * Before test.
@@ -188,11 +188,11 @@ public class UserDialogTest extends AbstractViewTestCase {
   public void localeChange() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final MessageResource resources = new MessageResource(UserDialog.class, locale);
-    final MessageResource userResources = new MessageResource(User.class, locale);
-    final MessageResource addressResources = new MessageResource(Address.class, locale);
-    final MessageResource phoneNumberResources = new MessageResource(PhoneNumber.class, locale);
-    final MessageResource webResources = new MessageResource(WebConstants.class, locale);
+    final AppResources resources = new AppResources(UserDialog.class, locale);
+    final AppResources userResources = new AppResources(User.class, locale);
+    final AppResources addressResources = new AppResources(Address.class, locale);
+    final AppResources phoneNumberResources = new AppResources(PhoneNumber.class, locale);
+    final AppResources webResources = new AppResources(WebConstants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, 0), dialog.header.getText());
