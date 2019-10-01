@@ -687,8 +687,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -1013,8 +1012,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment")));
@@ -1030,8 +1028,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment")));
@@ -1046,8 +1043,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
@@ -1063,8 +1059,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
@@ -1080,8 +1075,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -1287,8 +1281,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));
@@ -1455,8 +1448,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"highResolution\""));
     assertTrue(content.contains(resources.message("submission.highResolution.false")));
   }
@@ -1499,8 +1491,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources =
-        new MessageResource(SubmissionService.class.getName() + "_Print", locale);
+    MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
     //assertTrue(content.contains("class=\"platform\""));
     //assertTrue(content.contains(resources.message("platform")));

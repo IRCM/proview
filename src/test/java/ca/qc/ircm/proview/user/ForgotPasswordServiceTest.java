@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -190,18 +191,18 @@ public class ForgotPasswordServiceTest {
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo(user.getEmail());
-    MessageResource resources = new MessageResource(
-        ForgotPasswordService.class.getName() + "_Email", locale);
-    verify(email).setSubject(resources.message("email.subject"));
+    AppResources resources = new AppResources(ForgotPasswordService.class, locale);
+    MessageResource mailResources = new MessageResource("user.forgotpassword", locale);
+    verify(email).setSubject(resources.message("subject"));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
     String htmlContent = stringCaptor.getAllValues().get(1);
-    assertTrue(textContent.contains(resources.message("header")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("header"))));
-    assertTrue(textContent.contains(resources.message("message")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("message"))));
-    assertTrue(textContent.contains(resources.message("footer")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(resources.message("footer"))));
+    assertTrue(textContent.contains(mailResources.message("header")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(mailResources.message("header"))));
+    assertTrue(textContent.contains(mailResources.message("message")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(mailResources.message("message"))));
+    assertTrue(textContent.contains(mailResources.message("footer")));
+    assertTrue(htmlContent.contains(StringUtils.escapeXml(mailResources.message("footer"))));
     String url = applicationConfiguration.getUrl(forgotPasswordUrl);
     assertTrue(textContent.contains(url));
     assertTrue(htmlContent.contains(url));

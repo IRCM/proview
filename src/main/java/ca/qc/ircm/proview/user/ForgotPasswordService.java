@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.user;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
-import ca.qc.ircm.text.MessageResource;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Locale;
@@ -132,18 +132,15 @@ public class ForgotPasswordService {
 
     // Prepare email content.
     MimeMessageHelper email = emailService.htmlEmail();
-    MessageResource resources = new MessageResource(
-        ForgotPasswordService.class.getName() + "_Email", locale);
-    String subject = resources.message("email.subject");
+    AppResources resources = new AppResources(ForgotPasswordService.class, locale);
+    String subject = resources.message("subject");
     email.setSubject(subject);
     email.addTo(emailAddress);
     Context context = new Context(locale);
     context.setVariable("url", url);
-    String htmlTemplateLocation = ForgotPasswordService.class.getName().replace(".", "/")
-        + "_Email.html";
+    String htmlTemplateLocation = "/user/forgotpassword.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation = ForgotPasswordService.class.getName().replace(".", "/")
-        + "_Email.txt";
+    String textTemplateLocation = "/user/forgotpassword.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
 
