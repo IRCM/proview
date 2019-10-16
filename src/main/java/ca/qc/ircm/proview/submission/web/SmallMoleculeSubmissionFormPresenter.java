@@ -99,7 +99,8 @@ public class SmallMoleculeSubmissionFormPresenter {
         .bind(STORAGE_TEMPERATURE);
     binder.forField(form.highResolution).asRequired(webResources.message(REQUIRED))
         .bind(HIGH_RESOLUTION);
-    binder.forField(form.solvents).asRequired(webResources.message(REQUIRED)).bind(SOLVENTS);
+    binder.forField(form.solvents).asRequired(webResources.message(REQUIRED))
+        .withValidator(solventsNotEmpty(locale)).bind(SOLVENTS);
     form.otherSolvent.setRequiredIndicatorVisible(true);
     binder.forField(form.otherSolvent)
         .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
@@ -128,6 +129,16 @@ public class SmallMoleculeSubmissionFormPresenter {
     };
   }
 
+  private Validator<List<Solvent>> solventsNotEmpty(Locale locale) {
+    return (value, context) -> {
+      if (value.isEmpty()) {
+        final AppResources resources = new AppResources(WebConstants.class, locale);
+        return ValidationResult.error(resources.message(REQUIRED, value));
+      }
+      return ValidationResult.ok();
+    };
+  }
+
   BinderValidationStatus<Submission> validateSubmission() {
     return binder.validate();
   }
@@ -138,6 +149,7 @@ public class SmallMoleculeSubmissionFormPresenter {
 
   boolean isValid() {
     boolean valid = true;
+    logger.debug("solvents: {}", binder.getBean().getSolvents());
     valid = validateSubmission().isOk() && valid;
     valid = validateFirstSample().isOk() && valid;
     return valid;
