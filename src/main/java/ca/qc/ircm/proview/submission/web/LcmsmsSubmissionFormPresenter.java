@@ -137,7 +137,9 @@ public class LcmsmsSubmissionFormPresenter {
         .withNullRepresentation("").withConverter(new SamplesNamesConverter())
         .withValidator(samplesNamesDuplicates(locale)).withValidator(samplesNamesExists(locale))
         .withValidator(samplesNamesCount(locale)).bind(SAMPLES_NAMES);
-    firstSampleBinder.forField(form.quantity).asRequired(webResources.message(REQUIRED))
+    form.quantity.setRequiredIndicatorVisible(true);
+    firstSampleBinder.forField(form.quantity)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
         .withNullRepresentation("").bind(QUANTITY);
     form.volume.setRequiredIndicatorVisible(true);
     firstSampleBinder.forField(form.volume)

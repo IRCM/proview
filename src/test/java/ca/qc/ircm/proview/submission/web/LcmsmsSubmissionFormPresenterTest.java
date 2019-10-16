@@ -746,6 +746,18 @@ public class LcmsmsSubmissionFormPresenterTest {
   }
 
   @Test
+  public void isValid_EmptyQuantity_Gel() {
+    presenter.setSubmission(newSubmission);
+    setFields();
+    form.sampleType.setValue(SampleType.GEL);
+    form.quantity.setValue("");
+
+    assertTrue(presenter.isValid());
+    BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
+    assertTrue(status.isOk());
+  }
+
+  @Test
   public void isValid_EmptyVolume() {
     presenter.setSubmission(newSubmission);
     setFields();

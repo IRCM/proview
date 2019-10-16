@@ -85,6 +85,7 @@ public class SubmissionViewPresenter {
   }
 
   void addFile(String filename, InputStream input, Locale locale) {
+    logger.debug("received file {}", filename);
     SubmissionFile file = new SubmissionFile();
     file.setFilename(filename);
     ByteArrayOutputStream output = new ByteArrayOutputStream();

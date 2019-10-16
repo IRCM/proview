@@ -25,6 +25,7 @@ public class SolventsField extends CustomField<List<Solvent>> implements LocaleC
     Stream.of(Solvent.values()).forEach(solvent -> {
       Checkbox field = new Checkbox();
       field.addClassName(solvent.name());
+      field.addValueChangeListener(e -> updateValue());
       add(field);
       fields.put(solvent, field);
     });

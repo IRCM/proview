@@ -24,6 +24,7 @@
   <logger name="ca.qc.ircm.proview" level="DEBUG"/>
   <logger name="ca.qc.ircm.proview.security.web.ShiroViewAccessControl" level="INFO"/>
   <logger name="ca.qc.ircm.proview.test.config.ShiroTestExecutionListener" level="INFO"/>
+  <logger name="ca.qc.ircm.proview.web.validator" level="TRACE"/>
   <logger name="org.springframework" level="INFO"/>
   <logger name="org.springframework.security" level="INFO"/>
   <logger name="org.springframework.jdbc.datasource.init.ScriptUtils" level="WARN"/>

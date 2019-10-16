@@ -69,7 +69,7 @@ public class SolventsFieldTest extends AbstractViewTestCase {
       fields.fields.get(value).setValue(true);
     }
 
-    List<Solvent> solvents = fields.generateModelValue();
+    List<Solvent> solvents = fields.getValue();
     assertEquals(Solvent.values().length, solvents.size());
     for (Solvent value : Solvent.values()) {
       assertTrue(solvents.contains(value));
@@ -77,13 +77,13 @@ public class SolventsFieldTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void generateModelValue_Some() {
+  public void getValue_Some() {
     List<Solvent> expected = Arrays.asList(Solvent.METHANOL, Solvent.OTHER);
     for (Solvent value : expected) {
       fields.fields.get(value).setValue(true);
     }
 
-    List<Solvent> solvents = fields.generateModelValue();
+    List<Solvent> solvents = fields.getValue();
     assertEquals(expected.size(), solvents.size());
     for (Solvent value : expected) {
       assertTrue(solvents.contains(value));
