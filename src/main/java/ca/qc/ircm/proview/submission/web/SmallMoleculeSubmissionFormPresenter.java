@@ -13,12 +13,14 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLUTION_SOLVEN
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLVENTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
+import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -27,6 +29,8 @@ import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.List;
@@ -51,9 +55,11 @@ public class SmallMoleculeSubmissionFormPresenter {
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   private Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
+  private SubmissionSampleService sampleService;
 
   @Autowired
-  protected SmallMoleculeSubmissionFormPresenter() {
+  protected SmallMoleculeSubmissionFormPresenter(SubmissionSampleService sampleService) {
+    this.sampleService = sampleService;
   }
 
   /**
@@ -73,7 +79,7 @@ public class SmallMoleculeSubmissionFormPresenter {
     firstSampleBinder.forField(form.sampleType).asRequired(webResources.message(REQUIRED))
         .bind(TYPE);
     firstSampleBinder.forField(form.sampleName).asRequired(webResources.message(REQUIRED))
-        .withNullRepresentation("").bind(NAME);
+        .withNullRepresentation("").withValidator(sampleNameExists(locale)).bind(NAME);
     form.solvent.setRequiredIndicatorVisible(true);
     binder.forField(form.solvent)
         .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
@@ -110,6 +116,16 @@ public class SmallMoleculeSubmissionFormPresenter {
   private void solventsChanged() {
     List<Solvent> solvents = form.solvents.getValue();
     form.otherSolvent.setEnabled(solvents != null && solvents.contains(Solvent.OTHER));
+  }
+
+  private Validator<String> sampleNameExists(Locale locale) {
+    return (value, context) -> {
+      if (sampleService.exists(value)) {
+        final AppResources resources = new AppResources(WebConstants.class, locale);
+        return ValidationResult.error(resources.message(ALREADY_EXISTS, value));
+      }
+      return ValidationResult.ok();
+    };
   }
 
   BinderValidationStatus<Submission> validateSubmission() {

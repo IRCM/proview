@@ -18,12 +18,14 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
+import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.sample.SampleType;
@@ -225,6 +227,22 @@ public class SmallMoleculeSubmissionFormPresenterTest {
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_AlreadyExistsSamplesNames() {
+    when(sampleService.exists(sampleName)).thenReturn(true);
+    presenter.setSubmission(newSubmission);
+    setFields();
+
+    assertFalse(presenter.isValid());
+    BinderValidationStatus<SubmissionSample> status = presenter.validateFirstSample();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.sampleName);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(ALREADY_EXISTS, sampleName)), error.getMessage());
   }
 
   @Test
