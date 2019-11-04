@@ -131,7 +131,11 @@ public class PlateService {
     if (filter == null) {
       filter = new PlateFilter();
     }
-    return Lists.newArrayList(repository.findAll(filter.predicate()));
+    if (filter.predicate() != null) {
+      return Lists.newArrayList(repository.findAll(filter.predicate()));
+    } else {
+      return repository.findAll();
+    }
   }
 
   /**

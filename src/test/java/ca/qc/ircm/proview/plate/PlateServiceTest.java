@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -161,7 +162,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     List<Plate> plates = service.all(filter);
 
-    verify(filter).predicate();
+    verify(filter, atLeastOnce()).predicate();
     assertEquals(18, plates.size());
   }
 
