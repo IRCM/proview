@@ -69,7 +69,6 @@
     <selenium.version>3.141.59</selenium.version>
     <testbench.skip>true</testbench.skip>
     <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
-    <staticweave-maven-plugin.version>1.0.0</staticweave-maven-plugin.version>
     <apt-maven-plugin.version>1.1.3</apt-maven-plugin.version>
     <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
     <migrations-maven-plugin.version>1.1.3</migrations-maven-plugin.version>
