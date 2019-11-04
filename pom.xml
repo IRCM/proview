@@ -61,7 +61,7 @@
     <guava.version>25.0-jre</guava.version>
     <commons-lang3.version>3.9</commons-lang3.version>
     <commons-email.version>1.5</commons-email.version>
-    <mariadb-java-client.version>2.4.0</mariadb-java-client.version>
+    <mariadb-java-client.version>2.5.1</mariadb-java-client.version>
     <thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
     <spotbugs.version>4.0.0-beta1</spotbugs.version>
     <generate-property-names.version>0.5</generate-property-names.version>
