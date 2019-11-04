@@ -65,7 +65,7 @@
     <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
     <spotbugs.version>4.0.0-beta1</spotbugs.version>
     <generate-property-names.version>0.5</generate-property-names.version>
-    <greenmail.version>1.5.9</greenmail.version>
+    <greenmail.version>1.5.11</greenmail.version>
     <selenium.version>3.141.59</selenium.version>
     <testbench.skip>true</testbench.skip>
     <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
