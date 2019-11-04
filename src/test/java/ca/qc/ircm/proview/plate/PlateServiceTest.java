@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.plate;
 
-import static ca.qc.ircm.proview.plate.PlateService.PLATE;
 import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
@@ -33,11 +32,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.sample.Control;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -51,13 +48,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import javax.inject.Inject;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -297,158 +287,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @WithAnonymousUser
   public void nameAvailable_AccessDenied_Anonymous() throws Throwable {
     service.nameAvailable("unit_test");
-  }
-
-  @SuppressWarnings("deprecation")
-  private String cellValue(Cell cell) {
-    return cell.getCellTypeEnum() == CellType.NUMERIC
-        ? String.format("%1.0f", cell.getNumericCellValue())
-        : cell.getStringCellValue();
-  }
-
-  private void workbook(Locale locale) throws Exception {
-    Plate plate = new Plate();
-    plate.initWells();
-    Well well1 = plate.well(0, 0);
-    well1.setSample(new SubmissionSample(1L, "test 1"));
-    Well well2 = plate.well(0, 1);
-    well2.setSample(new Control(1L, "test control 1"));
-    well2.setBanned(true);
-    Well well3 = plate.well(0, 2);
-    well3.setSample(new SubmissionSample(2L, "test control 2"));
-    well3.setBanned(true);
-    Well well4 = plate.well(1, 0);
-    well4.setSample(new SubmissionSample(4L, "test control 4"));
-    well4.setBanned(true);
-    AppResources resources = new AppResources(PlateService.class, locale);
-
-    Workbook workbook = service.workbook(plate, locale);
-
-    Sheet sheet = workbook.getSheetAt(0);
-    assertTrue(plate.getRowCount() + 1 <= sheet.getLastRowNum());
-    Row firstRow = sheet.getRow(0);
-    assertTrue(plate.getColumnCount() + 1 <= sheet.getLastRowNum());
-    assertEquals(resources.message(PLATE), cellValue(firstRow.getCell(0)));
-    for (int column = 1; column < firstRow.getLastCellNum(); column++) {
-      assertEquals(Plate.columnLabel(column - 1), cellValue(firstRow.getCell(column)));
-    }
-    for (int row = 1; row < sheet.getLastRowNum(); row++) {
-      assertTrue(plate.getColumnCount() + 1 <= sheet.getLastRowNum());
-      Row sheetRow = sheet.getRow(row);
-      assertEquals(Plate.rowLabel(row - 1), cellValue(sheetRow.getCell(0)));
-    }
-    for (int row = 0; row < plate.getRowCount(); row++) {
-      Row sheetRow = sheet.getRow(row + 1);
-      for (int column = 0; column < plate.getColumnCount(); column++) {
-        Well well = plate.well(row, column);
-        Sample sample = well.getSample();
-        Cell cell = sheetRow.getCell(column + 1);
-        assertEquals(sample != null ? sample.getName() : "", cellValue(cell));
-        CellStyle style = cell.getCellStyle();
-        assertEquals(well.isBanned() ? HSSFColor.RED.index : HSSFColor.WHITE.index,
-            style.getFillBackgroundColor());
-        assertEquals(well.isBanned() ? HSSFColor.WHITE.index : HSSFColor.BLACK.index,
-            workbook.getFontAt(style.getFontIndex()).getColor());
-      }
-    }
-    assertEquals(well1.getSample().getName(),
-        cellValue(sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1)));
-    CellStyle style =
-        sheet.getRow(well1.getRow() + 1).getCell(well1.getColumn() + 1).getCellStyle();
-    assertEquals(HSSFColor.WHITE.index, style.getFillBackgroundColor());
-    assertEquals(HSSFColor.BLACK.index, workbook.getFontAt(style.getFontIndex()).getColor());
-    assertEquals(well2.getSample().getName(),
-        cellValue(sheet.getRow(well2.getRow() + 1).getCell(well2.getColumn() + 1)));
-    style = sheet.getRow(well2.getRow() + 1).getCell(well2.getColumn() + 1).getCellStyle();
-    assertEquals(HSSFColor.RED.index, style.getFillBackgroundColor());
-    assertEquals(HSSFColor.WHITE.index, workbook.getFontAt(style.getFontIndex()).getColor());
-  }
-
-  @Test
-  public void workbook() throws Exception {
-    workbook(Locale.CANADA);
-  }
-
-  @Test
-  public void workbook_French() throws Exception {
-    workbook(Locale.CANADA_FRENCH);
-  }
-
-  @Test
-  public void workbook_NullPlate() throws Exception {
-    Locale locale = Locale.CANADA;
-    AppResources resources = new AppResources(PlateService.class, locale);
-
-    Workbook workbook = service.workbook(null, locale);
-
-    Plate plate = new Plate();
-    Sheet sheet = workbook.getSheetAt(0);
-    assertTrue(plate.getRowCount() + 1 <= sheet.getLastRowNum());
-    Row firstRow = sheet.getRow(0);
-    assertTrue(plate.getColumnCount() + 1 <= sheet.getLastRowNum());
-    assertEquals(resources.message(PLATE), cellValue(firstRow.getCell(0)));
-    for (int column = 1; column < firstRow.getLastCellNum(); column++) {
-      assertEquals(Plate.columnLabel(column - 1), cellValue(firstRow.getCell(column)));
-    }
-    for (int row = 1; row < sheet.getLastRowNum(); row++) {
-      assertTrue(plate.getColumnCount() + 1 <= sheet.getLastRowNum());
-      Row sheetRow = sheet.getRow(row);
-      assertEquals(Plate.rowLabel(row - 1), cellValue(sheetRow.getCell(0)));
-    }
-    for (int row = 1; row < sheet.getLastRowNum(); row++) {
-      Row sheetRow = sheet.getRow(row);
-      for (int column = 1; column < sheetRow.getLastCellNum(); column++) {
-        Cell cell = sheetRow.getCell(column);
-        assertEquals("", cellValue(cell));
-        CellStyle style = cell.getCellStyle();
-        assertEquals(HSSFColor.WHITE.index, style.getFillBackgroundColor());
-        assertEquals(HSSFColor.BLACK.index, workbook.getFontAt(style.getFontIndex()).getColor());
-      }
-    }
-  }
-
-  @Test
-  public void workbook_NullLocale() throws Exception {
-    Plate plate = new Plate();
-    plate.initWells();
-    Well well1 = plate.well(0, 0);
-    well1.setSample(new SubmissionSample(1L, "test 1"));
-    Well well2 = plate.well(0, 1);
-    well2.setSample(new Control(1L, "test control 1"));
-    Well well3 = plate.well(0, 2);
-    well3.setSample(new SubmissionSample(2L, "test control 2"));
-    Well well4 = plate.well(1, 0);
-    well4.setSample(new SubmissionSample(4L, "test control 4"));
-    Locale locale = Locale.CANADA;
-    AppResources resources = new AppResources(PlateService.class, locale);
-
-    Workbook workbook = service.workbook(plate, null);
-
-    Sheet sheet = workbook.getSheetAt(0);
-    assertTrue(plate.getRowCount() + 1 <= sheet.getLastRowNum());
-    Row firstRow = sheet.getRow(0);
-    assertTrue(plate.getColumnCount() + 1 <= sheet.getLastRowNum());
-    assertEquals(resources.message(PLATE), cellValue(firstRow.getCell(0)));
-    for (int column = 1; column < firstRow.getLastCellNum(); column++) {
-      assertEquals(Plate.columnLabel(column - 1), cellValue(firstRow.getCell(column)));
-    }
-    for (int row = 1; row < sheet.getLastRowNum(); row++) {
-      assertTrue(plate.getColumnCount() + 1 <= sheet.getLastRowNum());
-      Row sheetRow = sheet.getRow(row);
-      assertEquals(Plate.rowLabel(row - 1), cellValue(sheetRow.getCell(0)));
-    }
-    for (int row = 0; row < plate.getRowCount(); row++) {
-      Row sheetRow = sheet.getRow(row + 1);
-      for (int column = 0; column < plate.getColumnCount(); column++) {
-        Well well = plate.well(row, column);
-        Sample sample = well.getSample();
-        Cell cell = sheetRow.getCell(column + 1);
-        assertEquals(sample != null ? sample.getName() : "", cellValue(cell));
-        CellStyle style = cell.getCellStyle();
-        assertEquals(HSSFColor.WHITE.index, style.getFillBackgroundColor());
-        assertEquals(HSSFColor.BLACK.index, workbook.getFontAt(style.getFontIndex()).getColor());
-      }
-    }
   }
 
   private Plate plateForPrint() {

@@ -23,11 +23,8 @@ import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
-import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
@@ -35,24 +32,13 @@ import ca.qc.ircm.proview.user.UserRole;
 import com.google.common.collect.Lists;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -81,8 +67,6 @@ public class PlateService {
   private AuthorizationService authorizationService;
   @Inject
   private TemplateEngine emailTemplateEngine;
-  @Inject
-  private ApplicationConfiguration applicationConfiguration;
 
   protected PlateService() {
   }
@@ -161,56 +145,6 @@ public class PlateService {
       query.where(plate.submission.user.eq(user));
       return query.fetchCount() == 0;
     }
-  }
-
-  /**
-   * Creates an Excel workbook for plate.
-   *
-   * @param plate
-   *          plate
-   * @param locale
-   *          user's locale
-   * @return workbook for plate
-   * @throws IOException
-   *           could not create workbook
-   */
-  @CheckReturnValue
-  public Workbook workbook(Plate plate, Locale locale) throws IOException {
-    if (plate == null) {
-      plate = new Plate();
-      plate.initWells();
-    }
-    if (locale == null) {
-      locale = Locale.getDefault();
-    }
-    final AppResources resources = new AppResources(PlateService.class, locale);
-    Workbook workbook = new XSSFWorkbook(applicationConfiguration.getPlateTemplate());
-    Font normalFont = workbook.createFont();
-    normalFont.setColor(HSSFColor.BLACK.index);
-    CellStyle normalStyle = workbook.createCellStyle();
-    normalStyle.setFillBackgroundColor(HSSFColor.WHITE.index);
-    normalStyle.setFont(normalFont);
-    Font bannedFont = workbook.createFont();
-    bannedFont.setColor(HSSFColor.WHITE.index);
-    CellStyle bannedStyle = workbook.createCellStyle();
-    bannedStyle.setFillBackgroundColor(HSSFColor.RED.index);
-    bannedStyle.setFont(bannedFont);
-    Sheet sheet = workbook.getSheetAt(0);
-    sheet.getRow(0).getCell(0).setCellValue(resources.message(PLATE));
-    for (int row = 0; row < plate.getRowCount(); row++) {
-      Row wrow = sheet.getRow(row + 1);
-      if (wrow == null) {
-        wrow = sheet.createRow(row);
-      }
-      for (int column = 0; column < plate.getColumnCount(); column++) {
-        Well well = plate.well(row, column);
-        Sample sample = plate.well(row, column).getSample();
-        Cell cell = wrow.getCell(column + 1, MissingCellPolicy.CREATE_NULL_AS_BLANK);
-        cell.setCellValue(sample != null ? sample.getName() : "");
-        cell.setCellStyle(well.isBanned() ? bannedStyle : normalStyle);
-      }
-    }
-    return workbook;
   }
 
   /**
