@@ -86,7 +86,7 @@ public class PasswordsFormTest extends AbstractViewTestCase {
   public void localeChange() {
     form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(UserDialog.class, locale);
+    final AppResources resources = new AppResources(PasswordsForm.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(PASSWORD), form.password.getLabel());

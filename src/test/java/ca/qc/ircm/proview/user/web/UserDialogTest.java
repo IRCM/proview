@@ -19,29 +19,8 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
-import static ca.qc.ircm.proview.text.Strings.property;
-import static ca.qc.ircm.proview.text.Strings.styleName;
-import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
-import static ca.qc.ircm.proview.user.AddressProperties.LINE;
-import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
-import static ca.qc.ircm.proview.user.AddressProperties.STATE;
-import static ca.qc.ircm.proview.user.AddressProperties.TOWN;
-import static ca.qc.ircm.proview.user.PhoneNumberProperties.EXTENSION;
-import static ca.qc.ircm.proview.user.PhoneNumberProperties.NUMBER;
-import static ca.qc.ircm.proview.user.PhoneNumberProperties.TYPE;
-import static ca.qc.ircm.proview.user.UserProperties.ADMIN;
-import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
-import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
-import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
-import static ca.qc.ircm.proview.user.UserProperties.NAME;
-import static ca.qc.ircm.proview.user.web.UserDialog.CREATE_NEW_LABORATORY;
-import static ca.qc.ircm.proview.user.web.UserDialog.EMAIL_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserDialog.HEADER;
 import static ca.qc.ircm.proview.user.web.UserDialog.ID;
-import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME;
-import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME_PLACEHOLDER;
-import static ca.qc.ircm.proview.user.web.UserDialog.NAME_PLACEHOLDER;
-import static ca.qc.ircm.proview.user.web.UserDialog.NUMBER_PLACEHOLDER;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
@@ -59,10 +38,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
-import ca.qc.ircm.proview.user.PhoneNumber;
-import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SavedEvent;
@@ -82,10 +58,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ServiceTestAnnotations
 public class UserDialogTest extends AbstractViewTestCase {
   private UserDialog dialog;
+  private UserForm form;
   @Mock
   private UserDialogPresenter presenter;
   @Mock
   private User user;
+  @Mock
+  private UserFormPresenter formPresenter;
   @Mock
   private ComponentEventListener<SavedEvent<UserDialog>> savedListener;
   @Inject
@@ -94,9 +73,6 @@ public class UserDialogTest extends AbstractViewTestCase {
   private DefaultAddressConfiguration defaultAddressConfiguration;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(UserDialog.class, locale);
-  private AppResources userResources = new AppResources(User.class, locale);
-  private AppResources addressResources = new AppResources(Address.class, locale);
-  private AppResources phoneNumberResources = new AppResources(PhoneNumber.class, locale);
   private AppResources webResources = new AppResources(WebConstants.class, locale);
 
   /**
@@ -105,7 +81,8 @@ public class UserDialogTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    dialog = new UserDialog(presenter, defaultAddressConfiguration);
+    form = new UserForm(formPresenter, defaultAddressConfiguration);
+    dialog = new UserDialog(form, presenter);
     dialog.init();
   }
 
@@ -118,70 +95,19 @@ public class UserDialogTest extends AbstractViewTestCase {
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
     assertTrue(dialog.header.getClassNames().contains(HEADER));
-    assertTrue(dialog.email.getClassNames().contains(EMAIL));
-    assertTrue(dialog.name.getClassNames().contains(NAME));
-    assertTrue(dialog.admin.getClassNames().contains(ADMIN));
-    assertTrue(dialog.manager.getClassNames().contains(MANAGER));
-    assertTrue(dialog.createNewLaboratory.getClassNames().contains(CREATE_NEW_LABORATORY));
-    assertTrue(dialog.laboratory.getClassNames().contains(LABORATORY));
-    assertTrue(
-        dialog.laboratoryName.getClassNames().contains(styleName(LABORATORY, LABORATORY_NAME)));
-    assertTrue(dialog.addressLine.getClassNames().contains(LINE));
-    assertTrue(dialog.town.getClassNames().contains(TOWN));
-    assertTrue(dialog.state.getClassNames().contains(STATE));
-    assertTrue(dialog.country.getClassNames().contains(COUNTRY));
-    assertTrue(dialog.postalCode.getClassNames().contains(POSTAL_CODE));
-    assertTrue(dialog.phoneType.getClassNames().contains(TYPE));
-    assertTrue(dialog.number.getClassNames().contains(NUMBER));
-    assertTrue(dialog.extension.getClassNames().contains(EXTENSION));
     assertTrue(dialog.save.getClassNames().contains(SAVE));
     assertTrue(dialog.save.getElement().getAttribute(THEME).contains(PRIMARY));
     assertTrue(dialog.cancel.getClassNames().contains(CANCEL));
   }
 
   @Test
-  public void placeholder() {
-    dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(EMAIL_PLACEHOLDER, dialog.email.getPlaceholder());
-    assertEquals(NAME_PLACEHOLDER, dialog.name.getPlaceholder());
-    assertEquals(LABORATORY_NAME_PLACEHOLDER, dialog.laboratoryName.getPlaceholder());
-    Address address = defaultAddressConfiguration.getAddress();
-    assertEquals(address.getLine(), dialog.addressLine.getPlaceholder());
-    assertEquals(address.getTown(), dialog.town.getPlaceholder());
-    assertEquals(address.getState(), dialog.state.getPlaceholder());
-    assertEquals(address.getCountry(), dialog.country.getPlaceholder());
-    assertEquals(address.getPostalCode(), dialog.postalCode.getPlaceholder());
-    assertEquals(NUMBER_PLACEHOLDER, dialog.number.getPlaceholder());
-  }
-
-  @Test
   public void labels() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, 0), dialog.header.getText());
-    assertEquals(userResources.message(EMAIL), dialog.email.getLabel());
-    assertEquals(userResources.message(NAME), dialog.name.getLabel());
-    assertEquals(userResources.message(ADMIN), dialog.admin.getLabel());
-    assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
-    assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
-    assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(resources.message(property(LABORATORY, LABORATORY_NAME)),
-        dialog.laboratoryName.getLabel());
-    assertEquals(addressResources.message(LINE), dialog.addressLine.getLabel());
-    assertEquals(addressResources.message(TOWN), dialog.town.getLabel());
-    assertEquals(addressResources.message(STATE), dialog.state.getLabel());
-    assertEquals(addressResources.message(COUNTRY), dialog.country.getLabel());
-    assertEquals(addressResources.message(POSTAL_CODE), dialog.postalCode.getLabel());
-    assertEquals(phoneNumberResources.message(TYPE), dialog.phoneType.getLabel());
-    for (PhoneNumberType type : PhoneNumberType.values()) {
-      assertEquals(type.getLabel(locale), dialog.phoneType.getItemLabelGenerator().apply(type));
-    }
-    assertEquals(phoneNumberResources.message(NUMBER), dialog.number.getLabel());
-    assertEquals(phoneNumberResources.message(EXTENSION), dialog.extension.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), dialog.save.getIcon());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
     validateIcon(VaadinIcon.CLOSE.create(), dialog.cancel.getIcon());
-    verify(presenter).localeChange(locale);
   }
 
   @Test
@@ -189,35 +115,12 @@ public class UserDialogTest extends AbstractViewTestCase {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(UserDialog.class, locale);
-    final AppResources userResources = new AppResources(User.class, locale);
-    final AppResources addressResources = new AppResources(Address.class, locale);
-    final AppResources phoneNumberResources = new AppResources(PhoneNumber.class, locale);
     final AppResources webResources = new AppResources(WebConstants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, 0), dialog.header.getText());
-    assertEquals(userResources.message(EMAIL), dialog.email.getLabel());
-    assertEquals(userResources.message(NAME), dialog.name.getLabel());
-    assertEquals(userResources.message(ADMIN), dialog.admin.getLabel());
-    assertEquals(userResources.message(MANAGER), dialog.manager.getLabel());
-    assertEquals(resources.message(CREATE_NEW_LABORATORY), dialog.createNewLaboratory.getLabel());
-    assertEquals(userResources.message(LABORATORY), dialog.laboratory.getLabel());
-    assertEquals(resources.message(property(LABORATORY, LABORATORY_NAME)),
-        dialog.laboratoryName.getLabel());
-    assertEquals(addressResources.message(LINE), dialog.addressLine.getLabel());
-    assertEquals(addressResources.message(TOWN), dialog.town.getLabel());
-    assertEquals(addressResources.message(STATE), dialog.state.getLabel());
-    assertEquals(addressResources.message(COUNTRY), dialog.country.getLabel());
-    assertEquals(addressResources.message(POSTAL_CODE), dialog.postalCode.getLabel());
-    assertEquals(phoneNumberResources.message(TYPE), dialog.phoneType.getLabel());
-    for (PhoneNumberType type : PhoneNumberType.values()) {
-      assertEquals(type.getLabel(locale), dialog.phoneType.getItemLabelGenerator().apply(type));
-    }
-    assertEquals(phoneNumberResources.message(NUMBER), dialog.number.getLabel());
-    assertEquals(phoneNumberResources.message(EXTENSION), dialog.extension.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
-    verify(presenter).localeChange(locale);
   }
 
   @Test
@@ -236,44 +139,44 @@ public class UserDialogTest extends AbstractViewTestCase {
 
   @Test
   public void getUser() {
-    when(presenter.getUser()).thenReturn(user);
+    when(formPresenter.getUser()).thenReturn(user);
     assertEquals(user, dialog.getUser());
-    verify(presenter).getUser();
+    verify(formPresenter).getUser();
   }
 
   @Test
   public void setUser_NewUser() {
     User user = new User();
-    when(presenter.getUser()).thenReturn(user);
+    when(formPresenter.getUser()).thenReturn(user);
 
     dialog.localeChange(mock(LocaleChangeEvent.class));
     dialog.setUser(user);
 
-    verify(presenter).setUser(user);
+    verify(formPresenter).setUser(user);
     assertEquals(resources.message(HEADER, 0), dialog.header.getText());
   }
 
   @Test
   public void setUser_User() {
     User user = userRepository.findById(2L).get();
-    when(presenter.getUser()).thenReturn(user);
+    when(formPresenter.getUser()).thenReturn(user);
 
     dialog.localeChange(mock(LocaleChangeEvent.class));
     dialog.setUser(user);
 
-    verify(presenter).setUser(user);
+    verify(formPresenter).setUser(user);
     assertEquals(resources.message(HEADER, 1, user.getName()), dialog.header.getText());
   }
 
   @Test
   public void setUser_UserBeforeLocaleChange() {
     User user = userRepository.findById(2L).get();
-    when(presenter.getUser()).thenReturn(user);
+    when(formPresenter.getUser()).thenReturn(user);
 
     dialog.setUser(user);
     dialog.localeChange(mock(LocaleChangeEvent.class));
 
-    verify(presenter).setUser(user);
+    verify(formPresenter).setUser(user);
     assertEquals(resources.message(HEADER, 1, user.getName()), dialog.header.getText());
   }
 
@@ -282,7 +185,7 @@ public class UserDialogTest extends AbstractViewTestCase {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     dialog.setUser(null);
 
-    verify(presenter).setUser(null);
+    verify(formPresenter).setUser(null);
     assertEquals(resources.message(HEADER, 0), dialog.header.getText());
   }
 
