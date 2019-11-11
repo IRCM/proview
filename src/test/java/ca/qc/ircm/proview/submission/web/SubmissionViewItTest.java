@@ -137,9 +137,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private void setFields(SubmissionViewElement view) throws Throwable {
     view.comment().setValue(comment);
     view.upload().upload(file1.toFile());
-    Thread.sleep(2000);
     view.upload().upload(file2.toFile());
-    Thread.sleep(2000);
   }
 
   private void setFields(LcmsmsSubmissionFormElement form, SampleType sampleType) {
