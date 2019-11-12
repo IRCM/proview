@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -49,6 +50,7 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -302,13 +304,11 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
       assertEquals(quantificationComment, submission.getQuantificationComment());
     }
     assertEquals(comment, submission.getComment());
-    /* TestBench's file upload does not work.
     assertEquals(2, submission.getFiles().size());
     assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    */
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
@@ -367,13 +367,11 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
       assertEquals(quantificationComment, submission.getQuantificationComment());
     }
     assertEquals(comment, submission.getComment());
-    /* TestBench's file upload does not work.
     assertEquals(2, submission.getFiles().size());
     assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    */
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
@@ -410,13 +408,11 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     assertEquals(sampleType, submission.getSamples().get(0).getType());
     assertEquals(sampleName1, submission.getSamples().get(0).getName());
     assertEquals(comment, submission.getComment());
-    /* TestBench's file upload does not work.
     assertEquals(2, submission.getFiles().size());
     assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    */
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
@@ -452,13 +448,11 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     assertEquals(source, submission.getSource());
     assertEquals(instrument, submission.getInstrument());
     assertEquals(comment, submission.getComment());
-    /* TestBench's file upload does not work.
     assertEquals(2, submission.getFiles().size());
     assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    */
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }

@@ -137,7 +137,24 @@ public class WebConstants {
    * @return {@link UploadI18N} for English
    */
   public static UploadI18N englishUploadI18N() {
-    return new UploadI18N();
+    final AppResources resources = new AppResources(WebConstants.class, FRENCH);
+    return new UploadI18N()
+        .setAddFiles(new UploadI18N.AddFiles().setOne("Add file...").setMany("Add files..."))
+        .setCancel(resources.message(CANCEL))
+        .setDropFiles(
+            new UploadI18N.DropFiles().setOne("Drop file here").setMany("Drop files here"))
+        .setError(new UploadI18N.Error().setFileIsTooBig("The file is too big")
+            .setIncorrectFileType("Wrong file type")
+            .setTooManyFiles("Too many files were uploaded"))
+        .setUploading(new UploadI18N.Uploading()
+            .setError(
+                new UploadI18N.Uploading.Error().setForbidden("You are not allowed to upload files")
+                    .setServerUnavailable("The server is unavailable")
+                    .setUnexpectedServerError("An unexpected error occured on server"))
+            .setRemainingTime(new UploadI18N.Uploading.RemainingTime().setPrefix("Remains: ")
+                .setUnknown("Unknown remaining time"))
+            .setStatus(new UploadI18N.Uploading.Status().setConnecting("Connecting...")
+                .setHeld("Waiting...").setProcessing("Uploading...").setStalled("Stalled...")));
   }
 
   /**
@@ -161,7 +178,7 @@ public class WebConstants {
                 .setForbidden("Vous n'avez pas la permission de télécharger des fichiers")
                 .setServerUnavailable("Le serveur n'est pas disponible")
                 .setUnexpectedServerError("Erreur inatendu lors du téléchargement"))
-            .setRemainingTime(new UploadI18N.Uploading.RemainingTime().setPrefix("Reste ")
+            .setRemainingTime(new UploadI18N.Uploading.RemainingTime().setPrefix("Il reste ")
                 .setUnknown("Temps restant inconnu"))
             .setStatus(new UploadI18N.Uploading.Status().setConnecting("Connexion...")
                 .setHeld("En attente...").setProcessing("En cours...").setStalled("Bloqué...")));
