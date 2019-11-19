@@ -88,6 +88,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   @PostConstruct
   void init() {
     addClassName(CLASS_NAME);
+    setMaxWidth("80em");
     setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3));
     add(new FormLayout(experiment, goal, taxonomy, protein, molecularWeight,
