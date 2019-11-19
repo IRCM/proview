@@ -135,7 +135,9 @@ public class SubmissionView extends VerticalLayout
         uploadBuffer.getInputStream(event.getFileName()), getLocale()));
     files.setId(FILES);
     files.setHeight("15em");
+    files.setMinHeight("15em");
     files.setWidth("45em");
+    files.setMinWidth("45em");
     filename = files.addColumn(new ComponentRenderer<>(file -> filenameAnchor(file)), FILENAME)
         .setKey(FILENAME);
     remove =
