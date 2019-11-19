@@ -151,6 +151,7 @@ public class SubmissionView extends VerticalLayout
 
   private Anchor filenameAnchor(SubmissionFile file) {
     Anchor link = new Anchor();
+    link.setTarget("_blank");
     link.setText(file.getFilename());
     link.setHref(new StreamResource(file.getFilename(),
         new ByteArrayStreamResourceWriter(file.getContent())));
