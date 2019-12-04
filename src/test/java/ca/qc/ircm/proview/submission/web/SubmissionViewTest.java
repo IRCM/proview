@@ -283,4 +283,10 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     view.setParameter(beforeEvent, 12L);
     verify(presenter).setParameter(12L);
   }
+
+  @Test
+  public void setParameter_Null() {
+    view.setParameter(beforeEvent, null);
+    verify(presenter).setParameter(null);
+  }
 }
