@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
-import static ca.qc.ircm.proview.user.web.UserView.HEADER;
-import static ca.qc.ircm.proview.user.web.UserView.ID;
+import static ca.qc.ircm.proview.user.web.ProfileView.HEADER;
+import static ca.qc.ircm.proview.user.web.ProfileView.ID;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
@@ -38,7 +38,6 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
-import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -53,13 +52,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class UserViewTest extends AbstractViewTestCase {
-  private UserView view;
+public class ProfileViewTest extends AbstractViewTestCase {
+  private ProfileView view;
   private UserForm form;
   @Mock
-  private UserViewPresenter presenter;
-  @Mock
-  private User user;
+  private ProfileViewPresenter presenter;
   @Mock
   private UserFormPresenter formPresenter;
   @Mock
@@ -67,7 +64,7 @@ public class UserViewTest extends AbstractViewTestCase {
   @Inject
   private DefaultAddressConfiguration defaultAddressConfiguration;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(UserView.class, locale);
+  private AppResources resources = new AppResources(ProfileView.class, locale);
   private AppResources webResources = new AppResources(WebConstants.class, locale);
 
   /**
@@ -77,7 +74,7 @@ public class UserViewTest extends AbstractViewTestCase {
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     form = new UserForm(formPresenter, defaultAddressConfiguration);
-    view = new UserView(form, presenter);
+    view = new ProfileView(form, presenter);
     view.init();
   }
 
@@ -97,7 +94,7 @@ public class UserViewTest extends AbstractViewTestCase {
   @Test
   public void labels() {
     view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER, 0), view.header.getText());
+    assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(webResources.message(SAVE), view.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), view.save.getIcon());
   }
@@ -106,11 +103,11 @@ public class UserViewTest extends AbstractViewTestCase {
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(UserView.class, locale);
+    final AppResources resources = new AppResources(ProfileView.class, locale);
     final AppResources webResources = new AppResources(WebConstants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER, 0), view.header.getText());
+    assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(webResources.message(SAVE), view.save.getText());
   }
 
@@ -125,17 +122,5 @@ public class UserViewTest extends AbstractViewTestCase {
   public void getPageTitle() {
     assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
         view.getPageTitle());
-  }
-
-  @Test
-  public void setParameter() {
-    view.setParameter(beforeEvent, 12L);
-    verify(presenter).setParameter(12L);
-  }
-
-  @Test
-  public void setParameter_Null() {
-    view.setParameter(beforeEvent, null);
-    verify(presenter).setParameter(null);
   }
 }
