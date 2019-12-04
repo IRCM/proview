@@ -18,13 +18,12 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.text.Strings.styleName;
-import static ca.qc.ircm.proview.user.UserRole.ADMIN;
-import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
 import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
 import static ca.qc.ircm.proview.web.ViewLayout.ID;
+import static ca.qc.ircm.proview.web.ViewLayout.PROFILE;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.ViewLayout.TAB;
@@ -53,6 +52,7 @@ import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -93,6 +93,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertEquals(ID, view.getId().orElse(""));
     assertEquals(TABS, view.tabs.getId().orElse(""));
     assertEquals(styleName(SUBMISSIONS, TAB), view.submissions.getId().orElse(""));
+    assertEquals(styleName(PROFILE, TAB), view.profile.getId().orElse(""));
     assertEquals(styleName(USERS, TAB), view.users.getId().orElse(""));
     assertEquals(styleName(EXIT_SWITCH_USER, TAB), view.exitSwitchUser.getId().orElse(""));
     assertEquals(styleName(SIGNOUT, TAB), view.signout.getId().orElse(""));
@@ -107,6 +108,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   public void labels() {
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(SUBMISSIONS), view.submissions.getLabel());
+    assertEquals(resources.message(PROFILE), view.profile.getLabel());
     assertEquals(resources.message(USERS), view.users.getLabel());
     assertEquals(resources.message(EXIT_SWITCH_USER), view.exitSwitchUser.getLabel());
     assertEquals(resources.message(SIGNOUT), view.signout.getLabel());
@@ -125,6 +127,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(SUBMISSIONS), view.submissions.getLabel());
+    assertEquals(resources.message(PROFILE), view.profile.getLabel());
     assertEquals(resources.message(USERS), view.users.getLabel());
     assertEquals(resources.message(EXIT_SWITCH_USER), view.exitSwitchUser.getLabel());
     assertEquals(resources.message(SIGNOUT), view.signout.getLabel());
@@ -139,6 +142,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   public void tabs() {
     view.init();
     assertTrue(view.submissions.isVisible());
+    assertTrue(view.profile.isVisible());
     assertFalse(view.users.isVisible());
     assertFalse(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
@@ -149,24 +153,11 @@ public class ViewLayoutTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void tabs_Manager() {
-    when(authorizationService.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
+  public void tabs_AllowUsersView() {
+    when(authorizationService.isAuthorized(UsersView.class)).thenReturn(true);
     view.init();
     assertTrue(view.submissions.isVisible());
-    assertTrue(view.users.isVisible());
-    assertFalse(view.exitSwitchUser.isVisible());
-    assertTrue(view.signout.isVisible());
-    assertTrue(view.contact.isVisible());
-    assertTrue(view.guidelines.isVisible());
-    assertFalse(view.edit.isVisible());
-    assertFalse(view.print.isVisible());
-  }
-
-  @Test
-  public void tabs_Admin() {
-    when(authorizationService.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
-    view.init();
-    assertTrue(view.submissions.isVisible());
+    assertTrue(view.profile.isVisible());
     assertTrue(view.users.isVisible());
     assertFalse(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
@@ -182,6 +173,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
         .thenReturn(true);
     view.init();
     assertTrue(view.submissions.isVisible());
+    assertTrue(view.profile.isVisible());
     assertFalse(view.users.isVisible());
     assertTrue(view.exitSwitchUser.isVisible());
     assertTrue(view.signout.isVisible());
@@ -210,6 +202,30 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.afterNavigation(afterNavigationEvent);
 
     view.tabs.setSelectedTab(view.submissions);
+
+    verify(ui, never()).navigate(any(String.class));
+    verify(page, never()).executeJs(any());
+  }
+
+  @Test
+  public void tabs_SelectProfile() {
+    Location location = new Location(SubmissionsView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+    view.afterNavigation(afterNavigationEvent);
+
+    view.tabs.setSelectedTab(view.profile);
+
+    verify(ui).navigate(ProfileView.VIEW_NAME);
+    verify(page, never()).executeJs(any());
+  }
+
+  @Test
+  public void tabs_SelectProfileNoChange() {
+    Location location = new Location(ProfileView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+    view.afterNavigation(afterNavigationEvent);
+
+    view.tabs.setSelectedTab(view.profile);
 
     verify(ui, never()).navigate(any(String.class));
     verify(page, never()).executeJs(any());

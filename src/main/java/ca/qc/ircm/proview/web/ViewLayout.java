@@ -1,8 +1,6 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.text.Strings.styleName;
-import static ca.qc.ircm.proview.user.UserRole.ADMIN;
-import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.web.WebConstants.ADD;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
@@ -14,6 +12,7 @@ import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
@@ -45,6 +44,7 @@ public class ViewLayout extends VerticalLayout
   public static final String ID = "view-layout";
   public static final String TABS = styleName(ID, "tabs");
   public static final String SUBMISSIONS = "submissions";
+  public static final String PROFILE = "profile";
   public static final String USERS = "users";
   public static final String EXIT_SWITCH_USER = "exitSwitchUser";
   public static final String SIGNOUT = "signout";
@@ -56,6 +56,7 @@ public class ViewLayout extends VerticalLayout
   private static final Logger logger = LoggerFactory.getLogger(ViewLayout.class);
   protected Tabs tabs = new Tabs();
   protected Tab submissions = new Tab();
+  protected Tab profile = new Tab();
   protected Tab users = new Tab();
   protected Tab exitSwitchUser = new Tab();
   protected Tab signout = new Tab();
@@ -85,11 +86,12 @@ public class ViewLayout extends VerticalLayout
     setSpacing(false);
     add(tabs);
     tabs.setId(TABS);
-    tabs.add(submissions, users, exitSwitchUser, signout, changeLanguage, contact, guidelines, add,
-        edit, print);
+    tabs.add(submissions, profile, users, exitSwitchUser, signout, changeLanguage, contact,
+        guidelines, add, edit, print);
     submissions.setId(styleName(SUBMISSIONS, TAB));
+    profile.setId(styleName(PROFILE, TAB));
     users.setId(styleName(USERS, TAB));
-    users.setVisible(authorizationService.hasAnyRole(MANAGER, ADMIN));
+    users.setVisible(authorizationService.isAuthorized(UsersView.class));
     exitSwitchUser.setId(styleName(EXIT_SWITCH_USER, TAB));
     exitSwitchUser
         .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
@@ -104,6 +106,7 @@ public class ViewLayout extends VerticalLayout
     print.setId(styleName(PRINT, TAB));
     print.setVisible(false);
     tabsHref.put(submissions, SubmissionsView.VIEW_NAME);
+    tabsHref.put(profile, ProfileView.VIEW_NAME);
     tabsHref.put(users, UsersView.VIEW_NAME);
     tabsHref.put(contact, ContactView.VIEW_NAME);
     tabsHref.put(guidelines, GuidelinesView.VIEW_NAME);
@@ -117,6 +120,7 @@ public class ViewLayout extends VerticalLayout
   public void localeChange(LocaleChangeEvent event) {
     AppResources resources = new AppResources(ViewLayout.class, getLocale());
     submissions.setLabel(resources.message(SUBMISSIONS));
+    profile.setLabel(resources.message(PROFILE));
     users.setLabel(resources.message(USERS));
     exitSwitchUser.setLabel(resources.message(EXIT_SWITCH_USER));
     signout.setLabel(resources.message(SIGNOUT));

@@ -34,6 +34,7 @@ import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.user.web.UsersViewElement;
 import java.util.Locale;
@@ -64,6 +65,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     assertTrue(optional(() -> view.submissions()).isPresent());
+    assertTrue(optional(() -> view.profile()).isPresent());
     assertFalse(optional(() -> view.users()).isPresent());
     assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
     assertTrue(optional(() -> view.signout()).isPresent());
@@ -79,6 +81,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     assertTrue(optional(() -> view.submissions()).isPresent());
+    assertTrue(optional(() -> view.profile()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
     assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
     assertTrue(optional(() -> view.signout()).isPresent());
@@ -94,6 +97,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     assertTrue(optional(() -> view.submissions()).isPresent());
+    assertTrue(optional(() -> view.profile()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
     assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
     assertTrue(optional(() -> view.signout()).isPresent());
@@ -115,6 +119,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     usersView.clickSwitchUser();
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     assertTrue(optional(() -> view.submissions()).isPresent());
+    assertTrue(optional(() -> view.profile()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
     assertTrue(optional(() -> view.exitSwitchUser()).isPresent());
     assertTrue(optional(() -> view.signout()).isPresent());
@@ -131,6 +136,15 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     view.submissions().click();
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithUserDetails("christopher.anderson@ircm.qc.ca")
+  public void profile() throws Throwable {
+    open();
+    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    view.profile().click();
+    assertEquals(viewUrl(ProfileView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
