@@ -23,7 +23,6 @@ import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.THEME;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.user.LaboratoryProperties;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -52,12 +51,6 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   private static final long serialVersionUID = 3285639770914046262L;
   public static final String ID = "user-dialog";
   public static final String HEADER = "header";
-  public static final String EMAIL_PLACEHOLDER = "john.smith@ircm.qc.ca";
-  public static final String NAME_PLACEHOLDER = "John Smith";
-  public static final String CREATE_NEW_LABORATORY = "createNewLaboratory";
-  public static final String LABORATORY_NAME = LaboratoryProperties.NAME;
-  public static final String LABORATORY_NAME_PLACEHOLDER = "Translational Proteomics";
-  public static final String NUMBER_PLACEHOLDER = "514-987-5500";
   protected H2 header = new H2();
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();

@@ -30,7 +30,7 @@ import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
-import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME;
+import static ca.qc.ircm.proview.user.web.UserForm.LABORATORY_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 

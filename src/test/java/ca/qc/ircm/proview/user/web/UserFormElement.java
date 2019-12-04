@@ -31,8 +31,8 @@ import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
-import static ca.qc.ircm.proview.user.web.UserDialog.CREATE_NEW_LABORATORY;
-import static ca.qc.ircm.proview.user.web.UserDialog.LABORATORY_NAME;
+import static ca.qc.ircm.proview.user.web.UserForm.CREATE_NEW_LABORATORY;
+import static ca.qc.ircm.proview.user.web.UserForm.LABORATORY_NAME;
 
 import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
