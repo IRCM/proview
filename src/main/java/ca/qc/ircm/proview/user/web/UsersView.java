@@ -7,7 +7,8 @@ import static ca.qc.ircm.proview.user.UserProperties.ACTIVE;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
-import static ca.qc.ircm.proview.user.UserRole.USER;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.ERROR;
@@ -55,7 +56,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Users view.
  */
 @Route(value = UsersView.VIEW_NAME, layout = ViewLayout.class)
-@RolesAllowed({ USER })
+@RolesAllowed({ MANAGER, ADMIN })
 public class UsersView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle,
     AfterNavigationObserver, NotificationComponent {
   public static final String VIEW_NAME = "users";

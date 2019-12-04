@@ -108,6 +108,15 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void security_Manager() throws Throwable {
+    open();
+
+    assertEquals(resources(UsersView.class).message(TITLE,
+        resources(WebConstants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+  }
+
+  @Test
   public void title() throws Throwable {
     open();
 
