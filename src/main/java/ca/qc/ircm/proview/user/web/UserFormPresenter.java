@@ -57,6 +57,8 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -68,6 +70,8 @@ import org.springframework.security.acls.domain.BasePermission;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserFormPresenter {
+  @SuppressWarnings("unused")
+  private static final Logger logger = LoggerFactory.getLogger(UserFormPresenter.class);
   private UserForm form;
   private Binder<User> binder = new BeanValidationBinder<>(User.class);
   private ListDataProvider<Laboratory> laboratoriesDataProvider;
@@ -221,6 +225,7 @@ public class UserFormPresenter {
   }
 
   User getUser() {
+    user.setLaboratory(laboratoryBinder.getBean());
     if (form.laboratory.getValue() != null
         && (!form.createNewLaboratory.isEnabled() || !form.createNewLaboratory.getValue())) {
       user.getLaboratory().setId(form.laboratory.getValue().getId());
