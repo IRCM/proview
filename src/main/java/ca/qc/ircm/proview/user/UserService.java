@@ -195,7 +195,9 @@ public class UserService {
     user.setRegisterTime(LocalDateTime.now());
     if (authorizationService.hasPermission(user.getLaboratory(), BasePermission.WRITE)) {
       Laboratory laboratory = user.getLaboratory();
-      laboratory.setDirector(user.getName());
+      if (laboratory.getId() == null) {
+        laboratory.setDirector(user.getName());
+      }
       laboratoryRepository.save(laboratory);
     }
     repository.saveAndFlush(user);
@@ -212,8 +214,8 @@ public class UserService {
       setUserPassword(user, newPassword);
     }
 
-    boolean updateLaboratory = authorizationService.hasPermission(user.getLaboratory(),
-        BasePermission.WRITE);
+    boolean updateLaboratory =
+        authorizationService.hasPermission(user.getLaboratory(), BasePermission.WRITE);
     if (updateLaboratory) {
       laboratoryRepository.save(user.getLaboratory());
     }

@@ -346,6 +346,10 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
     assertEquals(true, user.isAdmin());
     assertEquals(false, user.isManager());
+    Laboratory laboratory = user.getLaboratory();
+    assertEquals((Long) 1L, laboratory.getId());
+    assertEquals("Admin", laboratory.getName());
+    assertEquals("Robot", laboratory.getDirector());
   }
 
   @Test
@@ -406,6 +410,10 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isActive());
     assertEquals(false, user.isAdmin());
     assertEquals(false, user.isManager());
+    Laboratory laboratory = user.getLaboratory();
+    assertEquals((Long) 2L, laboratory.getId());
+    assertEquals("Ribonucleoprotein Biochemistry", laboratory.getName());
+    assertEquals("Benoit Coulombe", laboratory.getDirector());
   }
 
   @Test
