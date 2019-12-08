@@ -184,7 +184,7 @@ public class UserFormPresenter {
     boolean createNew = form.createNewLaboratory.getValue();
     form.laboratory.setEnabled(!createNew);
     laboratoryBinder
-        .setBean(createNew || user.getLaboratory() == null || form.laboratory.getValue() == null
+        .readBean(createNew || user.getLaboratory() == null || form.laboratory.getValue() == null
             ? new Laboratory(laboratoryBinder.getBean().getName())
             : laboratoryService.get(form.laboratory.getValue().getId()));
   }
@@ -225,7 +225,6 @@ public class UserFormPresenter {
   }
 
   User getUser() {
-    user.setLaboratory(laboratoryBinder.getBean());
     if (form.laboratory.getValue() != null
         && (!form.createNewLaboratory.isEnabled() || !form.createNewLaboratory.getValue())) {
       user.getLaboratory().setId(form.laboratory.getValue().getId());
