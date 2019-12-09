@@ -65,7 +65,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.acls.domain.BasePermission;
 
 /**
- * Users dialog presenter.
+ * User form presenter.
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
