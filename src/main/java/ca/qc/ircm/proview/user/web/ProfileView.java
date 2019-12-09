@@ -43,7 +43,7 @@ import javax.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Users dialog.
+ * Profile view.
  */
 @Route(value = ProfileView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ USER })
@@ -72,11 +72,7 @@ public class ProfileView extends VerticalLayout
   @PostConstruct
   protected void init() {
     setId(ID);
-    VerticalLayout layout = new VerticalLayout();
-    layout.setMaxWidth("70em");
-    layout.setMinWidth("22em");
-    add(layout);
-    layout.add(header, form, buttonsLayout);
+    add(header, form, buttonsLayout);
     buttonsLayout.add(save);
     header.setId(HEADER);
     save.setId(SAVE);

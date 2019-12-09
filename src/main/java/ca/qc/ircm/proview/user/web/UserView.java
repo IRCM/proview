@@ -47,7 +47,7 @@ import javax.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Users dialog.
+ * User view.
  */
 @Route(value = UserView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ MANAGER, ADMIN })
@@ -76,11 +76,7 @@ public class UserView extends VerticalLayout
   @PostConstruct
   protected void init() {
     setId(ID);
-    VerticalLayout layout = new VerticalLayout();
-    layout.setMaxWidth("70em");
-    layout.setMinWidth("22em");
-    add(layout);
-    layout.add(header, form, buttonsLayout);
+    add(header, form, buttonsLayout);
     buttonsLayout.add(save);
     header.setId(HEADER);
     save.setId(SAVE);
