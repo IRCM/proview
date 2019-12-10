@@ -74,6 +74,10 @@ public class PasswordsForm extends FormLayout implements LocaleChangeObserver {
     return passwordBinder.validate();
   }
 
+  public boolean isValid() {
+    return passwordBinder.validate().isOk();
+  }
+
   public boolean isRequired() {
     return required;
   }

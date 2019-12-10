@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.web.AccessDeniedError;
+import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -85,6 +86,14 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
           .filter(locale -> new AppResources(SigninView.class, locale)
+              .message(TITLE,
+                  new AppResources(WebConstants.class, locale).message(APPLICATION_NAME))
+              .equals(getDriver().getTitle()))
+          .findAny();
+    }
+    if (!optlocale.isPresent()) {
+      optlocale = locales.stream()
+          .filter(locale -> new AppResources(ForgotPasswordView.class, locale)
               .message(TITLE,
                   new AppResources(WebConstants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
