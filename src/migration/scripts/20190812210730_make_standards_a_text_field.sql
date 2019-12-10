@@ -50,6 +50,6 @@ RENAME TABLE standard TO old_standard;
 
 RENAME TABLE old_standard TO standard;
 ALTER TABLE standard
-ADD CONSTRAINT standard_sample_ibfk FOREIGN KEY standards_id REFERENCES sample(id) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT standard_sample_ibfk FOREIGN KEY (standards_id) REFERENCES sample(id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE submission
 DROP COLUMN standards;

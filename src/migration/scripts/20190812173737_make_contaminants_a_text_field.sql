@@ -50,6 +50,6 @@ RENAME TABLE contaminant TO old_contaminant;
 
 RENAME TABLE old_contaminant TO contaminant;
 ALTER TABLE contaminant
-ADD CONSTRAINT contaminant_sample_ibfk FOREIGN KEY contaminants_id REFERENCES sample(id) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT contaminant_sample_ibfk FOREIGN KEY (contaminants_id) REFERENCES sample(id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE submission
 DROP COLUMN contaminants;
