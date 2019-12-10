@@ -39,6 +39,7 @@ public class SigninView extends LoginOverlay
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
   public static final String DESCRIPTION = "description";
+  public static final String ADDITIONAL_INFORMATION = "additionalInformation";
   public static final String FORM_TITLE = "form.title";
   public static final String USERNAME = "username";
   public static final String PASSWORD = "password";
@@ -86,7 +87,7 @@ public class SigninView extends LoginOverlay
     i18n.setHeader(new LoginI18n.Header());
     i18n.getHeader().setTitle(resources.message(HEADER));
     i18n.getHeader().setDescription(resources.message(DESCRIPTION));
-    i18n.setAdditionalInformation(null);
+    i18n.setAdditionalInformation(resources.message(ADDITIONAL_INFORMATION));
     i18n.setForm(new LoginI18n.Form());
     i18n.getForm().setSubmit(resources.message(SIGNIN));
     i18n.getForm().setTitle(resources.message(FORM_TITLE));

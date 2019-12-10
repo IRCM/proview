@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.HASHED_PASSWORD;
+import static ca.qc.ircm.proview.web.SigninView.ADDITIONAL_INFORMATION;
 import static ca.qc.ircm.proview.web.SigninView.DESCRIPTION;
 import static ca.qc.ircm.proview.web.SigninView.DISABLED;
 import static ca.qc.ircm.proview.web.SigninView.FAIL;
@@ -109,6 +110,7 @@ public class SigninViewTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
     assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
+    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
     assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
     assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
     assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
