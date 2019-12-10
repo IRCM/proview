@@ -108,6 +108,6 @@ public class ProfileViewPresenterTest extends AbstractViewTestCase {
     verify(view.form).isValid();
     verify(service).save(eq(user), eq(password));
     verify(ui).navigate(MainView.class);
-    verify(view).showNotification(resources.message(SAVED, user.getName()));
+    verify(view).showNotification(resources.message(SAVED));
   }
 }

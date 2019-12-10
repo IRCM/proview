@@ -107,7 +107,7 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     AppResources resources = this.resources(ProfileView.class);
-    assertEquals(resources.message(SAVED, name), notification.getText());
+    assertEquals(resources.message(SAVED), notification.getText());
     User user = repository.findById(10L).orElse(null);
     assertNotNull(user);
     entityManager.refresh(user);
