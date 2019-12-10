@@ -23,9 +23,9 @@ import ca.qc.ircm.proview.mail.EmailService;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Locale;
-import java.util.Random;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -59,10 +59,8 @@ public class ForgotPasswordService {
   private EmailService emailService;
   @Inject
   private ApplicationConfiguration applicationConfiguration;
-  private Random random;
 
   protected ForgotPasswordService() {
-    random = new Random();
   }
 
   /**
@@ -74,13 +72,14 @@ public class ForgotPasswordService {
    *          The confirm number of ForgotPassword.
    * @return ForgotPassword having this id.
    */
-  public ForgotPassword get(final Long id, final Integer confirmNumber) {
+  public ForgotPassword get(final Long id, final String confirmNumber) {
     if (id == null || confirmNumber == null) {
       return null;
     }
 
     ForgotPassword forgotPassword = repository.findById(id).orElse(null);
-    if (confirmNumber.equals(forgotPassword.getConfirmNumber()) && !forgotPassword.isUsed()
+    if (forgotPassword != null && confirmNumber.equals(forgotPassword.getConfirmNumber())
+        && !forgotPassword.isUsed()
         && forgotPassword.getRequestMoment().isAfter(LocalDateTime.now().minus(VALID_PERIOD))) {
       return forgotPassword;
     } else {
@@ -104,8 +103,7 @@ public class ForgotPasswordService {
     forgotPassword.setRequestMoment(LocalDateTime.now());
 
     // Generate random confirm number.
-    int rand = random.nextInt(Integer.MAX_VALUE);
-    forgotPassword.setConfirmNumber(rand);
+    forgotPassword.setConfirmNumber(RandomStringUtils.randomAlphanumeric(40));
 
     User user = userRepository.findByEmail(email);
     if (user.getId() == User.ROBOT_ID) {

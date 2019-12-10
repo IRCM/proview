@@ -56,7 +56,7 @@ public class ForgotPassword implements Data, Serializable {
    * Confirm number for the forgot password request.
    */
   @Column
-  private int confirmNumber;
+  private String confirmNumber;
   /**
    * Forgot password request was used.
    */
@@ -70,22 +70,34 @@ public class ForgotPassword implements Data, Serializable {
   private User user;
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof ForgotPassword) {
-      ForgotPassword other = (ForgotPassword) obj;
-      boolean equals = confirmNumber == other.getConfirmNumber();
-      equals &= requestMoment.equals(other.getRequestMoment());
-      return equals;
-    }
-    return false;
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((confirmNumber == null) ? 0 : confirmNumber.hashCode());
+    result = prime * result + ((requestMoment == null) ? 0 : requestMoment.hashCode());
+    return result;
   }
 
   @Override
-  public int hashCode() {
-    return confirmNumber;
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    ForgotPassword other = (ForgotPassword) obj;
+    if (confirmNumber == null) {
+      if (other.confirmNumber != null)
+        return false;
+    } else if (!confirmNumber.equals(other.confirmNumber))
+      return false;
+    if (requestMoment == null) {
+      if (other.requestMoment != null)
+        return false;
+    } else if (!requestMoment.equals(other.requestMoment))
+      return false;
+    return true;
   }
 
   @Override
@@ -110,11 +122,11 @@ public class ForgotPassword implements Data, Serializable {
     this.requestMoment = requestMoment;
   }
 
-  public int getConfirmNumber() {
+  public String getConfirmNumber() {
     return confirmNumber;
   }
 
-  public void setConfirmNumber(int confirmNumber) {
+  public void setConfirmNumber(String confirmNumber) {
     this.confirmNumber = confirmNumber;
   }
 

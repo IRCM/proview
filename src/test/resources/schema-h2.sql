@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS forgotpassword (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   user_id bigint(20) NOT NULL,
   requestmoment datetime NOT NULL,
-  confirmnumber int(11) NOT NULL,
+  confirmnumber varchar NOT NULL,
   used tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   CONSTRAINT forgotpassword_ibfk_1 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE

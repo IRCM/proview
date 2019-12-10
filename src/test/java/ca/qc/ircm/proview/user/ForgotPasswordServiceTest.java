@@ -76,7 +76,7 @@ public class ForgotPasswordServiceTest {
   private ArgumentCaptor<String> stringCaptor;
   private String hashedPassword;
   private User user;
-  private Integer confirmNumber;
+  private String confirmNumber;
   private String forgotPasswordUrl = "/validate/user";
 
   /**
@@ -94,7 +94,7 @@ public class ForgotPasswordServiceTest {
     hashedPassword = "da78f3a74658706/4ae8470fc73a83f369fed012";
     when(passwordEncoder.encode(any(String.class))).thenReturn(hashedPassword);
     when(emailService.htmlEmail()).thenReturn(email);
-    confirmNumber = 70987756;
+    confirmNumber = "70987756";
   }
 
   private ForgotPasswordWebContext forgotPasswordWebContext() {
@@ -103,12 +103,12 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void get() throws Exception {
-    ForgotPassword forgotPassword = service.get(9L, 174407008);
+    ForgotPassword forgotPassword = service.get(9L, "174407008");
 
     forgotPassword = service.get(forgotPassword.getId(), forgotPassword.getConfirmNumber());
 
     assertEquals((Long) 9L, forgotPassword.getId());
-    assertEquals(174407008, forgotPassword.getConfirmNumber());
+    assertEquals("174407008", forgotPassword.getConfirmNumber());
     assertTrue(
         LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
     assertTrue(LocalDateTime.now().minus(2, ChronoUnit.MINUTES)
@@ -117,7 +117,14 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void get_Expired() throws Exception {
-    ForgotPassword forgotPassword = service.get(7L, 803369922);
+    ForgotPassword forgotPassword = service.get(7L, "803369922");
+
+    assertNull(forgotPassword);
+  }
+
+  @Test
+  public void get_Invalid() throws Exception {
+    ForgotPassword forgotPassword = service.get(20L, "435FA");
 
     assertNull(forgotPassword);
   }
@@ -138,7 +145,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void get_Used() throws Exception {
-    ForgotPassword forgotPassword = service.get(10L, 460559412);
+    ForgotPassword forgotPassword = service.get(10L, "460559412");
 
     assertNull(forgotPassword);
   }
