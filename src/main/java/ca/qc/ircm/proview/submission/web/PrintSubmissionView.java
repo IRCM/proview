@@ -54,7 +54,7 @@ public class PrintSubmissionView extends VerticalLayout
 
   @PostConstruct
   void init() {
-    logger.debug("Print submission view");
+    logger.debug("print submission view");
     setId(ID);
     add(header, secondHeader, printContent);
     header.setId(HEADER);

@@ -103,7 +103,7 @@ public class SubmissionView extends VerticalLayout
 
   @PostConstruct
   void init() {
-    logger.debug("Submission view");
+    logger.debug("submission view");
     setId(ID);
     add(header, service, lcmsmsSubmissionForm, smallMoleculeSubmissionForm,
         intactProteinSubmissionForm, comment, upload, files, save);

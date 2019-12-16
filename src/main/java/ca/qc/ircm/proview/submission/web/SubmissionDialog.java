@@ -80,7 +80,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
 
   @PostConstruct
   void init() {
-    logger.debug("Submission dialog");
+    logger.debug("submission dialog");
     setId(ID);
     VerticalLayout layout = new VerticalLayout();
     layout.setMaxWidth("90em");

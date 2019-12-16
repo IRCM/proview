@@ -41,6 +41,8 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.WildcardParameter;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -50,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UseForgotPasswordView extends VerticalLayout implements LocaleChangeObserver,
     HasUrlParameter<String>, HasDynamicTitle, NotificationComponent {
   private static final long serialVersionUID = 4760310643370830640L;
+  private static final Logger logger = LoggerFactory.getLogger(UseForgotPasswordView.class);
   public static final String VIEW_NAME = "useforgotpassword";
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String SEPARATOR = "/";
@@ -74,6 +77,7 @@ public class UseForgotPasswordView extends VerticalLayout implements LocaleChang
    */
   @PostConstruct
   protected void init() {
+    logger.debug("use forgot password view");
     setId(ID);
     add(header, message, form, buttonsLayout);
     buttonsLayout.add(save);

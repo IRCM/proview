@@ -40,6 +40,8 @@ import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -50,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ProfileView extends VerticalLayout
     implements LocaleChangeObserver, HasDynamicTitle, NotificationComponent {
   private static final long serialVersionUID = 4760310643370830640L;
+  private static final Logger logger = LoggerFactory.getLogger(ProfileView.class);
   public static final String VIEW_NAME = "profile";
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
@@ -71,6 +74,7 @@ public class ProfileView extends VerticalLayout
    */
   @PostConstruct
   protected void init() {
+    logger.debug("profile view");
     setId(ID);
     add(header, form, buttonsLayout);
     buttonsLayout.add(save);

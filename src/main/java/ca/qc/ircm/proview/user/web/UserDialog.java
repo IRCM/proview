@@ -38,6 +38,8 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -49,6 +51,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserDialog extends Dialog implements LocaleChangeObserver {
   private static final long serialVersionUID = 3285639770914046262L;
+  private static final Logger logger = LoggerFactory.getLogger(UserDialog.class);
   public static final String ID = "user-dialog";
   public static final String HEADER = "header";
   protected H2 header = new H2();
@@ -69,6 +72,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
    */
   @PostConstruct
   protected void init() {
+    logger.debug("user dialog");
     setId(ID);
     VerticalLayout layout = new VerticalLayout();
     layout.setMaxWidth("70em");
