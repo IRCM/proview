@@ -36,17 +36,15 @@ import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
-import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SigninView;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -60,10 +58,6 @@ public class UseForgotPasswordViewPresenterTest extends AbstractViewTestCase {
   private ForgotPasswordService service;
   @Mock
   private ForgotPassword forgotPassword;
-  @Captor
-  private ArgumentCaptor<User> userCaptor;
-  @Captor
-  private ArgumentCaptor<Boolean> booleanCaptor;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(UseForgotPasswordView.class, locale);
   private long id = 34925;
@@ -77,6 +71,7 @@ public class UseForgotPasswordViewPresenterTest extends AbstractViewTestCase {
   public void beforeTest() {
     presenter = new UseForgotPasswordViewPresenter(service);
     view.header = new H2();
+    view.message = new Div();
     view.form = mock(PasswordsForm.class);
     view.buttonsLayout = new HorizontalLayout();
     view.save = new Button();
