@@ -46,11 +46,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Forgot password view.
  */
-@Route(value = ForgotPasswordView.VIEW_NAME)
-public class ForgotPasswordView extends VerticalLayout implements LocaleChangeObserver,
+@Route(value = UseForgotPasswordView.VIEW_NAME)
+public class UseForgotPasswordView extends VerticalLayout implements LocaleChangeObserver,
     HasUrlParameter<String>, HasDynamicTitle, NotificationComponent {
   private static final long serialVersionUID = 4760310643370830640L;
-  public static final String VIEW_NAME = "forgotpassword";
+  public static final String VIEW_NAME = "useforgotpassword";
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String SEPARATOR = "/";
   public static final String HEADER = "header";
@@ -62,10 +62,10 @@ public class ForgotPasswordView extends VerticalLayout implements LocaleChangeOb
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected PasswordsForm form = new PasswordsForm();
-  private transient ForgotPasswordViewPresenter presenter;
+  private transient UseForgotPasswordViewPresenter presenter;
 
   @Autowired
-  protected ForgotPasswordView(ForgotPasswordViewPresenter presenter) {
+  protected UseForgotPasswordView(UseForgotPasswordViewPresenter presenter) {
     this.presenter = presenter;
   }
 

@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.INVALID;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.SAVED;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.SEPARATOR;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.INVALID;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SAVED;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SEPARATOR;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.user.ForgotPassword;
@@ -39,18 +39,18 @@ import org.springframework.context.annotation.Scope;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ForgotPasswordViewPresenter {
-  private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewPresenter.class);
-  private ForgotPasswordView view;
+public class UseForgotPasswordViewPresenter {
+  private static final Logger logger = LoggerFactory.getLogger(UseForgotPasswordViewPresenter.class);
+  private UseForgotPasswordView view;
   private ForgotPassword forgotPassword;
   private ForgotPasswordService service;
 
   @Autowired
-  protected ForgotPasswordViewPresenter(ForgotPasswordService service) {
+  protected UseForgotPasswordViewPresenter(ForgotPasswordService service) {
     this.service = service;
   }
 
-  void init(ForgotPasswordView view) {
+  void init(UseForgotPasswordView view) {
     this.view = view;
   }
 
@@ -59,14 +59,14 @@ public class ForgotPasswordViewPresenter {
       String password = view.form.getPassword();
       logger.debug("save new password for user {}", forgotPassword.getUser());
       service.updatePassword(forgotPassword, password);
-      final AppResources resources = new AppResources(ForgotPasswordView.class, locale);
+      final AppResources resources = new AppResources(UseForgotPasswordView.class, locale);
       view.showNotification(resources.message(SAVED));
       UI.getCurrent().navigate(SigninView.class);
     }
   }
 
   private boolean validateParameter(String parameter, Locale locale) {
-    final AppResources resources = new AppResources(ForgotPasswordView.class, locale);
+    final AppResources resources = new AppResources(UseForgotPasswordView.class, locale);
     if (parameter == null) {
       view.showNotification(resources.message(INVALID));
       return false;

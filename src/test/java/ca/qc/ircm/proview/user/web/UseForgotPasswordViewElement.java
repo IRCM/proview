@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.HEADER;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.MESSAGE;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.HEADER;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.MESSAGE;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
@@ -28,7 +28,7 @@ import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.elementsbase.Element;
 
 @Element("vaadin-vertical-layout")
-public class ForgotPasswordViewElement extends VerticalLayoutElement {
+public class UseForgotPasswordViewElement extends VerticalLayoutElement {
   public H2Element header() {
     return $(H2Element.class).id(HEADER);
   }

@@ -1,9 +1,9 @@
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.ID;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.SAVED;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.SEPARATOR;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.VIEW_NAME;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.ID;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SAVED;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SEPARATOR;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.VIEW_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
@@ -31,9 +31,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
-public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
+public class UseForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   @SuppressWarnings("unused")
-  private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewItTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(UseForgotPasswordViewItTest.class);
   @Autowired
   private ForgotPasswordRepository repository;
   @Autowired
@@ -54,14 +54,14 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   public void title() throws Throwable {
     open();
 
-    assertEquals(resources(ForgotPasswordView.class).message(TITLE,
+    assertEquals(resources(UseForgotPasswordView.class).message(TITLE,
         resources(WebConstants.class).message(APPLICATION_NAME)), getDriver().getTitle());
   }
 
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    ForgotPasswordViewElement view = $(ForgotPasswordViewElement.class).id(ID);
+    UseForgotPasswordViewElement view = $(UseForgotPasswordViewElement.class).id(ID);
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.message()).isPresent());
     assertTrue(optional(() -> view.passwordsForm()).isPresent());
@@ -71,14 +71,14 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void save() throws Throwable {
     open();
-    ForgotPasswordViewElement view = $(ForgotPasswordViewElement.class).id(ID);
+    UseForgotPasswordViewElement view = $(UseForgotPasswordViewElement.class).id(ID);
 
     view.passwordsForm().password().setValue(password);
     view.passwordsForm().passwordConfirm().setValue(password);
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(ForgotPasswordView.class);
+    AppResources resources = this.resources(UseForgotPasswordView.class);
     assertEquals(resources.message(SAVED), notification.getText());
     ForgotPassword forgotPassword = repository.findById(id).orElse(null);
     entityManager.refresh(forgotPassword);

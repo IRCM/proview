@@ -26,7 +26,7 @@ import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.ShiroPasswordEncoder;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.proview.user.web.ForgotPasswordView;
+import ca.qc.ircm.proview.user.web.UseForgotPasswordView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SigninView;
@@ -209,7 +209,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .authenticated()
 
         // Allow anonymous views.
-        .antMatchers("/" + ForgotPasswordView.VIEW_NAME + "/**").permitAll()
+        .antMatchers("/" + UseForgotPasswordView.VIEW_NAME + "/**").permitAll()
 
         // Allow all requests by logged in users.
         .anyRequest().hasAnyAuthority(UserRole.roles())

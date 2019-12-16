@@ -19,9 +19,9 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.HEADER;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.ID;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.MESSAGE;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.HEADER;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.ID;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.MESSAGE;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
@@ -51,14 +51,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class ForgotPasswordViewTest extends AbstractViewTestCase {
-  private ForgotPasswordView view;
+public class UseForgotPasswordViewTest extends AbstractViewTestCase {
+  private UseForgotPasswordView view;
   @Mock
-  private ForgotPasswordViewPresenter presenter;
+  private UseForgotPasswordViewPresenter presenter;
   @Mock
   private BeforeEvent beforeEvent;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(ForgotPasswordView.class, locale);
+  private AppResources resources = new AppResources(UseForgotPasswordView.class, locale);
   private AppResources webResources = new AppResources(WebConstants.class, locale);
 
   /**
@@ -67,7 +67,7 @@ public class ForgotPasswordViewTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new ForgotPasswordView(presenter);
+    view = new UseForgotPasswordView(presenter);
     view.init();
   }
 
@@ -98,7 +98,7 @@ public class ForgotPasswordViewTest extends AbstractViewTestCase {
   public void localeChange() {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(ForgotPasswordView.class, locale);
+    final AppResources resources = new AppResources(UseForgotPasswordView.class, locale);
     final AppResources webResources = new AppResources(WebConstants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));

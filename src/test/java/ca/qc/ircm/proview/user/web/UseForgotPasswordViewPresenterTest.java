@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.INVALID;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.SAVED;
-import static ca.qc.ircm.proview.user.web.ForgotPasswordView.SEPARATOR;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.INVALID;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SAVED;
+import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SEPARATOR;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -52,10 +52,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
-public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
-  private ForgotPasswordViewPresenter presenter;
+public class UseForgotPasswordViewPresenterTest extends AbstractViewTestCase {
+  private UseForgotPasswordViewPresenter presenter;
   @Mock
-  private ForgotPasswordView view;
+  private UseForgotPasswordView view;
   @Mock
   private ForgotPasswordService service;
   @Mock
@@ -65,7 +65,7 @@ public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<Boolean> booleanCaptor;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(ForgotPasswordView.class, locale);
+  private AppResources resources = new AppResources(UseForgotPasswordView.class, locale);
   private long id = 34925;
   private String confirmNumber = "feafet23ts";
   private String parameter = id + SEPARATOR + confirmNumber;
@@ -75,7 +75,7 @@ public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
    */
   @Before
   public void beforeTest() {
-    presenter = new ForgotPasswordViewPresenter(service);
+    presenter = new UseForgotPasswordViewPresenter(service);
     view.header = new H2();
     view.form = mock(PasswordsForm.class);
     view.buttonsLayout = new HorizontalLayout();
