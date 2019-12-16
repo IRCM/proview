@@ -18,14 +18,11 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
@@ -162,21 +159,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(view.director.setKey(any())).thenReturn(view.director);
     when(view.director.setComparator(any(Comparator.class))).thenReturn(view.director);
     when(view.director.setHeader(any(String.class))).thenReturn(view.director);
-    view.sampleDeliveryDate = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(SAMPLE_DELIVERY_DATE)))
-        .thenReturn(view.sampleDeliveryDate);
-    when(view.sampleDeliveryDate.setKey(any())).thenReturn(view.sampleDeliveryDate);
-    when(view.sampleDeliveryDate.setHeader(any(String.class))).thenReturn(view.sampleDeliveryDate);
-    view.digestionDate = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(DIGESTION_DATE)))
-        .thenReturn(view.digestionDate);
-    when(view.digestionDate.setKey(any())).thenReturn(view.digestionDate);
-    when(view.digestionDate.setHeader(any(String.class))).thenReturn(view.digestionDate);
-    view.analysisDate = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(ANALYSIS_DATE)))
-        .thenReturn(view.analysisDate);
-    when(view.analysisDate.setKey(any())).thenReturn(view.analysisDate);
-    when(view.analysisDate.setHeader(any(String.class))).thenReturn(view.analysisDate);
     view.dataAvailableDate = mock(Column.class);
     when(view.submissions.addColumn(any(ValueProvider.class), eq(DATA_AVAILABLE_DATE)))
         .thenReturn(view.dataAvailableDate);
@@ -268,12 +250,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.user).setFooter(submissionResources.message(USER));
     verify(view.director).setHeader(laboratoryResources.message(DIRECTOR));
     verify(view.director).setFooter(laboratoryResources.message(DIRECTOR));
-    verify(view.sampleDeliveryDate).setHeader(submissionResources.message(SAMPLE_DELIVERY_DATE));
-    verify(view.sampleDeliveryDate).setFooter(submissionResources.message(SAMPLE_DELIVERY_DATE));
-    verify(view.digestionDate).setHeader(submissionResources.message(DIGESTION_DATE));
-    verify(view.digestionDate).setFooter(submissionResources.message(DIGESTION_DATE));
-    verify(view.analysisDate).setHeader(submissionResources.message(ANALYSIS_DATE));
-    verify(view.analysisDate).setFooter(submissionResources.message(ANALYSIS_DATE));
     verify(view.dataAvailableDate).setHeader(submissionResources.message(DATA_AVAILABLE_DATE));
     verify(view.dataAvailableDate).setFooter(submissionResources.message(DATA_AVAILABLE_DATE));
     verify(view.date).setHeader(submissionResources.message(SUBMISSION_DATE));
@@ -326,14 +302,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.user).setFooter(submissionResources.message(USER));
     verify(view.director).setHeader(laboratoryResources.message(DIRECTOR));
     verify(view.director).setFooter(laboratoryResources.message(DIRECTOR));
-    verify(view.sampleDeliveryDate).setHeader(submissionResources.message(SAMPLE_DELIVERY_DATE));
-    verify(view.sampleDeliveryDate).setFooter(submissionResources.message(SAMPLE_DELIVERY_DATE));
-    verify(view.digestionDate, atLeastOnce())
-        .setHeader(submissionResources.message(DIGESTION_DATE));
-    verify(view.digestionDate, atLeastOnce())
-        .setFooter(submissionResources.message(DIGESTION_DATE));
-    verify(view.analysisDate).setHeader(submissionResources.message(ANALYSIS_DATE));
-    verify(view.analysisDate).setFooter(submissionResources.message(ANALYSIS_DATE));
     verify(view.dataAvailableDate).setHeader(submissionResources.message(DATA_AVAILABLE_DATE));
     verify(view.dataAvailableDate).setFooter(submissionResources.message(DATA_AVAILABLE_DATE));
     verify(view.date, atLeastOnce()).setHeader(submissionResources.message(SUBMISSION_DATE));
@@ -378,19 +346,13 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
 
   @Test
   public void submissions_Columns() {
-    assertEquals(14, view.submissions.getColumns().size());
+    assertEquals(11, view.submissions.getColumns().size());
     assertNotNull(view.submissions.getColumnByKey(EXPERIMENT));
     assertTrue(view.submissions.getColumnByKey(EXPERIMENT).isSortable());
     assertNotNull(view.submissions.getColumnByKey(USER));
     assertTrue(view.submissions.getColumnByKey(USER).isSortable());
     assertNotNull(view.submissions.getColumnByKey(DIRECTOR));
     assertTrue(view.submissions.getColumnByKey(DIRECTOR).isSortable());
-    assertNotNull(view.submissions.getColumnByKey(SAMPLE_DELIVERY_DATE));
-    assertTrue(view.submissions.getColumnByKey(SAMPLE_DELIVERY_DATE).isSortable());
-    assertNotNull(view.submissions.getColumnByKey(DIGESTION_DATE));
-    assertTrue(view.submissions.getColumnByKey(DIGESTION_DATE).isSortable());
-    assertNotNull(view.submissions.getColumnByKey(ANALYSIS_DATE));
-    assertTrue(view.submissions.getColumnByKey(ANALYSIS_DATE).isSortable());
     assertNotNull(view.submissions.getColumnByKey(DATA_AVAILABLE_DATE));
     assertTrue(view.submissions.getColumnByKey(DATA_AVAILABLE_DATE).isSortable());
     assertNotNull(view.submissions.getColumnByKey(SUBMISSION_DATE));
@@ -460,29 +422,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertTrue(comparator.compare(director("Test"), director("abc")) > 0);
     assertTrue(comparator.compare(director("tést"), director("test")) == 0);
     assertTrue(comparator.compare(director("tèst"), director("test")) == 0);
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SAMPLE_DELIVERY_DATE));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(submission.getSampleDeliveryDate() != null
-          ? dateFormatter.format(submission.getSampleDeliveryDate())
-          : "", valueProvider.apply(submission));
-    }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(DIGESTION_DATE));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(submission.getDigestionDate() != null
-          ? dateFormatter.format(submission.getDigestionDate())
-          : "", valueProvider.apply(submission));
-    }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(ANALYSIS_DATE));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(
-          submission.getAnalysisDate() != null ? dateFormatter.format(submission.getAnalysisDate())
-              : "",
-          valueProvider.apply(submission));
-    }
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(DATA_AVAILABLE_DATE));
     valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {

@@ -1,13 +1,10 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
@@ -78,9 +75,6 @@ public class SubmissionsViewPresenter {
     columnProperties.put(EXPERIMENT, submission.experiment);
     columnProperties.put(USER, submission.user.name);
     columnProperties.put(DIRECTOR, submission.laboratory.director);
-    columnProperties.put(SAMPLE_DELIVERY_DATE, submission.sampleDeliveryDate);
-    columnProperties.put(DIGESTION_DATE, submission.digestionDate);
-    columnProperties.put(ANALYSIS_DATE, submission.analysisDate);
     columnProperties.put(DATA_AVAILABLE_DATE, submission.dataAvailableDate);
     columnProperties.put(SERVICE, submission.service);
     columnProperties.put(INSTRUMENT, submission.instrument);
@@ -102,8 +96,8 @@ public class SubmissionsViewPresenter {
 
   private DataProvider<Submission, Void> dataProvider() {
     @SuppressWarnings("checkstyle:linelength")
-    Function<Query<Submission, SubmissionFilter>, List<OrderSpecifier<?>>> filterSortOrders = query -> query
-        .getSortOrders() != null && !query.getSortOrders().isEmpty()
+    Function<Query<Submission, SubmissionFilter>, List<OrderSpecifier<?>>> filterSortOrders =
+        query -> query.getSortOrders() != null && !query.getSortOrders().isEmpty()
             ? query.getSortOrders().stream()
                 .filter(order -> columnProperties.containsKey(order.getSorted()))
                 .map(order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
@@ -123,10 +117,10 @@ public class SubmissionsViewPresenter {
       int count = service.count(filter);
       return count;
     };
-    DataProvider<Submission, SubmissionFilter> dataProvider = new CallbackDataProvider<>(
-        fetchCallback, countCallback);
-    ConfigurableFilterDataProvider<Submission, Void, SubmissionFilter> wrapper = dataProvider
-        .withConfigurableFilter();
+    DataProvider<Submission, SubmissionFilter> dataProvider =
+        new CallbackDataProvider<>(fetchCallback, countCallback);
+    ConfigurableFilterDataProvider<Submission, Void, SubmissionFilter> wrapper =
+        dataProvider.withConfigurableFilter();
     wrapper.setFilter(filter);
     return wrapper;
   }

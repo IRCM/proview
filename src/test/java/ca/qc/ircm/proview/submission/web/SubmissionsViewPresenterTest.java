@@ -103,9 +103,6 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     view.user = mock(Column.class);
     view.director = mock(Column.class);
     view.service = mock(Column.class);
-    view.sampleDeliveryDate = mock(Column.class);
-    view.digestionDate = mock(Column.class);
-    view.analysisDate = mock(Column.class);
     view.dataAvailableDate = mock(Column.class);
     view.date = mock(Column.class);
     view.instrument = mock(Column.class);
@@ -179,9 +176,9 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   public void submissions_SortOrder() {
     presenter.init(view);
     verify(view.submissions).setDataProvider(dataProviderCaptor.capture());
-    List<QuerySortOrder> sortOrders = Arrays.asList(
-        new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
-        new QuerySortOrder(USER, SortDirection.DESCENDING));
+    List<QuerySortOrder> sortOrders =
+        Arrays.asList(new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
+            new QuerySortOrder(USER, SortDirection.DESCENDING));
     List<Submission> submissions = dataProviderCaptor.getValue()
         .fetch(new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null))
         .collect(Collectors.toList());
@@ -276,8 +273,8 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     presenter.init(view);
     verify(view.dialog).addSavedListener(submissionSavedListenerCaptor.capture());
     @SuppressWarnings("checkstyle:linelength")
-    ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener = submissionSavedListenerCaptor
-        .getValue();
+    ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener =
+        submissionSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
     verify(view.submissions, times(2)).setDataProvider(any());
   }

@@ -29,7 +29,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-vertical-layout")
 public class SubmissionsViewElement extends VerticalLayoutElement {
   private static final int EXPERIMENT_COLUMN = 0;
-  private static final int VISIBLE_COLUMN = 13;
+  private static final int VISIBLE_COLUMN = 10;
 
   public H2Element header() {
     return $(H2Element.class).id(HEADER);

@@ -1,14 +1,11 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
@@ -79,9 +76,6 @@ public class SubmissionsView extends VerticalLayout
   protected Column<Submission> experiment;
   protected Column<Submission> user;
   protected Column<Submission> director;
-  protected Column<Submission> sampleDeliveryDate;
-  protected Column<Submission> digestionDate;
-  protected Column<Submission> analysisDate;
   protected Column<Submission> dataAvailableDate;
   protected Column<Submission> date;
   protected Column<Submission> instrument;
@@ -135,16 +129,6 @@ public class SubmissionsView extends VerticalLayout
         .setComparator((s1, s2) -> normalize(submissionDirector.apply(s1))
             .compareToIgnoreCase(normalize(submissionDirector.apply(s2))));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    sampleDeliveryDate =
-        submissions.addColumn(submission -> submission.getSampleDeliveryDate() != null
-            ? dateFormatter.format(submission.getSampleDeliveryDate())
-            : "", SAMPLE_DELIVERY_DATE).setKey(SAMPLE_DELIVERY_DATE);
-    digestionDate = submissions.addColumn(submission -> submission.getDigestionDate() != null
-        ? dateFormatter.format(submission.getDigestionDate())
-        : "", DIGESTION_DATE).setKey(DIGESTION_DATE);
-    analysisDate = submissions.addColumn(submission -> submission.getAnalysisDate() != null
-        ? dateFormatter.format(submission.getAnalysisDate())
-        : "", ANALYSIS_DATE).setKey(ANALYSIS_DATE);
     dataAvailableDate =
         submissions.addColumn(submission -> submission.getDataAvailableDate() != null
             ? dateFormatter.format(submission.getDataAvailableDate())
@@ -266,12 +250,6 @@ public class SubmissionsView extends VerticalLayout
     user.setHeader(userHeader).setFooter(userHeader);
     String directorHeader = laboratoryResources.message(DIRECTOR);
     director.setHeader(directorHeader).setFooter(directorHeader);
-    String sampleDeliveryDateHeader = submissionResources.message(SAMPLE_DELIVERY_DATE);
-    sampleDeliveryDate.setHeader(sampleDeliveryDateHeader).setFooter(sampleDeliveryDateHeader);
-    String digestionDateHeader = submissionResources.message(DIGESTION_DATE);
-    digestionDate.setHeader(digestionDateHeader).setFooter(digestionDateHeader);
-    String analysisDateHeader = submissionResources.message(ANALYSIS_DATE);
-    analysisDate.setHeader(analysisDateHeader).setFooter(analysisDateHeader);
     String dataAvailableDateHeader = submissionResources.message(DATA_AVAILABLE_DATE);
     dataAvailableDate.setHeader(dataAvailableDateHeader).setFooter(dataAvailableDateHeader);
     String dateHeader = submissionResources.message(SUBMISSION_DATE);
