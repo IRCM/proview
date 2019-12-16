@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Forgot password view.
+ * Use forgot password view.
  */
 @Route(value = UseForgotPasswordView.VIEW_NAME)
 public class UseForgotPasswordView extends VerticalLayout implements LocaleChangeObserver,
@@ -73,7 +73,7 @@ public class UseForgotPasswordView extends VerticalLayout implements LocaleChang
   }
 
   /**
-   * Initializes user dialog.
+   * Initializes view.
    */
   @PostConstruct
   protected void init() {

@@ -35,12 +35,13 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 /**
- * Forgot password view presenter.
+ * Use forgot password view presenter.
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UseForgotPasswordViewPresenter {
-  private static final Logger logger = LoggerFactory.getLogger(UseForgotPasswordViewPresenter.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(UseForgotPasswordViewPresenter.class);
   private UseForgotPasswordView view;
   private ForgotPassword forgotPassword;
   private ForgotPasswordService service;
