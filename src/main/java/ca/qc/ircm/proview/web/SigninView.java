@@ -11,6 +11,8 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.web.ForgotPasswordView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginI18n.ErrorMessage;
 import com.vaadin.flow.component.login.LoginOverlay;
@@ -44,6 +46,7 @@ public class SigninView extends LoginOverlay
   public static final String USERNAME = "username";
   public static final String PASSWORD = "password";
   public static final String SIGNIN = "signin";
+  public static final String FORGOT_PASSWORD = "forgotPassword";
   public static final String FAIL = "fail";
   public static final String DISABLED = "disabled";
   public static final String LOCKED = "locked";
@@ -66,9 +69,10 @@ public class SigninView extends LoginOverlay
     logger.debug("signin view");
     setId(ID);
     addLoginListener(e -> setError(false));
-    setForgotPasswordButtonVisible(false);
+    setForgotPasswordButtonVisible(true);
     setAction(VIEW_NAME);
     setOpened(true);
+    addForgotPasswordListener(e -> UI.getCurrent().navigate(ForgotPasswordView.VIEW_NAME));
   }
 
   @Override
@@ -93,6 +97,7 @@ public class SigninView extends LoginOverlay
     i18n.getForm().setTitle(resources.message(FORM_TITLE));
     i18n.getForm().setUsername(userResources.message(EMAIL));
     i18n.getForm().setPassword(userResources.message(HASHED_PASSWORD));
+    i18n.getForm().setForgotPassword(resources.message(FORGOT_PASSWORD));
     i18n.setErrorMessage(new ErrorMessage());
     if (error == null) {
       error = FAIL;

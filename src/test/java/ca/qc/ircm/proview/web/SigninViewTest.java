@@ -29,12 +29,12 @@ import static ca.qc.ircm.proview.web.SigninView.HEADER;
 import static ca.qc.ircm.proview.web.SigninView.ID;
 import static ca.qc.ircm.proview.web.SigninView.LOCKED;
 import static ca.qc.ircm.proview.web.SigninView.SIGNIN;
+import static ca.qc.ircm.proview.web.SigninView.VIEW_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -100,9 +100,15 @@ public class SigninViewTest extends AbstractViewTestCase {
   }
 
   @Test
+  public void init() {
+    assertEquals(VIEW_NAME, view.getAction());
+    assertTrue(view.isOpened());
+    assertTrue(view.isForgotPasswordButtonVisible());
+  }
+
+  @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
-    assertFalse(view.isForgotPasswordButtonVisible());
   }
 
   @Test

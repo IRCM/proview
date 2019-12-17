@@ -32,6 +32,7 @@ import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +113,14 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getPasswordField().setValue("password");
     view.getSubmitButton().click();
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  public void forgotPassword() throws Throwable {
+    open();
+    SigninViewElement view = $(SigninViewElement.class).id(ID);
+    view.getForgotPasswordButton().click();
+    assertEquals(viewUrl(ForgotPasswordView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 
   @Test
