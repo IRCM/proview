@@ -1,10 +1,7 @@
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
@@ -109,9 +106,6 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
     assertEquals(ID, dialog.getId().orElse(""));
     assertTrue(dialog.header.getClassName().contains(HEADER));
     assertTrue(dialog.instrument.getClassName().contains(INSTRUMENT));
-    assertTrue(dialog.sampleDeliveryDate.getClassName().contains(SAMPLE_DELIVERY_DATE));
-    assertTrue(dialog.digestionDate.getClassName().contains(DIGESTION_DATE));
-    assertTrue(dialog.analysisDate.getClassName().contains(ANALYSIS_DATE));
     assertTrue(dialog.dataAvailableDate.getClassName().contains(DATA_AVAILABLE_DATE));
     assertTrue(dialog.save.getClassName().contains(SAVE));
     assertTrue(dialog.save.getThemeName().contains(SUCCESS));
@@ -131,16 +125,6 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
       assertEquals(instrument.getLabel(locale),
           dialog.instrument.getItemLabelGenerator().apply(instrument));
     }
-    assertEquals(submissionResources.message(SAMPLE_DELIVERY_DATE),
-        dialog.sampleDeliveryDate.getLabel());
-    assertEquals(ENGLISH, dialog.sampleDeliveryDate.getLocale());
-    validateEquals(englishDatePickerI18n(), dialog.sampleDeliveryDate.getI18n());
-    assertEquals(submissionResources.message(DIGESTION_DATE), dialog.digestionDate.getLabel());
-    assertEquals(ENGLISH, dialog.digestionDate.getLocale());
-    validateEquals(englishDatePickerI18n(), dialog.digestionDate.getI18n());
-    assertEquals(submissionResources.message(ANALYSIS_DATE), dialog.analysisDate.getLabel());
-    assertEquals(ENGLISH, dialog.analysisDate.getLocale());
-    validateEquals(englishDatePickerI18n(), dialog.analysisDate.getI18n());
     assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
         dialog.dataAvailableDate.getLabel());
     assertEquals(ENGLISH, dialog.dataAvailableDate.getLocale());
@@ -166,16 +150,6 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
       assertEquals(instrument.getLabel(locale),
           dialog.instrument.getItemLabelGenerator().apply(instrument));
     }
-    assertEquals(submissionResources.message(SAMPLE_DELIVERY_DATE),
-        dialog.sampleDeliveryDate.getLabel());
-    assertEquals(ENGLISH, dialog.sampleDeliveryDate.getLocale());
-    validateEquals(frenchDatePickerI18n(), dialog.sampleDeliveryDate.getI18n());
-    assertEquals(submissionResources.message(DIGESTION_DATE), dialog.digestionDate.getLabel());
-    assertEquals(ENGLISH, dialog.digestionDate.getLocale());
-    validateEquals(frenchDatePickerI18n(), dialog.digestionDate.getI18n());
-    assertEquals(submissionResources.message(ANALYSIS_DATE), dialog.analysisDate.getLabel());
-    assertEquals(ENGLISH, dialog.analysisDate.getLocale());
-    validateEquals(frenchDatePickerI18n(), dialog.analysisDate.getI18n());
     assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
         dialog.dataAvailableDate.getLabel());
     assertEquals(ENGLISH, dialog.dataAvailableDate.getLocale());

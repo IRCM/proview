@@ -17,11 +17,8 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
@@ -42,18 +39,6 @@ public class SubmissionDialogElement extends DialogElement {
 
   public ComboBoxElement instrument() {
     return $(ComboBoxElement.class).attributeContains("class", INSTRUMENT).first();
-  }
-
-  public DatePickerElement sampleDeliveryDate() {
-    return $(DatePickerElement.class).attributeContains("class", SAMPLE_DELIVERY_DATE).first();
-  }
-
-  public DatePickerElement digestionDate() {
-    return $(DatePickerElement.class).attributeContains("class", DIGESTION_DATE).first();
-  }
-
-  public DatePickerElement analysisDate() {
-    return $(DatePickerElement.class).attributeContains("class", ANALYSIS_DATE).first();
   }
 
   public DatePickerElement dataAvailableDate() {

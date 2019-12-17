@@ -1,10 +1,7 @@
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.SubmissionProperties.ANALYSIS_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DIGESTION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLE_DELIVERY_DATE;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
@@ -60,9 +57,6 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   protected PrintSubmission printContent;
   protected FormLayout submissionForm = new FormLayout();
   protected ComboBox<MassDetectionInstrument> instrument = new ComboBox<>();
-  protected DatePicker sampleDeliveryDate = new DatePicker();
-  protected DatePicker digestionDate = new DatePicker();
-  protected DatePicker analysisDate = new DatePicker();
   protected DatePicker dataAvailableDate = new DatePicker();
   protected Button save = new Button();
   protected Button print = new Button();
@@ -98,8 +92,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
       formLayout.add(printContentLayout);
     }
     formLayout.add(submissionForm);
-    submissionForm.add(instrument, sampleDeliveryDate, digestionDate, analysisDate,
-        dataAvailableDate, save);
+    submissionForm.add(instrument, dataAvailableDate, save);
     submissionForm.setVisible(authorizationService.hasRole(ADMIN));
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
     buttons.setWidthFull();
@@ -108,9 +101,6 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     instrument.addClassName(INSTRUMENT);
     instrument.setItems(MassDetectionInstrument.userChoices());
     instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
-    sampleDeliveryDate.addClassName(SAMPLE_DELIVERY_DATE);
-    digestionDate.addClassName(DIGESTION_DATE);
-    analysisDate.addClassName(ANALYSIS_DATE);
     dataAvailableDate.addClassName(DATA_AVAILABLE_DATE);
     save.addThemeName(SUCCESS);
     save.addClassName(SAVE);
@@ -137,15 +127,6 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
       dateI18n = frenchDatePickerI18n();
     }
     instrument.setLabel(submissionResources.message(INSTRUMENT));
-    sampleDeliveryDate.setLabel(submissionResources.message(SAMPLE_DELIVERY_DATE));
-    sampleDeliveryDate.setI18n(dateI18n);
-    sampleDeliveryDate.setLocale(Locale.CANADA); // ISO format.
-    digestionDate.setLabel(submissionResources.message(DIGESTION_DATE));
-    digestionDate.setI18n(dateI18n);
-    digestionDate.setLocale(Locale.CANADA); // ISO format.
-    analysisDate.setLabel(submissionResources.message(ANALYSIS_DATE));
-    analysisDate.setI18n(dateI18n);
-    analysisDate.setLocale(Locale.CANADA); // ISO format.
     dataAvailableDate.setLabel(submissionResources.message(DATA_AVAILABLE_DATE));
     dataAvailableDate.setI18n(dateI18n);
     dataAvailableDate.setLocale(Locale.CANADA); // ISO format.

@@ -50,9 +50,6 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   @Value("${spring.application.name}")
   private String applicationName;
   private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
-  private LocalDate sampleDeliveryDate = LocalDate.now().minusDays(8);
-  private LocalDate digestionDate = LocalDate.now().minusDays(5);
-  private LocalDate analysisDate = LocalDate.now().minusDays(3);
   private LocalDate dataAvailableDate = LocalDate.now().minusDays(1);
 
   private void openDialog(int row) {
@@ -65,9 +62,6 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   private void setFields(SubmissionDialogElement dialog) {
     Locale locale = this.currentLocale();
     dialog.instrument().selectByText(instrument.getLabel(locale));
-    dialog.sampleDeliveryDate().setDate(sampleDeliveryDate);
-    dialog.digestionDate().setDate(digestionDate);
-    dialog.analysisDate().setDate(analysisDate);
     dialog.dataAvailableDate().setDate(dataAvailableDate);
   }
 
@@ -77,9 +71,6 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
     SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertFalse(optional(() -> dialog.instrument()).isPresent());
-    assertFalse(optional(() -> dialog.sampleDeliveryDate()).isPresent());
-    assertFalse(optional(() -> dialog.digestionDate()).isPresent());
-    assertFalse(optional(() -> dialog.analysisDate()).isPresent());
     assertFalse(optional(() -> dialog.dataAvailableDate()).isPresent());
     assertFalse(optional(() -> dialog.save()).isPresent());
     assertTrue(optional(() -> dialog.print()).isPresent());
@@ -93,9 +84,6 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
     SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.instrument()).isPresent());
-    assertTrue(optional(() -> dialog.sampleDeliveryDate()).isPresent());
-    assertTrue(optional(() -> dialog.digestionDate()).isPresent());
-    assertTrue(optional(() -> dialog.analysisDate()).isPresent());
     assertTrue(optional(() -> dialog.dataAvailableDate()).isPresent());
     assertTrue(optional(() -> dialog.save()).isPresent());
     assertTrue(optional(() -> dialog.print()).isPresent());
@@ -114,9 +102,6 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
     waitUntil(driver -> $(SubmissionDialogElement.class).all().isEmpty());
     Submission submission = repository.findById(164L).get();
     assertEquals(instrument, submission.getInstrument());
-    assertEquals(sampleDeliveryDate, submission.getSampleDeliveryDate());
-    assertEquals(digestionDate, submission.getDigestionDate());
-    assertEquals(analysisDate, submission.getAnalysisDate());
     assertEquals(dataAvailableDate, submission.getDataAvailableDate());
   }
 

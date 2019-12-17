@@ -40,9 +40,6 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   private Submission submission;
   private Locale locale = ENGLISH;
   private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
-  private LocalDate sampleDeliveryDate = LocalDate.of(2019, 7, 28);
-  private LocalDate digestionDate = LocalDate.of(2019, 7, 30);
-  private LocalDate analysisDate = LocalDate.of(2019, 8, 1);
   private LocalDate dataAvailableDate = LocalDate.of(2019, 8, 2);
 
   /**
@@ -55,9 +52,6 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     dialog.printContent = mock(PrintSubmission.class);
     dialog.instrument = new ComboBox<>();
     dialog.instrument.setItems(MassDetectionInstrument.platformChoices());
-    dialog.sampleDeliveryDate = new DatePicker();
-    dialog.digestionDate = new DatePicker();
-    dialog.analysisDate = new DatePicker();
     dialog.dataAvailableDate = new DatePicker();
     dialog.edit = new Button();
     dialog.print = new Button();
@@ -66,9 +60,6 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
 
   private void setFields() {
     dialog.instrument.setValue(instrument);
-    dialog.sampleDeliveryDate.setValue(sampleDeliveryDate);
-    dialog.digestionDate.setValue(digestionDate);
-    dialog.analysisDate.setValue(analysisDate);
     dialog.dataAvailableDate.setValue(dataAvailableDate);
   }
 
@@ -83,9 +74,6 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
 
     verify(service).update(submission, null);
     assertEquals(instrument, submission.getInstrument());
-    assertEquals(sampleDeliveryDate, submission.getSampleDeliveryDate());
-    assertEquals(digestionDate, submission.getDigestionDate());
-    assertEquals(analysisDate, submission.getAnalysisDate());
     assertEquals(dataAvailableDate, submission.getDataAvailableDate());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
@@ -103,9 +91,6 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
 
     verify(service).update(submission, null);
     assertNull(submission.getInstrument());
-    assertEquals(sampleDeliveryDate, submission.getSampleDeliveryDate());
-    assertEquals(digestionDate, submission.getDigestionDate());
-    assertEquals(analysisDate, submission.getAnalysisDate());
     assertEquals(dataAvailableDate, submission.getDataAvailableDate());
     verify(dialog).close();
     verify(dialog).fireSavedEvent();
@@ -155,18 +140,12 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   public void setSubmission() {
     Submission submission = new Submission();
     submission.setInstrument(instrument);
-    submission.setSampleDeliveryDate(sampleDeliveryDate);
-    submission.setDigestionDate(digestionDate);
-    submission.setAnalysisDate(analysisDate);
     submission.setDataAvailableDate(dataAvailableDate);
     presenter.localeChange(locale);
 
     presenter.setSubmission(submission);
 
     assertEquals(instrument, dialog.instrument.getValue());
-    assertEquals(sampleDeliveryDate, dialog.sampleDeliveryDate.getValue());
-    assertEquals(digestionDate, dialog.digestionDate.getValue());
-    assertEquals(analysisDate, dialog.analysisDate.getValue());
     assertEquals(dataAvailableDate, dialog.dataAvailableDate.getValue());
   }
 
@@ -174,18 +153,12 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   public void setSubmission_BeforeLocalChange() {
     Submission submission = new Submission();
     submission.setInstrument(instrument);
-    submission.setSampleDeliveryDate(sampleDeliveryDate);
-    submission.setDigestionDate(digestionDate);
-    submission.setAnalysisDate(analysisDate);
     submission.setDataAvailableDate(dataAvailableDate);
 
     presenter.setSubmission(submission);
     presenter.localeChange(locale);
 
     assertEquals(instrument, dialog.instrument.getValue());
-    assertEquals(sampleDeliveryDate, dialog.sampleDeliveryDate.getValue());
-    assertEquals(digestionDate, dialog.digestionDate.getValue());
-    assertEquals(analysisDate, dialog.analysisDate.getValue());
     assertEquals(dataAvailableDate, dialog.dataAvailableDate.getValue());
   }
 
@@ -197,9 +170,6 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     presenter.setSubmission(submission);
 
     assertEquals(MassDetectionInstrument.NULL, dialog.instrument.getValue());
-    assertEquals(null, dialog.sampleDeliveryDate.getValue());
-    assertEquals(null, dialog.digestionDate.getValue());
-    assertEquals(null, dialog.analysisDate.getValue());
     assertEquals(null, dialog.dataAvailableDate.getValue());
   }
 }
