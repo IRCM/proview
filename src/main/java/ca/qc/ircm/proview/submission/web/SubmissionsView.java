@@ -138,11 +138,10 @@ public class SubmissionsView extends VerticalLayout
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
     submissions.setSizeFull();
-    submissions.addItemDoubleClickListener(e -> {
+    submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
+    submissions.addItemClickListener(e -> {
       if (e.isShiftKey()) {
         presenter.editStatus(e.getItem());
-      } else {
-        presenter.view(e.getItem());
       }
     });
     ValueProvider<Submission, String> submissionExperiment =

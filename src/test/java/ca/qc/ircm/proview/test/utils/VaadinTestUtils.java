@@ -30,6 +30,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.grid.editor.EditorImpl;
 import com.vaadin.flow.component.icon.Icon;
@@ -96,9 +97,9 @@ public class VaadinTestUtils {
    * @param item
    *          item
    */
-  public static <E> void doubleClickItem(Grid<E> grid, E item) {
-    doubleClickItem(grid, item, (gv, key) -> new ItemDoubleClickEvent<>(gv, false, key, -1, -1, -1,
-        -1, 2, 0, false, false, false, false));
+  public static <E> void clickItem(Grid<E> grid, E item) {
+    clickItem(grid, item, (gv, key) -> new ItemClickEvent<>(gv, false, key, -1, -1, -1, -1, 2, 0,
+        false, false, false, false));
   }
 
   /**
@@ -108,8 +109,46 @@ public class VaadinTestUtils {
    *          grid
    * @param item
    *          item
-   * @param mockEventConsumer
-   *          allows to alter event
+   * @param eventGenerator
+   *          creates the item click event
+   */
+  public static <E> void clickItem(Grid<E> grid, E item,
+      BiFunction<Grid<E>, String, ItemClickEvent<E>> eventGenerator) {
+    try {
+      String key = grid.getDataCommunicator().getKeyMapper().key(item);
+      Method method = Component.class.getDeclaredMethod("getEventBus");
+      method.setAccessible(true);
+      ComponentEventBus eventBus = (ComponentEventBus) method.invoke(grid);
+      ItemClickEvent<E> event = eventGenerator.apply(grid, key);
+      eventBus.fireEvent(event);
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+        | IllegalArgumentException | InvocationTargetException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  /**
+   * Simulates an item double click on grid.
+   *
+   * @param grid
+   *          grid
+   * @param item
+   *          item
+   */
+  public static <E> void doubleClickItem(Grid<E> grid, E item) {
+    doubleClickItem(grid, item, (gv, key) -> new ItemDoubleClickEvent<>(gv, false, key, -1, -1, -1,
+        -1, 2, 0, false, false, false, false));
+  }
+
+  /**
+   * Simulates an item double click on grid.
+   *
+   * @param grid
+   *          grid
+   * @param item
+   *          item
+   * @param eventGenerator
+   *          creates the item dobule click event
    */
   public static <E> void doubleClickItem(Grid<E> grid, E item,
       BiFunction<Grid<E>, String, ItemDoubleClickEvent<E>> eventGenerator) {

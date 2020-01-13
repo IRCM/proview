@@ -34,6 +34,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
@@ -56,6 +57,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -78,7 +80,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
-import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
+import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -494,20 +496,31 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   }
 
   @Test
+  public void singleClickSubmission() {
+    Submission submission = submissions.get(0);
+    clickItem(view.submissions, submission);
+
+    verify(presenter, never()).view(any());
+    verify(presenter, never()).editStatus(any());
+  }
+
+  @Test
+  public void singleClickSubmission_Shift() {
+    Submission submission = submissions.get(0);
+    clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
+        -1, -1, -1, -1, 2, 0, false, true, false, false));
+
+    verify(presenter, never()).view(any());
+    verify(presenter).editStatus(submission);
+  }
+
+  @Test
   public void doubleClickSubmission() {
     Submission submission = submissions.get(0);
     doubleClickItem(view.submissions, submission);
 
     verify(presenter).view(submission);
-  }
-
-  @Test
-  public void doubleClickSubmission_Shift() {
-    Submission submission = submissions.get(0);
-    doubleClickItem(view.submissions, submission, (grid, key) -> new ItemDoubleClickEvent<>(grid,
-        false, key, -1, -1, -1, -1, 2, 0, false, true, false, false));
-
-    verify(presenter).editStatus(submission);
+    verify(presenter, never()).editStatus(any());
   }
 
   private Submission experiment(String experiment) {
