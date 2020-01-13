@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.EDIT_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
@@ -25,6 +26,7 @@ import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.elementsbase.Element;
+import org.openqa.selenium.Keys;
 
 @Element("vaadin-vertical-layout")
 public class SubmissionsViewElement extends VerticalLayoutElement {
@@ -41,6 +43,10 @@ public class SubmissionsViewElement extends VerticalLayoutElement {
 
   public void clickSubmission(int row) {
     submissions().getCell(row, 0).click();
+  }
+
+  public void clickSubmission(int row, Keys... modifiers) {
+    submissions().getCell(row, 0).click(0, 0, modifiers);
   }
 
   public ButtonElement visible(int row) {
@@ -63,7 +69,7 @@ public class SubmissionsViewElement extends VerticalLayoutElement {
     return $(ButtonElement.class).id(ADD);
   }
 
-  public void clickAdd() {
-    add().click();
+  public ButtonElement editStatus() {
+    return $(ButtonElement.class).id(EDIT_STATUS);
   }
 }

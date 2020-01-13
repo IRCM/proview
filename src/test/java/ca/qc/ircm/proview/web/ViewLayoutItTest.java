@@ -220,7 +220,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
-    submissionsView.clickAdd();
+    submissionsView.add().click();
     assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.add()).isPresent());
     view.guidelines().click();

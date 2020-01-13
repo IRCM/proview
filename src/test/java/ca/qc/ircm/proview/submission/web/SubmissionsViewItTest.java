@@ -28,6 +28,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
+import ca.qc.ircm.proview.sample.web.SamplesStatusDialogElement;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -37,6 +39,7 @@ import ca.qc.ircm.proview.web.WebConstants;
 import java.util.Locale;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +90,18 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
+    assertFalse(optional(() -> view.editStatus()).isPresent());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void fieldsExistence_Admin() throws Throwable {
+    open();
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    assertTrue(optional(() -> view.header()).isPresent());
+    assertTrue(optional(() -> view.submissions()).isPresent());
+    assertTrue(optional(() -> view.add()).isPresent());
+    assertTrue(optional(() -> view.editStatus()).isPresent());
   }
 
   @Test
@@ -125,9 +140,24 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     view.doubleClickSubmission(0);
 
     waitUntil(driver -> $(SubmissionDialogElement.class).id(SubmissionDialog.ID));
-    SubmissionDialogElement submissionDialog =
-        $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
-    assertEquals("POLR3B-Flag", submissionDialog.header().getText());
+    SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
+    assertEquals("POLR3B-Flag", dialog.header().getText());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void statusDialog() throws Throwable {
+    open();
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+
+    view.clickSubmission(0, Keys.SHIFT);
+
+    waitUntil(driver -> $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID));
+    SamplesStatusDialogElement dialog =
+        $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
+    AppResources resources = resources(SamplesStatusDialog.class);
+    assertEquals(resources.message(SamplesStatusDialog.HEADER, "POLR3B-Flag"),
+        dialog.header().getText());
   }
 
   @Test
@@ -135,8 +165,25 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.clickAdd();
+    view.add().click();
 
     assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void editStatus() throws Throwable {
+    open();
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+
+    view.clickSubmission(0);
+    view.editStatus().click();
+
+    waitUntil(driver -> $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID));
+    SamplesStatusDialogElement dialog =
+        $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
+    AppResources resources = resources(SamplesStatusDialog.class);
+    assertEquals(resources.message(SamplesStatusDialog.HEADER, "POLR3B-Flag"),
+        dialog.header().getText());
   }
 }
