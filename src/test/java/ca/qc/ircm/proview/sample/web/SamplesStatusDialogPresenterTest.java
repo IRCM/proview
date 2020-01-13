@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -39,8 +40,11 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.WebConstants;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.H2;
@@ -55,6 +59,8 @@ import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -69,6 +75,8 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
   private SubmissionSampleService service;
   @Mock
   private SamplesStatusDialog dialog;
+  @Captor
+  private ArgumentCaptor<ComponentEventListener<OpenedChangeEvent<Dialog>>> openedListener;
   @Inject
   private SubmissionRepository submissionRepository;
   private Locale locale = ENGLISH;
@@ -90,6 +98,8 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
     dialog.samples = mock(Grid.class);
     dialog.name = mock(Column.class);
     dialog.status = mock(Column.class);
+    dialog.allStatus = new ComboBox<>();
+    dialog.allStatus.setItems(SampleStatus.values());
     dialog.save = new Button();
     dialog.cancel = new Button();
     when(dialog.status(any())).then(i -> statusFields.get(i.getArgument(0)));
@@ -117,6 +127,15 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
       assertEquals(sample.getStatus(), statusFields.get(sample).getValue());
       assertTrue(statusFields.get(sample).isRequiredIndicatorVisible());
     }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void allStatus_ResetOnOpen() {
+    dialog.allStatus.setValue(SampleStatus.ANALYSED);
+    verify(dialog).addOpenedChangeListener(openedListener.capture());
+    openedListener.getValue().onComponentEvent(mock(OpenedChangeEvent.class));
+    assertNull(dialog.allStatus.getValue());
   }
 
   @Test

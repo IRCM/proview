@@ -62,6 +62,7 @@ public class SamplesStatusDialogPresenter {
 
   void init(SamplesStatusDialog dialog) {
     this.dialog = dialog;
+    dialog.addOpenedChangeListener(e -> dialog.allStatus.clear());
   }
 
   void bindFields() {
