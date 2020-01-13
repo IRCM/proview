@@ -86,11 +86,11 @@ public class SamplesStatusDialog extends Dialog
 
   @PostConstruct
   void init() {
-    logger.debug("submission dialog");
+    logger.debug("samples status dialog");
     setId(ID);
     VerticalLayout layout = new VerticalLayout();
     layout.setMaxWidth("90em");
-    layout.setMinWidth("22em");
+    layout.setMinWidth("35em");
     add(layout);
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     layout.add(header, samples, buttonsLayout);
@@ -104,6 +104,7 @@ public class SamplesStatusDialog extends Dialog
             .compareToIgnoreCase(normalize(sampleName.apply(s2))));
     status = samples.addColumn(new ComponentRenderer<>(sample -> status(sample)), STATUS)
         .setKey(STATUS).setSortable(false);
+    status.setWidth("10em");
     save.addThemeName(SUCCESS);
     save.addClassName(SAVE);
     save.setIcon(VaadinIcon.CHECK.create());
