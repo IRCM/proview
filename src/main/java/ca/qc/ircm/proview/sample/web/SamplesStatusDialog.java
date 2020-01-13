@@ -21,6 +21,9 @@ import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.text.Strings.normalize;
+import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
@@ -40,6 +43,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -75,6 +79,7 @@ public class SamplesStatusDialog extends Dialog
   protected Grid<SubmissionSample> samples = new Grid<>();
   protected Column<SubmissionSample> name;
   protected Column<SubmissionSample> status;
+  protected ComboBox<SampleStatus> allStatus = new ComboBox<>();
   protected Button save = new Button();
   protected Button cancel = new Button();
   private Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
@@ -105,6 +110,14 @@ public class SamplesStatusDialog extends Dialog
     status = samples.addColumn(new ComponentRenderer<>(sample -> status(sample)), STATUS)
         .setKey(STATUS).setSortable(false);
     status.setWidth("10em");
+    samples.appendHeaderRow(); // Headers.
+    HeaderRow allRow = samples.appendHeaderRow();
+    allRow.getCell(status).setComponent(allStatus);
+    allStatus.addClassName(styleName(STATUS, ALL));
+    allStatus.setClearButtonVisible(true);
+    allStatus.setItems(SampleStatus.values());
+    allStatus.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    allStatus.addValueChangeListener(e -> presenter.setAllStatus(allStatus.getValue()));
     save.addThemeName(SUCCESS);
     save.addClassName(SAVE);
     save.setIcon(VaadinIcon.CHECK.create());
@@ -129,6 +142,7 @@ public class SamplesStatusDialog extends Dialog
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
+    final AppResources resources = new AppResources(SamplesStatusDialog.class, getLocale());
     final AppResources webResources = new AppResources(WebConstants.class, getLocale());
     final AppResources sampleResources = new AppResources(Sample.class, getLocale());
     final AppResources submissionSampleResources =
@@ -137,6 +151,7 @@ public class SamplesStatusDialog extends Dialog
     name.setHeader(nameHeader).setFooter(nameHeader);
     String statusHeader = submissionSampleResources.message(STATUS);
     status.setHeader(statusHeader).setFooter(statusHeader);
+    allStatus.setLabel(resources.message(property(STATUS, ALL)));
     save.setText(webResources.message(SAVE));
     cancel.setText(webResources.message(CANCEL));
     updateHeader();

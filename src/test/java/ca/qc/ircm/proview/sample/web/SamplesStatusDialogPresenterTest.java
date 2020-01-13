@@ -120,6 +120,26 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
+  public void setAllStatus() {
+    presenter.localeChange(locale);
+    presenter.setSubmission(submission);
+    presenter.setAllStatus(SampleStatus.ANALYSED);
+    for (SubmissionSample sample : submission.getSamples()) {
+      assertEquals(SampleStatus.ANALYSED, statusFields.get(sample).getValue());
+    }
+  }
+
+  @Test
+  public void setAllStatus_Null() {
+    presenter.localeChange(locale);
+    presenter.setSubmission(submission);
+    presenter.setAllStatus(null);
+    for (SubmissionSample sample : submission.getSamples()) {
+      assertEquals(SampleStatus.WAITING, statusFields.get(sample).getValue());
+    }
+  }
+
+  @Test
   public void save_EmptySamples() {
     presenter.localeChange(locale);
     presenter.save();

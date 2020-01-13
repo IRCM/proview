@@ -23,6 +23,9 @@ import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.HEADER;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.ID;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
+import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
@@ -54,6 +57,8 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
@@ -123,6 +128,10 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
     when(dialog.status.setKey(any())).thenReturn(dialog.status);
     when(dialog.status.setHeader(any(String.class))).thenReturn(dialog.status);
     when(dialog.status.setSortable(anyBoolean())).thenReturn(dialog.status);
+    HeaderRow allRow = mock(HeaderRow.class);
+    when(dialog.samples.appendHeaderRow()).thenReturn(allRow);
+    HeaderCell allStatusCell = mock(HeaderCell.class);
+    when(allRow.getCell(dialog.status)).thenReturn(allStatusCell);
   }
 
   @Test
@@ -130,6 +139,7 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
     assertEquals(ID, dialog.getId().orElse(""));
     assertTrue(dialog.header.getClassName().contains(HEADER));
     assertTrue(dialog.samples.getClassName().contains(SAMPLES));
+    assertTrue(dialog.allStatus.getClassName().contains(styleName(STATUS, ALL)));
     assertTrue(dialog.save.getClassName().contains(SAVE));
     assertTrue(dialog.cancel.getClassName().contains(CANCEL));
   }
@@ -139,6 +149,7 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
     mockColumns();
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
     verify(dialog.name).setHeader(sampleResources.message(NAME));
@@ -159,6 +170,7 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
     when(ui.getLocale()).thenReturn(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
     verify(dialog.name).setHeader(sampleResources.message(NAME));
@@ -177,7 +189,7 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void submissions_ColumnsValueProvider() {
+  public void samples_ColumnsValueProvider() {
     dialog = new SamplesStatusDialog(presenter);
     mockColumns();
     dialog.init();
@@ -214,6 +226,26 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
   private SubmissionSample name(String name) {
     SubmissionSample sample = new SubmissionSample(name);
     return sample;
+  }
+
+  @Test
+  public void allStatus() {
+    assertTrue(dialog.allStatus.isClearButtonVisible());
+    assertFalse(dialog.allStatus.isRequiredIndicatorVisible());
+  }
+
+  @Test
+  public void allStatus_Changed() {
+    dialog.allStatus.setValue(SampleStatus.ANALYSED);
+    verify(presenter).setAllStatus(SampleStatus.ANALYSED);
+  }
+
+  @Test
+  public void allStatus_Clear() {
+    dialog.allStatus.setValue(SampleStatus.ANALYSED);
+    dialog.allStatus.clear();
+    verify(presenter).setAllStatus(SampleStatus.ANALYSED);
+    verify(presenter).setAllStatus(null);
   }
 
   @Test

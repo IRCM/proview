@@ -17,8 +17,11 @@
 
 package ca.qc.ircm.proview.sample.web;
 
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.HEADER;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
+import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 
@@ -39,6 +42,10 @@ public class SamplesStatusDialogElement extends DialogElement {
 
   public GridElement samples() {
     return $(GridElement.class).attribute("class", SAMPLES).first();
+  }
+
+  public ComboBoxElement allStatus() {
+    return $(ComboBoxElement.class).attribute("class", styleName(STATUS, ALL)).first();
   }
 
   public ComboBoxElement status(int row) {

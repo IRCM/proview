@@ -57,6 +57,7 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
         $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.samples()).isPresent());
+    assertTrue(optional(() -> dialog.allStatus()).isPresent());
     assertTrue(optional(() -> dialog.save()).isPresent());
     assertTrue(optional(() -> dialog.cancel()).isPresent());
   }

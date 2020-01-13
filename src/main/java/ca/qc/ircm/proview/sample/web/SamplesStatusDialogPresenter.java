@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.SAVED;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
@@ -80,6 +81,12 @@ public class SamplesStatusDialogPresenter {
   void localeChange(Locale locale) {
     this.locale = locale;
     bindFields();
+  }
+
+  void setAllStatus(SampleStatus status) {
+    if (status != null) {
+      submission.getSamples().stream().forEach(sample -> dialog.status(sample).setValue(status));
+    }
   }
 
   List<BinderValidationStatus<SubmissionSample>> validateSamples() {
