@@ -99,7 +99,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     add(layout);
     FormLayout formLayout = new FormLayout();
     VerticalScrollLayout printContentLayout = new VerticalScrollLayout(printContent);
-    printContentLayout.setHeight("45em");
+    printContentLayout.setHeight("38em");
     if (authorizationService.hasRole(ADMIN)) {
       formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
           new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
