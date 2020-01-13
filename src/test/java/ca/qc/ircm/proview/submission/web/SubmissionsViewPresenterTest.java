@@ -97,6 +97,9 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   @Captor
   @SuppressWarnings("checkstyle:linelength")
   private ArgumentCaptor<ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
+  @Captor
+  @SuppressWarnings("checkstyle:linelength")
+  private ArgumentCaptor<ComponentEventListener<SavedEvent<SamplesStatusDialog>>> statusSavedListenerCaptor;
   private List<Submission> submissions;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(SubmissionsView.class, locale);
@@ -313,12 +316,24 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void refreshOnSaved() {
+  public void refreshOnSaved_Dialog() {
     presenter.init(view);
     verify(view.dialog).addSavedListener(submissionSavedListenerCaptor.capture());
     @SuppressWarnings("checkstyle:linelength")
     ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener =
         submissionSavedListenerCaptor.getValue();
+    savedListener.onComponentEvent(mock(SavedEvent.class));
+    verify(view.submissions, times(2)).setDataProvider(any());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void refreshOnSaved_StatusDialog() {
+    presenter.init(view);
+    verify(view.statusDialog).addSavedListener(statusSavedListenerCaptor.capture());
+    @SuppressWarnings("checkstyle:linelength")
+    ComponentEventListener<SavedEvent<SamplesStatusDialog>> savedListener =
+        statusSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
     verify(view.submissions, times(2)).setDataProvider(any());
   }
@@ -332,6 +347,8 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void editSelectedStatus() {
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);
@@ -347,6 +364,8 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void editSelectedStatus_Empty() {
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     when(view.submissions.getSelectedItems()).thenReturn(Collections.emptySet());
     presenter.editSelectedStatus(locale);

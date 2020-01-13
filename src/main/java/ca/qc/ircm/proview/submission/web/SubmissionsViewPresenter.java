@@ -112,6 +112,7 @@ public class SubmissionsViewPresenter {
     view.editStatus.setVisible(authorizationService.hasRole(ADMIN));
     loadSubmissions();
     view.dialog.addSavedListener(e -> loadSubmissions());
+    view.statusDialog.addSavedListener(e -> loadSubmissions());
   }
 
   private void loadSubmissions() {
@@ -208,12 +209,9 @@ public class SubmissionsViewPresenter {
   }
 
   void editSelectedStatus(Locale locale) {
-    Optional<Long> oid =
-        view.submissions.getSelectedItems().stream().findFirst().map(s -> s.getId());
-    if (oid.isPresent()) {
-      Submission database = service.get(oid.get());
-      view.statusDialog.setSubmission(database);
-      view.statusDialog.open();
+    Optional<Submission> os = view.submissions.getSelectedItems().stream().findFirst();
+    if (os.isPresent()) {
+      editStatus(os.get());
     } else {
       AppResources resources = new AppResources(SubmissionsView.class, locale);
       view.showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
