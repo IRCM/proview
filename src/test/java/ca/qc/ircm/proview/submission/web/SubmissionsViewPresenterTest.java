@@ -129,6 +129,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     view.statusFilter = new ComboBox<>();
     view.hiddenFilter = new ComboBox<>();
     view.add = new Button();
+    view.editStatus = new Button();
     view.dialog = mock(SubmissionDialog.class);
     view.statusDialog = mock(SamplesStatusDialog.class);
     submissions = repository.findAll();
@@ -144,6 +145,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     verify(view.service).setVisible(false);
     verify(view.instrument).setVisible(false);
     verify(view.hidden).setVisible(false);
+    assertFalse(view.editStatus.isVisible());
   }
 
   @Test
@@ -156,6 +158,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     verify(view.service).setVisible(false);
     verify(view.instrument).setVisible(false);
     verify(view.hidden).setVisible(false);
+    assertFalse(view.editStatus.isVisible());
   }
 
   @Test
@@ -169,6 +172,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     verify(view.service).setVisible(true);
     verify(view.instrument).setVisible(true);
     verify(view.hidden).setVisible(true);
+    assertTrue(view.editStatus.isVisible());
   }
 
   @Test
@@ -280,7 +284,22 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void editStatus() {
+  public void editStatus_User() {
+    presenter.init(view);
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(2L);
+    Submission databaseSubmission = repository.findById(2L).orElse(null);
+    when(service.get(any(Long.class))).thenReturn(databaseSubmission);
+    presenter.editStatus(submission);
+    verify(service, never()).get(any());
+    verify(view.statusDialog, never()).setSubmission(any());
+    verify(view.statusDialog, never()).open();
+  }
+
+  @Test
+  public void editStatus_Admin() {
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);

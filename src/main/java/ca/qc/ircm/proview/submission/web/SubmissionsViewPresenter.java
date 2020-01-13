@@ -109,6 +109,7 @@ public class SubmissionsViewPresenter {
     view.service.setVisible(authorizationService.hasRole(ADMIN));
     view.instrument.setVisible(authorizationService.hasRole(ADMIN));
     view.hidden.setVisible(authorizationService.hasRole(ADMIN));
+    view.editStatus.setVisible(authorizationService.hasRole(ADMIN));
     loadSubmissions();
     view.dialog.addSavedListener(e -> loadSubmissions());
   }
@@ -195,9 +196,11 @@ public class SubmissionsViewPresenter {
   }
 
   void editStatus(Submission submission) {
-    Submission database = service.get(submission.getId());
-    view.statusDialog.setSubmission(database);
-    view.statusDialog.open();
+    if (authorizationService.hasRole(ADMIN)) {
+      Submission database = service.get(submission.getId());
+      view.statusDialog.setSubmission(database);
+      view.statusDialog.open();
+    }
   }
 
   void add() {
