@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,13 +97,29 @@ public class VaadinTestUtils {
    *          item
    */
   public static <E> void doubleClickItem(Grid<E> grid, E item) {
+    doubleClickItem(grid, item, (gv, key) -> new ItemDoubleClickEvent<>(gv, false, key, -1, -1, -1,
+        -1, 2, 0, false, false, false, false));
+  }
+
+  /**
+   * Simulates an item click on grid.
+   *
+   * @param grid
+   *          grid
+   * @param item
+   *          item
+   * @param mockEventConsumer
+   *          allows to alter event
+   */
+  public static <E> void doubleClickItem(Grid<E> grid, E item,
+      BiFunction<Grid<E>, String, ItemDoubleClickEvent<E>> eventGenerator) {
     try {
       String key = grid.getDataCommunicator().getKeyMapper().key(item);
       Method method = Component.class.getDeclaredMethod("getEventBus");
       method.setAccessible(true);
       ComponentEventBus eventBus = (ComponentEventBus) method.invoke(grid);
-      eventBus.fireEvent(new ItemDoubleClickEvent<>(grid, false, key, -1, -1, -1, -1, 2, 0, false,
-          false, false, false));
+      ItemDoubleClickEvent<E> event = eventGenerator.apply(grid, key);
+      eventBus.fireEvent(event);
     } catch (NoSuchMethodException | SecurityException | IllegalAccessException
         | IllegalArgumentException | InvocationTargetException e) {
       throw new IllegalStateException(e);

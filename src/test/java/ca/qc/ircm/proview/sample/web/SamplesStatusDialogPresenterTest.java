@@ -49,6 +49,7 @@ import com.vaadin.flow.data.binder.BindingValidationStatus;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -76,6 +77,7 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
   private Submission submission;
   private SampleStatus status1 = SampleStatus.ANALYSED;
   private SampleStatus status2 = SampleStatus.DIGESTED;
+  private Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
 
   /**
    * Before tests.
@@ -88,22 +90,22 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
     dialog.samples = mock(Grid.class);
     dialog.name = mock(Column.class);
     dialog.status = mock(Column.class);
-    dialog.statusFields = new HashMap<>();
     dialog.save = new Button();
     dialog.cancel = new Button();
+    when(dialog.status(any())).then(i -> statusFields.get(i.getArgument(0)));
     submission = submissionRepository.findById(163L).get();
     submission.getSamples().forEach(sample -> {
       ComboBox<SampleStatus> comboBox = new ComboBox<>();
       comboBox.setItems(SampleStatus.values());
-      dialog.statusFields.put(sample, comboBox);
+      statusFields.put(sample, comboBox);
     });
     presenter.init(dialog);
   }
 
   private void setFields() {
-    dialog.statusFields.get(submission.getSamples().get(0)).setValue(status1);
+    statusFields.get(submission.getSamples().get(0)).setValue(status1);
     submission.getSamples().stream().skip(1)
-        .forEach(sample -> dialog.statusFields.get(sample).setValue(status2));
+        .forEach(sample -> statusFields.get(sample).setValue(status2));
   }
 
   @Test
@@ -112,8 +114,8 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     dialog.samples.setItems(submission.getSamples());
     for (SubmissionSample sample : submission.getSamples()) {
-      assertEquals(sample.getStatus(), dialog.statusFields.get(sample).getValue());
-      assertTrue(dialog.statusFields.get(sample).isRequiredIndicatorVisible());
+      assertEquals(sample.getStatus(), statusFields.get(sample).getValue());
+      assertTrue(statusFields.get(sample).isRequiredIndicatorVisible());
     }
   }
 
@@ -130,14 +132,14 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     setFields();
     SubmissionSample sample = submission.getSamples().get(0);
-    dialog.statusFields.get(sample).setValue(null);
+    statusFields.get(sample).setValue(null);
     presenter.save();
     verify(service, never()).updateStatus(any());
     List<BinderValidationStatus<SubmissionSample>> statuses = presenter.validateSamples();
     BinderValidationStatus<SubmissionSample> status = statuses.get(0);
     assertFalse(status.isOk());
     Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.statusFields.get(sample));
+        findValidationStatusByField(status, statusFields.get(sample));
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -149,14 +151,14 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     setFields();
     SubmissionSample sample = submission.getSamples().get(1);
-    dialog.statusFields.get(sample).setValue(null);
+    statusFields.get(sample).setValue(null);
     presenter.save();
     verify(service, never()).updateStatus(any());
     List<BinderValidationStatus<SubmissionSample>> statuses = presenter.validateSamples();
     BinderValidationStatus<SubmissionSample> status = statuses.get(1);
     assertFalse(status.isOk());
     Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.statusFields.get(sample));
+        findValidationStatusByField(status, statusFields.get(sample));
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -192,8 +194,8 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
     presenter.setSubmission(submission);
     dialog.samples.setItems(submission.getSamples());
     for (SubmissionSample sample : submission.getSamples()) {
-      assertEquals(sample.getStatus(), dialog.statusFields.get(sample).getValue());
-      assertTrue(dialog.statusFields.get(sample).isRequiredIndicatorVisible());
+      assertEquals(sample.getStatus(), statusFields.get(sample).getValue());
+      assertTrue(statusFields.get(sample).isRequiredIndicatorVisible());
     }
   }
 
@@ -203,8 +205,8 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     dialog.samples.setItems(submission.getSamples());
     for (SubmissionSample sample : submission.getSamples()) {
-      assertEquals(sample.getStatus(), dialog.statusFields.get(sample).getValue());
-      assertTrue(dialog.statusFields.get(sample).isRequiredIndicatorVisible());
+      assertEquals(sample.getStatus(), statusFields.get(sample).getValue());
+      assertTrue(statusFields.get(sample).isRequiredIndicatorVisible());
     }
   }
 }

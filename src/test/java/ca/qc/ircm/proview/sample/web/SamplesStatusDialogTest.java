@@ -207,7 +207,7 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
       for (SampleStatus status : statuses) {
         assertEquals(status.getLabel(locale), comboBox.getItemLabelGenerator().apply(status));
       }
-      assertSame(comboBox, dialog.statusFields.get(sample));
+      assertSame(comboBox, dialog.status(sample));
     }
   }
 

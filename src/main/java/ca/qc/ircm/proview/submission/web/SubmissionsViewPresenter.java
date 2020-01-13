@@ -26,10 +26,14 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
+import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -52,7 +56,9 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -188,8 +194,27 @@ public class SubmissionsViewPresenter {
     view.dialog.open();
   }
 
+  void editStatus(Submission submission) {
+    Submission database = service.get(submission.getId());
+    view.statusDialog.setSubmission(database);
+    view.statusDialog.open();
+  }
+
   void add() {
     UI.getCurrent().navigate(SubmissionView.class);
+  }
+
+  void editSelectedStatus(Locale locale) {
+    Optional<Long> oid =
+        view.submissions.getSelectedItems().stream().findFirst().map(s -> s.getId());
+    if (oid.isPresent()) {
+      Submission database = service.get(oid.get());
+      view.statusDialog.setSubmission(database);
+      view.statusDialog.open();
+    } else {
+      AppResources resources = new AppResources(SubmissionsView.class, locale);
+      view.showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
+    }
   }
 
   void toggleHidden(Submission submission) {

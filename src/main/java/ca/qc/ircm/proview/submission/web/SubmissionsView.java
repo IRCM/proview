@@ -38,12 +38,14 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
+import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -52,6 +54,7 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -77,7 +80,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Route(value = SubmissionsView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ UserRole.USER })
 public class SubmissionsView extends VerticalLayout
-    implements HasDynamicTitle, LocaleChangeObserver {
+    implements HasDynamicTitle, LocaleChangeObserver, NotificationComponent {
   public static final String VIEW_NAME = "submissions";
   public static final String ID = styleName(VIEW_NAME, "view");
   public static final String HEADER = "header";
@@ -85,6 +88,7 @@ public class SubmissionsView extends VerticalLayout
   public static final String SAMPLES_COUNT = SAMPLES + "Count";
   public static final String SAMPLES_VALUE = property(SAMPLES, "value");
   public static final String STATUS_VALUE = property(STATUS, "value");
+  public static final String EDIT_STATUS = "editStatus";
   public static final String ADD = "add";
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
@@ -110,13 +114,17 @@ public class SubmissionsView extends VerticalLayout
   protected ComboBox<SampleStatus> statusFilter = new ComboBox<>();
   protected ComboBox<Boolean> hiddenFilter = new ComboBox<>();
   protected Button add = new Button();
+  protected Button editStatus = new Button();
   protected SubmissionDialog dialog;
+  protected SamplesStatusDialog statusDialog;
   private SubmissionsViewPresenter presenter;
 
   @Autowired
-  protected SubmissionsView(SubmissionsViewPresenter presenter, SubmissionDialog dialog) {
+  protected SubmissionsView(SubmissionsViewPresenter presenter, SubmissionDialog dialog,
+      SamplesStatusDialog statusDialog) {
     this.presenter = presenter;
     this.dialog = dialog;
+    this.statusDialog = statusDialog;
   }
 
   @PostConstruct
@@ -124,11 +132,19 @@ public class SubmissionsView extends VerticalLayout
     logger.debug("submissions view");
     setId(ID);
     setSizeFull();
-    add(header, submissions, add);
+    HorizontalLayout buttonsLayout = new HorizontalLayout();
+    buttonsLayout.add(add, editStatus);
+    add(header, submissions, buttonsLayout);
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
     submissions.setSizeFull();
-    submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
+    submissions.addItemDoubleClickListener(e -> {
+      if (e.isShiftKey()) {
+        presenter.editStatus(e.getItem());
+      } else {
+        presenter.view(e.getItem());
+      }
+    });
     ValueProvider<Submission, String> submissionExperiment =
         submission -> Objects.toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
@@ -217,6 +233,9 @@ public class SubmissionsView extends VerticalLayout
     add.setId(ADD);
     add.setIcon(VaadinIcon.PLUS.create());
     add.addClickListener(e -> presenter.add());
+    editStatus.setId(EDIT_STATUS);
+    editStatus.setIcon(VaadinIcon.EDIT.create());
+    editStatus.addClickListener(e -> presenter.editSelectedStatus(getLocale()));
     presenter.init(this);
   }
 
@@ -291,6 +310,7 @@ public class SubmissionsView extends VerticalLayout
     statusFilter.setPlaceholder(resources.message(ALL));
     hiddenFilter.setPlaceholder(resources.message(ALL));
     add.setText(resources.message(ADD));
+    editStatus.setText(resources.message(EDIT_STATUS));
     submissions.getDataProvider().refreshAll();
     instrumentFilter.getDataProvider().refreshAll();
     statusFilter.getDataProvider().refreshAll();

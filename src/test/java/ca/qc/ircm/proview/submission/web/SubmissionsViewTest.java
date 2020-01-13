@@ -64,6 +64,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
@@ -77,6 +78,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
+import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -108,6 +110,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   private SubmissionsViewPresenter presenter;
   @Mock
   private SubmissionDialog dialog;
+  @Mock
+  private SamplesStatusDialog statusDialog;
   @Captor
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
@@ -132,7 +136,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new SubmissionsView(presenter, dialog);
+    view = new SubmissionsView(presenter, dialog, statusDialog);
     view.init();
     submissions = repository.findAll();
   }
@@ -280,7 +284,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void localeChange() {
-    view = new SubmissionsView(presenter, dialog);
+    view = new SubmissionsView(presenter, dialog, statusDialog);
     mockColumns();
     view.init();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
@@ -373,7 +377,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
 
   @Test
   public void submissions_ColumnsValueProvider() {
-    view = new SubmissionsView(presenter, dialog);
+    view = new SubmissionsView(presenter, dialog, statusDialog);
     mockColumns();
     view.init();
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(EXPERIMENT));
@@ -490,11 +494,20 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void view() {
+  public void doubleClickSubmission() {
     Submission submission = submissions.get(0);
     doubleClickItem(view.submissions, submission);
 
     verify(presenter).view(submission);
+  }
+
+  @Test
+  public void doubleClickSubmission_Shift() {
+    Submission submission = submissions.get(0);
+    doubleClickItem(view.submissions, submission, (grid, key) -> new ItemDoubleClickEvent<>(grid,
+        false, key, -1, -1, -1, -1, 2, 0, false, true, false, false));
+
+    verify(presenter).editStatus(submission);
   }
 
   private Submission experiment(String experiment) {
@@ -651,5 +664,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   public void add() {
     clickButton(view.add);
     verify(presenter).add();
+  }
+
+  @Test
+  public void editStatus() {
+    clickButton(view.editStatus);
+    verify(presenter).editSelectedStatus(locale);
   }
 }

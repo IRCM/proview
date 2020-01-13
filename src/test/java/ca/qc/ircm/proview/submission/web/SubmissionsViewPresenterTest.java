@@ -19,19 +19,26 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
+import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
+import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
+import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Service;
@@ -54,7 +61,9 @@ import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
@@ -89,6 +98,8 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   @SuppressWarnings("checkstyle:linelength")
   private ArgumentCaptor<ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
   private List<Submission> submissions;
+  private Locale locale = ENGLISH;
+  private AppResources resources = new AppResources(SubmissionsView.class, locale);
 
   /**
    * Before test.
@@ -119,6 +130,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     view.hiddenFilter = new ComboBox<>();
     view.add = new Button();
     view.dialog = mock(SubmissionDialog.class);
+    view.statusDialog = mock(SamplesStatusDialog.class);
     submissions = repository.findAll();
     when(service.all(any())).thenReturn(submissions);
   }
@@ -268,6 +280,19 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
+  public void editStatus() {
+    presenter.init(view);
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(2L);
+    Submission databaseSubmission = repository.findById(2L).orElse(null);
+    when(service.get(any(Long.class))).thenReturn(databaseSubmission);
+    presenter.editStatus(submission);
+    verify(service).get(2L);
+    verify(view.statusDialog).setSubmission(databaseSubmission);
+    verify(view.statusDialog).open();
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void refreshOnSaved() {
     presenter.init(view);
@@ -284,6 +309,32 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     presenter.init(view);
     presenter.add();
     verify(ui).navigate(SubmissionView.class);
+  }
+
+  @Test
+  public void editSelectedStatus() {
+    presenter.init(view);
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(2L);
+    when(view.submissions.getSelectedItems()).thenReturn(Collections.singleton(submission));
+    Submission databaseSubmission = repository.findById(2L).orElse(null);
+    when(service.get(any(Long.class))).thenReturn(databaseSubmission);
+    presenter.editSelectedStatus(locale);
+    verify(service).get(2L);
+    verify(view.statusDialog).setSubmission(databaseSubmission);
+    verify(view.statusDialog).open();
+    verify(view, never()).showNotification(any());
+  }
+
+  @Test
+  public void editSelectedStatus_Empty() {
+    presenter.init(view);
+    when(view.submissions.getSelectedItems()).thenReturn(Collections.emptySet());
+    presenter.editSelectedStatus(locale);
+    verify(service, never()).get(any());
+    verify(view.statusDialog, never()).setSubmission(any());
+    verify(view.statusDialog, never()).open();
+    verify(view).showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
   }
 
   @Test

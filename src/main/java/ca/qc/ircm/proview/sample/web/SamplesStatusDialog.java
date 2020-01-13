@@ -77,7 +77,7 @@ public class SamplesStatusDialog extends Dialog
   protected Column<SubmissionSample> status;
   protected Button save = new Button();
   protected Button cancel = new Button();
-  protected Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
+  private Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
   private SamplesStatusDialogPresenter presenter;
 
   protected SamplesStatusDialog(SamplesStatusDialogPresenter presenter) {
@@ -115,6 +115,9 @@ public class SamplesStatusDialog extends Dialog
   }
 
   ComboBox<SampleStatus> status(SubmissionSample sample) {
+    if (statusFields.containsKey(sample)) {
+      return statusFields.get(sample);
+    }
     ComboBox<SampleStatus> status = new ComboBox<>();
     status.addClassName(STATUS);
     status.setItems(SampleStatus.values());
