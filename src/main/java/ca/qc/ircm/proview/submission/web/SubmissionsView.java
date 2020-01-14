@@ -140,7 +140,7 @@ public class SubmissionsView extends VerticalLayout
     submissions.setSizeFull();
     submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
     submissions.addItemClickListener(e -> {
-      if (e.isShiftKey()) {
+      if (e.isShiftKey() || e.isCtrlKey() || e.isMetaKey()) {
         presenter.editStatus(e.getItem());
       }
     });

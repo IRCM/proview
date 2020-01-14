@@ -515,6 +515,26 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   }
 
   @Test
+  public void singleClickSubmission_Control() {
+    Submission submission = submissions.get(0);
+    clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
+        -1, -1, -1, -1, 2, 0, true, false, false, false));
+
+    verify(presenter, never()).view(any());
+    verify(presenter).editStatus(submission);
+  }
+
+  @Test
+  public void singleClickSubmission_Meta() {
+    Submission submission = submissions.get(0);
+    clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
+        -1, -1, -1, -1, 2, 0, false, false, false, true));
+
+    verify(presenter, never()).view(any());
+    verify(presenter).editStatus(submission);
+  }
+
+  @Test
   public void doubleClickSubmission() {
     Submission submission = submissions.get(0);
     doubleClickItem(view.submissions, submission);
