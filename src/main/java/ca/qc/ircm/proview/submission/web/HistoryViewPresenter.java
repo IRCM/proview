@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_ERROR;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.history.ActivityComparator;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -11,6 +12,8 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +71,10 @@ public class HistoryViewPresenter {
 
   private void updateActivities() {
     if (submission != null) {
-      view.activities.setItems(service.all(submission));
+      List<Activity> activities = service.all(submission);
+      Collections.sort(activities,
+          new ActivityComparator(ActivityComparator.Compare.TIMESTAMP).reversed());
+      view.activities.setItems(activities);
     }
   }
 
