@@ -316,6 +316,27 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   @SuppressWarnings("unchecked")
+  public void history_User() {
+    presenter.init(view);
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(2L);
+    presenter.history(submission);
+    verify(ui, never()).navigate(any(Class.class), any());
+  }
+
+  @Test
+  public void history_Admin() {
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    presenter.init(view);
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(2L);
+    presenter.history(submission);
+    verify(ui).navigate(HistoryView.class, 2L);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
   public void refreshOnSaved_Dialog() {
     presenter.init(view);
     verify(view.dialog).addSavedListener(submissionSavedListenerCaptor.capture());

@@ -142,6 +142,8 @@ public class SubmissionsView extends VerticalLayout
     submissions.addItemClickListener(e -> {
       if (e.isShiftKey() || e.isCtrlKey() || e.isMetaKey()) {
         presenter.editStatus(e.getItem());
+      } else if (e.isAltKey()) {
+        presenter.history(e.getItem());
       }
     });
     ValueProvider<Submission, String> submissionExperiment =

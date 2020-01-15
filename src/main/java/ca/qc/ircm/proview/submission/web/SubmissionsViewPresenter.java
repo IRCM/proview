@@ -204,6 +204,12 @@ public class SubmissionsViewPresenter {
     }
   }
 
+  void history(Submission submission) {
+    if (authorizationService.hasRole(ADMIN)) {
+      UI.getCurrent().navigate(HistoryView.class, submission.getId());
+    }
+  }
+
   void add() {
     UI.getCurrent().navigate(SubmissionView.class);
   }
