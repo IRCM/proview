@@ -33,7 +33,6 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.web.SubmissionDialog;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
@@ -74,7 +73,7 @@ public class SamplesStatusDialog extends Dialog
   public static final String ID = "samples-status-dialog";
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
-  private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
+  private static final Logger logger = LoggerFactory.getLogger(SamplesStatusDialog.class);
   protected H2 header = new H2();
   protected Grid<SubmissionSample> samples = new Grid<>();
   protected Column<SubmissionSample> name;
