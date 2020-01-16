@@ -39,10 +39,6 @@ import com.vaadin.testbench.elementsbase.Element;
 
 @Element("vaadin-vertical-layout")
 public class SubmissionViewElement extends VerticalLayoutElement {
-  protected LcmsmsSubmissionForm lcmsmsSubmissionForm;
-  protected SmallMoleculeSubmissionForm smallMoleculeSubmissionForm;
-  protected IntactProteinSubmissionForm intactProteinSubmissionForm;
-
   public H2Element header() {
     return $(H2Element.class).id(HEADER);
   }

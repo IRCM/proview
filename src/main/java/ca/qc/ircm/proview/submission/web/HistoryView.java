@@ -75,7 +75,7 @@ public class HistoryView extends VerticalLayout
     logger.debug("history view");
     setId(ID);
     setSizeFull();
-    add(activities);
+    add(header, activities);
     header.setId(HEADER);
     activities.setId(ACTIVITIES);
     activities.setSizeFull();
