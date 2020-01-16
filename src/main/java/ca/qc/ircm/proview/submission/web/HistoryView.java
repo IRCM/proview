@@ -10,7 +10,9 @@ import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.WebConstants;
@@ -55,12 +57,17 @@ public class HistoryView extends VerticalLayout
   protected Column<Activity> description;
   protected Column<Activity> explanation;
   protected SubmissionDialog dialog;
+  protected MsAnalysisDialog msAnalysisDialog;
+  protected TreatmentDialog treatmentDialog;
   private HistoryViewPresenter presenter;
 
   @Autowired
-  protected HistoryView(HistoryViewPresenter presenter, SubmissionDialog dialog) {
+  protected HistoryView(HistoryViewPresenter presenter, SubmissionDialog dialog,
+      MsAnalysisDialog msAnalysisDialog, TreatmentDialog treatmentDialog) {
     this.presenter = presenter;
     this.dialog = dialog;
+    this.msAnalysisDialog = msAnalysisDialog;
+    this.treatmentDialog = treatmentDialog;
   }
 
   @PostConstruct

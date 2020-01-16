@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityRepository;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
@@ -40,6 +41,7 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.grid.Grid;
@@ -70,6 +72,10 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
   private HistoryView view;
   @Mock
   private Activity activity;
+  @Mock
+  private MsAnalysis msAnalysis;
+  @Mock
+  private Treatment treatment;
   @Autowired
   private ActivityRepository repository;
   @Autowired
@@ -101,6 +107,8 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
     view.description = mock(Grid.Column.class);
     view.explanation = mock(Grid.Column.class);
     view.dialog = mock(SubmissionDialog.class);
+    view.treatmentDialog = mock(TreatmentDialog.class);
+    view.msAnalysisDialog = mock(MsAnalysisDialog.class);
     submission = submissionRepository.findById(163L).get();
     activities = repository.findAll();
     presenter.init(view);
@@ -137,18 +145,18 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void view_MsAnalysis() {
-    // TODO Program when MS analysis can be shown.
-    when(service.record(any())).thenReturn(mock(MsAnalysis.class));
+    when(service.record(any())).thenReturn(msAnalysis);
     presenter.view(activity, locale);
-    verify(view).showNotification(resources.message(VIEW_ERROR, MsAnalysis.class.getSimpleName()));
+    verify(view.msAnalysisDialog).setMsAnalysis(msAnalysis);
+    verify(view.msAnalysisDialog).open();
   }
 
   @Test
   public void view_Treatment() {
-    // TODO Program when treatment can be shown.
-    when(service.record(any())).thenReturn(mock(Treatment.class));
+    when(service.record(any())).thenReturn(treatment);
     presenter.view(activity, locale);
-    verify(view).showNotification(resources.message(VIEW_ERROR, Treatment.class.getSimpleName()));
+    verify(view.treatmentDialog).setTreatment(treatment);
+    verify(view.treatmentDialog).open();
   }
 
   @Test

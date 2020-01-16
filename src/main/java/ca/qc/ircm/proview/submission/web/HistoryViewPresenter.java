@@ -55,13 +55,11 @@ public class HistoryViewPresenter {
       view.dialog.open();
       view.dialog.addSavedListener(e -> updateActivities());
     } else if (record instanceof MsAnalysis) {
-      // TODO Program dialog for MS analysis.
-      AppResources resources = new AppResources(HistoryView.class, locale);
-      view.showNotification(resources.message(VIEW_ERROR, record.getClass().getSimpleName()));
+      view.msAnalysisDialog.setMsAnalysis((MsAnalysis) record);
+      view.msAnalysisDialog.open();
     } else if (record instanceof Treatment) {
-      // TODO Program dialog for treatment.
-      AppResources resources = new AppResources(HistoryView.class, locale);
-      view.showNotification(resources.message(VIEW_ERROR, record.getClass().getSimpleName()));
+      view.treatmentDialog.setTreatment((Treatment) record);
+      view.treatmentDialog.open();
     } else {
       AppResources resources = new AppResources(HistoryView.class, locale);
       view.showNotification(resources.message(VIEW_ERROR, record.getClass().getSimpleName()));
