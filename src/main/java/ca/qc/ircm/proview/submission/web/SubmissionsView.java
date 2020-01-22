@@ -32,6 +32,8 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
 import static ca.qc.ircm.proview.web.WebConstants.ALL;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.web.WebConstants.ERROR;
+import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
@@ -56,7 +58,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.ValueProvider;
@@ -94,6 +95,10 @@ public class SubmissionsView extends VerticalLayout
       "<span title$='[[item.samplesTitle]]'>[[item.samplesValue]]</span>";
   public static final String STATUS_SPAN =
       "<span title$='[[item.statusTitle]]'>[[item.statusValue]]</span>";
+  public static final String HIDDEN_BUTTON =
+      "<vaadin-button class='" + HIDDEN + "' theme$='[[item.hiddenTheme]]' on-click='toggleHidden'>"
+          + "<iron-icon icon$='[[item.hiddenIcon]]' slot='prefix'></iron-icon>"
+          + "[[item.hiddenValue]]" + "</vaadin-button>";
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
   protected H2 header = new H2();
@@ -185,17 +190,22 @@ public class SubmissionsView extends VerticalLayout
             .setKey(SAMPLES_COUNT);
     samples = submissions
         .addColumn(TemplateRenderer.<Submission>of(SAMPLES_SPAN)
-            .withProperty("samplesValue", submission -> sampleNames(submission))
+            .withProperty("samplesValue", submission -> sampleNamesValue(submission))
             .withProperty("samplesTitle", submission -> sampleNamesTitle(submission)), SAMPLES)
         .setKey(SAMPLES).setSortable(false);
     status = submissions
         .addColumn(TemplateRenderer.<Submission>of(STATUS_SPAN)
-            .withProperty("statusValue", submission -> statuses(submission))
+            .withProperty("statusValue", submission -> statusesValue(submission))
             .withProperty("statusTitle", submission -> statusesTitle(submission)), STATUS)
         .setKey(STATUS).setSortable(false);
-    hidden =
-        submissions.addColumn(new ComponentRenderer<>(submission -> hidden(submission)), HIDDEN)
-            .setKey(HIDDEN);
+    hidden = submissions.addColumn(TemplateRenderer.<Submission>of(HIDDEN_BUTTON)
+        .withProperty("hiddenTheme", submission -> hiddenTheme(submission))
+        .withProperty("hiddenValue", submission -> hiddenValue(submission))
+        .withProperty("hiddenIcon", submission -> hiddenIcon(submission))
+        .withEventHandler("toggleHidden", submission -> {
+          presenter.toggleHidden(submission);
+          submissions.getDataProvider().refreshItem(submission);
+        }), HIDDEN).setKey(HIDDEN).setSortable(false);
     submissions.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = submissions.appendHeaderRow();
     filtersRow.getCell(experiment).setComponent(experimentFilter);
@@ -248,7 +258,7 @@ public class SubmissionsView extends VerticalLayout
     presenter.init(this);
   }
 
-  private String sampleNames(Submission submission) {
+  private String sampleNamesValue(Submission submission) {
     final AppResources resources = new AppResources(getClass(), getLocale());
     return resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
         submission.getSamples().size());
@@ -259,7 +269,7 @@ public class SubmissionsView extends VerticalLayout
         .collect(Collectors.joining("\n"));
   }
 
-  private String statuses(Submission submission) {
+  private String statusesValue(Submission submission) {
     final AppResources resources = new AppResources(getClass(), getLocale());
     List<SampleStatus> statuses = submission.getSamples().stream().map(sample -> sample.getStatus())
         .distinct().collect(Collectors.toList());
@@ -273,15 +283,17 @@ public class SubmissionsView extends VerticalLayout
         .collect(Collectors.joining("\n"));
   }
 
-  private Button hidden(Submission submission) {
-    Button button = new Button();
-    button.addClassName(HIDDEN);
+  private String hiddenTheme(Submission submission) {
+    return submission.isHidden() ? ERROR : SUCCESS;
+  }
+
+  private String hiddenValue(Submission submission) {
     final AppResources resources = new AppResources(Submission.class, getLocale());
-    button.setText(resources.message(property(HIDDEN, submission.isHidden())));
-    button.setIcon(submission.isHidden() ? VaadinIcon.EYE_SLASH.create() : VaadinIcon.EYE.create());
-    button.addThemeName(submission.isHidden() ? WebConstants.ERROR : WebConstants.SUCCESS);
-    button.addClickListener(e -> presenter.toggleHidden(submission));
-    return button;
+    return resources.message(property(HIDDEN, submission.isHidden()));
+  }
+
+  private String hiddenIcon(Submission submission) {
+    return submission.isHidden() ? "vaadin:eye-slash" : "vaadin:eye";
   }
 
   @Override

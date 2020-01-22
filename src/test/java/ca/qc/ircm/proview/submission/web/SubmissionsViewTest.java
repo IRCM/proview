@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.HIDDEN_BUTTON;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_SPAN;
@@ -78,7 +79,6 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.WebConstants;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -86,7 +86,6 @@ import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -121,8 +120,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
   private ArgumentCaptor<TemplateRenderer<Submission>> templateRendererCaptor;
-  @Captor
-  private ArgumentCaptor<ComponentRenderer<Button, Submission>> buttonRendererCaptor;
   @Captor
   private ArgumentCaptor<Comparator<Submission>> comparatorCaptor;
   @Autowired
@@ -206,10 +203,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(view.status.setHeader(any(String.class))).thenReturn(view.status);
     when(view.status.setSortable(anyBoolean())).thenReturn(view.status);
     view.hidden = mock(Column.class);
-    when(view.submissions.addColumn(any(ComponentRenderer.class), eq(HIDDEN)))
+    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(HIDDEN)))
         .thenReturn(view.hidden);
     when(view.hidden.setKey(any())).thenReturn(view.hidden);
     when(view.hidden.setHeader(any(String.class))).thenReturn(view.hidden);
+    when(view.hidden.setSortable(anyBoolean())).thenReturn(view.hidden);
     HeaderRow filtersRow = mock(HeaderRow.class);
     when(view.submissions.appendHeaderRow()).thenReturn(filtersRow);
     HeaderCell experienceFilterCell = mock(HeaderCell.class);
@@ -377,13 +375,15 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertNotNull(view.submissions.getColumnByKey(STATUS));
     assertFalse(view.submissions.getColumnByKey(STATUS).isSortable());
     assertNotNull(view.submissions.getColumnByKey(HIDDEN));
-    assertTrue(view.submissions.getColumnByKey(HIDDEN).isSortable());
+    assertFalse(view.submissions.getColumnByKey(HIDDEN).isSortable());
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void submissions_ColumnsValueProvider() {
     view = new SubmissionsView(presenter, dialog, statusDialog);
     mockColumns();
+    when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
     view.init();
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(EXPERIMENT));
     ValueProvider<Submission, String> valueProvider = valueProviderCaptor.getValue();
@@ -493,18 +493,23 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
               .collect(Collectors.joining("\n")),
           templateRenderer.getValueProviders().get("statusTitle").apply(submission));
     }
-    verify(view.submissions).addColumn(buttonRendererCaptor.capture(), eq(HIDDEN));
-    ComponentRenderer<Button, Submission> buttonRenderer = buttonRendererCaptor.getValue();
+    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(HIDDEN));
+    templateRenderer = templateRendererCaptor.getValue();
     for (Submission submission : submissions) {
-      Button button = buttonRenderer.createComponent(submission);
-      assertTrue(button.getClassName().contains(HIDDEN));
-      assertTrue(button.getThemeName().contains(submission.isHidden() ? ERROR : SUCCESS));
+      assertEquals(HIDDEN_BUTTON, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getValueProviders().containsKey("hiddenTheme"));
+      assertEquals(submission.isHidden() ? ERROR : SUCCESS,
+          templateRenderer.getValueProviders().get("hiddenTheme").apply(submission));
+      assertTrue(templateRenderer.getValueProviders().containsKey("hiddenValue"));
       assertEquals(submissionResources.message(property(HIDDEN, submission.isHidden())),
-          button.getText());
-      validateIcon(submission.isHidden() ? VaadinIcon.EYE_SLASH.create() : VaadinIcon.EYE.create(),
-          button.getIcon());
-      button.click();
+          templateRenderer.getValueProviders().get("hiddenValue").apply(submission));
+      assertTrue(templateRenderer.getValueProviders().containsKey("hiddenIcon"));
+      assertEquals(submission.isHidden() ? "vaadin:eye-slash" : "vaadin:eye",
+          templateRenderer.getValueProviders().get("hiddenIcon").apply(submission));
+      assertTrue(templateRenderer.getEventHandlers().containsKey("toggleHidden"));
+      templateRenderer.getEventHandlers().get("toggleHidden").accept(submission);
       verify(presenter).toggleHidden(submission);
+      verify(view.submissions.getDataProvider()).refreshItem(submission);
     }
   }
 
