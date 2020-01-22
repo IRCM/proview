@@ -32,7 +32,6 @@ import static ca.qc.ircm.proview.web.WebConstants.ERROR;
 import static ca.qc.ircm.proview.web.WebConstants.ERROR_TEXT;
 import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
-import static ca.qc.ircm.proview.web.WebConstants.THEME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
@@ -52,7 +51,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -60,8 +59,6 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -84,6 +81,10 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   public static final String SWITCH_USER = "switchUser";
   public static final String SWITCH_FAILED = "switchFailed";
   public static final String ADD = "add";
+  public static final String ACTIVE_BUTTON =
+      "<vaadin-button class='" + ACTIVE + "' theme$='[[item.activeTheme]]' on-click='toggleActive'>"
+          + "<iron-icon icon$='[[item.activeIcon]]' slot='prefix'></iron-icon>"
+          + "[[item.activeValue]]" + "</vaadin-button>";
   private static final long serialVersionUID = 1051684045824404864L;
   private static final Logger logger = LoggerFactory.getLogger(UsersView.class);
   protected H2 header = new H2();
@@ -100,7 +101,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected Button add = new Button();
   protected Button switchUser = new Button();
   protected UserDialog userDialog;
-  private Map<User, Button> actives = new HashMap<>();
   private transient UsersViewPresenter presenter;
 
   @Autowired
@@ -127,8 +127,15 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     laboratory = users.addColumn(user -> user.getLaboratory().getName(), LABORATORY)
         .setKey(LABORATORY).setComparator((u1, u2) -> normalize(u1.getLaboratory().getName())
             .compareToIgnoreCase(normalize(u2.getLaboratory().getName())));
-    active = users.addColumn(new ComponentRenderer<>(user -> activeButton(user)), ACTIVE)
-        .setKey(ACTIVE).setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
+    active = users.addColumn(TemplateRenderer.<User>of(ACTIVE_BUTTON)
+        .withProperty("activeTheme", user -> activeTheme(user))
+        .withProperty("activeValue", user -> activeValue(user))
+        .withProperty("activeIcon", user -> activeIcon(user))
+        .withEventHandler("toggleActive", user -> {
+          presenter.toggleActive(user);
+          users.getDataProvider().refreshItem(user);
+        }), ACTIVE).setKey(ACTIVE)
+        .setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
     users.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = users.appendHeaderRow();
     filtersRow.getCell(email).setComponent(emailFilter);
@@ -155,23 +162,17 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     presenter.init(this);
   }
 
-  private Button activeButton(User user) {
-    Button button = new Button();
-    button.addClassName(ACTIVE);
-    actives.put(user, button);
-    updateActiveButton(button, user);
-    button.addClickListener(e -> {
-      presenter.toggleActive(user);
-      updateActiveButton(button, user);
-    });
-    return button;
+  private String activeTheme(User user) {
+    return user.isActive() ? SUCCESS : ERROR;
   }
 
-  private void updateActiveButton(Button button, User user) {
+  private String activeValue(User user) {
     final AppResources userResources = new AppResources(User.class, getLocale());
-    button.setIcon(user.isActive() ? VaadinIcon.EYE.create() : VaadinIcon.EYE_SLASH.create());
-    button.setText(userResources.message(property(ACTIVE, user.isActive())));
-    button.getElement().setAttribute(THEME, user.isActive() ? SUCCESS : ERROR);
+    return userResources.message(property(ACTIVE, user.isActive()));
+  }
+
+  private String activeIcon(User user) {
+    return user.isActive() ? "vaadin:eye" : "vaadin:eye-slash";
   }
 
   @Override
@@ -193,8 +194,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     laboratoryFilter.setPlaceholder(webResources.message(ALL));
     activeFilter.setItemLabelGenerator(value -> value
         .map(bv -> userResources.message(property(ACTIVE, bv))).orElse(webResources.message(ALL)));
-    actives.entrySet().stream().forEach(entry -> entry.getValue()
-        .setText(userResources.message(property(ACTIVE, entry.getKey().isActive()))));
     add.setText(resources.message(ADD));
     add.setIcon(VaadinIcon.PLUS.create());
     switchUser.setText(resources.message(SWITCH_USER));

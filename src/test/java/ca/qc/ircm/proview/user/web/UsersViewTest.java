@@ -20,12 +20,14 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.UserProperties.ACTIVE;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
+import static ca.qc.ircm.proview.user.web.UsersView.ACTIVE_BUTTON;
 import static ca.qc.ircm.proview.user.web.UsersView.ADD;
 import static ca.qc.ircm.proview.user.web.UsersView.HEADER;
 import static ca.qc.ircm.proview.user.web.UsersView.ID;
@@ -40,14 +42,12 @@ import static ca.qc.ircm.proview.web.WebConstants.ERROR;
 import static ca.qc.ircm.proview.web.WebConstants.ERROR_TEXT;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
-import static ca.qc.ircm.proview.web.WebConstants.THEME;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -61,13 +61,13 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Element;
@@ -99,7 +99,7 @@ public class UsersViewTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<ValueProvider<User, String>> valueProviderCaptor;
   @Captor
-  private ArgumentCaptor<ComponentRenderer<Button, User>> buttonRendererCaptor;
+  private ArgumentCaptor<TemplateRenderer<User>> templateRendererCaptor;
   @Captor
   private ArgumentCaptor<Comparator<User>> comparatorCaptor;
   @Autowired
@@ -142,7 +142,7 @@ public class UsersViewTest extends AbstractViewTestCase {
     when(view.laboratory.setComparator(any(Comparator.class))).thenReturn(view.laboratory);
     when(view.laboratory.setHeader(any(String.class))).thenReturn(view.laboratory);
     view.active = mock(Column.class);
-    when(view.users.addColumn(any(ComponentRenderer.class), eq(ACTIVE))).thenReturn(view.active);
+    when(view.users.addColumn(any(TemplateRenderer.class), eq(ACTIVE))).thenReturn(view.active);
     when(view.active.setKey(any())).thenReturn(view.active);
     when(view.active.setComparator(any(Comparator.class))).thenReturn(view.active);
     when(view.active.setHeader(any(String.class))).thenReturn(view.active);
@@ -264,6 +264,7 @@ public class UsersViewTest extends AbstractViewTestCase {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void users_ColumnsValueProvider() {
     doAnswer(i -> {
       User user = i.getArgument(0);
@@ -272,6 +273,7 @@ public class UsersViewTest extends AbstractViewTestCase {
     }).when(presenter).toggleActive(any());
     view = new UsersView(presenter, userDialog);
     mockColumns();
+    when(view.users.getDataProvider()).thenReturn(mock(DataProvider.class));
     view.init();
     verify(view.users).addColumn(valueProviderCaptor.capture(), eq(EMAIL));
     ValueProvider<User, String> valueProvider = valueProviderCaptor.getValue();
@@ -311,23 +313,23 @@ public class UsersViewTest extends AbstractViewTestCase {
     assertTrue(comparator.compare(lab("test"), lab("abc")) > 0);
     assertTrue(comparator.compare(lab("Test"), lab("abc")) > 0);
     assertTrue(comparator.compare(lab("facteur"), lab("élement")) > 0);
-    verify(view.users).addColumn(buttonRendererCaptor.capture(), eq(ACTIVE));
-    ComponentRenderer<Button, User> buttonRenderer = buttonRendererCaptor.getValue();
+    verify(view.users).addColumn(templateRendererCaptor.capture(), eq(ACTIVE));
+    TemplateRenderer<User> templateRenderer = templateRendererCaptor.getValue();
     for (User user : users) {
-      Button button = buttonRenderer.createComponent(user);
-      assertTrue(button.getClassNames().contains(ACTIVE));
-      assertTrue(button.getElement().getAttribute(THEME).equals(user.isActive() ? SUCCESS : ERROR));
-      assertEquals(userResources.message(property(ACTIVE, user.isActive())), button.getText());
-      validateIcon(user.isActive() ? VaadinIcon.EYE.create() : VaadinIcon.EYE_SLASH.create(),
-          button.getIcon());
-      boolean previousActive = user.isActive();
-      clickButton(button);
-      verify(presenter, atLeastOnce()).toggleActive(user);
-      assertEquals(!previousActive, user.isActive());
-      assertTrue(button.getElement().getAttribute(THEME).equals(user.isActive() ? SUCCESS : ERROR));
-      assertEquals(userResources.message(property(ACTIVE, user.isActive())), button.getText());
-      validateIcon(user.isActive() ? VaadinIcon.EYE.create() : VaadinIcon.EYE_SLASH.create(),
-          button.getIcon());
+      assertEquals(ACTIVE_BUTTON, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getValueProviders().containsKey("activeTheme"));
+      assertEquals(user.isActive() ? SUCCESS : ERROR,
+          templateRenderer.getValueProviders().get("activeTheme").apply(user));
+      assertTrue(templateRenderer.getValueProviders().containsKey("activeValue"));
+      assertEquals(userResources.message(property(ACTIVE, user.isActive())),
+          templateRenderer.getValueProviders().get("activeValue").apply(user));
+      assertTrue(templateRenderer.getValueProviders().containsKey("activeIcon"));
+      assertEquals(user.isActive() ? "vaadin:eye" : "vaadin:eye-slash",
+          templateRenderer.getValueProviders().get("activeIcon").apply(user));
+      assertTrue(templateRenderer.getEventHandlers().containsKey("toggleActive"));
+      templateRenderer.getEventHandlers().get("toggleActive").accept(user);
+      verify(presenter).toggleActive(user);
+      verify(view.users.getDataProvider()).refreshItem(user);
     }
     verify(view.active).setComparator(comparatorCaptor.capture());
     comparator = comparatorCaptor.getValue();
