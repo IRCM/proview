@@ -207,7 +207,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
         .thenReturn(view.hidden);
     when(view.hidden.setKey(any())).thenReturn(view.hidden);
     when(view.hidden.setHeader(any(String.class))).thenReturn(view.hidden);
-    when(view.hidden.setSortable(anyBoolean())).thenReturn(view.hidden);
+    when(view.hidden.setSortProperty(any())).thenReturn(view.hidden);
+    when(view.hidden.setComparator(any(Comparator.class))).thenReturn(view.hidden);
     HeaderRow filtersRow = mock(HeaderRow.class);
     when(view.submissions.appendHeaderRow()).thenReturn(filtersRow);
     HeaderCell experienceFilterCell = mock(HeaderCell.class);
@@ -375,7 +376,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertNotNull(view.submissions.getColumnByKey(STATUS));
     assertFalse(view.submissions.getColumnByKey(STATUS).isSortable());
     assertNotNull(view.submissions.getColumnByKey(HIDDEN));
-    assertFalse(view.submissions.getColumnByKey(HIDDEN).isSortable());
+    assertTrue(view.submissions.getColumnByKey(HIDDEN).isSortable());
   }
 
   @Test
@@ -511,6 +512,12 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
       verify(presenter).toggleHidden(submission);
       verify(view.submissions.getDataProvider()).refreshItem(submission);
     }
+    verify(view.hidden).setComparator(comparatorCaptor.capture());
+    comparator = comparatorCaptor.getValue();
+    assertTrue(comparator.compare(hidden(false), hidden(true)) < 0);
+    assertTrue(comparator.compare(hidden(false), hidden(false)) == 0);
+    assertTrue(comparator.compare(hidden(true), hidden(true)) == 0);
+    assertTrue(comparator.compare(hidden(true), hidden(false)) > 0);
   }
 
   @Test
@@ -590,6 +597,12 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     laboratory.setDirector(director);
     Submission submission = new Submission();
     submission.setLaboratory(laboratory);
+    return submission;
+  }
+
+  private Submission hidden(boolean hidden) {
+    Submission submission = new Submission();
+    submission.setHidden(hidden);
     return submission;
   }
 

@@ -205,7 +205,8 @@ public class SubmissionsView extends VerticalLayout
         .withEventHandler("toggleHidden", submission -> {
           presenter.toggleHidden(submission);
           submissions.getDataProvider().refreshItem(submission);
-        }), HIDDEN).setKey(HIDDEN).setSortable(false);
+        }), HIDDEN).setKey(HIDDEN).setSortProperty(HIDDEN)
+        .setComparator((s1, s2) -> Boolean.compare(s1.isHidden(), s2.isHidden()));
     submissions.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = submissions.appendHeaderRow();
     filtersRow.getCell(experiment).setComponent(experimentFilter);
