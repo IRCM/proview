@@ -30,13 +30,16 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_SPAN;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_VALUE;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_SPAN;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
@@ -81,10 +84,10 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.grid.ItemClickEvent;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Element;
@@ -117,7 +120,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
-  private ArgumentCaptor<ComponentRenderer<Span, Submission>> spanRendererCaptor;
+  private ArgumentCaptor<TemplateRenderer<Submission>> templateRendererCaptor;
   @Captor
   private ArgumentCaptor<ComponentRenderer<Button, Submission>> buttonRendererCaptor;
   @Captor
@@ -191,13 +194,13 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(view.samplesCount.setKey(any())).thenReturn(view.samplesCount);
     when(view.samplesCount.setHeader(any(String.class))).thenReturn(view.samplesCount);
     view.samples = mock(Column.class);
-    when(view.submissions.addColumn(any(ComponentRenderer.class), eq(SAMPLES)))
+    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(SAMPLES)))
         .thenReturn(view.samples);
     when(view.samples.setKey(any())).thenReturn(view.samples);
     when(view.samples.setHeader(any(String.class))).thenReturn(view.samples);
     when(view.samples.setSortable(anyBoolean())).thenReturn(view.samples);
     view.status = mock(Column.class);
-    when(view.submissions.addColumn(any(ComponentRenderer.class), eq(STATUS)))
+    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(STATUS)))
         .thenReturn(view.status);
     when(view.status.setKey(any())).thenReturn(view.status);
     when(view.status.setHeader(any(String.class))).thenReturn(view.status);
@@ -459,26 +462,36 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     for (Submission submission : submissions) {
       assertEquals(submission.getSamples().size(), valueProvider.apply(submission));
     }
-    verify(view.submissions).addColumn(spanRendererCaptor.capture(), eq(SAMPLES));
-    ComponentRenderer<Span, Submission> spanRenderer = spanRendererCaptor.getValue();
+    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(SAMPLES));
+    TemplateRenderer<Submission> templateRenderer = templateRendererCaptor.getValue();
     for (Submission submission : submissions) {
-      Span span = spanRenderer.createComponent(submission);
-      assertEquals(resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
-          submission.getSamples().size()), span.getText());
-      assertEquals(submission.getSamples().stream().map(SubmissionSample::getName)
-          .collect(Collectors.joining("\n")), span.getTitle().orElse(""));
+      assertEquals(SAMPLES_SPAN, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getValueProviders().containsKey("samplesValue"));
+      assertEquals(
+          resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
+              submission.getSamples().size()),
+          templateRenderer.getValueProviders().get("samplesValue").apply(submission));
+      assertTrue(templateRenderer.getValueProviders().containsKey("samplesTitle"));
+      assertEquals(
+          submission.getSamples().stream().map(SubmissionSample::getName)
+              .collect(Collectors.joining("\n")),
+          templateRenderer.getValueProviders().get("samplesTitle").apply(submission));
     }
-    verify(view.submissions).addColumn(spanRendererCaptor.capture(), eq(STATUS));
-    spanRenderer = spanRendererCaptor.getValue();
+    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(STATUS));
+    templateRenderer = templateRendererCaptor.getValue();
     for (Submission submission : submissions) {
       List<SampleStatus> statuses = submission.getSamples().stream()
           .map(SubmissionSample::getStatus).distinct().collect(Collectors.toList());
-      Span span = spanRenderer.createComponent(submission);
+      assertEquals(STATUS_SPAN, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getValueProviders().containsKey("statusValue"));
       assertEquals(
           resources.message(STATUS_VALUE, statuses.get(0).getLabel(locale), statuses.size()),
-          span.getText());
-      assertEquals(statuses.stream().map(status -> status.getLabel(locale))
-          .collect(Collectors.joining("\n")), span.getTitle().orElse(""));
+          templateRenderer.getValueProviders().get("statusValue").apply(submission));
+      assertTrue(templateRenderer.getValueProviders().containsKey("statusTitle"));
+      assertEquals(
+          statuses.stream().map(status -> status.getLabel(locale))
+              .collect(Collectors.joining("\n")),
+          templateRenderer.getValueProviders().get("statusTitle").apply(submission));
     }
     verify(view.submissions).addColumn(buttonRendererCaptor.capture(), eq(HIDDEN));
     ComponentRenderer<Button, Submission> buttonRenderer = buttonRendererCaptor.getValue();

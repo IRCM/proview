@@ -42,6 +42,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.BasicRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -161,6 +162,27 @@ public class VaadinTestUtils {
       eventBus.fireEvent(event);
     } catch (NoSuchMethodException | SecurityException | IllegalAccessException
         | IllegalArgumentException | InvocationTargetException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  /**
+   * Simulates an item double click on grid.
+   *
+   * @param grid
+   *          grid
+   * @param item
+   *          item
+   * @param eventGenerator
+   *          creates the item dobule click event
+   */
+  public static String rendererTemplate(Renderer<?> renderer) {
+    try {
+      Field field = Renderer.class.getDeclaredField("template");
+      field.setAccessible(true);
+      return (String) field.get(renderer);
+    } catch (SecurityException | NoSuchFieldException | IllegalArgumentException
+        | IllegalAccessException e) {
       throw new IllegalStateException(e);
     }
   }

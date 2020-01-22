@@ -52,12 +52,12 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -90,6 +90,10 @@ public class SubmissionsView extends VerticalLayout
   public static final String STATUS_VALUE = property(STATUS, "value");
   public static final String EDIT_STATUS = "editStatus";
   public static final String ADD = "add";
+  public static final String SAMPLES_SPAN =
+      "<span title$='[[item.samplesTitle]]'>[[item.samplesValue]]</span>";
+  public static final String STATUS_SPAN =
+      "<span title$='[[item.statusTitle]]'>[[item.statusValue]]</span>";
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
   protected H2 header = new H2();
@@ -179,12 +183,16 @@ public class SubmissionsView extends VerticalLayout
     samplesCount =
         submissions.addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
             .setKey(SAMPLES_COUNT);
-    samples =
-        submissions.addColumn(new ComponentRenderer<>(submission -> samples(submission)), SAMPLES)
-            .setKey(SAMPLES).setSortable(false);
-    status =
-        submissions.addColumn(new ComponentRenderer<>(submission -> status(submission)), STATUS)
-            .setKey(STATUS).setSortable(false);
+    samples = submissions
+        .addColumn(TemplateRenderer.<Submission>of(SAMPLES_SPAN)
+            .withProperty("samplesValue", submission -> sampleNames(submission))
+            .withProperty("samplesTitle", submission -> sampleNamesTitle(submission)), SAMPLES)
+        .setKey(SAMPLES).setSortable(false);
+    status = submissions
+        .addColumn(TemplateRenderer.<Submission>of(STATUS_SPAN)
+            .withProperty("statusValue", submission -> statuses(submission))
+            .withProperty("statusTitle", submission -> statusesTitle(submission)), STATUS)
+        .setKey(STATUS).setSortable(false);
     hidden =
         submissions.addColumn(new ComponentRenderer<>(submission -> hidden(submission)), HIDDEN)
             .setKey(HIDDEN);
@@ -240,26 +248,29 @@ public class SubmissionsView extends VerticalLayout
     presenter.init(this);
   }
 
-  private Span samples(Submission submission) {
+  private String sampleNames(Submission submission) {
     final AppResources resources = new AppResources(getClass(), getLocale());
-    Span span = new Span();
-    span.setText(resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
-        submission.getSamples().size()));
-    span.setTitle(submission.getSamples().stream().map(SubmissionSample::getName)
-        .collect(Collectors.joining("\n")));
-    return span;
+    return resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
+        submission.getSamples().size());
   }
 
-  private Span status(Submission submission) {
+  private String sampleNamesTitle(Submission submission) {
+    return submission.getSamples().stream().map(SubmissionSample::getName)
+        .collect(Collectors.joining("\n"));
+  }
+
+  private String statuses(Submission submission) {
     final AppResources resources = new AppResources(getClass(), getLocale());
     List<SampleStatus> statuses = submission.getSamples().stream().map(sample -> sample.getStatus())
         .distinct().collect(Collectors.toList());
-    Span span = new Span();
-    span.setText(
-        resources.message(STATUS_VALUE, statuses.get(0).getLabel(getLocale()), statuses.size()));
-    span.setTitle(statuses.stream().map(status -> status.getLabel(getLocale()))
-        .collect(Collectors.joining("\n")));
-    return span;
+    return resources.message(STATUS_VALUE, statuses.get(0).getLabel(getLocale()), statuses.size());
+  }
+
+  private String statusesTitle(Submission submission) {
+    List<SampleStatus> statuses = submission.getSamples().stream().map(sample -> sample.getStatus())
+        .distinct().collect(Collectors.toList());
+    return statuses.stream().map(status -> status.getLabel(getLocale()))
+        .collect(Collectors.joining("\n"));
   }
 
   private Button hidden(Submission submission) {
