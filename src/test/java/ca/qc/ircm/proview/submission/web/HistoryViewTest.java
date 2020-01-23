@@ -23,20 +23,26 @@ import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
 import static ca.qc.ircm.proview.history.ActivityProperties.USER;
 import static ca.qc.ircm.proview.submission.web.HistoryView.ACTIVITIES;
 import static ca.qc.ircm.proview.submission.web.HistoryView.DESCRIPTION;
+import static ca.qc.ircm.proview.submission.web.HistoryView.DESCRIPTION_SPAN;
+import static ca.qc.ircm.proview.submission.web.HistoryView.EXPLANATION_SPAN;
 import static ca.qc.ircm.proview.submission.web.HistoryView.HEADER;
 import static ca.qc.ircm.proview.submission.web.HistoryView.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,6 +57,7 @@ import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -90,6 +97,8 @@ public class HistoryViewTest extends AbstractViewTestCase {
   private ActivityRepository repository;
   @Captor
   private ArgumentCaptor<ValueProvider<Activity, String>> valueProviderCaptor;
+  @Captor
+  private ArgumentCaptor<TemplateRenderer<Activity>> templateRendererCaptor;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(HistoryView.class, locale);
   private AppResources webResources = new AppResources(WebConstants.class, locale);
@@ -126,15 +135,17 @@ public class HistoryViewTest extends AbstractViewTestCase {
     when(view.date.setKey(any())).thenReturn(view.date);
     when(view.date.setHeader(any(String.class))).thenReturn(view.date);
     view.description = mock(Column.class);
-    when(view.activities.addColumn(any(ValueProvider.class), eq(DESCRIPTION)))
+    when(view.activities.addColumn(any(TemplateRenderer.class), eq(DESCRIPTION)))
         .thenReturn(view.description);
     when(view.description.setKey(any())).thenReturn(view.description);
     when(view.description.setHeader(any(String.class))).thenReturn(view.description);
+    when(view.description.setSortable(anyBoolean())).thenReturn(view.description);
     view.explanation = mock(Column.class);
-    when(view.activities.addColumn(any(ValueProvider.class), eq(EXPLANATION)))
+    when(view.activities.addColumn(any(TemplateRenderer.class), eq(EXPLANATION)))
         .thenReturn(view.explanation);
     when(view.explanation.setKey(any())).thenReturn(view.explanation);
     when(view.explanation.setHeader(any(String.class))).thenReturn(view.explanation);
+    when(view.explanation.setSortable(anyBoolean())).thenReturn(view.explanation);
   }
 
   @Test
@@ -198,9 +209,9 @@ public class HistoryViewTest extends AbstractViewTestCase {
     assertNotNull(view.activities.getColumnByKey(TIMESTAMP));
     assertTrue(view.activities.getColumnByKey(TIMESTAMP).isSortable());
     assertNotNull(view.activities.getColumnByKey(DESCRIPTION));
-    assertTrue(view.activities.getColumnByKey(DESCRIPTION).isSortable());
+    assertFalse(view.activities.getColumnByKey(DESCRIPTION).isSortable());
     assertNotNull(view.activities.getColumnByKey(EXPLANATION));
-    assertTrue(view.activities.getColumnByKey(EXPLANATION).isSortable());
+    assertFalse(view.activities.getColumnByKey(EXPLANATION).isSortable());
   }
 
   @Test
@@ -227,17 +238,28 @@ public class HistoryViewTest extends AbstractViewTestCase {
     for (Activity activity : activities) {
       assertEquals(dateFormatter.format(activity.getTimestamp()), valueProvider.apply(activity));
     }
-    verify(view.activities).addColumn(valueProviderCaptor.capture(), eq(DESCRIPTION));
-    valueProvider = valueProviderCaptor.getValue();
+    verify(view.activities).addColumn(templateRendererCaptor.capture(), eq(DESCRIPTION));
+    TemplateRenderer<Activity> templateRenderer = templateRendererCaptor.getValue();
     for (Activity activity : activities) {
-      String description = valueProvider.apply(activity);
-      assertEquals(descriptions.get(activity), description);
-      verify(presenter).description(activity, locale);
+      assertEquals(DESCRIPTION_SPAN, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getValueProviders().containsKey("descriptionValue"));
+      assertEquals(descriptions.get(activity),
+          templateRenderer.getValueProviders().get("descriptionValue").apply(activity));
+      assertTrue(templateRenderer.getValueProviders().containsKey("descriptionTitle"));
+      assertEquals(descriptions.get(activity),
+          templateRenderer.getValueProviders().get("descriptionTitle").apply(activity));
+      verify(presenter, times(2)).description(activity, locale);
     }
-    verify(view.activities).addColumn(valueProviderCaptor.capture(), eq(EXPLANATION));
-    valueProvider = valueProviderCaptor.getValue();
+    verify(view.activities).addColumn(templateRendererCaptor.capture(), eq(EXPLANATION));
+    templateRenderer = templateRendererCaptor.getValue();
     for (Activity activity : activities) {
-      assertEquals(activity.getExplanation(), valueProvider.apply(activity));
+      assertEquals(EXPLANATION_SPAN, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getValueProviders().containsKey("explanationValue"));
+      assertEquals(activity.getExplanation(),
+          templateRenderer.getValueProviders().get("explanationValue").apply(activity));
+      assertTrue(templateRenderer.getValueProviders().containsKey("explanationTitle"));
+      assertEquals(activity.getExplanation(),
+          templateRenderer.getValueProviders().get("explanationTitle").apply(activity));
     }
   }
 

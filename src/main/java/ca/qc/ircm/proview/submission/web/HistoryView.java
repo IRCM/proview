@@ -21,6 +21,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.BeforeEvent;
@@ -47,6 +48,10 @@ public class HistoryView extends VerticalLayout
   public static final String ACTIVITIES = "activities";
   public static final String DESCRIPTION = "description";
   public static final String VIEW_ERROR = "description";
+  public static final String DESCRIPTION_SPAN =
+      "<span title$='[[item.descriptionTitle]]'>[[item.descriptionValue]]</span>";
+  public static final String EXPLANATION_SPAN =
+      "<span title$='[[item.explanationTitle]]'>[[item.explanationValue]]</span>";
   private static final long serialVersionUID = -6131172448162015562L;
   private static final Logger logger = LoggerFactory.getLogger(HistoryView.class);
   protected H2 header = new H2();
@@ -85,9 +90,16 @@ public class HistoryView extends VerticalLayout
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     date = activities.addColumn(ac -> dateFormatter.format(ac.getTimestamp()), TIMESTAMP)
         .setKey(TIMESTAMP);
-    description = activities.addColumn(ac -> presenter.description(ac, getLocale()), DESCRIPTION)
-        .setKey(DESCRIPTION);
-    explanation = activities.addColumn(ac -> ac.getExplanation(), EXPLANATION).setKey(EXPLANATION);
+    description = activities
+        .addColumn(TemplateRenderer.<Activity>of(DESCRIPTION_SPAN)
+            .withProperty("descriptionTitle", ac -> description(ac))
+            .withProperty("descriptionValue", ac -> description(ac)), DESCRIPTION)
+        .setKey(DESCRIPTION).setSortable(false);
+    explanation = activities
+        .addColumn(TemplateRenderer.<Activity>of(EXPLANATION_SPAN)
+            .withProperty("explanationTitle", ac -> ac.getExplanation())
+            .withProperty("explanationValue", ac -> ac.getExplanation()), EXPLANATION)
+        .setKey(EXPLANATION).setSortable(false);
     activities.addItemDoubleClickListener(e -> presenter.view(e.getItem(), getLocale()));
     presenter.init(this);
   }
@@ -107,6 +119,10 @@ public class HistoryView extends VerticalLayout
     String explanationHeader = activityResources.message(EXPLANATION);
     explanation.setHeader(explanationHeader).setFooter(explanationHeader);
     updateHeader();
+  }
+
+  private String description(Activity activity) {
+    return presenter.description(activity, getLocale());
   }
 
   private void updateHeader() {
