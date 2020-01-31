@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.query.ContainerCriteria;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.stereotype.Component;
 
@@ -64,7 +65,7 @@ public class LdapService {
       logger.debug("Valid LDAP password for user [{}]", username);
       return true;
     } catch (Exception e) {
-      logger.debug("Invalid LDAP password for user [{}]", username, e);
+      logger.debug("Invalid LDAP password for user [{}]", username);
       return false;
     }
   }
@@ -100,8 +101,12 @@ public class LdapService {
    * @return user's username on LDAP or null if user does not exists
    */
   public String getUsername(String email) {
-    LdapQuery query = query().attributes(ldapConfiguration.getIdAttribute())
+    ContainerCriteria builder = query().attributes(ldapConfiguration.getIdAttribute())
         .where(ldapConfiguration.getMailAttribute()).is(email);
+    if (ldapConfiguration.getObjectClass() != null) {
+      builder = builder.and("objectclass").is(ldapConfiguration.getObjectClass());
+    }
+    LdapQuery query = builder;
     AttributesMapper<String> mapper =
         attrs -> Optional.ofNullable(attrs.get(ldapConfiguration.getIdAttribute())).map(attr -> {
           try {

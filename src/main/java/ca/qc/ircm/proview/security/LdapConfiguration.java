@@ -32,6 +32,7 @@ public class LdapConfiguration {
   private boolean enabled;
   private String idAttribute;
   private String mailAttribute;
+  private String objectClass;
 
   public String getIdAttribute() {
     return idAttribute;
@@ -55,5 +56,13 @@ public class LdapConfiguration {
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
+  }
+
+  public String getObjectClass() {
+    return objectClass;
+  }
+
+  public void setObjectClass(String objectClass) {
+    this.objectClass = objectClass;
   }
 }

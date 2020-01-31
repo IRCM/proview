@@ -37,5 +37,6 @@ public class LdapConfigurationTest {
     assertTrue(ldapConfiguration.isEnabled());
     assertEquals("uid", ldapConfiguration.getIdAttribute());
     assertEquals("mail", ldapConfiguration.getMailAttribute());
+    assertEquals("person", ldapConfiguration.getObjectClass());
   }
 }

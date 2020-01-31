@@ -135,6 +135,7 @@ security:
 
 ldap:
   enabled: true
+  object-class: person
 
 logos:
   files:
