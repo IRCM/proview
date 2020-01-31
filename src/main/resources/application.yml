@@ -23,6 +23,11 @@ spring:
     name: proview
 # Database.
   datasource:
+# MySQL database example.
+#     driver-class-name: com.mysql.jdbc.Driver
+#     url: jdbc:mysql://localhost/test
+#     username: dbuser
+#     password: dbpass
     platform: h2
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb;IGNORECASE=TRUE
@@ -31,11 +36,6 @@ spring:
     tomcat:
       test-on-borrow: true
       validationQuery: SELECT 1
-# MySQL database example.
-#     driver-class-name: com.mysql.jdbc.Driver
-#     url: jdbc:mysql://localhost/test
-#     username: dbuser
-#     password: dbpass
   jpa:
     hibernate:
       naming:
