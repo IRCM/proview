@@ -122,6 +122,8 @@ public class WebConstants {
    * Returns {@link UploadI18N} for specified locale. <br>
    * Falls back to English if no instance exists for specified locale.
    *
+   * @param locale
+   *          locale
    * @return {@link UploadI18N} for specified locale, never null
    */
   public static UploadI18N uploadI18N(Locale locale) {
