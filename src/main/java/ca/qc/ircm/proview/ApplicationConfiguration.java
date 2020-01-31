@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview;
 
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +36,6 @@ public class ApplicationConfiguration {
   @Value("${logging.path:${user.dir}}/${logging.file:" + APPLICATION_NAME + "log}")
   private String logfile;
   private String serverUrl;
-  private String plateTemplateResource = "/Plate-Template.xlsx";
 
   public Path getLogFile() {
     return Paths.get(logfile);
@@ -56,10 +54,6 @@ public class ApplicationConfiguration {
    */
   public String getUrl(String urlEnd) {
     return serverUrl + urlEnd;
-  }
-
-  public InputStream getPlateTemplate() {
-    return getClass().getResourceAsStream(plateTemplateResource);
   }
 
   public String getServerUrl() {
