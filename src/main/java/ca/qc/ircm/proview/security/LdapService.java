@@ -78,8 +78,12 @@ public class LdapService {
    * @return user's email from LDAP or null if user does not exists
    */
   public String getEmail(String username) {
-    LdapQuery query = query().attributes(ldapConfiguration.getMailAttribute())
+    ContainerCriteria builder = query().attributes(ldapConfiguration.getMailAttribute())
         .where(ldapConfiguration.getIdAttribute()).is(username);
+    if (ldapConfiguration.getObjectClass() != null) {
+      builder = builder.and("objectclass").is(ldapConfiguration.getObjectClass());
+    }
+    LdapQuery query = builder;
     AttributesMapper<String> mapper =
         attrs -> Optional.ofNullable(attrs.get(ldapConfiguration.getMailAttribute())).map(attr -> {
           try {
