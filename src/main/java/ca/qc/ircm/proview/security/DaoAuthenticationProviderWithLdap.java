@@ -34,8 +34,8 @@ import org.springframework.security.core.userdetails.UserDetails;
  * {@link DaoAuthenticationProvider} that also validates password using {@link LdapService}.
  */
 public class DaoAuthenticationProviderWithLdap extends DaoAuthenticationProvider {
-  private static final Logger logger = LoggerFactory
-      .getLogger(DaoAuthenticationProviderWithLdap.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(DaoAuthenticationProviderWithLdap.class);
   private UserRepository userRepository;
   private LdapService ldapService;
   private SecurityConfiguration securityConfiguration;
@@ -66,7 +66,7 @@ public class DaoAuthenticationProviderWithLdap extends DaoAuthenticationProvider
           && isLdapPasswordValid(userDetails, authentication.getCredentials().toString())) {
         // User is valid.
         resetSignAttemps(user);
-        logger.debug("user {} authenticated successfully through JDAP", username);
+        logger.debug("user {} authenticated successfully through LDAP", username);
       } else {
         incrementSignAttemps(user);
         logger.debug("user {} supplied wrong password for authentication", username);
