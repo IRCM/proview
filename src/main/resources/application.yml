@@ -125,6 +125,8 @@ spring:
         password: secret
   jpa:
     show-sql: false
+    hibernate:
+      ddl-auto: none
 
 security:
   rememberMeKey: 'JfYMi0qUQVt8FObsZHW7'
@@ -165,6 +167,8 @@ spring:
     url: jdbc:h2:file:./target/test-database;IGNORECASE=TRUE;DB_CLOSE_ON_EXIT=FALSE
   jpa:
     show-sql: false
+    hibernate:
+      ddl-auto: none
 
 main:
   serverUrl: http://localhost:${local.server.port}
