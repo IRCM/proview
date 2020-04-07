@@ -56,7 +56,6 @@
     <querydsl.version>4.2.1</querydsl.version>
     <shiro.version>1.3.2</shiro.version>
     <vaadin.version>14.0.12</vaadin.version>
-    <vaadin.theme>${project.artifactId}</vaadin.theme>
     <scrolllayout.version>2.0.2</scrolllayout.version>
     <guava.version>25.0-jre</guava.version>
     <commons-lang3.version>3.9</commons-lang3.version>
