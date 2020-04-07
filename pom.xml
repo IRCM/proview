@@ -475,7 +475,6 @@
         <configuration>
           <reportsDirectories>
             <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-            <reportsDirectory>${project.build.directory}/failsafe-reports</reportsDirectory>
           </reportsDirectories>
         </configuration>
       </plugin>
