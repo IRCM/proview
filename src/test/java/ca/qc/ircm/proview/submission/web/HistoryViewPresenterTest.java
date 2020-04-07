@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
@@ -197,7 +197,7 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
   public void setParameter_Null() {
     presenter.setParameter(null);
 
-    verifyZeroInteractions(submissionService, service, view.activities);
+    verifyNoInteractions(submissionService, service, view.activities);
     assertNull(presenter.getSubmission());
   }
 }

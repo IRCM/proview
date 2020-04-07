@@ -53,7 +53,7 @@ server:
   servlet:
     session:
       persistent: false
-  use-forward-headers: true
+  forward-headers-strategy: native
 vaadin:
   productionMode: false
   closeIdleSessions: true

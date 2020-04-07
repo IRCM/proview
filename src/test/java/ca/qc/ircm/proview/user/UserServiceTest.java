@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -183,7 +183,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     assertEquals(true, exists);
 
-    verifyZeroInteractions(authorizationService);
+    verifyNoInteractions(authorizationService);
   }
 
   @Test
@@ -192,7 +192,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     assertEquals(false, exists);
 
-    verifyZeroInteractions(authorizationService);
+    verifyNoInteractions(authorizationService);
   }
 
   @Test

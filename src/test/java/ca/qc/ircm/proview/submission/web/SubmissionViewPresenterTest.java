@@ -33,7 +33,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
@@ -455,7 +455,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
   public void setParameter_Null() {
     presenter.setParameter(null);
 
-    verifyZeroInteractions(service);
+    verifyNoInteractions(service);
     verify(view.lcmsmsSubmissionForm).setSubmission(submissionCaptor.capture());
     verify(view.smallMoleculeSubmissionForm).setSubmission(submissionCaptor.capture());
     verify(view.intactProteinSubmissionForm).setSubmission(submissionCaptor.capture());

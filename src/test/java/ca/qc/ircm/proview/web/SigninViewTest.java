@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
@@ -201,7 +201,7 @@ public class SigninViewTest extends AbstractViewTestCase {
   public void beforeEnter_Anonymous() {
     when(authorizationService.isAnonymous()).thenReturn(true);
     view.beforeEnter(beforeEnterEvent);
-    verifyZeroInteractions(beforeEnterEvent);
+    verifyNoInteractions(beforeEnterEvent);
   }
 
   @Test
