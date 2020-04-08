@@ -99,8 +99,8 @@ public class VaadinTestUtils {
    *          item
    */
   public static <E> void clickItem(Grid<E> grid, E item) {
-    clickItem(grid, item, (gv, key) -> new ItemClickEvent<>(gv, false, key, -1, -1, -1, -1, 2, 0,
-        false, false, false, false));
+    clickItem(grid, item, (gv, key) -> new ItemClickEvent<>(gv, false, key, null, -1, -1, -1, -1, 2,
+        0, false, false, false, false));
   }
 
   /**
@@ -137,8 +137,8 @@ public class VaadinTestUtils {
    *          item
    */
   public static <E> void doubleClickItem(Grid<E> grid, E item) {
-    doubleClickItem(grid, item, (gv, key) -> new ItemDoubleClickEvent<>(gv, false, key, -1, -1, -1,
-        -1, 2, 0, false, false, false, false));
+    doubleClickItem(grid, item, (gv, key) -> new ItemDoubleClickEvent<>(gv, false, key, null, -1,
+        -1, -1, -1, 2, 0, false, false, false, false));
   }
 
   /**

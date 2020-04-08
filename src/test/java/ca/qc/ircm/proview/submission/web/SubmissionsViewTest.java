@@ -533,7 +533,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   public void singleClickSubmission_Shift() {
     Submission submission = submissions.get(0);
     clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
-        -1, -1, -1, -1, 2, 0, false, true, false, false));
+        null, -1, -1, -1, -1, 2, 0, false, true, false, false));
 
     verify(presenter, never()).view(any());
     verify(presenter).editStatus(submission);
@@ -543,7 +543,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   public void singleClickSubmission_Control() {
     Submission submission = submissions.get(0);
     clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
-        -1, -1, -1, -1, 2, 0, true, false, false, false));
+        null, -1, -1, -1, -1, 2, 0, true, false, false, false));
 
     verify(presenter, never()).view(any());
     verify(presenter).editStatus(submission);
@@ -553,7 +553,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   public void singleClickSubmission_Meta() {
     Submission submission = submissions.get(0);
     clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
-        -1, -1, -1, -1, 2, 0, false, false, false, true));
+        null, -1, -1, -1, -1, 2, 0, false, false, false, true));
 
     verify(presenter, never()).view(any());
     verify(presenter).editStatus(submission);
@@ -563,7 +563,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   public void singleClickSubmission_Alt() {
     Submission submission = submissions.get(0);
     clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
-        -1, -1, -1, -1, 2, 0, false, false, true, false));
+        null, -1, -1, -1, -1, 2, 0, false, false, true, false));
 
     verify(presenter, never()).view(any());
     verify(presenter).history(submission);
