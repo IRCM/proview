@@ -58,9 +58,9 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -71,15 +71,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @WithMockUser(authorities = { UserRole.ADMIN })
 public class ActivityServiceTest extends AbstractServiceTestCase {
   private static final QActivity qactivity = QActivity.activity;
-  @Inject
+  @Autowired
   private ActivityService activityService;
-  @Inject
+  @Autowired
   private ActivityRepository repository;
-  @Inject
+  @Autowired
   private SubmissionRepository submissionRepository;
-  @Inject
+  @Autowired
   private SampleRepository sampleRepository;
-  @Inject
+  @Autowired
   private PlateRepository plateRepository;
   private Locale locale = Locale.ENGLISH;
   private AppResources resources = new AppResources(ActivityService.class, locale);

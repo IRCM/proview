@@ -30,10 +30,10 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -42,13 +42,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class UserPreferenceServiceTest {
   private static final String PREFERENCE_1 = "preference_1";
   private static final String PREFERENCE_2 = "preference_2";
-  @Inject
+  @Autowired
   private UserPreferenceService service;
-  @Inject
+  @Autowired
   private UserPreferenceRepository repository;
-  @Inject
+  @Autowired
   private PreferenceRepository preferenceRepository;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
   @MockBean
   private AuthorizationService authorizationService;

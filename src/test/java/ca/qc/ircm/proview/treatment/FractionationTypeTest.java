@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.treatment.FractionationType.MUDPIT;
 import static ca.qc.ircm.proview.treatment.FractionationType.PI;
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.proview.treatment.FractionationType;
 import java.util.Locale;
 import org.junit.Test;
 

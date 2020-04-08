@@ -25,10 +25,10 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserRepository;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
@@ -46,11 +46,11 @@ public class SubmissionPermissionEvaluatorTest {
   private static final String WRITE = "write";
   private static final Permission BASE_WRITE = BasePermission.WRITE;
   private SubmissionPermissionEvaluator permissionEvaluator;
-  @Inject
+  @Autowired
   private SubmissionRepository submissionRepository;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
 
   @Before

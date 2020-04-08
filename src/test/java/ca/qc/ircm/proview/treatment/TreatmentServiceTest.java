@@ -29,9 +29,9 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -41,9 +41,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ServiceTestAnnotations
 @WithMockUser(authorities = UserRole.ADMIN)
 public class TreatmentServiceTest {
-  @Inject
+  @Autowired
   private TreatmentService treatmentService;
-  @Inject
+  @Autowired
   private SubmissionRepository submissionRepository;
 
   @Test

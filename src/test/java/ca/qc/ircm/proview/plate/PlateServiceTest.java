@@ -47,13 +47,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
@@ -66,11 +66,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @WithMockUser
 public class PlateServiceTest extends AbstractServiceTestCase {
   private static final String READ = "read";
-  @Inject
+  @Autowired
   private PlateService service;
-  @Inject
+  @Autowired
   private PlateRepository repository;
-  @Inject
+  @Autowired
   private WellRepository wellRepository;
   @MockBean
   private PlateActivityService plateActivityService;

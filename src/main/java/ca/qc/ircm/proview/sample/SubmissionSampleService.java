@@ -31,7 +31,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,15 +42,15 @@ import org.springframework.transaction.annotation.Transactional;
 @org.springframework.stereotype.Service
 @Transactional
 public class SubmissionSampleService {
-  @Inject
+  @Autowired
   private SubmissionSampleRepository repository;
-  @Inject
+  @Autowired
   private SubmissionRepository submissionRepository;
-  @Inject
+  @Autowired
   private SampleActivityService sampleActivityService;
-  @Inject
+  @Autowired
   private ActivityService activityService;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
 
   protected SubmissionSampleService() {

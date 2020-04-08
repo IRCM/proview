@@ -47,9 +47,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 /**
@@ -85,7 +85,7 @@ public class ViewLayout extends VerticalLayout
   protected Tab print = new Tab();
   private Map<Tab, String> tabsHref = new HashMap<>();
   private String currentHref;
-  @Inject
+  @Autowired
   private transient AuthorizationService authorizationService;
 
   protected ViewLayout() {

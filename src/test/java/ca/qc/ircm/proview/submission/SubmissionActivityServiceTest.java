@@ -50,10 +50,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -62,9 +62,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
-  @Inject
+  @Autowired
   private SubmissionActivityService submissionActivityService;
-  @Inject
+  @Autowired
   private SubmissionRepository repository;
   @MockBean
   private SampleActivityService sampleActivityService;

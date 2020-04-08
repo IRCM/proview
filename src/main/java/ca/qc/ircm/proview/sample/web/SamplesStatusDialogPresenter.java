@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -55,7 +55,7 @@ public class SamplesStatusDialogPresenter {
   private Map<SubmissionSample, Binder<SubmissionSample>> binders = new HashMap<>();
   private SubmissionSampleService service;
 
-  @Inject
+  @Autowired
   private SamplesStatusDialogPresenter(SubmissionSampleService service) {
     this.service = service;
   }

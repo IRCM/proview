@@ -58,13 +58,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -83,7 +83,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   private ArgumentCaptor<User> userCaptor;
   @Captor
   private ArgumentCaptor<ComponentEventListener<SavedEvent<UserDialog>>> userSavedListenerCaptor;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
   private List<User> users;
   private User currentUser;

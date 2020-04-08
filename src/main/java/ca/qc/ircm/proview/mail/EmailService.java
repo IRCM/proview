@@ -25,11 +25,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -41,13 +41,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailService {
   private final Logger logger = LoggerFactory.getLogger(EmailService.class);
-  @Inject
+  @Autowired
   private MailConfiguration mailConfiguration;
-  @Inject
+  @Autowired
   private JavaMailSender mailSender;
-  @Inject
+  @Autowired
   private MimeMessage templateMessage;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
 
   protected EmailService() {

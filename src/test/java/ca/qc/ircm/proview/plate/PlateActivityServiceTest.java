@@ -38,19 +38,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PlateActivityServiceTest extends AbstractServiceTestCase {
-  @Inject
+  @Autowired
   private PlateActivityService plateActivityService;
-  @Inject
+  @Autowired
   private PlateRepository repository;
   @MockBean
   private AuthorizationService authorizationService;

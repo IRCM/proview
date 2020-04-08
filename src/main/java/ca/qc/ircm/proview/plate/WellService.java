@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class WellService {
-  @Inject
+  @Autowired
   private WellRepository wellRepository;
 
   protected WellService() {

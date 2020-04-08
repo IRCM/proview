@@ -38,13 +38,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
@@ -57,9 +57,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @WithMockUser
 public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   private static final String READ = "read";
-  @Inject
+  @Autowired
   private SubmissionSampleService service;
-  @Inject
+  @Autowired
   private SubmissionSampleRepository repository;
   @MockBean
   private SampleActivityService sampleActivityService;

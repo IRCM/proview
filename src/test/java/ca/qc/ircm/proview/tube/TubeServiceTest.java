@@ -34,10 +34,10 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
@@ -50,7 +50,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @WithMockUser
 public class TubeServiceTest {
   private static final String READ = "read";
-  @Inject
+  @Autowired
   private TubeService service;
   @MockBean
   private PermissionEvaluator permissionEvaluator;

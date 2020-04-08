@@ -31,11 +31,11 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserRepository;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
@@ -53,11 +53,11 @@ public class PlatePermissionEvaluatorTest {
   private static final String WRITE = "write";
   private static final Permission BASE_WRITE = BasePermission.WRITE;
   private PlatePermissionEvaluator permissionEvaluator;
-  @Inject
+  @Autowired
   private PlateRepository plateRepository;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
   @Mock
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;

@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,12 +33,12 @@ import ca.qc.ircm.proview.user.UserRole;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -61,9 +61,9 @@ public class AuthorizationServiceTest {
   private static final String MANAGER = UserRole.MANAGER;
   private static final String USER = UserRole.USER;
   private static final String DEFAULT_ROLE = USER;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
-  @Inject
+  @Autowired
   private UserDetailsService userDetailsService;
   @Mock
   private PermissionEvaluator permissionEvaluator;

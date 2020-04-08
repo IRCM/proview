@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.web;
 import static org.junit.Assert.assertArrayEquals;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import ca.qc.ircm.proview.web.PathStreamResourceWriter;
 import com.vaadin.flow.server.VaadinSession;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;

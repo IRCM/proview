@@ -41,9 +41,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -53,7 +53,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
-  @Inject
+  @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
   @Value("${spring.application.name}")
   private String applicationName;

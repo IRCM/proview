@@ -61,13 +61,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -78,9 +78,9 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
   private MsAnalysis msAnalysis;
   @Captor
   private ArgumentCaptor<ValueProvider<Acquisition, String>> valueProviderCaptor;
-  @Inject
+  @Autowired
   private MsAnalysisRepository repository;
-  @Inject
+  @Autowired
   private AcquisitionRepository acquisitionRepository;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(MsAnalysisDialog.class, locale);

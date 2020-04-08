@@ -55,7 +55,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +76,7 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
   private SamplesStatusDialog dialog;
   @Captor
   private ArgumentCaptor<ComponentEventListener<OpenedChangeEvent<Dialog>>> openedListener;
-  @Inject
+  @Autowired
   private SubmissionRepository submissionRepository;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(SamplesStatusDialog.class, locale);

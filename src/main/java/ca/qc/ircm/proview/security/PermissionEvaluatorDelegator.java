@@ -29,7 +29,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -41,17 +41,17 @@ import org.springframework.stereotype.Component;
 @Component
 @Primary
 public class PermissionEvaluatorDelegator implements PermissionEvaluator {
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
-  @Inject
+  @Autowired
   private LaboratoryRepository laboratoryRepository;
-  @Inject
+  @Autowired
   private SubmissionRepository submissionRepository;
-  @Inject
+  @Autowired
   private SampleRepository sampleRepository;
-  @Inject
+  @Autowired
   private PlateRepository plateRepository;
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
   private UserPermissionEvaluator userPermissionEvaluator;

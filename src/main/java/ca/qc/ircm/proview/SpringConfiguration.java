@@ -18,9 +18,9 @@
 package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.mail.MailConfiguration;
-import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +39,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 @Configuration
 @EnableTransactionManagement
 public class SpringConfiguration {
-  @Inject
+  @Autowired
   private MailConfiguration mailConfiguration;
 
   /**

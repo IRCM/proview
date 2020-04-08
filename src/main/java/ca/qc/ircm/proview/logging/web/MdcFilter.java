@@ -19,13 +19,13 @@ package ca.qc.ircm.proview.logging.web;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import java.io.IOException;
-import javax.inject.Inject;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
@@ -34,7 +34,7 @@ import org.springframework.web.filter.GenericFilterBean;
 public class MdcFilter extends GenericFilterBean {
   public static final String BEAN_NAME = "MdcFilter";
   public static final String USER_CONTEXT_KEY = "user";
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
 
   public MdcFilter() {

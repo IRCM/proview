@@ -27,7 +27,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,9 +38,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MsAnalysisService {
-  @Inject
+  @Autowired
   private MsAnalysisRepository repository;
-  @Inject
+  @Autowired
   private JPAQueryFactory queryFactory;
 
   protected MsAnalysisService() {

@@ -33,7 +33,6 @@ import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javax.inject.Inject;
 import javax.mail.Message.RecipientType;
 import javax.mail.Multipart;
 import javax.mail.internet.InternetAddress;
@@ -44,6 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -52,11 +52,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @NonTransactionalTestAnnotations
 public class EmailServiceTest {
   private EmailService emailService;
-  @Inject
+  @Autowired
   private MailConfiguration mailConfiguration;
-  @Inject
+  @Autowired
   private JavaMailSenderImpl mailSender;
-  @Inject
+  @Autowired
   private MimeMessage templateMessage;
   @Mock
   private AuthorizationService authorizationService;

@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 import javax.annotation.CheckReturnValue;
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,11 +45,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class SampleActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
-  @Inject
+  @Autowired
   private SampleRepository repository;
-  @Inject
+  @Autowired
   private SubmissionSampleRepository submissionSampleRepository;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
 
   protected SampleActivityService() {

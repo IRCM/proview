@@ -35,7 +35,6 @@ import ca.qc.ircm.text.MessageResource;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +45,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
@@ -58,11 +58,11 @@ import org.thymeleaf.util.StringUtils;
 public class ForgotPasswordServiceTest {
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(ForgotPasswordServiceTest.class);
-  @Inject
+  @Autowired
   private ForgotPasswordService service;
-  @Inject
+  @Autowired
   private ForgotPasswordRepository repository;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
   @MockBean
   private ApplicationConfiguration applicationConfiguration;

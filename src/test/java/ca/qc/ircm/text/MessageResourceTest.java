@@ -19,7 +19,6 @@ package ca.qc.ircm.text;
 
 import static org.junit.Assert.assertEquals;
 
-import ca.qc.ircm.text.MessageResource;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import org.junit.Test;

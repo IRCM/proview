@@ -59,11 +59,11 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Locale;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -74,9 +74,9 @@ public class UserFormTest extends AbstractViewTestCase {
   private UserFormPresenter presenter;
   @Mock
   private User user;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
-  @Inject
+  @Autowired
   private DefaultAddressConfiguration defaultAddressConfiguration;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(UserForm.class, locale);

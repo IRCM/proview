@@ -26,9 +26,9 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
@@ -44,13 +44,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
   private static final long ROBOT_ID = 1L;
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
-  @Inject
+  @Autowired
   private UserRepository repository;
-  @Inject
+  @Autowired
   private LaboratoryRepository laboratoryRepository;
-  @Inject
+  @Autowired
   private PasswordEncoder passwordEncoder;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
 
   protected UserService() {

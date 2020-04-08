@@ -66,13 +66,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -83,9 +83,9 @@ public class TreatmentDialogTest extends AbstractViewTestCase {
   private Treatment treatment;
   @Captor
   private ArgumentCaptor<ValueProvider<TreatedSample, String>> valueProviderCaptor;
-  @Inject
+  @Autowired
   private TreatmentRepository repository;
-  @Inject
+  @Autowired
   private TreatedSampleRepository treatedSampleRepository;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(TreatmentDialog.class, locale);

@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.treatment;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import java.util.List;
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProtocolService {
-  @Inject
+  @Autowired
   private ProtocolRepository repository;
 
   protected ProtocolService() {

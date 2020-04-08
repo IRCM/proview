@@ -74,7 +74,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -82,6 +81,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
@@ -97,17 +97,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String READ = "read";
   private static final String WRITE = "write";
-  @Inject
+  @Autowired
   private SubmissionService service;
-  @Inject
+  @Autowired
   private SubmissionRepository repository;
-  @Inject
+  @Autowired
   private SubmissionSampleRepository sampleRepository;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
-  @Inject
+  @Autowired
   private LaboratoryRepository laboratoryRepository;
-  @Inject
+  @Autowired
   private PlateRepository plateRepository;
   @MockBean
   private SubmissionActivityService submissionActivityService;

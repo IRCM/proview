@@ -23,11 +23,11 @@ import ca.qc.ircm.proview.mail.EmailService;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Locale;
-import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,17 +47,17 @@ public class ForgotPasswordService {
    */
   public static final Period VALID_PERIOD = Period.ofDays(2);
   private final Logger logger = LoggerFactory.getLogger(ForgotPasswordService.class);
-  @Inject
+  @Autowired
   private ForgotPasswordRepository repository;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
-  @Inject
+  @Autowired
   private PasswordEncoder passwordEncoder;
-  @Inject
+  @Autowired
   private TemplateEngine emailTemplateEngine;
-  @Inject
+  @Autowired
   private EmailService emailService;
-  @Inject
+  @Autowired
   private ApplicationConfiguration applicationConfiguration;
 
   protected ForgotPasswordService() {

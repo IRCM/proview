@@ -46,10 +46,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -65,25 +65,25 @@ import org.thymeleaf.context.Context;
 @Transactional
 public class SubmissionService {
   private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
-  @Inject
+  @Autowired
   private SubmissionRepository repository;
-  @Inject
+  @Autowired
   private SampleRepository sampleRepository;
-  @Inject
+  @Autowired
   private PlateRepository plateRepository;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
-  @Inject
+  @Autowired
   private JPAQueryFactory queryFactory;
-  @Inject
+  @Autowired
   private SubmissionActivityService submissionActivityService;
-  @Inject
+  @Autowired
   private ActivityService activityService;
-  @Inject
+  @Autowired
   private TemplateEngine emailTemplateEngine;
-  @Inject
+  @Autowired
   private EmailService emailService;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
 
   protected SubmissionService() {

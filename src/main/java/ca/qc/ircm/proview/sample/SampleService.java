@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SampleService {
-  @Inject
+  @Autowired
   private SampleRepository repository;
 
   protected SampleService() {

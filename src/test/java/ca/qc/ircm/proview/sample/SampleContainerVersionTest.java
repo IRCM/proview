@@ -19,18 +19,18 @@ package ca.qc.ircm.proview.sample;
 
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SampleContainerVersionTest extends AbstractServiceTestCase {
-  @Inject
+  @Autowired
   private SampleContainerRepository repository;
-  @Inject
+  @Autowired
   private SampleRepository sampleRepository;
 
   @Test(expected = ObjectOptimisticLockingFailureException.class)

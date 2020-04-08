@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.security;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,11 +29,11 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
@@ -53,7 +53,7 @@ public class PermissionEvaluatorDelegatorTest {
   private static final Permission BASE_READ = BasePermission.READ;
   private static final String WRITE = "write";
   private static final Permission BASE_WRITE = BasePermission.WRITE;
-  @Inject
+  @Autowired
   private PermissionEvaluatorDelegator permissionEvaluator;
   @Mock
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;

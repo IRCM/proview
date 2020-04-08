@@ -62,7 +62,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,6 +69,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -90,13 +90,13 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
   private ArgumentCaptor<User> userCaptor;
   @Captor
   private ArgumentCaptor<Boolean> booleanCaptor;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
-  @Inject
+  @Autowired
   private LaboratoryRepository laboratoryRepository;
-  @Inject
+  @Autowired
   private DefaultAddressConfiguration defaultAddressConfiguration;
-  @Inject
+  @Autowired
   private EntityManager entityManager;
   private Locale locale = ENGLISH;
   private AppResources webResources = new AppResources(WebConstants.class, locale);

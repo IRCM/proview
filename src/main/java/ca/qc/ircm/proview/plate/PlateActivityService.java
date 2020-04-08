@@ -30,9 +30,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 import javax.annotation.CheckReturnValue;
-import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,11 +45,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlateActivityService {
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(PlateActivityService.class);
-  @Inject
+  @Autowired
   private PlateRepository repository;
-  @Inject
+  @Autowired
   private WellRepository wellRepository;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
 
   protected PlateActivityService() {

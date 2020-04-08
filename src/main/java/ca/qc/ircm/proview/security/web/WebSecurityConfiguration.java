@@ -37,9 +37,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.DisabledException;
@@ -84,15 +84,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       "/" + UsersView.VIEW_NAME + "?" + UsersView.SWITCH_FAILED;
   private static final String SWITCH_USER_TRAGET_URL = "/" + MainView.VIEW_NAME;
   private static final String PASSWORD_ENCRYPTION = "bcrypt";
-  @Inject
+  @Autowired
   private UserDetailsService userDetailsService;
-  @Inject
+  @Autowired
   private UserRepository userRepository;
-  @Inject
+  @Autowired
   private LdapService ldapService;
-  @Inject
+  @Autowired
   private SecurityConfiguration configuration;
-  @Inject
+  @Autowired
   private LdapConfiguration ldapConfiguration;
 
   /**

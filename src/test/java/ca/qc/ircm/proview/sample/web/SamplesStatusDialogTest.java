@@ -66,7 +66,6 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Inject;
 import org.assertj.core.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +73,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -92,7 +92,7 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
   private ArgumentCaptor<Comparator<SubmissionSample>> comparatorCaptor;
   @Mock
   private ComponentEventListener<SavedEvent<SamplesStatusDialog>> savedListener;
-  @Inject
+  @Autowired
   private SubmissionSampleRepository repository;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(SamplesStatusDialog.class, locale);

@@ -20,18 +20,18 @@ package ca.qc.ircm.proview.mail;
 import static org.junit.Assert.assertEquals;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class MailConfigurationTest {
-  @Inject
+  @Autowired
   private MailConfiguration mailConfiguration;
-  @Inject
+  @Autowired
   private JavaMailSenderImpl mailSender;
 
   @Test

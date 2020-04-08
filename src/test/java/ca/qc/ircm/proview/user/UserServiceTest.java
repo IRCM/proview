@@ -38,12 +38,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
@@ -61,11 +61,11 @@ public class UserServiceTest extends AbstractServiceTestCase {
   private static final String WRITE = "write";
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
-  @Inject
+  @Autowired
   private UserService service;
-  @Inject
+  @Autowired
   private UserRepository repository;
-  @Inject
+  @Autowired
   private LaboratoryRepository laboratoryRepository;
   @MockBean
   private PasswordEncoder passwordEncoder;

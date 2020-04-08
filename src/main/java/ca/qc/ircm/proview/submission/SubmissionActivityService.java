@@ -38,7 +38,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.CheckReturnValue;
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,11 +49,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SubmissionActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
-  @Inject
+  @Autowired
   private SampleActivityService sampleActivityService;
-  @Inject
+  @Autowired
   private SubmissionRepository repository;
-  @Inject
+  @Autowired
   private AuthorizationService authorizationService;
 
   protected SubmissionActivityService() {
