@@ -89,7 +89,7 @@ public class SigninView extends LoginOverlay
     setForgotPasswordButtonVisible(true);
     setAction(VIEW_NAME);
     setOpened(true);
-    addForgotPasswordListener(e -> UI.getCurrent().navigate(ForgotPasswordView.VIEW_NAME));
+    addForgotPasswordListener(e -> UI.getCurrent().navigate(ForgotPasswordView.class));
   }
 
   @Override
@@ -145,5 +145,9 @@ public class SigninView extends LoginOverlay
       error = FAIL;
       setError(true);
     }
+  }
+
+  void fireForgotPasswordEvent() {
+    fireEvent(new ForgotPasswordEvent(this, false));
   }
 }

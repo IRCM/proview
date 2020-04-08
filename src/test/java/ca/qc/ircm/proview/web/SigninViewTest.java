@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.web.SigninView.ADDITIONAL_INFORMATION;
 import static ca.qc.ircm.proview.web.SigninView.DESCRIPTION;
 import static ca.qc.ircm.proview.web.SigninView.DISABLED;
 import static ca.qc.ircm.proview.web.SigninView.FAIL;
+import static ca.qc.ircm.proview.web.SigninView.FORGOT_PASSWORD;
 import static ca.qc.ircm.proview.web.SigninView.FORM_TITLE;
 import static ca.qc.ircm.proview.web.SigninView.HEADER;
 import static ca.qc.ircm.proview.web.SigninView.ID;
@@ -47,6 +48,7 @@ import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -121,6 +123,7 @@ public class SigninViewTest extends AbstractViewTestCase {
     assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
     assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
     assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
+    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
     assertEquals(resources.message(property(FAIL, TITLE)), view.i18n.getErrorMessage().getTitle());
     assertEquals(resources.message(FAIL), view.i18n.getErrorMessage().getMessage());
   }
@@ -132,10 +135,12 @@ public class SigninViewTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
     assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
+    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
     assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
     assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
     assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
     assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
+    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
     assertEquals(resources.message(property(FAIL, TITLE)), view.i18n.getErrorMessage().getTitle());
     assertEquals(resources.message(FAIL), view.i18n.getErrorMessage().getMessage());
   }
@@ -147,10 +152,12 @@ public class SigninViewTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
     assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
+    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
     assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
     assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
     assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
     assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
+    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
     assertEquals(resources.message(property(DISABLED, TITLE)),
         view.i18n.getErrorMessage().getTitle());
     assertEquals(resources.message(DISABLED), view.i18n.getErrorMessage().getMessage());
@@ -163,10 +170,12 @@ public class SigninViewTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
     assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
+    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
     assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
     assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
     assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
     assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
+    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
     assertEquals(resources.message(property(LOCKED, TITLE)),
         view.i18n.getErrorMessage().getTitle());
     assertEquals(resources.message(LOCKED, configuration.getLockDuration().getSeconds() / 60),
@@ -183,10 +192,12 @@ public class SigninViewTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
     assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
+    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
     assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
     assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
     assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
     assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
+    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
     assertEquals(resources.message(property(FAIL, TITLE)), view.i18n.getErrorMessage().getTitle());
     assertEquals(resources.message(FAIL), view.i18n.getErrorMessage().getMessage());
   }
@@ -245,5 +256,11 @@ public class SigninViewTest extends AbstractViewTestCase {
     view.afterNavigation(afterNavigationEvent);
 
     assertTrue(view.isError());
+  }
+
+  @Test
+  public void forgotPassword() {
+    view.fireForgotPasswordEvent();
+    verify(ui).navigate(ForgotPasswordView.class);
   }
 }
