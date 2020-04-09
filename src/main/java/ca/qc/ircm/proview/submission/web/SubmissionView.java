@@ -26,12 +26,12 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.FILES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.web.UploadInternationalization.uploadI18N;
 import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static ca.qc.ircm.proview.web.WebConstants.UPLOAD;
-import static ca.qc.ircm.proview.web.WebConstants.uploadI18N;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.submission.Submission;

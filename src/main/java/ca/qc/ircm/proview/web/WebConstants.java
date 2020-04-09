@@ -17,15 +17,11 @@
 
 package ca.qc.ircm.proview.web;
 
-import ca.qc.ircm.proview.AppResources;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
-import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
-import com.vaadin.flow.component.upload.UploadI18N;
 import com.vaadin.flow.internal.ReflectTools;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -86,103 +82,5 @@ public class WebConstants {
     locales.add(ENGLISH);
     locales.add(FRENCH);
     return locales;
-  }
-
-  /**
-   * Returns {@link DatePickerI18n} for English.
-   *
-   * @return {@link DatePickerI18n} for English
-   */
-  public static DatePickerI18n englishDatePickerI18n() {
-    return new DatePickerI18n().setWeek("Week").setCalendar("Calendar").setClear("Clear")
-        .setToday("Today").setCancel("Cancel").setFirstDayOfWeek(0)
-        .setMonthNames(Arrays.asList("January", "February", "March", "April", "May", "June", "July",
-            "August", "September", "October", "November", "December"))
-        .setWeekdays(Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-            "Saturday"))
-        .setWeekdaysShort(Arrays.asList("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"));
-  }
-
-  /**
-   * Returns {@link DatePickerI18n} for French.
-   *
-   * @return {@link DatePickerI18n} for French
-   */
-  public static DatePickerI18n frenchDatePickerI18n() {
-    return new DatePickerI18n().setWeek("Semaine").setCalendar("Calendrier").setClear("Effacer")
-        .setToday("Aujourd'hui").setCancel("Annuler").setFirstDayOfWeek(0)
-        .setMonthNames(Arrays.asList("Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
-            "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"))
-        .setWeekdays(
-            Arrays.asList("Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"))
-        .setWeekdaysShort(Arrays.asList("Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"));
-  }
-
-  /**
-   * Returns {@link UploadI18N} for specified locale. <br>
-   * Falls back to English if no instance exists for specified locale.
-   *
-   * @param locale
-   *          locale
-   * @return {@link UploadI18N} for specified locale, never null
-   */
-  public static UploadI18N uploadI18N(Locale locale) {
-    if (FRENCH.getLanguage().equals(locale.getLanguage())) {
-      return frenchUploadI18N();
-    }
-    return englishUploadI18N();
-  }
-
-  /**
-   * Returns {@link UploadI18N} for English.
-   *
-   * @return {@link UploadI18N} for English
-   */
-  public static UploadI18N englishUploadI18N() {
-    final AppResources resources = new AppResources(WebConstants.class, FRENCH);
-    return new UploadI18N()
-        .setAddFiles(new UploadI18N.AddFiles().setOne("Add file...").setMany("Add files..."))
-        .setCancel(resources.message(CANCEL))
-        .setDropFiles(
-            new UploadI18N.DropFiles().setOne("Drop file here").setMany("Drop files here"))
-        .setError(new UploadI18N.Error().setFileIsTooBig("The file is too big")
-            .setIncorrectFileType("Wrong file type")
-            .setTooManyFiles("Too many files were uploaded"))
-        .setUploading(new UploadI18N.Uploading()
-            .setError(
-                new UploadI18N.Uploading.Error().setForbidden("You are not allowed to upload files")
-                    .setServerUnavailable("The server is unavailable")
-                    .setUnexpectedServerError("An unexpected error occured on server"))
-            .setRemainingTime(new UploadI18N.Uploading.RemainingTime().setPrefix("Remains: ")
-                .setUnknown("Unknown remaining time"))
-            .setStatus(new UploadI18N.Uploading.Status().setConnecting("Connecting...")
-                .setHeld("Waiting...").setProcessing("Uploading...").setStalled("Stalled...")));
-  }
-
-  /**
-   * Returns {@link UploadI18N} for French.
-   *
-   * @return {@link UploadI18N} for French
-   */
-  public static UploadI18N frenchUploadI18N() {
-    final AppResources resources = new AppResources(WebConstants.class, FRENCH);
-    return new UploadI18N()
-        .setAddFiles(new UploadI18N.AddFiles()
-            .setOne("Ajouter un fichier...").setMany("Ajouter fichiers..."))
-        .setCancel(resources.message(CANCEL))
-        .setDropFiles(new UploadI18N.DropFiles().setOne("Déplacer un fichier ici")
-            .setMany("Déplacer des fichiers ici"))
-        .setError(new UploadI18N.Error().setFileIsTooBig("Le fichier est trop volumineux")
-            .setIncorrectFileType("Le fichier n'est pas du bon type").setTooManyFiles(
-                "Trop de fichiers téléchargés"))
-        .setUploading(new UploadI18N.Uploading()
-            .setError(new UploadI18N.Uploading.Error()
-                .setForbidden("Vous n'avez pas la permission de télécharger des fichiers")
-                .setServerUnavailable("Le serveur n'est pas disponible")
-                .setUnexpectedServerError("Erreur inatendu lors du téléchargement"))
-            .setRemainingTime(new UploadI18N.Uploading.RemainingTime().setPrefix("Il reste ")
-                .setUnknown("Temps restant inconnu"))
-            .setStatus(new UploadI18N.Uploading.Status().setConnecting("Connexion...")
-                .setHeld("En attente...").setProcessing("En cours...").setStalled("Bloqué...")));
   }
 }

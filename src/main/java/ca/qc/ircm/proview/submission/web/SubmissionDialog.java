@@ -20,14 +20,12 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.web.DatePickerInternationalization.datePickerI18n;
 import static ca.qc.ircm.proview.web.WebConstants.EDIT;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
 import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
-import static ca.qc.ircm.proview.web.WebConstants.englishDatePickerI18n;
-import static ca.qc.ircm.proview.web.WebConstants.frenchDatePickerI18n;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -139,10 +137,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     final AppResources submissionResources = new AppResources(Submission.class, getLocale());
     final AppResources webResources = new AppResources(WebConstants.class, getLocale());
     updateHeader();
-    DatePickerI18n dateI18n = englishDatePickerI18n();
-    if (FRENCH.equals(getLocale())) {
-      dateI18n = frenchDatePickerI18n();
-    }
+    DatePickerI18n dateI18n = datePickerI18n(getLocale());
     instrument.setLabel(submissionResources.message(INSTRUMENT));
     dataAvailableDate.setLabel(submissionResources.message(DATA_AVAILABLE_DATE));
     dataAvailableDate.setI18n(dateI18n);
