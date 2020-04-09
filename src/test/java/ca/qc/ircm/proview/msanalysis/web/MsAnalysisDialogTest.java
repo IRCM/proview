@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.msanalysis.web;
 
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.ACQUISITION_FILE;
 import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.COMMENT;
 import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.CONTAINER;
@@ -32,8 +34,6 @@ import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.SOURCE;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.HEADER;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.ID;
 import static ca.qc.ircm.proview.text.Strings.styleName;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

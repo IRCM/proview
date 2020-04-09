@@ -17,14 +17,14 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.CLASS_NAME;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORD;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORDS_NOT_MATCH;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORD_CONFIRM;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
-import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,9 +32,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -51,7 +51,7 @@ public class PasswordsFormTest extends AbstractViewTestCase {
   private PasswordsForm form;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(PasswordsForm.class, locale);
-  private AppResources webResources = new AppResources(WebConstants.class, locale);
+  private AppResources webResources = new AppResources(Constants.class, locale);
   private String password = "test_password";
 
   /**

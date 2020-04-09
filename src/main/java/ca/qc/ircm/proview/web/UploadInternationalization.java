@@ -17,11 +17,12 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
+import static ca.qc.ircm.proview.Constants.CANCEL;
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.FRENCH;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import com.vaadin.flow.component.upload.UploadI18N;
 import java.util.Locale;
 
@@ -50,7 +51,7 @@ public class UploadInternationalization {
    * @return {@link UploadI18N} for English
    */
   public static UploadI18N englishUploadI18N() {
-    final AppResources resources = new AppResources(WebConstants.class, ENGLISH);
+    final AppResources resources = new AppResources(Constants.class, ENGLISH);
     return new UploadI18N()
         .setAddFiles(new UploadI18N.AddFiles().setOne("Add file...").setMany("Add files..."))
         .setCancel(resources.message(CANCEL))
@@ -76,7 +77,7 @@ public class UploadInternationalization {
    * @return {@link UploadI18N} for French
    */
   public static UploadI18N frenchUploadI18N() {
-    final AppResources resources = new AppResources(WebConstants.class, FRENCH);
+    final AppResources resources = new AppResources(Constants.class, FRENCH);
     return new UploadI18N()
         .setAddFiles(new UploadI18N.AddFiles()
             .setOne("Ajouter un fichier...").setMany("Ajouter fichiers..."))

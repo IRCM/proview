@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.qc.ircm.proview.web;
+package ca.qc.ircm.proview;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.Locale;
 /**
  * Constants for Web.
  */
-public class WebConstants {
+public class Constants {
   public static final Locale ENGLISH = Locale.CANADA;
   public static final Locale FRENCH = Locale.CANADA_FRENCH;
   public static final Locale DEFAULT_LOCALE = ENGLISH;

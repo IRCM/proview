@@ -17,9 +17,9 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.HEADER;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.MESSAGE;
-import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.html.testbench.DivElement;

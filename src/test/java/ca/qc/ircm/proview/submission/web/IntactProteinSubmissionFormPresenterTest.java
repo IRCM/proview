@@ -17,20 +17,21 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.INVALID_INTEGER;
+import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMPLES_NAMES_DUPLICATES;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMPLES_NAMES_EXISTS;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMPLES_NAMES_WRONG_COUNT;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
-import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -41,7 +42,6 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.web.IntactProteinSubmissionFormPresenter.Samples;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -74,7 +74,7 @@ public class IntactProteinSubmissionFormPresenterTest {
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
-  private AppResources webResources = new AppResources(WebConstants.class, locale);
+  private AppResources webResources = new AppResources(Constants.class, locale);
   private Submission newSubmission;
   private String experiment = "my experiment";
   private String goal = "my goal";

@@ -17,16 +17,16 @@
 
 package ca.qc.ircm.proview.sample.web;
 
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.SAVED;
-import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -67,7 +67,7 @@ public class SamplesStatusDialogPresenter {
 
   void bindFields() {
     if (submission != null && locale != null) {
-      final AppResources webResources = new AppResources(WebConstants.class, locale);
+      final AppResources webResources = new AppResources(Constants.class, locale);
       for (SubmissionSample sample : submission.getSamples()) {
         Binder<SubmissionSample> binder =
             new BeanValidationBinder<SubmissionSample>(SubmissionSample.class);

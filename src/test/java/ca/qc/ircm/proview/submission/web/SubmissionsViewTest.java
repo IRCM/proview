@@ -17,6 +17,13 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.ALL;
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.ERROR;
+import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.SUCCESS;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
@@ -44,13 +51,6 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
-import static ca.qc.ircm.proview.web.WebConstants.ALL;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.ERROR;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
-import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -67,6 +67,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -78,7 +79,6 @@ import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -129,7 +129,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   private AppResources submissionResources = new AppResources(Submission.class, locale);
   private AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
   private AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-  private AppResources webResources = new AppResources(WebConstants.class, locale);
+  private AppResources webResources = new AppResources(Constants.class, locale);
   private List<Submission> submissions;
 
   /**

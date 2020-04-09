@@ -17,15 +17,15 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
-import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
-import static ca.qc.ircm.proview.web.WebConstants.SAVE;
-import static ca.qc.ircm.proview.web.WebConstants.THEME;
+import static ca.qc.ircm.proview.Constants.CANCEL;
+import static ca.qc.ircm.proview.Constants.PRIMARY;
+import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.THEME;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SavedEvent;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -93,7 +93,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
+    final AppResources webResources = new AppResources(Constants.class, getLocale());
     updateHeader();
     save.setText(webResources.message(SAVE));
     cancel.setText(webResources.message(CANCEL));

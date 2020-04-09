@@ -17,10 +17,10 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.INVALID;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SAVED;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SEPARATOR;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;

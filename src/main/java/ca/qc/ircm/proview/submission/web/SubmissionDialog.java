@@ -17,22 +17,22 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.EDIT;
+import static ca.qc.ircm.proview.Constants.PRIMARY;
+import static ca.qc.ircm.proview.Constants.PRINT;
+import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.SUCCESS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.web.DatePickerInternationalization.datePickerI18n;
-import static ca.qc.ircm.proview.web.WebConstants.EDIT;
-import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
-import static ca.qc.ircm.proview.web.WebConstants.PRINT;
-import static ca.qc.ircm.proview.web.WebConstants.SAVE;
-import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.SavedEvent;
-import ca.qc.ircm.proview.web.WebConstants;
 import ch.carnet.kasparscherrer.VerticalScrollLayout;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -135,7 +135,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   @Override
   public void localeChange(LocaleChangeEvent event) {
     final AppResources submissionResources = new AppResources(Submission.class, getLocale());
-    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
+    final AppResources webResources = new AppResources(Constants.class, getLocale());
     updateHeader();
     DatePickerI18n dateI18n = datePickerI18n(getLocale());
     instrument.setLabel(submissionResources.message(INSTRUMENT));

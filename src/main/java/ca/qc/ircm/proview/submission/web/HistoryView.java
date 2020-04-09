@@ -17,22 +17,22 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.history.ActivityProperties.ACTION_TYPE;
 import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
 import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
 import static ca.qc.ircm.proview.history.ActivityProperties.USER;
 import static ca.qc.ircm.proview.text.Strings.styleName;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
-import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -155,7 +155,7 @@ public class HistoryView extends VerticalLayout
   @Override
   public String getPageTitle() {
     final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
+    final AppResources generalResources = new AppResources(Constants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 

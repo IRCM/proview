@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.Constants.ADD;
+import static ca.qc.ircm.proview.Constants.EDIT;
+import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
@@ -27,9 +30,6 @@ import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.ViewLayout.TAB;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
-import static ca.qc.ircm.proview.web.WebConstants.ADD;
-import static ca.qc.ircm.proview.web.WebConstants.EDIT;
-import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.flow.component.tabs.testbench.TabElement;

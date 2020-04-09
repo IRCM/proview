@@ -17,24 +17,24 @@
 
 package ca.qc.ircm.proview.sample.web;
 
+import static ca.qc.ircm.proview.Constants.ALL;
+import static ca.qc.ircm.proview.Constants.CANCEL;
+import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.SUCCESS;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.text.Strings.normalize;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
-import static ca.qc.ircm.proview.web.WebConstants.ALL;
-import static ca.qc.ircm.proview.web.WebConstants.CANCEL;
-import static ca.qc.ircm.proview.web.WebConstants.SAVE;
-import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.SavedEvent;
-import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -142,7 +142,7 @@ public class SamplesStatusDialog extends Dialog
   @Override
   public void localeChange(LocaleChangeEvent event) {
     final AppResources resources = new AppResources(SamplesStatusDialog.class, getLocale());
-    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
+    final AppResources webResources = new AppResources(Constants.class, getLocale());
     final AppResources sampleResources = new AppResources(Sample.class, getLocale());
     final AppResources submissionSampleResources =
         new AppResources(SubmissionSample.class, getLocale());

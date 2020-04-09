@@ -17,6 +17,13 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.EDIT;
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.PRIMARY;
+import static ca.qc.ircm.proview.Constants.PRINT;
+import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.SUCCESS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
@@ -28,13 +35,6 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.web.DatePickerInternationalization.englishDatePickerI18n;
 import static ca.qc.ircm.proview.web.DatePickerInternationalization.frenchDatePickerI18n;
-import static ca.qc.ircm.proview.web.WebConstants.EDIT;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
-import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
-import static ca.qc.ircm.proview.web.WebConstants.PRINT;
-import static ca.qc.ircm.proview.web.WebConstants.SAVE;
-import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -48,13 +48,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SavedEvent;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -83,7 +83,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   private ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(SubmissionDialog.class, locale);
-  private AppResources webResources = new AppResources(WebConstants.class, locale);
+  private AppResources webResources = new AppResources(Constants.class, locale);
   private AppResources submissionResources = new AppResources(Submission.class, locale);
 
   /**
@@ -157,7 +157,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
     dialog.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(SubmissionDialog.class, locale);
-    final AppResources webResources = new AppResources(WebConstants.class, locale);
+    final AppResources webResources = new AppResources(Constants.class, locale);
     final AppResources submissionResources = new AppResources(Submission.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));

@@ -17,14 +17,15 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.HASHED_PASSWORD;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.user.User;
@@ -128,7 +129,7 @@ public class SigninView extends LoginOverlay
   @Override
   public String getPageTitle() {
     final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
+    final AppResources generalResources = new AppResources(Constants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 

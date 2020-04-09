@@ -17,6 +17,10 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
@@ -29,15 +33,12 @@ import static ca.qc.ircm.proview.web.ContactView.NAME;
 import static ca.qc.ircm.proview.web.ContactView.PHONE;
 import static ca.qc.ircm.proview.web.ContactView.PROTEOMIC;
 import static ca.qc.ircm.proview.web.ContactView.WEBSITE;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.component.icon.Icon;
@@ -55,7 +56,7 @@ public class ContactViewTest extends AbstractViewTestCase {
   private ContactView view;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(ContactView.class, locale);
-  private AppResources generalResources = new AppResources(WebConstants.class, locale);
+  private AppResources generalResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.

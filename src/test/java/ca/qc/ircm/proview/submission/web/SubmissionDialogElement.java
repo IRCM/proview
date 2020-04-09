@@ -17,12 +17,12 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.EDIT;
+import static ca.qc.ircm.proview.Constants.PRINT;
+import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
-import static ca.qc.ircm.proview.web.WebConstants.EDIT;
-import static ca.qc.ircm.proview.web.WebConstants.PRINT;
-import static ca.qc.ircm.proview.web.WebConstants.SAVE;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;

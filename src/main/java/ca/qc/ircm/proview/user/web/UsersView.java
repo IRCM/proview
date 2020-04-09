@@ -17,6 +17,13 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.ALL;
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.ERROR;
+import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.SUCCESS;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.text.Strings.normalize;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
@@ -26,18 +33,11 @@ import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
-import static ca.qc.ircm.proview.web.WebConstants.ALL;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.ERROR;
-import static ca.qc.ircm.proview.web.WebConstants.ERROR_TEXT;
-import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
-import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.ViewLayout;
-import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.button.Button;
@@ -179,7 +179,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   public void localeChange(LocaleChangeEvent event) {
     final AppResources resources = new AppResources(UsersView.class, getLocale());
     final AppResources userResources = new AppResources(User.class, getLocale());
-    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
+    final AppResources webResources = new AppResources(Constants.class, getLocale());
     header.setText(resources.message(HEADER));
     String emailHeader = userResources.message(EMAIL);
     email.setHeader(emailHeader).setFooter(emailHeader);
@@ -210,7 +210,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   @Override
   public String getPageTitle() {
     AppResources resources = new AppResources(UsersView.class, getLocale());
-    AppResources webResources = new AppResources(WebConstants.class, getLocale());
+    AppResources webResources = new AppResources(Constants.class, getLocale());
     return resources.message(TITLE, webResources.message(APPLICATION_NAME));
   }
 

@@ -17,12 +17,13 @@
 
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.Constants.ADD;
+import static ca.qc.ircm.proview.Constants.EDIT;
+import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.text.Strings.styleName;
-import static ca.qc.ircm.proview.web.WebConstants.ADD;
-import static ca.qc.ircm.proview.web.WebConstants.EDIT;
-import static ca.qc.ircm.proview.web.WebConstants.PRINT;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
@@ -162,8 +163,8 @@ public class ViewLayout extends VerticalLayout
           .executeJs("location.assign('" + WebSecurityConfiguration.SWITCH_USER_EXIT_URL + "')");
     } else if (tabs.getSelectedTab() == changeLanguage) {
       Locale locale = UI.getCurrent().getLocale();
-      Locale newLocale = WebConstants.getLocales().stream().filter(lo -> !lo.equals(locale))
-          .findFirst().orElse(WebConstants.DEFAULT_LOCALE);
+      Locale newLocale = Constants.getLocales().stream().filter(lo -> !lo.equals(locale))
+          .findFirst().orElse(Constants.DEFAULT_LOCALE);
       logger.debug("Change locale to {}", newLocale);
       UI.getCurrent().setLocale(newLocale);
       tabs.setSelectedTab(previous);

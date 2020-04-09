@@ -17,11 +17,11 @@
 
 package ca.qc.ircm.proview.security.web;
 
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.web.WebConstants;
+import ca.qc.ircm.proview.Constants;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.ErrorParameter;
@@ -49,7 +49,7 @@ public class AccessDeniedError extends Div
   @Override
   public String getPageTitle() {
     final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
+    final AppResources generalResources = new AppResources(Constants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 }

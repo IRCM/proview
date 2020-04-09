@@ -17,6 +17,14 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.ALL;
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.ERROR;
+import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
+import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.SUCCESS;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
@@ -35,14 +43,6 @@ import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.ALL;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.ERROR;
-import static ca.qc.ircm.proview.web.WebConstants.ERROR_TEXT;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
-import static ca.qc.ircm.proview.web.WebConstants.SUCCESS;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -54,12 +54,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -107,7 +107,7 @@ public class UsersViewTest extends AbstractViewTestCase {
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(UsersView.class, locale);
   private AppResources userResources = new AppResources(User.class, locale);
-  private AppResources webResources = new AppResources(WebConstants.class, locale);
+  private AppResources webResources = new AppResources(Constants.class, locale);
   private List<User> users;
 
   /**
@@ -211,7 +211,7 @@ public class UsersViewTest extends AbstractViewTestCase {
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(UsersView.class, locale);
     final AppResources userResources = new AppResources(User.class, locale);
-    final AppResources webResources = new AppResources(WebConstants.class, locale);
+    final AppResources webResources = new AppResources(Constants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());

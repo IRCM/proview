@@ -17,19 +17,19 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.PRIMARY;
+import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.THEME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.HEADER;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.ID;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.MESSAGE;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
-import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
-import static ca.qc.ircm.proview.web.WebConstants.SAVE;
-import static ca.qc.ircm.proview.web.WebConstants.THEME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -37,10 +37,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
@@ -62,7 +62,7 @@ public class ForgotPasswordViewTest extends AbstractViewTestCase {
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(ForgotPasswordView.class, locale);
   private AppResources userResources = new AppResources(User.class, locale);
-  private AppResources webResources = new AppResources(WebConstants.class, locale);
+  private AppResources webResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.
@@ -106,7 +106,7 @@ public class ForgotPasswordViewTest extends AbstractViewTestCase {
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(ForgotPasswordView.class, locale);
     final AppResources userResources = new AppResources(User.class, locale);
-    final AppResources webResources = new AppResources(WebConstants.class, locale);
+    final AppResources webResources = new AppResources(Constants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     verify(presenter).localeChange(locale);

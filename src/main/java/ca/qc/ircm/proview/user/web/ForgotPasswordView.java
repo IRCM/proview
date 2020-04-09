@@ -17,17 +17,17 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.PRIMARY;
+import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.THEME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.PRIMARY;
-import static ca.qc.ircm.proview.web.WebConstants.SAVE;
-import static ca.qc.ircm.proview.web.WebConstants.THEME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.web.WebConstants;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import ca.qc.ircm.proview.web.component.UrlComponent;
 import com.vaadin.flow.component.button.Button;
@@ -98,7 +98,7 @@ public class ForgotPasswordView extends VerticalLayout
   public void localeChange(LocaleChangeEvent event) {
     final AppResources resources = new AppResources(getClass(), getLocale());
     final AppResources userResources = new AppResources(User.class, getLocale());
-    final AppResources webResources = new AppResources(WebConstants.class, getLocale());
+    final AppResources webResources = new AppResources(Constants.class, getLocale());
     header.setText(resources.message(HEADER));
     message.setText(resources.message(MESSAGE));
     email.setLabel(userResources.message(EMAIL));
@@ -109,7 +109,7 @@ public class ForgotPasswordView extends VerticalLayout
   @Override
   public String getPageTitle() {
     final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(WebConstants.class, getLocale());
+    final AppResources generalResources = new AppResources(Constants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 }

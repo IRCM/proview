@@ -17,24 +17,24 @@
 
 package ca.qc.ircm.proview.files.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.HEADER;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.net.URLEncoder;
@@ -56,7 +56,7 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
   private GuidelinesConfiguration guidelinesConfiguration;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(GuidelinesView.class, locale);
-  private AppResources generalResources = new AppResources(WebConstants.class, locale);
+  private AppResources generalResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.

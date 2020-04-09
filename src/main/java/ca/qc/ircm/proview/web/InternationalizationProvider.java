@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
+import ca.qc.ircm.proview.Constants;
 import com.vaadin.flow.i18n.I18NProvider;
 import java.util.List;
 import java.util.Locale;
@@ -34,7 +35,7 @@ public class InternationalizationProvider implements I18NProvider {
 
   @Override
   public List<Locale> getProvidedLocales() {
-    return WebConstants.getLocales();
+    return Constants.getLocales();
   }
 
   @Override

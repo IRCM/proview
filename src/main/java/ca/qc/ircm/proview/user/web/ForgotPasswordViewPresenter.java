@@ -17,17 +17,17 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.INVALID_EMAIL;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SAVED;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_EMAIL;
-import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SigninView;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -65,7 +65,7 @@ public class ForgotPasswordViewPresenter {
   }
 
   void localeChange(Locale locale) {
-    final AppResources webResources = new AppResources(WebConstants.class, locale);
+    final AppResources webResources = new AppResources(Constants.class, locale);
     binder.forField(view.email).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("")
         .withValidator(new EmailValidator(webResources.message(INVALID_EMAIL))).bind(EMAIL);

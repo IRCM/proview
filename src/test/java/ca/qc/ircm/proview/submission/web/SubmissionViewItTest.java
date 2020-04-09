@@ -17,18 +17,19 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
 import static ca.qc.ircm.proview.text.Strings.property;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -48,7 +49,6 @@ import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.SigninView;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -222,7 +222,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     Locale locale = currentLocale();
     assertEquals(
         new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
+            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -231,7 +231,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     open();
 
     assertEquals(resources(SubmissionView.class).message(TITLE,
-        resources(WebConstants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
   }
 
   @Test

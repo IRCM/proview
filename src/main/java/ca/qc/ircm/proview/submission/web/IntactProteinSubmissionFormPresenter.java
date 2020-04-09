@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.INVALID_INTEGER;
+import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
@@ -35,11 +38,9 @@ import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMP
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMPLES_NAMES_DUPLICATES;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMPLES_NAMES_EXISTS;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMPLES_NAMES_WRONG_COUNT;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_INTEGER;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
-import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleType;
@@ -47,7 +48,6 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -106,7 +106,7 @@ public class IntactProteinSubmissionFormPresenter {
   }
 
   void localeChange(Locale locale) {
-    final AppResources webResources = new AppResources(WebConstants.class, locale);
+    final AppResources webResources = new AppResources(Constants.class, locale);
     binder.forField(form.experiment).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(EXPERIMENT);
     binder.forField(form.goal).withNullRepresentation("").bind(GOAL);

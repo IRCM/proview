@@ -17,10 +17,10 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.user.web.UsersView.ID;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -28,6 +28,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.web.AccessDeniedError;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -38,7 +39,6 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SigninView;
-import ca.qc.ircm.proview.web.WebConstants;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import javax.persistence.EntityManager;
@@ -91,7 +91,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     Locale locale = currentLocale();
     assertEquals(
         new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
+            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -103,7 +103,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     Locale locale = currentLocale();
     assertEquals(
         new AppResources(AccessDeniedError.class, locale).message(TITLE,
-            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
+            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -113,7 +113,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     open();
 
     assertEquals(resources(UsersView.class).message(TITLE,
-        resources(WebConstants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
   }
 
   @Test
@@ -121,7 +121,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     open();
 
     assertEquals(resources(UsersView.class).message(TITLE,
-        resources(WebConstants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
   }
 
   @Test
@@ -320,7 +320,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     Locale locale = currentLocale();
     assertEquals(
         new AppResources(SubmissionsView.class, locale).message(TITLE,
-            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
+            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 

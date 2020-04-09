@@ -17,14 +17,15 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.submission.web.HistoryView.ID;
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialogElement;
 import ca.qc.ircm.proview.security.web.AccessDeniedError;
@@ -34,7 +35,6 @@ import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
 import ca.qc.ircm.proview.web.SigninView;
-import ca.qc.ircm.proview.web.WebConstants;
 import java.util.Locale;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +58,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     Locale locale = currentLocale();
     assertEquals(
         new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
+            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -70,7 +70,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     Locale locale = currentLocale();
     assertEquals(
         new AppResources(AccessDeniedError.class, locale).message(TITLE,
-            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
+            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -82,7 +82,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     Locale locale = currentLocale();
     assertEquals(
         new AppResources(AccessDeniedError.class, locale).message(TITLE,
-            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
+            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -91,7 +91,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     open();
 
     assertEquals(resources(HistoryView.class).message(TITLE,
-        resources(WebConstants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
   }
 
   @Test

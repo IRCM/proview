@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.user.web.ProfileView.SAVED;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;

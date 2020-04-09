@@ -17,12 +17,12 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_IOEXCEPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_OVER_MAXIMUM;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.MAXIMUM_FILES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

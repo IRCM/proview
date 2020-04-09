@@ -17,15 +17,16 @@
 
 package ca.qc.ircm.proview.files.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.VIEW_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
@@ -33,7 +34,6 @@ import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.Download;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.html.testbench.AnchorElement;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,7 +72,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
     Locale locale = currentLocale();
     assertEquals(
         new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(WebConstants.class, locale).message(APPLICATION_NAME)),
+            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
 
@@ -81,7 +81,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
     open();
 
     assertEquals(resources(GuidelinesView.class).message(TITLE,
-        resources(WebConstants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
   }
 
   @Test

@@ -1,6 +1,6 @@
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
+import static ca.qc.ircm.proview.Constants.FRENCH;
 
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import java.util.Arrays;

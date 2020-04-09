@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.ALREADY_EXISTS;
+import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
@@ -30,11 +33,9 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLUTION_SOLVEN
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLVENTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
-import static ca.qc.ircm.proview.web.WebConstants.ALREADY_EXISTS;
-import static ca.qc.ircm.proview.web.WebConstants.INVALID_NUMBER;
-import static ca.qc.ircm.proview.web.WebConstants.REQUIRED;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
@@ -42,7 +43,6 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -92,7 +92,7 @@ public class SmallMoleculeSubmissionFormPresenter {
   }
 
   void localeChange(Locale locale) {
-    final AppResources webResources = new AppResources(WebConstants.class, locale);
+    final AppResources webResources = new AppResources(Constants.class, locale);
     firstSampleBinder.forField(form.sampleType).asRequired(webResources.message(REQUIRED))
         .bind(TYPE);
     firstSampleBinder.forField(form.sampleName).asRequired(webResources.message(REQUIRED))
@@ -139,7 +139,7 @@ public class SmallMoleculeSubmissionFormPresenter {
   private Validator<String> sampleNameExists(Locale locale) {
     return (value, context) -> {
       if (sampleService.exists(value)) {
-        final AppResources resources = new AppResources(WebConstants.class, locale);
+        final AppResources resources = new AppResources(Constants.class, locale);
         return ValidationResult.error(resources.message(ALREADY_EXISTS, value));
       }
       return ValidationResult.ok();
@@ -149,7 +149,7 @@ public class SmallMoleculeSubmissionFormPresenter {
   private Validator<List<Solvent>> solventsNotEmpty(Locale locale) {
     return (value, context) -> {
       if (value.isEmpty()) {
-        final AppResources resources = new AppResources(WebConstants.class, locale);
+        final AppResources resources = new AppResources(Constants.class, locale);
         return ValidationResult.error(resources.message(REQUIRED, value));
       }
       return ValidationResult.ok();

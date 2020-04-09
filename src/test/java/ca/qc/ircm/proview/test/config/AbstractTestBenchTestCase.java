@@ -17,16 +17,16 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.web.AccessDeniedError;
 import ca.qc.ircm.proview.user.web.UseForgotPasswordView;
 import ca.qc.ircm.proview.web.SigninView;
 import ca.qc.ircm.proview.web.ViewLayout;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.tabs.testbench.TabElement;
 import com.vaadin.flow.component.tabs.testbench.TabsElement;
 import com.vaadin.testbench.TestBenchTestCase;
@@ -77,7 +77,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
   }
 
   protected Locale currentLocale() {
-    List<Locale> locales = WebConstants.getLocales();
+    List<Locale> locales = Constants.getLocales();
     TabElement home =
         optional(() -> $(TabsElement.class).first().$(TabElement.class).first()).orElse(null);
     Optional<Locale> optlocale =
@@ -87,7 +87,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
       optlocale = locales.stream()
           .filter(locale -> new AppResources(SigninView.class, locale)
               .message(TITLE,
-                  new AppResources(WebConstants.class, locale).message(APPLICATION_NAME))
+                  new AppResources(Constants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
           .findAny();
     }
@@ -95,7 +95,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
       optlocale = locales.stream()
           .filter(locale -> new AppResources(UseForgotPasswordView.class, locale)
               .message(TITLE,
-                  new AppResources(WebConstants.class, locale).message(APPLICATION_NAME))
+                  new AppResources(Constants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
           .findAny();
     }
@@ -103,7 +103,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
       optlocale = locales.stream()
           .filter(locale -> new AppResources(AccessDeniedError.class, locale)
               .message(TITLE,
-                  new AppResources(WebConstants.class, locale).message(APPLICATION_NAME))
+                  new AppResources(Constants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
           .findAny();
     }

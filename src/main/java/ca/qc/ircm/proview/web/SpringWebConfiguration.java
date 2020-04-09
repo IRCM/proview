@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.web.WebConstants.DEFAULT_LOCALE;
+import static ca.qc.ircm.proview.Constants.DEFAULT_LOCALE;
 
 import ca.qc.ircm.proview.logging.web.MdcFilter;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;

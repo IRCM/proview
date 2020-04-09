@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.treatment.web;
 
+import static ca.qc.ircm.proview.Constants.ENGLISH;
+import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
 import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
@@ -36,8 +38,6 @@ import static ca.qc.ircm.proview.treatment.TreatmentProperties.PROTOCOL;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.TREATED_SAMPLES;
 import static ca.qc.ircm.proview.treatment.web.TreatmentDialog.HEADER;
 import static ca.qc.ircm.proview.treatment.web.TreatmentDialog.ID;
-import static ca.qc.ircm.proview.web.WebConstants.ENGLISH;
-import static ca.qc.ircm.proview.web.WebConstants.FRENCH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

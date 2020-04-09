@@ -17,17 +17,18 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.ID;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SAVED;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SEPARATOR;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.VIEW_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.web.WebConstants.TITLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
@@ -35,7 +36,6 @@ import ca.qc.ircm.proview.user.ForgotPasswordRepository;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SigninView;
-import ca.qc.ircm.proview.web.WebConstants;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import javax.persistence.EntityManager;
 import org.junit.Test;
@@ -72,7 +72,7 @@ public class UseForgotPasswordViewItTest extends AbstractTestBenchTestCase {
     open();
 
     assertEquals(resources(UseForgotPasswordView.class).message(TITLE,
-        resources(WebConstants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
   }
 
   @Test
