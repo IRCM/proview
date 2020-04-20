@@ -117,6 +117,14 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
+  public void security_Admin() throws Throwable {
+    open();
+
+    assertEquals(resources(UsersView.class).message(TITLE,
+        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+  }
+
+  @Test
   public void title() throws Throwable {
     open();
 
