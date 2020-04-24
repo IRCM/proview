@@ -167,14 +167,11 @@ public class VaadinTestUtils {
   }
 
   /**
-   * Simulates an item double click on grid.
+   * Returns renderer's template.
    *
-   * @param grid
-   *          grid
-   * @param item
-   *          item
-   * @param eventGenerator
-   *          creates the item dobule click event
+   * @param renderer
+   *          renderer
+   * @return renderer's template
    */
   public static String rendererTemplate(Renderer<?> renderer) {
     try {
