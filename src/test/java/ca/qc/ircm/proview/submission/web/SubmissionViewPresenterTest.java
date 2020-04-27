@@ -59,6 +59,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.data.provider.DataProviderListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,6 +92,8 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
   private SubmissionRepository repository;
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
+  @Mock
+  private DataProviderListener<SubmissionFile> filesDataProviderListener;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(SubmissionView.class, locale);
   private Submission submission;
@@ -137,16 +140,19 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void addFile() {
+    view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
     SubmissionFile file = files.get(0);
     presenter.addFile(file.getFilename(), new ByteArrayInputStream(file.getContent()), locale);
     List<SubmissionFile> files = items(view.files);
     assertEquals(1, files.size());
     assertEquals(file.getFilename(), files.get(0).getFilename());
     assertArrayEquals(file.getContent(), files.get(0).getContent());
+    verify(filesDataProviderListener).onDataChange(any());
   }
 
   @Test
   public void addFile_IoException() throws IOException {
+    view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
     SubmissionFile file = files.get(0);
     InputStream input = new InputStream() {
       @Override
@@ -157,27 +163,33 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     presenter.addFile(file.getFilename(), input, locale);
     verify(view).showNotification(resources.message(FILES_IOEXCEPTION, file.getFilename()));
     assertTrue(items(view.files).isEmpty());
+    verify(filesDataProviderListener, never()).onDataChange(any());
   }
 
   @Test
   public void addFile_OverMaximumCount() {
     SubmissionFile file = files.get(0);
-    IntStream.range(0, MAXIMUM_FILES_COUNT + 1).forEach(i -> {
+    IntStream.range(0, MAXIMUM_FILES_COUNT).forEach(i -> {
       presenter.addFile(file.getFilename() + i, new ByteArrayInputStream(file.getContent()),
           locale);
     });
+    view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
+    presenter.addFile(file.getFilename() + MAXIMUM_FILES_COUNT,
+        new ByteArrayInputStream(file.getContent()), locale);
     verify(view).showNotification(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
     List<SubmissionFile> files = items(view.files);
     assertEquals(MAXIMUM_FILES_COUNT, files.size());
     for (int i = 0; i < MAXIMUM_FILES_COUNT; i++) {
       assertEquals(file.getFilename() + i, files.get(i).getFilename());
     }
+    verify(filesDataProviderListener, never()).onDataChange(any());
   }
 
   @Test
   public void removeFile_New() {
     files.forEach(file -> presenter.addFile(file.getFilename(),
         new ByteArrayInputStream(file.getContent()), locale));
+    view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
     presenter.removeFile(items(view.files).get(0));
     List<SubmissionFile> files = items(view.files);
     assertEquals(this.files.size() - 1, files.size());
@@ -185,11 +197,13 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
       assertEquals(this.files.get(i + 1).getFilename(), files.get(i).getFilename());
       assertArrayEquals(this.files.get(i + 1).getContent(), files.get(i).getContent());
     }
+    verify(filesDataProviderListener).onDataChange(any());
   }
 
   @Test
   public void removeFile_Existing() {
     presenter.setParameter(1L);
+    view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
     presenter.removeFile(submission.getFiles().get(0));
     List<SubmissionFile> files = items(view.files);
     assertEquals(submission.getFiles().size() - 1, files.size());
@@ -197,6 +211,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
       assertEquals(submission.getFiles().get(i + 1).getFilename(), files.get(i).getFilename());
       assertArrayEquals(submission.getFiles().get(i + 1).getContent(), files.get(i).getContent());
     }
+    verify(filesDataProviderListener).onDataChange(any());
   }
 
   @Test
