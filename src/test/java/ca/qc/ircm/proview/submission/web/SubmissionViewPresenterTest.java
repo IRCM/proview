@@ -27,6 +27,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -155,15 +156,22 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     };
     presenter.addFile(file.getFilename(), input, locale);
     verify(view).showNotification(resources.message(FILES_IOEXCEPTION, file.getFilename()));
+    assertTrue(items(view.files).isEmpty());
   }
 
   @Test
   public void addFile_OverMaximumCount() {
     SubmissionFile file = files.get(0);
     IntStream.range(0, MAXIMUM_FILES_COUNT + 1).forEach(i -> {
-      presenter.addFile(file.getFilename(), new ByteArrayInputStream(file.getContent()), locale);
+      presenter.addFile(file.getFilename() + i, new ByteArrayInputStream(file.getContent()),
+          locale);
     });
     verify(view).showNotification(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
+    List<SubmissionFile> files = items(view.files);
+    assertEquals(MAXIMUM_FILES_COUNT, files.size());
+    for (int i = 0; i < MAXIMUM_FILES_COUNT; i++) {
+      assertEquals(file.getFilename() + i, files.get(i).getFilename());
+    }
   }
 
   @Test

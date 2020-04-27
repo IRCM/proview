@@ -111,11 +111,13 @@ public class SubmissionViewPresenter {
     } catch (IOException e) {
       AppResources resources = new AppResources(SubmissionView.class, locale);
       view.showNotification(resources.message(FILES_IOEXCEPTION, filename));
+      return;
     }
     file.setContent(output.toByteArray());
     if (filesDataProvider.getItems().size() >= MAXIMUM_FILES_COUNT) {
       AppResources resources = new AppResources(SubmissionView.class, locale);
       view.showNotification(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
+      return;
     }
     filesDataProvider.getItems().add(file);
     filesDataProvider.refreshAll();
