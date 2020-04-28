@@ -24,7 +24,6 @@ import static ca.qc.ircm.proview.Constants.SUCCESS;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
-import static ca.qc.ircm.proview.text.Strings.normalize;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
@@ -34,6 +33,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -104,8 +104,7 @@ public class SamplesStatusDialog extends Dialog
     ValueProvider<SubmissionSample, String> sampleName =
         sample -> Objects.toString(sample.getName(), "");
     name = samples.addColumn(sampleName, NAME).setKey(NAME)
-        .setComparator((s1, s2) -> normalize(sampleName.apply(s1))
-            .compareToIgnoreCase(normalize(sampleName.apply(s2))));
+        .setComparator(NormalizedComparator.of(Sample::getName));
     status = samples.addColumn(new ComponentRenderer<>(sample -> status(sample)), STATUS)
         .setKey(STATUS).setSortable(false);
     status.setWidth("10em");

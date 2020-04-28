@@ -52,6 +52,7 @@ import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -200,14 +201,11 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
     }
     verify(dialog.name).setComparator(comparatorCaptor.capture());
     Comparator<SubmissionSample> comparator = comparatorCaptor.getValue();
-    assertTrue(comparator.compare(name("abc"), name("test")) < 0);
-    assertTrue(comparator.compare(name("Abc"), name("test")) < 0);
-    assertTrue(comparator.compare(name("test"), name("test")) == 0);
-    assertTrue(comparator.compare(name("Test"), name("test")) == 0);
-    assertTrue(comparator.compare(name("test"), name("abc")) > 0);
-    assertTrue(comparator.compare(name("Test"), name("abc")) > 0);
-    assertTrue(comparator.compare(name("tést"), name("test")) == 0);
-    assertTrue(comparator.compare(name("tèst"), name("test")) == 0);
+    assertTrue(comparator instanceof NormalizedComparator);
+    for (SubmissionSample sample : samples) {
+      assertEquals(sample.getName(),
+          ((NormalizedComparator<SubmissionSample>) comparator).getConverter().apply(sample));
+    }
     verify(dialog.samples).addColumn(statusRendererCaptor.capture(), eq(STATUS));
     ComponentRenderer<ComboBox<SampleStatus>, SubmissionSample> statusRenderer =
         statusRendererCaptor.getValue();
@@ -221,11 +219,6 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
       }
       assertSame(comboBox, dialog.status(sample));
     }
-  }
-
-  private SubmissionSample name(String name) {
-    SubmissionSample sample = new SubmissionSample(name);
-    return sample;
   }
 
   @Test
