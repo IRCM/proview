@@ -37,6 +37,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
+import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ByteArrayStreamResourceWriter;
 import ca.qc.ircm.proview.web.ViewLayout;
@@ -156,7 +157,7 @@ public class SubmissionView extends VerticalLayout
     files.setWidth("45em");
     files.setMinWidth("45em");
     filename = files.addColumn(new ComponentRenderer<>(file -> filenameAnchor(file)), FILENAME)
-        .setKey(FILENAME);
+        .setKey(FILENAME).setComparator(NormalizedComparator.of(SubmissionFile::getFilename));
     remove =
         files.addColumn(new ComponentRenderer<>(file -> removeButton(file)), REMOVE).setKey(REMOVE);
     save.setId(SAVE);

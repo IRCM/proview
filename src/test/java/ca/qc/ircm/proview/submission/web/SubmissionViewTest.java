@@ -56,6 +56,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.text.NormalizedComparator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -68,6 +69,7 @@ import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
 import java.io.ByteArrayInputStream;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -101,6 +103,8 @@ public class SubmissionViewTest extends AbstractViewTestCase {
   private ArgumentCaptor<ComponentRenderer<Anchor, SubmissionFile>> anchorRendererCaptor;
   @Captor
   private ArgumentCaptor<ComponentRenderer<Button, SubmissionFile>> buttonRendererCaptor;
+  @Captor
+  private ArgumentCaptor<Comparator<SubmissionFile>> comparatorCaptor;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(SubmissionView.class, locale);
   private AppResources submissionResources = new AppResources(Submission.class, locale);
@@ -136,6 +140,7 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     when(view.files.addColumn(any(ComponentRenderer.class), eq(FILENAME)))
         .thenReturn(view.filename);
     when(view.filename.setKey(any())).thenReturn(view.filename);
+    when(view.filename.setComparator(any(Comparator.class))).thenReturn(view.filename);
     when(view.filename.setHeader(any(String.class))).thenReturn(view.filename);
     view.remove = mock(Column.class);
     when(view.files.addColumn(any(ComponentRenderer.class), eq(REMOVE))).thenReturn(view.remove);
@@ -254,6 +259,13 @@ public class SubmissionViewTest extends AbstractViewTestCase {
       assertEquals(file.getFilename(), anchor.getText());
       assertEquals(Optional.of("_blank"), anchor.getTarget());
       assertTrue(anchor.getHref().startsWith("VAADIN/dynamic/resource"));
+    }
+    verify(view.filename).setComparator(comparatorCaptor.capture());
+    Comparator<SubmissionFile> comparator = comparatorCaptor.getValue();
+    assertTrue(comparator instanceof NormalizedComparator);
+    for (SubmissionFile file : files) {
+      assertEquals(file.getFilename(),
+          ((NormalizedComparator<SubmissionFile>) comparator).getConverter().apply(file));
     }
     verify(view.files).addColumn(buttonRendererCaptor.capture(), eq(REMOVE));
     ComponentRenderer<Button, SubmissionFile> buttonRenderer = buttonRendererCaptor.getValue();
