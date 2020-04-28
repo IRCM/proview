@@ -72,7 +72,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -257,7 +256,7 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     for (SubmissionFile file : files) {
       Anchor anchor = anchorRenderer.createComponent(file);
       assertEquals(file.getFilename(), anchor.getText());
-      assertEquals(Optional.of("_blank"), anchor.getTarget());
+      assertEquals(file.getFilename(), anchor.getElement().getAttribute("download"));
       assertTrue(anchor.getHref().startsWith("VAADIN/dynamic/resource"));
     }
     verify(view.filename).setComparator(comparatorCaptor.capture());

@@ -46,9 +46,11 @@ import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.Download;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.flow.component.html.testbench.AnchorElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -78,6 +80,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private SubmissionRepository repository;
   @Value("${spring.application.name}")
   private String applicationName;
+  @Value("${download-home}")
+  protected Path downloadHome;
   private String experiment = "my experiment";
   private String goal = "my goal";
   private String taxonomy = "my taxon";
@@ -454,5 +458,28 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+  }
+
+  @Test
+  @Download
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void downloadFile() throws Throwable {
+    Files.createDirectories(downloadHome);
+    Path downloaded = downloadHome.resolve("protocol.txt");
+    Files.deleteIfExists(downloaded);
+    Path source = Paths.get(getClass().getResource("/submissionfile1.txt").toURI());
+    openView(VIEW_NAME, "1");
+    SubmissionViewElement view = $(SubmissionViewElement.class).id(ID);
+    AnchorElement filename = view.filename(0);
+    filename.click();
+
+    // Wait for file to download.
+    Thread.sleep(2000);
+    assertTrue(Files.exists(downloaded));
+    try {
+      assertArrayEquals(Files.readAllBytes(source), Files.readAllBytes(downloaded));
+    } finally {
+      Files.delete(downloaded);
+    }
   }
 }

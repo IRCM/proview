@@ -29,6 +29,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.HEADER;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
+import com.vaadin.flow.component.html.testbench.AnchorElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.flow.component.tabs.testbench.TabElement;
@@ -39,6 +40,8 @@ import com.vaadin.testbench.elementsbase.Element;
 
 @Element("vaadin-vertical-layout")
 public class SubmissionViewElement extends VerticalLayoutElement {
+  private static final int FILENAME_COLUMN = 0;
+
   public H2Element header() {
     return $(H2Element.class).id(HEADER);
   }
@@ -84,6 +87,10 @@ public class SubmissionViewElement extends VerticalLayoutElement {
 
   public GridElement files() {
     return $(GridElement.class).id(FILES);
+  }
+
+  public AnchorElement filename(int row) {
+    return files().getCell(row, FILENAME_COLUMN).$(AnchorElement.class).first();
   }
 
   public ButtonElement save() {
