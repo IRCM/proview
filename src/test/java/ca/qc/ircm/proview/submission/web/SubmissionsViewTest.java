@@ -77,8 +77,8 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
-import ca.qc.ircm.proview.user.User;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -394,14 +394,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     }
     verify(view.experiment).setComparator(comparatorCaptor.capture());
     Comparator<Submission> comparator = comparatorCaptor.getValue();
-    assertTrue(comparator.compare(experiment("abc"), experiment("test")) < 0);
-    assertTrue(comparator.compare(experiment("Abc"), experiment("test")) < 0);
-    assertTrue(comparator.compare(experiment("test"), experiment("test")) == 0);
-    assertTrue(comparator.compare(experiment("Test"), experiment("test")) == 0);
-    assertTrue(comparator.compare(experiment("test"), experiment("abc")) > 0);
-    assertTrue(comparator.compare(experiment("Test"), experiment("abc")) > 0);
-    assertTrue(comparator.compare(experiment("tést"), experiment("test")) == 0);
-    assertTrue(comparator.compare(experiment("tèst"), experiment("test")) == 0);
+    assertTrue(comparator instanceof NormalizedComparator);
+    for (Submission submission : submissions) {
+      assertEquals(submission.getExperiment(),
+          ((NormalizedComparator<Submission>) comparator).getConverter().apply(submission));
+    }
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(USER));
     valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
@@ -409,14 +406,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     }
     verify(view.user).setComparator(comparatorCaptor.capture());
     comparator = comparatorCaptor.getValue();
-    assertTrue(comparator.compare(user("abc"), user("test")) < 0);
-    assertTrue(comparator.compare(user("Abc"), user("test")) < 0);
-    assertTrue(comparator.compare(user("test"), user("test")) == 0);
-    assertTrue(comparator.compare(user("Test"), user("test")) == 0);
-    assertTrue(comparator.compare(user("test"), user("abc")) > 0);
-    assertTrue(comparator.compare(user("Test"), user("abc")) > 0);
-    assertTrue(comparator.compare(user("tést"), user("test")) == 0);
-    assertTrue(comparator.compare(user("tèst"), user("test")) == 0);
+    assertTrue(comparator instanceof NormalizedComparator);
+    for (Submission submission : submissions) {
+      assertEquals(submission.getUser().getName(),
+          ((NormalizedComparator<Submission>) comparator).getConverter().apply(submission));
+    }
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(DIRECTOR));
     valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
@@ -424,14 +418,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     }
     verify(view.director).setComparator(comparatorCaptor.capture());
     comparator = comparatorCaptor.getValue();
-    assertTrue(comparator.compare(director("abc"), director("test")) < 0);
-    assertTrue(comparator.compare(director("Abc"), director("test")) < 0);
-    assertTrue(comparator.compare(director("test"), director("test")) == 0);
-    assertTrue(comparator.compare(director("Test"), director("test")) == 0);
-    assertTrue(comparator.compare(director("test"), director("abc")) > 0);
-    assertTrue(comparator.compare(director("Test"), director("abc")) > 0);
-    assertTrue(comparator.compare(director("tést"), director("test")) == 0);
-    assertTrue(comparator.compare(director("tèst"), director("test")) == 0);
+    assertTrue(comparator instanceof NormalizedComparator);
+    for (Submission submission : submissions) {
+      assertEquals(submission.getLaboratory().getDirector(),
+          ((NormalizedComparator<Submission>) comparator).getConverter().apply(submission));
+    }
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(DATA_AVAILABLE_DATE));
     valueProvider = valueProviderCaptor.getValue();
@@ -576,28 +567,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
 
     verify(presenter).view(submission);
     verify(presenter, never()).editStatus(any());
-  }
-
-  private Submission experiment(String experiment) {
-    Submission submission = new Submission();
-    submission.setExperiment(experiment);
-    return submission;
-  }
-
-  private Submission user(String name) {
-    User user = new User();
-    user.setName(name);
-    Submission submission = new Submission();
-    submission.setUser(user);
-    return submission;
-  }
-
-  private Submission director(String director) {
-    Laboratory laboratory = new Laboratory();
-    laboratory.setDirector(director);
-    Submission submission = new Submission();
-    submission.setLaboratory(laboratory);
-    return submission;
   }
 
   private Submission hidden(boolean hidden) {

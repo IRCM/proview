@@ -31,7 +31,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
-import static ca.qc.ircm.proview.text.Strings.normalize;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
@@ -44,6 +43,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
@@ -158,19 +158,16 @@ public class SubmissionsView extends VerticalLayout
     ValueProvider<Submission, String> submissionExperiment =
         submission -> Objects.toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
-        .setComparator((s1, s2) -> normalize(submissionExperiment.apply(s1))
-            .compareToIgnoreCase(normalize(submissionExperiment.apply(s2))));
+        .setComparator(NormalizedComparator.of(Submission::getExperiment));
     ValueProvider<Submission, String> submissionUser = submission -> submission.getUser() != null
         ? Objects.toString(submission.getUser().getName())
         : "";
     user = submissions.addColumn(submissionUser, USER).setKey(USER)
-        .setComparator((s1, s2) -> normalize(submissionUser.apply(s1))
-            .compareToIgnoreCase(normalize(submissionUser.apply(s2))));
+        .setComparator(NormalizedComparator.of(s -> s.getUser().getName()));
     ValueProvider<Submission, String> submissionDirector =
         submission -> Objects.toString(submission.getLaboratory().getDirector(), "");
     director = submissions.addColumn(submissionDirector, DIRECTOR).setKey(DIRECTOR)
-        .setComparator((s1, s2) -> normalize(submissionDirector.apply(s1))
-            .compareToIgnoreCase(normalize(submissionDirector.apply(s2))));
+        .setComparator(NormalizedComparator.of(s -> s.getLaboratory().getDirector()));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     dataAvailableDate =
         submissions.addColumn(submission -> submission.getDataAvailableDate() != null
