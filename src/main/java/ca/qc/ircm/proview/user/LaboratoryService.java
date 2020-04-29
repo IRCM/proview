@@ -66,4 +66,15 @@ public class LaboratoryService {
   public List<Laboratory> all() {
     return Lists.newArrayList(repository.findAll());
   }
+
+  /**
+   * Saves laboratory into the database.
+   *
+   * @param laboratory
+   *          laboratory
+   */
+  @PreAuthorize("hasPermission(#laboratory, 'write')")
+  public void save(Laboratory laboratory) {
+    repository.save(laboratory);
+  }
 }
