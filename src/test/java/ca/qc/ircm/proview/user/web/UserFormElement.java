@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
 import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
@@ -32,7 +31,7 @@ import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.user.web.UserForm.CREATE_NEW_LABORATORY;
-import static ca.qc.ircm.proview.user.web.UserForm.LABORATORY_NAME;
+import static ca.qc.ircm.proview.user.web.UserForm.NEW_LABORATORY_NAME;
 
 import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
@@ -72,17 +71,16 @@ public class UserFormElement extends FormLayoutElement {
     return passwords().passwordConfirm();
   }
 
-  public CheckboxElement createNewLaboratory() {
-    return $(CheckboxElement.class).attributeContains("class", CREATE_NEW_LABORATORY).first();
-  }
-
   public ComboBoxElement laboratory() {
     return $(ComboBoxElement.class).attributeContains("class", LABORATORY).first();
   }
 
-  public TextFieldElement laboratoryName() {
-    return $(TextFieldElement.class)
-        .attributeContains("class", styleName(LABORATORY, LABORATORY_NAME)).first();
+  public CheckboxElement createNewLaboratory() {
+    return $(CheckboxElement.class).attributeContains("class", CREATE_NEW_LABORATORY).first();
+  }
+
+  public TextFieldElement newLaboratoryName() {
+    return $(TextFieldElement.class).attributeContains("class", NEW_LABORATORY_NAME).first();
   }
 
   public TextFieldElement address() {

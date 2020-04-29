@@ -69,7 +69,6 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   private String email = "test@ircm.qc.ca";
   private String name = "Test User";
   private String password = "test_password";
-  private String laboratoryName = "Test Laboratory";
   private String addressLine = "200 My Street";
   private String town = "My Town";
   private String state = "My State";
@@ -160,7 +159,6 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     dialog.userForm().passwordConfirm().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).get();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
-    dialog.userForm().laboratoryName().setValue(laboratoryName);
     dialog.userForm().address().setValue(addressLine);
     dialog.userForm().town().setValue(town);
     dialog.userForm().state().setValue(state);
@@ -183,7 +181,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     assertEquals(LocalDateTime.of(2008, 8, 11, 13, 43, 51), user.getRegisterTime());
     entityManager.refresh(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals("Translational Proteomics", user.getLaboratory().getName());
     assertEquals(1, user.getPhoneNumbers().size());
     assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
     assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
@@ -214,7 +212,6 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     dialog.userForm().passwordConfirm().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).get();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
-    dialog.userForm().laboratoryName().setValue(laboratoryName);
     dialog.userForm().address().setValue(addressLine);
     dialog.userForm().town().setValue(town);
     dialog.userForm().state().setValue(state);
@@ -247,7 +244,6 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     dialog.userForm().passwordConfirm().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).get();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
-    dialog.userForm().laboratoryName().setValue(laboratoryName);
     dialog.userForm().address().setValue(addressLine);
     dialog.userForm().town().setValue(town);
     dialog.userForm().state().setValue(state);
@@ -271,7 +267,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     assertTrue(user.getRegisterTime().isBefore(LocalDateTime.now().plusSeconds(60)));
     entityManager.refresh(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals("Translational Proteomics", user.getLaboratory().getName());
     assertEquals(1, user.getPhoneNumbers().size());
     assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
     assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
@@ -301,7 +297,6 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     dialog.userForm().passwordConfirm().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).get();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
-    dialog.userForm().laboratoryName().setValue(laboratoryName);
     dialog.userForm().address().setValue(addressLine);
     dialog.userForm().town().setValue(town);
     dialog.userForm().state().setValue(state);

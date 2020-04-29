@@ -56,6 +56,7 @@ import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,8 +77,6 @@ public class UserFormPresenter {
   private Binder<User> binder = new BeanValidationBinder<>(User.class);
   private ListDataProvider<Laboratory> laboratoriesDataProvider;
   private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
-  private Binder<LaboratoryContainer> laboratoryContainerBinder =
-      new BeanValidationBinder<>(LaboratoryContainer.class);
   private Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
   private Binder<PhoneNumber> phoneNumberBinder = new BeanValidationBinder<>(PhoneNumber.class);
   private User user;
@@ -106,13 +105,15 @@ public class UserFormPresenter {
           DataProvider.fromStream(Stream.of(authorizationService.getCurrentUser().getLaboratory()));
     }
     form.laboratory.setDataProvider(laboratoriesDataProvider);
-    form.laboratory.setItemLabelGenerator(lab -> lab.getName());
-    form.laboratory.setVisible(authorizationService.hasRole(UserRole.ADMIN));
-    form.laboratory.addValueChangeListener(e -> {
-      laboratoryBinder.readBean(e.getValue());
-    });
-    form.createNewLaboratory.addValueChangeListener(e -> updateCreateNewLaboratory());
+    form.laboratory.setRequiredIndicatorVisible(true);
+    form.laboratory.setReadOnly(!authorizationService.hasRole(UserRole.ADMIN));
+    form.laboratory.setEnabled(authorizationService.hasRole(UserRole.ADMIN));
+    form.laboratory.setItemLabelGenerator(lab -> Objects.toString(lab.getName(), ""));
     form.createNewLaboratory.setVisible(authorizationService.hasRole(UserRole.ADMIN));
+    form.createNewLaboratory.setEnabled(false);
+    form.createNewLaboratory.addValueChangeListener(e -> updateCreateNewLaboratory());
+    form.newLaboratoryName.setVisible(authorizationService.hasRole(UserRole.ADMIN));
+    form.newLaboratoryName.setEnabled(false);
     setUser(null);
     updateManager();
     updateCreateNewLaboratory();
@@ -127,13 +128,10 @@ public class UserFormPresenter {
         .bind(NAME);
     binder.forField(form.admin).bind(ADMIN);
     binder.forField(form.manager).bind(MANAGER);
-    if (!laboratoriesDataProvider.getItems().isEmpty()) {
-      form.laboratory.setRequiredIndicatorVisible(true);
-    }
-    laboratoryContainerBinder.forField(form.laboratory)
+    binder.forField(form.laboratory)
         .withValidator(laboratoryRequiredValidator(webResources.message(REQUIRED)))
         .withNullRepresentation(null).bind(LABORATORY);
-    laboratoryBinder.forField(form.laboratoryName).asRequired(webResources.message(REQUIRED))
+    laboratoryBinder.forField(form.newLaboratoryName).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(LABORATORY_NAME);
     addressBinder.forField(form.addressLine).asRequired(webResources.message(REQUIRED))
         .withNullRepresentation("").bind(LINE);
@@ -154,17 +152,19 @@ public class UserFormPresenter {
   }
 
   private Validator<Laboratory> laboratoryRequiredValidator(String errorMessage) {
-    return (value, context) -> !form.createNewLaboratory.getValue() && value == null
-        ? ValidationResult.error(errorMessage)
-        : ValidationResult.ok();
+    return (value,
+        context) -> !form.createNewLaboratory.getValue()
+            && (value == null || value.getName() == null) ? ValidationResult.error(errorMessage)
+                : ValidationResult.ok();
   }
 
   private void updateReadOnly() {
     boolean readOnly =
         user.getId() != null && !authorizationService.hasPermission(user, BasePermission.WRITE);
     binder.setReadOnly(readOnly);
-    form.laboratoryName.setReadOnly(
-        readOnly || !authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
+    form.laboratory.setReadOnly(!authorizationService.hasRole(UserRole.ADMIN));
+    form.laboratory.setEnabled(
+        !authorizationService.hasRole(UserRole.ADMIN) || !form.createNewLaboratory.getValue());
     form.passwords.setVisible(!readOnly);
     addressBinder.setReadOnly(readOnly);
     phoneNumberBinder.setReadOnly(readOnly);
@@ -175,26 +175,19 @@ public class UserFormPresenter {
       form.createNewLaboratory.setEnabled(form.manager.getValue());
       if (!form.manager.getValue()) {
         form.createNewLaboratory.setValue(false);
-        updateCreateNewLaboratory();
+        form.laboratory.setEnabled(true);
+        form.newLaboratoryName.setEnabled(false);
       }
     }
   }
 
   private void updateCreateNewLaboratory() {
-    boolean createNew = form.createNewLaboratory.getValue();
-    form.laboratory.setEnabled(!createNew);
-    laboratoryBinder
-        .readBean(createNew || user.getLaboratory() == null || form.laboratory.getValue() == null
-            ? new Laboratory(laboratoryBinder.getBean().getName())
-            : laboratoryService.get(form.laboratory.getValue().getId()));
+    form.laboratory.setEnabled(!form.createNewLaboratory.getValue());
+    form.newLaboratoryName.setEnabled(form.createNewLaboratory.getValue());
   }
 
   BinderValidationStatus<User> validateUser() {
     return binder.validate();
-  }
-
-  BinderValidationStatus<LaboratoryContainer> validateLaboratoryContainer() {
-    return laboratoryContainerBinder.validate();
   }
 
   BinderValidationStatus<Laboratory> validateLaboratory() {
@@ -213,8 +206,9 @@ public class UserFormPresenter {
     boolean valid = true;
     valid = validateUser().isOk() && valid;
     valid = form.passwords.validate().isOk() && valid;
-    valid = validateLaboratoryContainer().isOk() && valid;
-    valid = validateLaboratory().isOk() && valid;
+    if (form.createNewLaboratory.getValue()) {
+      valid = validateLaboratory().isOk() && valid;
+    }
     valid = validateAddress().isOk() && valid;
     valid = validatePhoneNumber().isOk() && valid;
     return valid;
@@ -228,8 +222,10 @@ public class UserFormPresenter {
     if (form.laboratory.getValue() != null
         && (!form.createNewLaboratory.isEnabled() || !form.createNewLaboratory.getValue())) {
       user.getLaboratory().setId(form.laboratory.getValue().getId());
+      user.getLaboratory().setName(form.laboratory.getValue().getName());
     } else {
       user.getLaboratory().setId(null);
+      user.getLaboratory().setName(form.newLaboratoryName.getValue());
     }
     return user;
   }
@@ -260,21 +256,8 @@ public class UserFormPresenter {
     this.user = user;
     binder.setBean(user);
     form.passwords.setRequired(user.getId() == null);
-    laboratoryBinder.setBean(user.getLaboratory());
     addressBinder.setBean(user.getAddress());
     phoneNumberBinder.setBean(user.getPhoneNumbers().get(0));
     updateReadOnly();
-  }
-
-  static class LaboratoryContainer {
-    private Laboratory laboratory;
-
-    public Laboratory getLaboratory() {
-      return laboratory;
-    }
-
-    public void setLaboratory(Laboratory laboratory) {
-      this.laboratory = laboratory;
-    }
   }
 }

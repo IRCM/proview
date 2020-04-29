@@ -50,7 +50,6 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.user.web.UserFormPresenter.LaboratoryContainer;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.TextField;
@@ -103,7 +102,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
   private String email = "test@ircm.qc.ca";
   private String name = "Test User";
   private String password = "test_password";
-  private String laboratoryName = "Test Laboratory";
+  private String newLaboratoryName = "Test Laboratory";
   private String addressLine = "200 My Street";
   private String town = "My Town";
   private String state = "My State";
@@ -130,7 +129,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     form.createNewLaboratory = new Checkbox();
     form.passwords = mock(PasswordsForm.class);
     form.laboratory = new ComboBox<>();
-    form.laboratoryName = new TextField();
+    form.newLaboratoryName = new TextField();
     form.addressLine = new TextField();
     form.town = new TextField();
     form.state = new TextField();
@@ -158,7 +157,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     if (!items(form.laboratory).isEmpty()) {
       form.laboratory.setValue(laboratory);
     }
-    form.laboratoryName.setValue(laboratoryName);
+    form.newLaboratoryName.setValue(newLaboratoryName);
     form.addressLine.setValue(addressLine);
     form.town.setValue(town);
     form.state.setValue(state);
@@ -175,9 +174,11 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     assertFalse(form.admin.isVisible());
     assertFalse(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertTrue(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
     assertFalse(form.createNewLaboratory.isVisible());
-    assertFalse(form.laboratory.isVisible());
-    assertTrue(form.laboratoryName.isReadOnly());
+    assertFalse(form.newLaboratoryName.isVisible());
   }
 
   @Test
@@ -188,9 +189,11 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     assertFalse(form.admin.isVisible());
     assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertTrue(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
     assertFalse(form.createNewLaboratory.isVisible());
-    assertFalse(form.laboratory.isVisible());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertFalse(form.newLaboratoryName.isVisible());
   }
 
   @Test
@@ -202,11 +205,13 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     assertTrue(form.admin.isVisible());
     assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
     assertTrue(form.createNewLaboratory.isVisible());
     assertFalse(form.createNewLaboratory.isEnabled());
-    assertTrue(form.laboratory.isVisible());
-    assertTrue(form.laboratory.isEnabled());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -245,11 +250,13 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     form.admin.setValue(true);
     assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
     assertTrue(form.createNewLaboratory.isVisible());
     assertFalse(form.createNewLaboratory.isEnabled());
-    assertTrue(form.laboratory.isVisible());
-    assertTrue(form.laboratory.isEnabled());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -261,11 +268,13 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     form.admin.setValue(true);
     form.admin.setValue(false);
     assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
     assertTrue(form.createNewLaboratory.isVisible());
     assertFalse(form.createNewLaboratory.isEnabled());
-    assertTrue(form.laboratory.isVisible());
-    assertTrue(form.laboratory.isEnabled());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -275,9 +284,14 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     presenter.init(form);
     presenter.localeChange(locale);
     form.manager.setValue(true);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertTrue(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
     assertFalse(form.createNewLaboratory.isVisible());
-    assertFalse(form.laboratory.isVisible());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertFalse(form.createNewLaboratory.isEnabled());
+    assertFalse(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -287,11 +301,14 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     presenter.init(form);
     presenter.localeChange(locale);
     form.manager.setValue(true);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
     assertTrue(form.createNewLaboratory.isVisible());
     assertTrue(form.createNewLaboratory.isEnabled());
-    assertTrue(form.laboratory.isVisible());
-    assertTrue(form.laboratory.isEnabled());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -302,11 +319,14 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     form.manager.setValue(true);
     form.createNewLaboratory.setValue(true);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertFalse(form.laboratory.isEnabled());
     assertTrue(form.createNewLaboratory.isVisible());
     assertTrue(form.createNewLaboratory.isEnabled());
-    assertTrue(form.laboratory.isVisible());
-    assertFalse(form.laboratory.isEnabled());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertTrue(form.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -317,11 +337,14 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     presenter.localeChange(locale);
     form.manager.setValue(true);
     form.manager.setValue(false);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
     assertTrue(form.createNewLaboratory.isVisible());
     assertFalse(form.createNewLaboratory.isEnabled());
-    assertTrue(form.laboratory.isVisible());
-    assertTrue(form.laboratory.isEnabled());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -334,31 +357,14 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     form.manager.setValue(true);
     form.createNewLaboratory.setValue(true);
     form.manager.setValue(false);
-    assertTrue(form.createNewLaboratory.isVisible());
-    assertFalse(form.createNewLaboratory.isEnabled());
+    assertTrue(form.manager.isVisible());
     assertTrue(form.laboratory.isVisible());
     assertTrue(form.laboratory.isEnabled());
-    assertFalse(form.laboratoryName.isReadOnly());
-  }
-
-  @Test
-  public void checkThenUncheckCreateNewLaboratory() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
-    presenter.init(form);
-    presenter.localeChange(locale);
-    User user = userRepository.findById(10L).get();
-    Laboratory laboratory = laboratoryRepository.findById(4L).get();
-    presenter.setUser(user);
-    form.laboratory.setValue(laboratory);
-    form.manager.setValue(true);
-    form.createNewLaboratory.setValue(true);
-    form.laboratoryName.setValue(laboratoryName);
-    form.createNewLaboratory.setValue(false);
-    assertEquals(laboratory, form.laboratory.getValue());
-    assertEquals(laboratory.getId(), form.laboratory.getValue().getId());
-    assertEquals(laboratory.getName(), form.laboratoryName.getValue());
+    assertTrue(form.createNewLaboratory.isVisible());
+    assertFalse(form.createNewLaboratory.isEnabled());
+    assertFalse(form.createNewLaboratory.getValue());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
   }
 
   @Test
@@ -399,8 +405,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     verify(form.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     assertEquals(laboratory.getId(), form.laboratory.getValue().getId());
-    assertEquals(laboratory.getName(), form.laboratoryName.getValue());
-    assertTrue(form.laboratoryName.isReadOnly());
+    assertTrue(form.laboratory.isReadOnly());
     Address address = defaultAddressConfiguration.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertFalse(form.addressLine.isReadOnly());
@@ -444,8 +449,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     verify(form.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     assertEquals((Long) 1L, form.laboratory.getValue().getId());
-    assertEquals("Admin", form.laboratoryName.getValue());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertFalse(form.laboratory.isReadOnly());
     Address address = defaultAddressConfiguration.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertFalse(form.addressLine.isReadOnly());
@@ -484,8 +488,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     verify(form.passwords, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
-    assertEquals(user.getLaboratory().getName(), form.laboratoryName.getValue());
-    assertTrue(form.laboratoryName.isReadOnly());
+    assertTrue(form.laboratory.isReadOnly());
     Address address = user.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertTrue(form.addressLine.isReadOnly());
@@ -528,8 +531,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     verify(form.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
-    assertEquals(user.getLaboratory().getName(), form.laboratoryName.getValue());
-    assertTrue(form.laboratoryName.isReadOnly());
+    assertTrue(form.laboratory.isReadOnly());
     Address address = user.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertFalse(form.addressLine.isReadOnly());
@@ -574,8 +576,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     verify(form.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
-    assertEquals(user.getLaboratory().getName(), form.laboratoryName.getValue());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertFalse(form.laboratory.isReadOnly());
     Address address = user.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertFalse(form.addressLine.isReadOnly());
@@ -615,8 +616,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     verify(form.passwords, atLeastOnce()).setVisible(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
-    assertEquals(user.getLaboratory().getName(), form.laboratoryName.getValue());
-    assertTrue(form.laboratoryName.isReadOnly());
+    assertTrue(form.laboratory.isReadOnly());
     Address address = user.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertTrue(form.addressLine.isReadOnly());
@@ -659,8 +659,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     verify(form.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
-    assertEquals(user.getLaboratory().getName(), form.laboratoryName.getValue());
-    assertTrue(form.laboratoryName.isReadOnly());
+    assertTrue(form.laboratory.isReadOnly());
     Address address = user.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertFalse(form.addressLine.isReadOnly());
@@ -705,8 +704,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     verify(form.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertFalse(booleanCaptor.getValue());
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
-    assertEquals(user.getLaboratory().getName(), form.laboratoryName.getValue());
-    assertFalse(form.laboratoryName.isReadOnly());
+    assertFalse(form.laboratory.isReadOnly());
     Address address = user.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertFalse(form.addressLine.isReadOnly());
@@ -740,7 +738,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     verify(form.passwords, atLeastOnce()).setRequired(booleanCaptor.capture());
     assertTrue(booleanCaptor.getValue());
     assertEquals(laboratory.getId(), form.laboratory.getValue().getId());
-    assertEquals(laboratory.getName(), form.laboratoryName.getValue());
     Address address = defaultAddressConfiguration.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertEquals(address.getTown(), form.town.getValue());
@@ -835,7 +832,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
 
     assertFalse(presenter.isValid());
 
-    BinderValidationStatus<LaboratoryContainer> status = presenter.validateLaboratoryContainer();
+    BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
     Optional<BindingValidationStatus<?>> optionalError =
         findValidationStatusByField(status, form.laboratory);
@@ -857,7 +854,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
 
     assertFalse(presenter.isValid());
 
-    BinderValidationStatus<LaboratoryContainer> status = presenter.validateLaboratoryContainer();
+    BinderValidationStatus<User> status = presenter.validateUser();
     assertFalse(status.isOk());
     Optional<BindingValidationStatus<?>> optionalError =
         findValidationStatusByField(status, form.laboratory);
@@ -876,36 +873,14 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     fillForm();
     form.manager.setValue(true);
     form.createNewLaboratory.setValue(true);
-    form.laboratoryName.setValue("");
+    form.newLaboratoryName.setValue("");
 
     assertFalse(presenter.isValid());
 
     BinderValidationStatus<Laboratory> status = presenter.validateLaboratory();
     assertFalse(status.isOk());
     Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.laboratoryName);
-    assertTrue(optionalError.isPresent());
-    BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
-    verify(userService, never()).save(any(), any());
-  }
-
-  @Test
-  public void isValid_LaboratoryNameEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    presenter.init(form);
-    presenter.localeChange(locale);
-    fillForm();
-    form.manager.setValue(true);
-    form.laboratoryName.setValue("");
-
-    assertFalse(presenter.isValid());
-
-    BinderValidationStatus<Laboratory> status = presenter.validateLaboratory();
-    assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.laboratoryName);
+        findValidationStatusByField(status, form.newLaboratoryName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
@@ -1054,7 +1029,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertFalse(user.isManager());
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1082,7 +1056,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isManager());
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1113,7 +1086,7 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isManager());
     assertNotNull(user.getLaboratory());
     assertNull(user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
+    assertEquals(newLaboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1143,7 +1116,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isManager());
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1175,7 +1147,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertFalse(user.isManager());
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1204,7 +1175,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isManager());
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1234,7 +1204,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertFalse(user.isManager());
     assertNotNull(user.getLaboratory());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1265,7 +1234,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isAdmin());
     assertTrue(user.isManager());
     assertEquals((Long) 2L, user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1295,7 +1263,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertTrue(user.isAdmin());
     assertTrue(user.isManager());
     assertEquals((Long) 2L, user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1327,7 +1294,6 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertFalse(user.isAdmin());
     assertTrue(user.isManager());
     assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(laboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1336,20 +1302,5 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
     assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
     assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
-  }
-
-  @Test
-  public void setUser_Multiple_ChangeLaboratoryName() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    presenter.init(form);
-    presenter.setUser(new User());
-    presenter.localeChange(locale);
-    final String expectedLaboratoryName = form.laboratory.getValue().getName();
-    form.laboratoryName.setValue(laboratoryName);
-
-    presenter.setUser(new User());
-
-    assertEquals(expectedLaboratoryName, form.laboratory.getValue().getName());
   }
 }

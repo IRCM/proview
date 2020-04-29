@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.text.Strings.property;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
 import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
@@ -66,6 +64,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   public static final String NAME_PLACEHOLDER = "John Smith";
   public static final String CREATE_NEW_LABORATORY = "createNewLaboratory";
   public static final String LABORATORY_NAME = LaboratoryProperties.NAME;
+  public static final String NEW_LABORATORY_NAME = "newLaboratoryName";
   public static final String LABORATORY_NAME_PLACEHOLDER = "Translational Proteomics";
   public static final String NUMBER_PLACEHOLDER = "514-987-5500";
   protected TextField email = new TextField();
@@ -73,9 +72,9 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   protected Checkbox admin = new Checkbox();
   protected Checkbox manager = new Checkbox();
   protected PasswordsForm passwords = new PasswordsForm();
-  protected Checkbox createNewLaboratory = new Checkbox();
   protected ComboBox<Laboratory> laboratory = new ComboBox<>();
-  protected TextField laboratoryName = new TextField();
+  protected Checkbox createNewLaboratory = new Checkbox();
+  protected TextField newLaboratoryName = new TextField();
   protected TextField addressLine = new TextField();
   protected TextField town = new TextField();
   protected TextField state = new TextField();
@@ -103,7 +102,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
     add(new FormLayout(email, name, admin, manager, passwords),
-        new FormLayout(laboratory, createNewLaboratory, laboratoryName),
+        new FormLayout(laboratory, createNewLaboratory, newLaboratoryName),
         new FormLayout(addressLine, town, state, country, postalCode),
         new FormLayout(phoneType, number, extension));
     email.addClassName(EMAIL);
@@ -112,10 +111,10 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     name.setPlaceholder(NAME_PLACEHOLDER);
     admin.addClassName(ADMIN);
     manager.addClassName(MANAGER);
-    createNewLaboratory.addClassName(CREATE_NEW_LABORATORY);
     laboratory.addClassName(LABORATORY);
-    laboratoryName.addClassName(styleName(LABORATORY, LABORATORY_NAME));
-    laboratoryName.setPlaceholder(LABORATORY_NAME_PLACEHOLDER);
+    createNewLaboratory.addClassName(CREATE_NEW_LABORATORY);
+    newLaboratoryName.addClassName(NEW_LABORATORY_NAME);
+    newLaboratoryName.setPlaceholder(LABORATORY_NAME_PLACEHOLDER);
     Address address = defaultAddressConfiguration.getAddress();
     addressLine.addClassName(LINE);
     addressLine.setPlaceholder(address.getLine());
@@ -147,9 +146,9 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     name.setLabel(userResources.message(NAME));
     admin.setLabel(userResources.message(ADMIN));
     manager.setLabel(userResources.message(MANAGER));
-    createNewLaboratory.setLabel(resources.message(CREATE_NEW_LABORATORY));
     laboratory.setLabel(userResources.message(LABORATORY));
-    laboratoryName.setLabel(resources.message(property(LABORATORY, LABORATORY_NAME)));
+    createNewLaboratory.setLabel(resources.message(CREATE_NEW_LABORATORY));
+    newLaboratoryName.setLabel(resources.message(NEW_LABORATORY_NAME));
     addressLine.setLabel(addressResources.message(LINE));
     town.setLabel(addressResources.message(TOWN));
     state.setLabel(addressResources.message(STATE));

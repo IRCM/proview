@@ -19,8 +19,6 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
-import static ca.qc.ircm.proview.text.Strings.property;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
 import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
@@ -37,9 +35,9 @@ import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.user.web.UserForm.CLASS_NAME;
 import static ca.qc.ircm.proview.user.web.UserForm.CREATE_NEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserForm.EMAIL_PLACEHOLDER;
-import static ca.qc.ircm.proview.user.web.UserForm.LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UserForm.LABORATORY_NAME_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserForm.NAME_PLACEHOLDER;
+import static ca.qc.ircm.proview.user.web.UserForm.NEW_LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UserForm.NUMBER_PLACEHOLDER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -106,10 +104,9 @@ public class UserFormTest extends AbstractViewTestCase {
     assertTrue(form.name.getClassNames().contains(NAME));
     assertTrue(form.admin.getClassNames().contains(ADMIN));
     assertTrue(form.manager.getClassNames().contains(MANAGER));
-    assertTrue(form.createNewLaboratory.getClassNames().contains(CREATE_NEW_LABORATORY));
     assertTrue(form.laboratory.getClassNames().contains(LABORATORY));
-    assertTrue(
-        form.laboratoryName.getClassNames().contains(styleName(LABORATORY, LABORATORY_NAME)));
+    assertTrue(form.createNewLaboratory.getClassNames().contains(CREATE_NEW_LABORATORY));
+    assertTrue(form.newLaboratoryName.getClassNames().contains(NEW_LABORATORY_NAME));
     assertTrue(form.addressLine.getClassNames().contains(LINE));
     assertTrue(form.town.getClassNames().contains(TOWN));
     assertTrue(form.state.getClassNames().contains(STATE));
@@ -125,7 +122,7 @@ public class UserFormTest extends AbstractViewTestCase {
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(EMAIL_PLACEHOLDER, form.email.getPlaceholder());
     assertEquals(NAME_PLACEHOLDER, form.name.getPlaceholder());
-    assertEquals(LABORATORY_NAME_PLACEHOLDER, form.laboratoryName.getPlaceholder());
+    assertEquals(LABORATORY_NAME_PLACEHOLDER, form.newLaboratoryName.getPlaceholder());
     Address address = defaultAddressConfiguration.getAddress();
     assertEquals(address.getLine(), form.addressLine.getPlaceholder());
     assertEquals(address.getTown(), form.town.getPlaceholder());
@@ -142,10 +139,9 @@ public class UserFormTest extends AbstractViewTestCase {
     assertEquals(userResources.message(NAME), form.name.getLabel());
     assertEquals(userResources.message(ADMIN), form.admin.getLabel());
     assertEquals(userResources.message(MANAGER), form.manager.getLabel());
-    assertEquals(resources.message(CREATE_NEW_LABORATORY), form.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), form.laboratory.getLabel());
-    assertEquals(resources.message(property(LABORATORY, LABORATORY_NAME)),
-        form.laboratoryName.getLabel());
+    assertEquals(resources.message(CREATE_NEW_LABORATORY), form.createNewLaboratory.getLabel());
+    assertEquals(resources.message(NEW_LABORATORY_NAME), form.newLaboratoryName.getLabel());
     assertEquals(addressResources.message(LINE), form.addressLine.getLabel());
     assertEquals(addressResources.message(TOWN), form.town.getLabel());
     assertEquals(addressResources.message(STATE), form.state.getLabel());
@@ -174,10 +170,9 @@ public class UserFormTest extends AbstractViewTestCase {
     assertEquals(userResources.message(NAME), form.name.getLabel());
     assertEquals(userResources.message(ADMIN), form.admin.getLabel());
     assertEquals(userResources.message(MANAGER), form.manager.getLabel());
-    assertEquals(resources.message(CREATE_NEW_LABORATORY), form.createNewLaboratory.getLabel());
     assertEquals(userResources.message(LABORATORY), form.laboratory.getLabel());
-    assertEquals(resources.message(property(LABORATORY, LABORATORY_NAME)),
-        form.laboratoryName.getLabel());
+    assertEquals(resources.message(CREATE_NEW_LABORATORY), form.createNewLaboratory.getLabel());
+    assertEquals(resources.message(NEW_LABORATORY_NAME), form.newLaboratoryName.getLabel());
     assertEquals(addressResources.message(LINE), form.addressLine.getLabel());
     assertEquals(addressResources.message(TOWN), form.town.getLabel());
     assertEquals(addressResources.message(STATE), form.state.getLabel());
