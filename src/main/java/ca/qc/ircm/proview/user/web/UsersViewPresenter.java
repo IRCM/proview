@@ -26,6 +26,8 @@ import static ca.qc.ircm.proview.user.web.UsersView.USERS_REQUIRED;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import com.vaadin.flow.component.UI;
@@ -53,17 +55,18 @@ import org.springframework.context.annotation.Scope;
 public class UsersViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(UsersViewPresenter.class);
   private UsersView view;
-  @Autowired
-  private UserService userService;
-  @Autowired
+  private UserService service;
+  private LaboratoryService laboratoryService;
   private AuthorizationService authorizationService;
   private Locale locale;
   private ListDataProvider<User> usersDataProvider;
   private WebUserFilter filter = new WebUserFilter();
 
   @Autowired
-  protected UsersViewPresenter(UserService userService, AuthorizationService authorizationService) {
-    this.userService = userService;
+  protected UsersViewPresenter(UserService service, LaboratoryService laboratoryService,
+      AuthorizationService authorizationService) {
+    this.service = service;
+    this.laboratoryService = laboratoryService;
     this.authorizationService = authorizationService;
   }
 
@@ -75,12 +78,13 @@ public class UsersViewPresenter {
     view.add.setVisible(authorizationService.hasAnyRole(ADMIN, MANAGER));
     view.switchUser.setVisible(authorizationService.hasRole(ADMIN));
     view.userDialog.addSavedListener(e -> loadUsers());
+    view.laboratoryDialog.addSavedListener(e -> loadUsers());
   }
 
   @SuppressWarnings("checkstyle:linelength")
   private void loadUsers() {
-    List<User> users = authorizationService.hasRole(ADMIN) ? userService.all(null)
-        : userService.all(null, authorizationService.getCurrentUser().getLaboratory());
+    List<User> users = authorizationService.hasRole(ADMIN) ? service.all(null)
+        : service.all(null, authorizationService.getCurrentUser().getLaboratory());
     usersDataProvider = new ListDataProvider<>(users);
     ConfigurableFilterDataProvider<User, Void, SerializablePredicate<User>> dataProvider =
         usersDataProvider.withConfigurableFilter();
@@ -118,14 +122,20 @@ public class UsersViewPresenter {
 
   void view(User user) {
     clearError();
-    view.userDialog.setUser(userService.get(user.getId()));
+    view.userDialog.setUser(service.get(user.getId()));
     view.userDialog.open();
+  }
+
+  void view(Laboratory laboratory) {
+    clearError();
+    view.laboratoryDialog.setLaboratory(laboratoryService.get(laboratory.getId()));
+    view.laboratoryDialog.open();
   }
 
   void toggleActive(User user) {
     clearError();
     user.setActive(!user.isActive());
-    userService.save(user, null);
+    service.save(user, null);
   }
 
   void switchUser() {

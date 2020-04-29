@@ -38,6 +38,8 @@ import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryRepository;
+import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
@@ -65,17 +67,21 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UsersViewPresenterTest extends AbstractViewTestCase {
+  @Autowired
   private UsersViewPresenter presenter;
   @Mock
   private UsersView view;
-  @Mock
-  private UserService userService;
-  @Mock
+  @MockBean
+  private UserService service;
+  @MockBean
+  private LaboratoryService laboratoryService;
+  @MockBean
   private AuthorizationService authorizationService;
   @Mock
   private DataProvider<User, ?> dataProvider;
@@ -83,8 +89,12 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   private ArgumentCaptor<User> userCaptor;
   @Captor
   private ArgumentCaptor<ComponentEventListener<SavedEvent<UserDialog>>> userSavedListenerCaptor;
+  @Captor
+  private ArgumentCaptor<ComponentEventListener<SavedEvent<LaboratoryDialog>>> laboratorySavedListenerCaptor;
   @Autowired
-  private UserRepository userRepository;
+  private UserRepository repository;
+  @Autowired
+  private LaboratoryRepository laboratoryRepository;
   private List<User> users;
   private User currentUser;
   private Locale locale = ENGLISH;
@@ -96,7 +106,6 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   @Before
   @SuppressWarnings("unchecked")
   public void beforeTest() {
-    presenter = new UsersViewPresenter(userService, authorizationService);
     view.header = new H2();
     view.users = new Grid<>();
     view.users.setSelectionMode(SelectionMode.MULTI);
@@ -105,17 +114,18 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     view.add = new Button();
     view.switchUser = new Button();
     view.userDialog = mock(UserDialog.class);
-    users = userRepository.findAll();
-    when(userService.all(any(), any(Laboratory.class))).thenReturn(users);
-    when(userService.all(any())).thenReturn(users);
-    currentUser = userRepository.findById(2L).orElse(null);
+    view.laboratoryDialog = mock(LaboratoryDialog.class);
+    users = repository.findAll();
+    when(service.all(any(), any(Laboratory.class))).thenReturn(users);
+    when(service.all(any())).thenReturn(users);
+    currentUser = repository.findById(2L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(currentUser);
   }
 
   @Test
   public void users_User() {
     presenter.init(view);
-    verify(userService).all(null, currentUser.getLaboratory());
+    verify(service).all(null, currentUser.getLaboratory());
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
@@ -133,7 +143,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   public void users_Manager() {
     when(authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER)).thenReturn(true);
     presenter.init(view);
-    verify(userService).all(null, currentUser.getLaboratory());
+    verify(service).all(null, currentUser.getLaboratory());
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
@@ -152,7 +162,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     when(authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER)).thenReturn(true);
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
-    verify(userService).all(null);
+    verify(service).all(null);
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
@@ -277,12 +287,25 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     presenter.init(view);
     User user = mock(User.class);
     when(user.getId()).thenReturn(2L);
-    User databaseUser = userRepository.findById(2L).orElse(null);
-    when(userService.get(any(Long.class))).thenReturn(databaseUser);
+    User databaseUser = repository.findById(2L).orElse(null);
+    when(service.get(any(Long.class))).thenReturn(databaseUser);
     presenter.view(user);
-    verify(userService).get(2L);
+    verify(service).get(2L);
     verify(view.userDialog).setUser(databaseUser);
     verify(view.userDialog).open();
+  }
+
+  @Test
+  public void view_Laboratory() {
+    presenter.init(view);
+    Laboratory laboratory = mock(Laboratory.class);
+    when(laboratory.getId()).thenReturn(2L);
+    Laboratory databaseLaboratory = laboratoryRepository.findById(2L).orElse(null);
+    when(laboratoryService.get(any(Long.class))).thenReturn(databaseLaboratory);
+    presenter.view(laboratory);
+    verify(laboratoryService).get(2L);
+    verify(view.laboratoryDialog).setLaboratory(databaseLaboratory);
+    verify(view.laboratoryDialog).open();
   }
 
   @Test
@@ -293,31 +316,42 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     ComponentEventListener<SavedEvent<UserDialog>> savedListener =
         userSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
-    verify(userService, times(2)).all(null, currentUser.getLaboratory());
+    verify(service, times(2)).all(null, currentUser.getLaboratory());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void refreshOnSaved_Laboratory() {
+    presenter.init(view);
+    verify(view.laboratoryDialog).addSavedListener(laboratorySavedListenerCaptor.capture());
+    ComponentEventListener<SavedEvent<LaboratoryDialog>> savedListener =
+        laboratorySavedListenerCaptor.getValue();
+    savedListener.onComponentEvent(mock(SavedEvent.class));
+    verify(service, times(2)).all(null, currentUser.getLaboratory());
   }
 
   @Test
   public void toggleActive_Active() {
     presenter.init(view);
-    User user = userRepository.findById(3L).orElse(null);
+    User user = repository.findById(3L).orElse(null);
     presenter.toggleActive(user);
-    verify(userService).save(user, null);
+    verify(service).save(user, null);
     assertFalse(user.isActive());
   }
 
   @Test
   public void toggleActive_Inactive() {
     presenter.init(view);
-    User user = userRepository.findById(11L).orElse(null);
+    User user = repository.findById(11L).orElse(null);
     presenter.toggleActive(user);
-    verify(userService).save(user, null);
+    verify(service).save(user, null);
     assertTrue(user.isActive());
   }
 
   @Test
   public void switchUser() throws Throwable {
     presenter.init(view);
-    User user = userRepository.findById(3L).orElse(null);
+    User user = repository.findById(3L).orElse(null);
     view.users.select(user);
     presenter.switchUser();
     assertFalse(view.error.isVisible());

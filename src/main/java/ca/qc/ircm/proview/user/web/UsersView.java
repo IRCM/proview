@@ -101,12 +101,15 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected Button add = new Button();
   protected Button switchUser = new Button();
   protected UserDialog userDialog;
+  protected LaboratoryDialog laboratoryDialog;
   private transient UsersViewPresenter presenter;
 
   @Autowired
-  protected UsersView(UsersViewPresenter presenter, UserDialog userDialog) {
+  protected UsersView(UsersViewPresenter presenter, UserDialog userDialog,
+      LaboratoryDialog laboratoryDialog) {
     this.presenter = presenter;
     this.userDialog = userDialog;
+    this.laboratoryDialog = laboratoryDialog;
   }
 
   @SuppressWarnings("unchecked")
@@ -120,7 +123,13 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     buttonsLayout.add(add, switchUser);
     header.setId(HEADER);
     users.setId(USERS);
-    users.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
+    users.addItemDoubleClickListener(e -> {
+      if (e.getColumn() == laboratory) {
+        presenter.view(e.getItem().getLaboratory());
+      } else {
+        presenter.view(e.getItem());
+      }
+    });
     email = users.addColumn(user -> user.getEmail(), EMAIL).setKey(EMAIL)
         .setComparator((u1, u2) -> u1.getEmail().compareToIgnoreCase(u2.getEmail()));
     name = users.addColumn(user -> user.getName(), NAME).setKey(NAME);

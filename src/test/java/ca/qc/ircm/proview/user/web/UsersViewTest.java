@@ -96,6 +96,8 @@ public class UsersViewTest extends AbstractViewTestCase {
   private UsersViewPresenter presenter;
   @Mock
   private UserDialog userDialog;
+  @Mock
+  private LaboratoryDialog laboratoryDialog;
   @Captor
   private ArgumentCaptor<ValueProvider<User, String>> valueProviderCaptor;
   @Captor
@@ -116,7 +118,7 @@ public class UsersViewTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new UsersView(presenter, userDialog);
+    view = new UsersView(presenter, userDialog, laboratoryDialog);
     view.init();
     users = userRepository.findAll();
   }
@@ -204,7 +206,7 @@ public class UsersViewTest extends AbstractViewTestCase {
 
   @Test
   public void localeChange() {
-    view = new UsersView(presenter, userDialog);
+    view = new UsersView(presenter, userDialog, laboratoryDialog);
     mockColumns();
     view.init();
     view.localeChange(mock(LocaleChangeEvent.class));
@@ -271,7 +273,7 @@ public class UsersViewTest extends AbstractViewTestCase {
       user.setActive(!user.isActive());
       return null;
     }).when(presenter).toggleActive(any());
-    view = new UsersView(presenter, userDialog);
+    view = new UsersView(presenter, userDialog, laboratoryDialog);
     mockColumns();
     when(view.users.getDataProvider()).thenReturn(mock(DataProvider.class));
     view.init();
@@ -345,6 +347,14 @@ public class UsersViewTest extends AbstractViewTestCase {
     doubleClickItem(view.users, user, null);
 
     verify(presenter).view(user);
+  }
+
+  @Test
+  public void view_Laboratory() {
+    User user = users.get(0);
+    doubleClickItem(view.users, user, view.laboratory);
+
+    verify(presenter).view(user.getLaboratory());
   }
 
   private User email(String email) {
