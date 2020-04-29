@@ -42,6 +42,7 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
+import com.google.common.collect.Range;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.vaadin.flow.component.UI;
@@ -53,6 +54,7 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -162,6 +164,16 @@ public class SubmissionsViewPresenter {
 
   void filterDirector(String value) {
     filter.directorContains = value;
+    view.submissions.getDataProvider().refreshAll();
+  }
+
+  void filterDataAvailableDate(Range<LocalDate> range) {
+    filter.dataAvailableDateRange = range;
+    view.submissions.getDataProvider().refreshAll();
+  }
+
+  void filterDate(Range<LocalDate> range) {
+    filter.dateRange = range;
     view.submissions.getDataProvider().refreshAll();
   }
 

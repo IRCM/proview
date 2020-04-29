@@ -79,6 +79,7 @@ import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
+import com.google.common.collect.Range;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -92,6 +93,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
@@ -217,6 +219,10 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(filtersRow.getCell(view.user)).thenReturn(userFilterCell);
     HeaderCell directorFilterCell = mock(HeaderCell.class);
     when(filtersRow.getCell(view.director)).thenReturn(directorFilterCell);
+    HeaderCell dataAvailableDateFilterCell = mock(HeaderCell.class);
+    when(filtersRow.getCell(view.dataAvailableDate)).thenReturn(dataAvailableDateFilterCell);
+    HeaderCell dateFilterCell = mock(HeaderCell.class);
+    when(filtersRow.getCell(view.date)).thenReturn(dateFilterCell);
     HeaderCell serviceFilterCell = mock(HeaderCell.class);
     when(filtersRow.getCell(view.service)).thenReturn(serviceFilterCell);
     HeaderCell instrumentFilterCell = mock(HeaderCell.class);
@@ -612,6 +618,22 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     view.directorFilter.setValue("test");
 
     verify(presenter).filterDirector("test");
+  }
+
+  @Test
+  public void filterDataAvailableDate() {
+    Range<LocalDate> range = Range.closed(LocalDate.now().minusDays(1), LocalDate.now());
+    view.dataAvailableDateFilter.setValue(range);
+
+    verify(presenter).filterDataAvailableDate(range);
+  }
+
+  @Test
+  public void filterDate() {
+    Range<LocalDate> range = Range.closed(LocalDate.now().minusDays(1), LocalDate.now());
+    view.dateFilter.setValue(range);
+
+    verify(presenter).filterDate(range);
   }
 
   @Test

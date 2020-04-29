@@ -46,6 +46,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserRole;
+import ca.qc.ircm.proview.web.DateRangeField;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.button.Button;
@@ -117,6 +118,8 @@ public class SubmissionsView extends VerticalLayout
   protected TextField experimentFilter = new TextField();
   protected TextField userFilter = new TextField();
   protected TextField directorFilter = new TextField();
+  protected DateRangeField dataAvailableDateFilter = new DateRangeField();
+  protected DateRangeField dateFilter = new DateRangeField();
   protected ComboBox<MassDetectionInstrument> instrumentFilter = new ComboBox<>();
   protected ComboBox<Service> serviceFilter = new ComboBox<>();
   protected TextField samplesFilter = new TextField();
@@ -218,6 +221,13 @@ public class SubmissionsView extends VerticalLayout
     directorFilter.addValueChangeListener(e -> presenter.filterDirector(e.getValue()));
     directorFilter.setValueChangeMode(ValueChangeMode.EAGER);
     directorFilter.setSizeFull();
+    filtersRow.getCell(dataAvailableDate).setComponent(dataAvailableDateFilter);
+    dataAvailableDateFilter
+        .addValueChangeListener(e -> presenter.filterDataAvailableDate(e.getValue()));
+    dataAvailableDateFilter.setSizeFull();
+    filtersRow.getCell(date).setComponent(dateFilter);
+    dateFilter.addValueChangeListener(e -> presenter.filterDate(e.getValue()));
+    dateFilter.setSizeFull();
     filtersRow.getCell(instrument).setComponent(instrumentFilter);
     instrumentFilter.setItems(MassDetectionInstrument.values());
     instrumentFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));

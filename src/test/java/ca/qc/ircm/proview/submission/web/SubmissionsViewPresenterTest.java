@@ -49,6 +49,7 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SavedEvent;
+import com.google.common.collect.Range;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -60,6 +61,7 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -230,6 +232,24 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     presenter.init(view);
     presenter.filterDirector("test");
     assertEquals("test", presenter.filter().directorContains);
+    verify(view.submissions.getDataProvider()).refreshAll();
+  }
+
+  @Test
+  public void filterDataAvailableDate() {
+    Range<LocalDate> range = Range.closed(LocalDate.now().minusDays(1), LocalDate.now());
+    presenter.init(view);
+    presenter.filterDataAvailableDate(range);
+    assertEquals(range, presenter.filter().dataAvailableDateRange);
+    verify(view.submissions.getDataProvider()).refreshAll();
+  }
+
+  @Test
+  public void filterDate() {
+    Range<LocalDate> range = Range.closed(LocalDate.now().minusDays(1), LocalDate.now());
+    presenter.init(view);
+    presenter.filterDate(range);
+    assertEquals(range, presenter.filter().dateRange);
     verify(view.submissions.getDataProvider()).refreshAll();
   }
 
