@@ -342,7 +342,7 @@ public class UsersViewTest extends AbstractViewTestCase {
   @Test
   public void view() {
     User user = users.get(0);
-    doubleClickItem(view.users, user);
+    doubleClickItem(view.users, user, null);
 
     verify(presenter).view(user);
   }

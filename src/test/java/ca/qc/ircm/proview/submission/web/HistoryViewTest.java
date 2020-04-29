@@ -266,7 +266,7 @@ public class HistoryViewTest extends AbstractViewTestCase {
   @Test
   public void activities_DoubleClick() {
     Activity activity = activities.get(0);
-    doubleClickItem(view.activities, activity);
+    doubleClickItem(view.activities, activity, null);
 
     verify(presenter).view(activity, locale);
   }

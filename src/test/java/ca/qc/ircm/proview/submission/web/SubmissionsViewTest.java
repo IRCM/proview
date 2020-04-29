@@ -84,7 +84,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
-import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
@@ -520,7 +519,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   public void singleClickSubmission() {
     Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission);
+    clickItem(view.submissions, submission, null);
 
     verify(presenter, never()).view(any());
     verify(presenter, never()).editStatus(any());
@@ -529,8 +528,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   public void singleClickSubmission_Shift() {
     Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
-        null, -1, -1, -1, -1, 2, 0, false, true, false, false));
+    clickItem(view.submissions, submission, null, false, true, false, false);
 
     verify(presenter, never()).view(any());
     verify(presenter).editStatus(submission);
@@ -539,8 +537,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   public void singleClickSubmission_Control() {
     Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
-        null, -1, -1, -1, -1, 2, 0, true, false, false, false));
+    clickItem(view.submissions, submission, null, true, false, false, false);
 
     verify(presenter, never()).view(any());
     verify(presenter).editStatus(submission);
@@ -549,8 +546,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   public void singleClickSubmission_Meta() {
     Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
-        null, -1, -1, -1, -1, 2, 0, false, false, false, true));
+    clickItem(view.submissions, submission, null, false, false, false, true);
 
     verify(presenter, never()).view(any());
     verify(presenter).editStatus(submission);
@@ -559,8 +555,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   public void singleClickSubmission_Alt() {
     Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission, (grid, key) -> new ItemClickEvent<>(grid, false, key,
-        null, -1, -1, -1, -1, 2, 0, false, false, true, false));
+    clickItem(view.submissions, submission, null, false, false, true, false);
 
     verify(presenter, never()).view(any());
     verify(presenter).history(submission);
@@ -569,7 +564,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   public void doubleClickSubmission() {
     Submission submission = submissions.get(0);
-    doubleClickItem(view.submissions, submission);
+    doubleClickItem(view.submissions, submission, null);
 
     verify(presenter).view(submission);
     verify(presenter, never()).editStatus(any());

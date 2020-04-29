@@ -51,7 +51,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,10 +96,11 @@ public class VaadinTestUtils {
    *          grid
    * @param item
    *          item
+   * @param column
+   *          grid column
    */
-  public static <E> void clickItem(Grid<E> grid, E item) {
-    clickItem(grid, item, (gv, key) -> new ItemClickEvent<>(gv, false, key, null, -1, -1, -1, -1, 2,
-        0, false, false, false, false));
+  public static <E> void clickItem(Grid<E> grid, E item, Grid.Column<E> column) {
+    clickItem(grid, item, column, false, false, false, false);
   }
 
   /**
@@ -110,18 +110,31 @@ public class VaadinTestUtils {
    *          grid
    * @param item
    *          item
-   * @param eventGenerator
-   *          creates the item click event
+   * @param column
+   *          grid column
+   * @param ctrlKey
+   *          <code>true</code> if the control key was down when the event was fired,
+   *          <code>false</code> otherwise
+   * @param shiftKey
+   *          <code>true</code> if the shift key was down when the event was fired,
+   *          <code>false</code> otherwise
+   * @param altKey
+   *          <code>true</code> if the alt key was down when the event was fired, <code>false</code>
+   *          otherwise
+   * @param metaKey
+   *          <code>true</code> if the meta key was down when the event was fired,
+   *          <code>false</code> otherwise
    */
-  public static <E> void clickItem(Grid<E> grid, E item,
-      BiFunction<Grid<E>, String, ItemClickEvent<E>> eventGenerator) {
+  public static <E> void clickItem(Grid<E> grid, E item, Grid.Column<E> column, boolean ctrlKey,
+      boolean shiftKey, boolean altKey, boolean metaKey) {
     try {
       String key = grid.getDataCommunicator().getKeyMapper().key(item);
       Method method = Component.class.getDeclaredMethod("getEventBus");
       method.setAccessible(true);
       ComponentEventBus eventBus = (ComponentEventBus) method.invoke(grid);
-      ItemClickEvent<E> event = eventGenerator.apply(grid, key);
-      eventBus.fireEvent(event);
+      eventBus.fireEvent(new ItemClickEvent<>(grid, false, key,
+          column != null ? column.getElement().getProperty("_flowId") : null, -1, -1, -1, -1, 2, 0,
+          ctrlKey, shiftKey, altKey, metaKey));
     } catch (NoSuchMethodException | SecurityException | IllegalAccessException
         | IllegalArgumentException | InvocationTargetException e) {
       throw new IllegalStateException(e);
@@ -135,10 +148,11 @@ public class VaadinTestUtils {
    *          grid
    * @param item
    *          item
+   * @param column
+   *          grid column
    */
-  public static <E> void doubleClickItem(Grid<E> grid, E item) {
-    doubleClickItem(grid, item, (gv, key) -> new ItemDoubleClickEvent<>(gv, false, key, null, -1,
-        -1, -1, -1, 2, 0, false, false, false, false));
+  public static <E> void doubleClickItem(Grid<E> grid, E item, Grid.Column<E> column) {
+    doubleClickItem(grid, item, column, false, false, false, false);
   }
 
   /**
@@ -148,18 +162,31 @@ public class VaadinTestUtils {
    *          grid
    * @param item
    *          item
-   * @param eventGenerator
-   *          creates the item dobule click event
+   * @param column
+   *          grid column
+   * @param ctrlKey
+   *          <code>true</code> if the control key was down when the event was fired,
+   *          <code>false</code> otherwise
+   * @param shiftKey
+   *          <code>true</code> if the shift key was down when the event was fired,
+   *          <code>false</code> otherwise
+   * @param altKey
+   *          <code>true</code> if the alt key was down when the event was fired, <code>false</code>
+   *          otherwise
+   * @param metaKey
+   *          <code>true</code> if the meta key was down when the event was fired,
+   *          <code>false</code> otherwise
    */
-  public static <E> void doubleClickItem(Grid<E> grid, E item,
-      BiFunction<Grid<E>, String, ItemDoubleClickEvent<E>> eventGenerator) {
+  public static <E> void doubleClickItem(Grid<E> grid, E item, Grid.Column<E> column,
+      boolean ctrlKey, boolean shiftKey, boolean altKey, boolean metaKey) {
     try {
       String key = grid.getDataCommunicator().getKeyMapper().key(item);
       Method method = Component.class.getDeclaredMethod("getEventBus");
       method.setAccessible(true);
       ComponentEventBus eventBus = (ComponentEventBus) method.invoke(grid);
-      ItemDoubleClickEvent<E> event = eventGenerator.apply(grid, key);
-      eventBus.fireEvent(event);
+      eventBus.fireEvent(new ItemDoubleClickEvent<>(grid, false, key,
+          column != null ? column.getElement().getProperty("_flowId") : null, -1, -1, -1, -1, 2, 0,
+          ctrlKey, shiftKey, altKey, metaKey));
     } catch (NoSuchMethodException | SecurityException | IllegalAccessException
         | IllegalArgumentException | InvocationTargetException e) {
       throw new IllegalStateException(e);
