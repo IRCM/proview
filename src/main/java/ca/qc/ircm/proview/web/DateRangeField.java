@@ -38,7 +38,9 @@ public class DateRangeField extends CustomField<Range<LocalDate>> implements Loc
     layout.addClassName(CLASS_NAME);
     add(layout);
     from.addClassName(FROM);
+    from.setClearButtonVisible(true);
     to.addClassName(TO);
+    to.setClearButtonVisible(true);
     to.addValueChangeListener(e -> binder.validate());
     binder.setBean(new Dates());
   }
