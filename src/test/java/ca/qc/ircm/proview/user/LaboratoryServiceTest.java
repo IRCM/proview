@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.user;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -44,10 +45,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @WithMockUser
 public class LaboratoryServiceTest extends AbstractServiceTestCase {
   private static final String READ = "read";
+  private static final String WRITE = "write";
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(LaboratoryServiceTest.class);
   @Autowired
   private LaboratoryService service;
+  @Autowired
+  private LaboratoryRepository repository;
   @MockBean
   private PermissionEvaluator permissionEvaluator;
 
@@ -85,5 +89,35 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void all_AccessDenied() throws Throwable {
     service.all();
+  }
+
+  @Test
+  public void save_New() {
+    Laboratory laboratory = new Laboratory();
+    laboratory.setName("Test laboratory");
+
+    service.save(laboratory);
+
+    repository.flush();
+    assertNotNull(laboratory.getId());
+    laboratory = repository.findById(laboratory.getId()).get();
+    assertEquals("Test laboratory", laboratory.getName());
+    assertEquals(null, laboratory.getDirector());
+    verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
+  }
+
+  @Test
+  public void save_Update() {
+    Laboratory laboratory = repository.findById(1L).get();
+    laboratory.setName("Test laboratory");
+
+    service.save(laboratory);
+
+    repository.flush();
+    assertNotNull(laboratory.getId());
+    laboratory = repository.findById(laboratory.getId()).get();
+    assertEquals("Test laboratory", laboratory.getName());
+    assertEquals("Robot", laboratory.getDirector());
+    verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
   }
 }

@@ -105,6 +105,7 @@ public class LaboratoryDialogTest extends AbstractViewTestCase {
     assertEquals(laboratoryResources.message(NAME), dialog.name.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    verify(presenter).localeChange(locale);
   }
 
   @Test
@@ -120,6 +121,7 @@ public class LaboratoryDialogTest extends AbstractViewTestCase {
     assertEquals(laboratoryResources.message(NAME), dialog.name.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    verify(presenter).localeChange(locale);
   }
 
   @Test

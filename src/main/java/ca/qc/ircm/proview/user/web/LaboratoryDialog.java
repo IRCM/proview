@@ -108,6 +108,7 @@ public class LaboratoryDialog extends Dialog
     name.setLabel(laboratoryResources.message(NAME));
     save.setText(webResources.message(SAVE));
     cancel.setText(webResources.message(CANCEL));
+    presenter.localeChange(getLocale());
   }
 
   private void updateHeader() {
