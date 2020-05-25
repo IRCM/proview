@@ -69,7 +69,7 @@ public class CategoryComponentTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(component.getClassNames().contains(CATEGORY));
+    assertTrue(component.hasClassName(CATEGORY));
   }
 
   @Test

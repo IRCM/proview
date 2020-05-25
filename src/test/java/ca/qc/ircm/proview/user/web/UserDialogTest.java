@@ -94,10 +94,10 @@ public class UserDialogTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertTrue(dialog.header.getClassNames().contains(HEADER));
-    assertTrue(dialog.save.getClassNames().contains(SAVE));
+    assertTrue(dialog.header.hasClassName(HEADER));
+    assertTrue(dialog.save.hasClassName(SAVE));
     assertTrue(dialog.save.getElement().getAttribute(THEME).contains(PRIMARY));
-    assertTrue(dialog.cancel.getClassNames().contains(CANCEL));
+    assertTrue(dialog.cancel.hasClassName(CANCEL));
   }
 
   @Test

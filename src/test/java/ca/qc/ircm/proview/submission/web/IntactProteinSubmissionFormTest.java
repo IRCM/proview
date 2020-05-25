@@ -95,21 +95,21 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(form.getClassName().contains(CLASS_NAME));
-    assertTrue(form.goal.getClassName().contains(GOAL));
-    assertTrue(form.taxonomy.getClassName().contains(TAXONOMY));
-    assertTrue(form.protein.getClassName().contains(PROTEIN));
-    assertTrue(form.molecularWeight.getClassName().contains(MOLECULAR_WEIGHT));
+    assertTrue(form.hasClassName(CLASS_NAME));
+    assertTrue(form.goal.hasClassName(GOAL));
+    assertTrue(form.taxonomy.hasClassName(TAXONOMY));
+    assertTrue(form.protein.hasClassName(PROTEIN));
+    assertTrue(form.molecularWeight.hasClassName(MOLECULAR_WEIGHT));
     assertTrue(
-        form.postTranslationModification.getClassName().contains(POST_TRANSLATION_MODIFICATION));
-    assertTrue(form.sampleType.getClassName().contains(SAMPLES_TYPE));
-    assertTrue(form.samplesCount.getClassName().contains(SAMPLES_COUNT));
-    assertTrue(form.samplesNames.getClassName().contains(SAMPLES_NAMES));
-    assertTrue(form.quantity.getClassName().contains(QUANTITY));
-    assertTrue(form.volume.getClassName().contains(VOLUME));
-    assertTrue(form.injection.getClassName().contains(INJECTION_TYPE));
-    assertTrue(form.source.getClassName().contains(SOURCE));
-    assertTrue(form.instrument.getClassName().contains(INSTRUMENT));
+        form.postTranslationModification.hasClassName(POST_TRANSLATION_MODIFICATION));
+    assertTrue(form.sampleType.hasClassName(SAMPLES_TYPE));
+    assertTrue(form.samplesCount.hasClassName(SAMPLES_COUNT));
+    assertTrue(form.samplesNames.hasClassName(SAMPLES_NAMES));
+    assertTrue(form.quantity.hasClassName(QUANTITY));
+    assertTrue(form.volume.hasClassName(VOLUME));
+    assertTrue(form.injection.hasClassName(INJECTION_TYPE));
+    assertTrue(form.source.hasClassName(SOURCE));
+    assertTrue(form.instrument.hasClassName(INSTRUMENT));
   }
 
   @Test

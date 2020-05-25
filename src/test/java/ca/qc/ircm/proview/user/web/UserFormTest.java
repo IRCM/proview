@@ -99,22 +99,22 @@ public class UserFormTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(form.getClassNames().contains(CLASS_NAME));
-    assertTrue(form.email.getClassNames().contains(EMAIL));
-    assertTrue(form.name.getClassNames().contains(NAME));
-    assertTrue(form.admin.getClassNames().contains(ADMIN));
-    assertTrue(form.manager.getClassNames().contains(MANAGER));
-    assertTrue(form.laboratory.getClassNames().contains(LABORATORY));
-    assertTrue(form.createNewLaboratory.getClassNames().contains(CREATE_NEW_LABORATORY));
-    assertTrue(form.newLaboratoryName.getClassNames().contains(NEW_LABORATORY_NAME));
-    assertTrue(form.addressLine.getClassNames().contains(LINE));
-    assertTrue(form.town.getClassNames().contains(TOWN));
-    assertTrue(form.state.getClassNames().contains(STATE));
-    assertTrue(form.country.getClassNames().contains(COUNTRY));
-    assertTrue(form.postalCode.getClassNames().contains(POSTAL_CODE));
-    assertTrue(form.phoneType.getClassNames().contains(TYPE));
-    assertTrue(form.number.getClassNames().contains(NUMBER));
-    assertTrue(form.extension.getClassNames().contains(EXTENSION));
+    assertTrue(form.hasClassName(CLASS_NAME));
+    assertTrue(form.email.hasClassName(EMAIL));
+    assertTrue(form.name.hasClassName(NAME));
+    assertTrue(form.admin.hasClassName(ADMIN));
+    assertTrue(form.manager.hasClassName(MANAGER));
+    assertTrue(form.laboratory.hasClassName(LABORATORY));
+    assertTrue(form.createNewLaboratory.hasClassName(CREATE_NEW_LABORATORY));
+    assertTrue(form.newLaboratoryName.hasClassName(NEW_LABORATORY_NAME));
+    assertTrue(form.addressLine.hasClassName(LINE));
+    assertTrue(form.town.hasClassName(TOWN));
+    assertTrue(form.state.hasClassName(STATE));
+    assertTrue(form.country.hasClassName(COUNTRY));
+    assertTrue(form.postalCode.hasClassName(POSTAL_CODE));
+    assertTrue(form.phoneType.hasClassName(TYPE));
+    assertTrue(form.number.hasClassName(NUMBER));
+    assertTrue(form.extension.hasClassName(EXTENSION));
   }
 
   @Test

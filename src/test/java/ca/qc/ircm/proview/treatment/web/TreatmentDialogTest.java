@@ -180,13 +180,13 @@ public class TreatmentDialogTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertTrue(dialog.header.getClassName().contains(HEADER));
-    assertTrue(dialog.deleted.getClassName().contains(DELETED));
-    assertTrue(dialog.protocol.getClassName().contains(PROTOCOL));
-    assertTrue(dialog.fractionationType.getClassName().contains(FRACTIONATION_TYPE));
-    assertTrue(dialog.date.getClassName().contains(INSERT_TIME));
-    assertTrue(dialog.samplesHeader.getClassName().contains(styleName(TREATED_SAMPLES, HEADER)));
-    assertTrue(dialog.samples.getClassName().contains(TREATED_SAMPLES));
+    assertTrue(dialog.header.hasClassName(HEADER));
+    assertTrue(dialog.deleted.hasClassName(DELETED));
+    assertTrue(dialog.protocol.hasClassName(PROTOCOL));
+    assertTrue(dialog.fractionationType.hasClassName(FRACTIONATION_TYPE));
+    assertTrue(dialog.date.hasClassName(INSERT_TIME));
+    assertTrue(dialog.samplesHeader.hasClassName(styleName(TREATED_SAMPLES, HEADER)));
+    assertTrue(dialog.samples.hasClassName(TREATED_SAMPLES));
   }
 
   @Test

@@ -92,7 +92,7 @@ public class LaboratoryDialogTest extends AbstractViewTestCase {
     assertEquals(id(HEADER), dialog.header.getId().orElse(""));
     assertEquals(id(NAME), dialog.name.getId().orElse(""));
     assertEquals(id(SAVE), dialog.save.getId().orElse(""));
-    assertTrue(dialog.save.getThemeName().contains(PRIMARY));
+    assertTrue(dialog.save.hasThemeName(PRIMARY));
     validateIcon(VaadinIcon.CHECK.create(), dialog.save.getIcon());
     assertEquals(id(CANCEL), dialog.cancel.getId().orElse(""));
     validateIcon(VaadinIcon.CLOSE.create(), dialog.cancel.getIcon());

@@ -155,13 +155,13 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertTrue(dialog.header.getClassName().contains(HEADER));
-    assertTrue(dialog.deleted.getClassName().contains(DELETED));
-    assertTrue(dialog.instrument.getClassName().contains(MASS_DETECTION_INSTRUMENT));
-    assertTrue(dialog.source.getClassName().contains(SOURCE));
-    assertTrue(dialog.date.getClassName().contains(INSERT_TIME));
-    assertTrue(dialog.acquisitionsHeader.getClassName().contains(styleName(ACQUISITIONS, HEADER)));
-    assertTrue(dialog.acquisitions.getClassName().contains(ACQUISITIONS));
+    assertTrue(dialog.header.hasClassName(HEADER));
+    assertTrue(dialog.deleted.hasClassName(DELETED));
+    assertTrue(dialog.instrument.hasClassName(MASS_DETECTION_INSTRUMENT));
+    assertTrue(dialog.source.hasClassName(SOURCE));
+    assertTrue(dialog.date.hasClassName(INSERT_TIME));
+    assertTrue(dialog.acquisitionsHeader.hasClassName(styleName(ACQUISITIONS, HEADER)));
+    assertTrue(dialog.acquisitions.hasClassName(ACQUISITIONS));
   }
 
   @Test

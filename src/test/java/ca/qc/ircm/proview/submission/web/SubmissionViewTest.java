@@ -164,7 +164,7 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     assertEquals(UPLOAD, view.upload.getId().orElse(""));
     assertEquals(FILES, view.files.getId().orElse(""));
     assertEquals(SAVE, view.save.getId().orElse(""));
-    assertTrue(view.save.getThemeName().contains(PRIMARY));
+    assertTrue(view.save.hasThemeName(PRIMARY));
     validateIcon(VaadinIcon.CHECK.create(), view.save.getIcon());
   }
 

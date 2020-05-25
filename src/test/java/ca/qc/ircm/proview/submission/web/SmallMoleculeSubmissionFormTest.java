@@ -87,18 +87,18 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(form.getClassName().contains(CLASS_NAME));
-    assertTrue(form.sampleType.getClassName().contains(SAMPLE_TYPE));
-    assertTrue(form.sampleName.getClassName().contains(SAMPLE_NAME));
-    assertTrue(form.solvent.getClassName().contains(SOLUTION_SOLVENT));
-    assertTrue(form.formula.getClassName().contains(FORMULA));
-    assertTrue(form.monoisotopicMass.getClassName().contains(MONOISOTOPIC_MASS));
-    assertTrue(form.averageMass.getClassName().contains(AVERAGE_MASS));
-    assertTrue(form.toxicity.getClassName().contains(TOXICITY));
-    assertTrue(form.lightSensitive.getClassName().contains(LIGHT_SENSITIVE));
-    assertTrue(form.storageTemperature.getClassName().contains(STORAGE_TEMPERATURE));
-    assertTrue(form.highResolution.getClassName().contains(HIGH_RESOLUTION));
-    assertTrue(form.otherSolvent.getClassName().contains(OTHER_SOLVENT));
+    assertTrue(form.hasClassName(CLASS_NAME));
+    assertTrue(form.sampleType.hasClassName(SAMPLE_TYPE));
+    assertTrue(form.sampleName.hasClassName(SAMPLE_NAME));
+    assertTrue(form.solvent.hasClassName(SOLUTION_SOLVENT));
+    assertTrue(form.formula.hasClassName(FORMULA));
+    assertTrue(form.monoisotopicMass.hasClassName(MONOISOTOPIC_MASS));
+    assertTrue(form.averageMass.hasClassName(AVERAGE_MASS));
+    assertTrue(form.toxicity.hasClassName(TOXICITY));
+    assertTrue(form.lightSensitive.hasClassName(LIGHT_SENSITIVE));
+    assertTrue(form.storageTemperature.hasClassName(STORAGE_TEMPERATURE));
+    assertTrue(form.highResolution.hasClassName(HIGH_RESOLUTION));
+    assertTrue(form.otherSolvent.hasClassName(OTHER_SOLVENT));
   }
 
   @Test

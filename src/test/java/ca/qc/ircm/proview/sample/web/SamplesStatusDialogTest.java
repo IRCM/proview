@@ -138,11 +138,11 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertTrue(dialog.header.getClassName().contains(HEADER));
-    assertTrue(dialog.samples.getClassName().contains(SAMPLES));
-    assertTrue(dialog.allStatus.getClassName().contains(styleName(STATUS, ALL)));
-    assertTrue(dialog.save.getClassName().contains(SAVE));
-    assertTrue(dialog.cancel.getClassName().contains(CANCEL));
+    assertTrue(dialog.header.hasClassName(HEADER));
+    assertTrue(dialog.samples.hasClassName(SAMPLES));
+    assertTrue(dialog.allStatus.hasClassName(styleName(STATUS, ALL)));
+    assertTrue(dialog.save.hasClassName(SAVE));
+    assertTrue(dialog.cancel.hasClassName(CANCEL));
   }
 
   @Test
@@ -211,7 +211,7 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
         statusRendererCaptor.getValue();
     for (SubmissionSample sample : samples) {
       ComboBox<SampleStatus> comboBox = statusRenderer.createComponent(sample);
-      assertTrue(comboBox.getClassName().contains(STATUS));
+      assertTrue(comboBox.hasClassName(STATUS));
       List<SampleStatus> statuses = items(comboBox);
       assertEquals(Arrays.asList(SampleStatus.values()), statuses);
       for (SampleStatus status : statuses) {

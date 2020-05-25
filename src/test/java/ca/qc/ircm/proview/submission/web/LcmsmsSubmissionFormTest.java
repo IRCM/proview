@@ -124,37 +124,37 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(form.getClassName().contains(CLASS_NAME));
-    assertTrue(form.goal.getClassName().contains(GOAL));
-    assertTrue(form.taxonomy.getClassName().contains(TAXONOMY));
-    assertTrue(form.protein.getClassName().contains(PROTEIN));
-    assertTrue(form.molecularWeight.getClassName().contains(MOLECULAR_WEIGHT));
+    assertTrue(form.hasClassName(CLASS_NAME));
+    assertTrue(form.goal.hasClassName(GOAL));
+    assertTrue(form.taxonomy.hasClassName(TAXONOMY));
+    assertTrue(form.protein.hasClassName(PROTEIN));
+    assertTrue(form.molecularWeight.hasClassName(MOLECULAR_WEIGHT));
     assertTrue(
-        form.postTranslationModification.getClassName().contains(POST_TRANSLATION_MODIFICATION));
-    assertTrue(form.sampleType.getClassName().contains(SAMPLES_TYPE));
-    assertTrue(form.samplesCount.getClassName().contains(SAMPLES_COUNT));
-    assertTrue(form.samplesNames.getClassName().contains(SAMPLES_NAMES));
-    assertTrue(form.quantity.getClassName().contains(QUANTITY));
-    assertTrue(form.volume.getClassName().contains(VOLUME));
-    assertTrue(form.contaminants.getClassName().contains(CONTAMINANTS));
-    assertTrue(form.standards.getClassName().contains(STANDARDS));
-    assertTrue(form.separation.getClassName().contains(SEPARATION));
-    assertTrue(form.thickness.getClassName().contains(THICKNESS));
-    assertTrue(form.coloration.getClassName().contains(COLORATION));
-    assertTrue(form.otherColoration.getClassName().contains(OTHER_COLORATION));
-    assertTrue(form.developmentTime.getClassName().contains(DEVELOPMENT_TIME));
-    assertTrue(form.destained.getClassName().contains(DECOLORATION));
-    assertTrue(form.weightMarkerQuantity.getClassName().contains(WEIGHT_MARKER_QUANTITY));
-    assertTrue(form.proteinQuantity.getClassName().contains(PROTEIN_QUANTITY));
-    assertTrue(form.digestion.getClassName().contains(DIGESTION));
-    assertTrue(form.usedDigestion.getClassName().contains(USED_DIGESTION));
-    assertTrue(form.otherDigestion.getClassName().contains(OTHER_DIGESTION));
-    assertTrue(form.proteinContent.getClassName().contains(PROTEIN_CONTENT));
-    assertTrue(form.instrument.getClassName().contains(INSTRUMENT));
-    assertTrue(form.identification.getClassName().contains(IDENTIFICATION));
-    assertTrue(form.identificationLink.getClassName().contains(IDENTIFICATION_LINK));
-    assertTrue(form.quantification.getClassName().contains(QUANTIFICATION));
-    assertTrue(form.quantificationComment.getClassName().contains(QUANTIFICATION_COMMENT));
+        form.postTranslationModification.hasClassName(POST_TRANSLATION_MODIFICATION));
+    assertTrue(form.sampleType.hasClassName(SAMPLES_TYPE));
+    assertTrue(form.samplesCount.hasClassName(SAMPLES_COUNT));
+    assertTrue(form.samplesNames.hasClassName(SAMPLES_NAMES));
+    assertTrue(form.quantity.hasClassName(QUANTITY));
+    assertTrue(form.volume.hasClassName(VOLUME));
+    assertTrue(form.contaminants.hasClassName(CONTAMINANTS));
+    assertTrue(form.standards.hasClassName(STANDARDS));
+    assertTrue(form.separation.hasClassName(SEPARATION));
+    assertTrue(form.thickness.hasClassName(THICKNESS));
+    assertTrue(form.coloration.hasClassName(COLORATION));
+    assertTrue(form.otherColoration.hasClassName(OTHER_COLORATION));
+    assertTrue(form.developmentTime.hasClassName(DEVELOPMENT_TIME));
+    assertTrue(form.destained.hasClassName(DECOLORATION));
+    assertTrue(form.weightMarkerQuantity.hasClassName(WEIGHT_MARKER_QUANTITY));
+    assertTrue(form.proteinQuantity.hasClassName(PROTEIN_QUANTITY));
+    assertTrue(form.digestion.hasClassName(DIGESTION));
+    assertTrue(form.usedDigestion.hasClassName(USED_DIGESTION));
+    assertTrue(form.otherDigestion.hasClassName(OTHER_DIGESTION));
+    assertTrue(form.proteinContent.hasClassName(PROTEIN_CONTENT));
+    assertTrue(form.instrument.hasClassName(INSTRUMENT));
+    assertTrue(form.identification.hasClassName(IDENTIFICATION));
+    assertTrue(form.identificationLink.hasClassName(IDENTIFICATION_LINK));
+    assertTrue(form.quantification.hasClassName(QUANTIFICATION));
+    assertTrue(form.quantificationComment.hasClassName(QUANTIFICATION_COMMENT));
   }
 
   @Test

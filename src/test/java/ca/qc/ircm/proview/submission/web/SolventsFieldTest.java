@@ -55,7 +55,7 @@ public class SolventsFieldTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     for (Solvent value : Solvent.values()) {
-      assertTrue(fields.fields.get(value).getClassName().contains(value.name()));
+      assertTrue(fields.fields.get(value).hasClassName(value.name()));
     }
   }
 

@@ -121,15 +121,15 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertTrue(dialog.header.getClassName().contains(HEADER));
-    assertTrue(dialog.instrument.getClassName().contains(INSTRUMENT));
-    assertTrue(dialog.dataAvailableDate.getClassName().contains(DATA_AVAILABLE_DATE));
-    assertTrue(dialog.save.getClassName().contains(SAVE));
-    assertTrue(dialog.save.getThemeName().contains(SUCCESS));
-    assertTrue(dialog.edit.getClassName().contains(EDIT));
-    assertTrue(dialog.edit.getThemeName().contains(PRIMARY));
+    assertTrue(dialog.header.hasClassName(HEADER));
+    assertTrue(dialog.instrument.hasClassName(INSTRUMENT));
+    assertTrue(dialog.dataAvailableDate.hasClassName(DATA_AVAILABLE_DATE));
+    assertTrue(dialog.save.hasClassName(SAVE));
+    assertTrue(dialog.save.hasThemeName(SUCCESS));
+    assertTrue(dialog.edit.hasClassName(EDIT));
+    assertTrue(dialog.edit.hasThemeName(PRIMARY));
     validateIcon(VaadinIcon.EDIT.create(), dialog.edit.getIcon());
-    assertTrue(dialog.print.getClassName().contains(PRINT));
+    assertTrue(dialog.print.hasClassName(PRINT));
     validateIcon(VaadinIcon.PRINT.create(), dialog.print.getIcon());
   }
 
