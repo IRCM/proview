@@ -20,9 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
-import static ca.qc.ircm.proview.Constants.PRIMARY;
 import static ca.qc.ircm.proview.Constants.SAVE;
-import static ca.qc.ircm.proview.Constants.THEME;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.web.UserDialog.HEADER;
@@ -44,6 +42,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Locale;
@@ -96,7 +95,7 @@ public class UserDialogTest extends AbstractViewTestCase {
     assertEquals(ID, dialog.getId().orElse(""));
     assertTrue(dialog.header.hasClassName(HEADER));
     assertTrue(dialog.save.hasClassName(SAVE));
-    assertTrue(dialog.save.getElement().getAttribute(THEME).contains(PRIMARY));
+    assertTrue(dialog.save.hasThemeName(ButtonVariant.LUMO_PRIMARY.getVariantName()));
     assertTrue(dialog.cancel.hasClassName(CANCEL));
   }
 

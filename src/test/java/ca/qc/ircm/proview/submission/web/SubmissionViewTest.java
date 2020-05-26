@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
-import static ca.qc.ircm.proview.Constants.PRIMARY;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.UPLOAD;
@@ -58,6 +57,7 @@ import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Anchor;
@@ -164,7 +164,7 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     assertEquals(UPLOAD, view.upload.getId().orElse(""));
     assertEquals(FILES, view.files.getId().orElse(""));
     assertEquals(SAVE, view.save.getId().orElse(""));
-    assertTrue(view.save.hasThemeName(PRIMARY));
+    assertTrue(view.save.hasThemeName(ButtonVariant.LUMO_PRIMARY.getVariantName()));
     validateIcon(VaadinIcon.CHECK.create(), view.save.getIcon());
   }
 

@@ -19,10 +19,8 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.ERROR;
 import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
-import static ca.qc.ircm.proview.Constants.SUCCESS;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.text.Strings.normalize;
 import static ca.qc.ircm.proview.text.Strings.property;
@@ -41,6 +39,7 @@ import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -172,7 +171,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   }
 
   private String activeTheme(User user) {
-    return user.isActive() ? SUCCESS : ERROR;
+    return user.isActive() ? ButtonVariant.LUMO_SUCCESS.getVariantName()
+        : ButtonVariant.LUMO_ERROR.getVariantName();
   }
 
   private String activeValue(User user) {

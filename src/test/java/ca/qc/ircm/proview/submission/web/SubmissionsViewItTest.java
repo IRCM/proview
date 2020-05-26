@@ -18,8 +18,6 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.ERROR;
-import static ca.qc.ircm.proview.Constants.SUCCESS;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
@@ -36,6 +34,7 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.flow.component.button.ButtonVariant;
 import java.util.Locale;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,7 +110,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
     view.clickVisible(0);
-    waitUntil(driver -> view.visible(0).getAttribute("theme").equals(ERROR));
+    waitUntil(driver -> view.visible(0).getAttribute("theme")
+        .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
 
     Submission submission = repository.findById(164L).get();
     assertTrue(submission.isHidden());
@@ -123,10 +123,12 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
     view.clickVisible(0);
-    waitUntil(driver -> view.visible(0).getAttribute("theme").equals(ERROR));
+    waitUntil(driver -> view.visible(0).getAttribute("theme")
+        .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
 
     view.clickVisible(0);
-    waitUntil(driver -> view.visible(0).getAttribute("theme").equals(SUCCESS));
+    waitUntil(driver -> view.visible(0).getAttribute("theme")
+        .equals(ButtonVariant.LUMO_SUCCESS.getVariantName()));
 
     Submission submission = repository.findById(164L).get();
     assertFalse(submission.isHidden());

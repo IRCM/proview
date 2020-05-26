@@ -20,10 +20,8 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
-import static ca.qc.ircm.proview.Constants.ERROR;
 import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
 import static ca.qc.ircm.proview.Constants.FRENCH;
-import static ca.qc.ircm.proview.Constants.SUCCESS;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
@@ -61,6 +59,7 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -320,7 +319,9 @@ public class UsersViewTest extends AbstractViewTestCase {
     for (User user : users) {
       assertEquals(ACTIVE_BUTTON, rendererTemplate(templateRenderer));
       assertTrue(templateRenderer.getValueProviders().containsKey("activeTheme"));
-      assertEquals(user.isActive() ? SUCCESS : ERROR,
+      assertEquals(
+          user.isActive() ? ButtonVariant.LUMO_SUCCESS.getVariantName()
+              : ButtonVariant.LUMO_ERROR.getVariantName(),
           templateRenderer.getValueProviders().get("activeTheme").apply(user));
       assertTrue(templateRenderer.getValueProviders().containsKey("activeValue"));
       assertEquals(userResources.message(property(ACTIVE, user.isActive())),

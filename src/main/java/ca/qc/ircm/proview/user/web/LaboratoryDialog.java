@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.CANCEL;
-import static ca.qc.ircm.proview.Constants.PRIMARY;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.NAME;
@@ -30,6 +29,7 @@ import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -91,7 +91,7 @@ public class LaboratoryDialog extends Dialog
     header.setId(id(HEADER));
     name.setId(id(NAME));
     save.setId(id(SAVE));
-    save.setThemeName(PRIMARY);
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
     save.addClickListener(e -> presenter.save(getLocale()));
     cancel.setId(id(CANCEL));

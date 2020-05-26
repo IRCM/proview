@@ -18,7 +18,6 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.PRIMARY;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.UPLOAD;
@@ -44,6 +43,7 @@ import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Anchor;
@@ -161,7 +161,7 @@ public class SubmissionView extends VerticalLayout
     remove =
         files.addColumn(new ComponentRenderer<>(file -> removeButton(file)), REMOVE).setKey(REMOVE);
     save.setId(SAVE);
-    save.addThemeName(PRIMARY);
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
     save.addClickListener(e -> presenter.save(getLocale()));
     presenter.init(this);

@@ -30,8 +30,6 @@ public class Constants {
   public static final Locale DEFAULT_LOCALE = ENGLISH;
   public static final String APPLICATION_NAME = "application.name";
   public static final String TITLE = "title";
-  public static final String THEME = "theme";
-  public static final String PRIMARY = "primary";
   public static final String FIELD_NOTIFICATION = "field.notification";
   public static final String PLACEHOLDER = "placeholder";
   public static final String REQUIRED = "required";
@@ -41,8 +39,6 @@ public class Constants {
   public static final String INVALID_EMAIL = "invalidEmail";
   public static final String ALREADY_EXISTS = "alreadyExists";
   public static final String OUT_OF_RANGE = "outOfRange";
-  public static final String SUCCESS = "success";
-  public static final String ERROR = "error";
   public static final String ERROR_TEXT = "error-text";
   public static final String BORDER = "border";
   public static final String RIGHT = "right";

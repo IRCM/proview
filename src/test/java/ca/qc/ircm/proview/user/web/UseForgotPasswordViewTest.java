@@ -20,9 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
-import static ca.qc.ircm.proview.Constants.PRIMARY;
 import static ca.qc.ircm.proview.Constants.SAVE;
-import static ca.qc.ircm.proview.Constants.THEME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
@@ -39,6 +37,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
@@ -82,7 +81,7 @@ public class UseForgotPasswordViewTest extends AbstractViewTestCase {
     assertEquals(HEADER, view.header.getId().orElse(""));
     assertEquals(MESSAGE, view.message.getId().orElse(""));
     assertEquals(SAVE, view.save.getId().orElse(""));
-    assertTrue(view.save.getElement().getAttribute(THEME).contains(PRIMARY));
+    assertTrue(view.save.hasThemeName(ButtonVariant.LUMO_PRIMARY.getVariantName()));
   }
 
   @Test

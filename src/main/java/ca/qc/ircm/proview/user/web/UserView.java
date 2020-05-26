@@ -18,9 +18,7 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.PRIMARY;
 import static ca.qc.ircm.proview.Constants.SAVE;
-import static ca.qc.ircm.proview.Constants.THEME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
@@ -31,6 +29,7 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -84,7 +83,7 @@ public class UserView extends VerticalLayout
     buttonsLayout.add(save);
     header.setId(HEADER);
     save.setId(SAVE);
-    save.getElement().setAttribute(THEME, PRIMARY);
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
     save.addClickListener(e -> presenter.save(getLocale()));
     presenter.init(this);

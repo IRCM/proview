@@ -18,9 +18,7 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.CANCEL;
-import static ca.qc.ircm.proview.Constants.PRIMARY;
 import static ca.qc.ircm.proview.Constants.SAVE;
-import static ca.qc.ircm.proview.Constants.THEME;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -28,6 +26,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -82,7 +81,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     buttonsLayout.add(save, cancel);
     header.addClassName(HEADER);
     save.addClassName(SAVE);
-    save.getElement().setAttribute(THEME, PRIMARY);
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
     save.addClickListener(e -> presenter.save());
     cancel.addClassName(CANCEL);

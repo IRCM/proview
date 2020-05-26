@@ -20,9 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
-import static ca.qc.ircm.proview.Constants.ERROR;
 import static ca.qc.ircm.proview.Constants.FRENCH;
-import static ca.qc.ircm.proview.Constants.SUCCESS;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
@@ -80,6 +78,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
 import com.google.common.collect.Range;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -495,7 +494,9 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     for (Submission submission : submissions) {
       assertEquals(HIDDEN_BUTTON, rendererTemplate(templateRenderer));
       assertTrue(templateRenderer.getValueProviders().containsKey("hiddenTheme"));
-      assertEquals(submission.isHidden() ? ERROR : SUCCESS,
+      assertEquals(
+          submission.isHidden() ? ButtonVariant.LUMO_ERROR.getVariantName()
+              : ButtonVariant.LUMO_SUCCESS.getVariantName(),
           templateRenderer.getValueProviders().get("hiddenTheme").apply(submission));
       assertTrue(templateRenderer.getValueProviders().containsKey("hiddenValue"));
       assertEquals(submissionResources.message(property(HIDDEN, submission.isHidden())),

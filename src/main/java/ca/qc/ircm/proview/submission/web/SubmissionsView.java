@@ -19,8 +19,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.ERROR;
-import static ca.qc.ircm.proview.Constants.SUCCESS;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
@@ -50,6 +48,7 @@ import ca.qc.ircm.proview.web.DateRangeField;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -292,7 +291,8 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private String hiddenTheme(Submission submission) {
-    return submission.isHidden() ? ERROR : SUCCESS;
+    return submission.isHidden() ? ButtonVariant.LUMO_ERROR.getVariantName()
+        : ButtonVariant.LUMO_SUCCESS.getVariantName();
   }
 
   private String hiddenValue(Submission submission) {
