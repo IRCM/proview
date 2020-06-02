@@ -28,14 +28,14 @@ import static ca.qc.ircm.proview.treatment.web.TreatmentDialog.HEADER;
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.DivElement;
-import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.html.testbench.H3Element;
+import com.vaadin.flow.component.html.testbench.H4Element;
 import com.vaadin.testbench.elementsbase.Element;
 
 @Element("vaadin-dialog")
 public class TreatmentDialogElement extends DialogElement {
-  public H2Element header() {
-    return $(H2Element.class).attributeContains("class", HEADER).first();
+  public H3Element header() {
+    return $(H3Element.class).attributeContains("class", HEADER).first();
   }
 
   public DivElement deleted() {
@@ -54,8 +54,8 @@ public class TreatmentDialogElement extends DialogElement {
     return $(DivElement.class).attributeContains("class", INSERT_TIME).first();
   }
 
-  public H3Element samplesHeader() {
-    return $(H3Element.class).attributeContains("class", styleName(TREATED_SAMPLES, HEADER))
+  public H4Element samplesHeader() {
+    return $(H4Element.class).attributeContains("class", styleName(TREATED_SAMPLES, HEADER))
         .first();
   }
 

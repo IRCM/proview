@@ -43,7 +43,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -74,7 +74,7 @@ public class SamplesStatusDialog extends Dialog
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
   private static final Logger logger = LoggerFactory.getLogger(SamplesStatusDialog.class);
-  protected H2 header = new H2();
+  protected H3 header = new H3();
   protected Grid<SubmissionSample> samples = new Grid<>();
   protected Column<SubmissionSample> name;
   protected Column<SubmissionSample> status;

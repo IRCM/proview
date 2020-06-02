@@ -42,7 +42,7 @@ import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -68,7 +68,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   public static final String ID = "submission-dialog";
   public static final String HEADER = "header";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
-  protected H2 header = new H2();
+  protected H3 header = new H3();
   protected PrintSubmission printContent;
   protected FormLayout submissionForm = new FormLayout();
   protected ComboBox<MassDetectionInstrument> instrument = new ComboBox<>();

@@ -47,7 +47,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.GeneratedVaadinDialog.OpenedChangeEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import java.util.HashMap;
@@ -93,7 +93,7 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
   @SuppressWarnings("unchecked")
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    dialog.header = new H2();
+    dialog.header = new H3();
     dialog.samples = mock(Grid.class);
     dialog.name = mock(Column.class);
     dialog.status = mock(Column.class);
