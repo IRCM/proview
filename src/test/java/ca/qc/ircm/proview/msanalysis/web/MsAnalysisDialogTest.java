@@ -33,6 +33,7 @@ import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.MASS_DETECTION_
 import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.SOURCE;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.HEADER;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.ID;
+import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.id;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -155,13 +156,13 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertTrue(dialog.header.hasClassName(HEADER));
-    assertTrue(dialog.deleted.hasClassName(DELETED));
-    assertTrue(dialog.instrument.hasClassName(MASS_DETECTION_INSTRUMENT));
-    assertTrue(dialog.source.hasClassName(SOURCE));
-    assertTrue(dialog.date.hasClassName(INSERT_TIME));
-    assertTrue(dialog.acquisitionsHeader.hasClassName(styleName(ACQUISITIONS, HEADER)));
-    assertTrue(dialog.acquisitions.hasClassName(ACQUISITIONS));
+    assertEquals(id(HEADER), dialog.header.getId().orElse(""));
+    assertEquals(id(DELETED), dialog.deleted.getId().orElse(""));
+    assertEquals(id(MASS_DETECTION_INSTRUMENT), dialog.instrument.getId().orElse(""));
+    assertEquals(id(SOURCE), dialog.source.getId().orElse(""));
+    assertEquals(id(INSERT_TIME), dialog.date.getId().orElse(""));
+    assertEquals(id(styleName(ACQUISITIONS, HEADER)), dialog.acquisitionsHeader.getId().orElse(""));
+    assertEquals(id(ACQUISITIONS), dialog.acquisitions.getId().orElse(""));
   }
 
   @Test

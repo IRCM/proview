@@ -79,6 +79,10 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
   protected Column<Acquisition> comment;
   private MsAnalysis msAnalysis;
 
+  public static String id(String baseId) {
+    return styleName(ID, baseId);
+  }
+
   @PostConstruct
   void init() {
     logger.debug("treatment dialog");
@@ -88,14 +92,14 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
     layout.setMinWidth("35em");
     add(layout);
     layout.add(header, deleted, instrument, source, date, acquisitionsHeader, acquisitions);
-    header.addClassName(HEADER);
-    deleted.addClassName(DELETED);
+    header.setId(id(HEADER));
+    deleted.setId(id(DELETED));
     deleted.setVisible(false);
-    instrument.addClassName(MASS_DETECTION_INSTRUMENT);
-    source.addClassName(SOURCE);
-    date.addClassName(INSERT_TIME);
-    acquisitionsHeader.addClassName(styleName(ACQUISITIONS, HEADER));
-    acquisitions.addClassName(ACQUISITIONS);
+    instrument.setId(id(MASS_DETECTION_INSTRUMENT));
+    source.setId(id(SOURCE));
+    date.setId(id(INSERT_TIME));
+    acquisitionsHeader.setId(id(styleName(ACQUISITIONS, HEADER)));
+    acquisitions.setId(id(ACQUISITIONS));
     sample = acquisitions.addColumn(ac -> ac.getSample().getName(), SAMPLE).setKey(SAMPLE);
     container =
         acquisitions.addColumn(ac -> ac.getContainer().getFullName(), CONTAINER).setKey(CONTAINER);

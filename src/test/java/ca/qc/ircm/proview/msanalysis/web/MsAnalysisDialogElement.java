@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.INSERT_TIME;
 import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.MASS_DETECTION_INSTRUMENT;
 import static ca.qc.ircm.proview.msanalysis.MsAnalysisProperties.SOURCE;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.HEADER;
+import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.id;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
@@ -35,30 +36,30 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-dialog")
 public class MsAnalysisDialogElement extends DialogElement {
   public H3Element header() {
-    return $(H3Element.class).attributeContains("class", HEADER).first();
+    return $(H3Element.class).id(id(HEADER));
   }
 
   public DivElement deleted() {
-    return $(DivElement.class).attributeContains("class", DELETED).first();
+    return $(DivElement.class).id(id(DELETED));
   }
 
   public DivElement instrument() {
-    return $(DivElement.class).attributeContains("class", MASS_DETECTION_INSTRUMENT).first();
+    return $(DivElement.class).id(id(MASS_DETECTION_INSTRUMENT));
   }
 
   public DivElement source() {
-    return $(DivElement.class).attributeContains("class", SOURCE).first();
+    return $(DivElement.class).id(id(SOURCE));
   }
 
   public DivElement date() {
-    return $(DivElement.class).attributeContains("class", INSERT_TIME).first();
+    return $(DivElement.class).id(id(INSERT_TIME));
   }
 
   public H4Element acquisitionsHeader() {
-    return $(H4Element.class).attributeContains("class", styleName(ACQUISITIONS, HEADER)).first();
+    return $(H4Element.class).id(id(styleName(ACQUISITIONS, HEADER)));
   }
 
   public GridElement acquisitions() {
-    return $(GridElement.class).attributeContains("class", ACQUISITIONS).first();
+    return $(GridElement.class).id(id(ACQUISITIONS));
   }
 }
