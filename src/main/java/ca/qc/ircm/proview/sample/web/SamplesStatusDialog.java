@@ -88,6 +88,10 @@ public class SamplesStatusDialog extends Dialog
     this.presenter = presenter;
   }
 
+  public static String id(String baseId) {
+    return styleName(ID, baseId);
+  }
+
   @PostConstruct
   void init() {
     logger.debug("samples status dialog");
@@ -99,8 +103,8 @@ public class SamplesStatusDialog extends Dialog
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     layout.add(header, samples, buttonsLayout);
     buttonsLayout.add(save, cancel);
-    header.addClassName(HEADER);
-    samples.addClassName(SAMPLES);
+    header.setId(id(HEADER));
+    samples.setId(id(SAMPLES));
     ValueProvider<SubmissionSample, String> sampleName =
         sample -> Objects.toString(sample.getName(), "");
     name = samples.addColumn(sampleName, NAME).setKey(NAME)
@@ -111,16 +115,16 @@ public class SamplesStatusDialog extends Dialog
     samples.appendHeaderRow(); // Headers.
     HeaderRow allRow = samples.appendHeaderRow();
     allRow.getCell(status).setComponent(allStatus);
-    allStatus.addClassName(styleName(STATUS, ALL));
+    allStatus.setId(id(styleName(STATUS, ALL)));
     allStatus.setClearButtonVisible(true);
     allStatus.setItems(SampleStatus.values());
     allStatus.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     allStatus.addValueChangeListener(e -> presenter.setAllStatus(allStatus.getValue()));
     save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-    save.addClassName(SAVE);
+    save.setId(id(SAVE));
     save.setIcon(VaadinIcon.CHECK.create());
     save.addClickListener(e -> presenter.save());
-    cancel.addClassName(CANCEL);
+    cancel.setId(id(CANCEL));
     cancel.setIcon(VaadinIcon.CLOSE.create());
     cancel.addClickListener(e -> presenter.cancel());
     presenter.init(this);

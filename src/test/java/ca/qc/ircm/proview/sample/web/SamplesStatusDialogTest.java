@@ -26,6 +26,7 @@ import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.HEADER;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.ID;
+import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.id;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.text.Strings.property;
@@ -138,11 +139,11 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertTrue(dialog.header.hasClassName(HEADER));
-    assertTrue(dialog.samples.hasClassName(SAMPLES));
-    assertTrue(dialog.allStatus.hasClassName(styleName(STATUS, ALL)));
-    assertTrue(dialog.save.hasClassName(SAVE));
-    assertTrue(dialog.cancel.hasClassName(CANCEL));
+    assertEquals(id(HEADER), dialog.header.getId().orElse(""));
+    assertEquals(id(SAMPLES), dialog.samples.getId().orElse(""));
+    assertEquals(id(styleName(STATUS, ALL)), dialog.allStatus.getId().orElse(""));
+    assertEquals(id(SAVE), dialog.save.getId().orElse(""));
+    assertEquals(id(CANCEL), dialog.cancel.getId().orElse(""));
   }
 
   @Test

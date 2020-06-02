@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.HEADER;
+import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.id;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
@@ -37,15 +38,15 @@ public class SamplesStatusDialogElement extends DialogElement {
   private static final int STATUS_INDEX = 1;
 
   public H3Element header() {
-    return $(H3Element.class).attribute("class", HEADER).first();
+    return $(H3Element.class).id(id(HEADER));
   }
 
   public GridElement samples() {
-    return $(GridElement.class).attribute("class", SAMPLES).first();
+    return $(GridElement.class).id(id(SAMPLES));
   }
 
   public ComboBoxElement allStatus() {
-    return $(ComboBoxElement.class).attribute("class", styleName(STATUS, ALL)).first();
+    return $(ComboBoxElement.class).id(id(styleName(STATUS, ALL)));
   }
 
   public ComboBoxElement status(int row) {
@@ -53,10 +54,10 @@ public class SamplesStatusDialogElement extends DialogElement {
   }
 
   public ButtonElement save() {
-    return $(ButtonElement.class).attribute("class", SAVE).first();
+    return $(ButtonElement.class).id(id(SAVE));
   }
 
   public ButtonElement cancel() {
-    return $(ButtonElement.class).attribute("class", CANCEL).first();
+    return $(ButtonElement.class).id(id(CANCEL));
   }
 }
