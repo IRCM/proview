@@ -48,6 +48,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -85,7 +86,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObserver {
-  public static final String CLASS_NAME = "lcmsmsSubmissionForm";
+  public static final String ID = "lcmsms-submission-form";
   public static final String SAMPLES_TYPE = SAMPLES + "Type";
   public static final String SAMPLES_COUNT = SAMPLES + "Count";
   public static final String SAMPLES_NAMES = SAMPLES + "Names";
@@ -144,9 +145,13 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     this.presenter = presenter;
   }
 
+  public static String id(String baseId) {
+    return styleName(ID, baseId);
+  }
+
   @PostConstruct
   void init() {
-    addClassName(CLASS_NAME);
+    setId(ID);
     setMaxWidth("80em");
     setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3));
@@ -157,59 +162,59 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
             weightMarkerQuantity, proteinQuantity),
         new FormLayout(digestion, usedDigestion, otherDigestion, proteinContent, instrument,
             identification, identificationLink, quantification, quantificationComment));
-    experiment.addClassName(EXPERIMENT);
-    goal.addClassName(GOAL);
-    taxonomy.addClassName(TAXONOMY);
-    protein.addClassName(PROTEIN);
-    molecularWeight.addClassName(MOLECULAR_WEIGHT);
-    postTranslationModification.addClassName(POST_TRANSLATION_MODIFICATION);
-    quantity.addClassName(QUANTITY);
-    volume.addClassName(VOLUME);
-    contaminants.addClassName(CONTAMINANTS);
-    standards.addClassName(STANDARDS);
-    sampleType.addClassName(SAMPLES_TYPE);
+    experiment.setId(id(EXPERIMENT));
+    goal.setId(id(GOAL));
+    taxonomy.setId(id(TAXONOMY));
+    protein.setId(id(PROTEIN));
+    molecularWeight.setId(id(MOLECULAR_WEIGHT));
+    postTranslationModification.setId(id(POST_TRANSLATION_MODIFICATION));
+    quantity.setId(id(QUANTITY));
+    volume.setId(id(VOLUME));
+    contaminants.setId(id(CONTAMINANTS));
+    standards.setId(id(STANDARDS));
+    sampleType.setId(id(SAMPLES_TYPE));
     sampleType.setItems(SampleType.values());
     sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    samplesCount.addClassName(SAMPLES_COUNT);
-    samplesNames.addClassName(SAMPLES_NAMES);
+    samplesCount.setId(id(SAMPLES_COUNT));
+    samplesNames.setId(id(SAMPLES_NAMES));
     samplesNames.setMinHeight("10em");
-    separation.addClassName(SEPARATION);
+    separation.setId(id(SEPARATION));
     separation.setItems(GelSeparation.values());
     separation.setItemLabelGenerator(value -> value.getLabel(getLocale()));
-    thickness.addClassName(THICKNESS);
+    thickness.setId(id(THICKNESS));
     thickness.setItems(GelThickness.values());
     thickness.setItemLabelGenerator(value -> value.getLabel(getLocale()));
-    coloration.addClassName(COLORATION);
+    coloration.setId(id(COLORATION));
     coloration.setItems(GelColoration.values());
     coloration.setItemLabelGenerator(value -> value.getLabel(getLocale()));
-    otherColoration.addClassName(OTHER_COLORATION);
-    developmentTime.addClassName(DEVELOPMENT_TIME);
-    destained.addClassName(DECOLORATION);
-    weightMarkerQuantity.addClassName(WEIGHT_MARKER_QUANTITY);
-    proteinQuantity.addClassName(PROTEIN_QUANTITY);
-    digestion.addClassName(DIGESTION);
+    otherColoration.setId(id(OTHER_COLORATION));
+    developmentTime.setId(id(DEVELOPMENT_TIME));
+    destained.setId(id(DECOLORATION));
+    weightMarkerQuantity.setId(id(WEIGHT_MARKER_QUANTITY));
+    proteinQuantity.setId(id(PROTEIN_QUANTITY));
+    digestion.setId(id(DIGESTION));
     digestion.setItems(ProteolyticDigestion.values());
     digestion.setItemLabelGenerator(value -> value.getLabel(getLocale()));
-    usedDigestion.addClassName(USED_DIGESTION);
-    otherDigestion.addClassName(OTHER_DIGESTION);
-    proteinContent.addClassName(PROTEIN_CONTENT);
+    usedDigestion.setId(id(USED_DIGESTION));
+    otherDigestion.setId(id(OTHER_DIGESTION));
+    proteinContent.setId(id(PROTEIN_CONTENT));
     proteinContent.setItems(ProteinContent.values());
     proteinContent.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     proteinContent.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    instrument.addClassName(INSTRUMENT);
+    instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
     instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
-    identification.addClassName(IDENTIFICATION);
+    identification.setId(id(IDENTIFICATION));
     identification.setItems(ProteinIdentification.availables());
     identification.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    identificationLink.addClassName(IDENTIFICATION_LINK);
-    quantification.addClassName(QUANTIFICATION);
+    identificationLink.setId(id(IDENTIFICATION_LINK));
+    quantification.setId(id(QUANTIFICATION));
     quantification.setItems(Quantification.values());
     quantification.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     quantification.addValueChangeListener(e -> updateQuantificationComment());
-    quantificationComment.addClassName(QUANTIFICATION_COMMENT);
+    quantificationComment.setId(id(QUANTIFICATION_COMMENT));
     identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     presenter.init(this);
   }

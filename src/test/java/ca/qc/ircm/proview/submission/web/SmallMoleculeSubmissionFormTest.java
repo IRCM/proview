@@ -31,9 +31,10 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLUTION_SOLVEN
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLVENTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
-import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.CLASS_NAME;
+import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.ID;
 import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.SAMPLE_TYPE;
+import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.id;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static org.junit.Assert.assertEquals;
@@ -87,18 +88,18 @@ public class SmallMoleculeSubmissionFormTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(form.hasClassName(CLASS_NAME));
-    assertTrue(form.sampleType.hasClassName(SAMPLE_TYPE));
-    assertTrue(form.sampleName.hasClassName(SAMPLE_NAME));
-    assertTrue(form.solvent.hasClassName(SOLUTION_SOLVENT));
-    assertTrue(form.formula.hasClassName(FORMULA));
-    assertTrue(form.monoisotopicMass.hasClassName(MONOISOTOPIC_MASS));
-    assertTrue(form.averageMass.hasClassName(AVERAGE_MASS));
-    assertTrue(form.toxicity.hasClassName(TOXICITY));
-    assertTrue(form.lightSensitive.hasClassName(LIGHT_SENSITIVE));
-    assertTrue(form.storageTemperature.hasClassName(STORAGE_TEMPERATURE));
-    assertTrue(form.highResolution.hasClassName(HIGH_RESOLUTION));
-    assertTrue(form.otherSolvent.hasClassName(OTHER_SOLVENT));
+    assertEquals(ID, form.getId().orElse(""));
+    assertEquals(id(SAMPLE_TYPE), form.sampleType.getId().orElse(""));
+    assertEquals(id(SAMPLE_NAME), form.sampleName.getId().orElse(""));
+    assertEquals(id(SOLUTION_SOLVENT), form.solvent.getId().orElse(""));
+    assertEquals(id(FORMULA), form.formula.getId().orElse(""));
+    assertEquals(id(MONOISOTOPIC_MASS), form.monoisotopicMass.getId().orElse(""));
+    assertEquals(id(AVERAGE_MASS), form.averageMass.getId().orElse(""));
+    assertEquals(id(TOXICITY), form.toxicity.getId().orElse(""));
+    assertEquals(id(LIGHT_SENSITIVE), form.lightSensitive.getId().orElse(""));
+    assertEquals(id(STORAGE_TEMPERATURE), form.storageTemperature.getId().orElse(""));
+    assertEquals(id(HIGH_RESOLUTION), form.highResolution.getId().orElse(""));
+    assertEquals(id(OTHER_SOLVENT), form.otherSolvent.getId().orElse(""));
   }
 
   @Test

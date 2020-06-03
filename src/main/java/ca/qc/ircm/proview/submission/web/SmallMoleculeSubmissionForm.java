@@ -30,6 +30,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLVENTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
 import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.sample.SampleType;
@@ -56,7 +57,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleChangeObserver {
-  public static final String CLASS_NAME = "smallMoleculeSubmissionForm";
+  public static final String ID = "small-molecule-submission-form";
   public static final String SAMPLE = "sample";
   public static final String SAMPLE_TYPE = SAMPLE + "Type";
   public static final String SAMPLE_NAME = SAMPLE + "Name";
@@ -80,37 +81,41 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     this.presenter = presenter;
   }
 
+  public static String id(String baseId) {
+    return styleName(ID, baseId);
+  }
+
   @PostConstruct
   void init() {
-    addClassName(CLASS_NAME);
+    setId(ID);
     setMaxWidth("80em");
     setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3));
     add(new FormLayout(sampleType, sampleName, solvent, formula),
         new FormLayout(monoisotopicMass, averageMass, toxicity, lightSensitive, storageTemperature),
         new FormLayout(highResolution, solvents, otherSolvent));
-    sampleType.addClassName(SAMPLE_TYPE);
+    sampleType.setId(id(SAMPLE_TYPE));
     sampleType.setItems(DRY, SOLUTION);
     sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    sampleName.addClassName(SAMPLE_NAME);
-    solvent.addClassName(SOLUTION_SOLVENT);
-    formula.addClassName(FORMULA);
-    monoisotopicMass.addClassName(MONOISOTOPIC_MASS);
-    averageMass.addClassName(AVERAGE_MASS);
-    toxicity.addClassName(TOXICITY);
-    lightSensitive.addClassName(LIGHT_SENSITIVE);
-    storageTemperature.addClassName(STORAGE_TEMPERATURE);
+    sampleName.setId(id(SAMPLE_NAME));
+    solvent.setId(id(SOLUTION_SOLVENT));
+    formula.setId(id(FORMULA));
+    monoisotopicMass.setId(id(MONOISOTOPIC_MASS));
+    averageMass.setId(id(AVERAGE_MASS));
+    toxicity.setId(id(TOXICITY));
+    lightSensitive.setId(id(LIGHT_SENSITIVE));
+    storageTemperature.setId(id(STORAGE_TEMPERATURE));
     storageTemperature.setItems(StorageTemperature.values());
     storageTemperature.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     storageTemperature.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    highResolution.addClassName(HIGH_RESOLUTION);
+    highResolution.setId(id(HIGH_RESOLUTION));
     highResolution.setItems(false, true);
     highResolution
         .setRenderer(new TextRenderer<>(value -> new AppResources(Submission.class, getLocale())
             .message(property(HIGH_RESOLUTION, value))));
     highResolution.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    otherSolvent.addClassName(OTHER_SOLVENT);
+    otherSolvent.setId(id(OTHER_SOLVENT));
     presenter.init(this);
   }
 

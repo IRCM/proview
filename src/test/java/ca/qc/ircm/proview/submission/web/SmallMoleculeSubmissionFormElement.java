@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERA
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.SAMPLE_NAME;
 import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.SAMPLE_TYPE;
+import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.id;
 
 import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import com.vaadin.flow.component.customfield.testbench.CustomFieldElement;
@@ -38,43 +39,43 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-form-layout")
 public class SmallMoleculeSubmissionFormElement extends CustomFieldElement {
   public RadioButtonGroupElement sampleType() {
-    return $(RadioButtonGroupElement.class).attribute("class", SAMPLE_TYPE).first();
+    return $(RadioButtonGroupElement.class).id(id(SAMPLE_TYPE));
   }
 
   public TextFieldElement sampleName() {
-    return $(TextFieldElement.class).attribute("class", SAMPLE_NAME).first();
+    return $(TextFieldElement.class).id(id(SAMPLE_NAME));
   }
 
   public TextFieldElement solvent() {
-    return $(TextFieldElement.class).attribute("class", SOLUTION_SOLVENT).first();
+    return $(TextFieldElement.class).id(id(SOLUTION_SOLVENT));
   }
 
   public TextFieldElement formula() {
-    return $(TextFieldElement.class).attribute("class", FORMULA).first();
+    return $(TextFieldElement.class).id(id(FORMULA));
   }
 
   public TextFieldElement monoisotopicMass() {
-    return $(TextFieldElement.class).attribute("class", MONOISOTOPIC_MASS).first();
+    return $(TextFieldElement.class).id(id(MONOISOTOPIC_MASS));
   }
 
   public TextFieldElement averageMass() {
-    return $(TextFieldElement.class).attribute("class", AVERAGE_MASS).first();
+    return $(TextFieldElement.class).id(id(AVERAGE_MASS));
   }
 
   public TextFieldElement toxicity() {
-    return $(TextFieldElement.class).attribute("class", TOXICITY).first();
+    return $(TextFieldElement.class).id(id(TOXICITY));
   }
 
   public CheckboxElement lightSensitive() {
-    return $(CheckboxElement.class).attribute("class", LIGHT_SENSITIVE).first();
+    return $(CheckboxElement.class).id(id(LIGHT_SENSITIVE));
   }
 
   public RadioButtonGroupElement storageTemperature() {
-    return $(RadioButtonGroupElement.class).attribute("class", STORAGE_TEMPERATURE).first();
+    return $(RadioButtonGroupElement.class).id(id(STORAGE_TEMPERATURE));
   }
 
   public RadioButtonGroupElement highResolution() {
-    return $(RadioButtonGroupElement.class).attribute("class", HIGH_RESOLUTION).first();
+    return $(RadioButtonGroupElement.class).id(id(HIGH_RESOLUTION));
   }
 
   public SolventsFieldElement solvents() {
@@ -82,6 +83,6 @@ public class SmallMoleculeSubmissionFormElement extends CustomFieldElement {
   }
 
   public TextFieldElement otherSolvent() {
-    return $(TextFieldElement.class).attribute("class", OTHER_SOLVENT).first();
+    return $(TextFieldElement.class).id(id(OTHER_SOLVENT));
   }
 }

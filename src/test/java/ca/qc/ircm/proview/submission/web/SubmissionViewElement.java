@@ -55,8 +55,7 @@ public class SubmissionViewElement extends VerticalLayoutElement {
   }
 
   public LcmsmsSubmissionFormElement lcmsmsSubmissionForm() {
-    return $(LcmsmsSubmissionFormElement.class).attribute("class", LcmsmsSubmissionForm.CLASS_NAME)
-        .first();
+    return $(LcmsmsSubmissionFormElement.class).id(LcmsmsSubmissionForm.ID);
   }
 
   public TabElement smallMolecule() {
@@ -64,8 +63,7 @@ public class SubmissionViewElement extends VerticalLayoutElement {
   }
 
   public SmallMoleculeSubmissionFormElement smallMoleculeSubmissionForm() {
-    return $(SmallMoleculeSubmissionFormElement.class)
-        .attribute("class", SmallMoleculeSubmissionForm.CLASS_NAME).first();
+    return $(SmallMoleculeSubmissionFormElement.class).id(SmallMoleculeSubmissionForm.ID);
   }
 
   public TabElement intactProtein() {
@@ -73,8 +71,7 @@ public class SubmissionViewElement extends VerticalLayoutElement {
   }
 
   public IntactProteinSubmissionFormElement intactProteinSubmissionForm() {
-    return $(IntactProteinSubmissionFormElement.class)
-        .attribute("class", IntactProteinSubmissionForm.CLASS_NAME).first();
+    return $(IntactProteinSubmissionFormElement.class).id(IntactProteinSubmissionForm.ID);
   }
 
   public TextAreaElement comment() {

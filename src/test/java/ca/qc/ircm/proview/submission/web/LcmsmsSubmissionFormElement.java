@@ -47,6 +47,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_Q
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_NAMES;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_TYPE;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.id;
 
 import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
@@ -59,122 +60,122 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-form-layout")
 public class LcmsmsSubmissionFormElement extends FormLayoutElement {
   public TextFieldElement experiment() {
-    return $(TextFieldElement.class).attribute("class", EXPERIMENT).first();
+    return $(TextFieldElement.class).id(id(EXPERIMENT));
   }
 
   public TextFieldElement goal() {
-    return $(TextFieldElement.class).attribute("class", GOAL).first();
+    return $(TextFieldElement.class).id(id(GOAL));
   }
 
   public TextFieldElement taxonomy() {
-    return $(TextFieldElement.class).attribute("class", TAXONOMY).first();
+    return $(TextFieldElement.class).id(id(TAXONOMY));
   }
 
   public TextFieldElement protein() {
-    return $(TextFieldElement.class).attribute("class", PROTEIN).first();
+    return $(TextFieldElement.class).id(id(PROTEIN));
   }
 
   public TextFieldElement molecularWeight() {
-    return $(TextFieldElement.class).attribute("class", MOLECULAR_WEIGHT).first();
+    return $(TextFieldElement.class).id(id(MOLECULAR_WEIGHT));
   }
 
   public TextFieldElement postTranslationModification() {
-    return $(TextFieldElement.class).attribute("class", POST_TRANSLATION_MODIFICATION).first();
+    return $(TextFieldElement.class).id(id(POST_TRANSLATION_MODIFICATION));
   }
 
   public RadioButtonGroupElement sampleType() {
-    return $(RadioButtonGroupElement.class).attribute("class", SAMPLES_TYPE).first();
+    return $(RadioButtonGroupElement.class).id(id(SAMPLES_TYPE));
   }
 
   public TextFieldElement samplesCount() {
-    return $(TextFieldElement.class).attribute("class", SAMPLES_COUNT).first();
+    return $(TextFieldElement.class).id(id(SAMPLES_COUNT));
   }
 
   public TextAreaElement samplesNames() {
-    return $(TextAreaElement.class).attribute("class", SAMPLES_NAMES).first();
+    return $(TextAreaElement.class).id(id(SAMPLES_NAMES));
   }
 
   public TextFieldElement quantity() {
-    return $(TextFieldElement.class).attribute("class", QUANTITY).first();
+    return $(TextFieldElement.class).id(id(QUANTITY));
   }
 
   public TextFieldElement volume() {
-    return $(TextFieldElement.class).attribute("class", VOLUME).first();
+    return $(TextFieldElement.class).id(id(VOLUME));
   }
 
   public TextAreaElement contaminants() {
-    return $(TextAreaElement.class).attribute("class", CONTAMINANTS).first();
+    return $(TextAreaElement.class).id(id(CONTAMINANTS));
   }
 
   public TextAreaElement standards() {
-    return $(TextAreaElement.class).attribute("class", STANDARDS).first();
+    return $(TextAreaElement.class).id(id(STANDARDS));
   }
 
   public ComboBoxElement separation() {
-    return $(ComboBoxElement.class).attribute("class", SEPARATION).first();
+    return $(ComboBoxElement.class).id(id(SEPARATION));
   }
 
   public ComboBoxElement thickness() {
-    return $(ComboBoxElement.class).attribute("class", THICKNESS).first();
+    return $(ComboBoxElement.class).id(id(THICKNESS));
   }
 
   public ComboBoxElement coloration() {
-    return $(ComboBoxElement.class).attribute("class", COLORATION).first();
+    return $(ComboBoxElement.class).id(id(COLORATION));
   }
 
   public TextFieldElement otherColoration() {
-    return $(TextFieldElement.class).attribute("class", OTHER_COLORATION).first();
+    return $(TextFieldElement.class).id(id(OTHER_COLORATION));
   }
 
   public TextFieldElement developmentTime() {
-    return $(TextFieldElement.class).attribute("class", DEVELOPMENT_TIME).first();
+    return $(TextFieldElement.class).id(id(DEVELOPMENT_TIME));
   }
 
   public CheckboxElement destained() {
-    return $(CheckboxElement.class).attribute("class", DECOLORATION).first();
+    return $(CheckboxElement.class).id(id(DECOLORATION));
   }
 
   public TextFieldElement weightMarkerQuantity() {
-    return $(TextFieldElement.class).attribute("class", WEIGHT_MARKER_QUANTITY).first();
+    return $(TextFieldElement.class).id(id(WEIGHT_MARKER_QUANTITY));
   }
 
   public TextFieldElement proteinQuantity() {
-    return $(TextFieldElement.class).attribute("class", PROTEIN_QUANTITY).first();
+    return $(TextFieldElement.class).id(id(PROTEIN_QUANTITY));
   }
 
   public ComboBoxElement digestion() {
-    return $(ComboBoxElement.class).attribute("class", DIGESTION).first();
+    return $(ComboBoxElement.class).id(id(DIGESTION));
   }
 
   public TextFieldElement usedDigestion() {
-    return $(TextFieldElement.class).attribute("class", USED_DIGESTION).first();
+    return $(TextFieldElement.class).id(id(USED_DIGESTION));
   }
 
   public TextFieldElement otherDigestion() {
-    return $(TextFieldElement.class).attribute("class", OTHER_DIGESTION).first();
+    return $(TextFieldElement.class).id(id(OTHER_DIGESTION));
   }
 
   public RadioButtonGroupElement proteinContent() {
-    return $(RadioButtonGroupElement.class).attribute("class", PROTEIN_CONTENT).first();
+    return $(RadioButtonGroupElement.class).id(id(PROTEIN_CONTENT));
   }
 
   public ComboBoxElement instrument() {
-    return $(ComboBoxElement.class).attribute("class", INSTRUMENT).first();
+    return $(ComboBoxElement.class).id(id(INSTRUMENT));
   }
 
   public RadioButtonGroupElement identification() {
-    return $(RadioButtonGroupElement.class).attribute("class", IDENTIFICATION).first();
+    return $(RadioButtonGroupElement.class).id(id(IDENTIFICATION));
   }
 
   public TextFieldElement identificationLink() {
-    return $(TextFieldElement.class).attribute("class", IDENTIFICATION_LINK).first();
+    return $(TextFieldElement.class).id(id(IDENTIFICATION_LINK));
   }
 
   public ComboBoxElement quantification() {
-    return $(ComboBoxElement.class).attribute("class", QUANTIFICATION).first();
+    return $(ComboBoxElement.class).id(id(QUANTIFICATION));
   }
 
   public TextAreaElement quantificationComment() {
-    return $(TextAreaElement.class).attribute("class", QUANTIFICATION_COMMENT).first();
+    return $(TextAreaElement.class).id(id(QUANTIFICATION_COMMENT));
   }
 }

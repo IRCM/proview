@@ -36,6 +36,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SOURCE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
@@ -67,7 +68,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class IntactProteinSubmissionForm extends FormLayout implements LocaleChangeObserver {
-  public static final String CLASS_NAME = "intactProteinSubmissionForm";
+  public static final String ID = "intact-protein-submission-form";
   public static final String SAMPLES_TYPE = SAMPLES + "Type";
   public static final String SAMPLES_COUNT = SAMPLES + "Count";
   public static final String SAMPLES_NAMES = SAMPLES + "Names";
@@ -102,9 +103,13 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     this.presenter = presenter;
   }
 
+  public static String id(String baseId) {
+    return styleName(ID, baseId);
+  }
+
   @PostConstruct
   void init() {
-    addClassName(CLASS_NAME);
+    setId(ID);
     setMaxWidth("80em");
     setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3));
@@ -112,30 +117,30 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
         postTranslationModification),
         new FormLayout(sampleType, samplesCount, samplesNames, quantity, volume),
         new FormLayout(injection, source, instrument));
-    experiment.addClassName(EXPERIMENT);
-    goal.addClassName(GOAL);
-    taxonomy.addClassName(TAXONOMY);
-    protein.addClassName(PROTEIN);
-    molecularWeight.addClassName(MOLECULAR_WEIGHT);
-    postTranslationModification.addClassName(POST_TRANSLATION_MODIFICATION);
-    quantity.addClassName(QUANTITY);
-    volume.addClassName(VOLUME);
-    sampleType.addClassName(SAMPLES_TYPE);
+    experiment.setId(id(EXPERIMENT));
+    goal.setId(id(GOAL));
+    taxonomy.setId(id(TAXONOMY));
+    protein.setId(id(PROTEIN));
+    molecularWeight.setId(id(MOLECULAR_WEIGHT));
+    postTranslationModification.setId(id(POST_TRANSLATION_MODIFICATION));
+    quantity.setId(id(QUANTITY));
+    volume.setId(id(VOLUME));
+    sampleType.setId(id(SAMPLES_TYPE));
     sampleType.setItems(DRY, SOLUTION);
     sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    samplesCount.addClassName(SAMPLES_COUNT);
-    samplesNames.addClassName(SAMPLES_NAMES);
+    samplesCount.setId(id(SAMPLES_COUNT));
+    samplesNames.setId(id(SAMPLES_NAMES));
     samplesNames.setMinHeight("10em");
-    injection.addClassName(INJECTION_TYPE);
+    injection.setId(id(INJECTION_TYPE));
     injection.setItems(InjectionType.values());
     injection.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     injection.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    source.addClassName(SOURCE);
+    source.setId(id(SOURCE));
     source.setItems(MassDetectionInstrumentSource.availables());
     source.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     source.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    instrument.addClassName(INSTRUMENT);
+    instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
     instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     presenter.init(this);

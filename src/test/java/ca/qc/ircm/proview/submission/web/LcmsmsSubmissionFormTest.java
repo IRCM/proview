@@ -46,9 +46,9 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.THICKNESS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USED_DIGESTION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
-import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.CLASS_NAME;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.CONTAMINANTS_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.DEVELOPMENT_TIME_PLACEHOLDER;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.ID;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.PROTEIN_QUANTITY_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.QUANTIFICATION_COMMENT_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.QUANTIFICATION_COMMENT_PLACEHOLDER_TMT;
@@ -61,6 +61,7 @@ import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.SAMPLES_TYP
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.STANDARDS_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.VOLUME_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.WEIGHT_MARKER_QUANTITY_PLACEHOLDER;
+import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.id;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -124,37 +125,37 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(form.hasClassName(CLASS_NAME));
-    assertTrue(form.goal.hasClassName(GOAL));
-    assertTrue(form.taxonomy.hasClassName(TAXONOMY));
-    assertTrue(form.protein.hasClassName(PROTEIN));
-    assertTrue(form.molecularWeight.hasClassName(MOLECULAR_WEIGHT));
-    assertTrue(
-        form.postTranslationModification.hasClassName(POST_TRANSLATION_MODIFICATION));
-    assertTrue(form.sampleType.hasClassName(SAMPLES_TYPE));
-    assertTrue(form.samplesCount.hasClassName(SAMPLES_COUNT));
-    assertTrue(form.samplesNames.hasClassName(SAMPLES_NAMES));
-    assertTrue(form.quantity.hasClassName(QUANTITY));
-    assertTrue(form.volume.hasClassName(VOLUME));
-    assertTrue(form.contaminants.hasClassName(CONTAMINANTS));
-    assertTrue(form.standards.hasClassName(STANDARDS));
-    assertTrue(form.separation.hasClassName(SEPARATION));
-    assertTrue(form.thickness.hasClassName(THICKNESS));
-    assertTrue(form.coloration.hasClassName(COLORATION));
-    assertTrue(form.otherColoration.hasClassName(OTHER_COLORATION));
-    assertTrue(form.developmentTime.hasClassName(DEVELOPMENT_TIME));
-    assertTrue(form.destained.hasClassName(DECOLORATION));
-    assertTrue(form.weightMarkerQuantity.hasClassName(WEIGHT_MARKER_QUANTITY));
-    assertTrue(form.proteinQuantity.hasClassName(PROTEIN_QUANTITY));
-    assertTrue(form.digestion.hasClassName(DIGESTION));
-    assertTrue(form.usedDigestion.hasClassName(USED_DIGESTION));
-    assertTrue(form.otherDigestion.hasClassName(OTHER_DIGESTION));
-    assertTrue(form.proteinContent.hasClassName(PROTEIN_CONTENT));
-    assertTrue(form.instrument.hasClassName(INSTRUMENT));
-    assertTrue(form.identification.hasClassName(IDENTIFICATION));
-    assertTrue(form.identificationLink.hasClassName(IDENTIFICATION_LINK));
-    assertTrue(form.quantification.hasClassName(QUANTIFICATION));
-    assertTrue(form.quantificationComment.hasClassName(QUANTIFICATION_COMMENT));
+    assertEquals(ID, form.getId().orElse(""));
+    assertEquals(id(GOAL), form.goal.getId().orElse(""));
+    assertEquals(id(TAXONOMY), form.taxonomy.getId().orElse(""));
+    assertEquals(id(PROTEIN), form.protein.getId().orElse(""));
+    assertEquals(id(MOLECULAR_WEIGHT), form.molecularWeight.getId().orElse(""));
+    assertEquals(id(POST_TRANSLATION_MODIFICATION),
+        form.postTranslationModification.getId().orElse(""));
+    assertEquals(id(SAMPLES_TYPE), form.sampleType.getId().orElse(""));
+    assertEquals(id(SAMPLES_COUNT), form.samplesCount.getId().orElse(""));
+    assertEquals(id(SAMPLES_NAMES), form.samplesNames.getId().orElse(""));
+    assertEquals(id(QUANTITY), form.quantity.getId().orElse(""));
+    assertEquals(id(VOLUME), form.volume.getId().orElse(""));
+    assertEquals(id(CONTAMINANTS), form.contaminants.getId().orElse(""));
+    assertEquals(id(STANDARDS), form.standards.getId().orElse(""));
+    assertEquals(id(SEPARATION), form.separation.getId().orElse(""));
+    assertEquals(id(THICKNESS), form.thickness.getId().orElse(""));
+    assertEquals(id(COLORATION), form.coloration.getId().orElse(""));
+    assertEquals(id(OTHER_COLORATION), form.otherColoration.getId().orElse(""));
+    assertEquals(id(DEVELOPMENT_TIME), form.developmentTime.getId().orElse(""));
+    assertEquals(id(DECOLORATION), form.destained.getId().orElse(""));
+    assertEquals(id(WEIGHT_MARKER_QUANTITY), form.weightMarkerQuantity.getId().orElse(""));
+    assertEquals(id(PROTEIN_QUANTITY), form.proteinQuantity.getId().orElse(""));
+    assertEquals(id(DIGESTION), form.digestion.getId().orElse(""));
+    assertEquals(id(USED_DIGESTION), form.usedDigestion.getId().orElse(""));
+    assertEquals(id(OTHER_DIGESTION), form.otherDigestion.getId().orElse(""));
+    assertEquals(id(PROTEIN_CONTENT), form.proteinContent.getId().orElse(""));
+    assertEquals(id(INSTRUMENT), form.instrument.getId().orElse(""));
+    assertEquals(id(IDENTIFICATION), form.identification.getId().orElse(""));
+    assertEquals(id(IDENTIFICATION_LINK), form.identificationLink.getId().orElse(""));
+    assertEquals(id(QUANTIFICATION), form.quantification.getId().orElse(""));
+    assertEquals(id(QUANTIFICATION_COMMENT), form.quantificationComment.getId().orElse(""));
   }
 
   @Test

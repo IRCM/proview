@@ -31,12 +31,13 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.POST_TRANSLATIO
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOURCE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
-import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.CLASS_NAME;
+import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.ID;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.QUANTITY_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMPLES_NAMES;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMPLES_TYPE;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.VOLUME_PLACEHOLDER;
+import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.id;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -95,21 +96,21 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(form.hasClassName(CLASS_NAME));
-    assertTrue(form.goal.hasClassName(GOAL));
-    assertTrue(form.taxonomy.hasClassName(TAXONOMY));
-    assertTrue(form.protein.hasClassName(PROTEIN));
-    assertTrue(form.molecularWeight.hasClassName(MOLECULAR_WEIGHT));
-    assertTrue(
-        form.postTranslationModification.hasClassName(POST_TRANSLATION_MODIFICATION));
-    assertTrue(form.sampleType.hasClassName(SAMPLES_TYPE));
-    assertTrue(form.samplesCount.hasClassName(SAMPLES_COUNT));
-    assertTrue(form.samplesNames.hasClassName(SAMPLES_NAMES));
-    assertTrue(form.quantity.hasClassName(QUANTITY));
-    assertTrue(form.volume.hasClassName(VOLUME));
-    assertTrue(form.injection.hasClassName(INJECTION_TYPE));
-    assertTrue(form.source.hasClassName(SOURCE));
-    assertTrue(form.instrument.hasClassName(INSTRUMENT));
+    assertEquals(ID, form.getId().orElse(""));
+    assertEquals(id(GOAL), form.goal.getId().orElse(""));
+    assertEquals(id(TAXONOMY), form.taxonomy.getId().orElse(""));
+    assertEquals(id(PROTEIN), form.protein.getId().orElse(""));
+    assertEquals(id(MOLECULAR_WEIGHT), form.molecularWeight.getId().orElse(""));
+    assertEquals(id(POST_TRANSLATION_MODIFICATION),
+        form.postTranslationModification.getId().orElse(""));
+    assertEquals(id(SAMPLES_TYPE), form.sampleType.getId().orElse(""));
+    assertEquals(id(SAMPLES_COUNT), form.samplesCount.getId().orElse(""));
+    assertEquals(id(SAMPLES_NAMES), form.samplesNames.getId().orElse(""));
+    assertEquals(id(QUANTITY), form.quantity.getId().orElse(""));
+    assertEquals(id(VOLUME), form.volume.getId().orElse(""));
+    assertEquals(id(INJECTION_TYPE), form.injection.getId().orElse(""));
+    assertEquals(id(SOURCE), form.source.getId().orElse(""));
+    assertEquals(id(INSTRUMENT), form.instrument.getId().orElse(""));
   }
 
   @Test
