@@ -93,6 +93,10 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   protected Column<TreatedSample> comment;
   private Treatment treatment;
 
+  public static String id(String baseId) {
+    return styleName(ID, baseId);
+  }
+
   @PostConstruct
   void init() {
     logger.debug("treatment dialog");
@@ -102,16 +106,16 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     layout.setMinWidth("35em");
     add(layout);
     layout.add(header, deleted, protocol, fractionationType, date, samplesHeader, samples);
-    header.addClassName(HEADER);
-    deleted.addClassName(DELETED);
+    header.setId(id(HEADER));
+    deleted.setId(id(DELETED));
     deleted.setVisible(false);
-    protocol.addClassName(PROTOCOL);
+    protocol.setId(id(PROTOCOL));
     protocol.setVisible(false);
-    fractionationType.addClassName(FRACTIONATION_TYPE);
+    fractionationType.setId(id(FRACTIONATION_TYPE));
     fractionationType.setVisible(false);
-    date.addClassName(INSERT_TIME);
-    samplesHeader.addClassName(styleName(TREATED_SAMPLES, HEADER));
-    samples.addClassName(TREATED_SAMPLES);
+    date.setId(id(INSERT_TIME));
+    samplesHeader.setId(id(styleName(TREATED_SAMPLES, HEADER)));
+    samples.setId(id(TREATED_SAMPLES));
     sample = samples.addColumn(ts -> ts.getSample().getName(), SAMPLE).setKey(SAMPLE);
     container =
         samples.addColumn(ts -> ts.getContainer().getFullName(), CONTAINER).setKey(CONTAINER);

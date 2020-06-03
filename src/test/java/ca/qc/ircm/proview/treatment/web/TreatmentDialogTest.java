@@ -38,6 +38,7 @@ import static ca.qc.ircm.proview.treatment.TreatmentProperties.PROTOCOL;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.TREATED_SAMPLES;
 import static ca.qc.ircm.proview.treatment.web.TreatmentDialog.HEADER;
 import static ca.qc.ircm.proview.treatment.web.TreatmentDialog.ID;
+import static ca.qc.ircm.proview.treatment.web.TreatmentDialog.id;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -180,13 +181,13 @@ public class TreatmentDialogTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertTrue(dialog.header.hasClassName(HEADER));
-    assertTrue(dialog.deleted.hasClassName(DELETED));
-    assertTrue(dialog.protocol.hasClassName(PROTOCOL));
-    assertTrue(dialog.fractionationType.hasClassName(FRACTIONATION_TYPE));
-    assertTrue(dialog.date.hasClassName(INSERT_TIME));
-    assertTrue(dialog.samplesHeader.hasClassName(styleName(TREATED_SAMPLES, HEADER)));
-    assertTrue(dialog.samples.hasClassName(TREATED_SAMPLES));
+    assertEquals(id(HEADER), dialog.header.getId().orElse(""));
+    assertEquals(id(DELETED), dialog.deleted.getId().orElse(""));
+    assertEquals(id(PROTOCOL), dialog.protocol.getId().orElse(""));
+    assertEquals(id(FRACTIONATION_TYPE), dialog.fractionationType.getId().orElse(""));
+    assertEquals(id(INSERT_TIME), dialog.date.getId().orElse(""));
+    assertEquals(id(styleName(TREATED_SAMPLES, HEADER)), dialog.samplesHeader.getId().orElse(""));
+    assertEquals(id(TREATED_SAMPLES), dialog.samples.getId().orElse(""));
   }
 
   @Test

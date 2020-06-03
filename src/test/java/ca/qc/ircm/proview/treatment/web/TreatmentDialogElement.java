@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.treatment.TreatmentProperties.INSERT_TIME;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.PROTOCOL;
 import static ca.qc.ircm.proview.treatment.TreatmentProperties.TREATED_SAMPLES;
 import static ca.qc.ircm.proview.treatment.web.TreatmentDialog.HEADER;
+import static ca.qc.ircm.proview.treatment.web.TreatmentDialog.id;
 
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
@@ -35,31 +36,30 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-dialog")
 public class TreatmentDialogElement extends DialogElement {
   public H3Element header() {
-    return $(H3Element.class).attributeContains("class", HEADER).first();
+    return $(H3Element.class).id(id(HEADER));
   }
 
   public DivElement deleted() {
-    return $(DivElement.class).attributeContains("class", DELETED).first();
+    return $(DivElement.class).id(id(DELETED));
   }
 
   public DivElement protocol() {
-    return $(DivElement.class).attributeContains("class", PROTOCOL).first();
+    return $(DivElement.class).id(id(PROTOCOL));
   }
 
   public DivElement fractionationType() {
-    return $(DivElement.class).attributeContains("class", FRACTIONATION_TYPE).first();
+    return $(DivElement.class).id(id(FRACTIONATION_TYPE));
   }
 
   public DivElement date() {
-    return $(DivElement.class).attributeContains("class", INSERT_TIME).first();
+    return $(DivElement.class).id(id(INSERT_TIME));
   }
 
   public H4Element samplesHeader() {
-    return $(H4Element.class).attributeContains("class", styleName(TREATED_SAMPLES, HEADER))
-        .first();
+    return $(H4Element.class).id(id(styleName(TREATED_SAMPLES, HEADER)));
   }
 
   public GridElement samples() {
-    return $(GridElement.class).attributeContains("class", TREATED_SAMPLES).first();
+    return $(GridElement.class).id(id(TREATED_SAMPLES));
   }
 }
