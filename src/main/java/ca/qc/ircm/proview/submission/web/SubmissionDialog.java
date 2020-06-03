@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.Constants.RIGHT;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
+import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.web.DatePickerInternationalization.datePickerI18n;
 
@@ -87,6 +88,10 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     this.authorizationService = authorizationService;
   }
 
+  public static String id(String baseId) {
+    return styleName(ID, baseId);
+  }
+
   @PostConstruct
   void init() {
     logger.debug("submission dialog");
@@ -112,20 +117,20 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
     buttons.setWidthFull();
     layout.add(header, formLayout, buttons);
-    header.addClassName(HEADER);
-    instrument.addClassName(INSTRUMENT);
+    header.setId(id(HEADER));
+    instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
     instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
-    dataAvailableDate.addClassName(DATA_AVAILABLE_DATE);
+    dataAvailableDate.setId(id(DATA_AVAILABLE_DATE));
     save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-    save.addClassName(SAVE);
+    save.setId(id(SAVE));
     save.setIcon(VaadinIcon.CHECK.create());
     save.addClickListener(e -> presenter.save());
-    print.addClassName(PRINT);
+    print.setId(id(PRINT));
     print.setIcon(VaadinIcon.PRINT.create());
     print.addClickListener(e -> presenter.print());
     edit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    edit.addClassName(EDIT);
+    edit.setId(id(EDIT));
     edit.addClassName(RIGHT);
     edit.setIcon(VaadinIcon.EDIT.create());
     edit.addClickListener(e -> presenter.edit());

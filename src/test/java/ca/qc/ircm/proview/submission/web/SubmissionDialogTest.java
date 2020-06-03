@@ -26,6 +26,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
+import static ca.qc.ircm.proview.submission.web.SubmissionDialog.id;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateEquals;
@@ -120,15 +121,15 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertTrue(dialog.header.hasClassName(HEADER));
-    assertTrue(dialog.instrument.hasClassName(INSTRUMENT));
-    assertTrue(dialog.dataAvailableDate.hasClassName(DATA_AVAILABLE_DATE));
-    assertTrue(dialog.save.hasClassName(SAVE));
+    assertEquals(id(HEADER), dialog.header.getId().orElse(""));
+    assertEquals(id(INSTRUMENT), dialog.instrument.getId().orElse(""));
+    assertEquals(id(DATA_AVAILABLE_DATE), dialog.dataAvailableDate.getId().orElse(""));
+    assertEquals(id(SAVE), dialog.save.getId().orElse(""));
     assertTrue(dialog.save.hasThemeName(ButtonVariant.LUMO_SUCCESS.getVariantName()));
-    assertTrue(dialog.edit.hasClassName(EDIT));
+    assertEquals(id(EDIT), dialog.edit.getId().orElse(""));
     assertTrue(dialog.edit.hasThemeName(ButtonVariant.LUMO_PRIMARY.getVariantName()));
     validateIcon(VaadinIcon.EDIT.create(), dialog.edit.getIcon());
-    assertTrue(dialog.print.hasClassName(PRINT));
+    assertEquals(id(PRINT), dialog.print.getId().orElse(""));
     validateIcon(VaadinIcon.PRINT.create(), dialog.print.getIcon());
   }
 

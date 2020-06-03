@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionDialog.id;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
@@ -34,19 +35,19 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-dialog")
 public class SubmissionDialogElement extends DialogElement {
   public H3Element header() {
-    return $(H3Element.class).attributeContains("class", HEADER).first();
+    return $(H3Element.class).id(id(HEADER));
   }
 
   public ComboBoxElement instrument() {
-    return $(ComboBoxElement.class).attributeContains("class", INSTRUMENT).first();
+    return $(ComboBoxElement.class).id(id(INSTRUMENT));
   }
 
   public DatePickerElement dataAvailableDate() {
-    return $(DatePickerElement.class).attributeContains("class", DATA_AVAILABLE_DATE).first();
+    return $(DatePickerElement.class).id(id(DATA_AVAILABLE_DATE));
   }
 
   public ButtonElement save() {
-    return $(ButtonElement.class).attributeContains("class", SAVE).first();
+    return $(ButtonElement.class).id(id(SAVE));
   }
 
   public void clickSave() {
@@ -54,7 +55,7 @@ public class SubmissionDialogElement extends DialogElement {
   }
 
   public ButtonElement print() {
-    return $(ButtonElement.class).attributeContains("class", PRINT).first();
+    return $(ButtonElement.class).id(id(PRINT));
   }
 
   public void clickPrint() {
@@ -62,7 +63,7 @@ public class SubmissionDialogElement extends DialogElement {
   }
 
   public ButtonElement edit() {
-    return $(ButtonElement.class).attributeContains("class", EDIT).first();
+    return $(ButtonElement.class).id(id(EDIT));
   }
 
   public void clickEdit() {
