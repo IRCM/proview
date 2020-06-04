@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -66,6 +67,10 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     this.presenter = presenter;
   }
 
+  public static String id(String baseId) {
+    return styleName(ID, baseId);
+  }
+
   /**
    * Initializes user dialog.
    */
@@ -79,12 +84,12 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     add(layout);
     layout.add(header, form, buttonsLayout);
     buttonsLayout.add(save, cancel);
-    header.addClassName(HEADER);
-    save.addClassName(SAVE);
+    header.setId(id(HEADER));
+    save.setId(id(SAVE));
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
     save.addClickListener(e -> presenter.save());
-    cancel.addClassName(CANCEL);
+    cancel.setId(id(CANCEL));
     cancel.setIcon(VaadinIcon.CLOSE.create());
     cancel.addClickListener(e -> presenter.cancel());
     presenter.init(this);

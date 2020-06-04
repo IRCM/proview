@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.user.web.UserDialog.HEADER;
+import static ca.qc.ircm.proview.user.web.UserDialog.id;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
@@ -29,7 +30,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-dialog")
 public class UserDialogElement extends DialogElement {
   public H3Element header() {
-    return $(H3Element.class).attributeContains("class", HEADER).first();
+    return $(H3Element.class).id(id(HEADER));
   }
 
   public UserFormElement userForm() {
@@ -37,10 +38,10 @@ public class UserDialogElement extends DialogElement {
   }
 
   public ButtonElement save() {
-    return $(ButtonElement.class).attributeContains("class", SAVE).first();
+    return $(ButtonElement.class).id(id(SAVE));
   }
 
   public ButtonElement cancel() {
-    return $(ButtonElement.class).attributeContains("class", CANCEL).first();
+    return $(ButtonElement.class).id(id(CANCEL));
   }
 }
