@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
 import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
@@ -58,7 +59,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserForm extends FormLayout implements LocaleChangeObserver {
   private static final long serialVersionUID = 3285639770914046262L;
-  public static final String CLASS_NAME = "user-form";
+  public static final String ID = "user-form";
   public static final String HEADER = "header";
   public static final String EMAIL_PLACEHOLDER = "john.smith@ircm.qc.ca";
   public static final String NAME_PLACEHOLDER = "John Smith";
@@ -93,46 +94,50 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     this.defaultAddressConfiguration = defaultAddressConfiguration;
   }
 
+  public static String id(String baseId) {
+    return styleName(ID, baseId);
+  }
+
   /**
    * Initializes user dialog.
    */
   @PostConstruct
   protected void init() {
-    addClassName(CLASS_NAME);
+    setId(ID);
     setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
     add(new FormLayout(email, name, admin, manager, passwords),
         new FormLayout(laboratory, createNewLaboratory, newLaboratoryName),
         new FormLayout(addressLine, town, state, country, postalCode),
         new FormLayout(phoneType, number, extension));
-    email.addClassName(EMAIL);
+    email.setId(id(EMAIL));
     email.setPlaceholder(EMAIL_PLACEHOLDER);
-    name.addClassName(NAME);
+    name.setId(id(NAME));
     name.setPlaceholder(NAME_PLACEHOLDER);
-    admin.addClassName(ADMIN);
-    manager.addClassName(MANAGER);
-    laboratory.addClassName(LABORATORY);
-    createNewLaboratory.addClassName(CREATE_NEW_LABORATORY);
-    newLaboratoryName.addClassName(NEW_LABORATORY_NAME);
+    admin.setId(id(ADMIN));
+    manager.setId(id(MANAGER));
+    laboratory.setId(id(LABORATORY));
+    createNewLaboratory.setId(id(CREATE_NEW_LABORATORY));
+    newLaboratoryName.setId(id(NEW_LABORATORY_NAME));
     newLaboratoryName.setPlaceholder(LABORATORY_NAME_PLACEHOLDER);
     Address address = defaultAddressConfiguration.getAddress();
-    addressLine.addClassName(LINE);
+    addressLine.setId(id(LINE));
     addressLine.setPlaceholder(address.getLine());
-    town.addClassName(TOWN);
+    town.setId(id(TOWN));
     town.setPlaceholder(address.getTown());
-    state.addClassName(STATE);
+    state.setId(id(STATE));
     state.setPlaceholder(address.getState());
-    country.addClassName(COUNTRY);
+    country.setId(id(COUNTRY));
     country.setPlaceholder(address.getCountry());
-    postalCode.addClassName(POSTAL_CODE);
+    postalCode.setId(id(POSTAL_CODE));
     postalCode.setPlaceholder(address.getPostalCode());
-    phoneType.addClassName(TYPE);
+    phoneType.setId(id(TYPE));
     phoneType.setItems(PhoneNumberType.values());
     phoneType.setItemLabelGenerator(type -> type.getLabel(getLocale()));
     phoneType.setValue(PhoneNumberType.WORK);
-    number.addClassName(NUMBER);
+    number.setId(id(NUMBER));
     number.setPlaceholder(NUMBER_PLACEHOLDER);
-    extension.addClassName(EXTENSION);
+    extension.setId(id(EXTENSION));
     presenter.init(this);
   }
 

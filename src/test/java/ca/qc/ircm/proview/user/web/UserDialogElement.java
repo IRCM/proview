@@ -33,7 +33,7 @@ public class UserDialogElement extends DialogElement {
   }
 
   public UserFormElement userForm() {
-    return $(UserFormElement.class).attributeContains("class", UserForm.CLASS_NAME).first();
+    return $(UserFormElement.class).id(UserForm.ID);
   }
 
   public ButtonElement save() {

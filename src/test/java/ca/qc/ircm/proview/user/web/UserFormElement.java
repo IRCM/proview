@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.user.web.UserForm.CREATE_NEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserForm.NEW_LABORATORY_NAME;
+import static ca.qc.ircm.proview.user.web.UserForm.id;
 
 import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
@@ -43,19 +44,19 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-form-layout")
 public class UserFormElement extends FormLayoutElement {
   public TextFieldElement email() {
-    return $(TextFieldElement.class).attributeContains("class", EMAIL).first();
+    return $(TextFieldElement.class).id(id(EMAIL));
   }
 
   public TextFieldElement name() {
-    return $(TextFieldElement.class).attributeContains("class", NAME).first();
+    return $(TextFieldElement.class).id(id(NAME));
   }
 
   public CheckboxElement admin() {
-    return $(CheckboxElement.class).attributeContains("class", ADMIN).first();
+    return $(CheckboxElement.class).id(id(ADMIN));
   }
 
   public CheckboxElement manager() {
-    return $(CheckboxElement.class).attributeContains("class", MANAGER).first();
+    return $(CheckboxElement.class).id(id(MANAGER));
   }
 
   private PasswordsFormElement passwords() {
@@ -72,46 +73,46 @@ public class UserFormElement extends FormLayoutElement {
   }
 
   public ComboBoxElement laboratory() {
-    return $(ComboBoxElement.class).attributeContains("class", LABORATORY).first();
+    return $(ComboBoxElement.class).id(id(LABORATORY));
   }
 
   public CheckboxElement createNewLaboratory() {
-    return $(CheckboxElement.class).attributeContains("class", CREATE_NEW_LABORATORY).first();
+    return $(CheckboxElement.class).id(id(CREATE_NEW_LABORATORY));
   }
 
   public TextFieldElement newLaboratoryName() {
-    return $(TextFieldElement.class).attributeContains("class", NEW_LABORATORY_NAME).first();
+    return $(TextFieldElement.class).id(id(NEW_LABORATORY_NAME));
   }
 
   public TextFieldElement address() {
-    return $(TextFieldElement.class).attributeContains("class", LINE).first();
+    return $(TextFieldElement.class).id(id(LINE));
   }
 
   public TextFieldElement town() {
-    return $(TextFieldElement.class).attributeContains("class", TOWN).first();
+    return $(TextFieldElement.class).id(id(TOWN));
   }
 
   public TextFieldElement state() {
-    return $(TextFieldElement.class).attributeContains("class", STATE).first();
+    return $(TextFieldElement.class).id(id(STATE));
   }
 
   public TextFieldElement country() {
-    return $(TextFieldElement.class).attributeContains("class", COUNTRY).first();
+    return $(TextFieldElement.class).id(id(COUNTRY));
   }
 
   public TextFieldElement postalCode() {
-    return $(TextFieldElement.class).attributeContains("class", POSTAL_CODE).first();
+    return $(TextFieldElement.class).id(id(POSTAL_CODE));
   }
 
   public ComboBoxElement phoneType() {
-    return $(ComboBoxElement.class).attributeContains("class", TYPE).first();
+    return $(ComboBoxElement.class).id(id(TYPE));
   }
 
   public TextFieldElement number() {
-    return $(TextFieldElement.class).attributeContains("class", NUMBER).first();
+    return $(TextFieldElement.class).id(id(NUMBER));
   }
 
   public TextFieldElement extension() {
-    return $(TextFieldElement.class).attributeContains("class", EXTENSION).first();
+    return $(TextFieldElement.class).id(id(EXTENSION));
   }
 }

@@ -32,13 +32,14 @@ import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
-import static ca.qc.ircm.proview.user.web.UserForm.CLASS_NAME;
 import static ca.qc.ircm.proview.user.web.UserForm.CREATE_NEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserForm.EMAIL_PLACEHOLDER;
+import static ca.qc.ircm.proview.user.web.UserForm.ID;
 import static ca.qc.ircm.proview.user.web.UserForm.LABORATORY_NAME_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserForm.NAME_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserForm.NEW_LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UserForm.NUMBER_PLACEHOLDER;
+import static ca.qc.ircm.proview.user.web.UserForm.id;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -99,22 +100,22 @@ public class UserFormTest extends AbstractViewTestCase {
 
   @Test
   public void styles() {
-    assertTrue(form.hasClassName(CLASS_NAME));
-    assertTrue(form.email.hasClassName(EMAIL));
-    assertTrue(form.name.hasClassName(NAME));
-    assertTrue(form.admin.hasClassName(ADMIN));
-    assertTrue(form.manager.hasClassName(MANAGER));
-    assertTrue(form.laboratory.hasClassName(LABORATORY));
-    assertTrue(form.createNewLaboratory.hasClassName(CREATE_NEW_LABORATORY));
-    assertTrue(form.newLaboratoryName.hasClassName(NEW_LABORATORY_NAME));
-    assertTrue(form.addressLine.hasClassName(LINE));
-    assertTrue(form.town.hasClassName(TOWN));
-    assertTrue(form.state.hasClassName(STATE));
-    assertTrue(form.country.hasClassName(COUNTRY));
-    assertTrue(form.postalCode.hasClassName(POSTAL_CODE));
-    assertTrue(form.phoneType.hasClassName(TYPE));
-    assertTrue(form.number.hasClassName(NUMBER));
-    assertTrue(form.extension.hasClassName(EXTENSION));
+    assertEquals(ID, form.getId().orElse(""));
+    assertEquals(id(EMAIL), form.email.getId().orElse(""));
+    assertEquals(id(NAME), form.name.getId().orElse(""));
+    assertEquals(id(ADMIN), form.admin.getId().orElse(""));
+    assertEquals(id(MANAGER), form.manager.getId().orElse(""));
+    assertEquals(id(LABORATORY), form.laboratory.getId().orElse(""));
+    assertEquals(id(CREATE_NEW_LABORATORY), form.createNewLaboratory.getId().orElse(""));
+    assertEquals(id(NEW_LABORATORY_NAME), form.newLaboratoryName.getId().orElse(""));
+    assertEquals(id(LINE), form.addressLine.getId().orElse(""));
+    assertEquals(id(TOWN), form.town.getId().orElse(""));
+    assertEquals(id(STATE), form.state.getId().orElse(""));
+    assertEquals(id(COUNTRY), form.country.getId().orElse(""));
+    assertEquals(id(POSTAL_CODE), form.postalCode.getId().orElse(""));
+    assertEquals(id(TYPE), form.phoneType.getId().orElse(""));
+    assertEquals(id(NUMBER), form.number.getId().orElse(""));
+    assertEquals(id(EXTENSION), form.extension.getId().orElse(""));
   }
 
   @Test
