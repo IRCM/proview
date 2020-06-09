@@ -54,8 +54,10 @@ public class DateRangeField extends CustomField<Range<LocalDate>> implements Loc
     AppResources resources = new AppResources(DateRangeField.class, getLocale());
     from.setI18n(datePickerI18n(getLocale()));
     from.setPlaceholder(resources.message(property(FROM, PLACEHOLDER)));
+    from.setLocale(Locale.CANADA); // ISO format.
     to.setI18n(datePickerI18n(getLocale()));
     to.setPlaceholder(resources.message(property(TO, PLACEHOLDER)));
+    to.setLocale(Locale.CANADA); // ISO format.
     binder.forField(from).withValidator(fromBeforeTo(getLocale())).bind(TO);
     binder.forField(to).bind(FROM);
   }
