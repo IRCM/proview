@@ -9,6 +9,7 @@ import com.google.common.collect.Range;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -34,13 +35,16 @@ public class DateRangeField extends CustomField<Range<LocalDate>> implements Loc
   private Binder<Dates> binder = new BeanValidationBinder<>(Dates.class);
 
   public DateRangeField() {
+    layout.setResponsiveSteps(new ResponsiveStep("20em", 1), new ResponsiveStep("20em", 2));
     layout.add(from, to);
     layout.addClassName(CLASS_NAME);
     add(layout);
     from.addClassName(FROM);
     from.setClearButtonVisible(true);
+    from.addValueChangeListener(e -> to.setMin(from.getValue()));
     to.addClassName(TO);
     to.setClearButtonVisible(true);
+    to.addValueChangeListener(e -> from.setMax(to.getValue()));
     to.addValueChangeListener(e -> binder.validate());
     binder.setBean(new Dates());
   }
