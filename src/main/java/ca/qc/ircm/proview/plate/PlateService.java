@@ -29,13 +29,11 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
-import com.google.common.collect.Lists;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,25 +99,6 @@ public class PlateService {
     }
 
     return repository.findBySubmission(submission).orElse(null);
-  }
-
-  /**
-   * Selects all plates passing filter.
-   *
-   * @param filter
-   *          filters plates
-   * @return all plates passing filter
-   */
-  @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public List<Plate> all(PlateFilter filter) {
-    if (filter == null) {
-      filter = new PlateFilter();
-    }
-    if (filter.predicate() != null) {
-      return Lists.newArrayList(repository.findAll(filter.predicate()));
-    } else {
-      return repository.findAll();
-    }
   }
 
   /**

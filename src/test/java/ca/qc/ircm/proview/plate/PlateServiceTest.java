@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.plate;
 
-import static ca.qc.ircm.proview.plate.QPlate.plate;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,8 +26,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -142,68 +139,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     Plate plate = service.get((Submission) null);
 
     assertNull(plate);
-  }
-
-  @Test
-  @WithMockUser(authorities = UserRole.ADMIN)
-  public void all_Filter() throws Throwable {
-    PlateFilter filter = mock(PlateFilter.class);
-    when(filter.predicate()).thenReturn(plate.isNotNull());
-
-    List<Plate> plates = service.all(filter);
-
-    verify(filter, atLeastOnce()).predicate();
-    assertEquals(18, plates.size());
-  }
-
-  @Test
-  @WithMockUser(authorities = UserRole.ADMIN)
-  public void all_SubmissionFalse() throws Exception {
-    PlateFilter filter = new PlateFilter();
-    filter.submission = false;
-
-    List<Plate> plates = service.all(filter);
-
-    assertEquals(17, plates.size());
-    assertFalse(find(plates, 123L).isPresent());
-  }
-
-  @Test
-  @WithMockUser(authorities = UserRole.ADMIN)
-  public void all_SubmissionTrue() throws Exception {
-    PlateFilter filter = new PlateFilter();
-    filter.submission = true;
-
-    List<Plate> plates = service.all(filter);
-
-    assertEquals(1, plates.size());
-    assertTrue(find(plates, 123L).isPresent());
-  }
-
-  @Test
-  @WithMockUser(authorities = UserRole.ADMIN)
-  public void all_Null() throws Exception {
-    List<Plate> plates = service.all(null);
-
-    assertEquals(18, plates.size());
-  }
-
-  @Test(expected = AccessDeniedException.class)
-  @WithAnonymousUser
-  public void all_AccessDenied_Anonymous() throws Throwable {
-    PlateFilter filter = mock(PlateFilter.class);
-    when(filter.predicate()).thenReturn(plate.isNotNull());
-
-    service.all(filter);
-  }
-
-  @Test(expected = AccessDeniedException.class)
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void all_AccessDenied() throws Throwable {
-    PlateFilter filter = mock(PlateFilter.class);
-    when(filter.predicate()).thenReturn(plate.isNotNull());
-
-    service.all(filter);
   }
 
   @Test
