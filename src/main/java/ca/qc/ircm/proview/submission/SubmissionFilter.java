@@ -44,9 +44,6 @@ public class SubmissionFilter implements Predicate<Submission> {
   public SampleStatus anySampleStatus;
   public MassDetectionInstrument instrument;
   public Range<LocalDate> dateRange;
-  public Range<LocalDate> sampleDeliveryDateRange;
-  public Range<LocalDate> digestionDateRange;
-  public Range<LocalDate> analysisDateRange;
   public Range<LocalDate> dataAvailableDateRange;
   public Boolean hidden;
   public List<OrderSpecifier<?>> sortOrders;
@@ -86,26 +83,13 @@ public class SubmissionFilter implements Predicate<Submission> {
     }
     if (instrument != null) {
       if (instrument == MassDetectionInstrument.NULL) {
-        test &= submission.getInstrument() == null
-            || instrument == submission.getInstrument();
+        test &= submission.getInstrument() == null || instrument == submission.getInstrument();
       } else {
         test &= instrument == submission.getInstrument();
       }
     }
     if (dateRange != null) {
       test &= dateRange.contains(submission.getSubmissionDate().toLocalDate());
-    }
-    if (sampleDeliveryDateRange != null) {
-      test &= submission.getSampleDeliveryDate() != null
-          && sampleDeliveryDateRange.contains(submission.getSampleDeliveryDate());
-    }
-    if (digestionDateRange != null) {
-      test &= submission.getDigestionDate() != null
-          && digestionDateRange.contains(submission.getDigestionDate());
-    }
-    if (analysisDateRange != null) {
-      test &= submission.getAnalysisDate() != null
-          && analysisDateRange.contains(submission.getAnalysisDate());
     }
     if (dataAvailableDateRange != null) {
       test &= submission.getDataAvailableDate() != null
@@ -161,54 +145,6 @@ public class SubmissionFilter implements Predicate<Submission> {
           date = date.plusDays(1);
         }
         predicate.and(submission.submissionDate.before(toLocalDateTime(date)));
-      }
-    }
-    if (digestionDateRange != null) {
-      if (digestionDateRange.hasLowerBound()) {
-        LocalDate date = digestionDateRange.lowerEndpoint();
-        if (digestionDateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
-        }
-        predicate.and(submission.digestionDate.goe(date));
-      }
-      if (digestionDateRange.hasUpperBound()) {
-        LocalDate date = digestionDateRange.upperEndpoint();
-        if (digestionDateRange.upperBoundType() == BoundType.CLOSED) {
-          date = date.plusDays(1);
-        }
-        predicate.and(submission.digestionDate.before(date));
-      }
-    }
-    if (sampleDeliveryDateRange != null) {
-      if (sampleDeliveryDateRange.hasLowerBound()) {
-        LocalDate date = sampleDeliveryDateRange.lowerEndpoint();
-        if (sampleDeliveryDateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
-        }
-        predicate.and(submission.sampleDeliveryDate.goe(date));
-      }
-      if (sampleDeliveryDateRange.hasUpperBound()) {
-        LocalDate date = sampleDeliveryDateRange.upperEndpoint();
-        if (sampleDeliveryDateRange.upperBoundType() == BoundType.CLOSED) {
-          date = date.plusDays(1);
-        }
-        predicate.and(submission.sampleDeliveryDate.before(date));
-      }
-    }
-    if (analysisDateRange != null) {
-      if (analysisDateRange.hasLowerBound()) {
-        LocalDate date = analysisDateRange.lowerEndpoint();
-        if (analysisDateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
-        }
-        predicate.and(submission.analysisDate.goe(date));
-      }
-      if (analysisDateRange.hasUpperBound()) {
-        LocalDate date = analysisDateRange.upperEndpoint();
-        if (analysisDateRange.upperBoundType() == BoundType.CLOSED) {
-          date = date.plusDays(1);
-        }
-        predicate.and(submission.analysisDate.before(date));
       }
     }
     if (dataAvailableDateRange != null) {
@@ -274,54 +210,6 @@ public class SubmissionFilter implements Predicate<Submission> {
           date = date.plusDays(1);
         }
         query.where(submission.submissionDate.before(toLocalDateTime(date)));
-      }
-    }
-    if (digestionDateRange != null) {
-      if (digestionDateRange.hasLowerBound()) {
-        LocalDate date = digestionDateRange.lowerEndpoint();
-        if (digestionDateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
-        }
-        query.where(submission.digestionDate.goe(date));
-      }
-      if (digestionDateRange.hasUpperBound()) {
-        LocalDate date = digestionDateRange.upperEndpoint();
-        if (digestionDateRange.upperBoundType() == BoundType.CLOSED) {
-          date = date.plusDays(1);
-        }
-        query.where(submission.digestionDate.before(date));
-      }
-    }
-    if (sampleDeliveryDateRange != null) {
-      if (sampleDeliveryDateRange.hasLowerBound()) {
-        LocalDate date = sampleDeliveryDateRange.lowerEndpoint();
-        if (sampleDeliveryDateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
-        }
-        query.where(submission.sampleDeliveryDate.goe(date));
-      }
-      if (sampleDeliveryDateRange.hasUpperBound()) {
-        LocalDate date = sampleDeliveryDateRange.upperEndpoint();
-        if (sampleDeliveryDateRange.upperBoundType() == BoundType.CLOSED) {
-          date = date.plusDays(1);
-        }
-        query.where(submission.sampleDeliveryDate.before(date));
-      }
-    }
-    if (analysisDateRange != null) {
-      if (analysisDateRange.hasLowerBound()) {
-        LocalDate date = analysisDateRange.lowerEndpoint();
-        if (analysisDateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
-        }
-        query.where(submission.analysisDate.goe(date));
-      }
-      if (analysisDateRange.hasUpperBound()) {
-        LocalDate date = analysisDateRange.upperEndpoint();
-        if (analysisDateRange.upperBoundType() == BoundType.CLOSED) {
-          date = date.plusDays(1);
-        }
-        query.where(submission.analysisDate.before(date));
       }
     }
     if (dataAvailableDateRange != null) {
