@@ -58,11 +58,15 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected Button cancel = new Button();
+  @Autowired
   protected UserForm form;
+  @Autowired
   private transient UserDialogPresenter presenter;
 
-  @Autowired
-  protected UserDialog(UserForm form, UserDialogPresenter presenter) {
+  public UserDialog() {
+  }
+
+  UserDialog(UserForm form, UserDialogPresenter presenter) {
     this.form = form;
     this.presenter = presenter;
   }

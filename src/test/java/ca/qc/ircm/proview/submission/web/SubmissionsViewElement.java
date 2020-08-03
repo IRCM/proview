@@ -21,6 +21,8 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.EDIT_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
 
+import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
+import ca.qc.ircm.proview.sample.web.SamplesStatusDialogElement;
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
@@ -71,5 +73,13 @@ public class SubmissionsViewElement extends VerticalLayoutElement {
 
   public ButtonElement editStatus() {
     return $(ButtonElement.class).id(EDIT_STATUS);
+  }
+
+  public SubmissionDialogElement dialog() {
+    return $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
+  }
+
+  public SamplesStatusDialogElement statusDialog() {
+    return $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
   }
 }

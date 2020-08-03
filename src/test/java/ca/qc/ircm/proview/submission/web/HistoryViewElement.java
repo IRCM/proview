@@ -20,6 +20,10 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.web.HistoryView.ACTIVITIES;
 import static ca.qc.ircm.proview.submission.web.HistoryView.HEADER;
 
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialogElement;
+import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
+import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
@@ -37,5 +41,17 @@ public class HistoryViewElement extends VerticalLayoutElement {
 
   public void doubleClickActivity(int row) {
     activities().getCell(row, 0).doubleClick();
+  }
+
+  public SubmissionDialogElement dialog() {
+    return $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
+  }
+
+  public MsAnalysisDialogElement msAnalysisDialog() {
+    return $(MsAnalysisDialogElement.class).id(MsAnalysisDialog.ID);
+  }
+
+  public TreatmentDialogElement treatmentDialog() {
+    return $(TreatmentDialogElement.class).id(TreatmentDialog.ID);
   }
 }

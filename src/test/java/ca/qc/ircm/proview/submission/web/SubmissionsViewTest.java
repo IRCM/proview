@@ -112,10 +112,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   private SubmissionsView view;
   @Mock
   private SubmissionsViewPresenter presenter;
-  @Mock
-  private SubmissionDialog dialog;
-  @Mock
-  private SamplesStatusDialog statusDialog;
   @Captor
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
@@ -138,7 +134,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new SubmissionsView(presenter, dialog, statusDialog);
+    view = new SubmissionsView(presenter, new SubmissionDialog(), new SamplesStatusDialog());
     view.init();
     submissions = repository.findAll();
   }
@@ -292,7 +288,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void localeChange() {
-    view = new SubmissionsView(presenter, dialog, statusDialog);
     mockColumns();
     view.init();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
@@ -386,7 +381,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void submissions_ColumnsValueProvider() {
-    view = new SubmissionsView(presenter, dialog, statusDialog);
     mockColumns();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
     view.init();

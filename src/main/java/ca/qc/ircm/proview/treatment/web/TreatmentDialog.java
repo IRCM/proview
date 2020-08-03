@@ -93,6 +93,9 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   protected Column<TreatedSample> comment;
   private Treatment treatment;
 
+  public TreatmentDialog() {
+  }
+
   public static String id(String baseId) {
     return styleName(ID, baseId);
   }

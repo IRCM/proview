@@ -43,18 +43,16 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
   @Autowired
   private SubmissionSampleRepository repository;
 
-  private void open() {
+  private SamplesStatusDialogElement open() {
     openView(VIEW_NAME);
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
     view.clickSubmission(1, Keys.SHIFT);
-    waitUntil(driver -> $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID));
+    return view.statusDialog();
   }
 
   @Test
   public void fieldsExistence() throws Throwable {
-    open();
-    SamplesStatusDialogElement dialog =
-        $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
+    SamplesStatusDialogElement dialog = open();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.samples()).isPresent());
     assertTrue(optional(() -> dialog.allStatus()).isPresent());
@@ -64,15 +62,12 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
 
   @Test
   public void save() throws Throwable {
-    open();
-    SamplesStatusDialogElement dialog =
-        $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
+    SamplesStatusDialogElement dialog = open();
     Locale locale = currentLocale();
     dialog.status(0).selectByText(SampleStatus.ANALYSED.getLabel(locale));
     dialog.status(1).selectByText(SampleStatus.DIGESTED.getLabel(locale));
     dialog.save().click();
-    assertFalse(
-        optional(() -> $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID)).isPresent());
+    assertFalse(dialog.isOpen());
     assertEquals(SampleStatus.ANALYSED, repository.findById(640L).get().getStatus());
     assertEquals(SampleStatus.DIGESTED, repository.findById(641L).get().getStatus());
     assertEquals(SampleStatus.WAITING, repository.findById(642L).get().getStatus());
@@ -80,11 +75,8 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
 
   @Test
   public void cancel() throws Throwable {
-    open();
-    SamplesStatusDialogElement dialog =
-        $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
+    SamplesStatusDialogElement dialog = open();
     dialog.cancel().click();
-    assertFalse(
-        optional(() -> $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID)).isPresent());
+    assertFalse(dialog.isOpen());
   }
 }

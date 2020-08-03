@@ -90,6 +90,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
     assertFalse(optional(() -> view.editStatus()).isPresent());
+    assertTrue(optional(() -> view.dialog()).isPresent());
   }
 
   @Test
@@ -101,6 +102,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
     assertTrue(optional(() -> view.editStatus()).isPresent());
+    assertTrue(optional(() -> view.dialog()).isPresent());
   }
 
   @Test
@@ -141,8 +143,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
     view.doubleClickSubmission(0);
 
-    waitUntil(driver -> $(SubmissionDialogElement.class).id(SubmissionDialog.ID));
-    SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
+    SubmissionDialogElement dialog = view.dialog();
+    assertTrue(dialog.isOpen());
     assertEquals("POLR3B-Flag", dialog.header().getText());
   }
 
@@ -154,9 +156,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
     view.clickSubmission(0, Keys.SHIFT);
 
-    waitUntil(driver -> $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID));
-    SamplesStatusDialogElement dialog =
-        $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
+    SamplesStatusDialogElement dialog = view.statusDialog();
+    assertTrue(dialog.isOpen());
     AppResources resources = resources(SamplesStatusDialog.class);
     assertEquals(resources.message(SamplesStatusDialog.HEADER, "POLR3B-Flag"),
         dialog.header().getText());
@@ -181,9 +182,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     view.clickSubmission(0);
     view.editStatus().click();
 
-    waitUntil(driver -> $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID));
-    SamplesStatusDialogElement dialog =
-        $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
+    SamplesStatusDialogElement dialog = view.statusDialog();
+    assertTrue(dialog.isOpen());
     AppResources resources = resources(SamplesStatusDialog.class);
     assertEquals(resources.message(SamplesStatusDialog.HEADER, "POLR3B-Flag"),
         dialog.header().getText());

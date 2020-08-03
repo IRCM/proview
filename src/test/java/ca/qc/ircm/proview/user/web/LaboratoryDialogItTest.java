@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.LaboratoryDialog.ID;
 import static ca.qc.ircm.proview.user.web.LaboratoryDialog.SAVED;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.Assert.assertFalse;
@@ -57,7 +56,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
     view.doubleClickLaboratory(0);
-    LaboratoryDialogElement dialog = $(LaboratoryDialogElement.class).id(ID);
+    LaboratoryDialogElement dialog = view.laboratoryDialog();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.name()).isPresent());
     assertTrue(optional(() -> dialog.save()).isPresent());
@@ -69,7 +68,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
     view.doubleClickLaboratory(0);
-    LaboratoryDialogElement dialog = $(LaboratoryDialogElement.class).id(ID);
+    LaboratoryDialogElement dialog = view.laboratoryDialog();
     fill(dialog);
 
     TestTransaction.flagForCommit();
@@ -88,7 +87,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
     view.doubleClickLaboratory(0);
-    LaboratoryDialogElement dialog = $(LaboratoryDialogElement.class).id(ID);
+    LaboratoryDialogElement dialog = view.laboratoryDialog();
     fill(dialog);
 
     dialog.cancel().click();

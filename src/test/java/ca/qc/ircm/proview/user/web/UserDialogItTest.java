@@ -77,7 +77,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(ID);
     view.doubleClickUser(0);
-    UserDialogElement dialog = $(UserDialogElement.class).first();
+    UserDialogElement dialog = view.dialog();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.userForm().email()).isPresent());
     assertTrue(optional(() -> dialog.userForm().name()).isPresent());
@@ -108,8 +108,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
 
     view.doubleClickUser(0);
 
-    assertTrue(optional(() -> $(UserDialogElement.class).first()).isPresent());
-    UserDialogElement dialog = $(UserDialogElement.class).first();
+    UserDialogElement dialog = view.dialog();
     dialog.userForm().email().setValue(email);
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
@@ -161,8 +160,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
 
     view.doubleClickUser(0);
 
-    assertTrue(optional(() -> $(UserDialogElement.class).first()).isPresent());
-    UserDialogElement dialog = $(UserDialogElement.class).first();
+    UserDialogElement dialog = view.dialog();
     dialog.userForm().email().setValue(email);
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
@@ -191,10 +189,9 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
-    view.clickAdd();
+    view.add().click();
 
-    assertTrue(optional(() -> $(UserDialogElement.class).first()).isPresent());
-    UserDialogElement dialog = $(UserDialogElement.class).first();
+    UserDialogElement dialog = view.dialog();
     dialog.userForm().email().setValue(email);
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
@@ -244,10 +241,9 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
-    view.clickAdd();
+    view.add().click();
 
-    assertTrue(optional(() -> $(UserDialogElement.class).first()).isPresent());
-    UserDialogElement dialog = $(UserDialogElement.class).first();
+    UserDialogElement dialog = view.dialog();
     dialog.userForm().email().setValue(email);
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);

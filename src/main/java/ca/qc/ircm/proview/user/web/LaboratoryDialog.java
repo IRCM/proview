@@ -64,10 +64,13 @@ public class LaboratoryDialog extends Dialog
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected Button cancel = new Button();
+  @Autowired
   private transient LaboratoryDialogPresenter presenter;
 
-  @Autowired
-  protected LaboratoryDialog(LaboratoryDialogPresenter presenter) {
+  public LaboratoryDialog() {
+  }
+
+  LaboratoryDialog(LaboratoryDialogPresenter presenter) {
     this.presenter = presenter;
   }
 
@@ -80,7 +83,7 @@ public class LaboratoryDialog extends Dialog
    */
   @PostConstruct
   protected void init() {
-    logger.debug("user dialog");
+    logger.debug("laboratory dialog");
     setId(ID);
     VerticalLayout layout = new VerticalLayout();
     layout.setMaxWidth("70em");

@@ -70,18 +70,23 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   public static final String HEADER = "header";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
   protected H3 header = new H3();
-  protected PrintSubmission printContent;
   protected FormLayout submissionForm = new FormLayout();
   protected ComboBox<MassDetectionInstrument> instrument = new ComboBox<>();
   protected DatePicker dataAvailableDate = new DatePicker();
   protected Button save = new Button();
   protected Button print = new Button();
   protected Button edit = new Button();
+  @Autowired
+  protected PrintSubmission printContent;
+  @Autowired
   private SubmissionDialogPresenter presenter;
+  @Autowired
   private AuthorizationService authorizationService;
 
-  @Autowired
-  protected SubmissionDialog(SubmissionDialogPresenter presenter, PrintSubmission printContent,
+  public SubmissionDialog() {
+  }
+
+  SubmissionDialog(SubmissionDialogPresenter presenter, PrintSubmission printContent,
       AuthorizationService authorizationService) {
     this.presenter = presenter;
     this.printContent = printContent;

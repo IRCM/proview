@@ -97,7 +97,7 @@ public class HistoryView extends VerticalLayout
     logger.debug("history view");
     setId(ID);
     setSizeFull();
-    add(header, activities);
+    add(header, activities, dialog, msAnalysisDialog, treatmentDialog);
     header.setId(HEADER);
     activities.setId(ACTIVITIES);
     activities.setSizeFull();

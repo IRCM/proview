@@ -77,7 +77,7 @@ public class UsersViewPresenter {
     view.error.setVisible(false);
     view.add.setVisible(authorizationService.hasAnyRole(ADMIN, MANAGER));
     view.switchUser.setVisible(authorizationService.hasRole(ADMIN));
-    view.userDialog.addSavedListener(e -> loadUsers());
+    view.dialog.addSavedListener(e -> loadUsers());
     view.laboratoryDialog.addSavedListener(e -> loadUsers());
   }
 
@@ -122,8 +122,8 @@ public class UsersViewPresenter {
 
   void view(User user) {
     clearError();
-    view.userDialog.setUser(service.get(user.getId()));
-    view.userDialog.open();
+    view.dialog.setUser(service.get(user.getId()));
+    view.dialog.open();
   }
 
   void view(Laboratory laboratory) {
@@ -162,8 +162,8 @@ public class UsersViewPresenter {
   }
 
   void add() {
-    view.userDialog.setUser(new User());
-    view.userDialog.open();
+    view.dialog.setUser(new User());
+    view.dialog.open();
   }
 
   void showError(Map<String, List<String>> parameters, Locale locale) {

@@ -145,7 +145,7 @@ public class SubmissionsView extends VerticalLayout
     setSizeFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     buttonsLayout.add(add, editStatus);
-    add(header, submissions, buttonsLayout);
+    add(header, submissions, buttonsLayout, dialog, statusDialog);
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
     submissions.setSizeFull();

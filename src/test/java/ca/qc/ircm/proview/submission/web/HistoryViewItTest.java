@@ -32,7 +32,6 @@ import ca.qc.ircm.proview.security.web.AccessDeniedError;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatmentType;
-import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
 import ca.qc.ircm.proview.web.SigninView;
 import java.util.Locale;
@@ -100,6 +99,9 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.activities()).isPresent());
+    assertTrue(optional(() -> view.dialog()).isPresent());
+    assertTrue(optional(() -> view.msAnalysisDialog()).isPresent());
+    assertTrue(optional(() -> view.treatmentDialog()).isPresent());
   }
 
   @Test
@@ -107,8 +109,8 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
     view.doubleClickActivity(6);
-    waitUntil(driver -> $(SubmissionDialogElement.class).id(SubmissionDialog.ID));
-    SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
+    SubmissionDialogElement dialog = view.dialog();
+    assertTrue(dialog.isOpen());
     assertEquals("G100429", dialog.header().getText());
   }
 
@@ -117,8 +119,8 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
     view.doubleClickActivity(5);
-    waitUntil(driver -> $(MsAnalysisDialogElement.class).id(MsAnalysisDialog.ID));
-    MsAnalysisDialogElement dialog = $(MsAnalysisDialogElement.class).id(MsAnalysisDialog.ID);
+    MsAnalysisDialogElement dialog = view.msAnalysisDialog();
+    assertTrue(dialog.isOpen());
     assertEquals(resources(MsAnalysisDialog.class).message(MsAnalysisDialog.HEADER),
         dialog.header().getText());
   }
@@ -128,8 +130,8 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
     view.doubleClickActivity(0);
-    waitUntil(driver -> $(TreatmentDialogElement.class).id(TreatmentDialog.ID));
-    TreatmentDialogElement dialog = $(TreatmentDialogElement.class).id(TreatmentDialog.ID);
+    TreatmentDialogElement dialog = view.treatmentDialog();
+    assertTrue(dialog.isOpen());
     assertEquals(TreatmentType.TRANSFER.getLabel(currentLocale()), dialog.header().getText());
   }
 }

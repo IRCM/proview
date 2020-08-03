@@ -113,7 +113,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     view.error = new Div();
     view.add = new Button();
     view.switchUser = new Button();
-    view.userDialog = mock(UserDialog.class);
+    view.dialog = mock(UserDialog.class);
     view.laboratoryDialog = mock(LaboratoryDialog.class);
     users = repository.findAll();
     when(service.all(any(), any(Laboratory.class))).thenReturn(users);
@@ -291,8 +291,8 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     when(service.get(any(Long.class))).thenReturn(databaseUser);
     presenter.view(user);
     verify(service).get(2L);
-    verify(view.userDialog).setUser(databaseUser);
-    verify(view.userDialog).open();
+    verify(view.dialog).setUser(databaseUser);
+    verify(view.dialog).open();
   }
 
   @Test
@@ -312,7 +312,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   @SuppressWarnings("unchecked")
   public void refreshOnSaved() {
     presenter.init(view);
-    verify(view.userDialog).addSavedListener(userSavedListenerCaptor.capture());
+    verify(view.dialog).addSavedListener(userSavedListenerCaptor.capture());
     ComponentEventListener<SavedEvent<UserDialog>> savedListener =
         userSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
@@ -383,13 +383,13 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   public void add() {
     presenter.init(view);
     presenter.add();
-    verify(view.userDialog).setUser(userCaptor.capture());
+    verify(view.dialog).setUser(userCaptor.capture());
     User user = userCaptor.getValue();
     assertNull(user.getId());
     assertNull(user.getEmail());
     assertNull(user.getName());
     assertNull(user.getLaboratory());
-    verify(view.userDialog).open();
+    verify(view.dialog).open();
   }
 
   @Test

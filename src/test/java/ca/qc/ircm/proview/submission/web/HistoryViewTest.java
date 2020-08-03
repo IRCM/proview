@@ -84,12 +84,6 @@ public class HistoryViewTest extends AbstractViewTestCase {
   @Mock
   private HistoryViewPresenter presenter;
   @Mock
-  private SubmissionDialog dialog;
-  @Mock
-  private TreatmentDialog treatmentDialog;
-  @Mock
-  private MsAnalysisDialog msAnalysisDialog;
-  @Mock
   private Submission submission;
   @Mock
   private BeforeEvent beforeEvent;
@@ -111,7 +105,8 @@ public class HistoryViewTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new HistoryView(presenter, dialog, msAnalysisDialog, treatmentDialog);
+    view = new HistoryView(presenter, new SubmissionDialog(), new MsAnalysisDialog(),
+        new TreatmentDialog());
     view.init();
     activities = repository.findAll();
   }
@@ -219,7 +214,6 @@ public class HistoryViewTest extends AbstractViewTestCase {
     Map<Activity, String> descriptions = IntStream.range(0, activities.size()).boxed()
         .collect(Collectors.toMap(in -> activities.get(in), in -> "description " + in));
     when(presenter.description(any(), any())).thenAnswer(i -> descriptions.get(i.getArgument(0)));
-    view = new HistoryView(presenter, dialog, msAnalysisDialog, treatmentDialog);
     mockColumns();
     view.init();
     verify(view.activities).addColumn(valueProviderCaptor.capture(), eq(USER));

@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -52,11 +51,11 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
   private LocalDate dataAvailableDate = LocalDate.now().minusDays(1);
 
-  private void openDialog(int row) {
+  private SubmissionDialogElement openDialog(int row) {
     openView(VIEW_NAME);
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
     view.doubleClickSubmission(row);
-    waitUntil(driver -> $(SubmissionDialogElement.class).id(SubmissionDialog.ID));
+    return view.dialog();
   }
 
   private void setFields(SubmissionDialogElement dialog) {
@@ -67,8 +66,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
   @Test
   public void fieldsExistence_User() throws Throwable {
-    openDialog(0);
-    SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
+    SubmissionDialogElement dialog = openDialog(0);
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertFalse(optional(() -> dialog.instrument()).isPresent());
     assertFalse(optional(() -> dialog.dataAvailableDate()).isPresent());
@@ -80,8 +78,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Admin() throws Throwable {
-    openDialog(0);
-    SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
+    SubmissionDialogElement dialog = openDialog(0);
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.instrument()).isPresent());
     assertTrue(optional(() -> dialog.dataAvailableDate()).isPresent());
@@ -93,13 +90,12 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void update() throws Throwable {
-    openDialog(0);
-    SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
+    SubmissionDialogElement dialog = openDialog(0);
 
     setFields(dialog);
 
     dialog.clickSave();
-    waitUntil(driver -> $(SubmissionDialogElement.class).all().isEmpty());
+    assertFalse(dialog.isOpen());
     Submission submission = repository.findById(164L).get();
     assertEquals(instrument, submission.getInstrument());
     assertEquals(dataAvailableDate, submission.getDataAvailableDate());
@@ -107,8 +103,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
   @Test
   public void print() throws Throwable {
-    openDialog(0);
-    SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
+    SubmissionDialogElement dialog = openDialog(0);
 
     dialog.clickPrint();
 
@@ -117,8 +112,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
   @Test
   public void edit() throws Throwable {
-    openDialog(0);
-    SubmissionDialogElement dialog = $(SubmissionDialogElement.class).id(ID);
+    SubmissionDialogElement dialog = openDialog(0);
 
     dialog.clickEdit();
 

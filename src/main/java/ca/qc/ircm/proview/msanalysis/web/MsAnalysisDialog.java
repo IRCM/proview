@@ -79,6 +79,9 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
   protected Column<Acquisition> comment;
   private MsAnalysis msAnalysis;
 
+  public MsAnalysisDialog() {
+  }
+
   public static String id(String baseId) {
     return styleName(ID, baseId);
   }

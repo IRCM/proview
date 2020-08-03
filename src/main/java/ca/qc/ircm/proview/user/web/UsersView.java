@@ -99,15 +99,15 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected Div error = new Div();
   protected Button add = new Button();
   protected Button switchUser = new Button();
-  protected UserDialog userDialog;
+  protected UserDialog dialog;
   protected LaboratoryDialog laboratoryDialog;
   private transient UsersViewPresenter presenter;
 
   @Autowired
-  protected UsersView(UsersViewPresenter presenter, UserDialog userDialog,
+  protected UsersView(UsersViewPresenter presenter, UserDialog dialog,
       LaboratoryDialog laboratoryDialog) {
     this.presenter = presenter;
-    this.userDialog = userDialog;
+    this.dialog = dialog;
     this.laboratoryDialog = laboratoryDialog;
   }
 
@@ -118,7 +118,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     setId(ID);
     setSizeFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    add(header, users, error, buttonsLayout);
+    add(header, users, error, buttonsLayout, dialog, laboratoryDialog);
     buttonsLayout.add(add, switchUser);
     header.setId(HEADER);
     users.setId(USERS);

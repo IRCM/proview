@@ -59,6 +59,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -82,7 +83,11 @@ public class SamplesStatusDialog extends Dialog
   protected Button save = new Button();
   protected Button cancel = new Button();
   private Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
+  @Autowired
   private SamplesStatusDialogPresenter presenter;
+
+  public SamplesStatusDialog() {
+  }
 
   protected SamplesStatusDialog(SamplesStatusDialogPresenter presenter) {
     this.presenter = presenter;
