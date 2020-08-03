@@ -74,7 +74,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   protected RadioButtonGroup<Boolean> highResolution = new RadioButtonGroup<>();
   protected SolventsField solvents = new SolventsField();
   protected TextField otherSolvent = new TextField();
-  private SmallMoleculeSubmissionFormPresenter presenter;
+  private transient SmallMoleculeSubmissionFormPresenter presenter;
 
   @Autowired
   protected SmallMoleculeSubmissionForm(SmallMoleculeSubmissionFormPresenter presenter) {

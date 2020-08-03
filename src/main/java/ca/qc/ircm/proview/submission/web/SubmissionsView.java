@@ -128,7 +128,7 @@ public class SubmissionsView extends VerticalLayout
   protected Button editStatus = new Button();
   protected SubmissionDialog dialog;
   protected SamplesStatusDialog statusDialog;
-  private SubmissionsViewPresenter presenter;
+  private transient SubmissionsViewPresenter presenter;
 
   @Autowired
   protected SubmissionsView(SubmissionsViewPresenter presenter, SubmissionDialog dialog,

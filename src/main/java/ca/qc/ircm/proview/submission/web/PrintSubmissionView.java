@@ -60,7 +60,7 @@ public class PrintSubmissionView extends VerticalLayout
   protected H2 header = new H2();
   protected H3 secondHeader = new H3();
   protected PrintSubmission printContent;
-  private PrintSubmissionViewPresenter presenter;
+  private transient PrintSubmissionViewPresenter presenter;
 
   @Autowired
   protected PrintSubmissionView(PrintSubmissionViewPresenter presenter,

@@ -40,7 +40,7 @@ public class PrintSubmission extends VerticalLayout implements LocaleChangeObser
   public static final String ID = "print-submission";
   private static final long serialVersionUID = 480796342756791299L;
   private Submission submission;
-  private SubmissionService service;
+  private transient SubmissionService service;
 
   @Autowired
   protected PrintSubmission(SubmissionService service) {

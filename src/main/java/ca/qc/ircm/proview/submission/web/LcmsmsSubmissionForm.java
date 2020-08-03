@@ -138,7 +138,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   protected TextField identificationLink = new TextField();
   protected ComboBox<Quantification> quantification = new ComboBox<>();
   protected TextArea quantificationComment = new TextArea();
-  private LcmsmsSubmissionFormPresenter presenter;
+  private transient LcmsmsSubmissionFormPresenter presenter;
 
   @Autowired
   protected LcmsmsSubmissionForm(LcmsmsSubmissionFormPresenter presenter) {

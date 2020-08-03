@@ -96,7 +96,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   protected RadioButtonGroup<InjectionType> injection = new RadioButtonGroup<>();
   protected RadioButtonGroup<MassDetectionInstrumentSource> source = new RadioButtonGroup<>();
   protected ComboBox<MassDetectionInstrument> instrument = new ComboBox<>();
-  private IntactProteinSubmissionFormPresenter presenter;
+  private transient IntactProteinSubmissionFormPresenter presenter;
 
   @Autowired
   protected IntactProteinSubmissionForm(IntactProteinSubmissionFormPresenter presenter) {

@@ -106,7 +106,7 @@ public class SubmissionView extends VerticalLayout
   protected SmallMoleculeSubmissionForm smallMoleculeSubmissionForm;
   protected IntactProteinSubmissionForm intactProteinSubmissionForm;
   private Map<Tab, Component> tabsToComponents = new HashMap<>();
-  private SubmissionViewPresenter presenter;
+  private transient SubmissionViewPresenter presenter;
 
   @Autowired
   protected SubmissionView(SubmissionViewPresenter presenter,

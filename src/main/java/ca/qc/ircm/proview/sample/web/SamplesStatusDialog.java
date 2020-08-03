@@ -84,12 +84,12 @@ public class SamplesStatusDialog extends Dialog
   protected Button cancel = new Button();
   private Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
   @Autowired
-  private SamplesStatusDialogPresenter presenter;
+  private transient SamplesStatusDialogPresenter presenter;
 
   public SamplesStatusDialog() {
   }
 
-  protected SamplesStatusDialog(SamplesStatusDialogPresenter presenter) {
+  SamplesStatusDialog(SamplesStatusDialogPresenter presenter) {
     this.presenter = presenter;
   }
 

@@ -79,9 +79,9 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   @Autowired
   protected PrintSubmission printContent;
   @Autowired
-  private SubmissionDialogPresenter presenter;
+  private transient SubmissionDialogPresenter presenter;
   @Autowired
-  private AuthorizationService authorizationService;
+  private transient AuthorizationService authorizationService;
 
   public SubmissionDialog() {
   }

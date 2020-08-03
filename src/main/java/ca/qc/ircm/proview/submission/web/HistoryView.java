@@ -81,7 +81,7 @@ public class HistoryView extends VerticalLayout
   protected SubmissionDialog dialog;
   protected MsAnalysisDialog msAnalysisDialog;
   protected TreatmentDialog treatmentDialog;
-  private HistoryViewPresenter presenter;
+  private transient HistoryViewPresenter presenter;
 
   @Autowired
   protected HistoryView(HistoryViewPresenter presenter, SubmissionDialog dialog,
