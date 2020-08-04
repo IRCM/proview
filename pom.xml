@@ -64,6 +64,7 @@
     <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
     <spotbugs.version>4.0.0-beta1</spotbugs.version>
     <generate-property-names.version>0.5</generate-property-names.version>
+    <karibu-testing.version>1.1.26</karibu-testing.version>
     <greenmail.version>1.5.11</greenmail.version>
     <testbench.skip>false</testbench.skip>
     <testbench.maxAttempts>3</testbench.maxAttempts>
@@ -114,6 +115,11 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-testbench</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.mvysny.kaributesting</groupId>
+      <artifactId>karibu-testing-v10</artifactId>
+      <version>${karibu-testing.version}</version>
     </dependency>
     <dependency>
       <groupId>com.icegreen</groupId>

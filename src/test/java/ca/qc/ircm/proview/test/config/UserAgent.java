@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ * Copyright (c) 2018 Institut de recherches cliniques de Montreal (IRCM)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,18 +21,19 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.TestExecutionListeners.MergeMode;
 
-@Target({ ElementType.TYPE })
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-@SpringBootTest
-@ActiveProfiles("test")
-@TestExecutionListeners(
-    value = { KaribuTestExecutionListener.class },
-    mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
-public @interface NonTransactionalTestAnnotations {
+public @interface UserAgent {
+  public static final String FIREFOX_WINDOWS_USER_AGENT =
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0";
+  public static final String FIREFOX_LINUX_USER_AGENT =
+      "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:77.0) Gecko/20100101 Firefox/77.0";
+  public static final String FIREFOX_MACOSX_USER_AGENT =
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:77.0) Gecko/20100101 Firefox/77.0";
 
+  /**
+   * User agent of browser.
+   */
+  String value() default "";
 }
