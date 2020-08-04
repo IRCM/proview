@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.component.html.Anchor;
 import java.nio.file.Paths;
@@ -39,7 +39,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
-public class CategoryComponentTest extends AbstractViewTestCase {
+public class CategoryComponentTest extends AbstractKaribuTestCase {
   private CategoryComponent component;
   @Mock
   private Category category;

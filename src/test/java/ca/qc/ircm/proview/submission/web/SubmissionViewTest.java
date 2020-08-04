@@ -53,7 +53,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import com.vaadin.flow.component.button.Button;
@@ -86,7 +86,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
-public class SubmissionViewTest extends AbstractViewTestCase {
+public class SubmissionViewTest extends AbstractKaribuTestCase {
   private SubmissionView view;
   @Mock
   private SubmissionViewPresenter presenter;
@@ -116,7 +116,7 @@ public class SubmissionViewTest extends AbstractViewTestCase {
    */
   @Before
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view = new SubmissionView(presenter, lcmsmsSubmissionForm, smallMoleculeSubmissionForm,
         intactProteinSubmissionForm);
     view.init();
@@ -194,7 +194,7 @@ public class SubmissionViewTest extends AbstractViewTestCase {
     final AppResources resources = new AppResources(SubmissionView.class, locale);
     final AppResources submissionResources = new AppResources(Submission.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view.filename = mock(Column.class);
     view.remove = mock(Column.class);
     view.localeChange(mock(LocaleChangeEvent.class));

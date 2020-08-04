@@ -26,19 +26,17 @@ import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import com.google.common.net.UrlEscapers;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
@@ -50,7 +48,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
-public class GuidelinesViewTest extends AbstractViewTestCase {
+public class GuidelinesViewTest extends AbstractKaribuTestCase {
   private GuidelinesView view;
   @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
@@ -63,7 +61,7 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
    */
   @Before
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view = new GuidelinesView(guidelinesConfiguration);
     view.init();
   }
@@ -98,7 +96,7 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(GuidelinesView.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
@@ -129,8 +127,8 @@ public class GuidelinesViewTest extends AbstractViewTestCase {
       for (int j = 0; j < category.guidelines().size(); j++) {
         Guideline guideline = category.guidelines().get(j);
         Anchor anchor = anchors.get(j);
-        String guidelinePath = URLEncoder.encode(guideline.path().getFileName().toString(),
-            StandardCharsets.UTF_8.name());
+        String guidelinePath =
+            UrlEscapers.urlFragmentEscaper().escape(guideline.path().getFileName().toString());
         assertEquals(guidelinePath, Paths.get(anchor.getHref()).getFileName().toString());
       }
     }
