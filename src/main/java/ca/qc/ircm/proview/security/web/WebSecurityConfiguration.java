@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.user.web.UseForgotPasswordView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SigninView;
-import com.vaadin.flow.server.ServletHelper.RequestType;
+import com.vaadin.flow.server.HandlerHelper.RequestType;
 import com.vaadin.flow.shared.ApplicationConstants;
 import java.util.HashMap;
 import java.util.Map;
