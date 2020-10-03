@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.ADD;
 import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.PRINT;
+import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USER_EXIT_URL;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
@@ -32,6 +33,7 @@ import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -65,6 +67,7 @@ public class ViewLayout extends VerticalLayout
   public static final String PROFILE = "profile";
   public static final String USERS = "users";
   public static final String EXIT_SWITCH_USER = "exitSwitchUser";
+  public static final String EXIT_SWITCH_USER_FORM = "exitSwitchUserform";
   public static final String SIGNOUT = "signout";
   public static final String CHANGE_LANGUAGE = "changeLanguage";
   public static final String CONTACT = "contact";
@@ -84,6 +87,8 @@ public class ViewLayout extends VerticalLayout
   protected Tab add = new Tab();
   protected Tab edit = new Tab();
   protected Tab print = new Tab();
+  protected Html exitSwitchUserForm = new Html("<form action=\"" + SWITCH_USER_EXIT_URL
+      + "\" method=\"post\" style=\"display:none;\"></form>");
   private Map<Tab, String> tabsHref = new HashMap<>();
   private String currentHref;
   @Autowired
@@ -105,13 +110,16 @@ public class ViewLayout extends VerticalLayout
     add(tabs);
     tabs.setId(TABS);
     tabs.add(submissions, profile, users, exitSwitchUser, signout, changeLanguage, contact,
-        guidelines, add, edit, print);
+        guidelines, add, edit, print, exitSwitchUserForm);
     submissions.setId(styleName(SUBMISSIONS, TAB));
     profile.setId(styleName(PROFILE, TAB));
     users.setId(styleName(USERS, TAB));
     users.setVisible(authorizationService.isAuthorized(UsersView.class));
     exitSwitchUser.setId(styleName(EXIT_SWITCH_USER, TAB));
     exitSwitchUser
+        .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
+    exitSwitchUserForm.setId(styleName(EXIT_SWITCH_USER_FORM, TAB));
+    exitSwitchUserForm
         .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
     signout.setId(styleName(SIGNOUT, TAB));
     changeLanguage.setId(styleName(CHANGE_LANGUAGE, TAB));
@@ -159,8 +167,8 @@ public class ViewLayout extends VerticalLayout
     } else if (tabs.getSelectedTab() == exitSwitchUser) {
       // Exit switch user requires a request to be made outside of Vaadin.
       logger.debug("Redirect to exit switch user");
-      UI.getCurrent().getPage()
-          .executeJs("location.assign('" + WebSecurityConfiguration.SWITCH_USER_EXIT_URL + "')");
+      UI.getCurrent().getPage().executeJs(
+          "document.getElementById(\"" + styleName(EXIT_SWITCH_USER_FORM, TAB) + "\").submit()");
     } else if (tabs.getSelectedTab() == changeLanguage) {
       Locale locale = UI.getCurrent().getLocale();
       Locale newLocale = Constants.getLocales().stream().filter(lo -> !lo.equals(locale))
