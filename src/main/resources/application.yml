@@ -111,7 +111,8 @@ address:
   postalCode: H2W 1R7
 
 logging:
-  file: ${spring.application.name}.log
+  file:
+    name: ${spring.application.name}.log
 
 ---
 spring:
@@ -159,7 +160,8 @@ guidelines:
             path: 'Protocollo_di_immunoprecipitazione_magnetica_Dynabeads.docx'
 
 logging:
-  file: test.log
+  file:
+    name: test.log
 
 ---
 spring:
