@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfiguration {
   public static final String APPLICATION_NAME = "proview";
   public static final String PREFIX = "main";
-  @Value("${logging.path:${user.dir}}/${logging.file:" + APPLICATION_NAME + "log}")
+  @Value("${logging.path:${user.dir}}/${logging.file.name:" + APPLICATION_NAME + "log}")
   private String logfile;
   private String serverUrl;
 
