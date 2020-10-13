@@ -24,7 +24,6 @@ import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USERNAME_PARAMETER;
 import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USER_URL;
-import static ca.qc.ircm.proview.text.Strings.normalize;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserProperties.ACTIVE;
@@ -36,6 +35,7 @@ import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
@@ -138,11 +138,12 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
       }
     });
     email = users.addColumn(user -> user.getEmail(), EMAIL).setKey(EMAIL)
-        .setComparator((u1, u2) -> u1.getEmail().compareToIgnoreCase(u2.getEmail()));
-    name = users.addColumn(user -> user.getName(), NAME).setKey(NAME);
-    laboratory = users.addColumn(user -> user.getLaboratory().getName(), LABORATORY)
-        .setKey(LABORATORY).setComparator((u1, u2) -> normalize(u1.getLaboratory().getName())
-            .compareToIgnoreCase(normalize(u2.getLaboratory().getName())));
+        .setComparator(NormalizedComparator.of(user -> user.getEmail()));
+    name = users.addColumn(user -> user.getName(), NAME).setKey(NAME)
+        .setComparator(NormalizedComparator.of(user -> user.getName()));
+    laboratory =
+        users.addColumn(user -> user.getLaboratory().getName(), LABORATORY).setKey(LABORATORY)
+            .setComparator(NormalizedComparator.of(user -> user.getLaboratory().getName()));
     active = users.addColumn(TemplateRenderer.<User>of(ACTIVE_BUTTON)
         .withProperty("activeTheme", user -> activeTheme(user))
         .withProperty("activeValue", user -> activeValue(user))
