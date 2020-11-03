@@ -25,7 +25,6 @@ import ca.qc.ircm.proview.security.LdapService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.ShiroPasswordEncoder;
 import ca.qc.ircm.proview.user.UserRepository;
-import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import ca.qc.ircm.proview.user.web.UseForgotPasswordView;
 import ca.qc.ircm.proview.user.web.UsersView;
@@ -214,7 +213,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .permitAll()
 
         // Allow all requests by logged in users.
-        .anyRequest().hasAnyAuthority(UserRole.roles())
+        .anyRequest().authenticated()
 
         // Configure the login page.
         .and().formLogin().loginPage(SIGNIN_URL).permitAll()
