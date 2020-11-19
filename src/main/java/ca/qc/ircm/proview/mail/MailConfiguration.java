@@ -23,8 +23,6 @@ package ca.qc.ircm.proview.mail;
 public interface MailConfiguration {
   public boolean isEnabled();
 
-  public String getHost();
-
   public String getFrom();
 
   public String getTo();

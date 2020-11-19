@@ -48,6 +48,8 @@ spring:
       enabled: false
   thymeleaf:
     cache: false
+  mail:
+    host: myemailserver.com
 
 # Web server.
 server:
@@ -72,7 +74,6 @@ ldap:
 
 email:
   enabled: true
-  host: myemailserver.com
   from: proview@ircm.qc.ca
   to: christian.poitras@ircm.qc.ca
 
@@ -129,6 +130,9 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: none
+  mail:
+    port: 30025
+    host: localhost
 
 security:
   rememberMeKey: 'JfYMi0qUQVt8FObsZHW7'

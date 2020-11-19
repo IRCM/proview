@@ -49,15 +49,6 @@ public class MailConfigurationSpringBoot implements MailConfiguration {
   }
 
   @Override
-  public String getHost() {
-    return host;
-  }
-
-  public void setHost(String host) {
-    this.host = host;
-  }
-
-  @Override
   public String getFrom() {
     return from;
   }
