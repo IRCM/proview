@@ -59,11 +59,11 @@ public class HistoryViewPresenter {
   }
 
   String description(Activity activity, Locale locale) {
-    return service.description(activity, locale);
+    return service.description(activity, locale).orElse("");
   }
 
   void view(Activity activity, Locale locale) {
-    Object record = service.record(activity);
+    Object record = service.record(activity).orElse(new Object());
     if (record instanceof SubmissionSample) {
       record = ((SubmissionSample) record).getSubmission();
     }

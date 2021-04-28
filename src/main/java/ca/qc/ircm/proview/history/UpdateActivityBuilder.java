@@ -64,8 +64,8 @@ public class UpdateActivityBuilder {
     activity.setRecordId(recordId);
     activity.setActionType(actionType);
     activity.setColumn(column);
-    activity.setOldValue(converter.convert(oldValue));
-    activity.setNewValue(converter.convert(newValue));
+    activity.setOldValue(converter.convert(oldValue).orElse(null));
+    activity.setNewValue(converter.convert(newValue).orElse(null));
     return activity;
   }
 

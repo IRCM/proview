@@ -50,6 +50,7 @@ import com.vaadin.flow.function.ValueProvider;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,7 +85,8 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
   private ArgumentCaptor<ValueProvider<Activity, String>> valueProviderCaptor;
   @Captor
   @SuppressWarnings("checkstyle:linelength")
-  private ArgumentCaptor<ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
+  private ArgumentCaptor<
+      ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(HistoryView.class, locale);
   private Submission submission;
@@ -117,10 +119,18 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void description() {
-    when(service.description(any(), any())).thenReturn(description);
+    when(service.description(any(), any())).thenReturn(Optional.of(description));
     String description = presenter.description(activities.get(1), locale);
     verify(service).description(activities.get(1), locale);
     assertEquals(this.description, description);
+  }
+
+  @Test
+  public void description_Empty() {
+    when(service.description(any(), any())).thenReturn(Optional.empty());
+    String description = presenter.description(activities.get(1), locale);
+    verify(service).description(activities.get(1), locale);
+    assertEquals("", description);
   }
 
   @Test
@@ -129,7 +139,7 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
     when(submissionService.get(any())).thenReturn(submission);
     presenter.setParameter(34L);
     Submission submission = mock(Submission.class);
-    when(service.record(any())).thenReturn(submission);
+    when(service.record(any())).thenReturn(Optional.of(submission));
     presenter.view(activity, locale);
     verify(service).record(activity);
     verify(view.dialog).setSubmission(submission);
@@ -145,7 +155,7 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void view_MsAnalysis() {
-    when(service.record(any())).thenReturn(msAnalysis);
+    when(service.record(any())).thenReturn(Optional.of(msAnalysis));
     presenter.view(activity, locale);
     verify(view.msAnalysisDialog).setMsAnalysis(msAnalysis);
     verify(view.msAnalysisDialog).open();
@@ -153,7 +163,7 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void view_Treatment() {
-    when(service.record(any())).thenReturn(treatment);
+    when(service.record(any())).thenReturn(Optional.of(treatment));
     presenter.view(activity, locale);
     verify(view.treatmentDialog).setTreatment(treatment);
     verify(view.treatmentDialog).open();
@@ -161,14 +171,21 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void view_Plate() {
-    when(service.record(any())).thenReturn(mock(Plate.class));
+    when(service.record(any())).thenReturn(Optional.of(mock(Plate.class)));
     presenter.view(activity, locale);
     verify(view).showNotification(resources.message(VIEW_ERROR, Plate.class.getSimpleName()));
   }
 
   @Test
   public void view_Other() {
-    when(service.record(any())).thenReturn(mock(Object.class));
+    when(service.record(any())).thenReturn(Optional.of(mock(Object.class)));
+    presenter.view(activity, locale);
+    verify(view).showNotification(resources.message(VIEW_ERROR, Object.class.getSimpleName()));
+  }
+
+  @Test
+  public void view_Empty() {
+    when(service.record(any())).thenReturn(Optional.empty());
     presenter.view(activity, locale);
     verify(view).showNotification(resources.message(VIEW_ERROR, Object.class.getSimpleName()));
   }
