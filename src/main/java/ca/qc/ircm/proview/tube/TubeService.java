@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import ca.qc.ircm.proview.sample.Sample;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,13 +48,13 @@ public class TubeService {
    *          database identifier of tube
    * @return tube
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject.sample, 'read')")
-  public Tube get(Long id) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get().sample, 'read')")
+  public Optional<Tube> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 
   /**

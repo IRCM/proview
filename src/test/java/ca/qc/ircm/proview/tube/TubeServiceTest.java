@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.tube;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -62,7 +61,7 @@ public class TubeServiceTest {
 
   @Test
   public void get() throws Throwable {
-    Tube tube = service.get(1L);
+    Tube tube = service.get(1L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(tube.getSample()), eq(READ));
     assertEquals((Long) 1L, tube.getId());
@@ -74,9 +73,7 @@ public class TubeServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Tube tube = service.get((Long) null);
-
-    assertNull(tube);
+    assertFalse(service.get((Long) null).isPresent());
   }
 
   @Test
