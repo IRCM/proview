@@ -17,10 +17,12 @@
 
 package ca.qc.ircm.proview.treatment;
 
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.treatment.Protocol.Type.DIGESTION;
 import static ca.qc.ircm.proview.treatment.Protocol.Type.ENRICHMENT;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
@@ -42,7 +44,7 @@ public class ProtocolServiceTest {
 
   @Test
   public void get_DigestionProtocol() throws Throwable {
-    Protocol protocol = service.get(1L);
+    Protocol protocol = service.get(1L).get();
 
     assertEquals((Long) 1L, protocol.getId());
     assertEquals("digestion_protocol_1", protocol.getName());
@@ -51,7 +53,7 @@ public class ProtocolServiceTest {
 
   @Test
   public void get_EnrichmentProtocol() throws Throwable {
-    Protocol protocol = service.get(2L);
+    Protocol protocol = service.get(2L).get();
 
     assertEquals((Long) 2L, protocol.getId());
     assertEquals("enrichment_protocol_1", protocol.getName());
@@ -60,9 +62,7 @@ public class ProtocolServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Protocol protocol = service.get(null);
-
-    assertNull(protocol);
+    assertFalse(service.get(null).isPresent());
   }
 
   @Test(expected = AccessDeniedException.class)
@@ -82,8 +82,8 @@ public class ProtocolServiceTest {
     List<Protocol> protocols = service.all(DIGESTION);
 
     assertEquals(2, protocols.size());
-    assertEquals(true, protocols.contains(service.get(1L)));
-    assertEquals(true, protocols.contains(service.get(3L)));
+    assertTrue(find(protocols, 1L).isPresent());
+    assertTrue(find(protocols, 3L).isPresent());
   }
 
   @Test
@@ -91,8 +91,8 @@ public class ProtocolServiceTest {
     List<Protocol> protocols = service.all(ENRICHMENT);
 
     assertEquals(2, protocols.size());
-    assertEquals(true, protocols.contains(service.get(2L)));
-    assertEquals(true, protocols.contains(service.get(4L)));
+    assertTrue(find(protocols, 2L).isPresent());
+    assertTrue(find(protocols, 4L).isPresent());
   }
 
   @Test(expected = AccessDeniedException.class)

@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.treatment;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -48,7 +48,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void get_Solubilisation() throws Throwable {
-    Treatment treatment = treatmentService.get(1L);
+    Treatment treatment = treatmentService.get(1L).get();
 
     assertEquals((Long) 1L, treatment.getId());
     assertEquals(TreatmentType.SOLUBILISATION, treatment.getType());
@@ -71,7 +71,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void get_EnrichmentProtocol() throws Throwable {
-    Treatment treatment = treatmentService.get(2L);
+    Treatment treatment = treatmentService.get(2L).get();
 
     assertEquals((Long) 2L, treatment.getId());
     assertEquals(TreatmentType.FRACTIONATION, treatment.getType());
@@ -96,9 +96,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Treatment protocol = treatmentService.get(null);
-
-    assertNull(protocol);
+    assertFalse(treatmentService.get(null).isPresent());
   }
 
   @Test(expected = AccessDeniedException.class)

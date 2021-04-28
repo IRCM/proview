@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -50,12 +51,12 @@ public class TreatmentService {
    * @return treatment
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public Treatment get(Long id) {
+  public Optional<Treatment> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 
   /**
