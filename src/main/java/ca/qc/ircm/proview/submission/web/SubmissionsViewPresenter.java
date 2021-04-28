@@ -203,14 +203,14 @@ public class SubmissionsViewPresenter {
   }
 
   void view(Submission submission) {
-    Submission database = service.get(submission.getId());
+    Submission database = service.get(submission.getId()).orElse(null);
     view.dialog.setSubmission(database);
     view.dialog.open();
   }
 
   void editStatus(Submission submission) {
     if (authorizationService.hasRole(ADMIN)) {
-      Submission database = service.get(submission.getId());
+      Submission database = service.get(submission.getId()).orElse(null);
       view.statusDialog.setSubmission(database);
       view.statusDialog.open();
     }

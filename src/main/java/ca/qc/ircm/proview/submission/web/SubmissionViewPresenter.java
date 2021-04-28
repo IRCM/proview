@@ -202,7 +202,7 @@ public class SubmissionViewPresenter {
 
   void setParameter(Long parameter) {
     if (parameter != null) {
-      setSubmission(service.get(parameter));
+      setSubmission(service.get(parameter).orElse(null));
     }
   }
 }

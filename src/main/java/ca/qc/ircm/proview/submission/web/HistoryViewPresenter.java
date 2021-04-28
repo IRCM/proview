@@ -99,7 +99,7 @@ public class HistoryViewPresenter {
 
   public void setParameter(Long parameter) {
     if (parameter != null) {
-      submission = submissionService.get(parameter);
+      submission = submissionService.get(parameter).orElse(null);
       updateActivities();
     }
   }

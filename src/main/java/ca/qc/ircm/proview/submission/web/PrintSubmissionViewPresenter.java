@@ -45,7 +45,7 @@ public class PrintSubmissionViewPresenter {
 
   void setParameter(Long parameter) {
     if (parameter != null) {
-      submission = service.get(parameter);
+      submission = service.get(parameter).orElse(null);
     }
     view.printContent.setSubmission(submission);
   }

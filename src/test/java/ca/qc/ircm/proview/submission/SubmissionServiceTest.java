@@ -154,7 +154,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get() throws Throwable {
-    Submission submission = service.get(1L);
+    Submission submission = service.get(1L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(READ));
     assertEquals((Long) 1L, submission.getId());
@@ -223,7 +223,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_33() throws Throwable {
-    Submission submission = service.get(33L);
+    Submission submission = service.get(33L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(READ));
     assertEquals((Long) 33L, submission.getId());
@@ -295,9 +295,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_NullId() throws Throwable {
-    Submission submission = service.get((Long) null);
-
-    assertNull(submission);
+    assertFalse(service.get((Long) null).isPresent());
   }
 
   @Test

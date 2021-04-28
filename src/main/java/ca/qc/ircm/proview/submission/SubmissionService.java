@@ -96,13 +96,13 @@ public class SubmissionService {
    *          database identifier of submission
    * @return submission
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
-  public Submission get(Long id) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
+  public Optional<Submission> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 
   /**

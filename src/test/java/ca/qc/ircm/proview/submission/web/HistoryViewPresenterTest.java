@@ -136,7 +136,7 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void view_Submission() {
-    when(submissionService.get(any())).thenReturn(submission);
+    when(submissionService.get(any())).thenReturn(Optional.of(submission));
     presenter.setParameter(34L);
     Submission submission = mock(Submission.class);
     when(service.record(any())).thenReturn(Optional.of(submission));
@@ -192,7 +192,7 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void getSubmission() {
-    when(submissionService.get(any())).thenReturn(submission);
+    when(submissionService.get(any())).thenReturn(Optional.of(submission));
     assertNull(presenter.getSubmission());
     presenter.setParameter(34L);
     assertEquals(submission, presenter.getSubmission());
@@ -200,7 +200,7 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void setParameter() {
-    when(submissionService.get(any())).thenReturn(submission);
+    when(submissionService.get(any())).thenReturn(Optional.of(submission));
 
     presenter.setParameter(34L);
 
@@ -208,6 +208,17 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
     verify(service).all(submission);
     verify(view.activities).setItems(activities);
     assertEquals(submission, presenter.getSubmission());
+  }
+
+  @Test
+  public void setParameter_EmptySubmission() {
+    when(submissionService.get(any())).thenReturn(Optional.empty());
+
+    presenter.setParameter(34L);
+
+    verify(submissionService).get(34L);
+    verifyNoInteractions(service, view.activities);
+    assertNull(presenter.getSubmission());
   }
 
   @Test
