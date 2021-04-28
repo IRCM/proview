@@ -115,7 +115,7 @@ public class EmailService {
         return String.valueOf(email.getMimeMessage().getContent());
       }
     } catch (IOException | IllegalStateException | MessagingException e) {
-      return null;
+      return "<exception>: " + e.getMessage();
     }
   }
 
