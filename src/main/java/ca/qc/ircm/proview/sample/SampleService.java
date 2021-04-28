@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
@@ -41,12 +42,12 @@ public class SampleService {
    *          database identifier of sample
    * @return sample
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
-  public Sample get(Long id) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
+  public Optional<Sample> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 }

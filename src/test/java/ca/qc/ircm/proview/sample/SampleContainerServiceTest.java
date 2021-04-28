@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -52,7 +52,7 @@ public class SampleContainerServiceTest {
 
   @Test
   public void get_Id() throws Throwable {
-    SampleContainer container = service.get(1L);
+    SampleContainer container = service.get(1L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(container.getSample()), eq(READ));
     assertEquals((Long) 1L, container.getId());
@@ -63,16 +63,14 @@ public class SampleContainerServiceTest {
 
   @Test
   public void get_NullId() throws Throwable {
-    SampleContainer container = service.get((Long) null);
-
-    assertNull(container);
+    assertFalse(service.get((Long) null).isPresent());
   }
 
   @Test
   public void last() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    SampleContainer container = service.last(sample);
+    SampleContainer container = service.last(sample).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertEquals((Long) 129L, container.getId());
@@ -83,8 +81,6 @@ public class SampleContainerServiceTest {
 
   @Test
   public void last_Null() throws Throwable {
-    SampleContainer container = service.last(null);
-
-    assertNull(container);
+    assertFalse(service.last(null).isPresent());
   }
 }
