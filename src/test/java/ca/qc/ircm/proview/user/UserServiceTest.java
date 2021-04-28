@@ -97,7 +97,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_Id() throws Throwable {
-    User user = service.get(3L);
+    User user = service.get(3L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(READ));
     assertEquals((Long) 3L, user.getId());
@@ -131,14 +131,12 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_NullId() throws Throwable {
-    User user = service.get((Long) null);
-
-    assertNull(user);
+    assertFalse(service.get((Long) null).isPresent());
   }
 
   @Test
   public void get_Email() throws Throwable {
-    User user = service.get("benoit.coulombe@ircm.qc.ca");
+    User user = service.get("benoit.coulombe@ircm.qc.ca").get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(READ));
     assertEquals((Long) 3L, user.getId());
@@ -172,9 +170,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_NullEmail() throws Throwable {
-    User user = service.get((String) null);
-
-    assertNull(user);
+    assertFalse(service.get((String) null).isPresent());
   }
 
   @Test

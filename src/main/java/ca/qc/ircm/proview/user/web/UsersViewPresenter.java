@@ -117,13 +117,13 @@ public class UsersViewPresenter {
 
   void view(User user) {
     clearError();
-    view.dialog.setUser(service.get(user.getId()));
+    view.dialog.setUser(service.get(user.getId()).orElse(null));
     view.dialog.open();
   }
 
   void view(Laboratory laboratory) {
     clearError();
-    view.laboratoryDialog.setLaboratory(laboratoryService.get(laboratory.getId()));
+    view.laboratoryDialog.setLaboratory(laboratoryService.get(laboratory.getId()).orElse(null));
     view.laboratoryDialog.open();
   }
 

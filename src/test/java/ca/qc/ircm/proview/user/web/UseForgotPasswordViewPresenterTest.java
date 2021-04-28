@@ -42,6 +42,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,7 +76,7 @@ public class UseForgotPasswordViewPresenterTest extends AbstractViewTestCase {
     view.form = mock(PasswordsForm.class);
     view.buttonsLayout = new HorizontalLayout();
     view.save = new Button();
-    when(service.get(any(Long.class), any())).thenReturn(forgotPassword);
+    when(service.get(any(Long.class), any())).thenReturn(Optional.of(forgotPassword));
   }
 
   @Test

@@ -242,7 +242,8 @@ public class UserFormPresenter {
       form.laboratory.setValue(laboratoriesDataProvider.getItems().stream()
           .filter(lab -> lab.getId().equals(laboratory.getId())).findAny()
           .orElse(laboratoriesDataProvider.getItems().iterator().next()));
-      user.setLaboratory(laboratoryService.get(form.laboratory.getValue().getId()));
+      user.setLaboratory(
+          laboratoryService.get(form.laboratory.getValue().getId()).orElse(new Laboratory()));
     }
     if (user.getAddress() == null) {
       user.setAddress(defaultAddressConfiguration.getAddress());

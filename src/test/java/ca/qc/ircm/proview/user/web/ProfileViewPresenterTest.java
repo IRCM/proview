@@ -37,6 +37,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +75,7 @@ public class ProfileViewPresenterTest extends AbstractViewTestCase {
     view.form = mock(UserForm.class);
     view.buttonsLayout = new HorizontalLayout();
     view.save = new Button();
-    when(service.get(any(Long.class))).thenReturn(user);
+    when(service.get(any(Long.class))).thenReturn(Optional.of(user));
     when(authorizationService.getCurrentUser()).thenReturn(user);
   }
 

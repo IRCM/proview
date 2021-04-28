@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -125,7 +126,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().extension().setValue(extension);
     dialog.save().click();
     waitUntil(driver -> !dialog.isOpen());
-    User user = repository.findByEmail(email);
+    User user = repository.findByEmail(email).get();
     assertNotNull(user);
     assertNotNull(user.getId());
     assertEquals(name, user.getName());
@@ -177,8 +178,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().extension().setValue(extension);
     dialog.cancel().click();
     waitUntil(driver -> !dialog.isOpen());
-    User user = repository.findByEmail(email);
-    assertNull(user);
+    assertFalse(repository.findByEmail(email).isPresent());
     assertEquals(rows, view.users().getRowCount());
   }
 
@@ -208,7 +208,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().extension().setValue(extension);
     dialog.save().click();
     waitUntil(driver -> !dialog.isOpen());
-    User user = repository.findByEmail(email);
+    User user = repository.findByEmail(email).get();
     assertNotNull(user);
     assertNotNull(user.getId());
     assertEquals(name, user.getName());
@@ -260,8 +260,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().extension().setValue(extension);
     dialog.cancel().click();
     waitUntil(driver -> !dialog.isOpen());
-    User user = repository.findByEmail(email);
-    assertNull(user);
+    assertFalse(repository.findByEmail(email).isPresent());
     assertEquals(rows, view.users().getRowCount());
   }
 }

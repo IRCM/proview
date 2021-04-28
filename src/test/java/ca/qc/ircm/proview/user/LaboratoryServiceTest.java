@@ -18,8 +18,8 @@
 package ca.qc.ircm.proview.user;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -62,7 +62,7 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_Id() throws Throwable {
-    Laboratory laboratory = service.get(2L);
+    Laboratory laboratory = service.get(2L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(READ));
     assertEquals((Long) 2L, laboratory.getId());
@@ -72,9 +72,7 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_NullId() throws Throwable {
-    Laboratory laboratory = service.get((Long) null);
-
-    assertNull(laboratory);
+    assertFalse(service.get((Long) null).isPresent());
   }
 
   @Test
