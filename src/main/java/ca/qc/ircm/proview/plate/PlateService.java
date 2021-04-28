@@ -76,13 +76,13 @@ public class PlateService {
    *          plate's database identifier
    * @return plate
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
-  public Plate get(Long id) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
+  public Optional<Plate> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 
   /**
@@ -93,12 +93,12 @@ public class PlateService {
    * @return submission's plate
    */
   @PreAuthorize("hasPermission(#submission, 'read')")
-  public Plate get(Submission submission) {
+  public Optional<Plate> get(Submission submission) {
     if (submission == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findBySubmission(submission).orElse(null);
+    return repository.findBySubmission(submission);
   }
 
   /**
@@ -160,9 +160,9 @@ public class PlateService {
    *         recent
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public LocalDateTime lastTreatmentOrAnalysisDate(Plate plate) {
+  public Optional<LocalDateTime> lastTreatmentOrAnalysisDate(Plate plate) {
     if (plate == null) {
-      return null;
+      return Optional.empty();
     }
 
     LocalDateTime treatmentInstant = queryFactory.select(treatment.insertTime.max()).from(treatment)
@@ -175,9 +175,9 @@ public class PlateService {
     return max(treatmentInstant, analysisInstant);
   }
 
-  private LocalDateTime max(LocalDateTime... instants) {
+  private Optional<LocalDateTime> max(LocalDateTime... instants) {
     return Arrays.asList(instants).stream().filter(instant -> instant != null)
-        .sorted((i1, i2) -> i2.compareTo(i1)).findFirst().orElse(null);
+        .sorted((i1, i2) -> i2.compareTo(i1)).findFirst();
   }
 
   /**

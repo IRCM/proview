@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -44,11 +45,11 @@ public class WellService {
    * @return well
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public Well get(Long id) {
+  public Optional<Well> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return wellRepository.findById(id).orElse(null);
+    return wellRepository.findById(id);
   }
 }
