@@ -27,7 +27,9 @@ import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
+import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.elementsbase.Element;
+import org.openqa.selenium.By;
 
 @Element("vaadin-vertical-layout")
 public class HistoryViewElement extends VerticalLayoutElement {
@@ -44,14 +46,17 @@ public class HistoryViewElement extends VerticalLayoutElement {
   }
 
   public SubmissionDialogElement dialog() {
-    return $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
+    return ((TestBenchElement) getDriver().findElement(By.id(SubmissionDialog.ID)))
+        .wrap(SubmissionDialogElement.class);
   }
 
   public MsAnalysisDialogElement msAnalysisDialog() {
-    return $(MsAnalysisDialogElement.class).id(MsAnalysisDialog.ID);
+    return ((TestBenchElement) getDriver().findElement(By.id(MsAnalysisDialog.ID)))
+        .wrap(MsAnalysisDialogElement.class);
   }
 
   public TreatmentDialogElement treatmentDialog() {
-    return $(TreatmentDialogElement.class).id(TreatmentDialog.ID);
+    return ((TestBenchElement) getDriver().findElement(By.id(TreatmentDialog.ID)))
+        .wrap(TreatmentDialogElement.class);
   }
 }

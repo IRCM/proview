@@ -145,7 +145,7 @@ public class SubmissionsView extends VerticalLayout
     setSizeFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     buttonsLayout.add(add, editStatus);
-    add(header, submissions, buttonsLayout, dialog, statusDialog);
+    add(header, submissions, buttonsLayout);
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
     submissions.setSizeFull();
@@ -161,9 +161,10 @@ public class SubmissionsView extends VerticalLayout
         submission -> Objects.toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
         .setComparator(NormalizedComparator.of(Submission::getExperiment));
-    ValueProvider<Submission, String> submissionUser = submission -> submission.getUser() != null
-        ? Objects.toString(submission.getUser().getName())
-        : "";
+    ValueProvider<Submission,
+        String> submissionUser = submission -> submission.getUser() != null
+            ? Objects.toString(submission.getUser().getName())
+            : "";
     user = submissions.addColumn(submissionUser, USER).setKey(USER)
         .setComparator(NormalizedComparator.of(s -> s.getUser().getName()));
     ValueProvider<Submission, String> submissionDirector =

@@ -126,7 +126,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     setId(ID);
     setSizeFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    add(header, users, error, buttonsLayout, switchUserForm, dialog, laboratoryDialog);
+    add(header, users, error, buttonsLayout, switchUserForm);
     buttonsLayout.add(add, switchUser);
     header.setId(HEADER);
     users.setId(USERS);

@@ -99,9 +99,6 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.activities()).isPresent());
-    assertTrue(optional(() -> view.dialog()).isPresent());
-    assertTrue(optional(() -> view.msAnalysisDialog()).isPresent());
-    assertTrue(optional(() -> view.treatmentDialog()).isPresent());
   }
 
   @Test

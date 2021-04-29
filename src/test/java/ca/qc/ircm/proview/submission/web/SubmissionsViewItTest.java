@@ -90,7 +90,6 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
     assertFalse(optional(() -> view.editStatus()).isPresent());
-    assertTrue(optional(() -> view.dialog()).isPresent());
   }
 
   @Test
@@ -102,7 +101,6 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
     assertTrue(optional(() -> view.editStatus()).isPresent());
-    assertTrue(optional(() -> view.dialog()).isPresent());
   }
 
   @Test

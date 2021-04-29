@@ -27,7 +27,9 @@ import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
+import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.elementsbase.Element;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 
 @Element("vaadin-vertical-layout")
@@ -76,10 +78,12 @@ public class SubmissionsViewElement extends VerticalLayoutElement {
   }
 
   public SubmissionDialogElement dialog() {
-    return $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
+    return ((TestBenchElement) getDriver().findElement(By.id(SubmissionDialog.ID)))
+        .wrap(SubmissionDialogElement.class);
   }
 
   public SamplesStatusDialogElement statusDialog() {
-    return $(SamplesStatusDialogElement.class).id(SamplesStatusDialog.ID);
+    return ((TestBenchElement) getDriver().findElement(By.id(SamplesStatusDialog.ID)))
+        .wrap(SamplesStatusDialogElement.class);
   }
 }
