@@ -44,22 +44,22 @@ public class GuidelinesConfigurationTest {
     List<Category> categories = guidelinesConfiguration.categories(null);
     assertEquals(2, categories.size());
     Category category = categories.get(0);
-    assertEquals("Guidelines", category.name());
-    List<Guideline> guidelines = category.guidelines();
+    assertEquals("Guidelines", category.getName());
+    List<Guideline> guidelines = category.getGuidelines();
     assertEquals(1, guidelines.size());
     Guideline guideline = guidelines.get(0);
-    assertEquals("Gel-free sample preparation", guideline.name());
-    assertEquals(path("Guidelines_Gel-free_sample_preparation.doc"), guideline.path());
+    assertEquals("Gel-free sample preparation", guideline.getName());
+    assertEquals(path("Guidelines_Gel-free_sample_preparation.doc"), guideline.getPath());
     category = categories.get(1);
-    assertEquals("Protocols", category.name());
-    guidelines = category.guidelines();
+    assertEquals("Protocols", category.getName());
+    guidelines = category.getGuidelines();
     assertEquals(2, guidelines.size());
     guideline = guidelines.get(0);
-    assertEquals("Gel staining protocols", guideline.name());
-    assertEquals(path("Gel staining protocols.doc"), guideline.path());
+    assertEquals("Gel staining protocols", guideline.getName());
+    assertEquals(path("Gel staining protocols.doc"), guideline.getPath());
     guideline = guidelines.get(1);
-    assertEquals("Immunoprecipitation Magnetic Dynabeads protocol", guideline.name());
-    assertEquals(path("Immunoprecipitation Magnetic Dynabeads protocol.docx"), guideline.path());
+    assertEquals("Immunoprecipitation Magnetic Dynabeads protocol", guideline.getName());
+    assertEquals(path("Immunoprecipitation Magnetic Dynabeads protocol.docx"), guideline.getPath());
   }
 
   @Test
@@ -67,22 +67,22 @@ public class GuidelinesConfigurationTest {
     List<Category> categories = guidelinesConfiguration.categories(Locale.ENGLISH);
     assertEquals(2, categories.size());
     Category category = categories.get(0);
-    assertEquals("Guidelines", category.name());
-    List<Guideline> guidelines = category.guidelines();
+    assertEquals("Guidelines", category.getName());
+    List<Guideline> guidelines = category.getGuidelines();
     assertEquals(1, guidelines.size());
     Guideline guideline = guidelines.get(0);
-    assertEquals("Gel-free sample preparation", guideline.name());
-    assertEquals(path("Guidelines_Gel-free_sample_preparation.doc"), guideline.path());
+    assertEquals("Gel-free sample preparation", guideline.getName());
+    assertEquals(path("Guidelines_Gel-free_sample_preparation.doc"), guideline.getPath());
     category = categories.get(1);
-    assertEquals("Protocols", category.name());
-    guidelines = category.guidelines();
+    assertEquals("Protocols", category.getName());
+    guidelines = category.getGuidelines();
     assertEquals(2, guidelines.size());
     guideline = guidelines.get(0);
-    assertEquals("Gel staining protocols", guideline.name());
-    assertEquals(path("Gel staining protocols.doc"), guideline.path());
+    assertEquals("Gel staining protocols", guideline.getName());
+    assertEquals(path("Gel staining protocols.doc"), guideline.getPath());
     guideline = guidelines.get(1);
-    assertEquals("Immunoprecipitation Magnetic Dynabeads protocol", guideline.name());
-    assertEquals(path("Immunoprecipitation Magnetic Dynabeads protocol.docx"), guideline.path());
+    assertEquals("Immunoprecipitation Magnetic Dynabeads protocol", guideline.getName());
+    assertEquals(path("Immunoprecipitation Magnetic Dynabeads protocol.docx"), guideline.getPath());
   }
 
   @Test
@@ -90,23 +90,23 @@ public class GuidelinesConfigurationTest {
     List<Category> categories = guidelinesConfiguration.categories(Locale.FRENCH);
     assertEquals(2, categories.size());
     Category category = categories.get(0);
-    assertEquals("Directives", category.name());
-    List<Guideline> guidelines = category.guidelines();
+    assertEquals("Directives", category.getName());
+    List<Guideline> guidelines = category.getGuidelines();
     assertEquals(1, guidelines.size());
     Guideline guideline = guidelines.get(0);
-    assertEquals("Préparation des échantillons sans gel", guideline.name());
+    assertEquals("Préparation des échantillons sans gel", guideline.getName());
     assertEquals(path("Directives_de_préparation_des_échantillons_sans_gel.doc"),
-        guideline.path());
+        guideline.getPath());
     category = categories.get(1);
-    assertEquals("Protocoles", category.name());
-    guidelines = category.guidelines();
+    assertEquals("Protocoles", category.getName());
+    guidelines = category.getGuidelines();
     assertEquals(2, guidelines.size());
     guideline = guidelines.get(0);
-    assertEquals("Protocoles coloration de gels", guideline.name());
-    assertEquals(path("Protocoles coloration de gels.doc"), guideline.path());
+    assertEquals("Protocoles coloration de gels", guideline.getName());
+    assertEquals(path("Protocoles coloration de gels.doc"), guideline.getPath());
     guideline = guidelines.get(1);
-    assertEquals("Protocole Immunoprecipitation Dynabeads", guideline.name());
-    assertEquals(path("Protocole Immunoprecipitation Dynabeads.docx"), guideline.path());
+    assertEquals("Protocole Immunoprecipitation Dynabeads", guideline.getName());
+    assertEquals(path("Protocole Immunoprecipitation Dynabeads.docx"), guideline.getPath());
   }
 
   @Test
@@ -114,22 +114,22 @@ public class GuidelinesConfigurationTest {
     List<Category> categories = guidelinesConfiguration.categories(Locale.ITALIAN);
     assertEquals(2, categories.size());
     Category category = categories.get(0);
-    assertEquals("Linee guida", category.name());
-    List<Guideline> guidelines = category.guidelines();
+    assertEquals("Linee guida", category.getName());
+    List<Guideline> guidelines = category.getGuidelines();
     assertEquals(1, guidelines.size());
     Guideline guideline = guidelines.get(0);
-    assertEquals("Preparazione del campione senza gel", guideline.name());
-    assertEquals(path("Preparazione_del_campione_senza_gel.doc"), guideline.path());
+    assertEquals("Preparazione del campione senza gel", guideline.getName());
+    assertEquals(path("Preparazione_del_campione_senza_gel.doc"), guideline.getPath());
     category = categories.get(1);
-    assertEquals("Protocolli", category.name());
-    guidelines = category.guidelines();
+    assertEquals("Protocolli", category.getName());
+    guidelines = category.getGuidelines();
     assertEquals(2, guidelines.size());
     guideline = guidelines.get(0);
-    assertEquals("Protocolli di colorazione gel", guideline.name());
-    assertEquals(path("Protocolli_di_colorazione_gel.doc"), guideline.path());
+    assertEquals("Protocolli di colorazione gel", guideline.getName());
+    assertEquals(path("Protocolli_di_colorazione_gel.doc"), guideline.getPath());
     guideline = guidelines.get(1);
-    assertEquals("Protocollo di immunoprecipitazione magnetica Dynabeads", guideline.name());
+    assertEquals("Protocollo di immunoprecipitazione magnetica Dynabeads", guideline.getName());
     assertEquals(path("Protocollo_di_immunoprecipitazione_magnetica_Dynabeads.docx"),
-        guideline.path());
+        guideline.getPath());
   }
 }

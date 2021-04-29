@@ -42,12 +42,12 @@ public class CategoryComponent extends VerticalLayout {
     addClassName(CATEGORY);
     setPadding(false);
     add(header);
-    header.setText(category.name());
-    category.guidelines().forEach(guide -> {
+    header.setText(category.getName());
+    category.getGuidelines().forEach(guide -> {
       Anchor link = new Anchor();
-      link.setText(guide.name());
-      link.setHref(new StreamResource(guide.path().getFileName().toString(),
-          new PathStreamResourceWriter(guide.path().toFile())));
+      link.setText(guide.getName());
+      link.setHref(new StreamResource(guide.getPath().getFileName().toString(),
+          new PathStreamResourceWriter(guide.getPath().toFile())));
       add(link);
     });
   }

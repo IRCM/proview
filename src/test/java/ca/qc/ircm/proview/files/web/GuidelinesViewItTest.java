@@ -96,7 +96,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
       Category category = categories.get(i);
       CategoryComponentElement categoryElement = view.categories().get(i);
       assertTrue(optional(() -> categoryElement.header()).isPresent());
-      assertEquals(category.guidelines().size(), categoryElement.guidelines().size());
+      assertEquals(category.getGuidelines().size(), categoryElement.guidelines().size());
     }
   }
 
@@ -105,12 +105,12 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   public void download() throws Throwable {
     Files.createDirectories(downloadHome);
     Guideline guideline =
-        guidelinesConfiguration.categories(currentLocale()).get(0).guidelines().get(0);
-    Path downloaded = downloadHome.resolve(guideline.path().getFileName().toString());
+        guidelinesConfiguration.categories(currentLocale()).get(0).getGuidelines().get(0);
+    Path downloaded = downloadHome.resolve(guideline.getPath().getFileName().toString());
     Files.deleteIfExists(downloaded);
     Path source = Paths.get(getClass().getResource("/structure1.png").toURI());
-    Files.createDirectories(guideline.path().getParent());
-    Files.copy(source, guideline.path(), StandardCopyOption.REPLACE_EXISTING);
+    Files.createDirectories(guideline.getPath().getParent());
+    Files.copy(source, guideline.getPath(), StandardCopyOption.REPLACE_EXISTING);
 
     open();
 
@@ -121,7 +121,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
     Thread.sleep(2000);
     assertTrue(Files.exists(downloaded));
     try {
-      assertArrayEquals(Files.readAllBytes(guideline.path()), Files.readAllBytes(downloaded));
+      assertArrayEquals(Files.readAllBytes(guideline.getPath()), Files.readAllBytes(downloaded));
     } finally {
       Files.delete(downloaded);
     }

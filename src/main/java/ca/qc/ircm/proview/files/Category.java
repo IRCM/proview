@@ -17,23 +17,35 @@
 
 package ca.qc.ircm.proview.files;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Guideline's category.
  */
-public interface Category {
+public class Category {
   /**
-   * Returns category's name.
-   *
-   * @return category's name
+   * Name.
    */
-  public String name();
+  private String name;
+  /**
+   * Guidelines of this category.
+   */
+  private List<Guideline> guidelines;
 
-  /**
-   * Returns category's guidelines.
-   *
-   * @return category's guidelines
-   */
-  public List<Guideline> guidelines();
+  public String getName() {
+    return name;
+  }
+
+  void setName(String name) {
+    this.name = name;
+  }
+
+  public List<Guideline> getGuidelines() {
+    return new ArrayList<>(guidelines);
+  }
+
+  void setGuidelines(List<Guideline> guidelines) {
+    this.guidelines = guidelines;
+  }
 }

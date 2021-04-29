@@ -81,12 +81,12 @@ public class GuidelinesViewTest extends AbstractKaribuTestCase {
     for (int i = 0; i < categories.size(); i++) {
       Category category = categories.get(i);
       CategoryComponent categoryComponent = categoryComponents.get(i);
-      assertEquals(category.name(), categoryComponent.header.getText());
+      assertEquals(category.getName(), categoryComponent.header.getText());
       List<Anchor> anchors = findChildren(categoryComponent, Anchor.class);
-      for (int j = 0; j < category.guidelines().size(); j++) {
-        Guideline guideline = category.guidelines().get(j);
+      for (int j = 0; j < category.getGuidelines().size(); j++) {
+        Guideline guideline = category.getGuidelines().get(j);
         Anchor anchor = anchors.get(j);
-        assertEquals(guideline.name(), anchor.getText());
+        assertEquals(guideline.getName(), anchor.getText());
       }
     }
   }
@@ -105,12 +105,12 @@ public class GuidelinesViewTest extends AbstractKaribuTestCase {
     for (int i = 0; i < categories.size(); i++) {
       Category category = categories.get(i);
       CategoryComponent categoryComponent = categoryComponents.get(i);
-      assertEquals(category.name(), categoryComponent.header.getText());
+      assertEquals(category.getName(), categoryComponent.header.getText());
       List<Anchor> anchors = findChildren(categoryComponent, Anchor.class);
-      for (int j = 0; j < category.guidelines().size(); j++) {
-        Guideline guideline = category.guidelines().get(j);
+      for (int j = 0; j < category.getGuidelines().size(); j++) {
+        Guideline guideline = category.getGuidelines().get(j);
         Anchor anchor = anchors.get(j);
-        assertEquals(guideline.name(), anchor.getText());
+        assertEquals(guideline.getName(), anchor.getText());
       }
     }
   }
@@ -124,11 +124,11 @@ public class GuidelinesViewTest extends AbstractKaribuTestCase {
       Category category = categories.get(i);
       CategoryComponent categoryComponent = categoryComponents.get(i);
       List<Anchor> anchors = findChildren(categoryComponent, Anchor.class);
-      for (int j = 0; j < category.guidelines().size(); j++) {
-        Guideline guideline = category.guidelines().get(j);
+      for (int j = 0; j < category.getGuidelines().size(); j++) {
+        Guideline guideline = category.getGuidelines().get(j);
         Anchor anchor = anchors.get(j);
         String guidelinePath =
-            UrlEscapers.urlFragmentEscaper().escape(guideline.path().getFileName().toString());
+            UrlEscapers.urlFragmentEscaper().escape(guideline.getPath().getFileName().toString());
         assertEquals(guidelinePath, Paths.get(anchor.getHref()).getFileName().toString());
       }
     }
