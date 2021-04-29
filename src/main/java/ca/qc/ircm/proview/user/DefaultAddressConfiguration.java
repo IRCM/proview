@@ -37,7 +37,7 @@ public class DefaultAddressConfiguration {
 
   /**
    * Returns default address.
-   * 
+   *
    * @return default address
    */
   public Address getAddress() {

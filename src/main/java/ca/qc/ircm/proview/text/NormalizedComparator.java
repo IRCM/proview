@@ -36,7 +36,7 @@ public class NormalizedComparator<T> implements Comparator<T>, Serializable {
   }
 
   public static <T> NormalizedComparator<T> of(SerializableFunction<T, String> converter) {
-    return new NormalizedComparator<T>(converter);
+    return new NormalizedComparator<>(converter);
   }
 
   @Override

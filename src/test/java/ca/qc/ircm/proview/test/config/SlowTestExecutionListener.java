@@ -55,8 +55,9 @@ public class SlowTestExecutionListener implements TestExecutionListener {
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     if (skipSlowTests) {
-      Slow slow = findAnnotation(testContext.getTestClass(), testContext.getTestMethod(),
-          Slow.class).orElse(null);
+      Slow slow =
+          findAnnotation(testContext.getTestClass(), testContext.getTestMethod(), Slow.class)
+              .orElse(null);
       if (slow != null) {
         String message = "Test " + testContext.getTestMethod().getName() + " of class "
             + testContext.getTestClass().getName() + " is skipped";

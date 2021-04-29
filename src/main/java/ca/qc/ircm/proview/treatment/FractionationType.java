@@ -32,6 +32,7 @@ public enum FractionationType {
    * Split by pI.
    */
   PI;
+
   private static AppResources getResources(Locale locale) {
     return new AppResources(FractionationType.class, locale);
   }

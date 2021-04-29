@@ -43,7 +43,7 @@ public class Protocol implements Data, Serializable, Named {
    * Protocol types.
    */
   public static enum Type {
-  DIGESTION, ENRICHMENT;
+    DIGESTION, ENRICHMENT;
   }
 
   public static final String TABLE_NAME = "protocol";

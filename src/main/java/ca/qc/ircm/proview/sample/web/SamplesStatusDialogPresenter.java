@@ -70,7 +70,7 @@ public class SamplesStatusDialogPresenter {
       final AppResources webResources = new AppResources(Constants.class, locale);
       for (SubmissionSample sample : submission.getSamples()) {
         Binder<SubmissionSample> binder =
-            new BeanValidationBinder<SubmissionSample>(SubmissionSample.class);
+            new BeanValidationBinder<>(SubmissionSample.class);
         binder.forField(dialog.status(sample)).asRequired(webResources.message(REQUIRED))
             .bind(STATUS);
         binder.setBean(sample);

@@ -25,6 +25,7 @@ import java.util.Locale;
  */
 public enum StorageTemperature {
   MEDIUM(4), LOW(-20);
+
   StorageTemperature(int temperature) {
     this.temperature = temperature;
   }

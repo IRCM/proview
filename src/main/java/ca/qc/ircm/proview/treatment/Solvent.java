@@ -25,6 +25,7 @@ import java.util.Locale;
  */
 public enum Solvent {
   ACETONITRILE, METHANOL, CHCL3, OTHER;
+
   private static AppResources getResources(Locale locale) {
     return new AppResources(Solvent.class, locale);
   }

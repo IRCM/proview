@@ -25,6 +25,7 @@ import java.util.Locale;
  */
 public enum ProteinContent {
   SMALL(1, 4), MEDIUM(5, 10), LARGE(10, 20), XLARGE(20, Integer.MAX_VALUE);
+
   ProteinContent(int start, int end) {
     this.start = start;
     this.end = end;

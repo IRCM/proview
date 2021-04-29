@@ -25,14 +25,14 @@ import java.nio.file.Path;
 public interface Guideline {
   /**
    * Returns guideline's name.
-   * 
+   *
    * @return guideline's name
    */
   public String name();
 
   /**
    * Returns guideline's path.
-   * 
+   *
    * @return guideline's path
    */
   public Path path();

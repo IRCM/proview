@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 public @interface RetryOnFail {
   /**
    * Returns maximum number of allowed retries before test fails.
-   * 
+   *
    * @return maximum number of allowed retries before test fails
    */
   public int value();

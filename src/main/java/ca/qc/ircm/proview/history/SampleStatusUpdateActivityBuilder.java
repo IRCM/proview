@@ -28,7 +28,7 @@ public class SampleStatusUpdateActivityBuilder extends UpdateActivityBuilder {
 
   /**
    * Sets old sample for activity.
-   * 
+   *
    * @param oldSample
    *          old sample
    * @return builder
@@ -41,7 +41,7 @@ public class SampleStatusUpdateActivityBuilder extends UpdateActivityBuilder {
 
   /**
    * Sets new sample for activity.
-   * 
+   *
    * @param newSample
    *          new sample
    * @return builder

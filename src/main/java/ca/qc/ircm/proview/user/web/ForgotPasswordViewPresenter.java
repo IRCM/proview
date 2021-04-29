@@ -49,7 +49,7 @@ import org.springframework.context.annotation.Scope;
 public class ForgotPasswordViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewPresenter.class);
   private ForgotPasswordView view;
-  private Binder<User> binder = new BeanValidationBinder<User>(User.class);
+  private Binder<User> binder = new BeanValidationBinder<>(User.class);
   private ForgotPasswordService service;
   private UserService userService;
 

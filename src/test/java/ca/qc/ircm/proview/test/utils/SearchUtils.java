@@ -51,7 +51,7 @@ public class SearchUtils {
 
   /**
    * Returns last element of a list.
-   * 
+   *
    * @param elements
    *          list
    * @return last element of a list

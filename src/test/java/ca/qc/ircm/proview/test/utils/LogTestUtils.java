@@ -38,8 +38,8 @@ public class LogTestUtils {
    */
   public static void validateUpdateActivities(Collection<UpdateActivity> expecteds,
       Collection<UpdateActivity> actuals) {
-    Set<ComparableUpdateActivity> comparableExpecteds = new HashSet<ComparableUpdateActivity>();
-    Set<ComparableUpdateActivity> comparableActuals = new HashSet<ComparableUpdateActivity>();
+    Set<ComparableUpdateActivity> comparableExpecteds = new HashSet<>();
+    Set<ComparableUpdateActivity> comparableActuals = new HashSet<>();
     if (expecteds != null) {
       for (UpdateActivity updateActivity : expecteds) {
         comparableExpecteds.add(new ComparableUpdateActivity(updateActivity));

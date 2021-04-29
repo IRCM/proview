@@ -33,7 +33,7 @@ public class RemoveSampleFromSampleContainerUpdateActivityBuilder extends Update
 
   /**
    * Sets old container for activity.
-   * 
+   *
    * @param oldContainer
    *          old container
    * @return builder

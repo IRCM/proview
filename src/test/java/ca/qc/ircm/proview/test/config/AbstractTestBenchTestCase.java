@@ -86,24 +86,21 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
           .filter(locale -> new AppResources(SigninView.class, locale)
-              .message(TITLE,
-                  new AppResources(Constants.class, locale).message(APPLICATION_NAME))
+              .message(TITLE, new AppResources(Constants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
           .findAny();
     }
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
           .filter(locale -> new AppResources(UseForgotPasswordView.class, locale)
-              .message(TITLE,
-                  new AppResources(Constants.class, locale).message(APPLICATION_NAME))
+              .message(TITLE, new AppResources(Constants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
           .findAny();
     }
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
           .filter(locale -> new AppResources(AccessDeniedError.class, locale)
-              .message(TITLE,
-                  new AppResources(Constants.class, locale).message(APPLICATION_NAME))
+              .message(TITLE, new AppResources(Constants.class, locale).message(APPLICATION_NAME))
               .equals(getDriver().getTitle()))
           .findAny();
     }

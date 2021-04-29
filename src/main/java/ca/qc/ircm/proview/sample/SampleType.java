@@ -36,6 +36,7 @@ public enum SampleType {
    * Sample is in a Gel.
    */
   GEL, BIOID_BEADS, MAGNETIC_BEADS, AGAROSE_BEADS;
+
   private static AppResources getResources(Locale locale) {
     return new AppResources(SampleType.class, locale);
   }

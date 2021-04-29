@@ -80,23 +80,30 @@ public class ForgotPassword implements Data, Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     ForgotPassword other = (ForgotPassword) obj;
     if (confirmNumber == null) {
-      if (other.confirmNumber != null)
+      if (other.confirmNumber != null) {
         return false;
-    } else if (!confirmNumber.equals(other.confirmNumber))
+      }
+    } else if (!confirmNumber.equals(other.confirmNumber)) {
       return false;
+    }
     if (requestMoment == null) {
-      if (other.requestMoment != null)
+      if (other.requestMoment != null) {
         return false;
-    } else if (!requestMoment.equals(other.requestMoment))
+      }
+    } else if (!requestMoment.equals(other.requestMoment)) {
       return false;
+    }
     return true;
   }
 

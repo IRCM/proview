@@ -22,6 +22,7 @@ package ca.qc.ircm.proview.submission;
  */
 public enum MudPitFraction {
   EIGHT(8), TWELVE(12), SIXTEEN(16);
+
   MudPitFraction(int number) {
     this.number = number;
   }

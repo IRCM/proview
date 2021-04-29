@@ -33,7 +33,7 @@ public class TreatmentComparator implements Comparator<Treatment>, Serializable 
 
   /**
    * Creates comparator for treatments.
-   * 
+   *
    * @param compare
    *          how to compare treatments
    */

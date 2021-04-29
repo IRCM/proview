@@ -24,7 +24,7 @@ public interface Data {
 
   /**
    * Returns database's identifier.
-   * 
+   *
    * @return database identifier
    */
   public Long getId();
