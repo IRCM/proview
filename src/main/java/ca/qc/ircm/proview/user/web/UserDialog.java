@@ -82,11 +82,12 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected void init() {
     logger.debug("user dialog");
     setId(ID);
+    setWidth("1000px");
+    setResizable(true);
     VerticalLayout layout = new VerticalLayout();
-    layout.setMaxWidth("70em");
-    layout.setMinWidth("22em");
     add(layout);
     layout.add(header, form, buttonsLayout);
+    layout.setSizeFull();
     buttonsLayout.add(save, cancel);
     header.setId(id(HEADER));
     save.setId(id(SAVE));

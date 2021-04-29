@@ -104,11 +104,13 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   void init() {
     logger.debug("treatment dialog");
     setId(ID);
+    setWidth("1000px");
+    setResizable(true);
     VerticalLayout layout = new VerticalLayout();
-    layout.setMaxWidth("90em");
-    layout.setMinWidth("35em");
     add(layout);
     layout.add(header, deleted, protocol, fractionationType, date, samplesHeader, samples);
+    layout.setSizeFull();
+    layout.expand(samples);
     header.setId(id(HEADER));
     deleted.setId(id(DELETED));
     deleted.setVisible(false);

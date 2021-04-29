@@ -101,22 +101,23 @@ public class SamplesStatusDialog extends Dialog
   void init() {
     logger.debug("samples status dialog");
     setId(ID);
+    setWidth("700px");
+    setResizable(true);
     VerticalLayout layout = new VerticalLayout();
-    layout.setMaxWidth("90em");
-    layout.setMinWidth("35em");
     add(layout);
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     layout.add(header, samples, buttonsLayout);
+    layout.setSizeFull();
+    layout.expand(samples);
     buttonsLayout.add(save, cancel);
     header.setId(id(HEADER));
     samples.setId(id(SAMPLES));
     ValueProvider<SubmissionSample, String> sampleName =
         sample -> Objects.toString(sample.getName(), "");
     name = samples.addColumn(sampleName, NAME).setKey(NAME)
-        .setComparator(NormalizedComparator.of(Sample::getName));
+        .setComparator(NormalizedComparator.of(Sample::getName)).setFlexGrow(2);
     status = samples.addColumn(new ComponentRenderer<>(sample -> status(sample)), STATUS)
         .setKey(STATUS).setSortable(false);
-    status.setWidth("10em");
     samples.appendHeaderRow(); // Headers.
     HeaderRow allRow = samples.appendHeaderRow();
     allRow.getCell(status).setComponent(allStatus);

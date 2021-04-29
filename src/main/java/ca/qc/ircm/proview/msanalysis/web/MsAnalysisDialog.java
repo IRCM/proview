@@ -90,11 +90,13 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
   void init() {
     logger.debug("treatment dialog");
     setId(ID);
+    setWidth("1300px");
+    setResizable(true);
     VerticalLayout layout = new VerticalLayout();
-    layout.setMaxWidth("90em");
-    layout.setMinWidth("35em");
     add(layout);
     layout.add(header, deleted, instrument, source, date, acquisitionsHeader, acquisitions);
+    layout.setSizeFull();
+    layout.expand(acquisitions);
     header.setId(id(HEADER));
     deleted.setId(id(DELETED));
     deleted.setVisible(false);
@@ -108,12 +110,13 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
         acquisitions.addColumn(ac -> ac.getContainer().getFullName(), CONTAINER).setKey(CONTAINER);
     numberOfAcquisition =
         acquisitions.addColumn(ac -> ac.getNumberOfAcquisition(), NUMBER_OF_ACQUISITION)
-            .setKey(NUMBER_OF_ACQUISITION);
+            .setKey(NUMBER_OF_ACQUISITION).setFlexGrow(0);
     sampleListName = acquisitions.addColumn(ac -> ac.getSampleListName(), SAMPLE_LIST_NAME)
         .setKey(SAMPLE_LIST_NAME);
     acquisitionFile = acquisitions.addColumn(ac -> ac.getAcquisitionFile(), ACQUISITION_FILE)
         .setKey(ACQUISITION_FILE);
-    position = acquisitions.addColumn(ac -> ac.getPosition(), POSITION).setKey(POSITION);
+    position =
+        acquisitions.addColumn(ac -> ac.getPosition(), POSITION).setKey(POSITION).setFlexGrow(0);
     comment =
         acquisitions.addColumn(ac -> ac.getComment(), COMMENT).setKey(COMMENT).setSortable(false);
   }

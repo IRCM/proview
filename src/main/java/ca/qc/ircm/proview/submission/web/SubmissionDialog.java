@@ -101,16 +101,16 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   void init() {
     logger.debug("submission dialog");
     setId(ID);
+    setWidth("1400px");
+    setHeight("800px");
+    setResizable(true);
     VerticalLayout layout = new VerticalLayout();
-    layout.setMaxWidth("90em");
-    layout.setMinWidth("22em");
     add(layout);
     FormLayout formLayout = new FormLayout();
     VerticalScrollLayout printContentLayout = new VerticalScrollLayout(printContent);
-    printContentLayout.setHeight("38em");
+    printContentLayout.setHeight("600px");
     if (authorizationService.hasRole(ADMIN)) {
-      formLayout.setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
-          new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
+      formLayout.setResponsiveSteps(new ResponsiveStep("15em", 4));
       formLayout.add(printContentLayout, 3);
     } else {
       formLayout.setResponsiveSteps(new ResponsiveStep("45em", 1));
@@ -122,6 +122,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
     buttons.setWidthFull();
     layout.add(header, formLayout, buttons);
+    layout.setSizeFull();
+    layout.expand(formLayout);
     header.setId(id(HEADER));
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());

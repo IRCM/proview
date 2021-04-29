@@ -31,6 +31,8 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -85,11 +87,15 @@ public class LaboratoryDialog extends Dialog
   protected void init() {
     logger.debug("laboratory dialog");
     setId(ID);
+    setWidth("500px");
+    setResizable(true);
     VerticalLayout layout = new VerticalLayout();
-    layout.setMaxWidth("70em");
-    layout.setMinWidth("22em");
     add(layout);
-    layout.add(header, name, buttonsLayout);
+    FormLayout form = new FormLayout();
+    layout.add(header, form, buttonsLayout);
+    layout.setSizeFull();
+    form.add(name);
+    form.setResponsiveSteps(new ResponsiveStep("15em", 1));
     buttonsLayout.add(save, cancel);
     header.setId(id(HEADER));
     name.setId(id(NAME));

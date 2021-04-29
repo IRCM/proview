@@ -104,8 +104,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   @PostConstruct
   protected void init() {
     setId(ID);
-    setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
-        new ResponsiveStep("15em", 3), new ResponsiveStep("15em", 4));
+    setResponsiveSteps(new ResponsiveStep("15em", 4));
     add(new FormLayout(email, name, admin, manager, passwords),
         new FormLayout(laboratory, createNewLaboratory, newLaboratoryName),
         new FormLayout(addressLine, town, state, country, postalCode),

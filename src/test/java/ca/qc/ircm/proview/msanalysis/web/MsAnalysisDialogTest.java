@@ -40,6 +40,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -111,12 +112,14 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
     when(dialog.sample.setKey(any())).thenReturn(dialog.sample);
     when(dialog.sample.setComparator(any(Comparator.class))).thenReturn(dialog.sample);
     when(dialog.sample.setHeader(any(String.class))).thenReturn(dialog.sample);
+    when(dialog.sample.setFlexGrow(anyInt())).thenReturn(dialog.sample);
     dialog.container = mock(Column.class);
     when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(CONTAINER)))
         .thenReturn(dialog.container);
     when(dialog.container.setKey(any())).thenReturn(dialog.container);
     when(dialog.container.setComparator(any(Comparator.class))).thenReturn(dialog.container);
     when(dialog.container.setHeader(any(String.class))).thenReturn(dialog.container);
+    when(dialog.container.setFlexGrow(anyInt())).thenReturn(dialog.container);
     dialog.numberOfAcquisition = mock(Column.class);
     when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(NUMBER_OF_ACQUISITION)))
         .thenReturn(dialog.numberOfAcquisition);
@@ -125,6 +128,7 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
         .thenReturn(dialog.numberOfAcquisition);
     when(dialog.numberOfAcquisition.setHeader(any(String.class)))
         .thenReturn(dialog.numberOfAcquisition);
+    when(dialog.numberOfAcquisition.setFlexGrow(anyInt())).thenReturn(dialog.numberOfAcquisition);
     dialog.sampleListName = mock(Column.class);
     when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(SAMPLE_LIST_NAME)))
         .thenReturn(dialog.sampleListName);
@@ -132,6 +136,7 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
     when(dialog.sampleListName.setComparator(any(Comparator.class)))
         .thenReturn(dialog.sampleListName);
     when(dialog.sampleListName.setHeader(any(String.class))).thenReturn(dialog.sampleListName);
+    when(dialog.sampleListName.setFlexGrow(anyInt())).thenReturn(dialog.sampleListName);
     dialog.acquisitionFile = mock(Column.class);
     when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(ACQUISITION_FILE)))
         .thenReturn(dialog.acquisitionFile);
@@ -139,18 +144,21 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
     when(dialog.acquisitionFile.setComparator(any(Comparator.class)))
         .thenReturn(dialog.acquisitionFile);
     when(dialog.acquisitionFile.setHeader(any(String.class))).thenReturn(dialog.acquisitionFile);
+    when(dialog.acquisitionFile.setFlexGrow(anyInt())).thenReturn(dialog.acquisitionFile);
     dialog.position = mock(Column.class);
     when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(POSITION)))
         .thenReturn(dialog.position);
     when(dialog.position.setKey(any())).thenReturn(dialog.position);
     when(dialog.position.setComparator(any(Comparator.class))).thenReturn(dialog.position);
     when(dialog.position.setHeader(any(String.class))).thenReturn(dialog.position);
+    when(dialog.position.setFlexGrow(anyInt())).thenReturn(dialog.position);
     dialog.comment = mock(Column.class);
     when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(COMMENT)))
         .thenReturn(dialog.comment);
     when(dialog.comment.setKey(any())).thenReturn(dialog.comment);
     when(dialog.comment.setComparator(any(Comparator.class))).thenReturn(dialog.comment);
     when(dialog.comment.setHeader(any(String.class))).thenReturn(dialog.comment);
+    when(dialog.comment.setFlexGrow(anyInt())).thenReturn(dialog.comment);
   }
 
   @Test

@@ -38,6 +38,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -89,7 +90,8 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<ValueProvider<SubmissionSample, String>> valueProviderCaptor;
   @Captor
-  private ArgumentCaptor<ComponentRenderer<ComboBox<SampleStatus>, SubmissionSample>> statusRendererCaptor;
+  private ArgumentCaptor<
+      ComponentRenderer<ComboBox<SampleStatus>, SubmissionSample>> statusRendererCaptor;
   @Captor
   private ArgumentCaptor<Comparator<SubmissionSample>> comparatorCaptor;
   @Mock
@@ -124,12 +126,14 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
     when(dialog.name.setKey(any())).thenReturn(dialog.name);
     when(dialog.name.setComparator(any(Comparator.class))).thenReturn(dialog.name);
     when(dialog.name.setHeader(any(String.class))).thenReturn(dialog.name);
+    when(dialog.name.setFlexGrow(anyInt())).thenReturn(dialog.name);
     dialog.status = mock(Column.class);
     when(dialog.samples.addColumn(any(ComponentRenderer.class), eq(STATUS)))
         .thenReturn(dialog.status);
     when(dialog.status.setKey(any())).thenReturn(dialog.status);
     when(dialog.status.setHeader(any(String.class))).thenReturn(dialog.status);
     when(dialog.status.setSortable(anyBoolean())).thenReturn(dialog.status);
+    when(dialog.status.setFlexGrow(anyInt())).thenReturn(dialog.status);
     HeaderRow allRow = mock(HeaderRow.class);
     when(dialog.samples.appendHeaderRow()).thenReturn(allRow);
     HeaderCell allStatusCell = mock(HeaderCell.class);
