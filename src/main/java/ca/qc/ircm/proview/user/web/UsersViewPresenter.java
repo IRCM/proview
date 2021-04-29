@@ -79,7 +79,7 @@ public class UsersViewPresenter {
   @SuppressWarnings("checkstyle:linelength")
   private void loadUsers() {
     List<User> users = authorizationService.hasRole(ADMIN) ? service.all(null)
-        : service.all(null, authorizationService.getCurrentUser().getLaboratory());
+        : service.all(null, authorizationService.getCurrentUser().get().getLaboratory());
     usersDataProvider = new ListDataProvider<>(users);
     ConfigurableFilterDataProvider<User, Void, SerializablePredicate<User>> dataProvider =
         usersDataProvider.withConfigurableFilter();

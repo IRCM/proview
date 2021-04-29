@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -290,7 +291,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Test
   public void save_Insert_Admin() throws Throwable {
     final User manager = repository.findById(1L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(manager);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(manager));
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -370,7 +371,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     user.setPhoneNumbers(phoneNumbers);
     user.setLaboratory(laboratoryRepository.findById(2L).get());
     user.getLaboratory().setName("Ribonucleoprotein Biochemistry");
-    when(authorizationService.getCurrentUser()).thenReturn(repository.findById(3L).get());
+    when(authorizationService.getCurrentUser()).thenReturn(repository.findById(3L));
 
     service.save(user, "password");
 

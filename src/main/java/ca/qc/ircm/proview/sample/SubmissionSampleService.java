@@ -86,7 +86,7 @@ public class SubmissionSampleService {
     if (name == null) {
       return false;
     }
-    User currentUser = authorizationService.getCurrentUser();
+    User currentUser = authorizationService.getCurrentUser().orElse(null);
 
     BooleanExpression predicate =
         submissionSample.name.eq(name).and(submissionSample.submission.user.eq(currentUser));

@@ -101,8 +101,8 @@ public class UserFormPresenter {
     if (authorizationService.hasRole(UserRole.ADMIN)) {
       laboratoriesDataProvider = DataProvider.ofCollection(laboratoryService.all());
     } else {
-      laboratoriesDataProvider =
-          DataProvider.fromStream(Stream.of(authorizationService.getCurrentUser().getLaboratory()));
+      laboratoriesDataProvider = DataProvider
+          .fromStream(Stream.of(authorizationService.getCurrentUser().get().getLaboratory()));
     }
     form.laboratory.setDataProvider(laboratoriesDataProvider);
     form.laboratory.setRequiredIndicatorVisible(true);

@@ -113,7 +113,7 @@ public class PlateService {
     if (name == null) {
       return false;
     }
-    User user = authorizationService.getCurrentUser();
+    User user = authorizationService.getCurrentUser().orElse(null);
 
     if (authorizationService.hasRole(UserRole.ADMIN)) {
       return repository.countByName(name) == 0;

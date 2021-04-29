@@ -62,7 +62,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
   @Before
   public void beforeTest() {
     user = new User(4L);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
   }
 
   @Test

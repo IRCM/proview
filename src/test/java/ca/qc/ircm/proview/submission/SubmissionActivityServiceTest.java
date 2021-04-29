@@ -78,7 +78,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   @Before
   public void beforeTest() {
     user = new User(4L);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
     when(sampleActivityService.update(any(), any())).thenReturn(Optional.empty());
   }
 

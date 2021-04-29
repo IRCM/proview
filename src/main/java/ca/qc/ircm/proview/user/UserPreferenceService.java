@@ -104,7 +104,7 @@ public class UserPreferenceService {
     if (referer == null || name == null) {
       return defaultValue;
     }
-    User user = authorizationService.getCurrentUser();
+    User user = authorizationService.getCurrentUser().orElse(null);
     if (user == null) {
       return defaultValue;
     }
@@ -133,7 +133,7 @@ public class UserPreferenceService {
    */
   public void save(Object referer, String name, Serializable value) {
     final String refererName = referer.getClass().getName();
-    final User user = authorizationService.getCurrentUser();
+    final User user = authorizationService.getCurrentUser().orElse(null);
     Preference preference = findPreference(toString(referer), name);
     if (preference == null) {
       preference = new Preference();
@@ -162,7 +162,7 @@ public class UserPreferenceService {
    *          preference's name
    */
   public void delete(Object referer, String name) {
-    User user = authorizationService.getCurrentUser();
+    User user = authorizationService.getCurrentUser().orElse(null);
     repository.deleteByUserAndPreferenceRefererAndPreferenceName(user, toString(referer), name);
   }
 

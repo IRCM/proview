@@ -122,7 +122,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     when(service.all(any(), any(Laboratory.class))).thenReturn(users);
     when(service.all(any())).thenReturn(users);
     currentUser = repository.findById(2L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(currentUser);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(currentUser));
   }
 
   @Test

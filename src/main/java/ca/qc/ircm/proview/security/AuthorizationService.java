@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.user.UserAuthority.FORCE_CHANGE_PASSWORD;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.util.Collection;
+import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,13 +60,10 @@ public class AuthorizationService {
     return SecurityContextHolder.getContext().getAuthentication();
   }
 
-  private UserDetails getUserDetails() {
-    Authentication authentication = getAuthentication();
-    if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-      return (UserDetails) authentication.getPrincipal();
-    } else {
-      return null;
-    }
+  private Optional<UserDetails> getUserDetails() {
+    return Optional.ofNullable(getAuthentication())
+        .filter(au -> au.getPrincipal() instanceof UserDetails)
+        .map(au -> (UserDetails) au.getPrincipal());
   }
 
   /**
@@ -73,18 +71,10 @@ public class AuthorizationService {
    *
    * @return current user
    */
-  public User getCurrentUser() {
-    UserDetails user = getUserDetails();
-    if (user instanceof AuthenticatedUser) {
-      Long userId = ((AuthenticatedUser) user).getId();
-      if (userId == null) {
-        return null;
-      }
-
-      return repository.findById(userId).orElse(null);
-    } else {
-      return null;
-    }
+  public Optional<User> getCurrentUser() {
+    return getUserDetails().filter(ud -> ud instanceof AuthenticatedUser)
+        .map(ud -> (AuthenticatedUser) ud).map(au -> au.getId())
+        .map(id -> repository.findById(id).orElse(null));
   }
 
   /**
@@ -93,7 +83,7 @@ public class AuthorizationService {
    * @return true if current user is anonymous, false otherwise
    */
   public boolean isAnonymous() {
-    return getUserDetails() == null;
+    return !getUserDetails().isPresent();
   }
 
   /**
