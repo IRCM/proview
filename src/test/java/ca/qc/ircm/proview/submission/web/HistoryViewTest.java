@@ -39,6 +39,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -119,28 +120,33 @@ public class HistoryViewTest extends AbstractViewTestCase {
     view.user = mock(Column.class);
     when(view.activities.addColumn(any(ValueProvider.class), eq(USER))).thenReturn(view.user);
     when(view.user.setKey(any())).thenReturn(view.user);
+    when(view.user.setFlexGrow(anyInt())).thenReturn(view.user);
     when(view.user.setHeader(any(String.class))).thenReturn(view.user);
     view.type = mock(Column.class);
     when(view.activities.addColumn(any(ValueProvider.class), eq(ACTION_TYPE)))
         .thenReturn(view.type);
     when(view.type.setKey(any())).thenReturn(view.type);
+    when(view.type.setFlexGrow(anyInt())).thenReturn(view.type);
     when(view.type.setHeader(any(String.class))).thenReturn(view.type);
     view.date = mock(Column.class);
     when(view.activities.addColumn(any(ValueProvider.class), eq(TIMESTAMP))).thenReturn(view.date);
     when(view.date.setKey(any())).thenReturn(view.date);
+    when(view.date.setFlexGrow(anyInt())).thenReturn(view.date);
     when(view.date.setHeader(any(String.class))).thenReturn(view.date);
     view.description = mock(Column.class);
     when(view.activities.addColumn(any(TemplateRenderer.class), eq(DESCRIPTION)))
         .thenReturn(view.description);
     when(view.description.setKey(any())).thenReturn(view.description);
-    when(view.description.setHeader(any(String.class))).thenReturn(view.description);
     when(view.description.setSortable(anyBoolean())).thenReturn(view.description);
+    when(view.description.setFlexGrow(anyInt())).thenReturn(view.description);
+    when(view.description.setHeader(any(String.class))).thenReturn(view.description);
     view.explanation = mock(Column.class);
     when(view.activities.addColumn(any(TemplateRenderer.class), eq(EXPLANATION)))
         .thenReturn(view.explanation);
     when(view.explanation.setKey(any())).thenReturn(view.explanation);
-    when(view.explanation.setHeader(any(String.class))).thenReturn(view.explanation);
     when(view.explanation.setSortable(anyBoolean())).thenReturn(view.explanation);
+    when(view.explanation.setFlexGrow(anyInt())).thenReturn(view.explanation);
+    when(view.explanation.setHeader(any(String.class))).thenReturn(view.explanation);
   }
 
   @Test

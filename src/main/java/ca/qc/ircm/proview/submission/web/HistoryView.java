@@ -98,25 +98,26 @@ public class HistoryView extends VerticalLayout
     setId(ID);
     setSizeFull();
     add(header, activities);
+    expand(activities);
     header.setId(HEADER);
     activities.setId(ACTIVITIES);
     activities.setSizeFull();
-    user = activities.addColumn(ac -> ac.getUser().getName(), USER).setKey(USER);
+    user = activities.addColumn(ac -> ac.getUser().getName(), USER).setKey(USER).setFlexGrow(5);
     type = activities.addColumn(ac -> ac.getActionType().getLabel(getLocale()), ACTION_TYPE)
         .setKey(ACTION_TYPE);
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     date = activities.addColumn(ac -> dateFormatter.format(ac.getTimestamp()), TIMESTAMP)
-        .setKey(TIMESTAMP);
+        .setKey(TIMESTAMP).setFlexGrow(3);
     description = activities
         .addColumn(TemplateRenderer.<Activity>of(DESCRIPTION_SPAN)
             .withProperty("descriptionTitle", ac -> description(ac))
             .withProperty("descriptionValue", ac -> description(ac)), DESCRIPTION)
-        .setKey(DESCRIPTION).setSortable(false);
+        .setKey(DESCRIPTION).setSortable(false).setFlexGrow(5);
     explanation = activities
         .addColumn(TemplateRenderer.<Activity>of(EXPLANATION_SPAN)
             .withProperty("explanationTitle", ac -> ac.getExplanation())
             .withProperty("explanationValue", ac -> ac.getExplanation()), EXPLANATION)
-        .setKey(EXPLANATION).setSortable(false);
+        .setKey(EXPLANATION).setSortable(false).setFlexGrow(5);
     activities.addItemDoubleClickListener(e -> presenter.view(e.getItem(), getLocale()));
     presenter.init(this);
   }

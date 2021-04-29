@@ -44,6 +44,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -140,10 +141,12 @@ public class SubmissionViewTest extends AbstractKaribuTestCase {
         .thenReturn(view.filename);
     when(view.filename.setKey(any())).thenReturn(view.filename);
     when(view.filename.setComparator(any(Comparator.class))).thenReturn(view.filename);
+    when(view.filename.setFlexGrow(anyInt())).thenReturn(view.filename);
     when(view.filename.setHeader(any(String.class))).thenReturn(view.filename);
     view.remove = mock(Column.class);
     when(view.files.addColumn(any(ComponentRenderer.class), eq(REMOVE))).thenReturn(view.remove);
     when(view.remove.setKey(any())).thenReturn(view.remove);
+    when(view.remove.setFlexGrow(anyInt())).thenReturn(view.remove);
     when(view.remove.setHeader(any(String.class))).thenReturn(view.remove);
   }
 
