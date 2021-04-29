@@ -157,7 +157,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     AppResources resources = this.resources(UserView.class);
     assertEquals(resources.message(SAVED, name), notification.getText());
-    User user = repository.findByEmail(email);
+    User user = repository.findByEmail(email).get();
     assertNotNull(user);
     assertNotNull(user.getId());
     assertEquals(name, user.getName());
@@ -205,7 +205,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     AppResources resources = this.resources(UserView.class);
     assertEquals(resources.message(SAVED, name), notification.getText());
-    User user = repository.findByEmail(email);
+    User user = repository.findByEmail(email).get();
     assertNotNull(user);
     assertNotNull(user.getId());
     assertEquals(name, user.getName());

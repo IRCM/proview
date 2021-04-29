@@ -30,6 +30,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,8 +60,8 @@ public class UserPreferenceServiceTest {
    */
   @Before
   public void beforeTest() {
-    user = userRepository.findById(2L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    user = userRepository.findById(2L).get();
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
   }
 
   private String referer() {
@@ -93,8 +94,7 @@ public class UserPreferenceServiceTest {
 
   @Test
   public void get_MissingUserPreference() {
-    User user = userRepository.findById(10L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(userRepository.findById(10L));
 
     assertEquals("default value", service.get(this, PREFERENCE_1, "default value"));
     assertEquals((Integer) 20, service.get(this, PREFERENCE_2, 20));
@@ -117,7 +117,7 @@ public class UserPreferenceServiceTest {
 
   @Test
   public void get_NoCurrentUser() {
-    when(authorizationService.getCurrentUser()).thenReturn(null);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.empty());
 
     assertEquals("default value", service.get(this, PREFERENCE_1, "default value"));
   }
@@ -131,8 +131,8 @@ public class UserPreferenceServiceTest {
   public void save_Insert_All() throws Throwable {
     String value = "test value 1";
     String name = "test new preference";
-    User user = userRepository.findById(10L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    user = userRepository.findById(10L).get();
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
 
     service.save(this, name, value);
     repository.flush();
@@ -144,8 +144,8 @@ public class UserPreferenceServiceTest {
   @Test
   public void save_Insert() throws Throwable {
     String value = "test value 1";
-    User user = userRepository.findById(10L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    user = userRepository.findById(10L).get();
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
 
     service.save(this, PREFERENCE_1, value);
     repository.flush();

@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
+import java.util.Optional;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,9 +80,23 @@ public class MdcFilterTest {
   public void doFilter_User() throws Throwable {
     Long userId = 3L;
     String email = "test@ircm.qc.ca";
-    when(authorizationService.getCurrentUser()).thenReturn(new User(userId, email));
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(new User(userId, email)));
     doAnswer(i -> {
       assertEquals("3:test", MDC.get(USER_CONTEXT_KEY));
+      return null;
+    }).when(filterChain).doFilter(any(), any());
+
+    mdcFilter.doFilter(request, response, filterChain);
+
+    verify(filterChain).doFilter(request, response);
+    assertNull(MDC.get(USER_CONTEXT_KEY));
+  }
+
+  @Test
+  public void doFilter_EmptyUser() throws Throwable {
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.empty());
+    doAnswer(i -> {
+      assertNull(MDC.get(USER_CONTEXT_KEY));
       return null;
     }).when(filterChain).doFilter(any(), any());
 

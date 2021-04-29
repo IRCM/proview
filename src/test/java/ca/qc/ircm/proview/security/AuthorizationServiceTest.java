@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.security;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -95,14 +94,14 @@ public class AuthorizationServiceTest {
   @Test
   @WithAnonymousUser
   public void getCurrentUser_Anonymous() throws Throwable {
-    assertNull(authorizationService.getCurrentUser());
+    assertFalse(authorizationService.getCurrentUser().isPresent());
   }
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void getCurrentUser() throws Throwable {
-    User user = authorizationService.getCurrentUser();
-    assertNotNull(authorizationService.getCurrentUser());
+    User user = authorizationService.getCurrentUser().orElse(null);
+    assertNotNull(user);
     assertEquals((Long) 1L, user.getId());
   }
 

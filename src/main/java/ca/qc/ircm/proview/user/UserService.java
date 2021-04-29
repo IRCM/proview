@@ -26,6 +26,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,14 +64,13 @@ public class UserService {
    *          database identifier of user
    * @return user
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
-  public User get(Long id) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
+  public Optional<User> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    User user = repository.findById(id).orElse(null);
-    return user;
+    return repository.findById(id);
   }
 
   /**
@@ -80,19 +80,18 @@ public class UserService {
    *          email
    * @return user with email
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
-  public User get(String email) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
+  public Optional<User> get(String email) {
     if (email == null) {
-      return null;
+      return Optional.empty();
     }
 
-    User ret = noSecurityGet(email);
-    return ret;
+    return noSecurityGet(email);
   }
 
-  private User noSecurityGet(String email) {
+  private Optional<User> noSecurityGet(String email) {
     if (email == null) {
-      return null;
+      return Optional.empty();
     }
 
     return repository.findByEmail(email);
@@ -110,7 +109,7 @@ public class UserService {
       return false;
     }
 
-    return repository.findByEmail(email) != null;
+    return repository.findByEmail(email).isPresent();
   }
 
   /**

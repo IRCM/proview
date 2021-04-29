@@ -140,12 +140,12 @@ public class UserFormPresenterTest extends AbstractViewTestCase {
     form.number = new TextField();
     form.extension = new TextField();
     currentUser = userRepository.findById(3L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(currentUser);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(currentUser));
     laboratories = laboratoryRepository.findAll();
     laboratories.forEach(lab -> entityManager.detach(lab));
     when(laboratoryService.all()).thenReturn(laboratories);
     when(laboratoryService.get(any()))
-        .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)).orElse(null));
+        .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)));
     laboratory = laboratoryRepository.findById(2L).orElse(null);
     when(form.passwords.validate()).thenReturn(passwordsValidationStatus);
     when(passwordsValidationStatus.isOk()).thenReturn(true);

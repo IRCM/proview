@@ -30,6 +30,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -65,6 +66,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -119,7 +121,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     view.smallMoleculeSubmissionForm = mock(SmallMoleculeSubmissionForm.class);
     view.intactProteinSubmissionForm = mock(IntactProteinSubmissionForm.class);
     submission = repository.findById(1L).orElse(null);
-    when(service.get(any())).thenReturn(submission);
+    when(service.get(any())).thenReturn(Optional.of(submission));
     presenter.init(view);
     presenter.localeChange(locale);
     files = IntStream.range(0, 2).mapToObj(i -> {
@@ -472,6 +474,40 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
       assertEquals(submission.getFiles().get(i).getFilename(), files.get(i).getFilename());
       assertArrayEquals(submission.getFiles().get(i).getContent(), files.get(i).getContent());
     }
+  }
+
+  @Test
+  public void setParameter_EmptySubmission() {
+    when(service.get(any())).thenReturn(Optional.empty());
+
+    presenter.setParameter(2L);
+
+    verify(service).get(2L);
+    verify(view.lcmsmsSubmissionForm, atLeastOnce()).setSubmission(submissionCaptor.capture());
+    Submission lcmsms = submissionCaptor.getValue();
+    verify(view.smallMoleculeSubmissionForm, atLeastOnce())
+        .setSubmission(submissionCaptor.capture());
+    Submission smallMolecule = submissionCaptor.getValue();
+    verify(view.intactProteinSubmissionForm, atLeastOnce())
+        .setSubmission(submissionCaptor.capture());
+    Submission intactProtein = submissionCaptor.getValue();
+    assertSame(lcmsms, smallMolecule);
+    assertSame(lcmsms, intactProtein);
+    Submission submission = lcmsms;
+    assertNull(submission.getId());
+    assertEquals(Service.LC_MS_MS, submission.getService());
+    assertEquals(StorageTemperature.MEDIUM, submission.getStorageTemperature());
+    assertEquals(GelSeparation.ONE_DIMENSION, submission.getSeparation());
+    assertEquals(GelThickness.ONE, submission.getThickness());
+    assertEquals(ProteolyticDigestion.TRYPSIN, submission.getDigestion());
+    assertEquals(ProteinContent.SMALL, submission.getProteinContent());
+    assertEquals(InjectionType.LC_MS, submission.getInjectionType());
+    assertEquals(MassDetectionInstrumentSource.ESI, submission.getSource());
+    assertEquals(ProteinIdentification.REFSEQ, submission.getIdentification());
+    assertEquals(1, submission.getSamples().size());
+    assertEquals(SampleType.SOLUTION, submission.getSamples().get(0).getType());
+    assertNull(submission.getComment());
+    assertEquals("", view.comment.getValue());
   }
 
   @Test

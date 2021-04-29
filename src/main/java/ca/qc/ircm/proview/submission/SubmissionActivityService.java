@@ -68,7 +68,7 @@ public class SubmissionActivityService {
    */
   @CheckReturnValue
   public Activity insert(final Submission submission) {
-    User user = authorizationService.getCurrentUser();
+    User user = authorizationService.getCurrentUser().orElse(null);
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -91,7 +91,7 @@ public class SubmissionActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> update(final Submission submission, final String explanation) {
-    final User user = authorizationService.getCurrentUser();
+    final User user = authorizationService.getCurrentUser().orElse(null);
 
     final Submission oldSubmission = repository.findById(submission.getId()).orElse(null);
 

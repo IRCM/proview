@@ -79,7 +79,7 @@ public class UsersViewPresenter {
   @SuppressWarnings("checkstyle:linelength")
   private void loadUsers() {
     List<User> users = authorizationService.hasRole(ADMIN) ? service.all(null)
-        : service.all(null, authorizationService.getCurrentUser().getLaboratory());
+        : service.all(null, authorizationService.getCurrentUser().get().getLaboratory());
     usersDataProvider = new ListDataProvider<>(users);
     ConfigurableFilterDataProvider<User, Void, SerializablePredicate<User>> dataProvider =
         usersDataProvider.withConfigurableFilter();
@@ -117,13 +117,13 @@ public class UsersViewPresenter {
 
   void view(User user) {
     clearError();
-    view.dialog.setUser(service.get(user.getId()));
+    view.dialog.setUser(service.get(user.getId()).orElse(null));
     view.dialog.open();
   }
 
   void view(Laboratory laboratory) {
     clearError();
-    view.laboratoryDialog.setLaboratory(laboratoryService.get(laboratory.getId()));
+    view.laboratoryDialog.setLaboratory(laboratoryService.get(laboratory.getId()).orElse(null));
     view.laboratoryDialog.open();
   }
 

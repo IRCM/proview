@@ -53,7 +53,7 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
       return false;
     }
     Laboratory laboratory = (Laboratory) targetDomainObject;
-    User currentUser = getUser(authentication);
+    User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(laboratory, currentUser, realPermission);
   }
@@ -70,7 +70,7 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
     if (laboratory == null) {
       return false;
     }
-    User currentUser = getUser(authentication);
+    User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(laboratory, currentUser, realPermission);
   }

@@ -55,7 +55,7 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
       return false;
     }
     Plate plate = (Plate) targetDomainObject;
-    User currentUser = getUser(authentication);
+    User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(plate, currentUser, realPermission);
   }
@@ -72,7 +72,7 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
     if (plate == null) {
       return false;
     }
-    User currentUser = getUser(authentication);
+    User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(plate, currentUser, realPermission);
   }

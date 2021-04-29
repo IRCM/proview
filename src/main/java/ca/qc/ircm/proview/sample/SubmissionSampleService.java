@@ -63,13 +63,13 @@ public class SubmissionSampleService {
    *          database identifier of submitted sample
    * @return submitted sample
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
-  public SubmissionSample get(Long id) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
+  public Optional<SubmissionSample> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 
   /**
@@ -86,7 +86,7 @@ public class SubmissionSampleService {
     if (name == null) {
       return false;
     }
-    User currentUser = authorizationService.getCurrentUser();
+    User currentUser = authorizationService.getCurrentUser().orElse(null);
 
     BooleanExpression predicate =
         submissionSample.name.eq(name).and(submissionSample.submission.user.eq(currentUser));

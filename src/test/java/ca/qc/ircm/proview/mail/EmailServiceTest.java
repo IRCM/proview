@@ -34,6 +34,7 @@ import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.mail.Message.RecipientType;
 import javax.mail.Multipart;
@@ -195,7 +196,7 @@ public class EmailServiceTest {
       error.printStackTrace(printWriter);
     }
     User user = new User(1L, "christian.poitras@ircm.qc.ca");
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
 
     emailService.sendError(error);
 

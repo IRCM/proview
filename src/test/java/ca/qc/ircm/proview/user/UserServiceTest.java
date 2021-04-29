@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,7 +98,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_Id() throws Throwable {
-    User user = service.get(3L);
+    User user = service.get(3L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(READ));
     assertEquals((Long) 3L, user.getId());
@@ -131,14 +132,12 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_NullId() throws Throwable {
-    User user = service.get((Long) null);
-
-    assertNull(user);
+    assertFalse(service.get((Long) null).isPresent());
   }
 
   @Test
   public void get_Email() throws Throwable {
-    User user = service.get("benoit.coulombe@ircm.qc.ca");
+    User user = service.get("benoit.coulombe@ircm.qc.ca").get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(READ));
     assertEquals((Long) 3L, user.getId());
@@ -172,9 +171,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_NullEmail() throws Throwable {
-    User user = service.get((String) null);
-
-    assertNull(user);
+    assertFalse(service.get((String) null).isPresent());
   }
 
   @Test
@@ -294,7 +291,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Test
   public void save_Insert_Admin() throws Throwable {
     final User manager = repository.findById(1L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(manager);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(manager));
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -374,7 +371,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     user.setPhoneNumbers(phoneNumbers);
     user.setLaboratory(laboratoryRepository.findById(2L).get());
     user.getLaboratory().setName("Ribonucleoprotein Biochemistry");
-    when(authorizationService.getCurrentUser()).thenReturn(repository.findById(3L).get());
+    when(authorizationService.getCurrentUser()).thenReturn(repository.findById(3L));
 
     service.save(user, "password");
 

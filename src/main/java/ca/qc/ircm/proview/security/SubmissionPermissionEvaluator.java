@@ -57,7 +57,7 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
       return false;
     }
     Submission submission = (Submission) targetDomainObject;
-    User currentUser = getUser(authentication);
+    User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(submission, currentUser, realPermission);
   }
@@ -74,7 +74,7 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
     if (submission == null) {
       return false;
     }
-    User currentUser = getUser(authentication);
+    User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(submission, currentUser, realPermission);
   }

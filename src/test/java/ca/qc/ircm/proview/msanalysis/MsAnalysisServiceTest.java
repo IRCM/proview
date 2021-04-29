@@ -23,8 +23,8 @@ import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
@@ -47,7 +47,7 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get() {
-    MsAnalysis msAnalysis = service.get(1L);
+    MsAnalysis msAnalysis = service.get(1L).orElse(null);
 
     assertNotNull(msAnalysis);
     assertEquals((Long) 1L, msAnalysis.getId());
@@ -66,9 +66,7 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_Null() {
-    MsAnalysis msAnalysis = service.get((Long) null);
-
-    assertNull(msAnalysis);
+    assertFalse(service.get((Long) null).isPresent());
   }
 
   @Test

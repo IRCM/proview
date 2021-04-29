@@ -99,7 +99,7 @@ public class UseForgotPasswordViewPresenter {
       String[] parameters = parameter.split(SEPARATOR, -1);
       long id = Long.parseLong(parameters[0]);
       String confirmNumber = parameters[1];
-      forgotPassword = service.get(id, confirmNumber);
+      forgotPassword = service.get(id, confirmNumber).orElse(null);
     } else {
       view.save.setEnabled(false);
       view.form.setEnabled(false);

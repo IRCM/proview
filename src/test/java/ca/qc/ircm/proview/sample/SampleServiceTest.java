@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -52,7 +52,7 @@ public class SampleServiceTest {
 
   @Test
   public void get_SubmissionSample_Gel() throws Throwable {
-    Sample sample = service.get(1L);
+    Sample sample = service.get(1L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
@@ -67,7 +67,7 @@ public class SampleServiceTest {
 
   @Test
   public void get_SubmissionSample() throws Throwable {
-    Sample sample = service.get(442L);
+    Sample sample = service.get(442L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
@@ -84,7 +84,7 @@ public class SampleServiceTest {
 
   @Test
   public void get_Control() throws Throwable {
-    Sample sample = service.get(444L);
+    Sample sample = service.get(444L).get();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof Control);
@@ -100,8 +100,6 @@ public class SampleServiceTest {
 
   @Test
   public void get_Null() throws Throwable {
-    Sample sample = service.get(null);
-
-    assertNull(sample);
+    assertFalse(service.get(null).isPresent());
   }
 }

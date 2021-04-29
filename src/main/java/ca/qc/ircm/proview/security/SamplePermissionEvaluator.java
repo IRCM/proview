@@ -56,7 +56,7 @@ public class SamplePermissionEvaluator extends AbstractPermissionEvaluator {
       return false;
     }
     Sample sample = (Sample) targetDomainObject;
-    User currentUser = getUser(authentication);
+    User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(sample, currentUser, realPermission);
   }
@@ -73,7 +73,7 @@ public class SamplePermissionEvaluator extends AbstractPermissionEvaluator {
     if (sample == null) {
       return false;
     }
-    User currentUser = getUser(authentication);
+    User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(sample, currentUser, realPermission);
   }

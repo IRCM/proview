@@ -69,7 +69,7 @@ public class SpringDataUserDetailsServiceTest {
     user.setHashedPassword(InitializeDatabaseExecutionListener.PASSWORD_PASS1);
     user.setActive(true);
     user.setLaboratory(new Laboratory(1L));
-    when(userRepository.findByEmail(any(String.class))).thenReturn(user);
+    when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.of(user));
   }
 
   private Optional<? extends GrantedAuthority>
@@ -156,7 +156,7 @@ public class SpringDataUserDetailsServiceTest {
 
   @Test(expected = UsernameNotFoundException.class)
   public void loadUserByUsername_NotExists() {
-    when(userRepository.findByEmail(any(String.class))).thenReturn(null);
+    when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
 
     userDetailsService.loadUserByUsername("proview@ircm.qc.ca");
   }

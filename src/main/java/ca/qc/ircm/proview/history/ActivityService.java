@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -91,105 +92,105 @@ public class ActivityService {
    * @return object associated with this activity
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public Object record(Activity activity) {
+  public Optional<Object> record(Activity activity) {
     if (activity == null || activity.getTableName() == null) {
-      return null;
+      return Optional.empty();
     }
 
     return record(activity.getTableName(), activity.getRecordId());
   }
 
-  private Object record(String tableName, Long id) {
+  private Optional<Object> record(String tableName, Long id) {
     switch (tableName) {
       case Acquisition.TABLE_NAME: {
         JPAQuery<Acquisition> query = queryFactory.select(acquisition);
         query.from(acquisition);
         query.where(acquisition.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case MsAnalysis.TABLE_NAME: {
         JPAQuery<MsAnalysis> query = queryFactory.select(msAnalysis);
         query.from(msAnalysis);
         query.where(msAnalysis.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case Plate.TABLE_NAME: {
         JPAQuery<Plate> query = queryFactory.select(plate);
         query.from(plate);
         query.where(plate.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case Sample.TABLE_NAME: {
         JPAQuery<Sample> query = queryFactory.select(sample);
         query.from(sample);
         query.where(sample.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case SampleContainer.TABLE_NAME: {
         JPAQuery<SampleContainer> query = queryFactory.select(sampleContainer);
         query.from(sampleContainer);
         query.where(sampleContainer.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case Submission.TABLE_NAME: {
         JPAQuery<Submission> query = queryFactory.select(submission);
         query.from(submission);
         query.where(submission.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case SubmissionFile.TABLE_NAME: {
         JPAQuery<SubmissionFile> query = queryFactory.select(submissionFile);
         query.from(submissionFile);
         query.where(submissionFile.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case Protocol.TABLE_NAME: {
         JPAQuery<Protocol> query = queryFactory.select(protocol);
         query.from(protocol);
         query.where(protocol.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case TreatedSample.TABLE_NAME: {
         JPAQuery<TreatedSample> query = queryFactory.select(treatedSample);
         query.from(treatedSample);
         query.where(treatedSample.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case Treatment.TABLE_NAME: {
         JPAQuery<Treatment> query = queryFactory.select(treatment);
         query.from(treatment);
         query.where(treatment.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case Address.TABLE_NAME: {
         JPAQuery<Address> query = queryFactory.select(address);
         query.from(address);
         query.where(address.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case ForgotPassword.TABLE_NAME: {
         JPAQuery<ForgotPassword> query = queryFactory.select(forgotPassword);
         query.from(forgotPassword);
         query.where(forgotPassword.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case Laboratory.TABLE_NAME: {
         JPAQuery<Laboratory> query = queryFactory.select(laboratory);
         query.from(laboratory);
         query.where(laboratory.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case PhoneNumber.TABLE_NAME: {
         JPAQuery<PhoneNumber> query = queryFactory.select(phoneNumber);
         query.from(phoneNumber);
         query.where(phoneNumber.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       case User.TABLE_NAME: {
         JPAQuery<User> query = queryFactory.select(user);
         query.from(user);
         query.where(user.id.eq(id));
-        return query.fetchOne();
+        return Optional.ofNullable(query.fetchOne());
       }
       default:
         throw new AssertionError("Record type " + tableName + " not covered in switch");
@@ -364,20 +365,20 @@ public class ActivityService {
    * @return description of activity
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public String description(Activity activity, Locale locale) {
+  public Optional<String> description(Activity activity, Locale locale) {
     if (activity == null || locale == null) {
-      return null;
+      return Optional.empty();
     }
 
     AppResources resources = new AppResources(ActivityService.class, locale);
     StringBuilder builder = new StringBuilder();
-    Object record = record(activity.getTableName(), activity.getRecordId());
+    Object record = record(activity.getTableName(), activity.getRecordId()).orElse(null);
     String name = record instanceof Named ? ((Named) record).getName() : "";
     builder.append(resources.message("activity", activity.getActionType().ordinal(),
         activity.getTableName(), name, activity.getRecordId()));
     if (activity.getUpdates() != null) {
       for (UpdateActivity update : activity.getUpdates()) {
-        Object updateRecord = record(update.getTableName(), update.getRecordId());
+        Object updateRecord = record(update.getTableName(), update.getRecordId()).orElse(null);
         String updateName = updateRecord instanceof Named ? ((Named) updateRecord).getName() : "";
         builder.append("\n");
         builder.append(resources.message("update", update.getActionType().ordinal(),
@@ -385,7 +386,7 @@ public class ActivityService {
             update.getOldValue(), update.getNewValue()));
       }
     }
-    return builder.toString();
+    return Optional.of(builder.toString());
   }
 
   /**

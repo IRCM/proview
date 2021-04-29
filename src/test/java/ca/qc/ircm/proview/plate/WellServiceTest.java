@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.plate;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
@@ -40,7 +40,7 @@ public class WellServiceTest {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void get() throws Exception {
-    Well well = service.get(129L);
+    Well well = service.get(129L).orElse(null);
 
     assertEquals((Long) 129L, well.getId());
     assertEquals((Long) 26L, well.getPlate().getId());
@@ -54,9 +54,7 @@ public class WellServiceTest {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void get_Null() throws Exception {
-    Well well = service.get(null);
-
-    assertNull(well);
+    assertFalse(service.get(null).isPresent());
   }
 
   @Test(expected = AccessDeniedException.class)

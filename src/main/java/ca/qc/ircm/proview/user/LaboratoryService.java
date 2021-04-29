@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,14 +48,13 @@ public class LaboratoryService {
    *          database identifier of user
    * @return user
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
-  public Laboratory get(Long id) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
+  public Optional<Laboratory> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    Laboratory laboratory = repository.findById(id).orElse(null);
-    return laboratory;
+    return repository.findById(id);
   }
 
   /**

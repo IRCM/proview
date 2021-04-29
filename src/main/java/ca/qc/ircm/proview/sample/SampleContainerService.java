@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,13 +43,13 @@ public class SampleContainerService {
    *          database identifier of sample container
    * @return sample container
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject.sample, 'read')")
-  public SampleContainer get(Long id) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get().sample, 'read')")
+  public Optional<SampleContainer> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 
   /**
@@ -59,9 +60,9 @@ public class SampleContainerService {
    * @return last sample container in which sample was
    */
   @PreAuthorize("hasPermission(#sample, 'read')")
-  public SampleContainer last(Sample sample) {
+  public Optional<SampleContainer> last(Sample sample) {
     if (sample == null) {
-      return null;
+      return Optional.empty();
     }
 
     return repository.findFirstBySampleOrderByTimestampDesc(sample);

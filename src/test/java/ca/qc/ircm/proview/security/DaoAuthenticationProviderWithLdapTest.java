@@ -32,6 +32,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,7 +99,7 @@ public class DaoAuthenticationProviderWithLdapTest {
   @Test
   public void authenticate_LdapSuccess() throws Throwable {
     when(ldapConfiguration.isEnabled()).thenReturn(true);
-    when(ldapService.getUsername(any())).thenReturn("frobert");
+    when(ldapService.getUsername(any())).thenReturn(Optional.of("frobert"));
     when(ldapService.isPasswordValid(any(), any())).thenReturn(true);
 
     Authentication authentication =
@@ -116,7 +117,7 @@ public class DaoAuthenticationProviderWithLdapTest {
   @Test
   public void authenticate_LdapFail() throws Throwable {
     when(ldapConfiguration.isEnabled()).thenReturn(true);
-    when(ldapService.getUsername(any())).thenReturn("frobert");
+    when(ldapService.getUsername(any())).thenReturn(Optional.of("frobert"));
 
     Authentication authentication =
         new UsernamePasswordAuthenticationToken("christian.poitras@ircm.qc.ca", "test");
@@ -138,7 +139,7 @@ public class DaoAuthenticationProviderWithLdapTest {
   @Test
   public void authenticate_LdapFailPasswordEncoderSuccess() throws Throwable {
     when(ldapConfiguration.isEnabled()).thenReturn(true);
-    when(ldapService.getUsername(any())).thenReturn("frobert");
+    when(ldapService.getUsername(any())).thenReturn(Optional.of("frobert"));
 
     Authentication authentication =
         new UsernamePasswordAuthenticationToken("christian.poitras@ircm.qc.ca", "password");
@@ -153,6 +154,7 @@ public class DaoAuthenticationProviderWithLdapTest {
   @Test
   public void authenticate_NotAnLdapUser() throws Throwable {
     when(ldapConfiguration.isEnabled()).thenReturn(true);
+    when(ldapService.getUsername(any())).thenReturn(Optional.empty());
 
     Authentication authentication =
         new UsernamePasswordAuthenticationToken("christian.poitras@ircm.qc.ca", "test");

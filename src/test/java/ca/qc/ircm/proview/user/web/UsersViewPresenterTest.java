@@ -60,6 +60,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,7 +91,8 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<ComponentEventListener<SavedEvent<UserDialog>>> userSavedListenerCaptor;
   @Captor
-  private ArgumentCaptor<ComponentEventListener<SavedEvent<LaboratoryDialog>>> laboratorySavedListenerCaptor;
+  private ArgumentCaptor<
+      ComponentEventListener<SavedEvent<LaboratoryDialog>>> laboratorySavedListenerCaptor;
   @Autowired
   private UserRepository repository;
   @Autowired
@@ -120,7 +122,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     when(service.all(any(), any(Laboratory.class))).thenReturn(users);
     when(service.all(any())).thenReturn(users);
     currentUser = repository.findById(2L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(currentUser);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(currentUser));
   }
 
   @Test
@@ -292,10 +294,22 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     User user = mock(User.class);
     when(user.getId()).thenReturn(2L);
     User databaseUser = repository.findById(2L).orElse(null);
-    when(service.get(any(Long.class))).thenReturn(databaseUser);
+    when(service.get(any(Long.class))).thenReturn(Optional.of(databaseUser));
     presenter.view(user);
     verify(service).get(2L);
     verify(view.dialog).setUser(databaseUser);
+    verify(view.dialog).open();
+  }
+
+  @Test
+  public void view_Empty() {
+    presenter.init(view);
+    User user = mock(User.class);
+    when(user.getId()).thenReturn(2L);
+    when(service.get(any(Long.class))).thenReturn(Optional.empty());
+    presenter.view(user);
+    verify(service).get(2L);
+    verify(view.dialog).setUser(null);
     verify(view.dialog).open();
   }
 
@@ -305,10 +319,22 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     Laboratory laboratory = mock(Laboratory.class);
     when(laboratory.getId()).thenReturn(2L);
     Laboratory databaseLaboratory = laboratoryRepository.findById(2L).orElse(null);
-    when(laboratoryService.get(any(Long.class))).thenReturn(databaseLaboratory);
+    when(laboratoryService.get(any(Long.class))).thenReturn(Optional.of(databaseLaboratory));
     presenter.view(laboratory);
     verify(laboratoryService).get(2L);
     verify(view.laboratoryDialog).setLaboratory(databaseLaboratory);
+    verify(view.laboratoryDialog).open();
+  }
+
+  @Test
+  public void view_EmptyLaboratory() {
+    presenter.init(view);
+    Laboratory laboratory = mock(Laboratory.class);
+    when(laboratory.getId()).thenReturn(2L);
+    when(laboratoryService.get(any(Long.class))).thenReturn(Optional.empty());
+    presenter.view(laboratory);
+    verify(laboratoryService).get(2L);
+    verify(view.laboratoryDialog).setLaboratory(null);
     verify(view.laboratoryDialog).open();
   }
 

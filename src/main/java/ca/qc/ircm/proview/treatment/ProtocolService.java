@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.treatment;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -45,12 +46,12 @@ public class ProtocolService {
    * @return protocol
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public Protocol get(Long id) {
+  public Optional<Protocol> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 
   /**

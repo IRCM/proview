@@ -64,7 +64,7 @@ public class UserViewPresenter {
 
   void setParameter(Long parameter) {
     if (parameter != null) {
-      view.form.setUser(service.get(parameter));
+      view.form.setUser(service.get(parameter).orElse(null));
     }
   }
 }

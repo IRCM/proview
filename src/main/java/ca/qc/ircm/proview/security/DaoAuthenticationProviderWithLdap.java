@@ -77,7 +77,7 @@ public class DaoAuthenticationProviderWithLdap extends DaoAuthenticationProvider
 
   private User getUser(UserDetails userDetails) {
     String email = userDetails.getUsername();
-    return userRepository.findByEmail(email);
+    return userRepository.findByEmail(email).orElse(null);
   }
 
   private boolean accountLocked(User user) {
@@ -91,8 +91,8 @@ public class DaoAuthenticationProviderWithLdap extends DaoAuthenticationProvider
 
   private boolean isLdapPasswordValid(UserDetails userDetails, String password) {
     String email = userDetails.getUsername();
-    String username = ldapService.getUsername(email);
-    return username != null && ldapService.isPasswordValid(username, password);
+    return ldapService.getUsername(email)
+        .map(username -> ldapService.isPasswordValid(username, password)).orElse(false);
   }
 
   private void resetSignAttemps(User user) {

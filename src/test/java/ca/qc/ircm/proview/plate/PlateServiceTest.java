@@ -94,7 +94,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get() throws Exception {
-    Plate plate = service.get(26L);
+    Plate plate = service.get(26L).orElse(null);
 
     verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
     assertEquals((Long) 26L, plate.getId());
@@ -117,16 +117,14 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_NullId() throws Exception {
-    Plate plate = service.get((Long) null);
-
-    assertNull(plate);
+    assertFalse(service.get((Long) null).isPresent());
   }
 
   @Test
   public void get_Submission() throws Exception {
     Submission submission = new Submission(163L);
 
-    Plate plate = service.get(submission);
+    Plate plate = service.get(submission).orElse(null);
 
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(READ));
     assertEquals((Long) 123L, plate.getId());
@@ -136,15 +134,13 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_NullSubmission() throws Exception {
-    Plate plate = service.get((Submission) null);
-
-    assertNull(plate);
+    assertFalse(service.get((Submission) null).isPresent());
   }
 
   @Test
   public void nameAvailable_ProteomicTrue() throws Exception {
     User user = new User(1L);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
 
     boolean available = service.nameAvailable("unit_test");
@@ -155,7 +151,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_ProteomicFalse() throws Exception {
     User user = new User(1L);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
 
     boolean available = service.nameAvailable("A_20111108");
@@ -166,7 +162,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_SubmissionTrue() throws Exception {
     User user = new User(10L);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(false);
 
     boolean available = service.nameAvailable("unit_test");
@@ -177,7 +173,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_SubmissionFalse() throws Exception {
     User user = new User(10L);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(false);
 
     boolean available = service.nameAvailable("Andrew-20171108");
@@ -188,7 +184,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_OtherUser() throws Exception {
     User user = new User(3L);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(false);
 
     boolean available = service.nameAvailable("Andrew-20171108");
@@ -199,7 +195,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_ProteomicNull() throws Exception {
     User user = new User(1L);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
 
     boolean available = service.nameAvailable(null);
@@ -210,7 +206,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_SubmissionNull() throws Exception {
     User user = new User(3L);
-    when(authorizationService.getCurrentUser()).thenReturn(user);
+    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
     when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(false);
 
     boolean available = service.nameAvailable(null);
@@ -267,21 +263,23 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @WithMockUser(authorities = UserRole.ADMIN)
   public void lastTreatmentOrAnalysisDate() {
     assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34),
-        service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null)));
+        service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null)).orElse(null));
     assertEquals(LocalDateTime.of(2014, 10, 15, 15, 53, 34),
-        service.lastTreatmentOrAnalysisDate(repository.findById(115L).orElse(null)));
+        service.lastTreatmentOrAnalysisDate(repository.findById(115L).orElse(null)).orElse(null));
     assertEquals(LocalDateTime.of(2014, 10, 17, 11, 54, 22),
-        service.lastTreatmentOrAnalysisDate(repository.findById(118L).orElse(null)));
+        service.lastTreatmentOrAnalysisDate(repository.findById(118L).orElse(null)).orElse(null));
     assertEquals(LocalDateTime.of(2014, 10, 22, 9, 57, 18),
-        service.lastTreatmentOrAnalysisDate(repository.findById(121L).orElse(null)));
-    assertNull(service.lastTreatmentOrAnalysisDate(repository.findById(122L).orElse(null)));
-    assertNull(service.lastTreatmentOrAnalysisDate(repository.findById(123L).orElse(null)));
+        service.lastTreatmentOrAnalysisDate(repository.findById(121L).orElse(null)).orElse(null));
+    assertFalse(
+        service.lastTreatmentOrAnalysisDate(repository.findById(122L).orElse(null)).isPresent());
+    assertFalse(
+        service.lastTreatmentOrAnalysisDate(repository.findById(123L).orElse(null)).isPresent());
   }
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void lastTreatmentOrAnalysisDate_Null() {
-    assertNull(service.lastTreatmentOrAnalysisDate(null));
+    assertFalse(service.lastTreatmentOrAnalysisDate(null).isPresent());
   }
 
   @Test(expected = AccessDeniedException.class)
@@ -309,7 +307,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     verify(plateActivityService).insert(plate);
     verify(activityService).insert(activity);
     assertNotNull(plate.getId());
-    plate = service.get(plate.getId());
+    plate = service.get(plate.getId()).get();
     assertEquals("test_plate_4896415", plate.getName());
   }
 
@@ -346,7 +344,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     verify(plateActivityService).update(plate);
     verify(activityService).insert(activity);
     assertNotNull(plate.getId());
-    plate = service.get(plate.getId());
+    plate = service.get(plate.getId()).get();
     assertEquals("test_plate_4896415", plate.getName());
   }
 
@@ -404,7 +402,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(plateActivityService).ban(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    List<Well> bannedWells = service.get(plate.getId()).wells(from, to);
+    List<Well> bannedWells = service.get(plate.getId()).get().wells(from, to);
     for (Well bannedWell : bannedWells) {
       Well well = wellRepository.findById(bannedWell.getId()).orElse(null);
       assertEquals(true, well.isBanned());

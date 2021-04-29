@@ -30,6 +30,7 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,13 +65,25 @@ public class PrintSubmissionsViewPresenterTest {
   @Test
   public void setParameter() {
     Long parameter = 12L;
-    when(service.get(any())).thenReturn(submission);
+    when(service.get(any())).thenReturn(Optional.of(submission));
 
     presenter.setParameter(parameter);
 
     verify(service).get(parameter);
     assertEquals(submission, presenter.getSubmission());
     verify(view.printContent).setSubmission(submission);
+  }
+
+  @Test
+  public void setParameter_EmptySubmission() {
+    Long parameter = 12L;
+    when(service.get(any())).thenReturn(Optional.empty());
+
+    presenter.setParameter(parameter);
+
+    verify(service).get(parameter);
+    assertNull(presenter.getSubmission());
+    verify(view.printContent).setSubmission(null);
   }
 
   @Test

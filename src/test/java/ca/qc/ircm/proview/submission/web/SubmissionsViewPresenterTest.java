@@ -66,6 +66,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,10 +99,12 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   private ArgumentCaptor<DataProvider<Submission, ?>> dataProviderCaptor;
   @Captor
   @SuppressWarnings("checkstyle:linelength")
-  private ArgumentCaptor<ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
+  private ArgumentCaptor<
+      ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
   @Captor
   @SuppressWarnings("checkstyle:linelength")
-  private ArgumentCaptor<ComponentEventListener<SavedEvent<SamplesStatusDialog>>> statusSavedListenerCaptor;
+  private ArgumentCaptor<
+      ComponentEventListener<SavedEvent<SamplesStatusDialog>>> statusSavedListenerCaptor;
   private List<Submission> submissions;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(SubmissionsView.class, locale);
@@ -297,12 +300,24 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   public void view() {
     presenter.init(view);
     Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(32L);
+    Submission databaseSubmission = repository.findById(32L).get();
+    when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
+    presenter.view(submission);
+    verify(service).get(32L);
+    verify(view.dialog).setSubmission(databaseSubmission);
+    verify(view.dialog).open();
+  }
+
+  @Test
+  public void view_Empty() {
+    presenter.init(view);
+    Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);
-    Submission databaseSubmission = repository.findById(2L).orElse(null);
-    when(service.get(any(Long.class))).thenReturn(databaseSubmission);
+    when(service.get(any(Long.class))).thenReturn(Optional.empty());
     presenter.view(submission);
     verify(service).get(2L);
-    verify(view.dialog).setSubmission(databaseSubmission);
+    verify(view.dialog).setSubmission(null);
     verify(view.dialog).open();
   }
 
@@ -310,9 +325,9 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   public void editStatus_User() {
     presenter.init(view);
     Submission submission = mock(Submission.class);
-    when(submission.getId()).thenReturn(2L);
-    Submission databaseSubmission = repository.findById(2L).orElse(null);
-    when(service.get(any(Long.class))).thenReturn(databaseSubmission);
+    when(submission.getId()).thenReturn(32L);
+    Submission databaseSubmission = repository.findById(32L).get();
+    when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
     presenter.editStatus(submission);
     verify(service, never()).get(any());
     verify(view.statusDialog, never()).setSubmission(any());
@@ -325,12 +340,26 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     when(authorizationService.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(32L);
+    Submission databaseSubmission = repository.findById(32L).get();
+    when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
+    presenter.editStatus(submission);
+    verify(service).get(32L);
+    verify(view.statusDialog).setSubmission(databaseSubmission);
+    verify(view.statusDialog).open();
+  }
+
+  @Test
+  public void editStatus_AdminEmpty() {
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    presenter.init(view);
+    Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);
-    Submission databaseSubmission = repository.findById(2L).orElse(null);
-    when(service.get(any(Long.class))).thenReturn(databaseSubmission);
+    when(service.get(any(Long.class))).thenReturn(Optional.empty());
     presenter.editStatus(submission);
     verify(service).get(2L);
-    verify(view.statusDialog).setSubmission(databaseSubmission);
+    verify(view.statusDialog).setSubmission(null);
     verify(view.statusDialog).open();
   }
 
@@ -392,12 +421,12 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     when(authorizationService.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
-    when(submission.getId()).thenReturn(2L);
+    when(submission.getId()).thenReturn(32L);
     when(view.submissions.getSelectedItems()).thenReturn(Collections.singleton(submission));
-    Submission databaseSubmission = repository.findById(2L).orElse(null);
-    when(service.get(any(Long.class))).thenReturn(databaseSubmission);
+    Submission databaseSubmission = repository.findById(32L).get();
+    when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
     presenter.editSelectedStatus(locale);
-    verify(service).get(2L);
+    verify(service).get(32L);
     verify(view.statusDialog).setSubmission(databaseSubmission);
     verify(view.statusDialog).open();
     verify(view, never()).showNotification(any());
@@ -405,6 +434,22 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void editSelectedStatus_Empty() {
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    presenter.init(view);
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(2L);
+    when(view.submissions.getSelectedItems()).thenReturn(Collections.singleton(submission));
+    when(service.get(any(Long.class))).thenReturn(Optional.empty());
+    presenter.editSelectedStatus(locale);
+    verify(service).get(2L);
+    verify(view.statusDialog).setSubmission(null);
+    verify(view.statusDialog).open();
+    verify(view, never()).showNotification(any());
+  }
+
+  @Test
+  public void editSelectedStatus_NoSelection() {
     when(authorizationService.hasRole(any())).thenReturn(true);
     when(authorizationService.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);

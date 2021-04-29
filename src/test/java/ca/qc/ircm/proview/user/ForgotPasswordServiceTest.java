@@ -71,7 +71,11 @@ public class ForgotPasswordServiceTest {
   @MockBean
   private PasswordEncoder passwordEncoder;
   @Mock
+  private ForgotPasswordWebContext forgotPasswordWebContext;
+  @Mock
   private MimeMessageHelper email;
+  @Captor
+  private ArgumentCaptor<ForgotPassword> forgotPasswordCaptor;
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   private String hashedPassword;
@@ -94,18 +98,14 @@ public class ForgotPasswordServiceTest {
     hashedPassword = "da78f3a74658706/4ae8470fc73a83f369fed012";
     when(passwordEncoder.encode(any(String.class))).thenReturn(hashedPassword);
     when(emailService.htmlEmail()).thenReturn(email);
+    when(forgotPasswordWebContext.getChangeForgottenPasswordUrl(any(), any()))
+        .thenReturn(forgotPasswordUrl);
     confirmNumber = "70987756";
-  }
-
-  private ForgotPasswordWebContext forgotPasswordWebContext() {
-    return (forgotPassword, locale) -> forgotPasswordUrl;
   }
 
   @Test
   public void get() throws Exception {
-    ForgotPassword forgotPassword = service.get(9L, "174407008");
-
-    forgotPassword = service.get(forgotPassword.getId(), forgotPassword.getConfirmNumber());
+    ForgotPassword forgotPassword = service.get(9L, "174407008").get();
 
     assertEquals((Long) 9L, forgotPassword.getId());
     assertEquals("174407008", forgotPassword.getConfirmNumber());
@@ -117,37 +117,27 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void get_Expired() throws Exception {
-    ForgotPassword forgotPassword = service.get(7L, "803369922");
-
-    assertNull(forgotPassword);
+    assertFalse(service.get(7L, "803369922").isPresent());
   }
 
   @Test
   public void get_Invalid() throws Exception {
-    ForgotPassword forgotPassword = service.get(20L, "435FA");
-
-    assertNull(forgotPassword);
+    assertFalse(service.get(20L, "435FA").isPresent());
   }
 
   @Test
   public void get_NullId() throws Exception {
-    ForgotPassword forgotPassword = service.get(null, confirmNumber);
-
-    assertNull(forgotPassword);
+    assertFalse(service.get(null, confirmNumber).isPresent());
   }
 
   @Test
   public void get_NullConfirmNumber() throws Exception {
-    ForgotPassword forgotPassword = service.get(7L, null);
-
-    assertNull(forgotPassword);
+    assertFalse(service.get(7L, null).isPresent());
   }
 
   @Test
   public void get_Used() throws Exception {
-    ForgotPassword forgotPassword = service.get(10L, "460559412");
-
-    assertNull(forgotPassword);
+    assertFalse(service.get(10L, "460559412").isPresent());
   }
 
   @Test
@@ -155,7 +145,7 @@ public class ForgotPasswordServiceTest {
     user = userRepository.findById(1L).orElse(null);
 
     try {
-      service.insert(user.getEmail(), forgotPasswordWebContext());
+      service.insert(user.getEmail(), forgotPasswordWebContext);
       fail("Expected AccessDeniedException");
     } catch (AccessDeniedException e) {
       // Ignore.
@@ -164,9 +154,12 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void insert() throws Exception {
-    ForgotPassword forgotPassword = service.insert(user.getEmail(), forgotPasswordWebContext());
+    service.insert(user.getEmail(), forgotPasswordWebContext);
 
     repository.flush();
+    verify(forgotPasswordWebContext).getChangeForgottenPasswordUrl(forgotPasswordCaptor.capture(),
+        any());
+    ForgotPassword forgotPassword = forgotPasswordCaptor.getValue();
     assertNotNull(forgotPassword.getId());
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
@@ -192,7 +185,7 @@ public class ForgotPasswordServiceTest {
     user.setLocale(locale);
     userRepository.save(user);
 
-    service.insert(user.getEmail(), forgotPasswordWebContext());
+    service.insert(user.getEmail(), forgotPasswordWebContext);
 
     repository.flush();
     verify(emailService).htmlEmail();
@@ -224,7 +217,7 @@ public class ForgotPasswordServiceTest {
     service.updatePassword(forgotPassword, "abc");
 
     repository.flush();
-    assertNull(service.get(forgotPassword.getId(), forgotPassword.getConfirmNumber()));
+    assertFalse(service.get(forgotPassword.getId(), forgotPassword.getConfirmNumber()).isPresent());
     verify(passwordEncoder).encode("abc");
     User user = forgotPassword.getUser();
     assertEquals(hashedPassword, user.getHashedPassword());

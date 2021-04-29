@@ -101,8 +101,8 @@ public class UserFormPresenter {
     if (authorizationService.hasRole(UserRole.ADMIN)) {
       laboratoriesDataProvider = DataProvider.ofCollection(laboratoryService.all());
     } else {
-      laboratoriesDataProvider =
-          DataProvider.fromStream(Stream.of(authorizationService.getCurrentUser().getLaboratory()));
+      laboratoriesDataProvider = DataProvider
+          .fromStream(Stream.of(authorizationService.getCurrentUser().get().getLaboratory()));
     }
     form.laboratory.setDataProvider(laboratoriesDataProvider);
     form.laboratory.setRequiredIndicatorVisible(true);
@@ -242,7 +242,8 @@ public class UserFormPresenter {
       form.laboratory.setValue(laboratoriesDataProvider.getItems().stream()
           .filter(lab -> lab.getId().equals(laboratory.getId())).findAny()
           .orElse(laboratoriesDataProvider.getItems().iterator().next()));
-      user.setLaboratory(laboratoryService.get(form.laboratory.getValue().getId()));
+      user.setLaboratory(
+          laboratoryService.get(form.laboratory.getValue().getId()).orElse(new Laboratory()));
     }
     if (user.getAddress() == null) {
       user.setAddress(defaultAddressConfiguration.getAddress());

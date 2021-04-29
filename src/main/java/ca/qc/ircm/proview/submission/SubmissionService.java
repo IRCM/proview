@@ -96,13 +96,13 @@ public class SubmissionService {
    *          database identifier of submission
    * @return submission
    */
-  @PostAuthorize("returnObject == null || hasPermission(returnObject, 'read')")
-  public Submission get(Long id) {
+  @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
+  public Optional<Submission> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 
   /**
@@ -153,7 +153,7 @@ public class SubmissionService {
   }
 
   private void initializeAllQuery(JPAQuery<?> query) {
-    final User currentUser = authorizationService.getCurrentUser();
+    final User currentUser = authorizationService.getCurrentUser().get();
     final Laboratory currentLaboratory = currentUser.getLaboratory();
 
     query.from(submission);
@@ -215,7 +215,7 @@ public class SubmissionService {
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
   public void insert(Submission submission) {
-    User user = authorizationService.getCurrentUser();
+    User user = authorizationService.getCurrentUser().get();
     Laboratory laboratory = user.getLaboratory();
 
     submission.setLaboratory(laboratory);

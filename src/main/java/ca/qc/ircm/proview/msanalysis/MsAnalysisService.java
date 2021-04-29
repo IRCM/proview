@@ -27,6 +27,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -54,12 +55,12 @@ public class MsAnalysisService {
    * @return MS analysis
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public MsAnalysis get(Long id) {
+  public Optional<MsAnalysis> get(Long id) {
     if (id == null) {
-      return null;
+      return Optional.empty();
     }
 
-    return repository.findById(id).orElse(null);
+    return repository.findById(id);
   }
 
   /**
