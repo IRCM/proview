@@ -30,7 +30,6 @@ public class MailConfigurationSpringBoot implements MailConfiguration {
   @Value("${spring.application.name}")
   private String applicationName;
   private boolean enabled;
-  private String host;
   private String from;
   private String to;
 
