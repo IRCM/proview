@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
@@ -89,6 +90,9 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
       "<vaadin-button class='" + ACTIVE + "' theme$='[[item.activeTheme]]' on-click='toggleActive'>"
           + "<iron-icon icon$='[[item.activeIcon]]' slot='prefix'></iron-icon>"
           + "[[item.activeValue]]" + "</vaadin-button>";
+  public static final String EDIT_BUTTON =
+      "<vaadin-button class='" + EDIT + "' theme='icon' on-click='edit'>"
+          + "<iron-icon icon='vaadin:edit' slot='prefix'></iron-icon>" + "</vaadin-button>";
   private static final long serialVersionUID = 1051684045824404864L;
   private static final Logger logger = LoggerFactory.getLogger(UsersView.class);
   protected H2 header = new H2();
@@ -97,6 +101,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected Column<User> name;
   protected Column<User> laboratory;
   protected Column<User> active;
+  protected Column<User> edit;
   protected TextField emailFilter = new TextField();
   protected TextField nameFilter = new TextField();
   protected TextField laboratoryFilter = new TextField();
@@ -127,6 +132,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     setSizeFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     add(header, users, error, buttonsLayout, switchUserForm);
+    expand(users);
     buttonsLayout.add(add, switchUser);
     header.setId(HEADER);
     users.setId(USERS);
@@ -138,12 +144,13 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
       }
     });
     email = users.addColumn(user -> user.getEmail(), EMAIL).setKey(EMAIL)
-        .setComparator(NormalizedComparator.of(user -> user.getEmail()));
+        .setComparator(NormalizedComparator.of(user -> user.getEmail())).setFlexGrow(3);
     name = users.addColumn(user -> user.getName(), NAME).setKey(NAME)
-        .setComparator(NormalizedComparator.of(user -> user.getName()));
+        .setComparator(NormalizedComparator.of(user -> user.getName())).setFlexGrow(3);
     laboratory =
         users.addColumn(user -> user.getLaboratory().getName(), LABORATORY).setKey(LABORATORY)
-            .setComparator(NormalizedComparator.of(user -> user.getLaboratory().getName()));
+            .setComparator(NormalizedComparator.of(user -> user.getLaboratory().getName()))
+            .setFlexGrow(3);
     active = users.addColumn(TemplateRenderer.<User>of(ACTIVE_BUTTON)
         .withProperty("activeTheme", user -> activeTheme(user))
         .withProperty("activeValue", user -> activeValue(user))
@@ -153,6 +160,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
           users.getDataProvider().refreshItem(user);
         }), ACTIVE).setKey(ACTIVE)
         .setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
+    edit = users.addColumn(TemplateRenderer.<User>of(EDIT_BUTTON).withEventHandler("edit",
+        user -> presenter.view(user)), EDIT).setKey(EDIT).setSortable(false).setFlexGrow(0);
     users.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = users.appendHeaderRow();
     filtersRow.getCell(email).setComponent(emailFilter);
@@ -210,6 +219,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     laboratory.setHeader(laboratoryHeader).setFooter(laboratoryHeader);
     String activeHeader = userResources.message(ACTIVE);
     active.setHeader(activeHeader).setFooter(activeHeader);
+    String editHeader = webResources.message(EDIT);
+    edit.setHeader(editHeader).setFooter(editHeader);
     emailFilter.setPlaceholder(webResources.message(ALL));
     nameFilter.setPlaceholder(webResources.message(ALL));
     laboratoryFilter.setPlaceholder(webResources.message(ALL));

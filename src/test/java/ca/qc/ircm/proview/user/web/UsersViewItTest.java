@@ -123,6 +123,16 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
+  public void edit_Button() throws Throwable {
+    open();
+    UsersViewElement view = $(UsersViewElement.class).id(ID);
+
+    view.edit(0).click();
+
+    assertTrue(view.dialog().isOpen());
+  }
+
+  @Test
   public void add() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(ID);

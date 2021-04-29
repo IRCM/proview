@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
 import static ca.qc.ircm.proview.Constants.FRENCH;
@@ -37,6 +38,7 @@ import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.user.web.UsersView.ACTIVE_BUTTON;
 import static ca.qc.ircm.proview.user.web.UsersView.ADD;
+import static ca.qc.ircm.proview.user.web.UsersView.EDIT_BUTTON;
 import static ca.qc.ircm.proview.user.web.UsersView.HEADER;
 import static ca.qc.ircm.proview.user.web.UsersView.ID;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
@@ -48,7 +50,10 @@ import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -132,22 +137,32 @@ public class UsersViewTest extends AbstractViewTestCase {
     when(view.email.setKey(any())).thenReturn(view.email);
     when(view.email.setComparator(any(Comparator.class))).thenReturn(view.email);
     when(view.email.setHeader(any(String.class))).thenReturn(view.email);
+    when(view.email.setFlexGrow(anyInt())).thenReturn(view.email);
     view.name = mock(Column.class);
     when(view.users.addColumn(any(ValueProvider.class), eq(NAME))).thenReturn(view.name);
     when(view.name.setKey(any())).thenReturn(view.name);
     when(view.name.setComparator(any(Comparator.class))).thenReturn(view.name);
     when(view.name.setHeader(any(String.class))).thenReturn(view.name);
+    when(view.name.setFlexGrow(anyInt())).thenReturn(view.name);
     view.laboratory = mock(Column.class);
     when(view.users.addColumn(any(ValueProvider.class), eq(LABORATORY)))
         .thenReturn(view.laboratory);
     when(view.laboratory.setKey(any())).thenReturn(view.laboratory);
     when(view.laboratory.setComparator(any(Comparator.class))).thenReturn(view.laboratory);
     when(view.laboratory.setHeader(any(String.class))).thenReturn(view.laboratory);
+    when(view.laboratory.setFlexGrow(anyInt())).thenReturn(view.laboratory);
     view.active = mock(Column.class);
     when(view.users.addColumn(any(TemplateRenderer.class), eq(ACTIVE))).thenReturn(view.active);
     when(view.active.setKey(any())).thenReturn(view.active);
     when(view.active.setComparator(any(Comparator.class))).thenReturn(view.active);
     when(view.active.setHeader(any(String.class))).thenReturn(view.active);
+    when(view.active.setFlexGrow(anyInt())).thenReturn(view.active);
+    view.edit = mock(Column.class);
+    when(view.users.addColumn(any(TemplateRenderer.class), eq(EDIT))).thenReturn(view.edit);
+    when(view.edit.setKey(any())).thenReturn(view.edit);
+    when(view.edit.setSortable(anyBoolean())).thenReturn(view.edit);
+    when(view.edit.setFlexGrow(anyInt())).thenReturn(view.edit);
+    when(view.edit.setHeader(any(String.class))).thenReturn(view.edit);
     HeaderRow filtersRow = mock(HeaderRow.class);
     when(view.users.appendHeaderRow()).thenReturn(filtersRow);
     HeaderCell emailFilterCell = mock(HeaderCell.class);
@@ -197,6 +212,8 @@ public class UsersViewTest extends AbstractViewTestCase {
     verify(view.laboratory).setFooter(userResources.message(LABORATORY));
     verify(view.active).setHeader(userResources.message(ACTIVE));
     verify(view.active).setFooter(userResources.message(ACTIVE));
+    verify(view.edit).setHeader(webResources.message(EDIT));
+    verify(view.edit).setFooter(webResources.message(EDIT));
     assertEquals(webResources.message(ALL), view.emailFilter.getPlaceholder());
     assertEquals(webResources.message(ALL), view.nameFilter.getPlaceholder());
     assertEquals(webResources.message(ALL), view.laboratoryFilter.getPlaceholder());
@@ -233,6 +250,8 @@ public class UsersViewTest extends AbstractViewTestCase {
     verify(view.laboratory).setFooter(userResources.message(LABORATORY));
     verify(view.active).setHeader(userResources.message(ACTIVE));
     verify(view.active).setFooter(userResources.message(ACTIVE));
+    verify(view.edit).setHeader(webResources.message(EDIT));
+    verify(view.edit).setFooter(webResources.message(EDIT));
     assertEquals(webResources.message(ALL), view.emailFilter.getPlaceholder());
     assertEquals(webResources.message(ALL), view.nameFilter.getPlaceholder());
     assertEquals(webResources.message(ALL), view.laboratoryFilter.getPlaceholder());
@@ -262,7 +281,7 @@ public class UsersViewTest extends AbstractViewTestCase {
 
   @Test
   public void users_Columns() {
-    assertEquals(4, view.users.getColumns().size());
+    assertEquals(5, view.users.getColumns().size());
     assertNotNull(view.users.getColumnByKey(EMAIL));
     assertTrue(view.users.getColumnByKey(EMAIL).isSortable());
     assertNotNull(view.users.getColumnByKey(NAME));
@@ -271,6 +290,8 @@ public class UsersViewTest extends AbstractViewTestCase {
     assertTrue(view.users.getColumnByKey(LABORATORY).isSortable());
     assertNotNull(view.users.getColumnByKey(ACTIVE));
     assertTrue(view.users.getColumnByKey(ACTIVE).isSortable());
+    assertNotNull(view.users.getColumnByKey(EDIT));
+    assertFalse(view.users.getColumnByKey(EDIT).isSortable());
   }
 
   @Test
@@ -347,6 +368,14 @@ public class UsersViewTest extends AbstractViewTestCase {
     assertTrue(comparator.compare(active(false), active(false)) == 0);
     assertTrue(comparator.compare(active(true), active(true)) == 0);
     assertTrue(comparator.compare(active(true), active(false)) > 0);
+    verify(view.users).addColumn(templateRendererCaptor.capture(), eq(EDIT));
+    templateRenderer = templateRendererCaptor.getValue();
+    for (User user : users) {
+      assertEquals(EDIT_BUTTON, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getEventHandlers().containsKey("edit"));
+      templateRenderer.getEventHandlers().get("edit").accept(user);
+      verify(presenter).view(user);
+    }
   }
 
   @Test

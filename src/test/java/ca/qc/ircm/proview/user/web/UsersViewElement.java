@@ -35,6 +35,7 @@ import org.openqa.selenium.By;
 public class UsersViewElement extends VerticalLayoutElement {
   private static final int EMAIL_COLUMN = 0;
   private static final int LABORATORY_COLUMN = 2;
+  private static final int EDIT_COLUMN = 4;
 
   public H2Element header() {
     return $(H2Element.class).id(HEADER);
@@ -54,6 +55,10 @@ public class UsersViewElement extends VerticalLayoutElement {
 
   public String email(int row) {
     return users().getCell(row, EMAIL_COLUMN).getText();
+  }
+
+  public ButtonElement edit(int row) {
+    return users().getCell(row, EDIT_COLUMN).$(ButtonElement.class).first();
   }
 
   public DivElement switchFailed() {
