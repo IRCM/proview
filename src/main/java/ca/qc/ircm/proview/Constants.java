@@ -47,6 +47,7 @@ public class Constants {
   public static final String ALL = "all";
   public static final String SAVE = "save";
   public static final String ADD = "add";
+  public static final String VIEW = "view";
   public static final String EDIT = "edit";
   public static final String PRINT = "print";
   public static final String UPLOAD = "upload";

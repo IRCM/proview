@@ -57,6 +57,11 @@ public class SubmissionsViewElement extends VerticalLayoutElement {
     return submissions().getCell(row, VISIBLE_COLUMN).$(ButtonElement.class).first();
   }
 
+  public ButtonElement view(int row) {
+    return submissions().getCell(row, submissions().getVisibleColumns().size() - 1)
+        .$(ButtonElement.class).first();
+  }
+
   public void clickVisible(int row) {
     visible(row).click();
   }

@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
@@ -41,6 +42,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_SPAN;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_BUTTON;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
@@ -222,6 +224,12 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(view.hidden.setSortProperty(any())).thenReturn(view.hidden);
     when(view.hidden.setComparator(any(Comparator.class))).thenReturn(view.hidden);
     when(view.hidden.setFlexGrow(anyInt())).thenReturn(view.hidden);
+    view.view = mock(Column.class);
+    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(VIEW))).thenReturn(view.view);
+    when(view.view.setKey(any())).thenReturn(view.view);
+    when(view.view.setHeader(any(String.class))).thenReturn(view.view);
+    when(view.view.setSortable(anyBoolean())).thenReturn(view.view);
+    when(view.view.setFlexGrow(anyInt())).thenReturn(view.view);
     HeaderRow filtersRow = mock(HeaderRow.class);
     when(view.submissions.appendHeaderRow()).thenReturn(filtersRow);
     HeaderCell experienceFilterCell = mock(HeaderCell.class);
@@ -292,6 +300,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.status).setFooter(submissionSampleResources.message(STATUS));
     verify(view.hidden).setHeader(submissionResources.message(HIDDEN));
     verify(view.hidden).setFooter(submissionResources.message(HIDDEN));
+    verify(view.view).setHeader(webResources.message(VIEW));
+    verify(view.view).setFooter(webResources.message(VIEW));
     assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
@@ -345,6 +355,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.status).setFooter(submissionSampleResources.message(STATUS));
     verify(view.hidden).setHeader(submissionResources.message(HIDDEN));
     verify(view.hidden).setFooter(submissionResources.message(HIDDEN));
+    verify(view.view).setHeader(webResources.message(VIEW));
+    verify(view.view).setFooter(webResources.message(VIEW));
     assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
@@ -375,7 +387,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
 
   @Test
   public void submissions_Columns() {
-    assertEquals(11, view.submissions.getColumns().size());
+    assertEquals(12, view.submissions.getColumns().size());
     assertNotNull(view.submissions.getColumnByKey(EXPERIMENT));
     assertTrue(view.submissions.getColumnByKey(EXPERIMENT).isSortable());
     assertNotNull(view.submissions.getColumnByKey(USER));
@@ -398,6 +410,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertFalse(view.submissions.getColumnByKey(STATUS).isSortable());
     assertNotNull(view.submissions.getColumnByKey(HIDDEN));
     assertTrue(view.submissions.getColumnByKey(HIDDEN).isSortable());
+    assertNotNull(view.submissions.getColumnByKey(VIEW));
+    assertFalse(view.submissions.getColumnByKey(VIEW).isSortable());
   }
 
   @Test
@@ -531,6 +545,14 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertTrue(comparator.compare(hidden(false), hidden(false)) == 0);
     assertTrue(comparator.compare(hidden(true), hidden(true)) == 0);
     assertTrue(comparator.compare(hidden(true), hidden(false)) > 0);
+    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(VIEW));
+    templateRenderer = templateRendererCaptor.getValue();
+    for (Submission submission : submissions) {
+      assertEquals(VIEW_BUTTON, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getEventHandlers().containsKey("view"));
+      templateRenderer.getEventHandlers().get("view").accept(submission);
+      verify(presenter).view(submission);
+    }
   }
 
   @Test

@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
@@ -101,6 +102,9 @@ public class SubmissionsView extends VerticalLayout
       "<vaadin-button class='" + HIDDEN + "' theme$='[[item.hiddenTheme]]' on-click='toggleHidden'>"
           + "<iron-icon icon$='[[item.hiddenIcon]]' slot='prefix'></iron-icon>"
           + "[[item.hiddenValue]]" + "</vaadin-button>";
+  public static final String VIEW_BUTTON =
+      "<vaadin-button class='" + VIEW + "' theme='icon' on-click='view'>"
+          + "<iron-icon icon='vaadin:eye' slot='prefix'></iron-icon>" + "</vaadin-button>";
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
   protected H2 header = new H2();
@@ -116,6 +120,7 @@ public class SubmissionsView extends VerticalLayout
   protected Column<Submission> samples;
   protected Column<Submission> status;
   protected Column<Submission> hidden;
+  protected Column<Submission> view;
   protected TextField experimentFilter = new TextField();
   protected TextField userFilter = new TextField();
   protected TextField directorFilter = new TextField();
@@ -215,6 +220,10 @@ public class SubmissionsView extends VerticalLayout
           submissions.getDataProvider().refreshItem(submission);
         }), HIDDEN).setKey(HIDDEN).setSortProperty(HIDDEN)
         .setComparator((s1, s2) -> Boolean.compare(s1.isHidden(), s2.isHidden()));
+    view = submissions
+        .addColumn(TemplateRenderer.<Submission>of(VIEW_BUTTON).withEventHandler("view",
+            submission -> presenter.view(submission)), VIEW)
+        .setKey(VIEW).setSortable(false).setFlexGrow(0);
     submissions.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = submissions.appendHeaderRow();
     filtersRow.getCell(experiment).setComponent(experimentFilter);
@@ -320,6 +329,7 @@ public class SubmissionsView extends VerticalLayout
     final AppResources laboratoryResources = new AppResources(Laboratory.class, getLocale());
     final AppResources submissionSampleResources =
         new AppResources(SubmissionSample.class, getLocale());
+    final AppResources webResources = new AppResources(Constants.class, getLocale());
     header.setText(resources.message(HEADER));
     String experimentHeader = submissionResources.message(EXPERIMENT);
     experiment.setHeader(experimentHeader).setFooter(experimentHeader);
@@ -343,6 +353,8 @@ public class SubmissionsView extends VerticalLayout
     status.setHeader(statusHeader).setFooter(statusHeader);
     String hiddenHeader = submissionResources.message(HIDDEN);
     hidden.setHeader(hiddenHeader).setFooter(hiddenHeader);
+    String viewHeader = webResources.message(VIEW);
+    view.setHeader(viewHeader).setFooter(viewHeader);
     experimentFilter.setPlaceholder(resources.message(ALL));
     userFilter.setPlaceholder(resources.message(ALL));
     directorFilter.setPlaceholder(resources.message(ALL));
