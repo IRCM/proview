@@ -32,6 +32,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -39,6 +40,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.text.NormalizedComparator;
@@ -128,14 +130,16 @@ public class SubmissionsView extends VerticalLayout
   protected Button editStatus = new Button();
   protected SubmissionDialog dialog;
   protected SamplesStatusDialog statusDialog;
+  private AuthorizationService authorizationService;
   private transient SubmissionsViewPresenter presenter;
 
   @Autowired
   protected SubmissionsView(SubmissionsViewPresenter presenter, SubmissionDialog dialog,
-      SamplesStatusDialog statusDialog) {
+      SamplesStatusDialog statusDialog, AuthorizationService authorizationService) {
     this.presenter = presenter;
     this.dialog = dialog;
     this.statusDialog = statusDialog;
+    this.authorizationService = authorizationService;
   }
 
   @PostConstruct
@@ -146,9 +150,10 @@ public class SubmissionsView extends VerticalLayout
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     buttonsLayout.add(add, editStatus);
     add(header, submissions, buttonsLayout);
+    expand(submissions);
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
-    submissions.setSizeFull();
+    submissions.setWidth(authorizationService.hasRole(ADMIN) ? "2500px" : "100%");
     submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
     submissions.addItemClickListener(e -> {
       if (e.isShiftKey() || e.isCtrlKey() || e.isMetaKey()) {
@@ -160,44 +165,47 @@ public class SubmissionsView extends VerticalLayout
     ValueProvider<Submission, String> submissionExperiment =
         submission -> Objects.toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
-        .setComparator(NormalizedComparator.of(Submission::getExperiment));
+        .setComparator(NormalizedComparator.of(Submission::getExperiment)).setFlexGrow(3);
     ValueProvider<Submission,
         String> submissionUser = submission -> submission.getUser() != null
             ? Objects.toString(submission.getUser().getName())
             : "";
     user = submissions.addColumn(submissionUser, USER).setKey(USER)
-        .setComparator(NormalizedComparator.of(s -> s.getUser().getName()));
+        .setComparator(NormalizedComparator.of(s -> s.getUser().getName())).setFlexGrow(3);
     ValueProvider<Submission, String> submissionDirector =
         submission -> Objects.toString(submission.getLaboratory().getDirector(), "");
     director = submissions.addColumn(submissionDirector, DIRECTOR).setKey(DIRECTOR)
-        .setComparator(NormalizedComparator.of(s -> s.getLaboratory().getDirector()));
+        .setComparator(NormalizedComparator.of(s -> s.getLaboratory().getDirector()))
+        .setFlexGrow(3);
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     dataAvailableDate =
         submissions.addColumn(submission -> submission.getDataAvailableDate() != null
             ? dateFormatter.format(submission.getDataAvailableDate())
-            : "", DATA_AVAILABLE_DATE).setKey(DATA_AVAILABLE_DATE);
+            : "", DATA_AVAILABLE_DATE).setKey(DATA_AVAILABLE_DATE).setFlexGrow(2);
     date = submissions.addColumn(submission -> submission.getSubmissionDate().toLocalDate() != null
         ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
-        : "", SUBMISSION_DATE).setKey(SUBMISSION_DATE);
-    instrument = submissions.addColumn(submission -> submission.getInstrument() != null
-        ? submission.getInstrument().getLabel(getLocale())
-        : MassDetectionInstrument.getNullLabel(getLocale()), INSTRUMENT).setKey(INSTRUMENT);
+        : "", SUBMISSION_DATE).setKey(SUBMISSION_DATE).setFlexGrow(2);
+    instrument = submissions
+        .addColumn(submission -> submission.getInstrument() != null
+            ? submission.getInstrument().getLabel(getLocale())
+            : MassDetectionInstrument.getNullLabel(getLocale()), INSTRUMENT)
+        .setKey(INSTRUMENT).setFlexGrow(2);
     service = submissions.addColumn(submission -> submission.getService() != null
         ? submission.getService().getLabel(getLocale())
-        : Service.getNullLabel(getLocale()), SERVICE).setKey(SERVICE);
+        : Service.getNullLabel(getLocale()), SERVICE).setKey(SERVICE).setFlexGrow(2);
     samplesCount =
         submissions.addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
-            .setKey(SAMPLES_COUNT);
+            .setKey(SAMPLES_COUNT).setFlexGrow(0);
     samples = submissions
         .addColumn(TemplateRenderer.<Submission>of(SAMPLES_SPAN)
             .withProperty("samplesValue", submission -> sampleNamesValue(submission))
             .withProperty("samplesTitle", submission -> sampleNamesTitle(submission)), SAMPLES)
-        .setKey(SAMPLES).setSortable(false);
+        .setKey(SAMPLES).setSortable(false).setFlexGrow(3);
     status = submissions
         .addColumn(TemplateRenderer.<Submission>of(STATUS_SPAN)
             .withProperty("statusValue", submission -> statusesValue(submission))
             .withProperty("statusTitle", submission -> statusesTitle(submission)), STATUS)
-        .setKey(STATUS).setSortable(false);
+        .setKey(STATUS).setSortable(false).setFlexGrow(2);
     hidden = submissions.addColumn(TemplateRenderer.<Submission>of(HIDDEN_BUTTON)
         .withProperty("hiddenTheme", submission -> hiddenTheme(submission))
         .withProperty("hiddenValue", submission -> hiddenValue(submission))
@@ -339,6 +347,7 @@ public class SubmissionsView extends VerticalLayout
     userFilter.setPlaceholder(resources.message(ALL));
     directorFilter.setPlaceholder(resources.message(ALL));
     instrumentFilter.setPlaceholder(resources.message(ALL));
+    serviceFilter.setPlaceholder(resources.message(ALL));
     samplesFilter.setPlaceholder(resources.message(ALL));
     statusFilter.setPlaceholder(resources.message(ALL));
     hiddenFilter.setPlaceholder(resources.message(ALL));
@@ -346,6 +355,7 @@ public class SubmissionsView extends VerticalLayout
     editStatus.setText(resources.message(EDIT_STATUS));
     submissions.getDataProvider().refreshAll();
     instrumentFilter.getDataProvider().refreshAll();
+    serviceFilter.getDataProvider().refreshAll();
     statusFilter.getDataProvider().refreshAll();
     hiddenFilter.getDataProvider().refreshAll();
   }

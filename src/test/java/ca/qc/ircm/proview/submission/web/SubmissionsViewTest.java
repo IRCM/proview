@@ -56,6 +56,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -70,6 +71,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
@@ -104,6 +106,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -112,6 +115,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   private SubmissionsView view;
   @Mock
   private SubmissionsViewPresenter presenter;
+  @MockBean
+  private AuthorizationService authorizationService;
   @Captor
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
@@ -134,7 +139,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
-    view = new SubmissionsView(presenter, new SubmissionDialog(), new SamplesStatusDialog());
+    view = new SubmissionsView(presenter, new SubmissionDialog(), new SamplesStatusDialog(),
+        authorizationService);
     view.init();
     submissions = repository.findAll();
   }
@@ -150,54 +156,64 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(view.experiment.setKey(any())).thenReturn(view.experiment);
     when(view.experiment.setComparator(any(Comparator.class))).thenReturn(view.experiment);
     when(view.experiment.setHeader(any(String.class))).thenReturn(view.experiment);
+    when(view.experiment.setFlexGrow(anyInt())).thenReturn(view.experiment);
     view.user = mock(Column.class);
     when(view.submissions.addColumn(any(ValueProvider.class), eq(USER))).thenReturn(view.user);
     when(view.user.setKey(any())).thenReturn(view.user);
     when(view.user.setComparator(any(Comparator.class))).thenReturn(view.user);
     when(view.user.setHeader(any(String.class))).thenReturn(view.user);
+    when(view.user.setFlexGrow(anyInt())).thenReturn(view.user);
     view.director = mock(Column.class);
     when(view.submissions.addColumn(any(ValueProvider.class), eq(DIRECTOR)))
         .thenReturn(view.director);
     when(view.director.setKey(any())).thenReturn(view.director);
     when(view.director.setComparator(any(Comparator.class))).thenReturn(view.director);
     when(view.director.setHeader(any(String.class))).thenReturn(view.director);
+    when(view.director.setFlexGrow(anyInt())).thenReturn(view.director);
     view.dataAvailableDate = mock(Column.class);
     when(view.submissions.addColumn(any(ValueProvider.class), eq(DATA_AVAILABLE_DATE)))
         .thenReturn(view.dataAvailableDate);
     when(view.dataAvailableDate.setKey(any())).thenReturn(view.dataAvailableDate);
     when(view.dataAvailableDate.setHeader(any(String.class))).thenReturn(view.dataAvailableDate);
+    when(view.dataAvailableDate.setFlexGrow(anyInt())).thenReturn(view.dataAvailableDate);
     view.date = mock(Column.class);
     when(view.submissions.addColumn(any(ValueProvider.class), eq(SUBMISSION_DATE)))
         .thenReturn(view.date);
     when(view.date.setKey(any())).thenReturn(view.date);
     when(view.date.setHeader(any(String.class))).thenReturn(view.date);
+    when(view.date.setFlexGrow(anyInt())).thenReturn(view.date);
     view.instrument = mock(Column.class);
     when(view.submissions.addColumn(any(ValueProvider.class), eq(INSTRUMENT)))
         .thenReturn(view.instrument);
     when(view.instrument.setKey(any())).thenReturn(view.instrument);
     when(view.instrument.setHeader(any(String.class))).thenReturn(view.instrument);
+    when(view.instrument.setFlexGrow(anyInt())).thenReturn(view.instrument);
     view.service = mock(Column.class);
     when(view.submissions.addColumn(any(ValueProvider.class), eq(SERVICE)))
         .thenReturn(view.service);
     when(view.service.setKey(any())).thenReturn(view.service);
     when(view.service.setHeader(any(String.class))).thenReturn(view.service);
+    when(view.service.setFlexGrow(anyInt())).thenReturn(view.service);
     view.samplesCount = mock(Column.class);
     when(view.submissions.addColumn(any(ValueProvider.class), eq(SAMPLES_COUNT)))
         .thenReturn(view.samplesCount);
     when(view.samplesCount.setKey(any())).thenReturn(view.samplesCount);
     when(view.samplesCount.setHeader(any(String.class))).thenReturn(view.samplesCount);
+    when(view.samplesCount.setFlexGrow(anyInt())).thenReturn(view.samplesCount);
     view.samples = mock(Column.class);
     when(view.submissions.addColumn(any(TemplateRenderer.class), eq(SAMPLES)))
         .thenReturn(view.samples);
     when(view.samples.setKey(any())).thenReturn(view.samples);
     when(view.samples.setHeader(any(String.class))).thenReturn(view.samples);
     when(view.samples.setSortable(anyBoolean())).thenReturn(view.samples);
+    when(view.samples.setFlexGrow(anyInt())).thenReturn(view.samples);
     view.status = mock(Column.class);
     when(view.submissions.addColumn(any(TemplateRenderer.class), eq(STATUS)))
         .thenReturn(view.status);
     when(view.status.setKey(any())).thenReturn(view.status);
     when(view.status.setHeader(any(String.class))).thenReturn(view.status);
     when(view.status.setSortable(anyBoolean())).thenReturn(view.status);
+    when(view.status.setFlexGrow(anyInt())).thenReturn(view.status);
     view.hidden = mock(Column.class);
     when(view.submissions.addColumn(any(TemplateRenderer.class), eq(HIDDEN)))
         .thenReturn(view.hidden);
@@ -205,6 +221,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(view.hidden.setHeader(any(String.class))).thenReturn(view.hidden);
     when(view.hidden.setSortProperty(any())).thenReturn(view.hidden);
     when(view.hidden.setComparator(any(Comparator.class))).thenReturn(view.hidden);
+    when(view.hidden.setFlexGrow(anyInt())).thenReturn(view.hidden);
     HeaderRow filtersRow = mock(HeaderRow.class);
     when(view.submissions.appendHeaderRow()).thenReturn(filtersRow);
     HeaderCell experienceFilterCell = mock(HeaderCell.class);
@@ -248,6 +265,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     mockColumns();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
     view.instrumentFilter.setDataProvider(mock(DataProvider.class));
+    view.serviceFilter.setDataProvider(mock(DataProvider.class));
     view.statusFilter.setDataProvider(mock(DataProvider.class));
     view.hiddenFilter.setDataProvider(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
@@ -278,6 +296,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
@@ -292,6 +311,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     view.init();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
     view.instrumentFilter.setDataProvider(mock(DataProvider.class));
+    view.serviceFilter.setDataProvider(mock(DataProvider.class));
     view.statusFilter.setDataProvider(mock(DataProvider.class));
     view.hiddenFilter.setDataProvider(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
@@ -329,6 +349,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
+    assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
@@ -336,6 +357,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
     verify(view.submissions.getDataProvider(), times(2)).refreshAll();
     verify(view.instrumentFilter.getDataProvider(), times(2)).refreshAll();
+    verify(view.serviceFilter.getDataProvider(), times(2)).refreshAll();
     verify(view.statusFilter.getDataProvider(), times(2)).refreshAll();
     verify(view.hiddenFilter.getDataProvider(), times(2)).refreshAll();
   }
