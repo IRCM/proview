@@ -688,12 +688,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
-    //assertTrue(content.contains("class=\"platform\""));
-    //assertTrue(content.contains(resources.message("platform")));
-    //assertTrue(content.contains("class=\"service\""));
-    //assertTrue(content.contains(submission.getService().getLabel(locale)));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
     assertTrue(
@@ -1076,12 +1071,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources = new MessageResource("submission.print", locale);
+    final MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
-    //assertTrue(content.contains("class=\"platform\""));
-    //assertTrue(content.contains(resources.message("platform")));
-    //assertTrue(content.contains("class=\"service\""));
-    //assertTrue(content.contains(submission.getService().getLabel(locale)));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
     assertTrue(
@@ -1282,12 +1273,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources = new MessageResource("submission.print", locale);
+    final MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
-    //assertTrue(content.contains("class=\"platform\""));
-    //assertTrue(content.contains(resources.message("platform")));
-    //assertTrue(content.contains("class=\"service\""));
-    //assertTrue(content.contains(submission.getService().getLabel(locale)));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
     assertTrue(
@@ -1492,12 +1479,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
-    //assertTrue(content.contains("class=\"platform\""));
-    //assertTrue(content.contains(resources.message("platform")));
-    //assertTrue(content.contains("class=\"service\""));
-    //assertTrue(content.contains(submission.getService().getLabel(locale)));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
     assertTrue(
