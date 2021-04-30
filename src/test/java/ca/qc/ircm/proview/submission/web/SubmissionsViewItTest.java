@@ -112,8 +112,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.clickVisible(0);
-    waitUntil(driver -> view.visible(0).getAttribute("theme")
+    view.submissions().visible(0).click();
+    waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
         .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
 
     Submission submission = repository.findById(164L).get();
@@ -125,12 +125,12 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   public void show() throws Throwable {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
-    view.clickVisible(0);
-    waitUntil(driver -> view.visible(0).getAttribute("theme")
+    view.submissions().visible(0).click();
+    waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
         .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
 
-    view.clickVisible(0);
-    waitUntil(driver -> view.visible(0).getAttribute("theme")
+    view.submissions().visible(0).click();
+    waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
         .equals(ButtonVariant.LUMO_SUCCESS.getVariantName()));
 
     Submission submission = repository.findById(164L).get();
@@ -142,7 +142,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.view(0).click();
+    view.submissions().view(0).click();
 
     SubmissionDialogElement dialog = view.dialog();
     assertTrue(dialog.isOpen());
@@ -154,7 +154,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.doubleClickSubmission(0);
+    view.submissions().getCell(0, 0).doubleClick();
 
     SubmissionDialogElement dialog = view.dialog();
     assertTrue(dialog.isOpen());
@@ -167,7 +167,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.clickSubmission(0, Keys.SHIFT);
+    view.submissions().getCell(0, 0).click(0, 0, Keys.SHIFT);
 
     SamplesStatusDialogElement dialog = view.statusDialog();
     assertTrue(dialog.isOpen());
@@ -192,7 +192,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.clickSubmission(0);
+    view.submissions().getCell(0, 0).click();
     view.editStatus().click();
 
     SamplesStatusDialogElement dialog = view.statusDialog();

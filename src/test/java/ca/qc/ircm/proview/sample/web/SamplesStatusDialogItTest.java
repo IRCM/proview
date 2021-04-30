@@ -49,7 +49,7 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
   private SamplesStatusDialogElement open() {
     openView(VIEW_NAME);
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
-    view.clickSubmission(1, Keys.SHIFT);
+    view.submissions().getCell(1, 0).click(0, 0, Keys.SHIFT);
     return view.statusDialog();
   }
 

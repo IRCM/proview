@@ -24,57 +24,23 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialogElement;
 import com.vaadin.flow.component.button.testbench.ButtonElement;
-import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.elementsbase.Element;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 
 /**
  * {@link SubmissionsView} element.
  */
 @Element("vaadin-vertical-layout")
 public class SubmissionsViewElement extends VerticalLayoutElement {
-  private static final int EXPERIMENT_COLUMN = 0;
-  private static final int VISIBLE_COLUMN = 10;
-
   public H2Element header() {
     return $(H2Element.class).id(HEADER);
   }
 
-  public GridElement submissions() {
-    return $(GridElement.class).first();
-  }
-
-  public void clickSubmission(int row) {
-    submissions().getCell(row, 0).click();
-  }
-
-  public void clickSubmission(int row, Keys... modifiers) {
-    submissions().getCell(row, 0).click(0, 0, modifiers);
-  }
-
-  public ButtonElement visible(int row) {
-    return submissions().getCell(row, VISIBLE_COLUMN).$(ButtonElement.class).first();
-  }
-
-  public ButtonElement view(int row) {
-    return submissions().getCell(row, submissions().getVisibleColumns().size() - 1)
-        .$(ButtonElement.class).first();
-  }
-
-  public void clickVisible(int row) {
-    visible(row).click();
-  }
-
-  public void doubleClickSubmission(int row) {
-    submissions().getCell(row, 0).doubleClick();
-  }
-
-  public String experiment(int row) {
-    return submissions().getCell(row, EXPERIMENT_COLUMN).getText();
+  public SubmissionsViewSubmissionsElement submissions() {
+    return $(SubmissionsViewSubmissionsElement.class).first();
   }
 
   public ButtonElement add() {

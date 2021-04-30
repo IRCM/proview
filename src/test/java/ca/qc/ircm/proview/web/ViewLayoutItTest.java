@@ -238,7 +238,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
-    submissionsView.doubleClickSubmission(0);
+    submissionsView.submissions().getCell(0, 0).doubleClick();
     SubmissionDialogElement submissionDialog =
         $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
     submissionDialog.clickEdit();
@@ -256,7 +256,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
-    submissionsView.doubleClickSubmission(0);
+    submissionsView.submissions().getCell(0, 0).doubleClick();
     SubmissionDialogElement submissionDialog =
         $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
     submissionDialog.clickPrint();
