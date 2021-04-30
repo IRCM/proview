@@ -27,6 +27,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Locale;
 import org.junit.Test;
 
+/**
+ * Tests for {@link GelColoration}.
+ */
 public class GelColorationTest {
   @Test
   public void getNullLabel() {

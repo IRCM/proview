@@ -38,6 +38,9 @@ import com.vaadin.flow.component.textfield.testbench.TextAreaElement;
 import com.vaadin.flow.component.upload.testbench.UploadElement;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link SubmissionView} element.
+ */
 @Element("vaadin-vertical-layout")
 public class SubmissionViewElement extends VerticalLayoutElement {
   private static final int FILENAME_COLUMN = 0;

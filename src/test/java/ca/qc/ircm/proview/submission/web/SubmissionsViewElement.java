@@ -32,6 +32,9 @@ import com.vaadin.testbench.elementsbase.Element;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 
+/**
+ * {@link SubmissionsView} element.
+ */
 @Element("vaadin-vertical-layout")
 public class SubmissionsViewElement extends VerticalLayoutElement {
   private static final int EXPERIMENT_COLUMN = 0;

@@ -51,6 +51,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link EmailService}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(initializers = SmtpPortRandomizer.class)
 @NonTransactionalTestAnnotations

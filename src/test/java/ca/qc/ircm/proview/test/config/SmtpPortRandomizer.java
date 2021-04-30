@@ -5,6 +5,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.springframework.util.SocketUtils;
 
+/**
+ * Configures SMTP on a random port.
+ */
 public class SmtpPortRandomizer
     implements ApplicationContextInitializer<ConfigurableApplicationContext> {
   @Override

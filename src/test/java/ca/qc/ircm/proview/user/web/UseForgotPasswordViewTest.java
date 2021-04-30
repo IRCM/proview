@@ -48,6 +48,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link UseForgotPasswordView}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UseForgotPasswordViewTest extends AbstractViewTestCase {

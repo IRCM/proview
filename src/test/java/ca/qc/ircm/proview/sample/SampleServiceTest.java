@@ -35,6 +35,9 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link SampleService}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 @WithMockUser

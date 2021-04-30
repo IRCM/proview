@@ -24,6 +24,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+/**
+ * Tests for {@link QueryDsl}.
+ */
 public class QueryDslTest {
   @Test
   public void qname_Test() {

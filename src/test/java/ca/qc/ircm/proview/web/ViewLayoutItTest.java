@@ -44,6 +44,9 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Integration tests for {@link ViewLayout}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 public class ViewLayoutItTest extends AbstractTestBenchTestCase {

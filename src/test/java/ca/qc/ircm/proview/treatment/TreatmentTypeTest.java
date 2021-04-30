@@ -29,6 +29,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Locale;
 import org.junit.Test;
 
+/**
+ * Tests for {@link TreatmentType}.
+ */
 public class TreatmentTypeTest {
   @Test
   public void getLabel_Digestion() {

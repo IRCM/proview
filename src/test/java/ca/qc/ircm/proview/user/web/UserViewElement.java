@@ -25,6 +25,9 @@ import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link UserView} element.
+ */
 @Element("vaadin-vertical-layout")
 public class UserViewElement extends VerticalLayoutElement {
   public H2Element header() {

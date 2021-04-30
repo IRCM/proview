@@ -46,6 +46,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link ProfileViewPresenter}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ProfileViewPresenterTest extends AbstractViewTestCase {

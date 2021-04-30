@@ -17,6 +17,9 @@
 
 package ca.qc.ircm.proview.history;
 
+/**
+ * Builder for an update activity - change to a database column for some data.
+ */
 public class UpdateActivityBuilder {
   private String tableName;
   private Long recordId;

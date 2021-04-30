@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Locale;
 import org.junit.Test;
 
+/**
+ * Tests for {@link MassDetectionInstrumentSource}.
+ */
 public class MassDetectionInstrumentSourceTest {
   @Test
   public void availables() {

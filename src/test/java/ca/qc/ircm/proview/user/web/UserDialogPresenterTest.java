@@ -39,6 +39,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link UserDialogPresenter}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UserDialogPresenterTest extends AbstractViewTestCase {

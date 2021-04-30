@@ -20,6 +20,9 @@ package ca.qc.ircm.proview.history;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.tube.Tube;
 
+/**
+ * {@link UpdateActivityBuilder} for addition of sample to a sample container.
+ */
 public class AddSampleToSampleContainerUpdateActivityBuilder extends UpdateActivityBuilder {
   {
     tableName("samplecontainer");

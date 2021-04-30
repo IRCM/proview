@@ -38,6 +38,9 @@ import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link AccessDeniedError}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class AccessDeniedErrorTest extends AbstractViewTestCase {

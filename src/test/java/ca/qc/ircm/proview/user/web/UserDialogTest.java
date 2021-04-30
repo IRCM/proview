@@ -54,6 +54,9 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link UserDialog}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UserDialogTest extends AbstractViewTestCase {

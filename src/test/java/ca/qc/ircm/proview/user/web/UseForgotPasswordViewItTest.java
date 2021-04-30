@@ -46,6 +46,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Integration tests for {@link UseForgotPasswordView}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 public class UseForgotPasswordViewItTest extends AbstractTestBenchTestCase {

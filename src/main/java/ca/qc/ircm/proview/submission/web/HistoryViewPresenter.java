@@ -97,7 +97,7 @@ public class HistoryViewPresenter {
     return submission;
   }
 
-  public void setParameter(Long parameter) {
+  void setParameter(Long parameter) {
     if (parameter != null) {
       submission = submissionService.get(parameter).orElse(null);
       updateActivities();

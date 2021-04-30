@@ -31,6 +31,9 @@ import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link ContactView} element.
+ */
 @Element("vaadin-vertical-layout")
 public class ContactViewElement extends VerticalLayoutElement {
   public H2Element header() {

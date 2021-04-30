@@ -27,6 +27,9 @@ import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import com.vaadin.flow.component.formlayout.testbench.FormLayoutElement;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link SolventsField} element.
+ */
 @Element("vaadin-custom-field")
 public class SolventsFieldElement extends FormLayoutElement {
   public CheckboxElement solvent(Solvent solvent) {

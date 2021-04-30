@@ -55,6 +55,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utilities for tests on Vaadin components.
+ */
 public class VaadinTestUtils {
   private static final String ICON_ATTRIBUTE = "icon";
   private static final Logger logger = LoggerFactory.getLogger(VaadinTestUtils.class);

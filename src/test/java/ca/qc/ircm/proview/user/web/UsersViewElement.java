@@ -31,6 +31,9 @@ import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.elementsbase.Element;
 import org.openqa.selenium.By;
 
+/**
+ * {@link UsersView} element.
+ */
 @Element("vaadin-vertical-layout")
 public class UsersViewElement extends VerticalLayoutElement {
   private static final int EMAIL_COLUMN = 0;

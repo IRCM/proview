@@ -30,6 +30,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.Locale;
 import org.junit.Test;
 
+/**
+ * Tests for {@link SampleType}.
+ */
 public class SampleTypeTest {
   @Test
   public void getNullLabel() {

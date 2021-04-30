@@ -19,6 +19,9 @@ package ca.qc.ircm.proview.history;
 
 import ca.qc.ircm.proview.sample.SampleContainer;
 
+/**
+ * {@link UpdateActivityBuilder} for ban of a sample container.
+ */
 public class BanSampleContainerUpdateActivityBuilder extends UpdateActivityBuilder {
   {
     tableName("samplecontainer");

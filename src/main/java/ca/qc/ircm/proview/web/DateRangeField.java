@@ -21,7 +21,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 
 /**
- * Date range.
+ * Date range field.
  */
 public class DateRangeField extends CustomField<Range<LocalDate>> implements LocaleChangeObserver {
   public static final String CLASS_NAME = "date-range";
@@ -34,6 +34,9 @@ public class DateRangeField extends CustomField<Range<LocalDate>> implements Loc
   protected DatePicker to = new DatePicker();
   private Binder<Dates> binder = new BeanValidationBinder<>(Dates.class);
 
+  /**
+   * Creates a date range field.
+   */
   public DateRangeField() {
     layout.setResponsiveSteps(new ResponsiveStep("20em", 1), new ResponsiveStep("20em", 2));
     layout.add(from, to);
@@ -105,7 +108,10 @@ public class DateRangeField extends CustomField<Range<LocalDate>> implements Loc
     to.setValue(range.hasUpperBound() ? range.upperEndpoint() : null);
   }
 
-  public static class Dates {
+  /**
+   * From and to dates that are used to create date range.
+   */
+  protected static class Dates {
     private LocalDate from;
     private LocalDate to;
 

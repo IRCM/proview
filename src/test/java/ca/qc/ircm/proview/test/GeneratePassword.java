@@ -25,6 +25,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Generates passwords compatible with configuration.
+ */
 public class GeneratePassword {
   /**
    * Generates random passwords.

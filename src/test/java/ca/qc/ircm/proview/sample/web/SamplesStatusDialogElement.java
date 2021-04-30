@@ -33,6 +33,9 @@ import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link SamplesStatusDialog} element.
+ */
 @Element("vaadin-dialog")
 public class SamplesStatusDialogElement extends DialogElement {
   private static final int STATUS_INDEX = 1;

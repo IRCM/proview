@@ -261,7 +261,10 @@ public class IntactProteinSubmissionFormPresenter {
     samplesBinder.setBean(samples);
   }
 
-  public static class Samples {
+  /**
+   * Represents a list of sample names.
+   */
+  protected static class Samples {
     private int samplesCount;
     private List<String> samplesNames;
 

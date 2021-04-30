@@ -40,6 +40,9 @@ import org.mockito.Mock;
 import org.slf4j.MDC;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link MdcFilter}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class MdcFilterTest {

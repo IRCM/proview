@@ -150,9 +150,9 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
-    AppResources treatmentResource = new AppResources(Treatment.class, getLocale());
-    AppResources treatedSampleResource = new AppResources(TreatedSample.class, getLocale());
+    final AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
+    final AppResources treatmentResource = new AppResources(Treatment.class, getLocale());
+    final AppResources treatedSampleResource = new AppResources(TreatedSample.class, getLocale());
     if (treatment == null) {
       header.setText(resource.message(HEADER));
     }
@@ -175,6 +175,12 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     return treatment;
   }
 
+  /**
+   * Sets dialog's treatment.
+   *
+   * @param treatment
+   *          treatment
+   */
   public void setTreatment(Treatment treatment) {
     Objects.requireNonNull(treatment);
     this.treatment = treatment;

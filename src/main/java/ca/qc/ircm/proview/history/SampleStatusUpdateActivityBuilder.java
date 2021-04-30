@@ -19,6 +19,9 @@ package ca.qc.ircm.proview.history;
 
 import ca.qc.ircm.proview.sample.SubmissionSample;
 
+/**
+ * {@link UpdateActivityBuilder} for update of a sample status.
+ */
 public class SampleStatusUpdateActivityBuilder extends UpdateActivityBuilder {
   {
     tableName("sample");

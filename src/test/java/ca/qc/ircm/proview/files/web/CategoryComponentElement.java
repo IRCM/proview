@@ -23,6 +23,9 @@ import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.elementsbase.Element;
 import java.util.List;
 
+/**
+ * {@link CategoryComponent} element.
+ */
 @Element("vaadin-vertical-layout")
 public class CategoryComponentElement extends VerticalLayoutElement {
   public H3Element header() {

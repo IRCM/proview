@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Locale;
 import org.junit.Test;
 
+/**
+ * Tests for {@link MassDetectionInstrument}.
+ */
 public class MassDetectionInstrumentTest {
   @Test
   public void userChoices() {

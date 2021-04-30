@@ -53,6 +53,9 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link SubmissionSampleService}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 @WithMockUser
@@ -149,7 +152,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void exists_OtherUSer() throws Throwable {
+  public void exists_OtherUser() throws Throwable {
     User user = new User(10L);
     when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
 

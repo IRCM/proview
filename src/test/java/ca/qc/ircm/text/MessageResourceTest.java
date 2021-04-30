@@ -23,6 +23,9 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import org.junit.Test;
 
+/**
+ * Tests for {@link MessageResource}.
+ */
 public class MessageResourceTest {
   @Test
   public void message() {

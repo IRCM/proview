@@ -20,6 +20,9 @@ package ca.qc.ircm.proview.web;
 import com.vaadin.flow.component.login.testbench.LoginOverlayElement;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link SigninView} element.
+ */
 @Element("vaadin-login-overlay")
 public class SigninViewElement extends LoginOverlayElement {
 }

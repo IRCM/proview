@@ -27,6 +27,9 @@ import static org.junit.Assert.assertEquals;
 import ca.qc.ircm.proview.AppResources;
 import org.junit.Test;
 
+/**
+ * Tests for {@link PhoneNumberType}.
+ */
 public class PhoneNumberTypeTest {
   AppResources englishResource = new AppResources(PhoneNumberType.class, ENGLISH);
   AppResources frenchResource = new AppResources(PhoneNumberType.class, FRENCH);

@@ -35,6 +35,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link DateRangeField}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class DateRangeFieldTest extends AbstractViewTestCase {
@@ -44,6 +47,9 @@ public class DateRangeFieldTest extends AbstractViewTestCase {
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(DateRangeField.class, locale);
 
+  /**
+   * Before each test.
+   */
   @Before
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);

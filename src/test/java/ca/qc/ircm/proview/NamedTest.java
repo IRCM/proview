@@ -21,6 +21,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+/**
+ * Tests for {@link Named}.
+ */
 public class NamedTest {
   @Test
   public void incrementLastNumber() {

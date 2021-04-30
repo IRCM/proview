@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Locale;
 import org.junit.Test;
 
+/**
+ * Tests for {@link SampleStatus}.
+ */
 public class SampleStatusTest {
   @Test
   public void analysedStatuses() {

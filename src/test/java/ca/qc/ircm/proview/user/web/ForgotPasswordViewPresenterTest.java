@@ -58,6 +58,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link ForgotPasswordViewPresenter}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {

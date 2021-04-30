@@ -32,6 +32,9 @@ import com.vaadin.flow.component.dialog.testbench.DialogElement;
 import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link SubmissionDialog} element.
+ */
 @Element("vaadin-dialog")
 public class SubmissionDialogElement extends DialogElement {
   public H3Element header() {

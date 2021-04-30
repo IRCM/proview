@@ -53,6 +53,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.thymeleaf.util.StringUtils;
 
+/**
+ * Tests for {@link ForgotPasswordService}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ForgotPasswordServiceTest {

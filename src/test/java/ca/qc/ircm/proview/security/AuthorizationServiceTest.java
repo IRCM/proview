@@ -53,6 +53,9 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 import org.springframework.security.web.authentication.switchuser.SwitchUserGrantedAuthority;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link AuthorizationService}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class AuthorizationServiceTest {
@@ -274,21 +277,36 @@ public class AuthorizationServiceTest {
     verify(permissionEvaluator).hasPermission(authentication, object, permission);
   }
 
+  /**
+   * Class that requires no role.
+   */
   public static final class NoRoleTest {
   }
 
+  /**
+   * Class that requires USER role.
+   */
   @RolesAllowed(USER)
   public static final class UserRoleTest {
   }
 
+  /**
+   * Class that requires MANAGER role.
+   */
   @RolesAllowed(MANAGER)
   public static final class ManagerRoleTest {
   }
 
+  /**
+   * Class that requires ADMIN role.
+   */
   @RolesAllowed(ADMIN)
   public static final class AdminRoleTest {
   }
 
+  /**
+   * Class that requires MANAGER or ADMIN role.
+   */
   @RolesAllowed({ MANAGER, ADMIN })
   public static final class ManagerOrAdminRoleTest {
   }

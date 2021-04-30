@@ -40,6 +40,9 @@ import com.vaadin.flow.component.textfield.testbench.TextAreaElement;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link IntactProteinSubmissionForm} element.
+ */
 @Element("vaadin-form-layout")
 public class IntactProteinSubmissionFormElement extends FormLayoutElement {
   public TextFieldElement experiment() {

@@ -24,6 +24,9 @@ import java.util.Comparator;
  * Comparator for treated samples by their LIMS.
  */
 public class TreatmentComparator implements Comparator<Treatment>, Serializable {
+  /**
+   * Types of comparison that can be made.
+   */
   public static enum TreatmentCompareType {
     TIMESTAMP;
   }

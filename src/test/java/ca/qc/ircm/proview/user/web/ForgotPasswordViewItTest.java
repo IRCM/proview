@@ -41,6 +41,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Integration tests for {@link ForgotPasswordView}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {

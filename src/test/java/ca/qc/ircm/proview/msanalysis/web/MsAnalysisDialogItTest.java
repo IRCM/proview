@@ -30,6 +30,9 @@ import org.junit.runner.RunWith;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Integration tests for {@link MsAnalysisDialog}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")

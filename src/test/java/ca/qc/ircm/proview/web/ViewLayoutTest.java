@@ -68,6 +68,9 @@ import org.mockito.Mock;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link ViewLayout}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class ViewLayoutTest extends AbstractViewTestCase {
@@ -494,6 +497,9 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertFalse(view.print.isVisible());
   }
 
+  /**
+   * Fake view.
+   */
   public static class ViewTest {
   }
 }

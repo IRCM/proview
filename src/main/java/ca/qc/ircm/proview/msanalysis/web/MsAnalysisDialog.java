@@ -123,9 +123,9 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    AppResources resource = new AppResources(MsAnalysisDialog.class, getLocale());
-    AppResources treatmentResource = new AppResources(MsAnalysis.class, getLocale());
-    AppResources treatedSampleResource = new AppResources(Acquisition.class, getLocale());
+    final AppResources resource = new AppResources(MsAnalysisDialog.class, getLocale());
+    final AppResources treatmentResource = new AppResources(MsAnalysis.class, getLocale());
+    final AppResources treatedSampleResource = new AppResources(Acquisition.class, getLocale());
     header.setText(resource.message(HEADER));
     deleted.setText(treatmentResource.message(property(DELETED, true)));
     acquisitionsHeader.setText(treatmentResource.message(ACQUISITIONS));
@@ -142,6 +142,12 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
     return msAnalysis;
   }
 
+  /**
+   * Sets dialog's MS analysis.
+   *
+   * @param msAnalysis
+   *          MS analysis
+   */
   public void setMsAnalysis(MsAnalysis msAnalysis) {
     Objects.requireNonNull(msAnalysis);
     this.msAnalysis = msAnalysis;

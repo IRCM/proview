@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Locale;
 import org.junit.Test;
 
+/**
+ * Tests for {@link Service}.
+ */
 public class ServiceTest {
   @Test
   public void availables() {

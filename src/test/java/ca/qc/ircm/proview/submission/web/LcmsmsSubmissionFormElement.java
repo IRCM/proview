@@ -57,6 +57,9 @@ import com.vaadin.flow.component.textfield.testbench.TextAreaElement;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link LcmsmsSubmissionForm} element.
+ */
 @Element("vaadin-form-layout")
 public class LcmsmsSubmissionFormElement extends FormLayoutElement {
   public TextFieldElement experiment() {

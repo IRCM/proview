@@ -24,6 +24,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Locale;
 import org.junit.Test;
 
+/**
+ * Tests for {@link FractionationType}.
+ */
 public class FractionationTypeTest {
   @Test
   public void getNullLabel() {

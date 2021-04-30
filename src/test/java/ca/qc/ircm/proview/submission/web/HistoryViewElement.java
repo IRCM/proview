@@ -31,6 +31,9 @@ import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.elementsbase.Element;
 import org.openqa.selenium.By;
 
+/**
+ * {@link HistoryView} element.
+ */
 @Element("vaadin-vertical-layout")
 public class HistoryViewElement extends VerticalLayoutElement {
   public H2Element header() {

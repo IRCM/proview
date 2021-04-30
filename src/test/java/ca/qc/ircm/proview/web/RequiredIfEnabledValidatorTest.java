@@ -35,6 +35,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Tests for {@link RequiredIfEnabledValidator}.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class RequiredIfEnabledValidatorTest {
@@ -44,8 +47,7 @@ public class RequiredIfEnabledValidatorTest {
 
   @Test
   public void apply_Null() {
-    RequiredIfEnabledValidator<String> validator =
-        new RequiredIfEnabledValidator<>(errorMessage);
+    RequiredIfEnabledValidator<String> validator = new RequiredIfEnabledValidator<>(errorMessage);
     ComboBox<Boolean> field = new ComboBox<>();
     field.setItems(false, true);
     when(context.getComponent()).thenReturn(Optional.of((Component) field));
@@ -57,8 +59,7 @@ public class RequiredIfEnabledValidatorTest {
 
   @Test
   public void apply_Empty() {
-    RequiredIfEnabledValidator<String> validator =
-        new RequiredIfEnabledValidator<>(errorMessage);
+    RequiredIfEnabledValidator<String> validator = new RequiredIfEnabledValidator<>(errorMessage);
     TextField field = new TextField();
     when(context.getComponent()).thenReturn(Optional.of((Component) field));
     ValidationResult result = validator.apply("", context);
@@ -69,8 +70,7 @@ public class RequiredIfEnabledValidatorTest {
 
   @Test
   public void apply_NotEmpty() {
-    RequiredIfEnabledValidator<String> validator =
-        new RequiredIfEnabledValidator<>(errorMessage);
+    RequiredIfEnabledValidator<String> validator = new RequiredIfEnabledValidator<>(errorMessage);
     TextField field = new TextField();
     when(context.getComponent()).thenReturn(Optional.of((Component) field));
     ValidationResult result = validator.apply("not empty", context);

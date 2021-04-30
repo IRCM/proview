@@ -36,6 +36,9 @@ import com.vaadin.flow.component.radiobutton.testbench.RadioButtonGroupElement;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
 import com.vaadin.testbench.elementsbase.Element;
 
+/**
+ * {@link SmallMoleculeSubmissionForm} element.
+ */
 @Element("vaadin-form-layout")
 public class SmallMoleculeSubmissionFormElement extends CustomFieldElement {
   public RadioButtonGroupElement sampleType() {

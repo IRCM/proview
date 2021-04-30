@@ -23,6 +23,9 @@ import ca.qc.ircm.proview.plate.WellComparator.Compare;
 import java.time.LocalDateTime;
 import org.junit.Test;
 
+/**
+ * Tests for {@link WellComparator}.
+ */
 public class WellComparatorTest {
   @Test
   public void compare_Location_Row() {
