@@ -34,14 +34,14 @@ import org.springframework.security.access.AccessDeniedException;
  * Adds before enter listener to check access to views. Adds the Offline banner.
  */
 @SpringComponent
-public class ConfigureUIServiceInitListener implements VaadinServiceInitListener {
+public class ConfigureUiServiceInitListener implements VaadinServiceInitListener {
   private static final Logger logger =
-      LoggerFactory.getLogger(ConfigureUIServiceInitListener.class);
+      LoggerFactory.getLogger(ConfigureUiServiceInitListener.class);
   private static final long serialVersionUID = -5535854753812022664L;
   private AuthorizationService authorizationService;
 
   @Autowired
-  protected ConfigureUIServiceInitListener(AuthorizationService authorizationService) {
+  protected ConfigureUiServiceInitListener(AuthorizationService authorizationService) {
     this.authorizationService = authorizationService;
   }
 
