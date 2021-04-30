@@ -76,7 +76,6 @@ public class UsersViewPresenter {
     view.laboratoryDialog.addSavedListener(e -> loadUsers());
   }
 
-  @SuppressWarnings("checkstyle:linelength")
   private void loadUsers() {
     List<User> users = authorizationService.hasRole(ADMIN) ? service.all(null)
         : service.all(null, authorizationService.getCurrentUser().get().getLaboratory());

@@ -47,7 +47,6 @@ import org.springframework.test.context.TestExecutionListener;
  */
 @Order(0)
 public class TestBenchTestExecutionListener implements TestExecutionListener, InjectDependencies {
-  @SuppressWarnings("checkstyle:linelength")
   private static final String LICENSE_ERROR_MESSAGE =
       "License for Vaadin TestBench not found. Skipping test class {0} .";
   private static final String[] LICENSE_PATHS =

@@ -87,7 +87,6 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<ValueProvider<Activity, String>> valueProviderCaptor;
   @Captor
-  @SuppressWarnings("checkstyle:linelength")
   private ArgumentCaptor<
       ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
   private Locale locale = ENGLISH;
@@ -148,7 +147,6 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
     verify(view.dialog).setSubmission(submission);
     verify(view.dialog).open();
     verify(view.dialog).addSavedListener(submissionSavedListenerCaptor.capture());
-    @SuppressWarnings("checkstyle:linelength")
     ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener =
         submissionSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));

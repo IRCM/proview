@@ -59,12 +59,12 @@ public class ShiroPasswordEncoderTest {
   }
 
   @Test
-  @SuppressWarnings("checkstyle:linelength")
   public void matches() {
     String password = "password";
     String hashed = "b29775bf7946df11a0e73216a87ee4cd44acd398570723559b1a14699330d8d7"
         + ShiroPasswordEncoder.SEPARATOR
-        + "d04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d";
+        + "d04bf2902bf87be882795dc357490bae6db48f06d773f3cb0c0d3c544a4a7d734c"
+        + "022d75d58bfe5c6a5193f520d0124beff4d39deaf65755e66eb7785c08208d";
     assertTrue(passwordEncoder.matches(password, hashed));
   }
 }

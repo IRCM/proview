@@ -101,11 +101,9 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   @Captor
   private ArgumentCaptor<DataProvider<Submission, ?>> dataProviderCaptor;
   @Captor
-  @SuppressWarnings("checkstyle:linelength")
   private ArgumentCaptor<
       ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
   @Captor
-  @SuppressWarnings("checkstyle:linelength")
   private ArgumentCaptor<
       ComponentEventListener<SavedEvent<SamplesStatusDialog>>> statusSavedListenerCaptor;
   private List<Submission> submissions;
@@ -392,7 +390,6 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   public void refreshOnSaved_Dialog() {
     presenter.init(view);
     verify(view.dialog).addSavedListener(submissionSavedListenerCaptor.capture());
-    @SuppressWarnings("checkstyle:linelength")
     ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener =
         submissionSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
@@ -404,7 +401,6 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   public void refreshOnSaved_StatusDialog() {
     presenter.init(view);
     verify(view.statusDialog).addSavedListener(statusSavedListenerCaptor.capture());
-    @SuppressWarnings("checkstyle:linelength")
     ComponentEventListener<SavedEvent<SamplesStatusDialog>> savedListener =
         statusSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));

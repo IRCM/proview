@@ -121,7 +121,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
    * @return {@link DaoAuthenticationProviderWithLdap}
    */
   @Bean
-  @SuppressWarnings("checkstyle:linelength")
   public DaoAuthenticationProviderWithLdap authenticationProvider() {
     DaoAuthenticationProviderWithLdap authenticationProvider =
         new DaoAuthenticationProviderWithLdap();
@@ -140,7 +139,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
    * @return {@link AuthenticationFailureHandler}
    */
   @Bean
-  @SuppressWarnings("checkstyle:linelength")
   public AuthenticationFailureHandler authenticationFailureHandler() {
     final Map<String, String> failureUrlMap = new HashMap<>();
     failureUrlMap.put(LockedException.class.getName(), SIGNIN_LOCKED_URL);

@@ -122,7 +122,6 @@ public class SubmissionsViewPresenter {
   }
 
   private DataProvider<Submission, Void> dataProvider() {
-    @SuppressWarnings("checkstyle:linelength")
     Function<Query<Submission, SubmissionFilter>, List<OrderSpecifier<?>>> filterSortOrders =
         query -> query.getSortOrders() != null && !query.getSortOrders().isEmpty()
             ? query.getSortOrders().stream()
