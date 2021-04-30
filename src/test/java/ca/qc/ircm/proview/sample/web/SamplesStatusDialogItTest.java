@@ -58,7 +58,7 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
     SamplesStatusDialogElement dialog = open();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.samples()).isPresent());
-    assertTrue(optional(() -> dialog.allStatus()).isPresent());
+    assertTrue(optional(() -> dialog.samples().allStatus()).isPresent());
     assertTrue(optional(() -> dialog.save()).isPresent());
     assertTrue(optional(() -> dialog.cancel()).isPresent());
   }
@@ -67,8 +67,8 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
   public void save() throws Throwable {
     SamplesStatusDialogElement dialog = open();
     Locale locale = currentLocale();
-    dialog.status(0).selectByText(SampleStatus.ANALYSED.getLabel(locale));
-    dialog.status(1).selectByText(SampleStatus.DIGESTED.getLabel(locale));
+    dialog.samples().status(0).selectByText(SampleStatus.ANALYSED.getLabel(locale));
+    dialog.samples().status(1).selectByText(SampleStatus.DIGESTED.getLabel(locale));
     dialog.save().click();
     assertFalse(dialog.isOpen());
     assertEquals(SampleStatus.ANALYSED, repository.findById(640L).get().getStatus());

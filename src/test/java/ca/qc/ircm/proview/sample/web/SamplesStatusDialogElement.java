@@ -17,19 +17,14 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.SAVE;
-import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.HEADER;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.id;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
-import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
-import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.testbench.elementsbase.Element;
 
@@ -38,22 +33,12 @@ import com.vaadin.testbench.elementsbase.Element;
  */
 @Element("vaadin-dialog")
 public class SamplesStatusDialogElement extends DialogElement {
-  private static final int STATUS_INDEX = 1;
-
   public H3Element header() {
     return $(H3Element.class).id(id(HEADER));
   }
 
-  public GridElement samples() {
-    return $(GridElement.class).id(id(SAMPLES));
-  }
-
-  public ComboBoxElement allStatus() {
-    return $(ComboBoxElement.class).id(id(styleName(STATUS, ALL)));
-  }
-
-  public ComboBoxElement status(int row) {
-    return samples().getCell(row, STATUS_INDEX).$(ComboBoxElement.class).first();
+  public SamplesStatusDialogSamplesElement samples() {
+    return $(SamplesStatusDialogSamplesElement.class).id(id(SAMPLES));
   }
 
   public ButtonElement save() {
