@@ -40,7 +40,7 @@ public class TreatmentDialogItTest extends AbstractTestBenchTestCase {
   private void open() throws Throwable {
     openView(VIEW_NAME, "1");
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
-    view.doubleClickActivity(3);
+    view.activities().getCell(3, 0).doubleClick();
     waitUntil(driver -> $(TreatmentDialogElement.class).id(TreatmentDialog.ID));
   }
 

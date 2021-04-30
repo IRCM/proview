@@ -44,10 +44,6 @@ public class HistoryViewElement extends VerticalLayoutElement {
     return $(GridElement.class).id(ACTIVITIES);
   }
 
-  public void doubleClickActivity(int row) {
-    activities().getCell(row, 0).doubleClick();
-  }
-
   public SubmissionDialogElement dialog() {
     return ((TestBenchElement) getDriver().findElement(By.id(SubmissionDialog.ID)))
         .wrap(SubmissionDialogElement.class);
