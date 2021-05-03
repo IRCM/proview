@@ -473,7 +473,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     Path source = Paths.get(getClass().getResource("/submissionfile1.txt").toURI());
     openView(VIEW_NAME, "1");
     SubmissionViewElement view = $(SubmissionViewElement.class).id(ID);
-    AnchorElement filename = view.filename(0);
+    AnchorElement filename = view.files().filename(0);
     filename.click();
 
     // Wait for file to download.

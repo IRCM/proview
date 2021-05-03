@@ -28,8 +28,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.HEADER;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
-import com.vaadin.flow.component.grid.testbench.GridElement;
-import com.vaadin.flow.component.html.testbench.AnchorElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.flow.component.tabs.testbench.TabElement;
@@ -85,12 +83,8 @@ public class SubmissionViewElement extends VerticalLayoutElement {
     return $(UploadElement.class).id(UPLOAD);
   }
 
-  public GridElement files() {
-    return $(GridElement.class).id(FILES);
-  }
-
-  public AnchorElement filename(int row) {
-    return files().getCell(row, FILENAME_COLUMN).$(AnchorElement.class).first();
+  public SubmissionViewFilesElement files() {
+    return $(SubmissionViewFilesElement.class).id(FILES);
   }
 
   public ButtonElement save() {
