@@ -58,7 +58,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
-    view.doubleClickLaboratory(0);
+    view.users().laboratoryCell(0).doubleClick();
     LaboratoryDialogElement dialog = view.laboratoryDialog();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.name()).isPresent());
@@ -70,7 +70,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   public void save() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
-    view.doubleClickLaboratory(0);
+    view.users().laboratoryCell(0).doubleClick();
     LaboratoryDialogElement dialog = view.laboratoryDialog();
     fill(dialog);
 
@@ -89,7 +89,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   public void cancel() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
-    view.doubleClickLaboratory(0);
+    view.users().laboratoryCell(0).doubleClick();
     LaboratoryDialogElement dialog = view.laboratoryDialog();
     fill(dialog);
 

@@ -80,7 +80,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(ID);
-    view.doubleClickUser(0);
+    view.users().emailCell(0).doubleClick();
     UserDialogElement dialog = view.dialog();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.userForm().email()).isPresent());
@@ -110,7 +110,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
-    view.doubleClickUser(0);
+    view.users().emailCell(0).doubleClick();
 
     UserDialogElement dialog = view.dialog();
     dialog.userForm().email().setValue(email);
@@ -152,7 +152,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     assertEquals(country, user.getAddress().getCountry());
     assertEquals(postalCode, user.getAddress().getPostalCode());
     assertEquals(rows, view.users().getRowCount());
-    assertEquals(email, view.email(0));
+    assertEquals(email, view.users().email(0));
   }
 
   @Test
@@ -162,7 +162,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
-    view.doubleClickUser(0);
+    view.users().emailCell(0).doubleClick();
 
     UserDialogElement dialog = view.dialog();
     dialog.userForm().email().setValue(email);

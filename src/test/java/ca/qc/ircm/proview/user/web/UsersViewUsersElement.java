@@ -18,29 +18,40 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.UsersView.ADD;
-import static ca.qc.ircm.proview.user.web.UsersView.HEADER;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
+import com.vaadin.flow.component.grid.testbench.GridElement;
+import com.vaadin.flow.component.grid.testbench.GridTHTDElement;
 import com.vaadin.flow.component.html.testbench.DivElement;
-import com.vaadin.flow.component.html.testbench.H2Element;
-import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.elementsbase.Element;
 import org.openqa.selenium.By;
 
 /**
- * {@link UsersView} element.
+ * {@link UsersView} users element.
  */
-@Element("vaadin-vertical-layout")
-public class UsersViewElement extends VerticalLayoutElement {
-  public H2Element header() {
-    return $(H2Element.class).id(HEADER);
+@Element("vaadin-grid")
+public class UsersViewUsersElement extends GridElement {
+  private static final int EMAIL_COLUMN = 0;
+  private static final int LABORATORY_COLUMN = 2;
+  private static final int EDIT_COLUMN = 4;
+
+  public GridTHTDElement emailCell(int row) {
+    return getCell(row, EMAIL_COLUMN);
   }
 
-  public UsersViewUsersElement users() {
-    return $(UsersViewUsersElement.class).first();
+  public GridTHTDElement laboratoryCell(int row) {
+    return getCell(row, LABORATORY_COLUMN);
+  }
+
+  public String email(int row) {
+    return getCell(row, EMAIL_COLUMN).getText();
+  }
+
+  public ButtonElement edit(int row) {
+    return getCell(row, EDIT_COLUMN).$(ButtonElement.class).first();
   }
 
   public DivElement switchFailed() {
