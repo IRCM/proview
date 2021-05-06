@@ -371,7 +371,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);
     presenter.history(submission);
-    verify(ui, never()).navigate(any(Class.class), any());
+    verify(ui, never()).navigate(any(Class.class), any(Object.class));
   }
 
   @Test

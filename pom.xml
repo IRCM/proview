@@ -17,7 +17,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>ca.qc.ircm</groupId>
     <artifactId>parent</artifactId>
@@ -56,7 +57,7 @@
     <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
     <querydsl.version>4.2.1</querydsl.version>
     <shiro.version>1.3.2</shiro.version>
-    <vaadin.version>14.4.10</vaadin.version>
+    <vaadin.version>14.5.3</vaadin.version>
     <scrolllayout.version>2.0.2</scrolllayout.version>
     <guava.version>25.0-jre</guava.version>
     <commons-lang3.version>3.9</commons-lang3.version>
@@ -302,7 +303,8 @@
             <systemPropertyVariables>
               <slow-tests.skip>${slow-tests.skip}</slow-tests.skip>
               <testbench.skip>${testbench.skip}</testbench.skip>
-              <com.vaadin.testbench.Parameters.maxAttempts>${testbench.maxAttempts}</com.vaadin.testbench.Parameters.maxAttempts>
+              <com.vaadin.testbench.Parameters.maxAttempts>${testbench.maxAttempts}
+              </com.vaadin.testbench.Parameters.maxAttempts>
             </systemPropertyVariables>
             <argLine>-Dvaadin.productionMode=true</argLine>
           </configuration>
@@ -395,7 +397,7 @@
           <artifactId>migrations-maven-plugin</artifactId>
           <version>${migrations-maven-plugin.version}</version>
           <configuration>
-              <repository>src/migration</repository>
+            <repository>src/migration</repository>
           </configuration>
           <dependencies>
             <dependency>
@@ -425,7 +427,9 @@
           </configuration>
           <executions>
             <execution>
-              <goals><goal>check</goal></goals>
+              <goals>
+                <goal>check</goal>
+              </goals>
             </execution>
           </executions>
         </plugin>

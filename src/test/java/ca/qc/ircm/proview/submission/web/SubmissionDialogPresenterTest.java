@@ -129,7 +129,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   @Test
   public void edit_New() {
     presenter.edit();
-    verify(ui).navigate(SubmissionView.class, null);
+    verify(ui).navigate(SubmissionView.class, (Long) null);
     verify(dialog).close();
   }
 
@@ -146,7 +146,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   @Test
   public void print_New() {
     presenter.print();
-    verify(ui).navigate(PrintSubmissionView.class, null);
+    verify(ui).navigate(PrintSubmissionView.class, (Long) null);
     verify(dialog).close();
   }
 
