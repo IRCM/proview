@@ -42,7 +42,6 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -106,17 +105,12 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     setResizable(true);
     VerticalLayout layout = new VerticalLayout();
     add(layout);
-    FormLayout formLayout = new FormLayout();
+    HorizontalLayout formLayout = new HorizontalLayout();
     VerticalScrollLayout printContentLayout = new VerticalScrollLayout(printContent);
     printContentLayout.setHeight("600px");
-    if (authorizationService.hasRole(ADMIN)) {
-      formLayout.setResponsiveSteps(new ResponsiveStep("15em", 4));
-      formLayout.add(printContentLayout, 3);
-    } else {
-      formLayout.setResponsiveSteps(new ResponsiveStep("45em", 1));
-      formLayout.add(printContentLayout);
-    }
+    formLayout.add(printContentLayout);
     formLayout.add(submissionForm);
+    formLayout.expand(printContentLayout);
     submissionForm.add(instrument, dataAvailableDate, save);
     submissionForm.setVisible(authorizationService.hasRole(ADMIN));
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
