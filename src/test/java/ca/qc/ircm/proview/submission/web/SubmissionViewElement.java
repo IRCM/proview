@@ -41,8 +41,6 @@ import com.vaadin.testbench.elementsbase.Element;
  */
 @Element("vaadin-vertical-layout")
 public class SubmissionViewElement extends VerticalLayoutElement {
-  private static final int FILENAME_COLUMN = 0;
-
   public H2Element header() {
     return $(H2Element.class).id(HEADER);
   }
