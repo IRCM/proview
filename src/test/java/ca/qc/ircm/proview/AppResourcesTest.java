@@ -19,7 +19,9 @@ package ca.qc.ircm.proview;
 
 import static org.junit.Assert.assertEquals;
 
+import ca.qc.ircm.proview.user.User;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import org.junit.Test;
 
 /**
@@ -47,6 +49,30 @@ public class AppResourcesTest {
   }
 
   @Test
+  public void message_NameReplacements() {
+    AppResources resources = new AppResources(Constants.class.getName(), locale);
+    assertEquals("out of the range 2 to 5", resources.message("outOfRange", 2, 5));
+  }
+
+  @Test
+  public void message_NameReplacementsFrench() {
+    AppResources resources = new AppResources(Constants.class.getName(), Locale.FRENCH);
+    assertEquals("doit être compris entre 2 et 5", resources.message("outOfRange", 2, 5));
+  }
+
+  @Test(expected = MissingResourceException.class)
+  public void message_NameMissing() {
+    AppResources resources = new AppResources(Constants.class.getName(), locale);
+    assertEquals("!{en:Constants.missing_name}!", resources.message("missing_name"));
+  }
+
+  @Test(expected = MissingResourceException.class)
+  public void message_NameMissingFrench() {
+    AppResources resources = new AppResources(Constants.class.getName(), Locale.FRENCH);
+    assertEquals("!{fr:Constants.missing_name}!", resources.message("missing_name"));
+  }
+
+  @Test
   public void message_Class() {
     AppResources resources = new AppResources(Constants.class, locale);
     assertEquals("ProView", resources.message("application.name"));
@@ -62,5 +88,53 @@ public class AppResourcesTest {
   public void message_ClassFrench() {
     AppResources resources = new AppResources(Constants.class, Locale.FRENCH);
     assertEquals("Sauvegarder", resources.message("save"));
+  }
+
+  @Test
+  public void message_ClassReplacements() {
+    AppResources resources = new AppResources(Constants.class, locale);
+    assertEquals("out of the range 2 to 5", resources.message("outOfRange", 2, 5));
+  }
+
+  @Test
+  public void message_ClassReplacementsFrench() {
+    AppResources resources = new AppResources(Constants.class, Locale.FRENCH);
+    assertEquals("doit être compris entre 2 et 5", resources.message("outOfRange", 2, 5));
+  }
+
+  @Test(expected = MissingResourceException.class)
+  public void message_ClassMissing() {
+    AppResources resources = new AppResources(Constants.class, locale);
+    assertEquals("!{en:Constants.missing_name}!", resources.message("missing_name"));
+  }
+
+  @Test(expected = MissingResourceException.class)
+  public void message_ClassMissingFrench() {
+    AppResources resources = new AppResources(Constants.class, Locale.FRENCH);
+    assertEquals("!{fr:Constants.missing_name}!", resources.message("missing_name"));
+  }
+
+  @Test
+  public void message_UserEmail() {
+    AppResources resources = new AppResources(User.class, locale);
+    assertEquals("Email", resources.message("email"));
+  }
+
+  @Test
+  public void message_UserEmailFrench() {
+    AppResources resources = new AppResources(User.class, Locale.FRENCH);
+    assertEquals("Courriel", resources.message("email"));
+  }
+
+  @Test
+  public void message_UserBasenameEmail() {
+    AppResources resources = new AppResources(User.class, locale);
+    assertEquals("Email", resources.message("email"));
+  }
+
+  @Test
+  public void message_UserBasenameEmailFrench() {
+    AppResources resources = new AppResources(User.class, Locale.FRENCH);
+    assertEquals("Courriel", resources.message("email"));
   }
 }
