@@ -97,8 +97,8 @@ public class IntactProteinSubmissionFormPresenter {
   /**
    * Initializes presenter.
    *
-   * @param view
-   *          view
+   * @param form
+   *          form
    */
   void init(IntactProteinSubmissionForm form) {
     this.form = form;
