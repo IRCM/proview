@@ -22,9 +22,11 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -42,6 +44,13 @@ public class SpringConfiguration {
   private MailConfiguration mailConfiguration;
   @Autowired
   private JavaMailSender mailSender;
+
+  @Bean
+  public MessageSource messageSource() {
+    ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+    messageSource.setBasename("AppResources");
+    return messageSource;
+  }
 
   /**
    * Creates Thymeleaf's template engine.
