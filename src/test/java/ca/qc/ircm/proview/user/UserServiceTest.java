@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -236,22 +237,26 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertTrue(find(users, 27).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void all_Filter_AccessDenied_Anonymous() throws Throwable {
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
 
-    service.all(filter);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.all(filter);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void all_Filter_AccessDenied() throws Throwable {
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
 
-    service.all(filter);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.all(filter);
+    });
   }
 
   @Test
@@ -478,7 +483,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(true, user.isManager());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void save_Insert_NewLaboratoryNotManager() throws Throwable {
     Laboratory laboratory = new Laboratory();
     laboratory.setName("Ribonucleoprotein Biochemistry");
@@ -502,7 +507,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    service.save(user, "password");
+    assertThrows(IllegalArgumentException.class, () -> {
+      service.save(user, "password");
+    });
   }
 
   @Test
@@ -676,13 +683,15 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(false, user.isManager());
   }
 
-  @Test(expected = UnmanagedLaboratoryException.class)
+  @Test
   public void save_Update_RemoveManagerUnmanagedLaboratory() throws Throwable {
     User user = repository.findById(25L).orElse(null);
     detach(user);
     user.setManager(false);
 
-    service.save(user, null);
+    assertThrows(UnmanagedLaboratoryException.class, () -> {
+      service.save(user, null);
+    });
   }
 
   @Test
@@ -751,14 +760,16 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals("lab test", user.getLaboratory().getName());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void save_Update_CreateLabNotManager() throws Throwable {
     User user = repository.findById(10L).orElse(null);
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
     user.setLaboratory(new Laboratory("lab test"));
 
-    service.save(user, null);
+    assertThrows(IllegalArgumentException.class, () -> {
+      service.save(user, null);
+    });
   }
 
   @Test

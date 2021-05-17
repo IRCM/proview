@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
@@ -181,10 +182,12 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     assertEquals(false, exists);
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void exists_AccessDenied() throws Throwable {
-    service.exists("CAP_20111013_05");
+    assertThrows(AccessDeniedException.class, () -> {
+      service.exists("CAP_20111013_05");
+    });
   }
 
   @Test
@@ -363,7 +366,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     assertEquals(LocalDate.of(2014, 10, 17), sample.getSubmission().getAnalysisDate());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void updateStatus_AccessDenied_Anonymous() throws Throwable {
     SubmissionSample sample1 = repository.findById(443L).orElse(null);
@@ -377,10 +380,12 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     samples.add(sample2);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    service.updateStatus(samples);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.updateStatus(samples);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void updateStatus_AccessDenied() throws Throwable {
     SubmissionSample sample1 = repository.findById(443L).orElse(null);
@@ -394,6 +399,8 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     samples.add(sample2);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
 
-    service.updateStatus(samples);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.updateStatus(samples);
+    });
   }
 }

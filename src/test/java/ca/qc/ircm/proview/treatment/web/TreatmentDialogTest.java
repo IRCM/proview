@@ -42,6 +42,7 @@ import static ca.qc.ircm.proview.treatment.web.TreatmentDialog.id;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -592,8 +593,10 @@ public class TreatmentDialogTest extends AbstractViewTestCase {
     assertFalse(dialog.piInterval.isVisible());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void setTreatment_Null() {
-    dialog.setTreatment(null);
+    assertThrows(NullPointerException.class, () -> {
+      dialog.setTreatment(null);
+    });
   }
 }

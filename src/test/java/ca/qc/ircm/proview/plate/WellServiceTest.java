@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.plate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
@@ -60,15 +61,19 @@ public class WellServiceTest {
     assertFalse(service.get(null).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void get_AccessDenied_Anonymous() throws Exception {
-    service.get(129L);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.get(129L);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void get_AccessDenied() throws Exception {
-    service.get(129L);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.get(129L);
+    });
   }
 }

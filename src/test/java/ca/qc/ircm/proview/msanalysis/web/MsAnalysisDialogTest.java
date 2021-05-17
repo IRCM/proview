@@ -38,6 +38,7 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -346,8 +347,10 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
         dialog.date.getText());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void setMsAnalysis_Null() {
-    dialog.setMsAnalysis(null);
+    assertThrows(NullPointerException.class, () -> {
+      dialog.setMsAnalysis(null);
+    });
   }
 }

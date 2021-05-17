@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.tube;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -103,16 +104,20 @@ public class TubeServiceTest {
     assertFalse(available);
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void nameAvailable_AccessDenied_Anonymous() throws Throwable {
-    service.nameAvailable("FAM119A_band_01");
+    assertThrows(AccessDeniedException.class, () -> {
+      service.nameAvailable("FAM119A_band_01");
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void nameAvailable_AccessDenied() throws Throwable {
-    service.nameAvailable("FAM119A_band_01");
+    assertThrows(AccessDeniedException.class, () -> {
+      service.nameAvailable("FAM119A_band_01");
+    });
   }
 
   @Test

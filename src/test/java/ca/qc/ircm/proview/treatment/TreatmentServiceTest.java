@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.treatment;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -102,16 +103,20 @@ public class TreatmentServiceTest {
     assertFalse(treatmentService.get(null).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void get_AccessDenied_Anonymous() throws Throwable {
-    treatmentService.get(1L);
+    assertThrows(AccessDeniedException.class, () -> {
+      treatmentService.get(1L);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void get_AccessDenied() throws Throwable {
-    treatmentService.get(1L);
+    assertThrows(AccessDeniedException.class, () -> {
+      treatmentService.get(1L);
+    });
   }
 
   @Test
@@ -147,19 +152,23 @@ public class TreatmentServiceTest {
     assertTrue(treatments.isEmpty());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void all_AccessDenied_Anonymous() throws Throwable {
     Submission submission = submissionRepository.findById(149L).orElse(null);
 
-    treatmentService.all(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      treatmentService.all(submission);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void all_AccessDenied() throws Throwable {
     Submission submission = submissionRepository.findById(149L).orElse(null);
 
-    treatmentService.all(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      treatmentService.all(submission);
+    });
   }
 }

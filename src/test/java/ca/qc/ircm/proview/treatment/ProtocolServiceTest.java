@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.treatment.Protocol.Type.DIGESTION;
 import static ca.qc.ircm.proview.treatment.Protocol.Type.ENRICHMENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -68,16 +69,20 @@ public class ProtocolServiceTest {
     assertFalse(service.get(null).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void get_AccessDenied_Anonymous() throws Throwable {
-    service.get(1L);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.get(1L);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void get_AccessDenied() throws Throwable {
-    service.get(1L);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.get(1L);
+    });
   }
 
   @Test
@@ -98,15 +103,19 @@ public class ProtocolServiceTest {
     assertTrue(find(protocols, 4L).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void all_AccessDenied_Anonymous() throws Throwable {
-    service.all(DIGESTION);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.all(DIGESTION);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void all_AccessDenied() throws Throwable {
-    service.all(DIGESTION);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.all(DIGESTION);
+    });
   }
 }

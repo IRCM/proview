@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -157,11 +158,13 @@ public class SpringDataUserDetailsServiceTest {
     assertTrue(findAuthority(authorities, MANAGER).isPresent());
   }
 
-  @Test(expected = UsernameNotFoundException.class)
+  @Test
   public void loadUserByUsername_NotExists() {
     when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
 
-    userDetailsService.loadUserByUsername("proview@ircm.qc.ca");
+    assertThrows(UsernameNotFoundException.class, () -> {
+      userDetailsService.loadUserByUsername("proview@ircm.qc.ca");
+    });
   }
 
   @Test

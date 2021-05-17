@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.user;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -86,10 +87,12 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
     assertEquals(4, laboratories.size());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void all_AccessDenied() throws Throwable {
-    service.all();
+    assertThrows(AccessDeniedException.class, () -> {
+      service.all();
+    });
   }
 
   @Test

@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.sample;
 
+import static org.junit.Assert.assertThrows;
+
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import org.junit.Test;
@@ -36,7 +38,7 @@ public class SampleContainerVersionTest extends AbstractServiceTestCase {
   @Autowired
   private SampleRepository sampleRepository;
 
-  @Test(expected = ObjectOptimisticLockingFailureException.class)
+  @Test
   public void update_FailVersion() throws Throwable {
     final Sample sample1 = sampleRepository.findById(442L).orElse(null);
     final Sample sample2 = sampleRepository.findById(443L).orElse(null);
@@ -46,6 +48,8 @@ public class SampleContainerVersionTest extends AbstractServiceTestCase {
     sampleContainer1.setSample(sample1);
     sampleContainer2.setSample(sample2);
     repository.saveAndFlush(sampleContainer1);
-    repository.save(sampleContainer2);
+    assertThrows(ObjectOptimisticLockingFailureException.class, () -> {
+      repository.save(sampleContainer2);
+    });
   }
 }

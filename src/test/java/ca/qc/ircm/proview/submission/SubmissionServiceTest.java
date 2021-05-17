@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -527,13 +528,15 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(find(submissions, 34).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void all_AccessDenied() {
     SubmissionFilter filter = mock(SubmissionFilter.class);
     when(filter.predicate()).thenReturn(submission.isNotNull());
 
-    service.all(filter);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.all(filter);
+    });
   }
 
   @Test
@@ -604,13 +607,15 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(3, count);
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void count_AccessDenied() {
     SubmissionFilter filter = mock(SubmissionFilter.class);
     when(filter.predicate()).thenReturn(submission.isNotNull());
 
-    service.count(filter);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.count(filter);
+    });
   }
 
   private Submission submissionForPrint(Service service) {
@@ -2188,7 +2193,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(htmlContent.contains("???"));
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void insert_AccessDenied() {
     SubmissionSample sample = new SubmissionSample();
@@ -2243,7 +2248,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     files.add(gelImage);
     submission.setFiles(files);
 
-    service.insert(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.insert(submission);
+    });
   }
 
   @Test
@@ -2394,7 +2401,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(submission.getId(), submissionLogged.getId());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void update_UpdateUser() throws Exception {
     Submission submission = repository.findById(36L).orElse(null);
     detach(submission);
@@ -2405,10 +2412,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setUser(user);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
-    service.update(submission, null);
+    assertThrows(IllegalArgumentException.class, () -> {
+      service.update(submission, null);
+    });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void update_Received() throws Exception {
     Submission submission = repository.findById(149L).orElse(null);
     detach(submission);
@@ -2416,10 +2425,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       detach(sa);
     });
 
-    service.update(submission, null);
+    assertThrows(IllegalArgumentException.class, () -> {
+      service.update(submission, null);
+    });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void update_AfterReceived() throws Exception {
     Submission submission = repository.findById(147L).orElse(null);
     detach(submission);
@@ -2427,7 +2438,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       detach(sa);
     });
 
-    service.update(submission, null);
+    assertThrows(IllegalArgumentException.class, () -> {
+      service.update(submission, null);
+    });
   }
 
   @Test
@@ -2615,24 +2628,28 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(submission.isHidden());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void hide_AccessDenied_Anonymous() throws Exception {
     Submission submission = repository.findById(147L).orElse(null);
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
-    service.hide(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.hide(submission);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void hide_AccessDenied() throws Exception {
     Submission submission = repository.findById(147L).orElse(null);
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
-    service.hide(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.hide(submission);
+    });
   }
 
   @Test
@@ -2653,7 +2670,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(submission.isHidden());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   @SuppressWarnings("unchecked")
   public void show_AccessDenied_Anonymous() throws Exception {
@@ -2662,10 +2679,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
 
-    service.show(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.show(submission);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   @SuppressWarnings("unchecked")
   public void show_AccessDenied() throws Exception {
@@ -2674,6 +2693,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
 
-    service.show(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.show(submission);
+    });
   }
 }

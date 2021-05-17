@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -61,10 +62,12 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
     assertEquals(null, msAnalysis.getDeletionExplanation());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { USER, MANAGER })
   public void get_NotAdmin() {
-    service.get(1L);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.get(1L);
+    });
   }
 
   @Test
@@ -82,12 +85,14 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
     assertTrue(find(msAnalyses, 21).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { USER, MANAGER })
   public void all_NotAdmin() {
     Submission submission = new Submission(155L);
 
-    service.all(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.all(submission);
+    });
   }
 
   @Test

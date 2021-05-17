@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import ca.qc.ircm.proview.user.User;
 import java.util.Locale;
@@ -60,16 +61,20 @@ public class AppResourcesTest {
     assertEquals("doit être compris entre 2 et 5", resources.message("outOfRange", 2, 5));
   }
 
-  @Test(expected = MissingResourceException.class)
+  @Test
   public void message_NameMissing() {
     AppResources resources = new AppResources(Constants.class.getName(), locale);
-    assertEquals("!{en:Constants.missing_name}!", resources.message("missing_name"));
+    assertThrows(MissingResourceException.class, () -> {
+      assertEquals("!{en:Constants.missing_name}!", resources.message("missing_name"));
+    });
   }
 
-  @Test(expected = MissingResourceException.class)
+  @Test
   public void message_NameMissingFrench() {
     AppResources resources = new AppResources(Constants.class.getName(), Locale.FRENCH);
-    assertEquals("!{fr:Constants.missing_name}!", resources.message("missing_name"));
+    assertThrows(MissingResourceException.class, () -> {
+      assertEquals("!{fr:Constants.missing_name}!", resources.message("missing_name"));
+    });
   }
 
   @Test
@@ -102,16 +107,20 @@ public class AppResourcesTest {
     assertEquals("doit être compris entre 2 et 5", resources.message("outOfRange", 2, 5));
   }
 
-  @Test(expected = MissingResourceException.class)
+  @Test
   public void message_ClassMissing() {
     AppResources resources = new AppResources(Constants.class, locale);
-    assertEquals("!{en:Constants.missing_name}!", resources.message("missing_name"));
+    assertThrows(MissingResourceException.class, () -> {
+      assertEquals("!{en:Constants.missing_name}!", resources.message("missing_name"));
+    });
   }
 
-  @Test(expected = MissingResourceException.class)
+  @Test
   public void message_ClassMissingFrench() {
     AppResources resources = new AppResources(Constants.class, Locale.FRENCH);
-    assertEquals("!{fr:Constants.missing_name}!", resources.message("missing_name"));
+    assertThrows(MissingResourceException.class, () -> {
+      assertEquals("!{fr:Constants.missing_name}!", resources.message("missing_name"));
+    });
   }
 
   @Test

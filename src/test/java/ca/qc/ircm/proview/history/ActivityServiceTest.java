@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.history;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -413,20 +414,24 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertFalse(activityService.record(activity).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void record_AccessDenied_Anonymous() throws Exception {
     Activity activity = repository.findById(5639L).orElse(null);
 
-    activityService.record(activity);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.record(activity);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void record_AccessDenied() throws Exception {
     Activity activity = repository.findById(5639L).orElse(null);
 
-    activityService.record(activity);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.record(activity);
+    });
   }
 
   @Test
@@ -468,20 +473,24 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertTrue(activities.isEmpty());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void all_AccessDenied_Anonymous() throws Exception {
     Submission submission = submissionRepository.findById(1L).orElse(null);
 
-    activityService.all(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.all(submission);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void all_AccessDenied() throws Exception {
     Submission submission = submissionRepository.findById(1L).orElse(null);
 
-    activityService.all(submission);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.all(submission);
+    });
   }
 
   @Test
@@ -508,20 +517,24 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertTrue(activities.isEmpty());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void allInsertActivities_AccessDenied_Anonymous() throws Exception {
     Plate plate = new Plate(26L);
 
-    activityService.allInsertActivities(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.allInsertActivities(plate);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void allInsertActivities_AccessDenied() throws Exception {
     Plate plate = new Plate(26L);
 
-    activityService.allInsertActivities(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.allInsertActivities(plate);
+    });
   }
 
   @Test
@@ -555,20 +568,24 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertTrue(activities.isEmpty());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void allUpdateWellActivities_AccessDenied_Anonymous() throws Exception {
     Plate plate = new Plate(26L);
 
-    activityService.allUpdateWellActivities(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.allUpdateWellActivities(plate);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void allUpdateWellActivities_AccessDenied() throws Exception {
     Plate plate = new Plate(26L);
 
-    activityService.allUpdateWellActivities(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.allUpdateWellActivities(plate);
+    });
   }
 
   @Test
@@ -620,20 +637,24 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(0, activities.size());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void allTreatmentActivities_AccessDenied_Anonymous() throws Exception {
     Plate plate = new Plate(26L);
 
-    activityService.allTreatmentActivities(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.allTreatmentActivities(plate);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void allTreatmentActivities_AccessDenied() throws Exception {
     Plate plate = new Plate(26L);
 
-    activityService.allTreatmentActivities(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.allTreatmentActivities(plate);
+    });
   }
 
   @Test
@@ -667,20 +688,24 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(0, activities.size());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void allMsAnalysisActivities_AccessDenied_Anonymous() throws Exception {
     Plate plate = new Plate(115L);
 
-    activityService.allMsAnalysisActivities(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.allMsAnalysisActivities(plate);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void allMsAnalysisActivities_AccessDenied() throws Exception {
     Plate plate = new Plate(115L);
 
-    activityService.allMsAnalysisActivities(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.allMsAnalysisActivities(plate);
+    });
   }
 
   @Test
@@ -724,20 +749,24 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     }
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void description_AccessDenied_Anonymous() throws Exception {
     Activity activity = repository.findById(5543L).orElse(null);
 
-    activityService.description(activity, locale);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.description(activity, locale);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void description_AccessDenied() throws Exception {
     Activity activity = repository.findById(5543L).orElse(null);
 
-    activityService.description(activity, locale);
+    assertThrows(AccessDeniedException.class, () -> {
+      activityService.description(activity, locale);
+    });
   }
 
   @Test

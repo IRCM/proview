@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
@@ -217,10 +218,12 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     assertEquals(false, available);
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void nameAvailable_AccessDenied_Anonymous() throws Throwable {
-    service.nameAvailable("unit_test");
+    assertThrows(AccessDeniedException.class, () -> {
+      service.nameAvailable("unit_test");
+    });
   }
 
   private Plate plateForPrint() {
@@ -285,16 +288,20 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     assertFalse(service.lastTreatmentOrAnalysisDate(null).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void lastTreatmentOrAnalysisDate_AccessDenied_Anonymous() throws Throwable {
-    service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null));
+    assertThrows(AccessDeniedException.class, () -> {
+      service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null));
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void lastTreatmentOrAnalysisDate_AccessDenied() throws Throwable {
-    service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null));
+    assertThrows(AccessDeniedException.class, () -> {
+      service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null));
+    });
   }
 
   @Test
@@ -314,24 +321,28 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     assertEquals("test_plate_4896415", plate.getName());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void insert_AccessDenied_Anonymous() throws Throwable {
     Plate plate = new Plate();
     plate.setName("test_plate_4896415");
     when(plateActivityService.insert(any(Plate.class))).thenReturn(activity);
 
-    service.insert(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.insert(plate);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void insert_AccessDenied() throws Throwable {
     Plate plate = new Plate();
     plate.setName("test_plate_4896415");
     when(plateActivityService.insert(any(Plate.class))).thenReturn(activity);
 
-    service.insert(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.insert(plate);
+    });
   }
 
   @Test
@@ -351,24 +362,28 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     assertEquals("test_plate_4896415", plate.getName());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void update_AccessDenied_Anonymous() throws Throwable {
     Plate plate = repository.findById(26L).orElse(null);
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
 
-    service.update(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.update(plate);
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void update_AccessDenied() throws Throwable {
     Plate plate = repository.findById(26L).orElse(null);
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
 
-    service.update(plate);
+    assertThrows(AccessDeniedException.class, () -> {
+      service.update(plate);
+    });
   }
 
   @Test
@@ -417,7 +432,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     }
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void ban_AccessDenied_Anonymous() throws Throwable {
     Plate plate = repository.findById(26L).orElse(null);
@@ -426,10 +441,12 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     WellLocation to = new WellLocation(5, 4);
     when(plateActivityService.ban(anyCollection(), any(String.class))).thenReturn(activity);
 
-    service.ban(plate, from, to, "unit test");
+    assertThrows(AccessDeniedException.class, () -> {
+      service.ban(plate, from, to, "unit test");
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void ban_AccessDenied() throws Throwable {
     Plate plate = repository.findById(26L).orElse(null);
@@ -438,7 +455,9 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     WellLocation to = new WellLocation(5, 4);
     when(plateActivityService.ban(anyCollection(), any(String.class))).thenReturn(activity);
 
-    service.ban(plate, from, to, "unit test");
+    assertThrows(AccessDeniedException.class, () -> {
+      service.ban(plate, from, to, "unit test");
+    });
   }
 
   @Test
@@ -488,7 +507,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     assertTrue(find(loggedWells, 223L).isPresent());
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithAnonymousUser
   public void activate_AccessDenied_Anonymous() throws Throwable {
     Plate plate = repository.findById(26L).orElse(null);
@@ -496,10 +515,12 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     WellLocation location = new WellLocation(6, 11);
     when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
 
-    service.activate(plate, location, location, "unit test");
+    assertThrows(AccessDeniedException.class, () -> {
+      service.activate(plate, location, location, "unit test");
+    });
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void activate_AccessDenied() throws Throwable {
     Plate plate = repository.findById(26L).orElse(null);
@@ -507,6 +528,8 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     WellLocation location = new WellLocation(6, 11);
     when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
 
-    service.activate(plate, location, location, "unit test");
+    assertThrows(AccessDeniedException.class, () -> {
+      service.activate(plate, location, location, "unit test");
+    });
   }
 }
