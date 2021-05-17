@@ -52,7 +52,6 @@
   </issueManagement>
   <properties>
     <main-class>ca.qc.ircm.proview.Main</main-class>
-    <slow-tests.skip>false</slow-tests.skip>
     <javac.version>1.8</javac.version>
     <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
     <querydsl.version>4.2.1</querydsl.version>
@@ -289,9 +288,6 @@
               <exclude>ca/qc/ircm/proview/test/**/*.java</exclude>
               <exclude>ca/qc/ircm/proview/**/*ItTest.java</exclude>
             </excludes>
-            <systemPropertyVariables>
-              <slow-tests.skip>${slow-tests.skip}</slow-tests.skip>
-            </systemPropertyVariables>
           </configuration>
         </plugin>
         <plugin>
@@ -301,7 +297,6 @@
               <include>ca/qc/ircm/proview/**/*ItTest.java</include>
             </includes>
             <systemPropertyVariables>
-              <slow-tests.skip>${slow-tests.skip}</slow-tests.skip>
               <testbench.skip>${testbench.skip}</testbench.skip>
               <com.vaadin.testbench.Parameters.maxAttempts>${testbench.maxAttempts}
               </com.vaadin.testbench.Parameters.maxAttempts>
@@ -499,17 +494,6 @@
           <url>https://maven.vaadin.com/vaadin-addons</url>
         </repository>
       </repositories>
-    </profile>
-    <profile>
-      <id>test-quick</id>
-      <activation>
-        <property>
-          <name>quick</name>
-        </property>
-      </activation>
-      <properties>
-        <slow-tests.skip>true</slow-tests.skip>
-      </properties>
     </profile>
     <profile>
       <id>firefox</id>
