@@ -414,10 +414,13 @@
               <yml>SCRIPT_STYLE</yml>
               <ini>SEMICOLON_STYLE</ini>
               <scss>JAVADOC_STYLE</scss>
+              <ldif>SCRIPT_STYLE</ldif>
             </mapping>
             <excludes>
               <exclude>**/.*</exclude>
               <exclude>**/*.txt</exclude>
+              <exclude>**/*.ser</exclude>
+              <exclude>*.log*</exclude>
             </excludes>
           </configuration>
           <executions>
