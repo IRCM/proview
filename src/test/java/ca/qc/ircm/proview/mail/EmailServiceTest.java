@@ -17,19 +17,19 @@
 
 package ca.qc.ircm.proview.mail;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.test.config.SmtpPortRandomizer;
 import ca.qc.ircm.proview.user.User;
-import com.icegreen.greenmail.junit4.GreenMailRule;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
 import java.io.PrintWriter;
@@ -41,20 +41,18 @@ import javax.mail.Multipart;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.mail.util.MimeMessageParser;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link EmailService}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(initializers = SmtpPortRandomizer.class)
 @NonTransactionalTestAnnotations
 public class EmailServiceTest {
@@ -68,15 +66,16 @@ public class EmailServiceTest {
   private AuthorizationService authorizationService;
   @Value("${spring.mail.port}")
   private int smtpPort;
-  @Rule
-  public GreenMailRule greenMailRule;
+  @RegisterExtension
+  public GreenMailExtension greenMail;
 
   @PostConstruct
   public void initGreenMail() {
-    greenMailRule = new GreenMailRule(new ServerSetup(smtpPort, null, ServerSetup.PROTOCOL_SMTP));
+    greenMail = new GreenMailExtension(new ServerSetup(smtpPort, null, ServerSetup.PROTOCOL_SMTP));
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   public void textEmail() throws Throwable {
     MimeMessageHelper email = emailService.textEmail();
 
@@ -86,7 +85,8 @@ public class EmailServiceTest {
     assertEquals(templateMessage.getContent(), email.getMimeMessage().getContent());
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   public void htmlEmail() throws Throwable {
     MimeMessageHelper email = emailService.htmlEmail();
 
@@ -100,7 +100,8 @@ public class EmailServiceTest {
     assertNull(mimeMessageParser.getPlainContent());
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   public void sendEmail_Text() throws Throwable {
     String receiver = "liam.li@ircm.qc.ca";
     String subject = "test subject";
@@ -112,7 +113,7 @@ public class EmailServiceTest {
 
     emailService.send(email);
 
-    MimeMessage[] messages = greenMailRule.getReceivedMessages();
+    MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
     MimeMessage message = messages[0];
     assertEquals(subject, message.getSubject());
@@ -130,7 +131,8 @@ public class EmailServiceTest {
     assertEquals(content, body);
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   public void sendEmail_HtmlAndText() throws Throwable {
     String receiver = "liam.li@ircm.qc.ca";
     String subject = "test subject";
@@ -143,7 +145,7 @@ public class EmailServiceTest {
 
     emailService.send(email);
 
-    MimeMessage[] messages = greenMailRule.getReceivedMessages();
+    MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
     MimeMessage message = messages[0];
     assertEquals(subject, message.getSubject());
@@ -162,7 +164,8 @@ public class EmailServiceTest {
     assertEquals(textContent, mimeMessageParser.getPlainContent());
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   public void sendEmail_ErrorText() throws Throwable {
     String receiver = "liam.li@ircm.qc.ca";
     String subject = "test subject";
@@ -171,12 +174,13 @@ public class EmailServiceTest {
     email.addTo(receiver);
     email.setSubject(subject);
     email.setText(content);
-    greenMailRule.stop();
+    greenMail.stop();
 
     emailService.send(email);
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   public void sendEmail_ErrorHtmlAndText() throws Throwable {
     String receiver = "liam.li@ircm.qc.ca";
     String subject = "test subject";
@@ -186,12 +190,13 @@ public class EmailServiceTest {
     email.addTo(receiver);
     email.setSubject(subject);
     email.setText(textContent, htmlContent);
-    greenMailRule.stop();
+    greenMail.stop();
 
     emailService.send(email);
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   public void sendError() throws Throwable {
     Exception error = new IllegalStateException("test");
     StringWriter writer = new StringWriter();
@@ -203,7 +208,7 @@ public class EmailServiceTest {
 
     emailService.sendError(error);
 
-    MimeMessage[] messages = greenMailRule.getReceivedMessages();
+    MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
     MimeMessage message = messages[0];
     assertEquals(mailConfiguration.getSubject(), message.getSubject());
@@ -224,7 +229,8 @@ public class EmailServiceTest {
     assertEquals(expectedBody, body);
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   public void sendError_NoCurrentUser() throws Throwable {
     Exception error = new IllegalStateException("test");
     StringWriter writer = new StringWriter();
@@ -234,7 +240,7 @@ public class EmailServiceTest {
 
     emailService.sendError(error);
 
-    MimeMessage[] messages = greenMailRule.getReceivedMessages();
+    MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
     MimeMessage message = messages[0];
     assertEquals(mailConfiguration.getSubject(), message.getSubject());

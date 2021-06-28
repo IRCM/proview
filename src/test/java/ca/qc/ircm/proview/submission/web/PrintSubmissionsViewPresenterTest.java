@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -31,18 +31,15 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link PrintSubmissionViewPresenter}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class PrintSubmissionsViewPresenterTest {
   @Autowired
@@ -57,7 +54,7 @@ public class PrintSubmissionsViewPresenterTest {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     view.header = new H2();
     view.secondHeader = new H3();

@@ -18,10 +18,10 @@
 package ca.qc.ircm.proview.treatment;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import ca.qc.ircm.proview.submission.Submission;
@@ -30,18 +30,15 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link TreatmentService}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 @WithMockUser(authorities = UserRole.ADMIN)
 public class TreatmentServiceTest {
@@ -138,10 +135,10 @@ public class TreatmentServiceTest {
 
     assertEquals(12, treatments.size());
     for (long id = 209; id < 214; id++) {
-      assertTrue("Treatment " + id + " not found", find(treatments, id).isPresent());
+      assertTrue(find(treatments, id).isPresent(), "Treatment " + id + " not found");
     }
     for (long id = 215; id <= 221; id++) {
-      assertTrue("Treatment " + id + " not found", find(treatments, id).isPresent());
+      assertTrue(find(treatments, id).isPresent(), "Treatment " + id + " not found");
     }
   }
 

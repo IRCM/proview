@@ -24,7 +24,7 @@ import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.HEADER;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import ca.qc.ircm.proview.AppResources;
@@ -40,16 +40,13 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link GuidelinesView}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class GuidelinesViewTest extends AbstractKaribuTestCase {
   private GuidelinesView view;
@@ -62,7 +59,7 @@ public class GuidelinesViewTest extends AbstractKaribuTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     ui.setLocale(locale);
     view = new GuidelinesView(guidelinesConfiguration);

@@ -26,8 +26,8 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.web.ProfileView.HEADER;
 import static ca.qc.ircm.proview.user.web.ProfileView.ID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,17 +42,14 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
 import java.util.Locale;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link ProfileView}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ProfileViewTest extends AbstractViewTestCase {
   private ProfileView view;
@@ -72,7 +69,7 @@ public class ProfileViewTest extends AbstractViewTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     form = new UserForm(formPresenter, defaultAddressConfiguration);

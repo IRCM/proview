@@ -24,10 +24,10 @@ import static ca.qc.ircm.proview.treatment.TreatmentType.FRACTIONATION;
 import static ca.qc.ircm.proview.treatment.TreatmentType.SOLUBILISATION;
 import static ca.qc.ircm.proview.treatment.TreatmentType.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.treatment.TreatmentType.TRANSFER;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link TreatmentType}.

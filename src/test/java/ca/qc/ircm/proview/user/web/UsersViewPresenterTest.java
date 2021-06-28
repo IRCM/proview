@@ -23,10 +23,10 @@ import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USERNAME;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER_FORM;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS_REQUIRED;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -61,20 +61,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link UsersViewPresenter}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UsersViewPresenterTest extends AbstractViewTestCase {
   @Autowired
@@ -108,7 +105,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   @SuppressWarnings("unchecked")
   public void beforeTest() {
     view.header = new H2();
@@ -135,7 +132,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
-      assertTrue(user.toString(), users.contains(user));
+      assertTrue(users.contains(user), user.toString());
     }
     assertEquals(0, view.users.getSelectedItems().size());
     users.forEach(user -> view.users.select(user));
@@ -154,7 +151,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
-      assertTrue(user.toString(), users.contains(user));
+      assertTrue(users.contains(user), user.toString());
     }
     assertEquals(0, view.users.getSelectedItems().size());
     users.forEach(user -> view.users.select(user));
@@ -174,7 +171,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
-      assertTrue(user.toString(), users.contains(user));
+      assertTrue(users.contains(user), user.toString());
     }
     assertEquals(0, view.users.getSelectedItems().size());
     users.forEach(user -> view.users.select(user));

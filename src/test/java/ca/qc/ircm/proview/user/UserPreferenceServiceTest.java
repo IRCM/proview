@@ -19,9 +19,9 @@ package ca.qc.ircm.proview.user;
 
 import static ca.qc.ircm.proview.user.QPreference.preference;
 import static ca.qc.ircm.proview.user.QUserPreference.userPreference;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
@@ -31,17 +31,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link UserPreferenceService}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UserPreferenceServiceTest {
   private static final String PREFERENCE_1 = "preference_1";
@@ -61,7 +58,7 @@ public class UserPreferenceServiceTest {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     user = userRepository.findById(2L).get();
     when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));

@@ -22,10 +22,10 @@ import static ca.qc.ircm.proview.user.PhoneNumberType.MOBILE;
 import static ca.qc.ircm.proview.user.PhoneNumberType.WORK;
 import static java.util.Locale.ENGLISH;
 import static java.util.Locale.FRENCH;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ca.qc.ircm.proview.AppResources;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link PhoneNumberType}.

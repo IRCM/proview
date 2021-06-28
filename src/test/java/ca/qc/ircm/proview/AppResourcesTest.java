@@ -17,13 +17,13 @@
 
 package ca.qc.ircm.proview;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.qc.ircm.proview.user.User;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link AppResources}.

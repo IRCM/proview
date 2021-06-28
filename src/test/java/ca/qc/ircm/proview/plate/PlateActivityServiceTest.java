@@ -17,10 +17,10 @@
 
 package ca.qc.ircm.proview.plate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.ActionType;
@@ -38,17 +38,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link PlateActivityService}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PlateActivityServiceTest extends AbstractServiceTestCase {
   @Autowired
@@ -62,7 +59,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));

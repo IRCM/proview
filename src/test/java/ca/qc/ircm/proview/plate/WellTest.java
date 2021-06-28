@@ -17,17 +17,14 @@
 
 package ca.qc.ircm.proview.plate;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link Well}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class WellTest {
   @Test

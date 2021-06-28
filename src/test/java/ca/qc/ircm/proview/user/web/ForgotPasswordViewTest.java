@@ -28,8 +28,8 @@ import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.HEADER;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.ID;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.MESSAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,16 +44,13 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
 import java.util.Locale;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link ForgotPasswordView}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class ForgotPasswordViewTest extends AbstractViewTestCase {
   private ForgotPasswordView view;
@@ -69,7 +66,7 @@ public class ForgotPasswordViewTest extends AbstractViewTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     view = new ForgotPasswordView(presenter);

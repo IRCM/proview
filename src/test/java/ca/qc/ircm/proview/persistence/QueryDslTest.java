@@ -20,9 +20,9 @@ package ca.qc.ircm.proview.persistence;
 import static ca.qc.ircm.proview.persistence.QueryDsl.direction;
 import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link QueryDsl}.

@@ -17,11 +17,11 @@
 
 package ca.qc.ircm.proview.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,10 +32,9 @@ import ca.qc.ircm.proview.user.UserRole;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
@@ -51,12 +50,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.authentication.switchuser.SwitchUserGrantedAuthority;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link AuthorizationService}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class AuthorizationServiceTest {
   private static final String ADMIN = UserRole.ADMIN;
@@ -77,7 +74,7 @@ public class AuthorizationServiceTest {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     //subject = SecurityUtils.getSubject();
     authorizationService.setPermissionEvaluator(permissionEvaluator);
@@ -178,14 +175,14 @@ public class AuthorizationServiceTest {
 
   @Test
   @WithUserDetails("christian.poitras@ircm.qc.ca")
-  @Ignore("User does not have expired password")
+  @Disabled("User does not have expired password")
   public void removeForceChangePasswordRole() throws Throwable {
     fail("Program test");
   }
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  @Ignore("User does not have expired password")
+  @Disabled("User does not have expired password")
   public void removeForceChangePasswordRole_NoForceChangePasswordRole() throws Throwable {
     fail("Program test");
   }

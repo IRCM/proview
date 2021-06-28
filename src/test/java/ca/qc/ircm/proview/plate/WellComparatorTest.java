@@ -17,11 +17,11 @@
 
 package ca.qc.ircm.proview.plate;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.plate.WellComparator.Compare;
 import java.time.LocalDateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link WellComparator}.

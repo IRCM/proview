@@ -33,7 +33,7 @@ import static ca.qc.ircm.proview.web.ContactView.NAME;
 import static ca.qc.ircm.proview.web.ContactView.PHONE;
 import static ca.qc.ircm.proview.web.ContactView.PROTEOMIC;
 import static ca.qc.ircm.proview.web.ContactView.WEBSITE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -45,15 +45,12 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Locale;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link ContactView}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class ContactViewTest extends AbstractViewTestCase {
   private ContactView view;
@@ -64,7 +61,7 @@ public class ContactViewTest extends AbstractViewTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     view = new ContactView();

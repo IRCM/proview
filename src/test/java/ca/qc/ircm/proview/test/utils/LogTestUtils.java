@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.test.utils;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.history.UpdateActivity;
 import java.util.Collection;
@@ -52,11 +52,12 @@ public class LogTestUtils {
     }
 
     for (ComparableUpdateActivity actual : comparableActuals) {
-      assertTrue("Activity " + actual + " not expected", comparableExpecteds.contains(actual));
+      assertTrue(comparableExpecteds.contains(actual),
+          () -> "Activity " + actual + " not expected");
     }
     for (ComparableUpdateActivity expected : comparableExpecteds) {
-      assertTrue("Expected to find " + expected + " in sample update activity",
-          comparableActuals.contains(expected));
+      assertTrue(comparableActuals.contains(expected),
+          () -> "Expected to find " + expected + " in sample update activity");
     }
   }
 }

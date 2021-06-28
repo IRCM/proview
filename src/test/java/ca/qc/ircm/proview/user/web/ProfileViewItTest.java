@@ -22,10 +22,10 @@ import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.user.web.ProfileView.ID;
 import static ca.qc.ircm.proview.user.web.ProfileView.SAVED;
 import static ca.qc.ircm.proview.user.web.ProfileView.VIEW_NAME;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -40,18 +40,15 @@ import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import javax.persistence.EntityManager;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Integration tests for {@link ProfileView}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ProfileViewItTest extends AbstractTestBenchTestCase {

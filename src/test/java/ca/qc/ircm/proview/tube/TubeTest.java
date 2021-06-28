@@ -17,17 +17,14 @@
 
 package ca.qc.ircm.proview.tube;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link Tube}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class TubeTest {
   @Test

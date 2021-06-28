@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.files.web;
 
 import static ca.qc.ircm.proview.files.web.CategoryComponent.CATEGORY;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.files.Category;
@@ -31,16 +31,13 @@ import com.vaadin.flow.component.html.Anchor;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link CategoryComponent}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class CategoryComponentTest extends AbstractKaribuTestCase {
   private CategoryComponent component;
@@ -55,7 +52,7 @@ public class CategoryComponentTest extends AbstractKaribuTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(category.getName()).thenReturn("test category");
     when(category.getGuidelines()).thenReturn(guidelines);

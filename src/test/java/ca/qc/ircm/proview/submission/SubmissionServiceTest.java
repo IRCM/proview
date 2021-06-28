@@ -19,13 +19,13 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
@@ -75,10 +75,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -90,12 +89,10 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link SubmissionService}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 @WithMockUser
 public class SubmissionServiceTest extends AbstractServiceTestCase {
@@ -138,7 +135,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() throws Throwable {
     user = userRepository.findById(4L).orElse(null);
     when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
@@ -468,7 +465,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void all_SortSampleName() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
@@ -484,7 +481,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void all_SortSampleStatus() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
@@ -500,7 +497,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void all_SortResults() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
@@ -1346,9 +1343,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(resources.message("submission.highResolution.true")));
     assertTrue(content.contains("class=\"solvent\""));
     for (Solvent solvent : Solvent.values()) {
-      assertEquals(solvent.name(),
+      assertEquals(
           submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
-          content.contains(solvent.getLabel(locale)));
+          content.contains(solvent.getLabel(locale)), solvent.name());
     }
     assertTrue(content.contains("class=\"comment\""));
     assertTrue(content.contains(formatMultiline(submission.getComment())));
@@ -1469,10 +1466,11 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"solvent\""));
     assertFalse(content.contains(Solvent.OTHER.getLabel(locale)));
     for (Solvent solvent : Solvent.values()) {
-      assertEquals(solvent.name(),
+      assertEquals(
           submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
           content.contains(
-              solvent == Solvent.OTHER ? submission.getOtherSolvent() : solvent.getLabel(locale)));
+              solvent == Solvent.OTHER ? submission.getOtherSolvent() : solvent.getLabel(locale)),
+          solvent.name());
     }
   }
 

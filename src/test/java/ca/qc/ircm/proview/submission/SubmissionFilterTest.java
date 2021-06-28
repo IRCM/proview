@@ -24,9 +24,9 @@ import static ca.qc.ircm.proview.sample.SampleStatus.RECEIVED;
 import static ca.qc.ircm.proview.sample.SampleStatus.WAITING;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -49,18 +49,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link SubmissionFilter}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class SubmissionFilterTest {
   private SubmissionFilter filter;
@@ -72,7 +69,7 @@ public class SubmissionFilterTest {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() throws Throwable {
     filter = new SubmissionFilter();
   }

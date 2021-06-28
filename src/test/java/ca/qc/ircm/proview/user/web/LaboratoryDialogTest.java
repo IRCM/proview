@@ -27,8 +27,8 @@ import static ca.qc.ircm.proview.user.LaboratoryProperties.NAME;
 import static ca.qc.ircm.proview.user.web.LaboratoryDialog.HEADER;
 import static ca.qc.ircm.proview.user.web.LaboratoryDialog.ID;
 import static ca.qc.ircm.proview.user.web.LaboratoryDialog.id;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -47,17 +47,14 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Locale;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link LaboratoryDialog}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class LaboratoryDialogTest extends AbstractViewTestCase {
   private LaboratoryDialog dialog;
@@ -77,7 +74,7 @@ public class LaboratoryDialogTest extends AbstractViewTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     dialog = new LaboratoryDialog(presenter);

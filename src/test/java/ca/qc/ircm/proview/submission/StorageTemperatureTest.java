@@ -19,10 +19,10 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.submission.StorageTemperature.LOW;
 import static ca.qc.ircm.proview.submission.StorageTemperature.MEDIUM;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link StorageTemperature}.

@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.ActionType;
@@ -36,17 +36,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link SampleActivityService}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class SampleActivityServiceTest extends AbstractServiceTestCase {
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
@@ -62,7 +59,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     user = new User(4L);
     when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));

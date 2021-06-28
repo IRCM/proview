@@ -39,9 +39,9 @@ import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.SAMP
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.VOLUME_PLACEHOLDER;
 import static ca.qc.ircm.proview.submission.web.IntactProteinSubmissionForm.id;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,16 +59,13 @@ import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.List;
 import java.util.Locale;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link IntactProteinSubmissionForm}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
   private IntactProteinSubmissionForm form;
@@ -85,7 +82,7 @@ public class IntactProteinSubmissionFormTest extends AbstractViewTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     form = new IntactProteinSubmissionForm(presenter);

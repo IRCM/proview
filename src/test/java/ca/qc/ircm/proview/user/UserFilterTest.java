@@ -18,26 +18,23 @@
 package ca.qc.ircm.proview.user;
 
 import static ca.qc.ircm.proview.user.QUser.user;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.core.types.Predicate;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link UserFilter}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UserFilterTest {
   private UserFilter filter;
 
-  @Before
+  @BeforeEach
   public void beforeTest() {
     filter = new UserFilter();
   }

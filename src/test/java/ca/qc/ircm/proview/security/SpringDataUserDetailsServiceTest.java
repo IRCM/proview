@@ -21,9 +21,9 @@ import static ca.qc.ircm.proview.user.UserAuthority.FORCE_CHANGE_PASSWORD;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.user.UserRole.USER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,21 +38,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link SpringDataUserDetailsService}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class SpringDataUserDetailsServiceTest {
   private SpringDataUserDetailsService userDetailsService;
@@ -63,7 +60,7 @@ public class SpringDataUserDetailsServiceTest {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     userDetailsService = new SpringDataUserDetailsService(userRepository);
     user = new User();
@@ -168,7 +165,7 @@ public class SpringDataUserDetailsServiceTest {
   }
 
   @Test
-  @Ignore("Expired password not supported")
+  @Disabled("Expired password not supported")
   public void loadUserByUsername_ExpiredPassword() {
     //user.setExpiredPassword(true);
 

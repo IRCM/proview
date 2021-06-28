@@ -24,7 +24,7 @@ import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.HEADER;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.ID;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.SECOND_HEADER;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,17 +38,14 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
 import java.util.Locale;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link PrintSubmissionView}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PrintSubmissionViewTest extends AbstractViewTestCase {
   private PrintSubmissionView view;
@@ -63,7 +60,7 @@ public class PrintSubmissionViewTest extends AbstractViewTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     view = new PrintSubmissionView(presenter, printContent);

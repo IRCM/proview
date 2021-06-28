@@ -21,8 +21,8 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.INVALID;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SAVED;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SEPARATOR;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
@@ -43,16 +43,13 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import java.util.Locale;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link UseForgotPasswordViewPresenter}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class UseForgotPasswordViewPresenterTest extends AbstractViewTestCase {
   private UseForgotPasswordViewPresenter presenter;
@@ -71,7 +68,7 @@ public class UseForgotPasswordViewPresenterTest extends AbstractViewTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     presenter = new UseForgotPasswordViewPresenter(service);
     view.header = new H2();

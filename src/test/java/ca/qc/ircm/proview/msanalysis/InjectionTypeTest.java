@@ -24,10 +24,10 @@ import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.Q_TOF;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TOF;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TSQ_VANTAGE;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.VELOS;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link InjectionType}.

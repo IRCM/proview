@@ -20,10 +20,10 @@ package ca.qc.ircm.proview.sample;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.DIGESTED;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.OTHER;
 import static ca.qc.ircm.proview.sample.ProteolyticDigestion.TRYPSIN;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link ProteolyticDigestion}.

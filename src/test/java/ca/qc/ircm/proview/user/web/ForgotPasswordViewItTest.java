@@ -22,8 +22,8 @@ import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.ID;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.SAVED;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.VIEW_NAME;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -34,17 +34,14 @@ import ca.qc.ircm.proview.user.ForgotPasswordRepository;
 import ca.qc.ircm.proview.web.SigninView;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Integration tests for {@link ForgotPasswordView}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   @SuppressWarnings("unused")

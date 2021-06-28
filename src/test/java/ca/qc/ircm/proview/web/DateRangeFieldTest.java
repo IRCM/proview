@@ -29,10 +29,10 @@ import static ca.qc.ircm.proview.web.DateRangeField.CLASS_NAME;
 import static ca.qc.ircm.proview.web.DateRangeField.FROM;
 import static ca.qc.ircm.proview.web.DateRangeField.FROM_AFTER_TO;
 import static ca.qc.ircm.proview.web.DateRangeField.TO;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
@@ -46,16 +46,13 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link DateRangeField}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class DateRangeFieldTest extends AbstractViewTestCase {
   private DateRangeField dateRange;
@@ -67,7 +64,7 @@ public class DateRangeFieldTest extends AbstractViewTestCase {
   /**
    * Before each test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     dateRange = new DateRangeField();

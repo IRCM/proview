@@ -19,8 +19,8 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.LaboratoryDialog.SAVED;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
@@ -28,17 +28,14 @@ import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 
 /**
  * Integration tests for {@link LaboratoryDialog}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {

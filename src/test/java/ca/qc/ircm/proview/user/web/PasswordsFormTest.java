@@ -25,9 +25,9 @@ import static ca.qc.ircm.proview.user.web.PasswordsForm.CLASS_NAME;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORD;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORDS_NOT_MATCH;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORD_CONFIRM;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,15 +40,12 @@ import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Locale;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link PasswordsForm}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class PasswordsFormTest extends AbstractViewTestCase {
   private PasswordsForm form;
@@ -60,7 +57,7 @@ public class PasswordsFormTest extends AbstractViewTestCase {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     form = new PasswordsForm();

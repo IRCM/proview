@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.web;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.server.VaadinSession;
@@ -25,16 +25,13 @@ import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link PathStreamResourceWriter}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class PathStreamResourceWriterTest {
   private PathStreamResourceWriter writer;
@@ -45,7 +42,7 @@ public class PathStreamResourceWriterTest {
   /**
    * Before test.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() throws Throwable {
     path = Paths.get(getClass().getResource("/structure1.png").toURI());
     writer = new PathStreamResourceWriter(path.toFile());

@@ -19,10 +19,10 @@ package ca.qc.ircm.proview.treatment;
 
 import static ca.qc.ircm.proview.treatment.FractionationType.MUDPIT;
 import static ca.qc.ircm.proview.treatment.FractionationType.PI;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link FractionationType}.

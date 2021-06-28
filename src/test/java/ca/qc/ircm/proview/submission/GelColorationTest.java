@@ -22,10 +22,10 @@ import static ca.qc.ircm.proview.submission.GelColoration.OTHER;
 import static ca.qc.ircm.proview.submission.GelColoration.SILVER;
 import static ca.qc.ircm.proview.submission.GelColoration.SILVER_INVITROGEN;
 import static ca.qc.ircm.proview.submission.GelColoration.SYPRO;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link GelColoration}.

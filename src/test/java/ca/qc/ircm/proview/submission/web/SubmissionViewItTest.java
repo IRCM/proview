@@ -24,9 +24,9 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
 import static ca.qc.ircm.proview.text.Strings.property;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -58,21 +58,18 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Integration tests for {@link SubmissionView}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionViewItTest extends AbstractTestBenchTestCase {
@@ -133,7 +130,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private Path file1;
   private Path file2;
 
-  @Before
+  @BeforeEach
   public void beforeTest() throws Throwable {
     file1 = Paths.get(getClass().getResource("/gelimages1.png").toURI());
     file2 = Paths.get(getClass().getResource("/structure1.png").toURI());

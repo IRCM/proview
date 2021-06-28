@@ -17,10 +17,10 @@
 
 package ca.qc.ircm.proview.web;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,16 +32,13 @@ import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link IgnoreConversionIfDisabledConverter}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @NonTransactionalTestAnnotations
 public class IgnoreConversionIfDisabledConverterTest {
   private IgnoreConversionIfDisabledConverter<String, Double> converter;
@@ -52,7 +49,7 @@ public class IgnoreConversionIfDisabledConverterTest {
   private TextField component = new TextField();
   private String errorMessage = "error message";
 
-  @Before
+  @BeforeEach
   public void before() {
     converter = new IgnoreConversionIfDisabledConverter<>(delegate);
     when(context.getComponent()).thenReturn(Optional.of((Component) component));

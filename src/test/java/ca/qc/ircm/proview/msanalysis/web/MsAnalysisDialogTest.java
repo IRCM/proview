@@ -35,11 +35,11 @@ import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.HEADER;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.ID;
 import static ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog.id;
 import static ca.qc.ircm.proview.text.Strings.styleName;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -64,19 +64,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests for {@link MsAnalysisDialog}.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ServiceTestAnnotations
 public class MsAnalysisDialogTest extends AbstractViewTestCase {
   private MsAnalysisDialog dialog;
@@ -97,7 +94,7 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
   /**
    * Before tests.
    */
-  @Before
+  @BeforeEach
   public void beforeTest() {
     when(ui.getLocale()).thenReturn(locale);
     dialog = new MsAnalysisDialog();

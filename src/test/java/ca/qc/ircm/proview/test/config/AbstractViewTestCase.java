@@ -36,7 +36,8 @@ import com.vaadin.flow.server.VaadinServletService;
 import com.vaadin.flow.server.VaadinSession;
 import javax.servlet.ServletContext;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -69,7 +70,7 @@ public abstract class AbstractViewTestCase {
   /**
    * Sets ui as current UI instance.
    */
-  @Before
+  @BeforeEach
   public void setUi() {
     when(ui.getSession()).thenReturn(session);
     when(ui.getPage()).thenReturn(page);
@@ -81,7 +82,7 @@ public abstract class AbstractViewTestCase {
     CurrentInstance.set(VaadinService.class, vaadinService);
   }
 
-  @After
+  @AfterEach
   public void removeUi() {
     CurrentInstance.set(UI.class, null);
   }
