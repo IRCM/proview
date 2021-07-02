@@ -501,6 +501,9 @@
               <exclude>**/*.txt</exclude>
               <exclude>**/*.ser</exclude>
               <exclude>*.log*</exclude>
+              <exclude>node_modules/**</exclude>
+              <exclude>package*.json</exclude>
+              <exclude>webpack.*.js</exclude>
             </excludes>
           </configuration>
           <executions>
