@@ -27,7 +27,7 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
-import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -48,7 +48,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Route(value = PrintSubmissionView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ UserRole.USER })
-@HtmlImport("styles/print-submission-view-styles.html")
+@JsModule("./styles/print-submission-view-styles.js")
 public class PrintSubmissionView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver {
   public static final String VIEW_NAME = "print-submission";

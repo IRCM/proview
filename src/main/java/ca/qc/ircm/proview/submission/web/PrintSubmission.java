@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import com.vaadin.flow.component.Html;
-import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Scope;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@HtmlImport("styles/print-submission-styles.html")
+@JsModule("./styles/print-submission-styles.js")
 public class PrintSubmission extends VerticalLayout implements LocaleChangeObserver {
   public static final String ID = "print-submission";
   private static final long serialVersionUID = 480796342756791299L;

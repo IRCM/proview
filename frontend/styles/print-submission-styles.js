@@ -1,29 +1,13 @@
-<!--
+const $_documentContainer = document.createElement('template');
 
-    Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
--->
-<custom-style>
+$_documentContainer.innerHTML = `<custom-style> 
   <style>
     #print-submission .section {
       border-style: solid;
       margin: 1em 0;
       padding: 1em;
     }
-    #print-submission .section > div {
+    #print-submission .section &gt; div {
       margin: 0.3em 0;
     }
     #print-submission .two-columns {
@@ -108,7 +92,7 @@
       word-wrap: break-word;
       overflow: hidden;
     }
-  </style>
+  </style> 
   <style media="print">
     #print-submission .section {
       width: 11in;
@@ -128,5 +112,8 @@
     #print-submission .pagebreak {
       page-break-before: always;
     }
-  </style>
-</custom-style>
+  </style> 
+ </custom-style>`;
+
+document.head.appendChild($_documentContainer.content);
+

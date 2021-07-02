@@ -122,6 +122,33 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-testbench</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
+        <exclusion>
+          <groupId>com.vaadin.webjar</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.insites</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.polymer</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.polymerelements</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.vaadin</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.webcomponents</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.github.mvysny.kaributesting</groupId>
@@ -227,6 +254,33 @@
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-core</artifactId>
+      <exclusions>
+        <!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
+        <exclusion>
+          <groupId>com.vaadin.webjar</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.insites</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.polymer</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.polymerelements</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.vaadin</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.webcomponents</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
@@ -235,6 +289,33 @@
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-confirm-dialog-flow</artifactId>
+      <exclusions>
+        <!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
+        <exclusion>
+          <groupId>com.vaadin.webjar</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.insites</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.polymer</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.polymerelements</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.vaadin</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.webjars.bowergithub.webcomponents</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>ch.carnet.kasparscherrer</groupId>
@@ -306,7 +387,6 @@
               <com.vaadin.testbench.Parameters.maxAttempts>${testbench.maxAttempts}
               </com.vaadin.testbench.Parameters.maxAttempts>
             </systemPropertyVariables>
-            <argLine>-Dvaadin.productionMode=true</argLine>
           </configuration>
           <executions>
             <execution>
@@ -366,13 +446,8 @@
           <executions>
             <execution>
               <goals>
-                <goal>copy-production-files</goal>
-                <goal>package-for-production</goal>
+                <goal>prepare-frontend</goal>
               </goals>
-              <configuration>
-                <bundle>true</bundle>
-                <transpileOutputDirectory>${project.build.directory}/classes/static</transpileOutputDirectory>
-              </configuration>
             </execution>
           </executions>
         </plugin>
@@ -502,6 +577,28 @@
           <url>https://maven.vaadin.com/vaadin-addons</url>
         </repository>
       </repositories>
+    </profile>
+    <profile>
+      <id>production</id>
+      <properties>
+        <vaadin.productionMode>true</vaadin.productionMode>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-maven-plugin</artifactId>
+            <version>${vaadin.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>build-frontend</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>firefox</id>

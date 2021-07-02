@@ -60,7 +60,7 @@ server:
 vaadin:
   productionMode: false
   closeIdleSessions: true
-  compatibilityMode: true
+  compatibilityMode: false
 
 security:
   lockAttemps: 5
