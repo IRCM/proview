@@ -18,7 +18,7 @@
 package ca.qc.ircm.proview.test.config;
 
 import static ca.qc.ircm.proview.test.config.AnnotationFinder.findAnnotation;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.TestBenchTestCase;
@@ -72,7 +72,7 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
     injectDependencies(testContext.getApplicationContext());
     if (isTestBenchTest(testContext)) {
       if (isSkipTestBenchTests()) {
-        assumeTrue(SKIP_TESTS_ERROR_MESSAGE, false);
+        assumeTrue(false, SKIP_TESTS_ERROR_MESSAGE);
       }
 
       boolean licenseFileExists = false;
@@ -84,7 +84,7 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
         String message =
             MessageFormat.format(LICENSE_ERROR_MESSAGE, testContext.getTestClass().getName());
         logger.info(message);
-        assumeTrue(message, false);
+        assumeTrue(false, message);
       }
       setRetries();
     }
