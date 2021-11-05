@@ -19,13 +19,19 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.acls.domain.BasePermission.WRITE;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
@@ -51,6 +57,8 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
   private SubmissionDialogPresenter presenter;
   @MockBean
   private SubmissionService service;
+  @MockBean
+  private AuthorizationService authorizationService;
   @Mock
   private SubmissionDialog dialog;
   @Mock
@@ -155,38 +163,64 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void setSubmission() {
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
     Submission submission = new Submission();
+    submission.setId(1L);
     submission.setInstrument(instrument);
     submission.setDataAvailableDate(dataAvailableDate);
     presenter.localeChange(locale);
 
     presenter.setSubmission(submission);
 
+    verify(authorizationService).hasPermission(submission, WRITE);
     assertEquals(instrument, dialog.instrument.getValue());
     assertEquals(dataAvailableDate, dialog.dataAvailableDate.getValue());
+    assertTrue(dialog.edit.isEnabled());
+  }
+
+  @Test
+  public void setSubmission_ReadOnly() {
+    Submission submission = new Submission();
+    submission.setId(1L);
+    submission.setInstrument(instrument);
+    submission.setDataAvailableDate(dataAvailableDate);
+    presenter.localeChange(locale);
+
+    presenter.setSubmission(submission);
+
+    verify(authorizationService).hasPermission(submission, WRITE);
+    assertEquals(instrument, dialog.instrument.getValue());
+    assertEquals(dataAvailableDate, dialog.dataAvailableDate.getValue());
+    assertFalse(dialog.edit.isEnabled());
   }
 
   @Test
   public void setSubmission_BeforeLocalChange() {
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
     Submission submission = new Submission();
+    submission.setId(1L);
     submission.setInstrument(instrument);
     submission.setDataAvailableDate(dataAvailableDate);
 
     presenter.setSubmission(submission);
     presenter.localeChange(locale);
 
+    verify(authorizationService).hasPermission(submission, WRITE);
     assertEquals(instrument, dialog.instrument.getValue());
     assertEquals(dataAvailableDate, dialog.dataAvailableDate.getValue());
+    assertTrue(dialog.edit.isEnabled());
   }
 
   @Test
-  public void setSubmission_NullFields() {
-    Submission submission = new Submission();
+  public void setSubmission_Null() {
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
     presenter.localeChange(locale);
 
-    presenter.setSubmission(submission);
+    presenter.setSubmission(null);
 
+    verify(authorizationService, never()).hasPermission(submission, WRITE);
     assertEquals(MassDetectionInstrument.NULL, dialog.instrument.getValue());
     assertEquals(null, dialog.dataAvailableDate.getValue());
+    assertTrue(dialog.edit.isEnabled());
   }
 }

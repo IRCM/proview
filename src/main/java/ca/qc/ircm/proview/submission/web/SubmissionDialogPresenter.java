@@ -19,8 +19,10 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
+import static org.springframework.security.acls.domain.BasePermission.WRITE;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import com.vaadin.flow.component.UI;
@@ -46,10 +48,13 @@ public class SubmissionDialogPresenter {
   private SubmissionDialog dialog;
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   private SubmissionService service;
+  private AuthorizationService authorizationService;
 
   @Autowired
-  protected SubmissionDialogPresenter(SubmissionService service) {
+  protected SubmissionDialogPresenter(SubmissionService service,
+      AuthorizationService authorizationService) {
     this.service = service;
+    this.authorizationService = authorizationService;
   }
 
   /**
@@ -105,5 +110,7 @@ public class SubmissionDialogPresenter {
     }
     binder.setBean(submission);
     dialog.printContent.setSubmission(submission);
+    dialog.edit.setEnabled(
+        submission.getId() == null || authorizationService.hasPermission(submission, WRITE));
   }
 }

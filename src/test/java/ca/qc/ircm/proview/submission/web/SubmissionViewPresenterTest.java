@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_OVER_MAXIMU
 import static ca.qc.ircm.proview.submission.web.SubmissionView.MAXIMUM_FILES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.acls.domain.BasePermission.WRITE;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
@@ -44,6 +46,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleType;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
@@ -90,10 +93,14 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
   private SubmissionView view;
   @MockBean
   private SubmissionService service;
+  @MockBean
+  private AuthorizationService authorizationService;
   @Autowired
   private SubmissionRepository repository;
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
+  @Captor
+  private ArgumentCaptor<Boolean> booleanCaptor;
   @Mock
   private DataProviderListener<SubmissionFile> filesDataProviderListener;
   private Locale locale = ENGLISH;
@@ -458,16 +465,40 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void setParameter() {
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
     String comment = "my test comment";
     submission.setComment(comment);
 
     presenter.setParameter(34L);
 
     verify(service).get(34L);
+    verify(authorizationService).hasPermission(submission, WRITE);
+    verify(view, atLeastOnce()).setEnabled(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     verify(view.lcmsmsSubmissionForm).setSubmission(submission);
     verify(view.smallMoleculeSubmissionForm).setSubmission(submission);
     verify(view.intactProteinSubmissionForm).setSubmission(submission);
     assertEquals(comment, view.comment.getValue());
+    List<SubmissionFile> files = items(view.files);
+    assertEquals(submission.getFiles().size(), files.size());
+    for (int i = 0; i < files.size(); i++) {
+      assertEquals(submission.getFiles().get(i).getFilename(), files.get(i).getFilename());
+      assertArrayEquals(submission.getFiles().get(i).getContent(), files.get(i).getContent());
+    }
+  }
+
+  @Test
+  public void setParameter_ReadOnly() {
+    presenter.setParameter(34L);
+
+    verify(service).get(34L);
+    verify(authorizationService).hasPermission(submission, WRITE);
+    verify(view, atLeastOnce()).setEnabled(booleanCaptor.capture());
+    assertFalse(booleanCaptor.getValue());
+    verify(view.lcmsmsSubmissionForm).setSubmission(submission);
+    verify(view.smallMoleculeSubmissionForm).setSubmission(submission);
+    verify(view.intactProteinSubmissionForm).setSubmission(submission);
+    assertEquals("Philippe", view.comment.getValue());
     List<SubmissionFile> files = items(view.files);
     assertEquals(submission.getFiles().size(), files.size());
     for (int i = 0; i < files.size(); i++) {
@@ -483,6 +514,9 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     presenter.setParameter(2L);
 
     verify(service).get(2L);
+    verify(authorizationService, never()).hasPermission(submission, WRITE);
+    verify(view, atLeastOnce()).setEnabled(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     verify(view.lcmsmsSubmissionForm, atLeastOnce()).setSubmission(submissionCaptor.capture());
     Submission lcmsms = submissionCaptor.getValue();
     verify(view.smallMoleculeSubmissionForm, atLeastOnce())
@@ -515,6 +549,9 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     presenter.setParameter(null);
 
     verifyNoInteractions(service);
+    verify(authorizationService, never()).hasPermission(submission, WRITE);
+    verify(view, atLeastOnce()).setEnabled(booleanCaptor.capture());
+    assertTrue(booleanCaptor.getValue());
     verify(view.lcmsmsSubmissionForm).setSubmission(submissionCaptor.capture());
     verify(view.smallMoleculeSubmissionForm).setSubmission(submissionCaptor.capture());
     verify(view.intactProteinSubmissionForm).setSubmission(submissionCaptor.capture());

@@ -94,12 +94,12 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
     boolean ownerOrManager = currentUser.getId().equals(owner.getId()) || authorizationService
         .hasAllRoles(MANAGER, UserAuthority.laboratoryMember(owner.getLaboratory()));
     authorized |= permission.equals(BasePermission.READ) && ownerOrManager;
-    authorized |= permission.equals(BasePermission.WRITE) && submissionAfterApproved(submission)
+    authorized |= permission.equals(BasePermission.WRITE) && !submissionAfterWaiting(submission)
         && ownerOrManager;
     return authorized;
   }
 
-  private boolean submissionAfterApproved(Submission submissionParam) {
+  private boolean submissionAfterWaiting(Submission submissionParam) {
     BooleanExpression predicate = submission.id.eq(submissionParam.getId())
         .and(submission.samples.any().status.gt(SampleStatus.WAITING));
     return repository.count(predicate) > 0;

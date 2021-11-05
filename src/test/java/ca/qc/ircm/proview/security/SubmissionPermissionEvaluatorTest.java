@@ -181,8 +181,8 @@ public class SubmissionPermissionEvaluatorTest {
 
   @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
-  public void hasPermission_Write_Owner() throws Throwable {
-    Submission submission = submissionRepository.findById(35L).orElse(null);
+  public void hasPermission_Write_OwnerWaiting() throws Throwable {
+    Submission submission = submissionRepository.findById(36L).orElse(null);
     assertTrue(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), submission.getId(),
@@ -192,9 +192,33 @@ public class SubmissionPermissionEvaluatorTest {
   }
 
   @Test
+  @WithUserDetails("christopher.anderson@ircm.qc.ca")
+  public void hasPermission_Write_OwnerReceived() throws Throwable {
+    Submission submission = submissionRepository.findById(149L).orElse(null);
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, BASE_WRITE));
+  }
+
+  @Test
+  @WithUserDetails("christopher.anderson@ircm.qc.ca")
+  public void hasPermission_Write_OwnerAfterReceived() throws Throwable {
+    Submission submission = submissionRepository.findById(35L).orElse(null);
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, BASE_WRITE));
+  }
+
+  @Test
   @WithUserDetails("patricia.jones@ircm.qc.ca")
   public void hasPermission_Write_NotOwner() throws Throwable {
-    Submission submission = submissionRepository.findById(35L).orElse(null);
+    Submission submission = submissionRepository.findById(36L).orElse(null);
     assertFalse(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), submission.getId(),
@@ -205,8 +229,8 @@ public class SubmissionPermissionEvaluatorTest {
 
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
-  public void hasPermission_Write_Manager() throws Throwable {
-    Submission submission = submissionRepository.findById(35L).orElse(null);
+  public void hasPermission_Write_ManagerWaiting() throws Throwable {
+    Submission submission = submissionRepository.findById(36L).orElse(null);
     assertTrue(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), submission.getId(),
@@ -216,8 +240,20 @@ public class SubmissionPermissionEvaluatorTest {
   }
 
   @Test
-  @WithUserDetails("marie.trudel@ircm.qc.ca")
-  public void hasPermission_Write_OtherManager() throws Throwable {
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void hasPermission_Write_ManagerReceived() throws Throwable {
+    Submission submission = submissionRepository.findById(149L).orElse(null);
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, BASE_WRITE));
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void hasPermission_Write_ManagerAfterReceived() throws Throwable {
     Submission submission = submissionRepository.findById(35L).orElse(null);
     assertFalse(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
@@ -228,8 +264,44 @@ public class SubmissionPermissionEvaluatorTest {
   }
 
   @Test
+  @WithUserDetails("marie.trudel@ircm.qc.ca")
+  public void hasPermission_Write_OtherManager() throws Throwable {
+    Submission submission = submissionRepository.findById(36L).orElse(null);
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, WRITE));
+    assertFalse(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, BASE_WRITE));
+  }
+
+  @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void hasPermission_Write_Admin() throws Throwable {
+  public void hasPermission_Write_AdminWaiting() throws Throwable {
+    Submission submission = submissionRepository.findById(36L).orElse(null);
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, BASE_WRITE));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void hasPermission_Write_AdminReceived() throws Throwable {
+    Submission submission = submissionRepository.findById(149L).orElse(null);
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, WRITE));
+    assertTrue(permissionEvaluator.hasPermission(authentication(), submission.getId(),
+        SUBMISSION_CLASS, BASE_WRITE));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void hasPermission_Write_AdminAfterReceived() throws Throwable {
     Submission submission = submissionRepository.findById(35L).orElse(null);
     assertTrue(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), submission, BASE_WRITE));

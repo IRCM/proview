@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_IOEXCEPTION
 import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_OVER_MAXIMUM;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.MAXIMUM_FILES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
+import static org.springframework.security.acls.domain.BasePermission.WRITE;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
@@ -30,6 +31,7 @@ import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
@@ -69,10 +71,13 @@ public class SubmissionViewPresenter {
   private ListDataProvider<SubmissionFile> filesDataProvider =
       DataProvider.ofCollection(new ArrayList<>());
   private SubmissionService service;
+  private AuthorizationService authorizationService;
 
   @Autowired
-  protected SubmissionViewPresenter(SubmissionService service) {
+  protected SubmissionViewPresenter(SubmissionService service,
+      AuthorizationService authorizationService) {
     this.service = service;
+    this.authorizationService = authorizationService;
   }
 
   /**
@@ -168,6 +173,7 @@ public class SubmissionViewPresenter {
   }
 
   private void setSubmission(Submission submission) {
+    view.setEnabled(submission == null || authorizationService.hasPermission(submission, WRITE));
     if (submission == null) {
       submission = new Submission();
       submission.setService(Service.LC_MS_MS);
