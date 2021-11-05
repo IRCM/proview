@@ -73,10 +73,22 @@ $_documentContainer.innerHTML = `<custom-style>
       margin: 0;
       padding: 0;
     }
+    #print-submission .files table {
+      border-collapse: collapse;
+    }
+    #print-submission .files th, #print-submission .files td {
+      border-style: solid;
+      border-width: 1px;
+      border-color: black;
+    }
+    #print-submission .files td {
+      margin: 0;
+      padding: 0;
+    }
     #print-submission .plate-information table {
       border-collapse: collapse;
     }
-    #print-submission .plate-information th, .plate-information td {
+    #print-submission .plate-information th, #print-submission .plate-information td {
       border-style: solid;
       border-width: 0 1px 1px 0;
       border-color: black;

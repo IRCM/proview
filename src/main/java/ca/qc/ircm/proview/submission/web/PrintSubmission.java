@@ -18,14 +18,21 @@
 package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.web.ByteArrayStreamResourceWriter;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import com.vaadin.flow.server.StreamRegistration;
+import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -39,6 +46,7 @@ import org.springframework.context.annotation.Scope;
 public class PrintSubmission extends VerticalLayout implements LocaleChangeObserver {
   public static final String ID = "print-submission";
   private static final long serialVersionUID = 480796342756791299L;
+  private static final Logger logger = LoggerFactory.getLogger(PrintSubmission.class);
   private Submission submission;
   private transient SubmissionService service;
 
@@ -64,6 +72,15 @@ public class PrintSubmission extends VerticalLayout implements LocaleChangeObser
     if (submission != null) {
       String html = service.print(submission, getLocale());
       if (html != null && !html.isEmpty()) {
+        for (int i = 0; i < submission.getFiles().size(); i++) {
+          SubmissionFile file = submission.getFiles().get(i);
+          StreamRegistration streamRegistration =
+              VaadinSession.getCurrent().getResourceRegistry().registerResource(new StreamResource(
+                  file.getFilename(), new ByteArrayStreamResourceWriter(file.getContent())));
+          html = html.replace("href=\"files-" + i + "\"",
+              "href=\"" + streamRegistration.getResourceUri() + "\"");
+          addDetachListener(e -> streamRegistration.unregister());
+        }
         add(new Html(html));
       }
     }

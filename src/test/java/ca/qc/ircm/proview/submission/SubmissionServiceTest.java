@@ -675,6 +675,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setSolvents(new ArrayList<>(Arrays.asList(Solvent.ACETONITRILE, Solvent.CHCL3)));
     submission.setOtherSolvent("other solvent");
     submission.setComment("my comment\nsecond line");
+    SubmissionFile file1 = new SubmissionFile();
+    file1.setFilename("file_1.txt");
+    byte[] fileContent = new byte[1024];
+    random.nextBytes(fileContent);
+    file1.setContent(fileContent);
+    SubmissionFile file2 = new SubmissionFile();
+    file2.setFilename("file_2.xlsx");
+    random.nextBytes(fileContent);
+    file2.setContent(fileContent);
+    submission.setFiles(new ArrayList<>(Arrays.asList(file1, file2)));
     return submission;
   }
 
@@ -766,6 +776,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"comment\""));
     assertTrue(content.contains(formatMultiline(submission.getComment())));
     assertFalse(content.contains("class=\"samples-details section\""));
+    assertTrue(content.contains("class=\"files section\""));
+    for (int i = 0; i < submission.getFiles().size(); i++) {
+      assertTrue(content.contains("href=\"files-" + i + "\""));
+    }
     assertFalse(content.contains("class=\"plate-information section"));
   }
 
@@ -1155,6 +1169,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"comment\""));
     assertTrue(content.contains(formatMultiline(submission.getComment())));
     assertFalse(content.contains("class=\"samples-details section\""));
+    assertTrue(content.contains("class=\"files section\""));
+    for (int i = 0; i < submission.getFiles().size(); i++) {
+      assertTrue(content.contains("href=\"files-" + i + "\""));
+    }
     assertFalse(content.contains("class=\"plate-information section"));
   }
 
@@ -1268,6 +1286,17 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  public void print_Lcmsms_NoFiles() throws Exception {
+    Submission submission = submissionForPrint(Service.LC_MS_MS);
+    submission.setFiles(new ArrayList<>());
+    repository.save(submission);
+    Locale locale = Locale.getDefault();
+
+    String content = service.print(submission, locale);
+    assertFalse(content.contains("class=\"files section\""));
+  }
+
+  @Test
   public void print_SmallMolecule() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     repository.save(submission);
@@ -1350,6 +1379,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"comment\""));
     assertTrue(content.contains(formatMultiline(submission.getComment())));
     assertFalse(content.contains("class=\"samples-details section\""));
+    assertTrue(content.contains("class=\"files section\""));
+    for (int i = 0; i < submission.getFiles().size(); i++) {
+      assertTrue(content.contains("href=\"files-" + i + "\""));
+    }
     assertFalse(content.contains("class=\"plate-information section"));
   }
 
@@ -1475,6 +1508,20 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
+  public void print_SmallMolecule_NoFiles() throws Exception {
+    Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
+    submission.setFiles(new ArrayList<>());
+    repository.save(submission);
+    Locale locale = Locale.getDefault();
+
+    String content = service.print(submission, locale);
+    assertFalse(content.contains("class=\"files section\""));
+    for (int i = 0; i < submission.getFiles().size(); i++) {
+      assertFalse(content.contains("href=\"files-" + i + "\""));
+    }
+  }
+
+  @Test
   public void print_IntactProtein() throws Exception {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
     repository.save(submission);
@@ -1559,6 +1606,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       assertTrue(content.contains(String.valueOf(sample.getNumberProtein())));
       assertTrue(content.contains(String.valueOf(sample.getMolecularWeight())));
     }
+    assertTrue(content.contains("class=\"files section\""));
+    for (int i = 0; i < submission.getFiles().size(); i++) {
+      assertTrue(content.contains("href=\"files-" + i + "\""));
+    }
     assertFalse(content.contains("class=\"plate-information section"));
   }
 
@@ -1584,6 +1635,21 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     String content = service.print(submission, locale);
 
     assertFalse(content.contains("class=\"source\""));
+  }
+
+  @Test
+  public void print_IntactProtein_NoFiles() throws Exception {
+    Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
+    submission.setFiles(new ArrayList<>());
+    repository.save(submission);
+    Locale locale = Locale.getDefault();
+
+    String content = service.print(submission, locale);
+
+    assertFalse(content.contains("class=\"files section\""));
+    for (int i = 0; i < submission.getFiles().size(); i++) {
+      assertFalse(content.contains("href=\"files-" + i + "\""));
+    }
   }
 
   @Test
