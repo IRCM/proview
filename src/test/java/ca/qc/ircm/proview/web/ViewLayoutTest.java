@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER_FORM;
 import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
+import static ca.qc.ircm.proview.web.ViewLayout.HISTORY;
 import static ca.qc.ircm.proview.web.ViewLayout.ID;
 import static ca.qc.ircm.proview.web.ViewLayout.PROFILE;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
@@ -48,6 +49,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
+import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
@@ -109,6 +111,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertEquals(styleName(GUIDELINES, TAB), view.guidelines.getId().orElse(""));
     assertEquals(styleName(EDIT, TAB), view.edit.getId().orElse(""));
     assertEquals(styleName(PRINT, TAB), view.print.getId().orElse(""));
+    assertEquals(styleName(HISTORY, TAB), view.history.getId().orElse(""));
   }
 
   @Test
@@ -124,6 +127,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertEquals(resources.message(GUIDELINES), view.guidelines.getLabel());
     assertEquals(resources.message(EDIT), view.edit.getLabel());
     assertEquals(resources.message(PRINT), view.print.getLabel());
+    assertEquals(resources.message(HISTORY), view.history.getLabel());
   }
 
   @Test
@@ -143,6 +147,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertEquals(resources.message(GUIDELINES), view.guidelines.getLabel());
     assertEquals(resources.message(EDIT), view.edit.getLabel());
     assertEquals(resources.message(PRINT), view.print.getLabel());
+    assertEquals(resources.message(HISTORY), view.history.getLabel());
   }
 
   @Test
@@ -158,6 +163,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertTrue(view.guidelines.isVisible());
     assertFalse(view.edit.isVisible());
     assertFalse(view.print.isVisible());
+    assertFalse(view.history.isVisible());
   }
 
   @Test
@@ -174,6 +180,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertTrue(view.guidelines.isVisible());
     assertFalse(view.edit.isVisible());
     assertFalse(view.print.isVisible());
+    assertFalse(view.history.isVisible());
   }
 
   @Test
@@ -191,6 +198,7 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     assertTrue(view.guidelines.isVisible());
     assertFalse(view.edit.isVisible());
     assertFalse(view.print.isVisible());
+    assertFalse(view.history.isVisible());
   }
 
   @Test
@@ -492,6 +500,30 @@ public class ViewLayoutTest extends AbstractViewTestCase {
     view.afterNavigation(afterNavigationEvent);
 
     assertFalse(view.print.isVisible());
+  }
+
+  @Test
+  public void afterNavigation_History() {
+    Location location = new Location(HistoryView.VIEW_NAME + "/12");
+    when(afterNavigationEvent.getLocation()).thenReturn(location);
+
+    view.afterNavigation(afterNavigationEvent);
+
+    assertEquals(view.history, view.tabs.getSelectedTab());
+    assertTrue(view.history.isVisible());
+    verify(ui, never()).navigate(any(String.class));
+  }
+
+  @Test
+  public void afterNavigation_HistoryHideAfterChange() {
+    Location location1 = new Location(HistoryView.VIEW_NAME + "/12");
+    Location location2 = new Location(SubmissionsView.VIEW_NAME);
+    when(afterNavigationEvent.getLocation()).thenReturn(location1, location2);
+
+    view.afterNavigation(afterNavigationEvent);
+    view.afterNavigation(afterNavigationEvent);
+
+    assertFalse(view.history.isVisible());
   }
 
   /**

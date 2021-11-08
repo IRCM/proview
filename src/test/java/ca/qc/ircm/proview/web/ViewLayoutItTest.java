@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
+import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionDialog;
 import ca.qc.ircm.proview.submission.web.SubmissionDialogElement;
@@ -39,6 +40,7 @@ import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.user.web.UsersViewElement;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Keys;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -73,6 +75,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.contact()).isPresent());
     assertTrue(optional(() -> view.guidelines()).isPresent());
     assertFalse(optional(() -> view.print()).isPresent());
+    assertFalse(optional(() -> view.history()).isPresent());
   }
 
   @Test
@@ -89,6 +92,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.contact()).isPresent());
     assertTrue(optional(() -> view.guidelines()).isPresent());
     assertFalse(optional(() -> view.print()).isPresent());
+    assertFalse(optional(() -> view.history()).isPresent());
   }
 
   @Test
@@ -105,6 +109,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.contact()).isPresent());
     assertTrue(optional(() -> view.guidelines()).isPresent());
     assertFalse(optional(() -> view.print()).isPresent());
+    assertFalse(optional(() -> view.history()).isPresent());
   }
 
   @Test
@@ -127,6 +132,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.contact()).isPresent());
     assertTrue(optional(() -> view.guidelines()).isPresent());
     assertFalse(optional(() -> view.print()).isPresent());
+    assertFalse(optional(() -> view.history()).isPresent());
   }
 
   @Test
@@ -262,5 +268,20 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     view.guidelines().click();
     assertEquals(viewUrl(GuidelinesView.VIEW_NAME), getDriver().getCurrentUrl());
     assertEquals("true", view.print().getAttribute("hidden"));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void history() throws Throwable {
+    open();
+    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    view.submissions().click();
+    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
+    submissionsView.submissions().getCell(0, 0).click(0, 0, Keys.ALT);
+    assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
+    assertTrue(optional(() -> view.history()).isPresent());
+    view.guidelines().click();
+    assertEquals(viewUrl(GuidelinesView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals("true", view.history().getAttribute("hidden"));
   }
 }

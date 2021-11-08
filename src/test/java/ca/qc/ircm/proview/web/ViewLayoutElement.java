@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
 import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
+import static ca.qc.ircm.proview.web.ViewLayout.HISTORY;
 import static ca.qc.ircm.proview.web.ViewLayout.PROFILE;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
@@ -87,5 +88,9 @@ public class ViewLayoutElement extends VerticalLayoutElement {
 
   public TabElement print() {
     return $(TabElement.class).id(styleName(PRINT, TAB));
+  }
+
+  public TabElement history() {
+    return $(TabElement.class).id(styleName(HISTORY, TAB));
   }
 }

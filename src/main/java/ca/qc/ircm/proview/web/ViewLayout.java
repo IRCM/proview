@@ -28,6 +28,7 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
+import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
@@ -72,6 +73,7 @@ public class ViewLayout extends VerticalLayout
   public static final String CHANGE_LANGUAGE = "changeLanguage";
   public static final String CONTACT = "contact";
   public static final String GUIDELINES = "guidelines";
+  public static final String HISTORY = "history";
   public static final String TAB = "tab";
   private static final long serialVersionUID = 710800815636494374L;
   private static final Logger logger = LoggerFactory.getLogger(ViewLayout.class);
@@ -87,6 +89,7 @@ public class ViewLayout extends VerticalLayout
   protected Tab add = new Tab();
   protected Tab edit = new Tab();
   protected Tab print = new Tab();
+  protected Tab history = new Tab();
   protected Html exitSwitchUserForm = new Html("<form action=\"" + SWITCH_USER_EXIT_URL
       + "\" method=\"post\" style=\"display:none;\"></form>");
   private Map<Tab, String> tabsHref = new HashMap<>();
@@ -110,7 +113,7 @@ public class ViewLayout extends VerticalLayout
     add(tabs);
     tabs.setId(TABS);
     tabs.add(submissions, profile, users, exitSwitchUser, signout, changeLanguage, contact,
-        guidelines, add, edit, print, exitSwitchUserForm);
+        guidelines, add, edit, print, history, exitSwitchUserForm);
     submissions.setId(styleName(SUBMISSIONS, TAB));
     profile.setId(styleName(PROFILE, TAB));
     users.setId(styleName(USERS, TAB));
@@ -131,6 +134,8 @@ public class ViewLayout extends VerticalLayout
     edit.setVisible(false);
     print.setId(styleName(PRINT, TAB));
     print.setVisible(false);
+    history.setId(styleName(HISTORY, TAB));
+    history.setVisible(false);
     tabsHref.put(submissions, SubmissionsView.VIEW_NAME);
     tabsHref.put(profile, ProfileView.VIEW_NAME);
     tabsHref.put(users, UsersView.VIEW_NAME);
@@ -139,6 +144,7 @@ public class ViewLayout extends VerticalLayout
     tabsHref.put(add, SubmissionView.VIEW_NAME);
     tabsHref.put(edit, SubmissionView.VIEW_NAME + "/\\d+");
     tabsHref.put(print, PrintSubmissionView.VIEW_NAME + "/\\d+");
+    tabsHref.put(history, HistoryView.VIEW_NAME + "/\\d+");
     tabs.addSelectedChangeListener(e -> selectTab(e.getPreviousTab()));
   }
 
@@ -156,6 +162,7 @@ public class ViewLayout extends VerticalLayout
     add.setLabel(resources.message(ADD));
     edit.setLabel(resources.message(EDIT));
     print.setLabel(resources.message(PRINT));
+    history.setLabel(resources.message(HISTORY));
   }
 
   private void selectTab(Tab previous) {
@@ -177,7 +184,7 @@ public class ViewLayout extends VerticalLayout
       UI.getCurrent().setLocale(newLocale);
       tabs.setSelectedTab(previous);
     } else if (add == tabs.getSelectedTab() || edit == tabs.getSelectedTab()
-        || print == tabs.getSelectedTab()) {
+        || print == tabs.getSelectedTab() || history == tabs.getSelectedTab()) {
       // Do nothing.
     } else {
       if (!currentHref.equals(tabsHref.get(tabs.getSelectedTab()))) {
@@ -192,6 +199,7 @@ public class ViewLayout extends VerticalLayout
     add.setVisible(false);
     edit.setVisible(false);
     print.setVisible(false);
+    history.setVisible(false);
     currentHref = event.getLocation().getPath();
     Optional<Tab> currentTab = tabsHref.entrySet().stream()
         .filter(e -> Pattern.matches(e.getValue(), currentHref)).map(e -> e.getKey()).findFirst();
