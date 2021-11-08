@@ -112,6 +112,7 @@ public class SubmissionsViewPresenter {
     view.instrument.setVisible(authorizationService.hasRole(ADMIN));
     view.hidden.setVisible(authorizationService.hasRole(ADMIN));
     view.editStatus.setVisible(authorizationService.hasRole(ADMIN));
+    view.history.setVisible(authorizationService.hasRole(ADMIN));
     loadSubmissions();
     view.dialog.addSavedListener(e -> loadSubmissions());
     view.statusDialog.addSavedListener(e -> loadSubmissions());
@@ -229,6 +230,16 @@ public class SubmissionsViewPresenter {
     Optional<Submission> os = view.submissions.getSelectedItems().stream().findFirst();
     if (os.isPresent()) {
       editStatus(os.get());
+    } else {
+      AppResources resources = new AppResources(SubmissionsView.class, locale);
+      view.showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
+    }
+  }
+
+  void historySelected(Locale locale) {
+    Optional<Submission> os = view.submissions.getSelectedItems().stream().findFirst();
+    if (os.isPresent()) {
+      history(os.get());
     } else {
       AppResources resources = new AppResources(SubmissionsView.class, locale);
       view.showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));

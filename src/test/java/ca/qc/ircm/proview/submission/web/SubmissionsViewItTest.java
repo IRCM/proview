@@ -90,6 +90,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
     assertFalse(optional(() -> view.editStatus()).isPresent());
+    assertFalse(optional(() -> view.history()).isPresent());
   }
 
   @Test
@@ -101,6 +102,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
     assertTrue(optional(() -> view.editStatus()).isPresent());
+    assertTrue(optional(() -> view.history()).isPresent());
   }
 
   @Test
@@ -174,6 +176,17 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void history_Grid() throws Throwable {
+    open();
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+
+    view.submissions().getCell(0, 0).click(0, 0, Keys.ALT);
+
+    assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
+  }
+
+  @Test
   public void add() throws Throwable {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
@@ -197,5 +210,17 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     AppResources resources = resources(SamplesStatusDialog.class);
     assertEquals(resources.message(SamplesStatusDialog.HEADER, "POLR3B-Flag"),
         dialog.header().getText());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void history() throws Throwable {
+    open();
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+
+    view.submissions().getCell(0, 0).click();
+    view.history().click();
+
+    assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 }

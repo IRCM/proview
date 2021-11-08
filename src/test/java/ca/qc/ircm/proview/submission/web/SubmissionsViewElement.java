@@ -20,6 +20,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.EDIT_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.HISTORY;
 
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialogElement;
@@ -49,6 +50,10 @@ public class SubmissionsViewElement extends VerticalLayoutElement {
 
   public ButtonElement editStatus() {
     return $(ButtonElement.class).id(EDIT_STATUS);
+  }
+
+  public ButtonElement history() {
+    return $(ButtonElement.class).id(HISTORY);
   }
 
   public SubmissionDialogElement dialog() {

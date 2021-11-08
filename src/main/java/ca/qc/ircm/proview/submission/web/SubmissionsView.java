@@ -93,6 +93,7 @@ public class SubmissionsView extends VerticalLayout
   public static final String SAMPLES_VALUE = property(SAMPLES, "value");
   public static final String STATUS_VALUE = property(STATUS, "value");
   public static final String EDIT_STATUS = "editStatus";
+  public static final String HISTORY = "history";
   public static final String ADD = "add";
   public static final String SAMPLES_SPAN =
       "<span title$='[[item.samplesTitle]]'>[[item.samplesValue]]</span>";
@@ -133,6 +134,7 @@ public class SubmissionsView extends VerticalLayout
   protected ComboBox<Boolean> hiddenFilter = new ComboBox<>();
   protected Button add = new Button();
   protected Button editStatus = new Button();
+  protected Button history = new Button();
   protected SubmissionDialog dialog;
   protected SamplesStatusDialog statusDialog;
   private transient AuthorizationService authorizationService;
@@ -153,7 +155,7 @@ public class SubmissionsView extends VerticalLayout
     setId(ID);
     setSizeFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    buttonsLayout.add(add, editStatus);
+    buttonsLayout.add(add, editStatus, history);
     add(header, submissions, buttonsLayout);
     expand(submissions);
     header.setId(HEADER);
@@ -280,6 +282,9 @@ public class SubmissionsView extends VerticalLayout
     editStatus.setId(EDIT_STATUS);
     editStatus.setIcon(VaadinIcon.EDIT.create());
     editStatus.addClickListener(e -> presenter.editSelectedStatus(getLocale()));
+    history.setId(HISTORY);
+    history.setIcon(VaadinIcon.ARCHIVE.create());
+    history.addClickListener(e -> presenter.historySelected(getLocale()));
     presenter.init(this);
   }
 
@@ -365,6 +370,7 @@ public class SubmissionsView extends VerticalLayout
     hiddenFilter.setPlaceholder(resources.message(ALL));
     add.setText(resources.message(ADD));
     editStatus.setText(resources.message(EDIT_STATUS));
+    history.setText(resources.message(HISTORY));
     submissions.getDataProvider().refreshAll();
     instrumentFilter.getDataProvider().refreshAll();
     serviceFilter.getDataProvider().refreshAll();

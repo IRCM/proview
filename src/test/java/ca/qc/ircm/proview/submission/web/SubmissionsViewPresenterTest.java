@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -136,6 +137,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     view.hiddenFilter = new ComboBox<>();
     view.add = new Button();
     view.editStatus = new Button();
+    view.history = new Button();
     view.dialog = mock(SubmissionDialog.class);
     view.statusDialog = mock(SamplesStatusDialog.class);
     submissions = repository.findAll();
@@ -152,6 +154,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     verify(view.instrument).setVisible(false);
     verify(view.hidden).setVisible(false);
     assertFalse(view.editStatus.isVisible());
+    assertFalse(view.history.isVisible());
   }
 
   @Test
@@ -165,6 +168,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     verify(view.instrument).setVisible(false);
     verify(view.hidden).setVisible(false);
     assertFalse(view.editStatus.isVisible());
+    assertFalse(view.history.isVisible());
   }
 
   @Test
@@ -179,6 +183,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     verify(view.instrument).setVisible(true);
     verify(view.hidden).setVisible(true);
     assertTrue(view.editStatus.isVisible());
+    assertTrue(view.history.isVisible());
   }
 
   @Test
@@ -454,6 +459,30 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     verify(service, never()).get(any());
     verify(view.statusDialog, never()).setSubmission(any());
     verify(view.statusDialog, never()).open();
+    verify(view).showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
+  }
+
+  @Test
+  public void historySelected() {
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    presenter.init(view);
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(32L);
+    when(view.submissions.getSelectedItems()).thenReturn(Collections.singleton(submission));
+    presenter.historySelected(locale);
+    verify(ui).navigate(HistoryView.class, 32L);
+    verify(view, never()).showNotification(any());
+  }
+
+  @Test
+  public void historySelected_NoSelection() {
+    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    presenter.init(view);
+    when(view.submissions.getSelectedItems()).thenReturn(Collections.emptySet());
+    presenter.historySelected(locale);
+    verify(ui, never()).navigate(any(), anyLong());
     verify(view).showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
   }
 

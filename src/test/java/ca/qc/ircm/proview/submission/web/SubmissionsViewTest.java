@@ -33,8 +33,10 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.EDIT_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HIDDEN_BUTTON;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_SPAN;
@@ -265,6 +267,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertEquals(HEADER, view.header.getId().orElse(""));
     assertEquals(SUBMISSIONS, view.submissions.getId().orElse(""));
     assertEquals(ADD, view.add.getId().orElse(""));
+    validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
+    assertEquals(EDIT_STATUS, view.editStatus.getId().orElse(""));
+    validateIcon(VaadinIcon.EDIT.create(), view.editStatus.getIcon());
+    assertEquals(HISTORY, view.history.getId().orElse(""));
+    validateIcon(VaadinIcon.ARCHIVE.create(), view.history.getIcon());
   }
 
   @Test
@@ -311,7 +318,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
     assertEquals(resources.message(ADD), view.add.getText());
-    validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
+    assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
+    assertEquals(resources.message(HISTORY), view.history.getText());
   }
 
   @Test
@@ -366,7 +374,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
     assertEquals(resources.message(ADD), view.add.getText());
-    validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
+    assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
+    assertEquals(resources.message(HISTORY), view.history.getText());
     verify(view.submissions.getDataProvider(), times(2)).refreshAll();
     verify(view.instrumentFilter.getDataProvider(), times(2)).refreshAll();
     verify(view.serviceFilter.getDataProvider(), times(2)).refreshAll();
@@ -769,5 +778,11 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   public void editStatus() {
     clickButton(view.editStatus);
     verify(presenter).editSelectedStatus(locale);
+  }
+
+  @Test
+  public void history() {
+    clickButton(view.history);
+    verify(presenter).historySelected(locale);
   }
 }
