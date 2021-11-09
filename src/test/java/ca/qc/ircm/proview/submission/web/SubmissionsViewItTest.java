@@ -153,7 +153,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.submissions().getCell(0, 0).doubleClick();
+    view.submissions().experimentCell(0).doubleClick();
 
     SubmissionDialogElement dialog = view.dialog();
     assertTrue(dialog.isOpen());
@@ -166,7 +166,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.submissions().getCell(0, 1).click(0, 0, Keys.SHIFT);
+    view.submissions().experimentCell(0).click(0, 0, Keys.SHIFT);
 
     SamplesStatusDialogElement dialog = view.statusDialog();
     assertTrue(dialog.isOpen());
@@ -181,7 +181,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.submissions().getCell(0, 1).click(0, 0, Keys.ALT);
+    view.submissions().experimentCell(0).click(0, 0, Keys.ALT);
 
     assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
@@ -202,7 +202,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.submissions().getCell(0, 0).click();
+    view.submissions().experimentCell(0).click();
     view.editStatus().click();
 
     SamplesStatusDialogElement dialog = view.statusDialog();
@@ -218,7 +218,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
 
-    view.submissions().getCell(0, 0).click();
+    view.submissions().experimentCell(0).click();
     view.history().click();
 
     assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());

@@ -241,7 +241,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
-    submissionsView.submissions().getCell(0, 0).doubleClick();
+    submissionsView.submissions().experimentCell(0).doubleClick();
     SubmissionDialogElement submissionDialog =
         $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
     submissionDialog.clickEdit();
@@ -259,7 +259,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
-    submissionsView.submissions().getCell(0, 0).doubleClick();
+    submissionsView.submissions().experimentCell(0).doubleClick();
     SubmissionDialogElement submissionDialog =
         $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
     submissionDialog.clickPrint();
@@ -277,7 +277,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
-    submissionsView.submissions().getCell(0, 1).click(0, 0, Keys.ALT);
+    submissionsView.submissions().experimentCell(0).click(0, 0, Keys.ALT);
     assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.history()).isPresent());
     view.guidelines().click();
