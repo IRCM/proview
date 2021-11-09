@@ -19,6 +19,7 @@ const $_documentContainer = document.createElement('template');
 $_documentContainer.innerHTML = `<custom-style> 
   <style>
     #print-submission .section {
+      min-width: 50em;
       border-style: solid;
       margin: 1em 0;
       padding: 1em;
@@ -34,6 +35,7 @@ $_documentContainer.innerHTML = `<custom-style>
       display: inline-block;
     }
     #print-submission .two-columns .left {
+      min-width: 25em;
       width: auto;
       overflow: hidden;
     }
