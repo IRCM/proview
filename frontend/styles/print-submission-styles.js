@@ -19,7 +19,7 @@ const $_documentContainer = document.createElement('template');
 $_documentContainer.innerHTML = `<custom-style> 
   <style>
     #print-submission .section {
-      min-width: 50em;
+      min-width: 55em;
       border-style: solid;
       margin: 1em 0;
       padding: 1em;
