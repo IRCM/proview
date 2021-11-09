@@ -160,6 +160,7 @@ public class SubmissionsView extends VerticalLayout
     expand(submissions);
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
+    submissions.setMinHeight("500px");
     submissions.setWidth(authorizationService.hasRole(ADMIN) ? "2500px" : "100%");
     submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
     submissions.addItemClickListener(e -> {
