@@ -368,6 +368,25 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <configuration>
+            <filesets>
+              <fileset>
+                <directory>${basedir}</directory>
+                <includes>
+                  <include>build/**</include>
+                  <include>config/**</include>
+                  <include>node_modules/**</include>
+                  <include>package.json</include>
+                  <include>package-lock.json</include>
+                  <include>webpack.config.js</include>
+                  <include>webpack.generated.js</include>
+                </includes>
+              </fileset>
+            </filesets>
+          </configuration>
+        </plugin>
+        <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <excludes>
@@ -502,6 +521,8 @@
               <exclude>**/*.ser</exclude>
               <exclude>*.log*</exclude>
               <exclude>node_modules/**</exclude>
+              <exclude>build/**</exclude>
+              <exclude>config/**</exclude>
               <exclude>package*.json</exclude>
               <exclude>webpack.*.js</exclude>
             </excludes>
