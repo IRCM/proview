@@ -169,6 +169,10 @@ public class SubmissionsView extends VerticalLayout
         presenter.history(e.getItem());
       }
     });
+    view = submissions
+        .addColumn(TemplateRenderer.<Submission>of(VIEW_BUTTON).withEventHandler("view",
+            submission -> presenter.view(submission)), VIEW)
+        .setKey(VIEW).setSortable(false).setFlexGrow(0);
     ValueProvider<Submission, String> submissionExperiment =
         submission -> Objects.toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
@@ -222,10 +226,6 @@ public class SubmissionsView extends VerticalLayout
           submissions.getDataProvider().refreshItem(submission);
         }), HIDDEN).setKey(HIDDEN).setSortProperty(HIDDEN)
         .setComparator((s1, s2) -> Boolean.compare(s1.isHidden(), s2.isHidden()));
-    view = submissions
-        .addColumn(TemplateRenderer.<Submission>of(VIEW_BUTTON).withEventHandler("view",
-            submission -> presenter.view(submission)), VIEW)
-        .setKey(VIEW).setSortable(false).setFlexGrow(0);
     submissions.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = submissions.appendHeaderRow();
     filtersRow.getCell(experiment).setComponent(experimentFilter);

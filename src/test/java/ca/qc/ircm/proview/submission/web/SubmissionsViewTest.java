@@ -154,6 +154,12 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     Element usersElement = view.submissions.getElement();
     view.submissions = mock(Grid.class);
     when(view.submissions.getElement()).thenReturn(usersElement);
+    view.view = mock(Column.class);
+    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(VIEW))).thenReturn(view.view);
+    when(view.view.setKey(any())).thenReturn(view.view);
+    when(view.view.setHeader(any(String.class))).thenReturn(view.view);
+    when(view.view.setSortable(anyBoolean())).thenReturn(view.view);
+    when(view.view.setFlexGrow(anyInt())).thenReturn(view.view);
     view.experiment = mock(Column.class);
     when(view.submissions.addColumn(any(ValueProvider.class), eq(EXPERIMENT)))
         .thenReturn(view.experiment);
@@ -226,12 +232,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(view.hidden.setSortProperty(any())).thenReturn(view.hidden);
     when(view.hidden.setComparator(any(Comparator.class))).thenReturn(view.hidden);
     when(view.hidden.setFlexGrow(anyInt())).thenReturn(view.hidden);
-    view.view = mock(Column.class);
-    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(VIEW))).thenReturn(view.view);
-    when(view.view.setKey(any())).thenReturn(view.view);
-    when(view.view.setHeader(any(String.class))).thenReturn(view.view);
-    when(view.view.setSortable(anyBoolean())).thenReturn(view.view);
-    when(view.view.setFlexGrow(anyInt())).thenReturn(view.view);
     HeaderRow filtersRow = mock(HeaderRow.class);
     when(view.submissions.appendHeaderRow()).thenReturn(filtersRow);
     HeaderCell experienceFilterCell = mock(HeaderCell.class);
@@ -285,6 +285,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     view.hiddenFilter.setDataProvider(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
+    verify(view.view).setHeader(webResources.message(VIEW));
+    verify(view.view).setFooter(webResources.message(VIEW));
     verify(view.experiment).setHeader(submissionResources.message(EXPERIMENT));
     verify(view.experiment).setFooter(submissionResources.message(EXPERIMENT));
     verify(view.user).setHeader(submissionResources.message(USER));
@@ -307,8 +309,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.status).setFooter(submissionSampleResources.message(STATUS));
     verify(view.hidden).setHeader(submissionResources.message(HIDDEN));
     verify(view.hidden).setFooter(submissionResources.message(HIDDEN));
-    verify(view.view).setHeader(webResources.message(VIEW));
-    verify(view.view).setFooter(webResources.message(VIEW));
     assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
@@ -341,6 +341,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
+    verify(view.view).setHeader(webResources.message(VIEW));
+    verify(view.view).setFooter(webResources.message(VIEW));
     verify(view.experiment).setHeader(submissionResources.message(EXPERIMENT));
     verify(view.experiment).setFooter(submissionResources.message(EXPERIMENT));
     verify(view.user).setHeader(submissionResources.message(USER));
@@ -363,8 +365,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     verify(view.status).setFooter(submissionSampleResources.message(STATUS));
     verify(view.hidden).setHeader(submissionResources.message(HIDDEN));
     verify(view.hidden).setFooter(submissionResources.message(HIDDEN));
-    verify(view.view).setHeader(webResources.message(VIEW));
-    verify(view.view).setFooter(webResources.message(VIEW));
     assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
@@ -397,6 +397,8 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
   @Test
   public void submissions_Columns() {
     assertEquals(12, view.submissions.getColumns().size());
+    assertNotNull(view.submissions.getColumnByKey(VIEW));
+    assertFalse(view.submissions.getColumnByKey(VIEW).isSortable());
     assertNotNull(view.submissions.getColumnByKey(EXPERIMENT));
     assertTrue(view.submissions.getColumnByKey(EXPERIMENT).isSortable());
     assertNotNull(view.submissions.getColumnByKey(USER));
@@ -419,8 +421,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertFalse(view.submissions.getColumnByKey(STATUS).isSortable());
     assertNotNull(view.submissions.getColumnByKey(HIDDEN));
     assertTrue(view.submissions.getColumnByKey(HIDDEN).isSortable());
-    assertNotNull(view.submissions.getColumnByKey(VIEW));
-    assertFalse(view.submissions.getColumnByKey(VIEW).isSortable());
   }
 
   @Test
@@ -429,6 +429,14 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     mockColumns();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
     view.init();
+    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(VIEW));
+    TemplateRenderer<Submission> templateRenderer = templateRendererCaptor.getValue();
+    for (Submission submission : submissions) {
+      assertEquals(VIEW_BUTTON, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getEventHandlers().containsKey("view"));
+      templateRenderer.getEventHandlers().get("view").accept(submission);
+      verify(presenter).view(submission);
+    }
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(EXPERIMENT));
     ValueProvider<Submission, String> valueProvider = valueProviderCaptor.getValue();
     for (Submission submission : submissions) {
@@ -498,7 +506,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
       assertEquals(submission.getSamples().size(), valueProvider.apply(submission));
     }
     verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(SAMPLES));
-    TemplateRenderer<Submission> templateRenderer = templateRendererCaptor.getValue();
+    templateRenderer = templateRendererCaptor.getValue();
     for (Submission submission : submissions) {
       assertEquals(SAMPLES_SPAN, rendererTemplate(templateRenderer));
       assertTrue(templateRenderer.getValueProviders().containsKey("samplesValue"));
@@ -554,14 +562,6 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     assertTrue(comparator.compare(hidden(false), hidden(false)) == 0);
     assertTrue(comparator.compare(hidden(true), hidden(true)) == 0);
     assertTrue(comparator.compare(hidden(true), hidden(false)) > 0);
-    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(VIEW));
-    templateRenderer = templateRendererCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(VIEW_BUTTON, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getEventHandlers().containsKey("view"));
-      templateRenderer.getEventHandlers().get("view").accept(submission);
-      verify(presenter).view(submission);
-    }
   }
 
   @Test
