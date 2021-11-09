@@ -34,9 +34,9 @@ import org.openqa.selenium.By;
  */
 @Element("vaadin-grid")
 public class UsersViewUsersElement extends GridElement {
-  private static final int EMAIL_COLUMN = 0;
-  private static final int LABORATORY_COLUMN = 2;
-  private static final int EDIT_COLUMN = 4;
+  private static final int EMAIL_COLUMN = 1;
+  private static final int LABORATORY_COLUMN = 3;
+  private static final int EDIT_COLUMN = 0;
 
   public GridTHTDElement emailCell(int row) {
     return getCell(row, EMAIL_COLUMN);

@@ -97,11 +97,11 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   private static final Logger logger = LoggerFactory.getLogger(UsersView.class);
   protected H2 header = new H2();
   protected Grid<User> users = new Grid<>();
+  protected Column<User> edit;
   protected Column<User> email;
   protected Column<User> name;
   protected Column<User> laboratory;
   protected Column<User> active;
-  protected Column<User> edit;
   protected TextField emailFilter = new TextField();
   protected TextField nameFilter = new TextField();
   protected TextField laboratoryFilter = new TextField();
@@ -143,6 +143,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
         presenter.view(e.getItem());
       }
     });
+    edit = users.addColumn(TemplateRenderer.<User>of(EDIT_BUTTON).withEventHandler("edit",
+        user -> presenter.view(user)), EDIT).setKey(EDIT).setSortable(false).setFlexGrow(0);
     email = users.addColumn(user -> user.getEmail(), EMAIL).setKey(EMAIL)
         .setComparator(NormalizedComparator.of(user -> user.getEmail())).setFlexGrow(3);
     name = users.addColumn(user -> user.getName(), NAME).setKey(NAME)
@@ -160,8 +162,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
           users.getDataProvider().refreshItem(user);
         }), ACTIVE).setKey(ACTIVE)
         .setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
-    edit = users.addColumn(TemplateRenderer.<User>of(EDIT_BUTTON).withEventHandler("edit",
-        user -> presenter.view(user)), EDIT).setKey(EDIT).setSortable(false).setFlexGrow(0);
     users.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = users.appendHeaderRow();
     filtersRow.getCell(email).setComponent(emailFilter);
@@ -211,6 +211,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     final AppResources userResources = new AppResources(User.class, getLocale());
     final AppResources webResources = new AppResources(Constants.class, getLocale());
     header.setText(resources.message(HEADER));
+    String editHeader = webResources.message(EDIT);
+    edit.setHeader(editHeader).setFooter(editHeader);
     String emailHeader = userResources.message(EMAIL);
     email.setHeader(emailHeader).setFooter(emailHeader);
     String nameHeader = userResources.message(NAME);
@@ -219,8 +221,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     laboratory.setHeader(laboratoryHeader).setFooter(laboratoryHeader);
     String activeHeader = userResources.message(ACTIVE);
     active.setHeader(activeHeader).setFooter(activeHeader);
-    String editHeader = webResources.message(EDIT);
-    edit.setHeader(editHeader).setFooter(editHeader);
     emailFilter.setPlaceholder(webResources.message(ALL));
     nameFilter.setPlaceholder(webResources.message(ALL));
     laboratoryFilter.setPlaceholder(webResources.message(ALL));
