@@ -15,7 +15,7 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-ALTER TABLE samplecontainer
+ALTER TABLE IF EXISTS samplecontainer
 DROP CONSTRAINT IF EXISTS samplecontainer_ibfk_2;
 DROP TABLE userpreference IF EXISTS;
 DROP TABLE preference IF EXISTS;
