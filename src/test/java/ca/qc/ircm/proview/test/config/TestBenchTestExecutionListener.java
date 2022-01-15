@@ -49,8 +49,8 @@ import org.springframework.test.context.TestExecutionListener;
 public class TestBenchTestExecutionListener implements TestExecutionListener, InjectDependencies {
   private static final String LICENSE_ERROR_MESSAGE =
       "License for Vaadin TestBench not found. Skipping test class {0} .";
-  private static final String[] LICENSE_PATHS =
-      new String[] { "vaadin.testbench.developer.license", ".vaadin.testbench.developer.license" };
+  private static final String[] LICENSE_PATHS = new String[] { ".vaadin/proKey",
+      "vaadin.testbench.developer.license", ".vaadin.testbench.developer.license" };
   private static final String LICENSE_SYSTEM_PROPERTY = "vaadin.testbench.developer.license";
   private static final String SKIP_TESTS_ERROR_MESSAGE = "TestBench tests are skipped";
   private static final String SKIP_TESTS_SYSTEM_PROPERTY = "testbench.skip";
