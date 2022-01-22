@@ -46,18 +46,15 @@ public class EmailService {
   @Autowired
   private JavaMailSender mailSender;
   @Autowired
-  private MimeMessage templateMessage;
-  @Autowired
   private AuthorizationService authorizationService;
 
   protected EmailService() {
   }
 
   protected EmailService(MailConfiguration mailConfiguration, JavaMailSender mailSender,
-      MimeMessage templateMessage, AuthorizationService authorizationService) {
+      AuthorizationService authorizationService) {
     this.mailConfiguration = mailConfiguration;
     this.mailSender = mailSender;
-    this.templateMessage = templateMessage;
     this.authorizationService = authorizationService;
   }
 
@@ -69,8 +66,12 @@ public class EmailService {
    *           could not create email
    */
   public MimeMessageHelper textEmail() throws MessagingException {
-    MimeMessage message = new MimeMessage(templateMessage);
-    return new MimeMessageHelper(message);
+    MimeMessage message = mailSender.createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(message);
+    helper.setFrom(mailConfiguration.getFrom());
+    helper.setSubject(mailConfiguration.getSubject());
+    helper.setText("");
+    return helper;
   }
 
   /**
@@ -81,8 +82,11 @@ public class EmailService {
    *           could not create email
    */
   public MimeMessageHelper htmlEmail() throws MessagingException {
-    MimeMessage message = new MimeMessage(templateMessage);
-    return new MimeMessageHelper(message, true);
+    MimeMessage message = mailSender.createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+    helper.setFrom(mailConfiguration.getFrom());
+    helper.setSubject(mailConfiguration.getSubject());
+    return helper;
   }
 
   /**

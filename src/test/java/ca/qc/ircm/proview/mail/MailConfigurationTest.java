@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.mail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ public class MailConfigurationTest {
 
   @Test
   public void defaultValues() {
-    assertEquals(true, mailConfiguration.isEnabled());
+    assertTrue(mailConfiguration.isEnabled());
     assertEquals("proview@ircm.qc.ca", mailConfiguration.getFrom());
     assertEquals("christian.poitras@ircm.qc.ca", mailConfiguration.getTo());
     assertEquals("proview", mailConfiguration.getSubject());
