@@ -38,12 +38,12 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
   private static final long ROBOT_ID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(UserPermissionEvaluator.class);
   private UserRepository repository;
-  private AuthorizationService authorizationService;
+  private RoleValidator roleValidator;
 
-  UserPermissionEvaluator(UserRepository repository, AuthorizationService authorizationService) {
+  UserPermissionEvaluator(UserRepository repository, RoleValidator roleValidator) {
     super(repository);
     this.repository = repository;
-    this.authorizationService = authorizationService;
+    this.roleValidator = roleValidator;
   }
 
   @Override
@@ -85,11 +85,11 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
         && !user.isActive()) {
       return false;
     }
-    if (authorizationService.hasRole(ADMIN)) {
+    if (roleValidator.hasRole(ADMIN)) {
       return true;
     }
     if (user.getId() == null) {
-      if (authorizationService.hasRole(MANAGER) && user.getLaboratory() != null
+      if (roleValidator.hasRole(MANAGER) && user.getLaboratory() != null
           && user.getLaboratory().getId() != null && currentUser.getLaboratory() != null
           && user.getLaboratory().getId().equals(currentUser.getLaboratory().getId())) {
         return true;
@@ -101,9 +101,9 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
     }
     boolean authorized = false;
     authorized |= permission.equals(BasePermission.READ)
-        && authorizationService.hasRole(UserAuthority.laboratoryMember(user.getLaboratory()));
-    authorized |= permission.equals(BasePermission.WRITE) && authorizationService
-        .hasAllRoles(MANAGER, UserAuthority.laboratoryMember(user.getLaboratory()));
+        && roleValidator.hasRole(UserAuthority.laboratoryMember(user.getLaboratory()));
+    authorized |= permission.equals(BasePermission.WRITE)
+        && roleValidator.hasAllRoles(MANAGER, UserAuthority.laboratoryMember(user.getLaboratory()));
     return authorized;
   }
 }

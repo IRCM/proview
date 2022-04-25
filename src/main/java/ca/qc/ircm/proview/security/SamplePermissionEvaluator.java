@@ -36,15 +36,14 @@ import org.springframework.security.core.Authentication;
  */
 public class SamplePermissionEvaluator extends AbstractPermissionEvaluator {
   private SampleRepository repository;
-  private AuthorizationService authorizationService;
+  private RoleValidator roleValidator;
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
 
   SamplePermissionEvaluator(SampleRepository repository, UserRepository userRepository,
-      AuthorizationService authorizationService,
-      SubmissionPermissionEvaluator submissionPermissionEvaluator) {
+      RoleValidator roleValidator, SubmissionPermissionEvaluator submissionPermissionEvaluator) {
     super(userRepository);
     this.repository = repository;
-    this.authorizationService = authorizationService;
+    this.roleValidator = roleValidator;
     this.submissionPermissionEvaluator = submissionPermissionEvaluator;
   }
 
@@ -82,12 +81,12 @@ public class SamplePermissionEvaluator extends AbstractPermissionEvaluator {
     if (currentUser == null) {
       return false;
     }
-    if (authorizationService.hasRole(ADMIN)) {
+    if (roleValidator.hasRole(ADMIN)) {
       return true;
     }
     if (sample instanceof SubmissionSample) {
       if (sample.getId() == null) {
-        return authorizationService.hasRole(USER);
+        return roleValidator.hasRole(USER);
       }
       Submission submission = ((SubmissionSample) sample).getSubmission();
       return submissionPermissionEvaluator.hasPermission(submission, currentUser, permission);

@@ -36,13 +36,13 @@ import org.springframework.security.core.Authentication;
  */
 public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
   private LaboratoryRepository repository;
-  private AuthorizationService authorizationService;
+  private RoleValidator roleValidator;
 
   LaboratoryPermissionEvaluator(LaboratoryRepository repository, UserRepository userRepository,
-      AuthorizationService authorizationService) {
+      RoleValidator roleValidator) {
     super(userRepository);
     this.repository = repository;
-    this.authorizationService = authorizationService;
+    this.roleValidator = roleValidator;
   }
 
   @Override
@@ -79,7 +79,7 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
     if (currentUser == null) {
       return false;
     }
-    if (authorizationService.hasRole(ADMIN)) {
+    if (roleValidator.hasRole(ADMIN)) {
       return true;
     }
     if (laboratory.getId() == null) {
@@ -87,9 +87,9 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
     }
     boolean authorized = false;
     authorized |= permission.equals(BasePermission.READ)
-        && authorizationService.hasRole(UserAuthority.laboratoryMember(laboratory));
+        && roleValidator.hasRole(UserAuthority.laboratoryMember(laboratory));
     authorized |= permission.equals(BasePermission.WRITE)
-        && authorizationService.hasAllRoles(MANAGER, UserAuthority.laboratoryMember(laboratory));
+        && roleValidator.hasAllRoles(MANAGER, UserAuthority.laboratoryMember(laboratory));
     return authorized;
   }
 }

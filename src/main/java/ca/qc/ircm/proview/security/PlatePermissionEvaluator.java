@@ -35,15 +35,14 @@ import org.springframework.security.core.Authentication;
  */
 public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
   private PlateRepository repository;
-  private AuthorizationService authorizationService;
+  private RoleValidator roleValidator;
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
 
   PlatePermissionEvaluator(PlateRepository repository, UserRepository userRepository,
-      AuthorizationService authorizationService,
-      SubmissionPermissionEvaluator submissionPermissionEvaluator) {
+      RoleValidator roleValidator, SubmissionPermissionEvaluator submissionPermissionEvaluator) {
     super(userRepository);
     this.repository = repository;
-    this.authorizationService = authorizationService;
+    this.roleValidator = roleValidator;
     this.submissionPermissionEvaluator = submissionPermissionEvaluator;
   }
 
@@ -81,12 +80,12 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
     if (currentUser == null) {
       return false;
     }
-    if (authorizationService.hasRole(ADMIN)) {
+    if (roleValidator.hasRole(ADMIN)) {
       return true;
     }
     if (plate.getSubmission() != null) {
       if (plate.getId() == null) {
-        return authorizationService.hasRole(USER);
+        return roleValidator.hasRole(USER);
       }
       Submission submission = plate.getSubmission();
       return submissionPermissionEvaluator.hasPermission(submission, currentUser, permission);

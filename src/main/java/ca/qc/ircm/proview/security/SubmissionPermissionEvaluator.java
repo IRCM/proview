@@ -40,13 +40,13 @@ import org.springframework.security.core.Authentication;
  */
 public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
   private SubmissionRepository repository;
-  private AuthorizationService authorizationService;
+  private RoleValidator roleValidator;
 
   SubmissionPermissionEvaluator(SubmissionRepository repository, UserRepository userRepository,
-      AuthorizationService authorizationService) {
+      RoleValidator roleValidator) {
     super(userRepository);
     this.repository = repository;
-    this.authorizationService = authorizationService;
+    this.roleValidator = roleValidator;
   }
 
   @Override
@@ -83,15 +83,15 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
     if (currentUser == null) {
       return false;
     }
-    if (authorizationService.hasRole(ADMIN)) {
+    if (roleValidator.hasRole(ADMIN)) {
       return true;
     }
     if (submission.getId() == null) {
-      return authorizationService.hasRole(USER);
+      return roleValidator.hasRole(USER);
     }
     User owner = submission.getUser();
     boolean authorized = false;
-    boolean ownerOrManager = currentUser.getId().equals(owner.getId()) || authorizationService
+    boolean ownerOrManager = currentUser.getId().equals(owner.getId()) || roleValidator
         .hasAllRoles(MANAGER, UserAuthority.laboratoryMember(owner.getLaboratory()));
     authorized |= permission.equals(BasePermission.READ) && ownerOrManager;
     authorized |= permission.equals(BasePermission.WRITE) && !submissionAfterWaiting(submission)

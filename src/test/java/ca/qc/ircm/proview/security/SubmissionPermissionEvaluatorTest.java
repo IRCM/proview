@@ -51,12 +51,12 @@ public class SubmissionPermissionEvaluatorTest {
   @Autowired
   private UserRepository userRepository;
   @Autowired
-  private AuthorizationService authorizationService;
+  private RoleValidator roleValidator;
 
   @BeforeEach
   public void beforeTest() {
-    permissionEvaluator = new SubmissionPermissionEvaluator(submissionRepository, userRepository,
-        authorizationService);
+    permissionEvaluator =
+        new SubmissionPermissionEvaluator(submissionRepository, userRepository, roleValidator);
   }
 
   private Authentication authentication() {

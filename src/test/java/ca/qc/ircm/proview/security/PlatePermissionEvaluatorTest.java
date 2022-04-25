@@ -58,7 +58,7 @@ public class PlatePermissionEvaluatorTest {
   @Autowired
   private UserRepository userRepository;
   @Autowired
-  private AuthorizationService authorizationService;
+  private RoleValidator roleValidator;
   @Mock
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
   @Mock
@@ -70,7 +70,7 @@ public class PlatePermissionEvaluatorTest {
   @BeforeEach
   public void beforeTest() {
     permissionEvaluator = new PlatePermissionEvaluator(plateRepository, userRepository,
-        authorizationService, submissionPermissionEvaluator);
+        roleValidator, submissionPermissionEvaluator);
     when(submissionPermissionEvaluator.hasPermission(any(Submission.class), any(), any()))
         .thenReturn(true);
   }

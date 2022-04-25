@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.user.UserAuthority.FORCE_CHANGE_PASSWORD;
 
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
-import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
@@ -32,7 +31,6 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -50,6 +48,8 @@ public class AuthorizationService {
   private UserRepository repository;
   @Autowired
   private UserDetailsService userDetailsService;
+  @Autowired
+  private RoleValidator roleValidator;
   @Autowired
   private PermissionEvaluator permissionEvaluator;
 
@@ -83,7 +83,7 @@ public class AuthorizationService {
    * @return true if current user is anonymous, false otherwise
    */
   public boolean isAnonymous() {
-    return !getUserDetails().isPresent();
+    return roleValidator.isAnonymous();
   }
 
   /**
@@ -94,18 +94,7 @@ public class AuthorizationService {
    * @return true if current user has specified role, false otherwise
    */
   public boolean hasRole(String role) {
-    Authentication authentication = getAuthentication();
-    if (authentication == null) {
-      return false;
-    }
-
-    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-    boolean hasRole = false;
-    for (GrantedAuthority authority : authorities) {
-      hasRole |= authority.getAuthority().equals(role);
-    }
-    logger.trace("user {} hasRole {}? {}", authentication.getName(), role, hasRole);
-    return hasRole;
+    return roleValidator.hasRole(role);
   }
 
   /**
@@ -116,11 +105,7 @@ public class AuthorizationService {
    * @return true if current user has any of the specified roles, false otherwise
    */
   public boolean hasAnyRole(String... roles) {
-    boolean hasAnyRole = false;
-    for (String role : roles) {
-      hasAnyRole |= hasRole(role);
-    }
-    return hasAnyRole;
+    return roleValidator.hasAnyRole(roles);
   }
 
   /**
@@ -131,11 +116,7 @@ public class AuthorizationService {
    * @return true if current user has all of the specified roles, false otherwise
    */
   public boolean hasAllRoles(String... roles) {
-    boolean hasAllRole = true;
-    for (String role : roles) {
-      hasAllRole &= hasRole(role);
-    }
-    return hasAllRole;
+    return roleValidator.hasAllRoles(roles);
   }
 
   /**
@@ -163,7 +144,7 @@ public class AuthorizationService {
     RolesAllowed rolesAllowed = AnnotationUtils.findAnnotation(type, RolesAllowed.class);
     if (rolesAllowed != null) {
       String[] roles = rolesAllowed.value();
-      return hasAnyRole(roles);
+      return roleValidator.hasAnyRole(roles);
     } else {
       return true;
     }
@@ -180,9 +161,5 @@ public class AuthorizationService {
    */
   public boolean hasPermission(Object object, Permission permission) {
     return permissionEvaluator.hasPermission(getAuthentication(), object, permission);
-  }
-
-  void setPermissionEvaluator(PermissionEvaluator permissionEvaluator) {
-    this.permissionEvaluator = permissionEvaluator;
   }
 }

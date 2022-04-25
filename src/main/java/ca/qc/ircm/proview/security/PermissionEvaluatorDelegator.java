@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
 @Primary
 public class PermissionEvaluatorDelegator implements PermissionEvaluator {
   @Autowired
-  private AuthorizationService authorizationService;
+  private RoleValidator roleValidator;
   @Autowired
   private UserRepository userRepository;
   @Autowired
@@ -61,15 +61,15 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
 
   @PostConstruct
   protected void init() {
-    laboratoryPermissionEvaluator = new LaboratoryPermissionEvaluator(laboratoryRepository,
-        userRepository, authorizationService);
-    userPermissionEvaluator = new UserPermissionEvaluator(userRepository, authorizationService);
-    submissionPermissionEvaluator = new SubmissionPermissionEvaluator(submissionRepository,
-        userRepository, authorizationService);
+    laboratoryPermissionEvaluator =
+        new LaboratoryPermissionEvaluator(laboratoryRepository, userRepository, roleValidator);
+    userPermissionEvaluator = new UserPermissionEvaluator(userRepository, roleValidator);
+    submissionPermissionEvaluator =
+        new SubmissionPermissionEvaluator(submissionRepository, userRepository, roleValidator);
     samplePermissionEvaluator = new SamplePermissionEvaluator(sampleRepository, userRepository,
-        authorizationService, submissionPermissionEvaluator);
+        roleValidator, submissionPermissionEvaluator);
     platePermissionEvaluator = new PlatePermissionEvaluator(plateRepository, userRepository,
-        authorizationService, submissionPermissionEvaluator);
+        roleValidator, submissionPermissionEvaluator);
   }
 
   @Override

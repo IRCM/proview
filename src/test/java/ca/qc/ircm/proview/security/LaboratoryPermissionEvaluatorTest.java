@@ -51,12 +51,12 @@ public class LaboratoryPermissionEvaluatorTest {
   @Autowired
   private UserRepository userRepository;
   @Autowired
-  private AuthorizationService authorizationService;
+  private RoleValidator roleValidator;
 
   @BeforeEach
   public void beforeTest() {
-    permissionEvaluator = new LaboratoryPermissionEvaluator(laboratoryRepository, userRepository,
-        authorizationService);
+    permissionEvaluator =
+        new LaboratoryPermissionEvaluator(laboratoryRepository, userRepository, roleValidator);
   }
 
   private Authentication authentication() {
