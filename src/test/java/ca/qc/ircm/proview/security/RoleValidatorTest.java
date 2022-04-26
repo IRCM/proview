@@ -65,18 +65,6 @@ public class RoleValidatorTest {
 
   @Test
   @WithAnonymousUser
-  public void isAnonymous_True() throws Throwable {
-    assertTrue(roleValidator.isAnonymous());
-  }
-
-  @Test
-  @WithMockUser
-  public void isAnonymous_False() throws Throwable {
-    assertFalse(roleValidator.isAnonymous());
-  }
-
-  @Test
-  @WithAnonymousUser
   public void hasRole_Anonymous() throws Throwable {
     assertFalse(roleValidator.hasRole(ADMIN));
   }

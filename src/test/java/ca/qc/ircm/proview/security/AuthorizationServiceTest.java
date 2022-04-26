@@ -97,18 +97,15 @@ public class AuthorizationServiceTest {
   }
 
   @Test
-  @WithMockUser
-  public void isAnonymous_True() {
-    when(roleValidator.isAnonymous()).thenReturn(true);
+  @WithAnonymousUser
+  public void isAnonymous_True() throws Throwable {
     assertTrue(authorizationService.isAnonymous());
-    verify(roleValidator).isAnonymous();
   }
 
   @Test
   @WithMockUser
-  public void isAnonymous_False() {
+  public void isAnonymous_False() throws Throwable {
     assertFalse(authorizationService.isAnonymous());
-    verify(roleValidator).isAnonymous();
   }
 
   @Test
@@ -174,7 +171,7 @@ public class AuthorizationServiceTest {
   @WithMockUser
   public void isAuthorized_NoRole() throws Throwable {
     assertTrue(authorizationService.isAuthorized(NoRoleTest.class));
-    verify(roleValidator, never()).hasAnyRole();
+    verify(roleValidator, never()).hasAnyRole(any());
   }
 
   @Test

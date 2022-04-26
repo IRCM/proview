@@ -18,11 +18,9 @@
 package ca.qc.ircm.proview.security;
 
 import java.util.Collection;
-import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,21 +33,6 @@ public class RoleValidator {
 
   private Authentication getAuthentication() {
     return SecurityContextHolder.getContext().getAuthentication();
-  }
-
-  private Optional<UserDetails> getUserDetails() {
-    return Optional.ofNullable(getAuthentication())
-        .filter(au -> au.getPrincipal() instanceof UserDetails)
-        .map(au -> (UserDetails) au.getPrincipal());
-  }
-
-  /**
-   * Returns true if current user is anonymous, false otherwise.
-   *
-   * @return true if current user is anonymous, false otherwise
-   */
-  public boolean isAnonymous() {
-    return !getUserDetails().isPresent();
   }
 
   /**

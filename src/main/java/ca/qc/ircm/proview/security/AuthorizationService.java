@@ -82,7 +82,7 @@ public class AuthorizationService {
    * @return true if current user is anonymous, false otherwise
    */
   public boolean isAnonymous() {
-    return roleValidator.isAnonymous();
+    return !getUserDetails().isPresent();
   }
 
   /**
