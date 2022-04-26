@@ -25,10 +25,7 @@ import ca.qc.ircm.proview.user.UserRole;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -54,12 +51,6 @@ public class RoleValidatorTest {
   private RoleValidator roleValidator;
   @Autowired
   private UserDetailsService userDetailsService;
-  @Mock
-  private PermissionEvaluator permissionEvaluator;
-  @Mock
-  private Object object;
-  @Mock
-  private Permission permission;
 
   private void switchToUser(String username) {
     Authentication previousAuthentication = SecurityContextHolder.getContext().getAuthentication();
