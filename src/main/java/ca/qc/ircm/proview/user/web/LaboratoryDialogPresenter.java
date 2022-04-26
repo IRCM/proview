@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.user.web.LaboratoryDialog.SAVED;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -34,7 +35,6 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.acls.domain.BasePermission;
 
 /**
  * Laboratory dialog presenter.
@@ -65,7 +65,7 @@ public class LaboratoryDialogPresenter {
   }
 
   private void setReadOnly() {
-    boolean readOnly = !authorizationService.hasPermission(binder.getBean(), BasePermission.WRITE);
+    boolean readOnly = !authorizationService.hasPermission(binder.getBean(), Permission.WRITE);
     binder.setReadOnly(readOnly);
     dialog.save.setVisible(!readOnly);
     dialog.cancel.setVisible(!readOnly);

@@ -37,6 +37,7 @@ import static ca.qc.ircm.proview.user.web.UserForm.LABORATORY_NAME;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -63,7 +64,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.acls.domain.BasePermission;
 
 /**
  * User form presenter.
@@ -160,7 +160,7 @@ public class UserFormPresenter {
 
   private void updateReadOnly() {
     boolean readOnly =
-        user.getId() != null && !authorizationService.hasPermission(user, BasePermission.WRITE);
+        user.getId() != null && !authorizationService.hasPermission(user, Permission.WRITE);
     binder.setReadOnly(readOnly);
     form.laboratory.setReadOnly(!authorizationService.hasRole(UserRole.ADMIN));
     form.laboratory.setEnabled(

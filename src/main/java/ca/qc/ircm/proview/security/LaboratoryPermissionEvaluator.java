@@ -27,8 +27,6 @@ import ca.qc.ircm.proview.user.UserAuthority;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 
 /**
@@ -86,9 +84,9 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
       return false;
     }
     boolean authorized = false;
-    authorized |= permission.equals(BasePermission.READ)
+    authorized |= permission.equals(Permission.READ)
         && roleValidator.hasRole(UserAuthority.laboratoryMember(laboratory));
-    authorized |= permission.equals(BasePermission.WRITE)
+    authorized |= permission.equals(Permission.WRITE)
         && roleValidator.hasAllRoles(MANAGER, UserAuthority.laboratoryMember(laboratory));
     return authorized;
   }

@@ -33,6 +33,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.util.ArrayList;
@@ -48,7 +49,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -322,7 +322,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
     user = repository.findById(user.getId()).orElse(null);
@@ -382,7 +382,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     verify(passwordEncoder).encode("password");
     assertNotNull(user.getId());
     user = repository.findById(user.getId()).orElse(null);
@@ -447,7 +447,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     verify(passwordEncoder).encode("password");
     assertNotNull(laboratory.getId());
     assertNotNull(user.getId());
@@ -540,7 +540,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
@@ -605,7 +605,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("unit_test@ircm.qc.ca", user.getEmail());
@@ -649,7 +649,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(true, user.isManager());
   }
@@ -712,7 +712,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     verify(passwordEncoder).encode("unit_test_password");
     user = repository.findById(4L).orElse(null);
     assertEquals(hashedPassword, user.getHashedPassword());
@@ -732,7 +732,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals("lab test", user.getLaboratory().getName());
@@ -750,7 +750,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertNotNull(user.getLaboratory().getId());
@@ -781,7 +781,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
-    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(BasePermission.WRITE));
+    verify(authorizationService).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     user = repository.findById(user.getId()).orElse(null);
     assertEquals(user.getId(), user.getId());
     assertEquals((Long) 4L, user.getLaboratory().getId());

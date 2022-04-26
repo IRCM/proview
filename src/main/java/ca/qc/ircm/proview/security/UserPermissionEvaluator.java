@@ -27,8 +27,6 @@ import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 
 /**
@@ -81,7 +79,7 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
     if (currentUser == null) {
       return false;
     }
-    if (user.getId() != null && user.getId() == ROBOT_ID && permission.equals(BasePermission.WRITE)
+    if (user.getId() != null && user.getId() == ROBOT_ID && permission.equals(Permission.WRITE)
         && !user.isActive()) {
       return false;
     }
@@ -100,9 +98,9 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
       return true;
     }
     boolean authorized = false;
-    authorized |= permission.equals(BasePermission.READ)
+    authorized |= permission.equals(Permission.READ)
         && roleValidator.hasRole(UserAuthority.laboratoryMember(user.getLaboratory()));
-    authorized |= permission.equals(BasePermission.WRITE)
+    authorized |= permission.equals(Permission.WRITE)
         && roleValidator.hasAllRoles(MANAGER, UserAuthority.laboratoryMember(user.getLaboratory()));
     return authorized;
   }

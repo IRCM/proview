@@ -31,8 +31,6 @@ import ca.qc.ircm.proview.user.UserRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.io.Serializable;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 
 /**
@@ -93,8 +91,8 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
     boolean authorized = false;
     boolean ownerOrManager = currentUser.getId().equals(owner.getId()) || roleValidator
         .hasAllRoles(MANAGER, UserAuthority.laboratoryMember(owner.getLaboratory()));
-    authorized |= permission.equals(BasePermission.READ) && ownerOrManager;
-    authorized |= permission.equals(BasePermission.WRITE) && !submissionAfterWaiting(submission)
+    authorized |= permission.equals(Permission.READ) && ownerOrManager;
+    authorized |= permission.equals(Permission.WRITE) && !submissionAfterWaiting(submission)
         && ownerOrManager;
     return authorized;
   }

@@ -32,6 +32,7 @@ import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
@@ -53,7 +54,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -159,7 +159,7 @@ public class SubmissionService {
     query.from(submission);
     if (!authorizationService.hasRole(UserRole.ADMIN)) {
       query.where(submission.hidden.eq(false));
-      if (authorizationService.hasPermission(currentLaboratory, BasePermission.WRITE)) {
+      if (authorizationService.hasPermission(currentLaboratory, Permission.WRITE)) {
         query.where(submission.laboratory.eq(currentLaboratory));
       } else {
         query.where(submission.user.eq(currentUser));

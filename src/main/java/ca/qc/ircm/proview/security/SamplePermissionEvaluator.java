@@ -28,7 +28,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 
 /**

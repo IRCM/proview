@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.Permission;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDateTime;
@@ -32,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -192,7 +192,7 @@ public class UserService {
     setUserPassword(user, password);
     user.setActive(true);
     user.setRegisterTime(LocalDateTime.now());
-    if (authorizationService.hasPermission(user.getLaboratory(), BasePermission.WRITE)) {
+    if (authorizationService.hasPermission(user.getLaboratory(), Permission.WRITE)) {
       Laboratory laboratory = user.getLaboratory();
       if (laboratory.getId() == null) {
         laboratory.setDirector(user.getName());
@@ -214,7 +214,7 @@ public class UserService {
     }
 
     boolean updateLaboratory =
-        authorizationService.hasPermission(user.getLaboratory(), BasePermission.WRITE);
+        authorizationService.hasPermission(user.getLaboratory(), Permission.WRITE);
     if (updateLaboratory) {
       laboratoryRepository.save(user.getLaboratory());
     }

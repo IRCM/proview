@@ -35,8 +35,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -49,9 +47,9 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class PlatePermissionEvaluatorTest {
   private static final String PLATE_CLASS = Plate.class.getName();
   private static final String READ = "read";
-  private static final Permission BASE_READ = BasePermission.READ;
+  private static final Permission BASE_READ = Permission.READ;
   private static final String WRITE = "write";
-  private static final Permission BASE_WRITE = BasePermission.WRITE;
+  private static final Permission BASE_WRITE = Permission.WRITE;
   private PlatePermissionEvaluator permissionEvaluator;
   @Autowired
   private PlateRepository plateRepository;

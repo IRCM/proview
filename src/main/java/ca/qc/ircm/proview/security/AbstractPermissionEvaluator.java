@@ -17,19 +17,14 @@
 
 package ca.qc.ircm.proview.security;
 
-import static org.springframework.security.acls.domain.BasePermission.ADMINISTRATION;
-import static org.springframework.security.acls.domain.BasePermission.CREATE;
-import static org.springframework.security.acls.domain.BasePermission.DELETE;
-import static org.springframework.security.acls.domain.BasePermission.READ;
-import static org.springframework.security.acls.domain.BasePermission.WRITE;
+import static ca.qc.ircm.proview.security.Permission.READ;
+import static ca.qc.ircm.proview.security.Permission.WRITE;
 
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -68,15 +63,9 @@ public abstract class AbstractPermissionEvaluator implements PermissionEvaluator
         return READ;
       case "WRITE":
         return WRITE;
-      case "CREATE":
-        return CREATE;
-      case "DELETE":
-        return DELETE;
-      case "ADMINISTRATION":
-        return ADMINISTRATION;
       default:
-        throw new IllegalArgumentException("Permission " + permission + " does not exists in "
-            + BasePermission.class.getSimpleName());
+        throw new IllegalArgumentException(
+            "Permission " + permission + " does not exists in " + Permission.class.getSimpleName());
     }
   }
 }

@@ -39,7 +39,6 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.model.Permission;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -71,8 +70,6 @@ public class AuthorizationServiceTest {
   private PermissionEvaluator permissionEvaluator;
   @Mock
   private Object object;
-  @Mock
-  private Permission permission;
 
   private void switchToUser(String username) {
     Authentication previousAuthentication = SecurityContextHolder.getContext().getAuthentication();
@@ -260,6 +257,7 @@ public class AuthorizationServiceTest {
   @Test
   @WithAnonymousUser
   public void hasPermission_False() throws Throwable {
+    Permission permission = Permission.READ;
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     assertFalse(authorizationService.hasPermission(object, permission));
     verify(permissionEvaluator).hasPermission(authentication, object, permission);
@@ -268,6 +266,7 @@ public class AuthorizationServiceTest {
   @Test
   @WithAnonymousUser
   public void hasPermission_True() throws Throwable {
+    Permission permission = Permission.READ;
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
     assertTrue(authorizationService.hasPermission(object, permission));
