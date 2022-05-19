@@ -33,7 +33,7 @@
   <inceptionYear>2006</inceptionYear>
   <packaging>war</packaging>
   <description>LIMS managing sample analysis by mass spectrometry (MS)</description>
-  <url>http://bitbucket.org/ircm/proview-3</url>
+  <url>https://github.com/IRCM/proview</url>
   <licenses>
     <license>
       <name>GNU Affero General Public License</name>
