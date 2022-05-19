@@ -42,13 +42,13 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:https://bitbucket.org/ircm/proview-3.git</connection>
-    <developerConnection>scm:git:https://bitbucket.org/ircm/proview-3.git</developerConnection>
-    <url>https://bitbucket.org/ircm/proview-3</url>
+    <connection>scm:git:https://github.com/IRCM/proview.git</connection>
+    <developerConnection>scm:git:https://github.com/IRCM/proview.git</developerConnection>
+    <url>https://github.com/IRCM/proview</url>
   </scm>
   <issueManagement>
-    <system>Bitbucket</system>
-    <url>https://bitbucket.org/ircm/proview-3/issues</url>
+    <system>GitHub</system>
+    <url>https://github.com/IRCM/proview/issues</url>
   </issueManagement>
   <properties>
     <main-class>ca.qc.ircm.proview.Main</main-class>
