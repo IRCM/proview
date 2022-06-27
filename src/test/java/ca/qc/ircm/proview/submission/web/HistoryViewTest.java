@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.history.ActivityProperties.ACTION_TYPE;
 import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
 import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
@@ -31,6 +32,7 @@ import static ca.qc.ircm.proview.submission.web.HistoryView.DESCRIPTION_SPAN;
 import static ca.qc.ircm.proview.submission.web.HistoryView.EXPLANATION_SPAN;
 import static ca.qc.ircm.proview.submission.web.HistoryView.HEADER;
 import static ca.qc.ircm.proview.submission.web.HistoryView.ID;
+import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_BUTTON;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -117,6 +119,12 @@ public class HistoryViewTest extends AbstractViewTestCase {
     Element gridElement = view.activities.getElement();
     view.activities = mock(Grid.class);
     when(view.activities.getElement()).thenReturn(gridElement);
+    view.view = mock(Column.class);
+    when(view.activities.addColumn(any(TemplateRenderer.class), eq(VIEW))).thenReturn(view.view);
+    when(view.view.setKey(any())).thenReturn(view.view);
+    when(view.view.setSortable(anyBoolean())).thenReturn(view.view);
+    when(view.view.setFlexGrow(anyInt())).thenReturn(view.view);
+    when(view.view.setHeader(any(String.class))).thenReturn(view.view);
     view.user = mock(Column.class);
     when(view.activities.addColumn(any(ValueProvider.class), eq(USER))).thenReturn(view.user);
     when(view.user.setKey(any())).thenReturn(view.user);
@@ -166,6 +174,8 @@ public class HistoryViewTest extends AbstractViewTestCase {
     mockColumns();
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, ""), view.header.getText());
+    verify(view.view).setHeader(webResources.message(VIEW));
+    verify(view.view).setFooter(webResources.message(VIEW));
     verify(view.user).setHeader(activityResources.message(USER));
     verify(view.user).setFooter(activityResources.message(USER));
     verify(view.type).setHeader(activityResources.message(ACTION_TYPE));
@@ -185,9 +195,12 @@ public class HistoryViewTest extends AbstractViewTestCase {
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(HistoryView.class, locale);
     final AppResources activityResources = new AppResources(Activity.class, locale);
+    final AppResources viewResources = new AppResources(Constants.class, locale);
     when(ui.getLocale()).thenReturn(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, ""), view.header.getText());
+    verify(view.view).setHeader(webResources.message(VIEW));
+    verify(view.view).setFooter(webResources.message(VIEW));
     verify(view.user).setHeader(activityResources.message(USER));
     verify(view.user).setFooter(activityResources.message(USER));
     verify(view.type, atLeastOnce()).setHeader(activityResources.message(ACTION_TYPE));
@@ -202,7 +215,9 @@ public class HistoryViewTest extends AbstractViewTestCase {
 
   @Test
   public void activities_Columns() {
-    assertEquals(5, view.activities.getColumns().size());
+    assertEquals(6, view.activities.getColumns().size());
+    assertNotNull(view.activities.getColumnByKey(VIEW));
+    assertFalse(view.activities.getColumnByKey(VIEW).isSortable());
     assertNotNull(view.activities.getColumnByKey(USER));
     assertTrue(view.activities.getColumnByKey(USER).isSortable());
     assertNotNull(view.activities.getColumnByKey(ACTION_TYPE));
@@ -222,6 +237,14 @@ public class HistoryViewTest extends AbstractViewTestCase {
     when(presenter.description(any(), any())).thenAnswer(i -> descriptions.get(i.getArgument(0)));
     mockColumns();
     view.init();
+    verify(view.activities).addColumn(templateRendererCaptor.capture(), eq(VIEW));
+    TemplateRenderer<Activity> templateRenderer = templateRendererCaptor.getValue();
+    for (Activity activity : activities) {
+      assertEquals(VIEW_BUTTON, rendererTemplate(templateRenderer));
+      assertTrue(templateRenderer.getEventHandlers().containsKey("view"));
+      templateRenderer.getEventHandlers().get("view").accept(activity);
+      verify(presenter).view(activity, locale);
+    }
     verify(view.activities).addColumn(valueProviderCaptor.capture(), eq(USER));
     ValueProvider<Activity, String> valueProvider = valueProviderCaptor.getValue();
     for (Activity activity : activities) {
@@ -239,7 +262,7 @@ public class HistoryViewTest extends AbstractViewTestCase {
       assertEquals(dateFormatter.format(activity.getTimestamp()), valueProvider.apply(activity));
     }
     verify(view.activities).addColumn(templateRendererCaptor.capture(), eq(DESCRIPTION));
-    TemplateRenderer<Activity> templateRenderer = templateRendererCaptor.getValue();
+    templateRenderer = templateRendererCaptor.getValue();
     for (Activity activity : activities) {
       assertEquals(DESCRIPTION_SPAN, rendererTemplate(templateRenderer));
       assertTrue(templateRenderer.getValueProviders().containsKey("descriptionValue"));

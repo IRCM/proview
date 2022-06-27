@@ -37,7 +37,7 @@ public class MsAnalysisDialogItTest extends AbstractTestBenchTestCase {
   private void open() {
     openView(VIEW_NAME, "1");
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
-    view.activities().getCell(5, 0).doubleClick();
+    view.activities().view(5).click();
     waitUntil(driver -> $(MsAnalysisDialogElement.class).id(MsAnalysisDialog.ID));
   }
 

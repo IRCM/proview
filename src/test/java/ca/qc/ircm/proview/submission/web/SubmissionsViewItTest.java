@@ -149,18 +149,6 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void dialog() throws Throwable {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
-
-    view.submissions().experimentCell(0).doubleClick();
-
-    SubmissionDialogElement dialog = view.dialog();
-    assertTrue(dialog.isOpen());
-    assertEquals("POLR3B-Flag", dialog.header().getText());
-  }
-
-  @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void statusDialog() throws Throwable {
     open();

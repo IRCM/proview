@@ -24,7 +24,6 @@ import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialogElement;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
-import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.TestBenchElement;
@@ -40,8 +39,8 @@ public class HistoryViewElement extends VerticalLayoutElement {
     return $(H2Element.class).id(HEADER);
   }
 
-  public GridElement activities() {
-    return $(GridElement.class).id(ACTIVITIES);
+  public HistoryViewActivitiesElement activities() {
+    return $(HistoryViewActivitiesElement.class).id(ACTIVITIES);
   }
 
   public SubmissionDialogElement dialog() {

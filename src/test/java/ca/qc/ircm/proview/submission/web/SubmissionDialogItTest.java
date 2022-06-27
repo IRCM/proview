@@ -54,7 +54,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   private SubmissionDialogElement openDialog(int row) {
     openView(VIEW_NAME);
     SubmissionsViewElement view = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
-    view.submissions().experimentCell(row).doubleClick();
+    view.submissions().view(row).doubleClick();
     return view.dialog();
   }
 

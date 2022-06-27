@@ -105,7 +105,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   public void dialog() throws Throwable {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
-    view.activities().getCell(6, 0).doubleClick();
+    view.activities().view(6).click();
     SubmissionDialogElement dialog = view.dialog();
     assertTrue(dialog.isOpen());
     assertEquals("G100429", dialog.header().getText());
@@ -115,7 +115,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   public void msAnalysisDialog() throws Throwable {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
-    view.activities().getCell(5, 0).doubleClick();
+    view.activities().view(5).click();
     MsAnalysisDialogElement dialog = view.msAnalysisDialog();
     assertTrue(dialog.isOpen());
     assertEquals(resources(MsAnalysisDialog.class).message(MsAnalysisDialog.HEADER),
@@ -126,7 +126,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   public void treatmentDialog() throws Throwable {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).id(ID);
-    view.activities().getCell(0, 0).doubleClick();
+    view.activities().view(0).click();
     TreatmentDialogElement dialog = view.treatmentDialog();
     assertTrue(dialog.isOpen());
     assertEquals(TreatmentType.TRANSFER.getLabel(currentLocale()), dialog.header().getText());

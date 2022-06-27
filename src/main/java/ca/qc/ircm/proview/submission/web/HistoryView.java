@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.history.ActivityProperties.ACTION_TYPE;
 import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
 import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
@@ -65,6 +66,9 @@ public class HistoryView extends VerticalLayout
   public static final String ACTIVITIES = "activities";
   public static final String DESCRIPTION = "description";
   public static final String VIEW_ERROR = "description";
+  public static final String VIEW_BUTTON =
+      "<vaadin-button class='" + VIEW + "' theme='icon' on-click='view'>"
+          + "<iron-icon icon='vaadin:eye' slot='prefix'></iron-icon>" + "</vaadin-button>";
   public static final String DESCRIPTION_SPAN =
       "<span title$='[[item.descriptionTitle]]'>[[item.descriptionValue]]</span>";
   public static final String EXPLANATION_SPAN =
@@ -73,6 +77,7 @@ public class HistoryView extends VerticalLayout
   private static final Logger logger = LoggerFactory.getLogger(HistoryView.class);
   protected H2 header = new H2();
   protected Grid<Activity> activities = new Grid<>();
+  protected Column<Activity> view;
   protected Column<Activity> user;
   protected Column<Activity> type;
   protected Column<Activity> date;
@@ -102,6 +107,10 @@ public class HistoryView extends VerticalLayout
     header.setId(HEADER);
     activities.setId(ACTIVITIES);
     activities.setSizeFull();
+    view = activities
+        .addColumn(TemplateRenderer.<Activity>of(VIEW_BUTTON).withEventHandler("view",
+            ac -> presenter.view(ac, getLocale())), VIEW)
+        .setKey(VIEW).setSortable(false).setFlexGrow(0);
     user = activities.addColumn(ac -> ac.getUser().getName(), USER).setKey(USER).setFlexGrow(5);
     type = activities.addColumn(ac -> ac.getActionType().getLabel(getLocale()), ACTION_TYPE)
         .setKey(ACTION_TYPE);
@@ -126,6 +135,9 @@ public class HistoryView extends VerticalLayout
   public void localeChange(LocaleChangeEvent event) {
     AppResources resources = new AppResources(getClass(), getLocale());
     AppResources activityResources = new AppResources(Activity.class, getLocale());
+    AppResources webResources = new AppResources(Constants.class, getLocale());
+    String viewHeader = webResources.message(VIEW);
+    view.setHeader(viewHeader).setFooter(viewHeader);
     String userHeader = activityResources.message(USER);
     user.setHeader(userHeader).setFooter(userHeader);
     String typeHeader = activityResources.message(ACTION_TYPE);
