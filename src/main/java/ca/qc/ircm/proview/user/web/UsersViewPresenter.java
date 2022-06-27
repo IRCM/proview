@@ -72,6 +72,7 @@ public class UsersViewPresenter {
     view.add.setVisible(authorizationService.hasAnyRole(ADMIN, MANAGER));
     view.switchUser.setVisible(authorizationService.hasRole(ADMIN));
     view.switchUserForm.setVisible(authorizationService.hasRole(ADMIN));
+    view.viewLaboratory.setVisible(authorizationService.hasAnyRole(ADMIN, MANAGER));
     view.dialog.addSavedListener(e -> loadUsers());
     view.laboratoryDialog.addSavedListener(e -> loadUsers());
   }
@@ -120,7 +121,21 @@ public class UsersViewPresenter {
     view.dialog.open();
   }
 
-  void view(Laboratory laboratory) {
+  void viewLaboratory() {
+    clearError();
+    User user = view.users.getSelectedItems().stream().findFirst().orElse(null);
+    if (user == null) {
+      AppResources resources = new AppResources(UsersView.class, locale);
+      view.error.setText(resources.message(USERS_REQUIRED));
+      view.error.setVisible(true);
+    } else {
+      view.laboratoryDialog
+          .setLaboratory(laboratoryService.get(user.getLaboratory().getId()).orElse(null));
+      view.laboratoryDialog.open();
+    }
+  }
+
+  void viewLaboratory(Laboratory laboratory) {
     clearError();
     view.laboratoryDialog.setLaboratory(laboratoryService.get(laboratory.getId()).orElse(null));
     view.laboratoryDialog.open();

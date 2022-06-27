@@ -20,10 +20,10 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.user.web.UsersView.ID;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -77,7 +77,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(ID);
-    view.users().emailCell(0).doubleClick();
+    view.users().edit(0).click();
     UserDialogElement dialog = view.dialog();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.userForm().email()).isPresent());
@@ -107,7 +107,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
-    view.users().emailCell(0).doubleClick();
+    view.users().edit(0).click();
 
     UserDialogElement dialog = view.dialog();
     dialog.userForm().email().setValue(email);
@@ -159,7 +159,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
-    view.users().emailCell(0).doubleClick();
+    view.users().edit(0).click();
 
     UserDialogElement dialog = view.dialog();
     dialog.userForm().email().setValue(email);

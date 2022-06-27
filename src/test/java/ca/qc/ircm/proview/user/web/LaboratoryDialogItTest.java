@@ -19,9 +19,9 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.LaboratoryDialog.SAVED;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -55,7 +55,8 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
-    view.users().laboratoryCell(0).doubleClick();
+    view.users().select(0);
+    view.viewLaboratory().click();
     LaboratoryDialogElement dialog = view.laboratoryDialog();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.name()).isPresent());
@@ -67,7 +68,8 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   public void save() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
-    view.users().laboratoryCell(0).doubleClick();
+    view.users().select(0);
+    view.viewLaboratory().click();
     LaboratoryDialogElement dialog = view.laboratoryDialog();
     fill(dialog);
 
@@ -86,7 +88,8 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   public void cancel() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
-    view.users().laboratoryCell(0).doubleClick();
+    view.users().select(0);
+    view.viewLaboratory().click();
     LaboratoryDialogElement dialog = view.laboratoryDialog();
     fill(dialog);
 

@@ -115,6 +115,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     view.error = new Div();
     view.add = new Button();
     view.switchUser = new Button();
+    view.viewLaboratory = new Button();
     view.switchUserForm = new Html("<form></form>");
     view.dialog = mock(UserDialog.class);
     view.laboratoryDialog = mock(LaboratoryDialog.class);
@@ -141,6 +142,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     assertFalse(view.add.isVisible());
     assertFalse(view.switchUser.isVisible());
     assertFalse(view.switchUserForm.isVisible());
+    assertFalse(view.viewLaboratory.isVisible());
   }
 
   @Test
@@ -160,6 +162,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     assertTrue(view.add.isVisible());
     assertFalse(view.switchUser.isVisible());
     assertFalse(view.switchUserForm.isVisible());
+    assertTrue(view.viewLaboratory.isVisible());
   }
 
   @Test
@@ -180,6 +183,7 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
     assertTrue(view.add.isVisible());
     assertTrue(view.switchUser.isVisible());
     assertTrue(view.switchUserForm.isVisible());
+    assertTrue(view.viewLaboratory.isVisible());
   }
 
   @Test
@@ -314,25 +318,52 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void view_Laboratory() {
+  public void viewLaboratory() {
     presenter.init(view);
-    Laboratory laboratory = mock(Laboratory.class);
-    when(laboratory.getId()).thenReturn(2L);
+    presenter.localeChange(locale);
+    User user = repository.findById(3L).get();
+    view.users.select(user);
     Laboratory databaseLaboratory = laboratoryRepository.findById(2L).orElse(null);
     when(laboratoryService.get(any(Long.class))).thenReturn(Optional.of(databaseLaboratory));
-    presenter.view(laboratory);
+    presenter.viewLaboratory();
+    assertFalse(view.error.isVisible());
     verify(laboratoryService).get(2L);
     verify(view.laboratoryDialog).setLaboratory(databaseLaboratory);
     verify(view.laboratoryDialog).open();
   }
 
   @Test
-  public void view_EmptyLaboratory() {
+  public void viewLaboratory_Empty() {
+    presenter.init(view);
+    presenter.localeChange(locale);
+    presenter.viewLaboratory();
+    assertEquals(resources.message(USERS_REQUIRED), view.error.getText());
+    assertTrue(view.error.isVisible());
+    verify(laboratoryService, never()).get(any());
+    verify(view.laboratoryDialog, never()).setLaboratory(any());
+    verify(view.laboratoryDialog, never()).open();
+  }
+
+  @Test
+  public void viewLaboratory_Laboratory() {
+    presenter.init(view);
+    Laboratory laboratory = mock(Laboratory.class);
+    when(laboratory.getId()).thenReturn(2L);
+    Laboratory databaseLaboratory = laboratoryRepository.findById(2L).orElse(null);
+    when(laboratoryService.get(any(Long.class))).thenReturn(Optional.of(databaseLaboratory));
+    presenter.viewLaboratory(laboratory);
+    verify(laboratoryService).get(2L);
+    verify(view.laboratoryDialog).setLaboratory(databaseLaboratory);
+    verify(view.laboratoryDialog).open();
+  }
+
+  @Test
+  public void viewLaboratory_LaboratoryEmpty() {
     presenter.init(view);
     Laboratory laboratory = mock(Laboratory.class);
     when(laboratory.getId()).thenReturn(2L);
     when(laboratoryService.get(any(Long.class))).thenReturn(Optional.empty());
-    presenter.view(laboratory);
+    presenter.viewLaboratory(laboratory);
     verify(laboratoryService).get(2L);
     verify(view.laboratoryDialog).setLaboratory(null);
     verify(view.laboratoryDialog).open();

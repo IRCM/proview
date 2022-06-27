@@ -113,17 +113,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void view() throws Throwable {
-    open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
-
-    view.users().emailCell(0).doubleClick();
-
-    assertTrue(view.dialog().isOpen());
-  }
-
-  @Test
-  public void edit_Button() throws Throwable {
+  public void edit() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).id(ID);
 
@@ -140,14 +130,6 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     view.add().click();
 
     assertTrue(view.dialog().isOpen());
-  }
-
-  @Test
-  public void view_Laboratory() throws Throwable {
-    open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
-    view.users().laboratoryCell(0).doubleClick();
-    assertTrue(view.laboratoryDialog().isOpen());
   }
 
   @Test
@@ -175,5 +157,14 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     view.switchUser().click();
 
     assertTrue(optional(() -> view.switchFailed()).isPresent());
+  }
+
+  @Test
+  public void view_Laboratory() throws Throwable {
+    open();
+    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    view.users().select(0);
+    view.viewLaboratory().click();
+    assertTrue(view.laboratoryDialog().isOpen());
   }
 }

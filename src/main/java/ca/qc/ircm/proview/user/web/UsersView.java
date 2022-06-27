@@ -86,6 +86,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   public static final String SWITCH_USERNAME = "switchUsername";
   public static final String SWITCH_FAILED = "switchFailed";
   public static final String ADD = "add";
+  public static final String VIEW_LABORATORY = "viewLaboratory";
   public static final String ACTIVE_BUTTON =
       "<vaadin-button class='" + ACTIVE + "' theme$='[[item.activeTheme]]' on-click='toggleActive'>"
           + "<iron-icon icon$='[[item.activeIcon]]' slot='prefix'></iron-icon>"
@@ -109,6 +110,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected Div error = new Div();
   protected Button add = new Button();
   protected Button switchUser = new Button();
+  protected Button viewLaboratory = new Button();
   protected Html switchUserForm = new Html(
       "<form action=\"" + SWITCH_USER_URL + "\" method=\"post\" style=\"display:none;\"></form>");
   protected Html switchUsername = new Html("<input name=\"" + SWITCH_USERNAME_PARAMETER + "\">");
@@ -133,12 +135,12 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     add(header, users, error, buttonsLayout, switchUserForm);
     expand(users);
-    buttonsLayout.add(add, switchUser);
+    buttonsLayout.add(add, switchUser, viewLaboratory);
     header.setId(HEADER);
     users.setId(USERS);
     users.addItemDoubleClickListener(e -> {
       if (e.getColumn() == laboratory) {
-        presenter.view(e.getItem().getLaboratory());
+        presenter.viewLaboratory(e.getItem().getLaboratory());
       } else {
         presenter.view(e.getItem());
       }
@@ -188,6 +190,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     switchUserForm.setId(SWITCH_USER_FORM);
     switchUserForm.getElement().appendChild(switchUsername.getElement());
     switchUsername.setId(SWITCH_USERNAME);
+    viewLaboratory.setId(VIEW_LABORATORY);
+    viewLaboratory.addClickListener(e -> presenter.viewLaboratory());
     presenter.init(this);
   }
 
@@ -230,6 +234,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     add.setIcon(VaadinIcon.PLUS.create());
     switchUser.setText(resources.message(SWITCH_USER));
     switchUser.setIcon(VaadinIcon.BUG.create());
+    viewLaboratory.setText(resources.message(VIEW_LABORATORY));
+    viewLaboratory.setIcon(VaadinIcon.EDIT.create());
     presenter.localeChange(getLocale());
   }
 

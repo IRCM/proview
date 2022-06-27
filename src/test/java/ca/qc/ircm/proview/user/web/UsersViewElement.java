@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.user.web.UsersView.ADD;
 import static ca.qc.ircm.proview.user.web.UsersView.HEADER;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER;
+import static ca.qc.ircm.proview.user.web.UsersView.VIEW_LABORATORY;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.html.testbench.DivElement;
@@ -53,6 +54,10 @@ public class UsersViewElement extends VerticalLayoutElement {
 
   public ButtonElement switchUser() {
     return $(ButtonElement.class).id(SWITCH_USER);
+  }
+
+  public ButtonElement viewLaboratory() {
+    return $(ButtonElement.class).id(VIEW_LABORATORY);
   }
 
   public UserDialogElement dialog() {

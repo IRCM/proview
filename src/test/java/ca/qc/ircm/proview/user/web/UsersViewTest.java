@@ -46,6 +46,7 @@ import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USERNAME;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER_FORM;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS;
+import static ca.qc.ircm.proview.user.web.UsersView.VIEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -188,6 +189,7 @@ public class UsersViewTest extends AbstractViewTestCase {
     assertEquals(ERROR_TEXT, view.error.getId().orElse(""));
     assertEquals(ADD, view.add.getId().orElse(""));
     assertEquals(SWITCH_USER, view.switchUser.getId().orElse(""));
+    assertEquals(VIEW_LABORATORY, view.viewLaboratory.getId().orElse(""));
     assertEquals(SWITCH_USER_FORM, view.switchUserForm.getId().orElse(""));
     assertEquals(SWITCH_USER_URL, view.switchUserForm.getElement().getAttribute("action"));
     assertEquals("post", view.switchUserForm.getElement().getAttribute("method"));
@@ -227,6 +229,8 @@ public class UsersViewTest extends AbstractViewTestCase {
     validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
     assertEquals(resources.message(SWITCH_USER), view.switchUser.getText());
     validateIcon(VaadinIcon.BUG.create(), view.switchUser.getIcon());
+    assertEquals(resources.message(VIEW_LABORATORY), view.viewLaboratory.getText());
+    validateIcon(VaadinIcon.EDIT.create(), view.viewLaboratory.getIcon());
     verify(presenter).localeChange(locale);
   }
 
@@ -265,6 +269,8 @@ public class UsersViewTest extends AbstractViewTestCase {
     validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
     assertEquals(resources.message(SWITCH_USER), view.switchUser.getText());
     validateIcon(VaadinIcon.BUG.create(), view.switchUser.getIcon());
+    assertEquals(resources.message(VIEW_LABORATORY), view.viewLaboratory.getText());
+    validateIcon(VaadinIcon.EDIT.create(), view.viewLaboratory.getIcon());
     verify(presenter).localeChange(locale);
   }
 
@@ -387,11 +393,11 @@ public class UsersViewTest extends AbstractViewTestCase {
   }
 
   @Test
-  public void view_Laboratory() {
+  public void viewLaboratory_Grid() {
     User user = users.get(0);
     doubleClickItem(view.users, user, view.laboratory);
 
-    verify(presenter).view(user.getLaboratory());
+    verify(presenter).viewLaboratory(user.getLaboratory());
   }
 
   private User active(boolean active) {
@@ -474,6 +480,12 @@ public class UsersViewTest extends AbstractViewTestCase {
   public void switchUser() {
     clickButton(view.switchUser);
     verify(presenter).switchUser();
+  }
+
+  @Test
+  public void viewLaboratory() {
+    clickButton(view.viewLaboratory);
+    verify(presenter).viewLaboratory();
   }
 
   @Test
