@@ -52,7 +52,7 @@
   </issueManagement>
   <properties>
     <main-class>ca.qc.ircm.proview.Main</main-class>
-    <javac.version>1.8</javac.version>
+    <javac.version>11</javac.version>
     <spring-boot.version>2.6.7</spring-boot.version>
     <querydsl.version>4.2.1</querydsl.version>
     <shiro.version>1.8.0</shiro.version>
