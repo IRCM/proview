@@ -114,7 +114,7 @@ public class PrintSubmissionTest extends AbstractKaribuTestCase {
     Html html = findChild(component, Html.class).orElse(null);
     assertNotNull(html);
     ByteArrayOutputStream output = new ByteArrayOutputStream();
-    Pattern pattern = Pattern.compile("<a href=\"(.*)\">");
+    Pattern pattern = Pattern.compile("<a href=\"([^>]*)\">");
     Matcher matcher = pattern.matcher(html.getElement().getOuterHTML());
     assertTrue(matcher.find());
     String uri = matcher.group(1);
