@@ -17,11 +17,16 @@
 
 package ca.qc.ircm.proview.test.config;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import ca.qc.ircm.proview.security.AuthorizationService;
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.github.mvysny.kaributesting.v10.Routes;
 import com.github.mvysny.kaributesting.v10.spring.MockSpringServlet;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.spring.SpringServlet;
+import org.mockito.internal.util.MockUtil;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestExecutionListener;
 
@@ -40,13 +45,19 @@ public class KaribuTestExecutionListener implements TestExecutionListener {
     if (!isKaribuTest(testContext)) {
       return;
     }
-    routes = new Routes().autoDiscoverViews("ca.qc.ircm.lanaseq");
+    routes = new Routes().autoDiscoverViews("ca.qc.ircm.proview");
   }
 
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     if (!isKaribuTest(testContext)) {
       return;
+    }
+    AuthorizationService authorizationService =
+        testContext.getApplicationContext().getBean(AuthorizationService.class);
+    if (MockUtil.isMock(authorizationService)) {
+      // Force isAuthorized method to return true to prevent errors when configuring routes.
+      when(authorizationService.isAuthorized(any())).thenReturn(true);
     }
     AnnotationFinder
         .findAnnotation(testContext.getTestClass(), testContext.getTestMethod(), UserAgent.class)
