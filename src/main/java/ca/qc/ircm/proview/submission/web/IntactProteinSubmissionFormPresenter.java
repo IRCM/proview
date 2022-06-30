@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEIGHT;
+import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.GOAL;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INJECTION_TYPE;
@@ -46,6 +47,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -88,10 +90,13 @@ public class IntactProteinSubmissionFormPresenter {
       new BeanValidationBinder<>(SubmissionSample.class);
   private Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
   private SubmissionSampleService sampleService;
+  private AuthorizationService authorizationService;
 
   @Autowired
-  protected IntactProteinSubmissionFormPresenter(SubmissionSampleService sampleService) {
+  protected IntactProteinSubmissionFormPresenter(SubmissionSampleService sampleService,
+      AuthorizationService authorizationService) {
     this.sampleService = sampleService;
+    this.authorizationService = authorizationService;
   }
 
   /**
@@ -139,6 +144,7 @@ public class IntactProteinSubmissionFormPresenter {
     binder.forField(form.instrument).withNullRepresentation(MassDetectionInstrument.NULL)
         .bind(INSTRUMENT);
     sampleTypeChanged();
+    setReadOnly();
   }
 
   private void sampleTypeChanged() {
@@ -259,6 +265,14 @@ public class IntactProteinSubmissionFormPresenter {
     samples.setSamplesNames(
         submission.getSamples().stream().map(Sample::getName).collect(Collectors.toList()));
     samplesBinder.setBean(samples);
+    setReadOnly();
+  }
+
+  private void setReadOnly() {
+    boolean readOnly = !authorizationService.hasPermission(binder.getBean(), WRITE);
+    binder.setReadOnly(readOnly);
+    firstSampleBinder.setReadOnly(readOnly);
+    samplesBinder.setReadOnly(readOnly);
   }
 
   /**

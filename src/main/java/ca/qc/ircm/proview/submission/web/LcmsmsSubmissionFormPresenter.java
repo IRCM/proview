@@ -26,6 +26,7 @@ import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.SampleType.DRY;
 import static ca.qc.ircm.proview.sample.SampleType.GEL;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEIGHT;
+import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
@@ -63,6 +64,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
@@ -108,10 +110,13 @@ public class LcmsmsSubmissionFormPresenter {
       new BeanValidationBinder<>(SubmissionSample.class);
   private Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
   private SubmissionSampleService sampleService;
+  private AuthorizationService authorizationService;
 
   @Autowired
-  protected LcmsmsSubmissionFormPresenter(SubmissionSampleService sampleService) {
+  protected LcmsmsSubmissionFormPresenter(SubmissionSampleService sampleService,
+      AuthorizationService authorizationService) {
     this.sampleService = sampleService;
+    this.authorizationService = authorizationService;
   }
 
   /**
@@ -214,6 +219,7 @@ public class LcmsmsSubmissionFormPresenter {
     digestionChanged();
     identificationChanged();
     quantificationChanged();
+    setReadOnly();
   }
 
   private void sampleTypeChanged() {
@@ -365,6 +371,14 @@ public class LcmsmsSubmissionFormPresenter {
     samples.setSamplesNames(
         submission.getSamples().stream().map(Sample::getName).collect(Collectors.toList()));
     samplesBinder.setBean(samples);
+    setReadOnly();
+  }
+
+  private void setReadOnly() {
+    boolean readOnly = !authorizationService.hasPermission(binder.getBean(), WRITE);
+    binder.setReadOnly(readOnly);
+    firstSampleBinder.setReadOnly(readOnly);
+    samplesBinder.setReadOnly(readOnly);
   }
 
   /**

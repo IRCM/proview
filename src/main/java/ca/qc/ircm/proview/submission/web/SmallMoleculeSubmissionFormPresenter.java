@@ -23,6 +23,7 @@ import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
+import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.FORMULA;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
@@ -39,6 +40,7 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -73,10 +75,13 @@ public class SmallMoleculeSubmissionFormPresenter {
   private Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
   private SubmissionSampleService sampleService;
+  private AuthorizationService authorizationService;
 
   @Autowired
-  protected SmallMoleculeSubmissionFormPresenter(SubmissionSampleService sampleService) {
+  protected SmallMoleculeSubmissionFormPresenter(SubmissionSampleService sampleService,
+      AuthorizationService authorizationService) {
     this.sampleService = sampleService;
+    this.authorizationService = authorizationService;
   }
 
   /**
@@ -124,6 +129,7 @@ public class SmallMoleculeSubmissionFormPresenter {
         .bind(OTHER_SOLVENT);
     sampleTypeChanged();
     solventsChanged();
+    setReadOnly();
   }
 
   private void sampleTypeChanged() {
@@ -183,5 +189,12 @@ public class SmallMoleculeSubmissionFormPresenter {
     }
     binder.setBean(submission);
     firstSampleBinder.setBean(submission.getSamples().get(0));
+    setReadOnly();
+  }
+
+  private void setReadOnly() {
+    boolean readOnly = !authorizationService.hasPermission(binder.getBean(), WRITE);
+    binder.setReadOnly(readOnly);
+    firstSampleBinder.setReadOnly(readOnly);
   }
 }

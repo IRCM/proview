@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatus
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
@@ -38,6 +39,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.web.IntactProteinSubmissionFormPresenter.Samples;
@@ -70,6 +72,8 @@ public class IntactProteinSubmissionFormPresenterTest {
   private IntactProteinSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
+  @MockBean
+  private AuthorizationService authorizationService;
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
@@ -120,6 +124,7 @@ public class IntactProteinSubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setType(SampleType.DRY);
     newSubmission.getSamples().add(sample);
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
   }
 
   private Submission submission() {
@@ -706,19 +711,69 @@ public class IntactProteinSubmissionFormPresenterTest {
     presenter.setSubmission(submission());
 
     assertEquals(experiment, form.experiment.getValue());
+    assertFalse(form.experiment.isReadOnly());
     assertEquals(goal, form.goal.getValue());
+    assertFalse(form.goal.isReadOnly());
     assertEquals(taxonomy, form.taxonomy.getValue());
+    assertFalse(form.taxonomy.isReadOnly());
     assertEquals(protein, form.protein.getValue());
+    assertFalse(form.protein.isReadOnly());
     assertEquals(molecularWeight, Double.parseDouble(form.molecularWeight.getValue()), 0.00001);
+    assertFalse(form.molecularWeight.isReadOnly());
     assertEquals(postTranslationModification, form.postTranslationModification.getValue());
+    assertFalse(form.postTranslationModification.isReadOnly());
     assertEquals(sampleType, form.sampleType.getValue());
+    assertFalse(form.sampleType.isReadOnly());
     assertEquals(samplesCount, Integer.parseInt(form.samplesCount.getValue()));
+    assertFalse(form.samplesCount.isReadOnly());
     assertEquals(samplesNames, form.samplesNames.getValue());
+    assertFalse(form.samplesNames.isReadOnly());
     assertEquals(quantity, form.quantity.getValue());
+    assertFalse(form.quantity.isReadOnly());
     assertEquals(volume, form.volume.getValue());
+    assertFalse(form.volume.isReadOnly());
     assertEquals(injection, form.injection.getValue());
+    assertFalse(form.injection.isReadOnly());
     assertEquals(source, form.source.getValue());
+    assertFalse(form.source.isReadOnly());
     assertEquals(instrument, form.instrument.getValue());
+    assertFalse(form.instrument.isReadOnly());
+  }
+
+  @Test
+  public void setSubmission_ReadOnly() {
+    when(authorizationService.hasPermission(any(), any())).thenReturn(false);
+
+    presenter.setSubmission(submission());
+
+    assertEquals(experiment, form.experiment.getValue());
+    assertTrue(form.experiment.isReadOnly());
+    assertEquals(goal, form.goal.getValue());
+    assertTrue(form.goal.isReadOnly());
+    assertEquals(taxonomy, form.taxonomy.getValue());
+    assertTrue(form.taxonomy.isReadOnly());
+    assertEquals(protein, form.protein.getValue());
+    assertTrue(form.protein.isReadOnly());
+    assertEquals(molecularWeight, Double.parseDouble(form.molecularWeight.getValue()), 0.00001);
+    assertTrue(form.molecularWeight.isReadOnly());
+    assertEquals(postTranslationModification, form.postTranslationModification.getValue());
+    assertTrue(form.postTranslationModification.isReadOnly());
+    assertEquals(sampleType, form.sampleType.getValue());
+    assertTrue(form.sampleType.isReadOnly());
+    assertEquals(samplesCount, Integer.parseInt(form.samplesCount.getValue()));
+    assertTrue(form.samplesCount.isReadOnly());
+    assertEquals(samplesNames, form.samplesNames.getValue());
+    assertTrue(form.samplesNames.isReadOnly());
+    assertEquals(quantity, form.quantity.getValue());
+    assertTrue(form.quantity.isReadOnly());
+    assertEquals(volume, form.volume.getValue());
+    assertTrue(form.volume.isReadOnly());
+    assertEquals(injection, form.injection.getValue());
+    assertTrue(form.injection.isReadOnly());
+    assertEquals(source, form.source.getValue());
+    assertTrue(form.source.isReadOnly());
+    assertEquals(instrument, form.instrument.getValue());
+    assertTrue(form.instrument.isReadOnly());
   }
 
   @Test

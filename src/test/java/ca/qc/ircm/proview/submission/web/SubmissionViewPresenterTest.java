@@ -19,9 +19,11 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.security.Permission.WRITE;
+import static ca.qc.ircm.proview.submission.SubmissionFileProperties.FILENAME;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_IOEXCEPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_OVER_MAXIMUM;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.MAXIMUM_FILES_COUNT;
+import static ca.qc.ircm.proview.submission.web.SubmissionView.REMOVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static org.junit.Assert.assertFalse;
@@ -37,7 +39,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
@@ -56,13 +57,15 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.provider.DataProviderListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -81,12 +84,14 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link SubmissionViewPresenter}.
  */
 @ServiceTestAnnotations
-public class SubmissionViewPresenterTest extends AbstractViewTestCase {
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
+public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
   @Autowired
   private SubmissionViewPresenter presenter;
   @Mock
@@ -116,13 +121,17 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
     view.header = new H2();
     view.service = new Tabs();
     view.lcmsms = new Tab();
     view.smallMolecule = new Tab();
     view.intactProtein = new Tab();
     view.service.add(view.lcmsms, view.smallMolecule, view.intactProtein);
+    view.upload = new Upload(new MultiFileMemoryBuffer());
     view.files = new Grid<>();
+    view.filename = view.files.addColumn(file -> file.getFilename(), FILENAME).setKey(FILENAME);
+    view.remove = view.files.addColumn(file -> file.getFilename(), REMOVE).setKey(REMOVE);
     view.comment = new TextArea();
     view.lcmsmsSubmissionForm = mock(LcmsmsSubmissionForm.class);
     view.smallMoleculeSubmissionForm = mock(SmallMoleculeSubmissionForm.class);
@@ -322,7 +331,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
       assertEquals(files.get(i).getFilename(), submission.getFiles().get(i).getFilename());
       assertArrayEquals(files.get(i).getContent(), submission.getFiles().get(i).getContent());
     }
-    verify(ui).navigate(SubmissionsView.class);
+    assertCurrentView(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
@@ -349,7 +358,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
       assertEquals(expected.getFilename(), submission.getFiles().get(i).getFilename());
       assertArrayEquals(expected.getContent(), submission.getFiles().get(i).getContent());
     }
-    verify(ui).navigate(SubmissionsView.class);
+    assertCurrentView(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
@@ -377,7 +386,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
       assertEquals(files.get(i).getFilename(), submission.getFiles().get(i).getFilename());
       assertArrayEquals(files.get(i).getContent(), submission.getFiles().get(i).getContent());
     }
-    verify(ui).navigate(SubmissionsView.class);
+    assertCurrentView(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
@@ -404,7 +413,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
       assertEquals(expected.getFilename(), submission.getFiles().get(i).getFilename());
       assertArrayEquals(expected.getContent(), submission.getFiles().get(i).getContent());
     }
-    verify(ui).navigate(SubmissionsView.class);
+    assertCurrentView(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
@@ -432,7 +441,7 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
       assertEquals(files.get(i).getFilename(), submission.getFiles().get(i).getFilename());
       assertArrayEquals(files.get(i).getContent(), submission.getFiles().get(i).getContent());
     }
-    verify(ui).navigate(SubmissionsView.class);
+    assertCurrentView(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
@@ -459,22 +468,22 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
       assertEquals(expected.getFilename(), submission.getFiles().get(i).getFilename());
       assertArrayEquals(expected.getContent(), submission.getFiles().get(i).getContent());
     }
-    verify(ui).navigate(SubmissionsView.class);
+    assertCurrentView(SubmissionsView.class);
     verify(view).showNotification(resources.message(SAVED, submission.getExperiment()));
   }
 
   @Test
   public void setParameter() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
     String comment = "my test comment";
     submission.setComment(comment);
 
     presenter.setParameter(34L);
 
     verify(service).get(34L);
-    verify(authorizationService).hasPermission(submission, WRITE);
-    verify(view, atLeastOnce()).setEnabled(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
+    verify(authorizationService, atLeastOnce()).hasPermission(submission, WRITE);
+    assertFalse(view.comment.isReadOnly());
+    assertTrue(view.upload.isVisible());
+    assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
     verify(view.lcmsmsSubmissionForm).setSubmission(submission);
     verify(view.smallMoleculeSubmissionForm).setSubmission(submission);
     verify(view.intactProteinSubmissionForm).setSubmission(submission);
@@ -489,12 +498,15 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
 
   @Test
   public void setParameter_ReadOnly() {
+    when(authorizationService.hasPermission(any(), any())).thenReturn(false);
+
     presenter.setParameter(34L);
 
     verify(service).get(34L);
-    verify(authorizationService).hasPermission(submission, WRITE);
-    verify(view, atLeastOnce()).setEnabled(booleanCaptor.capture());
-    assertFalse(booleanCaptor.getValue());
+    verify(authorizationService, atLeastOnce()).hasPermission(submission, WRITE);
+    assertTrue(view.comment.isReadOnly());
+    assertFalse(view.upload.isVisible());
+    assertFalse(view.files.getColumnByKey(REMOVE).isVisible());
     verify(view.lcmsmsSubmissionForm).setSubmission(submission);
     verify(view.smallMoleculeSubmissionForm).setSubmission(submission);
     verify(view.intactProteinSubmissionForm).setSubmission(submission);
@@ -514,9 +526,10 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
     presenter.setParameter(2L);
 
     verify(service).get(2L);
-    verify(authorizationService, never()).hasPermission(submission, WRITE);
-    verify(view, atLeastOnce()).setEnabled(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
+    verify(authorizationService, atLeastOnce()).hasPermission(any(Submission.class), eq(WRITE));
+    assertFalse(view.comment.isReadOnly());
+    assertTrue(view.upload.isVisible());
+    assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
     verify(view.lcmsmsSubmissionForm, atLeastOnce()).setSubmission(submissionCaptor.capture());
     Submission lcmsms = submissionCaptor.getValue();
     verify(view.smallMoleculeSubmissionForm, atLeastOnce())
@@ -548,10 +561,11 @@ public class SubmissionViewPresenterTest extends AbstractViewTestCase {
   public void setParameter_Null() {
     presenter.setParameter(null);
 
-    verifyNoInteractions(service);
-    verify(authorizationService, never()).hasPermission(submission, WRITE);
-    verify(view, atLeastOnce()).setEnabled(booleanCaptor.capture());
-    assertTrue(booleanCaptor.getValue());
+    verify(service, never()).get(any());
+    verify(authorizationService, atLeastOnce()).hasPermission(any(Submission.class), eq(WRITE));
+    assertFalse(view.comment.isReadOnly());
+    assertTrue(view.upload.isVisible());
+    assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
     verify(view.lcmsmsSubmissionForm).setSubmission(submissionCaptor.capture());
     verify(view.smallMoleculeSubmissionForm).setSubmission(submissionCaptor.capture());
     verify(view.intactProteinSubmissionForm).setSubmission(submissionCaptor.capture());

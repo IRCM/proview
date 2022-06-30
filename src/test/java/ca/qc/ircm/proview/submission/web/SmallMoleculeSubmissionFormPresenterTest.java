@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatus
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
@@ -32,6 +33,7 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
@@ -64,6 +66,8 @@ public class SmallMoleculeSubmissionFormPresenterTest {
   private SmallMoleculeSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
+  @MockBean
+  private AuthorizationService authorizationService;
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
@@ -106,6 +110,7 @@ public class SmallMoleculeSubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setType(SampleType.DRY);
     newSubmission.getSamples().add(sample);
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
   }
 
   private Submission submission() {
@@ -450,16 +455,60 @@ public class SmallMoleculeSubmissionFormPresenterTest {
     presenter.setSubmission(submission());
 
     assertEquals(sampleType, form.sampleType.getValue());
+    assertFalse(form.sampleType.isReadOnly());
     assertEquals(sampleName, form.sampleName.getValue());
+    assertFalse(form.sampleName.isReadOnly());
     assertEquals(solvent, form.solvent.getValue());
+    assertFalse(form.solvent.isReadOnly());
     assertEquals(formula, form.formula.getValue());
+    assertFalse(form.formula.isReadOnly());
     assertEquals(String.valueOf(monoisotopicMass), form.monoisotopicMass.getValue());
+    assertFalse(form.monoisotopicMass.isReadOnly());
     assertEquals(String.valueOf(averageMass), form.averageMass.getValue());
+    assertFalse(form.averageMass.isReadOnly());
     assertEquals(toxicity, form.toxicity.getValue());
+    assertFalse(form.toxicity.isReadOnly());
     assertEquals(lightSensitive, form.lightSensitive.getValue());
+    assertFalse(form.lightSensitive.isReadOnly());
     assertEquals(storageTemperature, form.storageTemperature.getValue());
+    assertFalse(form.storageTemperature.isReadOnly());
     assertEquals(highResolution, form.highResolution.getValue());
+    assertFalse(form.highResolution.isReadOnly());
     assertEquals(solvents, form.solvents.getValue());
+    assertFalse(form.solvents.isReadOnly());
     assertEquals(otherSolvent, form.otherSolvent.getValue());
+    assertFalse(form.otherSolvent.isReadOnly());
+  }
+
+  @Test
+  public void setSubmission_ReadOnly() {
+    when(authorizationService.hasPermission(any(), any())).thenReturn(false);
+
+    presenter.setSubmission(submission());
+
+    assertEquals(sampleType, form.sampleType.getValue());
+    assertTrue(form.sampleType.isReadOnly());
+    assertEquals(sampleName, form.sampleName.getValue());
+    assertTrue(form.sampleName.isReadOnly());
+    assertEquals(solvent, form.solvent.getValue());
+    assertTrue(form.solvent.isReadOnly());
+    assertEquals(formula, form.formula.getValue());
+    assertTrue(form.formula.isReadOnly());
+    assertEquals(String.valueOf(monoisotopicMass), form.monoisotopicMass.getValue());
+    assertTrue(form.monoisotopicMass.isReadOnly());
+    assertEquals(String.valueOf(averageMass), form.averageMass.getValue());
+    assertTrue(form.averageMass.isReadOnly());
+    assertEquals(toxicity, form.toxicity.getValue());
+    assertTrue(form.toxicity.isReadOnly());
+    assertEquals(lightSensitive, form.lightSensitive.getValue());
+    assertTrue(form.lightSensitive.isReadOnly());
+    assertEquals(storageTemperature, form.storageTemperature.getValue());
+    assertTrue(form.storageTemperature.isReadOnly());
+    assertEquals(highResolution, form.highResolution.getValue());
+    assertTrue(form.highResolution.isReadOnly());
+    assertEquals(solvents, form.solvents.getValue());
+    assertTrue(form.solvents.isReadOnly());
+    assertEquals(otherSolvent, form.otherSolvent.getValue());
+    assertTrue(form.otherSolvent.isReadOnly());
   }
 }

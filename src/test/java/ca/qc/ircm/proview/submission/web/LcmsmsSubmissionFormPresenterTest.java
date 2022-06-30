@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatus
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
@@ -38,6 +39,7 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
@@ -76,6 +78,8 @@ public class LcmsmsSubmissionFormPresenterTest {
   private LcmsmsSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
+  @MockBean
+  private AuthorizationService authorizationService;
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
@@ -159,6 +163,7 @@ public class LcmsmsSubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setType(SampleType.DRY);
     newSubmission.getSamples().add(sample);
+    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
   }
 
   private Submission submission() {
@@ -1240,34 +1245,127 @@ public class LcmsmsSubmissionFormPresenterTest {
     presenter.setSubmission(submission());
 
     assertEquals(experiment, form.experiment.getValue());
+    assertFalse(form.experiment.isReadOnly());
     assertEquals(goal, form.goal.getValue());
+    assertFalse(form.goal.isReadOnly());
     assertEquals(taxonomy, form.taxonomy.getValue());
+    assertFalse(form.taxonomy.isReadOnly());
     assertEquals(protein, form.protein.getValue());
+    assertFalse(form.protein.isReadOnly());
     assertEquals(molecularWeight, Double.parseDouble(form.molecularWeight.getValue()), 0.00001);
+    assertFalse(form.molecularWeight.isReadOnly());
     assertEquals(postTranslationModification, form.postTranslationModification.getValue());
+    assertFalse(form.postTranslationModification.isReadOnly());
     assertEquals(sampleType, form.sampleType.getValue());
+    assertFalse(form.sampleType.isReadOnly());
     assertEquals(samplesCount, Integer.parseInt(form.samplesCount.getValue()));
+    assertFalse(form.samplesCount.isReadOnly());
     assertEquals(samplesNames, form.samplesNames.getValue());
+    assertFalse(form.samplesNames.isReadOnly());
     assertEquals(quantity, form.quantity.getValue());
+    assertFalse(form.quantity.isReadOnly());
     assertEquals(volume, form.volume.getValue());
+    assertFalse(form.volume.isReadOnly());
     assertEquals(separation, form.separation.getValue());
+    assertFalse(form.separation.isReadOnly());
     assertEquals(thickness, form.thickness.getValue());
+    assertFalse(form.thickness.isReadOnly());
     assertEquals(coloration, form.coloration.getValue());
+    assertFalse(form.coloration.isReadOnly());
     assertEquals(otherColoration, form.otherColoration.getValue());
+    assertFalse(form.otherColoration.isReadOnly());
     assertEquals(developmentTime, form.developmentTime.getValue());
+    assertFalse(form.developmentTime.isReadOnly());
     assertEquals(destained, form.destained.getValue());
+    assertFalse(form.destained.isReadOnly());
     assertEquals(weightMarkerQuantity, Double.parseDouble(form.weightMarkerQuantity.getValue()),
         0.00001);
+    assertFalse(form.weightMarkerQuantity.isReadOnly());
     assertEquals(proteinQuantity, form.proteinQuantity.getValue());
+    assertFalse(form.proteinQuantity.isReadOnly());
     assertEquals(digestion, form.digestion.getValue());
+    assertFalse(form.digestion.isReadOnly());
     assertEquals(usedDigestion, form.usedDigestion.getValue());
+    assertFalse(form.usedDigestion.isReadOnly());
     assertEquals(otherDigestion, form.otherDigestion.getValue());
+    assertFalse(form.otherDigestion.isReadOnly());
     assertEquals(proteinContent, form.proteinContent.getValue());
+    assertFalse(form.proteinContent.isReadOnly());
     assertEquals(instrument, form.instrument.getValue());
+    assertFalse(form.instrument.isReadOnly());
     assertEquals(identification, form.identification.getValue());
+    assertFalse(form.identification.isReadOnly());
     assertEquals(identificationLink, form.identificationLink.getValue());
+    assertFalse(form.identificationLink.isReadOnly());
     assertEquals(quantification, form.quantification.getValue());
+    assertFalse(form.quantification.isReadOnly());
     assertEquals(quantificationComment, form.quantificationComment.getValue());
+    assertFalse(form.quantificationComment.isReadOnly());
+  }
+
+  @Test
+  public void setSubmission_ReadOnly() {
+    when(authorizationService.hasPermission(any(), any())).thenReturn(false);
+
+    presenter.setSubmission(submission());
+
+    assertEquals(experiment, form.experiment.getValue());
+    assertTrue(form.experiment.isReadOnly());
+    assertEquals(goal, form.goal.getValue());
+    assertTrue(form.goal.isReadOnly());
+    assertEquals(taxonomy, form.taxonomy.getValue());
+    assertTrue(form.taxonomy.isReadOnly());
+    assertEquals(protein, form.protein.getValue());
+    assertTrue(form.protein.isReadOnly());
+    assertEquals(molecularWeight, Double.parseDouble(form.molecularWeight.getValue()), 0.00001);
+    assertTrue(form.molecularWeight.isReadOnly());
+    assertEquals(postTranslationModification, form.postTranslationModification.getValue());
+    assertTrue(form.postTranslationModification.isReadOnly());
+    assertEquals(sampleType, form.sampleType.getValue());
+    assertTrue(form.sampleType.isReadOnly());
+    assertEquals(samplesCount, Integer.parseInt(form.samplesCount.getValue()));
+    assertTrue(form.samplesCount.isReadOnly());
+    assertEquals(samplesNames, form.samplesNames.getValue());
+    assertTrue(form.samplesNames.isReadOnly());
+    assertEquals(quantity, form.quantity.getValue());
+    assertTrue(form.quantity.isReadOnly());
+    assertEquals(volume, form.volume.getValue());
+    assertTrue(form.volume.isReadOnly());
+    assertEquals(separation, form.separation.getValue());
+    assertTrue(form.separation.isReadOnly());
+    assertEquals(thickness, form.thickness.getValue());
+    assertTrue(form.thickness.isReadOnly());
+    assertEquals(coloration, form.coloration.getValue());
+    assertTrue(form.coloration.isReadOnly());
+    assertEquals(otherColoration, form.otherColoration.getValue());
+    assertTrue(form.otherColoration.isReadOnly());
+    assertEquals(developmentTime, form.developmentTime.getValue());
+    assertTrue(form.developmentTime.isReadOnly());
+    assertEquals(destained, form.destained.getValue());
+    assertTrue(form.destained.isReadOnly());
+    assertEquals(weightMarkerQuantity, Double.parseDouble(form.weightMarkerQuantity.getValue()),
+        0.00001);
+    assertTrue(form.weightMarkerQuantity.isReadOnly());
+    assertEquals(proteinQuantity, form.proteinQuantity.getValue());
+    assertTrue(form.proteinQuantity.isReadOnly());
+    assertEquals(digestion, form.digestion.getValue());
+    assertTrue(form.digestion.isReadOnly());
+    assertEquals(usedDigestion, form.usedDigestion.getValue());
+    assertTrue(form.usedDigestion.isReadOnly());
+    assertEquals(otherDigestion, form.otherDigestion.getValue());
+    assertTrue(form.otherDigestion.isReadOnly());
+    assertEquals(proteinContent, form.proteinContent.getValue());
+    assertTrue(form.proteinContent.isReadOnly());
+    assertEquals(instrument, form.instrument.getValue());
+    assertTrue(form.instrument.isReadOnly());
+    assertEquals(identification, form.identification.getValue());
+    assertTrue(form.identification.isReadOnly());
+    assertEquals(identificationLink, form.identificationLink.getValue());
+    assertTrue(form.identificationLink.isReadOnly());
+    assertEquals(quantification, form.quantification.getValue());
+    assertTrue(form.quantification.isReadOnly());
+    assertEquals(quantificationComment, form.quantificationComment.getValue());
+    assertTrue(form.quantificationComment.isReadOnly());
   }
 
   @Test
