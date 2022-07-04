@@ -213,6 +213,7 @@ public class SubmissionViewPresenter {
     binder.setReadOnly(readOnly);
     view.upload.setVisible(!readOnly);
     view.files.getColumnByKey(REMOVE).setVisible(!readOnly);
+    view.save.setEnabled(!readOnly);
   }
 
   void setParameter(Long parameter) {

@@ -59,6 +59,7 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.tabs.Tab;
@@ -133,6 +134,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
     view.filename = view.files.addColumn(file -> file.getFilename(), FILENAME).setKey(FILENAME);
     view.remove = view.files.addColumn(file -> file.getFilename(), REMOVE).setKey(REMOVE);
     view.comment = new TextArea();
+    view.save = new Button();
     view.lcmsmsSubmissionForm = mock(LcmsmsSubmissionForm.class);
     view.smallMoleculeSubmissionForm = mock(SmallMoleculeSubmissionForm.class);
     view.intactProteinSubmissionForm = mock(IntactProteinSubmissionForm.class);
@@ -484,6 +486,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
+    assertTrue(view.save.isEnabled());
     verify(view.lcmsmsSubmissionForm).setSubmission(submission);
     verify(view.smallMoleculeSubmissionForm).setSubmission(submission);
     verify(view.intactProteinSubmissionForm).setSubmission(submission);
@@ -507,6 +510,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
     assertTrue(view.comment.isReadOnly());
     assertFalse(view.upload.isVisible());
     assertFalse(view.files.getColumnByKey(REMOVE).isVisible());
+    assertFalse(view.save.isEnabled());
     verify(view.lcmsmsSubmissionForm).setSubmission(submission);
     verify(view.smallMoleculeSubmissionForm).setSubmission(submission);
     verify(view.intactProteinSubmissionForm).setSubmission(submission);
@@ -530,6 +534,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
+    assertTrue(view.save.isEnabled());
     verify(view.lcmsmsSubmissionForm, atLeastOnce()).setSubmission(submissionCaptor.capture());
     Submission lcmsms = submissionCaptor.getValue();
     verify(view.smallMoleculeSubmissionForm, atLeastOnce())
@@ -566,6 +571,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
+    assertTrue(view.save.isEnabled());
     verify(view.lcmsmsSubmissionForm).setSubmission(submissionCaptor.capture());
     verify(view.smallMoleculeSubmissionForm).setSubmission(submissionCaptor.capture());
     verify(view.intactProteinSubmissionForm).setSubmission(submissionCaptor.capture());
