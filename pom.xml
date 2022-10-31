@@ -55,7 +55,7 @@
     <javac.version>11</javac.version>
     <spring-boot.version>2.6.7</spring-boot.version>
     <querydsl.version>4.2.1</querydsl.version>
-    <shiro.version>1.9.1</shiro.version>
+    <shiro.version>1.10.0</shiro.version>
     <vaadin.version>14.8.13</vaadin.version>
     <scrolllayout.version>2.0.2</scrolllayout.version>
     <guava.version>31.0.1-jre</guava.version>
