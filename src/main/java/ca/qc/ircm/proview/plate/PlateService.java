@@ -122,7 +122,7 @@ public class PlateService {
       query.from(plate);
       query.where(plate.name.eq(name));
       query.where(plate.submission.user.eq(user));
-      return query.fetchCount() == 0;
+      return query.fetchFirst() == null;
     }
   }
 
