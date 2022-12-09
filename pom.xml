@@ -315,11 +315,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>ch.carnet.kasparscherrer</groupId>
-      <artifactId>scrolllayout</artifactId>
-      <version>${scrolllayout.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
