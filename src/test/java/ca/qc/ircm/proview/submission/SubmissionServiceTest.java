@@ -1816,7 +1816,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("other coloration", submission.getOtherColoration());
     assertEquals("5.0 min", submission.getDevelopmentTime());
     assertEquals(true, submission.isDecoloration());
-    assertEquals(new Double(20.0), submission.getWeightMarkerQuantity());
+    assertEquals((Double) 20.0, submission.getWeightMarkerQuantity());
     assertEquals("20.0 μg", submission.getProteinQuantity());
     assertEquals("comment", submission.getComment());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
@@ -1834,8 +1834,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
     assertEquals("unit_test_gel_01", submissionSample.getName());
-    assertEquals(new Integer(10), submissionSample.getNumberProtein());
-    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
+    assertEquals((Integer) 10, submissionSample.getNumberProtein());
+    assertEquals((Double) 120.0, submissionSample.getMolecularWeight());
     files = submission.getFiles();
     assertEquals(2, files.size());
     file = findFile(files, "my_file.docx").get();
@@ -1950,8 +1950,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
-    assertEquals(new Integer(10), submissionSample.getNumberProtein());
-    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
+    assertEquals((Integer) 10, submissionSample.getNumberProtein());
+    assertEquals((Double) 120.0, submissionSample.getMolecularWeight());
     assertEquals("unit_test_eluate_02", submission.getSamples().get(1).getName());
     files = submission.getFiles();
     assertEquals(1, files.size());
@@ -2067,8 +2067,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
-    assertEquals(new Integer(10), submissionSample.getNumberProtein());
-    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
+    assertEquals((Integer) 10, submissionSample.getNumberProtein());
+    assertEquals((Double) 120.0, submissionSample.getMolecularWeight());
     assertEquals("unit_test_eluate_02", submission.getSamples().get(1).getName());
     files = submission.getFiles();
     assertEquals(1, files.size());
@@ -2154,8 +2154,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(InjectionType.LC_MS, submission.getInjectionType());
     assertEquals(true, submission.isHighResolution());
     assertEquals("h2o", submission.getFormula());
-    assertEquals(new Double(18.0), submission.getMonoisotopicMass());
-    assertEquals(new Double(18.1), submission.getAverageMass());
+    assertEquals((Double) 18.0, submission.getMonoisotopicMass());
+    assertEquals((Double) 18.1, submission.getAverageMass());
     assertEquals("ch3oh", submission.getSolutionSolvent());
     assertEquals(1, submission.getSolvents().size());
     assertTrue(submission.getSolvents().contains(Solvent.ACETONITRILE));
@@ -2456,8 +2456,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
-    assertEquals(new Integer(10), submissionSample.getNumberProtein());
-    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
+    assertEquals((Integer) 10, submissionSample.getNumberProtein());
+    assertEquals((Double) 120.0, submissionSample.getMolecularWeight());
     assertNull(sampleRepository.findById(447L).orElse(null));
 
     // Validate log.
@@ -2665,8 +2665,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
     assertEquals("2.0 μg", submissionSample.getQuantity());
-    assertEquals(new Integer(10), submissionSample.getNumberProtein());
-    assertEquals(new Double(120.0), submissionSample.getMolecularWeight());
+    assertEquals((Integer) 10, submissionSample.getNumberProtein());
+    assertEquals((Double) 120.0, submissionSample.getMolecularWeight());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getAllValues().get(0);
