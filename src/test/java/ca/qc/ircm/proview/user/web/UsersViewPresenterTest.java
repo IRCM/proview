@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
@@ -48,6 +48,7 @@ import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -68,12 +69,13 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link UsersViewPresenter}.
  */
 @ServiceTestAnnotations
-public class UsersViewPresenterTest extends AbstractViewTestCase {
+public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Autowired
   private UsersViewPresenter presenter;
   @Mock
@@ -410,24 +412,31 @@ public class UsersViewPresenterTest extends AbstractViewTestCase {
   }
 
   @Test
+  @WithUserDetails("christian.poitras@ircm.qc.ca")
   public void switchUser() throws Throwable {
+    ui.navigate(UsersView.class);
     presenter.init(view);
     User user = repository.findById(3L).orElse(null);
     view.users.select(user);
     presenter.switchUser();
     assertFalse(view.error.isVisible());
-    verify(page).executeJs("document.getElementById(\"" + SWITCH_USERNAME + "\").value = \""
-        + user.getEmail() + "\"; document.getElementById(\"" + SWITCH_USER_FORM + "\").submit()");
+    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
+        .anyMatch(i -> ("document.getElementById(\"" + SWITCH_USERNAME + "\").value = \""
+            + user.getEmail() + "\"; document.getElementById(\"" + SWITCH_USER_FORM
+            + "\").submit()").equals(i.getInvocation().getExpression())));
   }
 
   @Test
+  @WithUserDetails("christian.poitras@ircm.qc.ca")
   public void switchUser_EmptySelection() throws Throwable {
+    ui.navigate(UsersView.class);
     presenter.init(view);
     presenter.localeChange(locale);
     presenter.switchUser();
     assertEquals(resources.message(USERS_REQUIRED), view.error.getText());
     assertTrue(view.error.isVisible());
-    verify(page, never()).executeJs(any());
+    assertFalse(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
+        .anyMatch(i -> i.getInvocation().getExpression().contains(SWITCH_USER_FORM)));
   }
 
   @Test

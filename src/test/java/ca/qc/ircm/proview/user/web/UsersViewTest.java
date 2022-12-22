@@ -63,7 +63,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.User;
@@ -99,7 +99,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link UsersView}.
  */
 @ServiceTestAnnotations
-public class UsersViewTest extends AbstractViewTestCase {
+public class UsersViewTest extends AbstractKaribuTestCase {
   private UsersView view;
   @Mock
   private UsersViewPresenter presenter;
@@ -122,7 +122,7 @@ public class UsersViewTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view = new UsersView(presenter, new UserDialog(), new LaboratoryDialog());
     view.init();
     users = userRepository.findAll();
@@ -243,7 +243,7 @@ public class UsersViewTest extends AbstractViewTestCase {
     final AppResources resources = new AppResources(UsersView.class, locale);
     final AppResources userResources = new AppResources(User.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     verify(view.edit).setHeader(webResources.message(EDIT));

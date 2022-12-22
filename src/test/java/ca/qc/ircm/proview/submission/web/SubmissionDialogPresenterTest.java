@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -34,7 +35,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -52,7 +53,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
  * Tests for {@link SubmissionDialogPresenter}.
  */
 @ServiceTestAnnotations
-public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
+public class SubmissionDialogPresenterTest extends AbstractKaribuTestCase {
   @Autowired
   private SubmissionDialogPresenter presenter;
   @MockBean
@@ -72,7 +73,7 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog.header = new H3();
     dialog.printContent = mock(PrintSubmission.class);
     dialog.instrument = new ComboBox<>();
@@ -127,14 +128,14 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     when(submission.getId()).thenReturn(id);
     presenter.setSubmission(submission);
     presenter.edit();
-    verify(ui).navigate(SubmissionView.class, id);
+    assertCurrentView(SubmissionView.class, id);
     verify(dialog).close();
   }
 
   @Test
   public void edit_New() {
     presenter.edit();
-    verify(ui).navigate(SubmissionView.class, (Long) null);
+    assertCurrentView(SubmissionView.class);
     verify(dialog).close();
   }
 
@@ -144,15 +145,15 @@ public class SubmissionDialogPresenterTest extends AbstractViewTestCase {
     when(submission.getId()).thenReturn(id);
     presenter.setSubmission(submission);
     presenter.print();
-    verify(ui).navigate(PrintSubmissionView.class, id);
+    assertCurrentView(PrintSubmissionView.class, id);
     verify(dialog).close();
   }
 
   @Test
   public void print_New() {
-    presenter.print();
-    verify(ui).navigate(PrintSubmissionView.class, (Long) null);
-    verify(dialog).close();
+    assertThrows(IllegalArgumentException.class, () -> presenter.print());
+    assertCurrentView(SubmissionsView.class);
+    verify(dialog, never()).close();
   }
 
   @Test

@@ -79,7 +79,7 @@ import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -115,7 +115,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
  * Tests for {@link SubmissionsView}.
  */
 @ServiceTestAnnotations
-public class SubmissionsViewTest extends AbstractViewTestCase {
+public class SubmissionsViewTest extends AbstractKaribuTestCase {
   private SubmissionsView view;
   @Mock
   private SubmissionsViewPresenter presenter;
@@ -142,7 +142,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view = new SubmissionsView(presenter, new SubmissionDialog(), new SamplesStatusDialog(),
         authorizationService);
     view.init();
@@ -338,7 +338,7 @@ public class SubmissionsViewTest extends AbstractViewTestCase {
     final AppResources submissionResources = new AppResources(Submission.class, locale);
     final AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
     final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     verify(view.view).setHeader(webResources.message(VIEW));

@@ -29,11 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
@@ -47,7 +46,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link PasswordsForm}.
  */
 @ServiceTestAnnotations
-public class PasswordsFormTest extends AbstractViewTestCase {
+public class PasswordsFormTest extends AbstractKaribuTestCase {
   private PasswordsForm form;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(PasswordsForm.class, locale);
@@ -59,7 +58,7 @@ public class PasswordsFormTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     form = new PasswordsForm();
   }
 
@@ -87,7 +86,7 @@ public class PasswordsFormTest extends AbstractViewTestCase {
     form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(PasswordsForm.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(PASSWORD), form.password.getLabel());
     assertEquals(resources.message(PASSWORD_CONFIRM), form.passwordConfirm.getLabel());

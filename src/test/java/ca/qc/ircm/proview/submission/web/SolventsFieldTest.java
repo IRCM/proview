@@ -23,9 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -39,7 +38,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link SolventsField}.
  */
 @NonTransactionalTestAnnotations
-public class SolventsFieldTest extends AbstractViewTestCase {
+public class SolventsFieldTest extends AbstractKaribuTestCase {
   private SolventsField fields;
   private Locale locale = ENGLISH;
 
@@ -48,7 +47,7 @@ public class SolventsFieldTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     fields = new SolventsField();
   }
 
@@ -72,7 +71,7 @@ public class SolventsFieldTest extends AbstractViewTestCase {
   public void localeChange() {
     fields.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     fields.localeChange(mock(LocaleChangeEvent.class));
     for (Solvent value : Solvent.values()) {
       assertTrue(fields.fields.get(value).getElement().getOuterHTML().replaceAll("\\s", "")

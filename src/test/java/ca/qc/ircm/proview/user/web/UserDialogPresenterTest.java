@@ -24,7 +24,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
@@ -41,7 +41,7 @@ import org.mockito.Mock;
  * Tests for {@link UserDialogPresenter}.
  */
 @ServiceTestAnnotations
-public class UserDialogPresenterTest extends AbstractViewTestCase {
+public class UserDialogPresenterTest extends AbstractKaribuTestCase {
   private UserDialogPresenter presenter;
   @Mock
   private UserDialog dialog;

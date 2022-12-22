@@ -52,7 +52,7 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.web.SavedEvent;
@@ -81,7 +81,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link SamplesStatusDialog}.
  */
 @ServiceTestAnnotations
-public class SamplesStatusDialogTest extends AbstractViewTestCase {
+public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
   private SamplesStatusDialog dialog;
   @Mock
   private SamplesStatusDialogPresenter presenter;
@@ -110,7 +110,7 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog = new SamplesStatusDialog(presenter);
     dialog.init();
     samples = repository.findAll();
@@ -173,7 +173,7 @@ public class SamplesStatusDialogTest extends AbstractViewTestCase {
     final AppResources webResources = new AppResources(Constants.class, locale);
     final AppResources sampleResources = new AppResources(Sample.class, locale);
     final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
     assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());

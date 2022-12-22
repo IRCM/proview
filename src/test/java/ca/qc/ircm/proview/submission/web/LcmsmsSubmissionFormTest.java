@@ -83,7 +83,7 @@ import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.List;
@@ -96,7 +96,7 @@ import org.mockito.Mock;
  * Tests for {@link LcmsmsSubmissionForm}.
  */
 @NonTransactionalTestAnnotations
-public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
+public class LcmsmsSubmissionFormTest extends AbstractKaribuTestCase {
   private LcmsmsSubmissionForm form;
   @Mock
   private LcmsmsSubmissionFormPresenter presenter;
@@ -113,7 +113,7 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     form = new LcmsmsSubmissionForm(presenter);
     form.init();
   }
@@ -222,7 +222,7 @@ public class LcmsmsSubmissionFormTest extends AbstractViewTestCase {
     final AppResources submissionResources = new AppResources(Submission.class, locale);
     final AppResources sampleResources = new AppResources(Sample.class, locale);
     final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
     assertEquals(submissionResources.message(TAXONOMY), form.taxonomy.getLabel());

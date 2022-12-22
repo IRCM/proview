@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
@@ -60,7 +60,7 @@ import org.mockito.Mock;
  * Tests for {@link ForgotPasswordViewPresenter}.
  */
 @ServiceTestAnnotations
-public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
+public class ForgotPasswordViewPresenterTest extends AbstractKaribuTestCase {
   private ForgotPasswordViewPresenter presenter;
   @Mock
   private ForgotPasswordView view;
@@ -106,6 +106,7 @@ public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void save_EmailEmtpy() {
+    ui.navigate(ForgotPasswordView.class);
     presenter.init(view);
     presenter.localeChange(locale);
     view.email.setValue("");
@@ -120,13 +121,14 @@ public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
     verify(service, never()).insert(any(), any());
-    verify(ui, never()).navigate(any(Class.class));
+    assertCurrentView(ForgotPasswordView.class);
     verify(view, never()).showNotification(any());
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void save_EmailInvalid() {
+    ui.navigate(ForgotPasswordView.class);
     presenter.init(view);
     presenter.localeChange(locale);
     view.email.setValue("test");
@@ -141,12 +143,13 @@ public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(webResources.message(INVALID_EMAIL)), error.getMessage());
     verify(service, never()).insert(any(), any());
-    verify(ui, never()).navigate(any(Class.class));
+    assertCurrentView(ForgotPasswordView.class);
     verify(view, never()).showNotification(any());
   }
 
   @Test
   public void save_EmailNotExists() {
+    ui.navigate(ForgotPasswordView.class);
     presenter.init(view);
     presenter.localeChange(locale);
     setFields();
@@ -155,7 +158,7 @@ public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
 
     verify(userService).exists(email);
     verify(service, never()).insert(any(), any());
-    verify(ui).navigate(SigninView.class);
+    assertCurrentView(SigninView.class);
     verify(view).showNotification(resources.message(SAVED, email));
   }
 
@@ -164,6 +167,7 @@ public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
     String viewUrl = "/usefp";
     when(userService.exists(any())).thenReturn(true);
     when(view.getUrl(any())).thenReturn(viewUrl);
+    ui.navigate(ForgotPasswordView.class);
     presenter.init(view);
     presenter.localeChange(locale);
     setFields();
@@ -175,7 +179,7 @@ public class ForgotPasswordViewPresenterTest extends AbstractViewTestCase {
     ForgotPasswordWebContext webContext = webContextCaptor.getValue();
     String url = webContext.getChangeForgottenPasswordUrl(forgotPassword, locale);
     assertEquals(viewUrl + "/" + id + UseForgotPasswordView.SEPARATOR + confirmNumber, url);
-    verify(ui).navigate(SigninView.class);
+    assertCurrentView(SigninView.class);
     verify(view).showNotification(resources.message(SAVED, email));
   }
 }

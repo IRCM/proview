@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
@@ -41,12 +41,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link UserViewPresenter}.
  */
 @ServiceTestAnnotations
-public class UserViewPresenterTest extends AbstractViewTestCase {
+@WithUserDetails("proview@ircm.qc.ca")
+public class UserViewPresenterTest extends AbstractKaribuTestCase {
   private UserViewPresenter presenter;
   @Mock
   private UserView view;
@@ -91,13 +93,14 @@ public class UserViewPresenterTest extends AbstractViewTestCase {
     when(view.form.isValid()).thenReturn(true);
     when(view.form.getPassword()).thenReturn(password);
     when(view.form.getUser()).thenReturn(user);
+    ui.navigate(UserView.class);
     presenter.init(view);
 
     presenter.save(locale);
 
     verify(view.form).isValid();
     verify(service).save(eq(user), eq(password));
-    verify(ui).navigate(UsersView.class);
+    assertCurrentView(UsersView.class);
     verify(view).showNotification(resources.message(SAVED, user.getName()));
   }
 

@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
@@ -56,7 +56,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link LaboratoryDialog}.
  */
 @ServiceTestAnnotations
-public class LaboratoryDialogTest extends AbstractViewTestCase {
+public class LaboratoryDialogTest extends AbstractKaribuTestCase {
   private LaboratoryDialog dialog;
   @Mock
   private LaboratoryDialogPresenter presenter;
@@ -76,7 +76,7 @@ public class LaboratoryDialogTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog = new LaboratoryDialog(presenter);
     dialog.init();
   }
@@ -115,7 +115,7 @@ public class LaboratoryDialogTest extends AbstractViewTestCase {
     final AppResources resources = new AppResources(LaboratoryDialog.class, locale);
     final AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, 0), dialog.header.getText());
     assertEquals(laboratoryResources.message(NAME), dialog.name.getLabel());

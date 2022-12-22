@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
@@ -73,7 +73,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link UserFormPresenter}.
  */
 @ServiceTestAnnotations
-public class UserFormPresenterTest extends AbstractViewTestCase {
+public class UserFormPresenterTest extends AbstractKaribuTestCase {
   private UserFormPresenter presenter;
   @Mock
   private UserForm form;

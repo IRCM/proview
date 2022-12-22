@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.web.component;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.ContactView;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link UrlComponent}.
  */
 @NonTransactionalTestAnnotations
-public class UrlComponentTest extends AbstractViewTestCase {
+public class UrlComponentTest extends AbstractKaribuTestCase {
   private UrlComponentForTest urlComponent = new UrlComponentForTest();
 
   @Test

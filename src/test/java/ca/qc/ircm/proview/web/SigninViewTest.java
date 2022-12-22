@@ -46,7 +46,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.ForgotPasswordView;
@@ -69,7 +69,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
  * Tests for {@link SigninView}.
  */
 @NonTransactionalTestAnnotations
-public class SigninViewTest extends AbstractViewTestCase {
+public class SigninViewTest extends AbstractKaribuTestCase {
   private SigninView view;
   @Autowired
   private SecurityConfiguration configuration;
@@ -94,7 +94,7 @@ public class SigninViewTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view = new SigninView(configuration, authorizationService);
     view.init();
     when(afterNavigationEvent.getLocation()).thenReturn(location);
@@ -189,7 +189,7 @@ public class SigninViewTest extends AbstractViewTestCase {
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(SigninView.class, locale);
     final AppResources userResources = new AppResources(User.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
     assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
@@ -261,7 +261,8 @@ public class SigninViewTest extends AbstractViewTestCase {
 
   @Test
   public void forgotPassword() {
+    ui.navigate(SigninView.class);
     view.fireForgotPasswordEvent();
-    verify(ui).navigate(ForgotPasswordView.class);
+    assertCurrentView(ForgotPasswordView.class);
   }
 }

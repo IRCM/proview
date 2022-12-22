@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
@@ -51,7 +51,7 @@ import org.mockito.Mock;
  * Tests for {@link UseForgotPasswordViewPresenter}.
  */
 @ServiceTestAnnotations
-public class UseForgotPasswordViewPresenterTest extends AbstractViewTestCase {
+public class UseForgotPasswordViewPresenterTest extends AbstractKaribuTestCase {
   private UseForgotPasswordViewPresenter presenter;
   @Mock
   private UseForgotPasswordView view;
@@ -100,6 +100,7 @@ public class UseForgotPasswordViewPresenterTest extends AbstractViewTestCase {
     String password = "test_password";
     when(view.form.isValid()).thenReturn(true);
     when(view.form.getPassword()).thenReturn(password);
+    ui.navigate(UseForgotPasswordView.class);
     presenter.init(view);
     presenter.setParameter(parameter, locale);
 
@@ -107,7 +108,7 @@ public class UseForgotPasswordViewPresenterTest extends AbstractViewTestCase {
 
     verify(view.form).isValid();
     verify(service).updatePassword(eq(forgotPassword), eq(password));
-    verify(ui).navigate(SigninView.class);
+    assertCurrentView(SigninView.class);
     verify(view).showNotification(resources.message(SAVED));
   }
 

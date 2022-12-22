@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.User;
@@ -56,7 +56,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link UserDialog}.
  */
 @ServiceTestAnnotations
-public class UserDialogTest extends AbstractViewTestCase {
+public class UserDialogTest extends AbstractKaribuTestCase {
   private UserDialog dialog;
   private UserForm form;
   @Mock
@@ -80,7 +80,7 @@ public class UserDialogTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     form = new UserForm(formPresenter, defaultAddressConfiguration);
     dialog = new UserDialog(form, presenter);
     dialog.init();
@@ -116,7 +116,7 @@ public class UserDialogTest extends AbstractViewTestCase {
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(UserDialog.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, 0), dialog.header.getText());
     assertEquals(webResources.message(SAVE), dialog.save.getText());

@@ -38,7 +38,7 @@ import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
@@ -63,7 +63,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
  * Tests for {@link HistoryViewPresenter}.
  */
 @ServiceTestAnnotations
-public class HistoryViewPresenterTest extends AbstractViewTestCase {
+public class HistoryViewPresenterTest extends AbstractKaribuTestCase {
   private HistoryViewPresenter presenter;
   @MockBean
   private ActivityService service;
@@ -98,7 +98,7 @@ public class HistoryViewPresenterTest extends AbstractViewTestCase {
   @BeforeEach
   @SuppressWarnings("unchecked")
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     presenter = new HistoryViewPresenter(service, submissionService);
     view.header = new H2();
     view.activities = mock(Grid.class);

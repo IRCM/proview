@@ -22,11 +22,10 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.security.web.AccessDeniedError.TEXT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.ErrorParameter;
@@ -40,7 +39,7 @@ import org.springframework.security.access.AccessDeniedException;
  * Tests for {@link AccessDeniedError}.
  */
 @NonTransactionalTestAnnotations
-public class AccessDeniedErrorTest extends AbstractViewTestCase {
+public class AccessDeniedErrorTest extends AbstractKaribuTestCase {
   private AccessDeniedError view;
   @Mock
   private BeforeEnterEvent event;
@@ -55,7 +54,7 @@ public class AccessDeniedErrorTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view = new AccessDeniedError();
   }
 

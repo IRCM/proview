@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -47,7 +46,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.google.common.collect.Range;
@@ -81,7 +80,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
  * Tests for {@link SubmissionsViewPresenter}.
  */
 @ServiceTestAnnotations
-public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
+public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @Autowired
   private SubmissionsViewPresenter presenter;
   @Mock
@@ -373,7 +372,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);
     presenter.history(submission);
-    verify(ui, never()).navigate(any(Class.class), any(Object.class));
+    assertCurrentView(SubmissionsView.class);
   }
 
   @Test
@@ -384,7 +383,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);
     presenter.history(submission);
-    verify(ui).navigate(HistoryView.class, 2L);
+    assertCurrentView(HistoryView.class, 2L);
   }
 
   @Test
@@ -413,7 +412,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
   public void add() {
     presenter.init(view);
     presenter.add();
-    verify(ui).navigate(SubmissionView.class);
+    assertCurrentView(SubmissionView.class);
   }
 
   @Test
@@ -471,7 +470,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     when(submission.getId()).thenReturn(32L);
     when(view.submissions.getSelectedItems()).thenReturn(Collections.singleton(submission));
     presenter.historySelected(locale);
-    verify(ui).navigate(HistoryView.class, 32L);
+    assertCurrentView(HistoryView.class, 32L);
     verify(view, never()).showNotification(any());
   }
 
@@ -482,7 +481,7 @@ public class SubmissionsViewPresenterTest extends AbstractViewTestCase {
     presenter.init(view);
     when(view.submissions.getSelectedItems()).thenReturn(Collections.emptySet());
     presenter.historySelected(locale);
-    verify(ui, never()).navigate(any(), anyLong());
+    assertCurrentView(SubmissionsView.class);
     verify(view).showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
   }
 

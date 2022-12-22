@@ -38,7 +38,7 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -67,7 +67,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
  * Tests for {@link SamplesStatusDialogPresenter}.
  */
 @ServiceTestAnnotations
-public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
+public class SamplesStatusDialogPresenterTest extends AbstractKaribuTestCase {
   @Autowired
   private SamplesStatusDialogPresenter presenter;
   @MockBean
@@ -92,7 +92,7 @@ public class SamplesStatusDialogPresenterTest extends AbstractViewTestCase {
   @BeforeEach
   @SuppressWarnings("unchecked")
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog.header = new H3();
     dialog.samples = mock(Grid.class);
     dialog.name = mock(Column.class);

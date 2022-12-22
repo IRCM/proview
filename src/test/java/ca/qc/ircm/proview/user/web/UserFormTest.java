@@ -48,7 +48,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
@@ -67,7 +67,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link UserForm}.
  */
 @ServiceTestAnnotations
-public class UserFormTest extends AbstractViewTestCase {
+public class UserFormTest extends AbstractKaribuTestCase {
   private UserForm form;
   @Mock
   private UserFormPresenter presenter;
@@ -88,7 +88,7 @@ public class UserFormTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     form = new UserForm(presenter, defaultAddressConfiguration);
     form.init();
   }
@@ -165,7 +165,7 @@ public class UserFormTest extends AbstractViewTestCase {
     final AppResources userResources = new AppResources(User.class, locale);
     final AppResources addressResources = new AppResources(Address.class, locale);
     final AppResources phoneNumberResources = new AppResources(PhoneNumber.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(userResources.message(EMAIL), form.email.getLabel());
     assertEquals(userResources.message(NAME), form.name.getLabel());

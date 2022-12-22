@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
@@ -58,7 +58,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
  * Tests for {@link LaboratoryDialogPresenter}.
  */
 @ServiceTestAnnotations
-public class LaboratoryDialogPresenterTest extends AbstractViewTestCase {
+public class LaboratoryDialogPresenterTest extends AbstractKaribuTestCase {
   @Autowired
   private LaboratoryDialogPresenter presenter;
   @Mock

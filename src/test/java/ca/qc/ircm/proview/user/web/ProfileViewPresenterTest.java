@@ -28,11 +28,11 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthorizationService;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.MainView;
+import ca.qc.ircm.proview.web.SigninView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -48,7 +48,7 @@ import org.mockito.Mock;
  * Tests for {@link ProfileViewPresenter}.
  */
 @ServiceTestAnnotations
-public class ProfileViewPresenterTest extends AbstractViewTestCase {
+public class ProfileViewPresenterTest extends AbstractKaribuTestCase {
   private ProfileViewPresenter presenter;
   @Mock
   private ProfileView view;
@@ -102,13 +102,14 @@ public class ProfileViewPresenterTest extends AbstractViewTestCase {
     when(view.form.isValid()).thenReturn(true);
     when(view.form.getPassword()).thenReturn(password);
     when(view.form.getUser()).thenReturn(user);
+    ui.navigate(ProfileView.class);
     presenter.init(view);
 
     presenter.save(locale);
 
     verify(view.form).isValid();
     verify(service).save(eq(user), eq(password));
-    verify(ui).navigate(MainView.class);
+    assertCurrentView(SigninView.class);
     verify(view).showNotification(resources.message(SAVED));
   }
 }

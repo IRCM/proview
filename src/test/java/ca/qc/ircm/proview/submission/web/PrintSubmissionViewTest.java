@@ -33,7 +33,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
@@ -47,7 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link PrintSubmissionView}.
  */
 @ServiceTestAnnotations
-public class PrintSubmissionViewTest extends AbstractViewTestCase {
+public class PrintSubmissionViewTest extends AbstractKaribuTestCase {
   private PrintSubmissionView view;
   @Mock
   private PrintSubmissionViewPresenter presenter;
@@ -62,7 +62,7 @@ public class PrintSubmissionViewTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view = new PrintSubmissionView(presenter, printContent);
     view.init();
   }
@@ -91,7 +91,7 @@ public class PrintSubmissionViewTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     AppResources resources = new AppResources(PrintSubmissionView.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(Service.LC_MS_MS.getLabel(locale), view.secondHeader.getText());

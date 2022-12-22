@@ -53,7 +53,7 @@ import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.AcquisitionRepository;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -75,7 +75,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link MsAnalysisDialog}.
  */
 @ServiceTestAnnotations
-public class MsAnalysisDialogTest extends AbstractViewTestCase {
+public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
   private MsAnalysisDialog dialog;
   @Mock
   private MsAnalysis msAnalysis;
@@ -96,7 +96,7 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog = new MsAnalysisDialog();
     dialog.init();
     acquisitions = acquisitionRepository.findAll();
@@ -199,7 +199,7 @@ public class MsAnalysisDialogTest extends AbstractViewTestCase {
     final AppResources resources = new AppResources(MsAnalysisDialog.class, locale);
     final AppResources msAnalysisResources = new AppResources(MsAnalysis.class, locale);
     final AppResources acquisitionResources = new AppResources(Acquisition.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
     assertEquals(msAnalysisResources.message(DELETED), dialog.deleted.getText());

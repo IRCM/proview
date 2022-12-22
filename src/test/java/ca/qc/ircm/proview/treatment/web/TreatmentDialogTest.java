@@ -52,7 +52,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.FractionationType;
 import ca.qc.ircm.proview.treatment.TreatedSample;
@@ -79,7 +79,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link TreatmentDialog}.
  */
 @ServiceTestAnnotations
-public class TreatmentDialogTest extends AbstractViewTestCase {
+public class TreatmentDialogTest extends AbstractKaribuTestCase {
   private TreatmentDialog dialog;
   @Mock
   private Treatment treatment;
@@ -100,7 +100,7 @@ public class TreatmentDialogTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog = new TreatmentDialog();
     dialog.init();
     treatedSamples = treatedSampleRepository.findAll();
@@ -220,7 +220,7 @@ public class TreatmentDialogTest extends AbstractViewTestCase {
     final AppResources resources = new AppResources(TreatmentDialog.class, locale);
     final AppResources treatmentResources = new AppResources(Treatment.class, locale);
     final AppResources treatedSampleResources = new AppResources(TreatedSample.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
     assertEquals(treatmentResources.message(DELETED), dialog.deleted.getText());

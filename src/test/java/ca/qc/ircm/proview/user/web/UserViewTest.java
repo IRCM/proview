@@ -30,11 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.User;
@@ -52,7 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link UserView}.
  */
 @ServiceTestAnnotations
-public class UserViewTest extends AbstractViewTestCase {
+public class UserViewTest extends AbstractKaribuTestCase {
   private UserView view;
   private UserForm form;
   @Mock
@@ -74,7 +73,7 @@ public class UserViewTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     form = new UserForm(formPresenter, defaultAddressConfiguration);
     view = new UserView(form, presenter);
     view.init();
@@ -107,7 +106,7 @@ public class UserViewTest extends AbstractViewTestCase {
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(UserView.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, 0), view.header.getText());
     assertEquals(webResources.message(SAVE), view.save.getText());

@@ -51,7 +51,7 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthorizationService;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -69,7 +69,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link SubmissionDialog}.
  */
 @ServiceTestAnnotations
-public class SubmissionDialogTest extends AbstractViewTestCase {
+public class SubmissionDialogTest extends AbstractKaribuTestCase {
   private SubmissionDialog dialog;
   @Mock
   private SubmissionDialogPresenter presenter;
@@ -91,7 +91,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog = new SubmissionDialog(presenter, printContent, authorizationService);
     dialog.init();
   }
@@ -159,7 +159,7 @@ public class SubmissionDialogTest extends AbstractViewTestCase {
     final AppResources resources = new AppResources(SubmissionDialog.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
     final AppResources submissionResources = new AppResources(Submission.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.header.getText());
     assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());

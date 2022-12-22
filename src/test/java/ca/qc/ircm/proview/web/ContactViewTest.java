@@ -35,11 +35,10 @@ import static ca.qc.ircm.proview.web.ContactView.PROTEOMIC;
 import static ca.qc.ircm.proview.web.ContactView.WEBSITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -52,7 +51,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link ContactView}.
  */
 @NonTransactionalTestAnnotations
-public class ContactViewTest extends AbstractViewTestCase {
+public class ContactViewTest extends AbstractKaribuTestCase {
   private ContactView view;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(ContactView.class, locale);
@@ -63,7 +62,7 @@ public class ContactViewTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view = new ContactView();
     view.init();
   }
@@ -101,7 +100,7 @@ public class ContactViewTest extends AbstractViewTestCase {
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(ContactView.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(resources.message(PROTEOMIC), view.proteomicHeader.getText());

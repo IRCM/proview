@@ -55,7 +55,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityRepository;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.test.config.AbstractViewTestCase;
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -82,7 +82,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link HistoryView}.
  */
 @ServiceTestAnnotations
-public class HistoryViewTest extends AbstractViewTestCase {
+public class HistoryViewTest extends AbstractKaribuTestCase {
   private HistoryView view;
   @Mock
   private HistoryViewPresenter presenter;
@@ -107,7 +107,7 @@ public class HistoryViewTest extends AbstractViewTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view = new HistoryView(presenter, new SubmissionDialog(), new MsAnalysisDialog(),
         new TreatmentDialog());
     view.init();
@@ -196,7 +196,7 @@ public class HistoryViewTest extends AbstractViewTestCase {
     final AppResources resources = new AppResources(HistoryView.class, locale);
     final AppResources activityResources = new AppResources(Activity.class, locale);
     final AppResources viewResources = new AppResources(Constants.class, locale);
-    when(ui.getLocale()).thenReturn(locale);
+    ui.setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, ""), view.header.getText());
     verify(view.view).setHeader(webResources.message(VIEW));
