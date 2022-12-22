@@ -27,6 +27,7 @@ import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORDS_NOT_MATCH;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORD_CONFIRM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -98,6 +99,15 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
     fillForm();
 
     assertEquals(password, form.getPassword());
+  }
+
+  @Test
+  public void getPassword_Empty() {
+    form.localeChange(mock(LocaleChangeEvent.class));
+    form.password.setValue("");
+    form.passwordConfirm.setValue("");
+
+    assertNull(form.getPassword());
   }
 
   @Test
