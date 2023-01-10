@@ -292,6 +292,7 @@ public class ViewLayoutTest extends AbstractKaribuTestCase {
   }
 
   @Test
+  @WithUserDetails("christian.poitras@ircm.qc.ca")
   public void tabs_SelectContact() {
     Location location = new Location(SubmissionsView.VIEW_NAME);
     when(afterNavigationEvent.getLocation()).thenReturn(location);

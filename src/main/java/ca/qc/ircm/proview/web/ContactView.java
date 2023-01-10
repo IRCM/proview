@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -39,6 +40,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import javax.annotation.PostConstruct;
+import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,7 @@ import org.slf4j.LoggerFactory;
  * Main view.
  */
 @Route(value = ContactView.VIEW_NAME, layout = ViewLayout.class)
+@RolesAllowed({ USER })
 public class ContactView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle {
   public static final String VIEW_NAME = "contact";
   public static final String ID = styleName(VIEW_NAME, "view");
