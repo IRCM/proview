@@ -54,7 +54,7 @@
     <main-class>ca.qc.ircm.proview.Main</main-class>
     <javac.version>11</javac.version>
     <spring-boot.version>2.6.14</spring-boot.version>
-    <querydsl.version>4.2.1</querydsl.version>
+    <querydsl.version>5.0.0</querydsl.version>
     <shiro.version>1.10.0</shiro.version>
     <vaadin.version>14.8.13</vaadin.version>
     <scrolllayout.version>2.0.2</scrolllayout.version>
