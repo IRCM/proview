@@ -36,6 +36,6 @@ DROP TABLE IF EXISTS submissionfiles;
 DROP TABLE IF EXISTS submission;
 DROP TABLE IF EXISTS forgotpassword;
 DROP TABLE IF EXISTS phonenumber;
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS address;
 DROP TABLE IF EXISTS laboratory;
