@@ -58,7 +58,6 @@
     <shiro.version>1.10.0</shiro.version>
     <vaadin.version>14.8.13</vaadin.version>
     <guava.version>31.0.1-jre</guava.version>
-    <commons-lang3.version>3.9</commons-lang3.version>
     <commons-email.version>1.5</commons-email.version>
     <mariadb-java-client.version>2.5.1</mariadb-java-client.version>
     <spotbugs.version>4.7.1</spotbugs.version>
