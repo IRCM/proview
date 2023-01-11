@@ -97,9 +97,9 @@ public class SpringDataUserDetailsServiceTest {
     assertTrue(userDetails.isAccountNonExpired());
     assertTrue(userDetails.isCredentialsNonExpired());
     assertTrue(userDetails.isAccountNonLocked());
-    assertTrue(userDetails instanceof AuthenticatedUser);
-    AuthenticatedUser authenticatedUser = (AuthenticatedUser) userDetails;
-    assertEquals((Long) 2L, authenticatedUser.getId());
+    assertTrue(userDetails instanceof UserDetailsWithId);
+    UserDetailsWithId userDetailsWithId = (UserDetailsWithId) userDetails;
+    assertEquals((Long) 2L, userDetailsWithId.getId());
   }
 
   @Test

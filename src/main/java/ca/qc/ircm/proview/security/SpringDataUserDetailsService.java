@@ -74,7 +74,7 @@ public class SpringDataUserDetailsService implements UserDetailsService {
         user.setHashedPassword("{" + user.getPasswordVersion() + "}" + user.getHashedPassword()
             + ShiroPasswordEncoder.SEPARATOR + user.getSalt());
       }
-      return new AuthenticatedUser(user, authorities);
+      return new UserDetailsWithId(user, authorities);
     }
   }
 }
