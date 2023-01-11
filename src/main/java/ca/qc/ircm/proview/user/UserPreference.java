@@ -58,7 +58,7 @@ class UserPreference {
    * Preference's value.
    */
   @Column
-  private byte[] value;
+  private byte[] content;
 
   public Long getId() {
     return id;
@@ -84,11 +84,11 @@ class UserPreference {
     this.preference = preference;
   }
 
-  public byte[] getValue() {
-    return value.clone();
+  public byte[] getContent() {
+    return content.clone();
   }
 
-  public void setValue(byte[] value) {
-    this.value = value.clone();
+  public void setContent(byte[] content) {
+    this.content = content.clone();
   }
 }

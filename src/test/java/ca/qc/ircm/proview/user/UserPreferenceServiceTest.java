@@ -70,7 +70,7 @@ public class UserPreferenceServiceTest {
 
   private Object getValue(UserPreference preference) throws IOException, ClassNotFoundException {
     try (ObjectInputStream input =
-        new ObjectInputStream(new ByteArrayInputStream(preference.getValue()))) {
+        new ObjectInputStream(new ByteArrayInputStream(preference.getContent()))) {
       return input.readObject();
     }
   }

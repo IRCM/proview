@@ -112,7 +112,7 @@ public class UserPreferenceService {
     UserPreference userPreference = find(user, toString(referer), name);
     if (userPreference != null) {
       try {
-        return (T) toObject(userPreference.getValue());
+        return (T) toObject(userPreference.getContent());
       } catch (ClassNotFoundException | IOException e) {
         return defaultValue;
       }
@@ -143,12 +143,12 @@ public class UserPreferenceService {
     }
     UserPreference userPreference = find(user, preference);
     if (userPreference != null) {
-      userPreference.setValue(toBytes(value));
+      userPreference.setContent(toBytes(value));
     } else {
       userPreference = new UserPreference();
       userPreference.setPreference(preference);
       userPreference.setUser(user);
-      userPreference.setValue(toBytes(value));
+      userPreference.setContent(toBytes(value));
     }
     repository.save(userPreference);
   }
