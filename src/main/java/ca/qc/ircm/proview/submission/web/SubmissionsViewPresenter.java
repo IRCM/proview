@@ -37,7 +37,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
@@ -80,13 +80,13 @@ public class SubmissionsViewPresenter {
   private Map<String, ComparableExpressionBase<?>> columnProperties = new HashMap<>();
   private SubmissionFilter filter = new SubmissionFilter();
   private SubmissionService service;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected SubmissionsViewPresenter(SubmissionService service,
-      AuthorizationService authorizationService) {
+      AuthenticatedUser authenticatedUser) {
     this.service = service;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**
@@ -106,13 +106,13 @@ public class SubmissionsViewPresenter {
     columnProperties.put(SAMPLES_COUNT, submission.samples.size());
     columnProperties.put(SUBMISSION_DATE, submission.submissionDate);
     columnProperties.put(HIDDEN, submission.hidden);
-    view.user.setVisible(authorizationService.hasAnyRole(MANAGER, ADMIN));
-    view.director.setVisible(authorizationService.hasRole(ADMIN));
-    view.service.setVisible(authorizationService.hasRole(ADMIN));
-    view.instrument.setVisible(authorizationService.hasRole(ADMIN));
-    view.hidden.setVisible(authorizationService.hasRole(ADMIN));
-    view.editStatus.setVisible(authorizationService.hasRole(ADMIN));
-    view.history.setVisible(authorizationService.hasRole(ADMIN));
+    view.user.setVisible(authenticatedUser.hasAnyRole(MANAGER, ADMIN));
+    view.director.setVisible(authenticatedUser.hasRole(ADMIN));
+    view.service.setVisible(authenticatedUser.hasRole(ADMIN));
+    view.instrument.setVisible(authenticatedUser.hasRole(ADMIN));
+    view.hidden.setVisible(authenticatedUser.hasRole(ADMIN));
+    view.editStatus.setVisible(authenticatedUser.hasRole(ADMIN));
+    view.history.setVisible(authenticatedUser.hasRole(ADMIN));
     loadSubmissions();
     view.dialog.addSavedListener(e -> loadSubmissions());
     view.statusDialog.addSavedListener(e -> loadSubmissions());
@@ -209,7 +209,7 @@ public class SubmissionsViewPresenter {
   }
 
   void editStatus(Submission submission) {
-    if (authorizationService.hasRole(ADMIN)) {
+    if (authenticatedUser.hasRole(ADMIN)) {
       Submission database = service.get(submission.getId()).orElse(null);
       view.statusDialog.setSubmission(database);
       view.statusDialog.open();
@@ -217,7 +217,7 @@ public class SubmissionsViewPresenter {
   }
 
   void history(Submission submission) {
-    if (authorizationService.hasRole(ADMIN)) {
+    if (authenticatedUser.hasRole(ADMIN)) {
       UI.getCurrent().navigate(HistoryView.class, submission.getId());
     }
   }

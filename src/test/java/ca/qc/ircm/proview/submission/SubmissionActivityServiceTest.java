@@ -36,7 +36,7 @@ import ca.qc.ircm.proview.sample.QSubmissionSample;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.test.utils.LogTestUtils;
@@ -69,7 +69,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   @MockBean
   private SampleActivityService sampleActivityService;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   private User user;
 
   /**
@@ -78,7 +78,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   @BeforeEach
   public void beforeTest() {
     user = new User(4L);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
     when(sampleActivityService.update(any(), any())).thenReturn(Optional.empty());
   }
 

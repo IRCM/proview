@@ -23,7 +23,7 @@ import static ca.qc.ircm.proview.user.web.LaboratoryDialog.SAVED;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
@@ -45,12 +45,12 @@ public class LaboratoryDialogPresenter {
   private LaboratoryDialog dialog;
   private Binder<Laboratory> binder = new BeanValidationBinder<>(Laboratory.class);
   private LaboratoryService service;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
-  LaboratoryDialogPresenter(LaboratoryService service, AuthorizationService authorizationService) {
+  LaboratoryDialogPresenter(LaboratoryService service, AuthenticatedUser authenticatedUser) {
     this.service = service;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   void init(LaboratoryDialog dialog) {
@@ -65,7 +65,7 @@ public class LaboratoryDialogPresenter {
   }
 
   private void setReadOnly() {
-    boolean readOnly = !authorizationService.hasPermission(binder.getBean(), Permission.WRITE);
+    boolean readOnly = !authenticatedUser.hasPermission(binder.getBean(), Permission.WRITE);
     binder.setReadOnly(readOnly);
     dialog.save.setVisible(!readOnly);
     dialog.cancel.setVisible(!readOnly);

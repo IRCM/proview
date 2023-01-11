@@ -40,7 +40,7 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.Solvent;
@@ -75,13 +75,13 @@ public class SmallMoleculeSubmissionFormPresenter {
   private Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
   private SubmissionSampleService sampleService;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected SmallMoleculeSubmissionFormPresenter(SubmissionSampleService sampleService,
-      AuthorizationService authorizationService) {
+      AuthenticatedUser authenticatedUser) {
     this.sampleService = sampleService;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**
@@ -193,7 +193,7 @@ public class SmallMoleculeSubmissionFormPresenter {
   }
 
   private void setReadOnly() {
-    boolean readOnly = !authorizationService.hasPermission(binder.getBean(), WRITE);
+    boolean readOnly = !authenticatedUser.hasPermission(binder.getBean(), WRITE);
     binder.setReadOnly(readOnly);
     firstSampleBinder.setReadOnly(readOnly);
   }

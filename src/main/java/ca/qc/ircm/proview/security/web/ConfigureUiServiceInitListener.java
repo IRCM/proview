@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.security.web;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SigninView;
 import com.vaadin.flow.component.UI;
@@ -38,11 +38,11 @@ public class ConfigureUiServiceInitListener implements VaadinServiceInitListener
   private static final Logger logger =
       LoggerFactory.getLogger(ConfigureUiServiceInitListener.class);
   private static final long serialVersionUID = -5535854753812022664L;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
-  protected ConfigureUiServiceInitListener(AuthorizationService authorizationService) {
-    this.authorizationService = authorizationService;
+  protected ConfigureUiServiceInitListener(AuthenticatedUser authenticatedUser) {
+    this.authenticatedUser = authenticatedUser;
   }
 
   @Override
@@ -61,9 +61,9 @@ public class ConfigureUiServiceInitListener implements VaadinServiceInitListener
    *          before navigation event with event details
    */
   private void beforeEnter(BeforeEnterEvent event) {
-    final boolean accessGranted = authorizationService.isAuthorized(event.getNavigationTarget());
+    final boolean accessGranted = authenticatedUser.isAuthorized(event.getNavigationTarget());
     if (!accessGranted) {
-      User user = authorizationService.getCurrentUser().orElse(null);
+      User user = authenticatedUser.getCurrentUser().orElse(null);
       logger.debug("Access denied for user {} when accessing view {}",
           user != null ? user.getId() : "anonymous", event.getNavigationTarget());
       if (user != null) {

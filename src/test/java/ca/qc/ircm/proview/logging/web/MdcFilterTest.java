@@ -25,7 +25,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import java.util.Optional;
@@ -45,7 +45,7 @@ import org.slf4j.MDC;
 public class MdcFilterTest {
   private MdcFilter mdcFilter;
   @Mock
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Mock
   private HttpServletRequest request;
   @Mock
@@ -57,7 +57,7 @@ public class MdcFilterTest {
 
   @BeforeEach
   public void beforeTest() {
-    mdcFilter = new MdcFilter(authorizationService);
+    mdcFilter = new MdcFilter(authenticatedUser);
   }
 
   @Test
@@ -80,7 +80,7 @@ public class MdcFilterTest {
   public void doFilter_User() throws Throwable {
     Long userId = 3L;
     String email = "test@ircm.qc.ca";
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(new User(userId, email)));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(new User(userId, email)));
     doAnswer(i -> {
       assertEquals("3:test", MDC.get(USER_CONTEXT_KEY));
       return null;
@@ -94,7 +94,7 @@ public class MdcFilterTest {
 
   @Test
   public void doFilter_EmptyUser() throws Throwable {
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.empty());
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.empty());
     doAnswer(i -> {
       assertNull(MDC.get(USER_CONTEXT_KEY));
       return null;

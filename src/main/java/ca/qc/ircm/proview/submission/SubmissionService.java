@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
@@ -84,7 +84,7 @@ public class SubmissionService {
   @Autowired
   private EmailService emailService;
   @Autowired
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   protected SubmissionService() {
   }
@@ -153,13 +153,13 @@ public class SubmissionService {
   }
 
   private void initializeAllQuery(JPAQuery<?> query) {
-    final User currentUser = authorizationService.getCurrentUser().get();
+    final User currentUser = authenticatedUser.getCurrentUser().get();
     final Laboratory currentLaboratory = currentUser.getLaboratory();
 
     query.from(submission);
-    if (!authorizationService.hasRole(UserRole.ADMIN)) {
+    if (!authenticatedUser.hasRole(UserRole.ADMIN)) {
       query.where(submission.hidden.eq(false));
-      if (authorizationService.hasPermission(currentLaboratory, Permission.WRITE)) {
+      if (authenticatedUser.hasPermission(currentLaboratory, Permission.WRITE)) {
         query.where(submission.laboratory.eq(currentLaboratory));
       } else {
         query.where(submission.user.eq(currentUser));
@@ -215,7 +215,7 @@ public class SubmissionService {
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
   public void insert(Submission submission) {
-    User user = authorizationService.getCurrentUser().get();
+    User user = authenticatedUser.getCurrentUser().get();
     Laboratory laboratory = user.getLaboratory();
 
     submission.setLaboratory(laboratory);
@@ -298,7 +298,7 @@ public class SubmissionService {
   @PreAuthorize("hasPermission(#submission, 'write')")
   public void update(Submission submission, String explanation) throws IllegalArgumentException {
     validateUpdateSubmission(submission);
-    if (!authorizationService.hasRole(UserRole.ADMIN)
+    if (!authenticatedUser.hasRole(UserRole.ADMIN)
         && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
       Submission userSupplied = submission;
       submission = repository.findById(submission.getId()).orElse(null);
@@ -315,7 +315,7 @@ public class SubmissionService {
       activityService.insert(activity.get());
       repository.flush();
 
-      if (!authorizationService.hasRole(UserRole.ADMIN)) {
+      if (!authenticatedUser.hasRole(UserRole.ADMIN)) {
         // Send email to admin users to inform them of the changes in submission.
         try {
           this.sendSubmissionToAdmins(submission, ActionType.UPDATE);
@@ -327,7 +327,7 @@ public class SubmissionService {
   }
 
   private void validateUpdateSubmission(Submission submission) {
-    if (!authorizationService.hasRole(UserRole.ADMIN)) {
+    if (!authenticatedUser.hasRole(UserRole.ADMIN)) {
       Submission old = repository.findById(submission.getId()).orElse(null);
       if (!old.getUser().getId().equals(submission.getUser().getId())) {
         throw new IllegalArgumentException("Cannot update submission's owner");

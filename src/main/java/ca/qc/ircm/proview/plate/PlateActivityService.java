@@ -23,7 +23,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.BanSampleContainerUpdateActivityBuilder;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.User;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,7 +50,7 @@ public class PlateActivityService {
   @Autowired
   private WellRepository wellRepository;
   @Autowired
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   protected PlateActivityService() {
   }
@@ -64,7 +64,7 @@ public class PlateActivityService {
    */
   @CheckReturnValue
   public Activity insert(final Plate plate) {
-    User user = authorizationService.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getCurrentUser().orElse(null);
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -85,7 +85,7 @@ public class PlateActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> update(final Plate plate) {
-    User user = authorizationService.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getCurrentUser().orElse(null);
 
     Plate oldPlate = repository.findById(plate.getId()).orElse(null);
 
@@ -151,7 +151,7 @@ public class PlateActivityService {
   @CheckReturnValue
   public Activity ban(final Collection<Well> wells, final String explanation) {
     validateSamePlate(wells);
-    final User user = authorizationService.getCurrentUser().orElse(null);
+    final User user = authenticatedUser.getCurrentUser().orElse(null);
     final Plate plate = wells.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
@@ -190,7 +190,7 @@ public class PlateActivityService {
   @CheckReturnValue
   public Activity activate(final Collection<Well> wells, final String explanation) {
     validateSamePlate(wells);
-    final User user = authorizationService.getCurrentUser().orElse(null);
+    final User user = authenticatedUser.getCurrentUser().orElse(null);
     Plate plate = wells.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();

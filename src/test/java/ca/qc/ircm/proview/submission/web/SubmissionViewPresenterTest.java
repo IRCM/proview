@@ -47,7 +47,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleType;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
@@ -100,7 +100,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
   @MockBean
   private SubmissionService service;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Autowired
   private SubmissionRepository repository;
   @Captor
@@ -122,7 +122,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     view.header = new H2();
     view.service = new Tabs();
     view.lcmsms = new Tab();
@@ -482,7 +482,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
     presenter.setParameter(34L);
 
     verify(service).get(34L);
-    verify(authorizationService, atLeastOnce()).hasPermission(submission, WRITE);
+    verify(authenticatedUser, atLeastOnce()).hasPermission(submission, WRITE);
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
@@ -501,12 +501,12 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void setParameter_ReadOnly() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(false);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(false);
 
     presenter.setParameter(34L);
 
     verify(service).get(34L);
-    verify(authorizationService, atLeastOnce()).hasPermission(submission, WRITE);
+    verify(authenticatedUser, atLeastOnce()).hasPermission(submission, WRITE);
     assertTrue(view.comment.isReadOnly());
     assertFalse(view.upload.isVisible());
     assertFalse(view.files.getColumnByKey(REMOVE).isVisible());
@@ -530,7 +530,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
     presenter.setParameter(2L);
 
     verify(service).get(2L);
-    verify(authorizationService, atLeastOnce()).hasPermission(any(Submission.class), eq(WRITE));
+    verify(authenticatedUser, atLeastOnce()).hasPermission(any(Submission.class), eq(WRITE));
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
@@ -567,7 +567,7 @@ public class SubmissionViewPresenterTest extends AbstractKaribuTestCase {
     presenter.setParameter(null);
 
     verify(service, never()).get(any());
-    verify(authorizationService, atLeastOnce()).hasPermission(any(Submission.class), eq(WRITE));
+    verify(authenticatedUser, atLeastOnce()).hasPermission(any(Submission.class), eq(WRITE));
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());

@@ -36,7 +36,7 @@ import static ca.qc.ircm.proview.user.web.UserForm.LABORATORY_NAME;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
@@ -81,38 +81,38 @@ public class UserFormPresenter {
   private Binder<PhoneNumber> phoneNumberBinder = new BeanValidationBinder<>(PhoneNumber.class);
   private User user;
   private LaboratoryService laboratoryService;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   private DefaultAddressConfiguration defaultAddressConfiguration;
 
   @Autowired
   protected UserFormPresenter(LaboratoryService laboratoryService,
-      AuthorizationService authorizationService,
+      AuthenticatedUser authenticatedUser,
       DefaultAddressConfiguration defaultAddressConfiguration) {
     this.laboratoryService = laboratoryService;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
     this.defaultAddressConfiguration = defaultAddressConfiguration;
   }
 
   void init(UserForm form) {
     this.form = form;
-    form.admin.setVisible(authorizationService.hasRole(UserRole.ADMIN));
-    form.manager.setVisible(authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
+    form.admin.setVisible(authenticatedUser.hasRole(UserRole.ADMIN));
+    form.manager.setVisible(authenticatedUser.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
     form.manager.addValueChangeListener(e -> updateManager());
-    if (authorizationService.hasRole(UserRole.ADMIN)) {
+    if (authenticatedUser.hasRole(UserRole.ADMIN)) {
       laboratoriesDataProvider = DataProvider.ofCollection(laboratoryService.all());
     } else {
       laboratoriesDataProvider = DataProvider
-          .fromStream(Stream.of(authorizationService.getCurrentUser().get().getLaboratory()));
+          .fromStream(Stream.of(authenticatedUser.getCurrentUser().get().getLaboratory()));
     }
     form.laboratory.setDataProvider(laboratoriesDataProvider);
     form.laboratory.setRequiredIndicatorVisible(true);
-    form.laboratory.setReadOnly(!authorizationService.hasRole(UserRole.ADMIN));
-    form.laboratory.setEnabled(authorizationService.hasRole(UserRole.ADMIN));
+    form.laboratory.setReadOnly(!authenticatedUser.hasRole(UserRole.ADMIN));
+    form.laboratory.setEnabled(authenticatedUser.hasRole(UserRole.ADMIN));
     form.laboratory.setItemLabelGenerator(lab -> Objects.toString(lab.getName(), ""));
-    form.createNewLaboratory.setVisible(authorizationService.hasRole(UserRole.ADMIN));
+    form.createNewLaboratory.setVisible(authenticatedUser.hasRole(UserRole.ADMIN));
     form.createNewLaboratory.setEnabled(false);
     form.createNewLaboratory.addValueChangeListener(e -> updateCreateNewLaboratory());
-    form.newLaboratoryName.setVisible(authorizationService.hasRole(UserRole.ADMIN));
+    form.newLaboratoryName.setVisible(authenticatedUser.hasRole(UserRole.ADMIN));
     form.newLaboratoryName.setEnabled(false);
     setUser(null);
     updateManager();
@@ -160,18 +160,18 @@ public class UserFormPresenter {
 
   private void updateReadOnly() {
     boolean readOnly =
-        user.getId() != null && !authorizationService.hasPermission(user, Permission.WRITE);
+        user.getId() != null && !authenticatedUser.hasPermission(user, Permission.WRITE);
     binder.setReadOnly(readOnly);
-    form.laboratory.setReadOnly(!authorizationService.hasRole(UserRole.ADMIN));
+    form.laboratory.setReadOnly(!authenticatedUser.hasRole(UserRole.ADMIN));
     form.laboratory.setEnabled(
-        !authorizationService.hasRole(UserRole.ADMIN) || !form.createNewLaboratory.getValue());
+        !authenticatedUser.hasRole(UserRole.ADMIN) || !form.createNewLaboratory.getValue());
     form.passwords.setVisible(!readOnly);
     addressBinder.setReadOnly(readOnly);
     phoneNumberBinder.setReadOnly(readOnly);
   }
 
   private void updateManager() {
-    if (authorizationService.hasRole(UserRole.ADMIN)) {
+    if (authenticatedUser.hasRole(UserRole.ADMIN)) {
       form.createNewLaboratory.setEnabled(form.manager.getValue());
       if (!form.manager.getValue()) {
         form.createNewLaboratory.setValue(false);

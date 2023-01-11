@@ -39,7 +39,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
@@ -88,7 +88,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @MockBean
   private SubmissionService service;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Autowired
   private SubmissionRepository repository;
   @Captor
@@ -158,7 +158,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void init_Manager() {
-    when(authorizationService.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
     presenter.init(view);
     verify(view.submissions).setDataProvider(any());
     verify(view.user).setVisible(true);
@@ -172,8 +172,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void init_Admin() {
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     verify(view.submissions).setDataProvider(any());
     verify(view.user).setVisible(true);
@@ -338,8 +338,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void editStatus_Admin() {
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(32L);
@@ -353,8 +353,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void editStatus_AdminEmpty() {
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);
@@ -377,8 +377,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void history_Admin() {
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);
@@ -417,8 +417,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void editSelectedStatus() {
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(32L);
@@ -434,8 +434,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void editSelectedStatus_Empty() {
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(2L);
@@ -450,8 +450,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void editSelectedStatus_NoSelection() {
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     when(view.submissions.getSelectedItems()).thenReturn(Collections.emptySet());
     presenter.editSelectedStatus(locale);
@@ -463,8 +463,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void historySelected() {
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     Submission submission = mock(Submission.class);
     when(submission.getId()).thenReturn(32L);
@@ -476,8 +476,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void historySelected_NoSelection() {
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
     when(view.submissions.getSelectedItems()).thenReturn(Collections.emptySet());
     presenter.historySelected(locale);

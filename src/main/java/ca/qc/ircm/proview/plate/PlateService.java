@@ -25,7 +25,7 @@ import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
@@ -62,7 +62,7 @@ public class PlateService {
   @Autowired
   private ActivityService activityService;
   @Autowired
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Autowired
   private TemplateEngine emailTemplateEngine;
 
@@ -113,9 +113,9 @@ public class PlateService {
     if (name == null) {
       return false;
     }
-    User user = authorizationService.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getCurrentUser().orElse(null);
 
-    if (authorizationService.hasRole(UserRole.ADMIN)) {
+    if (authenticatedUser.hasRole(UserRole.ADMIN)) {
       return repository.countByName(name) == 0;
     } else {
       JPAQuery<Long> query = queryFactory.select(plate.id);

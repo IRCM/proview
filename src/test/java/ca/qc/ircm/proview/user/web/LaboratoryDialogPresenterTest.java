@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -66,7 +66,7 @@ public class LaboratoryDialogPresenterTest extends AbstractKaribuTestCase {
   @MockBean
   private LaboratoryService service;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Captor
   private ArgumentCaptor<Laboratory> laboratoryCaptor;
   @Captor
@@ -90,7 +90,7 @@ public class LaboratoryDialogPresenterTest extends AbstractKaribuTestCase {
     dialog.cancel = new Button();
     presenter.init(dialog);
     presenter.localeChange(locale);
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
   }
 
   private void setFields() {
@@ -181,7 +181,7 @@ public class LaboratoryDialogPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void setLaboratory_CannotWrite() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(false);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(false);
     Laboratory laboratory = repository.findById(2L).get();
     presenter.setLaboratory(laboratory);
     assertEquals("Translational Proteomics", dialog.name.getValue());

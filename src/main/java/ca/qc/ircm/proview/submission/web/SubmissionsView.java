@@ -41,7 +41,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.text.NormalizedComparator;
@@ -137,16 +137,16 @@ public class SubmissionsView extends VerticalLayout
   protected Button history = new Button();
   protected SubmissionDialog dialog;
   protected SamplesStatusDialog statusDialog;
-  private transient AuthorizationService authorizationService;
+  private transient AuthenticatedUser authenticatedUser;
   private transient SubmissionsViewPresenter presenter;
 
   @Autowired
   protected SubmissionsView(SubmissionsViewPresenter presenter, SubmissionDialog dialog,
-      SamplesStatusDialog statusDialog, AuthorizationService authorizationService) {
+      SamplesStatusDialog statusDialog, AuthenticatedUser authenticatedUser) {
     this.presenter = presenter;
     this.dialog = dialog;
     this.statusDialog = statusDialog;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   @PostConstruct
@@ -161,7 +161,7 @@ public class SubmissionsView extends VerticalLayout
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
     submissions.setMinHeight("500px");
-    submissions.setWidth(authorizationService.hasRole(ADMIN) ? "2500px" : "100%");
+    submissions.setWidth(authenticatedUser.hasRole(ADMIN) ? "2500px" : "100%");
     submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
     submissions.addItemClickListener(e -> {
       if (e.isShiftKey() || e.isCtrlKey() || e.isMetaKey()) {

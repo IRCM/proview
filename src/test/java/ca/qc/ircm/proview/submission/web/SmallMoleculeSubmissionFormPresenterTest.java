@@ -33,7 +33,7 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
@@ -67,7 +67,7 @@ public class SmallMoleculeSubmissionFormPresenterTest {
   @MockBean
   private SubmissionSampleService sampleService;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
@@ -110,7 +110,7 @@ public class SmallMoleculeSubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setType(SampleType.DRY);
     newSubmission.getSamples().add(sample);
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
   }
 
   private Submission submission() {
@@ -482,7 +482,7 @@ public class SmallMoleculeSubmissionFormPresenterTest {
 
   @Test
   public void setSubmission_ReadOnly() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(false);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(false);
 
     presenter.setSubmission(submission());
 

@@ -23,7 +23,7 @@ import static ca.qc.ircm.proview.user.UserRole.USER;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -38,7 +38,7 @@ import org.mockito.Mock;
 public class MainViewTest {
   private MainView view;
   @Mock
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Mock
   private BeforeEnterEvent event;
 
@@ -49,7 +49,7 @@ public class MainViewTest {
 
   @Test
   public void beforeEnter_User() {
-    when(authorizationService.hasRole(USER)).thenReturn(true);
+    when(authenticatedUser.hasRole(USER)).thenReturn(true);
 
     view.beforeEnter(event);
 
@@ -58,8 +58,8 @@ public class MainViewTest {
 
   @Test
   public void beforeEnter_Admin() {
-    when(authorizationService.hasRole(USER)).thenReturn(true);
-    when(authorizationService.hasRole(ADMIN)).thenReturn(true);
+    when(authenticatedUser.hasRole(USER)).thenReturn(true);
+    when(authenticatedUser.hasRole(ADMIN)).thenReturn(true);
 
     view.beforeEnter(event);
 
@@ -68,8 +68,8 @@ public class MainViewTest {
 
   @Test
   public void beforeEnter_Manager() {
-    when(authorizationService.hasRole(USER)).thenReturn(true);
-    when(authorizationService.hasRole(MANAGER)).thenReturn(true);
+    when(authenticatedUser.hasRole(USER)).thenReturn(true);
+    when(authenticatedUser.hasRole(MANAGER)).thenReturn(true);
 
     view.beforeEnter(event);
 

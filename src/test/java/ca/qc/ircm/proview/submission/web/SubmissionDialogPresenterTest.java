@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
@@ -59,7 +59,7 @@ public class SubmissionDialogPresenterTest extends AbstractKaribuTestCase {
   @MockBean
   private SubmissionService service;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Mock
   private SubmissionDialog dialog;
   @Mock
@@ -164,7 +164,7 @@ public class SubmissionDialogPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void setSubmission() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     Submission submission = new Submission();
     submission.setId(1L);
     submission.setInstrument(instrument);
@@ -173,7 +173,7 @@ public class SubmissionDialogPresenterTest extends AbstractKaribuTestCase {
 
     presenter.setSubmission(submission);
 
-    verify(authorizationService).hasPermission(submission, WRITE);
+    verify(authenticatedUser).hasPermission(submission, WRITE);
     assertEquals(instrument, dialog.instrument.getValue());
     assertEquals(dataAvailableDate, dialog.dataAvailableDate.getValue());
     assertTrue(dialog.edit.isEnabled());
@@ -189,7 +189,7 @@ public class SubmissionDialogPresenterTest extends AbstractKaribuTestCase {
 
     presenter.setSubmission(submission);
 
-    verify(authorizationService).hasPermission(submission, WRITE);
+    verify(authenticatedUser).hasPermission(submission, WRITE);
     assertEquals(instrument, dialog.instrument.getValue());
     assertEquals(dataAvailableDate, dialog.dataAvailableDate.getValue());
     assertFalse(dialog.edit.isEnabled());
@@ -197,7 +197,7 @@ public class SubmissionDialogPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void setSubmission_BeforeLocalChange() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     Submission submission = new Submission();
     submission.setId(1L);
     submission.setInstrument(instrument);
@@ -206,7 +206,7 @@ public class SubmissionDialogPresenterTest extends AbstractKaribuTestCase {
     presenter.setSubmission(submission);
     presenter.localeChange(locale);
 
-    verify(authorizationService).hasPermission(submission, WRITE);
+    verify(authenticatedUser).hasPermission(submission, WRITE);
     assertEquals(instrument, dialog.instrument.getValue());
     assertEquals(dataAvailableDate, dialog.dataAvailableDate.getValue());
     assertTrue(dialog.edit.isEnabled());
@@ -214,12 +214,12 @@ public class SubmissionDialogPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void setSubmission_Null() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.localeChange(locale);
 
     presenter.setSubmission(null);
 
-    verify(authorizationService, never()).hasPermission(submission, WRITE);
+    verify(authenticatedUser, never()).hasPermission(submission, WRITE);
     assertEquals(MassDetectionInstrument.NULL, dialog.instrument.getValue());
     assertEquals(null, dialog.dataAvailableDate.getValue());
     assertTrue(dialog.edit.isEnabled());

@@ -22,7 +22,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import com.vaadin.flow.component.UI;
@@ -48,13 +48,13 @@ public class SubmissionDialogPresenter {
   private SubmissionDialog dialog;
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   private SubmissionService service;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected SubmissionDialogPresenter(SubmissionService service,
-      AuthorizationService authorizationService) {
+      AuthenticatedUser authenticatedUser) {
     this.service = service;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**
@@ -111,6 +111,6 @@ public class SubmissionDialogPresenter {
     binder.setBean(submission);
     dialog.printContent.setSubmission(submission);
     dialog.edit.setEnabled(
-        submission.getId() == null || authorizationService.hasPermission(submission, WRITE));
+        submission.getId() == null || authenticatedUser.hasPermission(submission, WRITE));
   }
 }

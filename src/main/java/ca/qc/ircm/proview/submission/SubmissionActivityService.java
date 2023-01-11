@@ -26,7 +26,7 @@ import ca.qc.ircm.proview.history.UpdateActivityBuilder;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleActivityService;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.user.User;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class SubmissionActivityService {
   @Autowired
   private SubmissionRepository repository;
   @Autowired
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   protected SubmissionActivityService() {
   }
@@ -68,7 +68,7 @@ public class SubmissionActivityService {
    */
   @CheckReturnValue
   public Activity insert(final Submission submission) {
-    User user = authorizationService.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getCurrentUser().orElse(null);
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -91,7 +91,7 @@ public class SubmissionActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> update(final Submission submission, final String explanation) {
-    final User user = authorizationService.getCurrentUser().orElse(null);
+    final User user = authenticatedUser.getCurrentUser().orElse(null);
 
     final Submission oldSubmission = repository.findById(submission.getId()).orElse(null);
 

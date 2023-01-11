@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -85,7 +85,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @MockBean
   private LaboratoryService laboratoryService;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Mock
   private DataProvider<User, ?> dataProvider;
   @Captor
@@ -125,7 +125,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     when(service.all(any(), any(Laboratory.class))).thenReturn(users);
     when(service.all(any())).thenReturn(users);
     currentUser = repository.findById(2L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(currentUser));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(currentUser));
   }
 
   @Test
@@ -149,7 +149,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void users_Manager() {
-    when(authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER)).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER)).thenReturn(true);
     presenter.init(view);
     verify(service).all(null, currentUser.getLaboratory());
     List<User> users = items(view.users);
@@ -169,8 +169,8 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void users_Admin() {
-    when(authorizationService.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER)).thenReturn(true);
-    when(authorizationService.hasRole(UserRole.ADMIN)).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER)).thenReturn(true);
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
     presenter.init(view);
     verify(service).all(null);
     List<User> users = items(view.users);

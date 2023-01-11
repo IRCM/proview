@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
@@ -78,7 +78,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 public class ViewLayoutTest extends AbstractKaribuTestCase {
   private ViewLayout view;
   @Mock
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Mock
   private AfterNavigationListener navigationListener;
   @Mock
@@ -94,8 +94,8 @@ public class ViewLayoutTest extends AbstractKaribuTestCase {
   public void beforeTest() {
     ui.setLocale(locale);
     ui.addAfterNavigationListener(navigationListener);
-    view = new ViewLayout(authorizationService);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    view = new ViewLayout(authenticatedUser);
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
     view.init();
   }
 
@@ -180,7 +180,7 @@ public class ViewLayoutTest extends AbstractKaribuTestCase {
 
   @Test
   public void tabs_AllowUsersView() {
-    when(authorizationService.isAuthorized(UsersView.class)).thenReturn(true);
+    when(authenticatedUser.isAuthorized(UsersView.class)).thenReturn(true);
     view.init();
     assertTrue(view.submissions.isVisible());
     assertTrue(view.profile.isVisible());
@@ -197,8 +197,7 @@ public class ViewLayoutTest extends AbstractKaribuTestCase {
 
   @Test
   public void tabs_SwitchedUser() {
-    when(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR))
-        .thenReturn(true);
+    when(authenticatedUser.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR)).thenReturn(true);
     view.init();
     assertTrue(view.submissions.isVisible());
     assertTrue(view.profile.isVisible());

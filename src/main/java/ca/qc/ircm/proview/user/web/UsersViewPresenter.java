@@ -25,7 +25,7 @@ import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER_FORM;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS_REQUIRED;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
@@ -51,35 +51,35 @@ public class UsersViewPresenter {
   private UsersView view;
   private UserService service;
   private LaboratoryService laboratoryService;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   private Locale locale;
   private ListDataProvider<User> usersDataProvider;
   private WebUserFilter filter = new WebUserFilter();
 
   @Autowired
   protected UsersViewPresenter(UserService service, LaboratoryService laboratoryService,
-      AuthorizationService authorizationService) {
+      AuthenticatedUser authenticatedUser) {
     this.service = service;
     this.laboratoryService = laboratoryService;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   void init(UsersView view) {
     this.view = view;
     loadUsers();
-    view.active.setVisible(authorizationService.hasAnyRole(ADMIN, MANAGER));
+    view.active.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
     view.error.setVisible(false);
-    view.add.setVisible(authorizationService.hasAnyRole(ADMIN, MANAGER));
-    view.switchUser.setVisible(authorizationService.hasRole(ADMIN));
-    view.switchUserForm.setVisible(authorizationService.hasRole(ADMIN));
-    view.viewLaboratory.setVisible(authorizationService.hasAnyRole(ADMIN, MANAGER));
+    view.add.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
+    view.switchUser.setVisible(authenticatedUser.hasRole(ADMIN));
+    view.switchUserForm.setVisible(authenticatedUser.hasRole(ADMIN));
+    view.viewLaboratory.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
     view.dialog.addSavedListener(e -> loadUsers());
     view.laboratoryDialog.addSavedListener(e -> loadUsers());
   }
 
   private void loadUsers() {
-    List<User> users = authorizationService.hasRole(ADMIN) ? service.all(null)
-        : service.all(null, authorizationService.getCurrentUser().get().getLaboratory());
+    List<User> users = authenticatedUser.hasRole(ADMIN) ? service.all(null)
+        : service.all(null, authenticatedUser.getCurrentUser().get().getLaboratory());
     usersDataProvider = new ListDataProvider<>(users);
     ConfigurableFilterDataProvider<User, Void, SerializablePredicate<User>> dataProvider =
         usersDataProvider.withConfigurableFilter();

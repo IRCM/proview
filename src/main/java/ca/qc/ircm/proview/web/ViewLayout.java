@@ -26,7 +26,7 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
@@ -95,13 +95,13 @@ public class ViewLayout extends VerticalLayout
   private Map<Tab, String> tabsHref = new HashMap<>();
   private String currentHref;
   @Autowired
-  private transient AuthorizationService authorizationService;
+  private transient AuthenticatedUser authenticatedUser;
 
   protected ViewLayout() {
   }
 
-  protected ViewLayout(AuthorizationService authorizationService) {
-    this.authorizationService = authorizationService;
+  protected ViewLayout(AuthenticatedUser authenticatedUser) {
+    this.authenticatedUser = authenticatedUser;
   }
 
   @PostConstruct
@@ -117,13 +117,13 @@ public class ViewLayout extends VerticalLayout
     submissions.setId(styleName(SUBMISSIONS, TAB));
     profile.setId(styleName(PROFILE, TAB));
     users.setId(styleName(USERS, TAB));
-    users.setVisible(authorizationService.isAuthorized(UsersView.class));
+    users.setVisible(authenticatedUser.isAuthorized(UsersView.class));
     exitSwitchUser.setId(styleName(EXIT_SWITCH_USER, TAB));
     exitSwitchUser
-        .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
+        .setVisible(authenticatedUser.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
     exitSwitchUserForm.setId(styleName(EXIT_SWITCH_USER_FORM, TAB));
     exitSwitchUserForm
-        .setVisible(authorizationService.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
+        .setVisible(authenticatedUser.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
     signout.setId(styleName(SIGNOUT, TAB));
     changeLanguage.setId(styleName(CHANGE_LANGUAGE, TAB));
     contact.setId(styleName(CONTACT, TAB));

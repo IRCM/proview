@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.user;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.Permission;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -52,7 +52,7 @@ public class UserService {
   @Autowired
   private PasswordEncoder passwordEncoder;
   @Autowired
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   protected UserService() {
   }
@@ -192,7 +192,7 @@ public class UserService {
     setUserPassword(user, password);
     user.setActive(true);
     user.setRegisterTime(LocalDateTime.now());
-    if (authorizationService.hasPermission(user.getLaboratory(), Permission.WRITE)) {
+    if (authenticatedUser.hasPermission(user.getLaboratory(), Permission.WRITE)) {
       Laboratory laboratory = user.getLaboratory();
       if (laboratory.getId() == null) {
         laboratory.setDirector(user.getName());
@@ -214,7 +214,7 @@ public class UserService {
     }
 
     boolean updateLaboratory =
-        authorizationService.hasPermission(user.getLaboratory(), Permission.WRITE);
+        authenticatedUser.hasPermission(user.getLaboratory(), Permission.WRITE);
     if (updateLaboratory) {
       laboratoryRepository.save(user.getLaboratory());
     }

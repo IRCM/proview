@@ -18,10 +18,10 @@
 package ca.qc.ircm.proview.sample;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
@@ -68,7 +68,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @MockBean
   private ActivityService activityService;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @MockBean
   private PermissionEvaluator permissionEvaluator;
   @Mock
@@ -132,7 +132,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_True() throws Throwable {
     User user = new User(3L);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists("CAP_20111013_05");
 
@@ -142,7 +142,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_False() throws Throwable {
     User user = new User(3L);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists("CAP_20111013_80");
 
@@ -152,7 +152,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_OtherUser() throws Throwable {
     User user = new User(10L);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists("CAP_20111013_05");
 
@@ -162,7 +162,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_ControlName() throws Throwable {
     User user = new User(3L);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists("control_01");
 
@@ -172,7 +172,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_Null() throws Throwable {
     User user = new User(3L);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists(null);
 

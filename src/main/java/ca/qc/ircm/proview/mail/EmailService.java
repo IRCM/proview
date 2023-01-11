@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.mail;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.User;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,16 +46,16 @@ public class EmailService {
   @Autowired
   private JavaMailSender mailSender;
   @Autowired
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   protected EmailService() {
   }
 
   protected EmailService(MailConfiguration mailConfiguration, JavaMailSender mailSender,
-      AuthorizationService authorizationService) {
+      AuthenticatedUser authenticatedUser) {
     this.mailConfiguration = mailConfiguration;
     this.mailSender = mailSender;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**
@@ -136,7 +136,7 @@ public class EmailService {
 
     StringBuilder message = new StringBuilder();
     message.append("User:");
-    message.append(authorizationService.getCurrentUser().map(User::getEmail).orElse("null"));
+    message.append(authenticatedUser.getCurrentUser().map(User::getEmail).orElse("null"));
     message.append("\n");
     message.append(error.getMessage());
     message.append("\n");

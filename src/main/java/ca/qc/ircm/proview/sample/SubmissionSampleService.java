@@ -23,7 +23,7 @@ import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.user.User;
@@ -51,7 +51,7 @@ public class SubmissionSampleService {
   @Autowired
   private ActivityService activityService;
   @Autowired
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   protected SubmissionSampleService() {
   }
@@ -86,7 +86,7 @@ public class SubmissionSampleService {
     if (name == null) {
       return false;
     }
-    User currentUser = authorizationService.getCurrentUser().orElse(null);
+    User currentUser = authenticatedUser.getCurrentUser().orElse(null);
 
     BooleanExpression predicate =
         submissionSample.name.eq(name).and(submissionSample.submission.user.eq(currentUser));

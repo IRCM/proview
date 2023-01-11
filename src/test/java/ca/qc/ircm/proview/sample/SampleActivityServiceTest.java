@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
@@ -53,7 +53,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
   @Autowired
   private SubmissionSampleRepository submissionSampleRepository;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   private User user;
 
   /**
@@ -62,7 +62,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
   @BeforeEach
   public void beforeTest() {
     user = new User(4L);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
   }
 
   @Test

@@ -32,7 +32,7 @@ import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
@@ -72,13 +72,13 @@ public class SubmissionViewPresenter {
   private ListDataProvider<SubmissionFile> filesDataProvider =
       DataProvider.ofCollection(new ArrayList<>());
   private SubmissionService service;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected SubmissionViewPresenter(SubmissionService service,
-      AuthorizationService authorizationService) {
+      AuthenticatedUser authenticatedUser) {
     this.service = service;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**
@@ -209,7 +209,7 @@ public class SubmissionViewPresenter {
   }
 
   private void setReadOnly() {
-    boolean readOnly = !authorizationService.hasPermission(binder.getBean(), WRITE);
+    boolean readOnly = !authenticatedUser.hasPermission(binder.getBean(), WRITE);
     binder.setReadOnly(readOnly);
     view.upload.setVisible(!readOnly);
     view.files.getColumnByKey(REMOVE).setVisible(!readOnly);

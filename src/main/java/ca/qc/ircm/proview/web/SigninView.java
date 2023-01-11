@@ -26,7 +26,7 @@ import static ca.qc.ircm.proview.user.UserProperties.HASHED_PASSWORD;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.ForgotPasswordView;
@@ -73,13 +73,12 @@ public class SigninView extends LoginOverlay
   protected LoginI18n i18n;
   protected String error;
   private transient SecurityConfiguration configuration;
-  private transient AuthorizationService authorizationService;
+  private transient AuthenticatedUser authenticatedUser;
 
   @Autowired
-  protected SigninView(SecurityConfiguration configuration,
-      AuthorizationService authorizationService) {
+  protected SigninView(SecurityConfiguration configuration, AuthenticatedUser authenticatedUser) {
     this.configuration = configuration;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   @PostConstruct
@@ -96,7 +95,7 @@ public class SigninView extends LoginOverlay
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
     // Redirect to main view if user is known.
-    if (!authorizationService.isAnonymous()) {
+    if (!authenticatedUser.isAnonymous()) {
       event.forwardTo(MainView.class);
     }
   }

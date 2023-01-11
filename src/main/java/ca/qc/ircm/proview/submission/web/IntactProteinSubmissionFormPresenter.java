@@ -47,7 +47,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -90,13 +90,13 @@ public class IntactProteinSubmissionFormPresenter {
       new BeanValidationBinder<>(SubmissionSample.class);
   private Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
   private SubmissionSampleService sampleService;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected IntactProteinSubmissionFormPresenter(SubmissionSampleService sampleService,
-      AuthorizationService authorizationService) {
+      AuthenticatedUser authenticatedUser) {
     this.sampleService = sampleService;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**
@@ -269,7 +269,7 @@ public class IntactProteinSubmissionFormPresenter {
   }
 
   private void setReadOnly() {
-    boolean readOnly = !authorizationService.hasPermission(binder.getBean(), WRITE);
+    boolean readOnly = !authenticatedUser.hasPermission(binder.getBean(), WRITE);
     binder.setReadOnly(readOnly);
     firstSampleBinder.setReadOnly(readOnly);
     samplesBinder.setReadOnly(readOnly);

@@ -39,7 +39,7 @@ import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
@@ -79,7 +79,7 @@ public class LcmsmsSubmissionFormPresenterTest {
   @MockBean
   private SubmissionSampleService sampleService;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
@@ -163,7 +163,7 @@ public class LcmsmsSubmissionFormPresenterTest {
     SubmissionSample sample = new SubmissionSample();
     sample.setType(SampleType.DRY);
     newSubmission.getSamples().add(sample);
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
   }
 
   private Submission submission() {
@@ -1305,7 +1305,7 @@ public class LcmsmsSubmissionFormPresenterTest {
 
   @Test
   public void setSubmission_ReadOnly() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(false);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(false);
 
     presenter.setSubmission(submission());
 

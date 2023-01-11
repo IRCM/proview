@@ -75,7 +75,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
@@ -120,7 +120,7 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   @Mock
   private SubmissionsViewPresenter presenter;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Captor
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
@@ -144,7 +144,7 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   public void beforeTest() {
     ui.setLocale(locale);
     view = new SubmissionsView(presenter, new SubmissionDialog(), new SamplesStatusDialog(),
-        authorizationService);
+        authenticatedUser);
     view.init();
     submissions = repository.findAll();
   }

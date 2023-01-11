@@ -30,7 +30,7 @@ import static ca.qc.ircm.proview.web.DatePickerInternationalization.datePickerI1
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -80,16 +80,16 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   @Autowired
   private transient SubmissionDialogPresenter presenter;
   @Autowired
-  private transient AuthorizationService authorizationService;
+  private transient AuthenticatedUser authenticatedUser;
 
   public SubmissionDialog() {
   }
 
   SubmissionDialog(SubmissionDialogPresenter presenter, PrintSubmission printContent,
-      AuthorizationService authorizationService) {
+      AuthenticatedUser authenticatedUser) {
     this.presenter = presenter;
     this.printContent = printContent;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   public static String id(String baseId) {
@@ -115,7 +115,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     formLayout.expand(printContentLayout);
     submissionForm.add(instrument, dataAvailableDate, save);
     submissionForm.setMaxWidth("400px");
-    submissionForm.setVisible(authorizationService.hasRole(ADMIN));
+    submissionForm.setVisible(authenticatedUser.hasRole(ADMIN));
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
     buttons.setWidthFull();
     layout.add(header, formLayout, buttons);

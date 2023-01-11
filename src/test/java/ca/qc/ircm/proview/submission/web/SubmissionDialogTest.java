@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -76,7 +76,7 @@ public class SubmissionDialogTest extends AbstractKaribuTestCase {
   @Autowired
   private PrintSubmission printContent;
   @Mock
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Mock
   private Submission submission;
   @Mock
@@ -92,24 +92,24 @@ public class SubmissionDialogTest extends AbstractKaribuTestCase {
   @BeforeEach
   public void beforeTest() {
     ui.setLocale(locale);
-    dialog = new SubmissionDialog(presenter, printContent, authorizationService);
+    dialog = new SubmissionDialog(presenter, printContent, authenticatedUser);
     dialog.init();
   }
 
   @Test
   public void init_User() {
     verify(presenter).init(dialog);
-    verify(authorizationService, atLeastOnce()).hasRole(ADMIN);
+    verify(authenticatedUser, atLeastOnce()).hasRole(ADMIN);
     assertFalse(dialog.submissionForm.isVisible());
   }
 
   @Test
   public void init_Admin() {
-    when(authorizationService.hasRole(ADMIN)).thenReturn(true);
+    when(authenticatedUser.hasRole(ADMIN)).thenReturn(true);
     dialog.init();
 
     verify(presenter, times(2)).init(dialog);
-    verify(authorizationService, atLeastOnce()).hasRole(ADMIN);
+    verify(authenticatedUser, atLeastOnce()).hasRole(ADMIN);
     assertTrue(dialog.submissionForm.isVisible());
   }
 

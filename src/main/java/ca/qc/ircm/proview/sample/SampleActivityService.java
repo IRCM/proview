@@ -23,7 +23,7 @@ import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
 import ca.qc.ircm.proview.history.UpdateActivityBuilder;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
@@ -50,7 +50,7 @@ public class SampleActivityService {
   @Autowired
   private SubmissionSampleRepository submissionSampleRepository;
   @Autowired
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   protected SampleActivityService() {
   }
@@ -64,7 +64,7 @@ public class SampleActivityService {
    */
   @CheckReturnValue
   public Activity insertControl(final Control control) {
-    User user = authorizationService.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getCurrentUser().orElse(null);
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -85,7 +85,7 @@ public class SampleActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> updateStatus(final SubmissionSample sample) {
-    User user = authorizationService.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getCurrentUser().orElse(null);
 
     final SubmissionSample oldSample =
         submissionSampleRepository.findById(sample.getId()).orElse(null);
@@ -136,7 +136,7 @@ public class SampleActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> update(final Sample newSample, final String explanation) {
-    User user = authorizationService.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getCurrentUser().orElse(null);
 
     final Sample oldSample = repository.findById(newSample.getId()).orElse(null);
 

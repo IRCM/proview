@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.io.ByteArrayInputStream;
@@ -52,7 +52,7 @@ public class UserPreferenceServiceTest {
   @Autowired
   private UserRepository userRepository;
   @MockBean
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   private User user;
 
   /**
@@ -61,7 +61,7 @@ public class UserPreferenceServiceTest {
   @BeforeEach
   public void beforeTest() {
     user = userRepository.findById(2L).get();
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
   }
 
   private String referer() {
@@ -94,7 +94,7 @@ public class UserPreferenceServiceTest {
 
   @Test
   public void get_MissingUserPreference() {
-    when(authorizationService.getCurrentUser()).thenReturn(userRepository.findById(10L));
+    when(authenticatedUser.getCurrentUser()).thenReturn(userRepository.findById(10L));
 
     assertEquals("default value", service.get(this, PREFERENCE_1, "default value"));
     assertEquals((Integer) 20, service.get(this, PREFERENCE_2, 20));
@@ -117,7 +117,7 @@ public class UserPreferenceServiceTest {
 
   @Test
   public void get_NoCurrentUser() {
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.empty());
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.empty());
 
     assertEquals("default value", service.get(this, PREFERENCE_1, "default value"));
   }
@@ -132,7 +132,7 @@ public class UserPreferenceServiceTest {
     String value = "test value 1";
     String name = "test new preference";
     user = userRepository.findById(10L).get();
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
 
     service.save(this, name, value);
     repository.flush();
@@ -145,7 +145,7 @@ public class UserPreferenceServiceTest {
   public void save_Insert() throws Throwable {
     String value = "test value 1";
     user = userRepository.findById(10L).get();
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
 
     service.save(this, PREFERENCE_1, value);
     repository.flush();

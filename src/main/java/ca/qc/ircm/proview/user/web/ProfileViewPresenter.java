@@ -20,7 +20,7 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.user.web.ProfileView.SAVED;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.MainView;
@@ -42,17 +42,17 @@ public class ProfileViewPresenter {
   private static final Logger logger = LoggerFactory.getLogger(ProfileViewPresenter.class);
   private ProfileView view;
   private UserService service;
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
-  protected ProfileViewPresenter(UserService service, AuthorizationService authorizationService) {
+  protected ProfileViewPresenter(UserService service, AuthenticatedUser authenticatedUser) {
     this.service = service;
-    this.authorizationService = authorizationService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   void init(ProfileView view) {
     this.view = view;
-    view.form.setUser(authorizationService.getCurrentUser().orElse(null));
+    view.form.setUser(authenticatedUser.getCurrentUser().orElse(null));
   }
 
   void save(Locale locale) {

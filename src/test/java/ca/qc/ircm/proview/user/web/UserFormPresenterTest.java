@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.AuthorizationService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
@@ -82,7 +82,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
   @Mock
   private LaboratoryService laboratoryService;
   @Mock
-  private AuthorizationService authorizationService;
+  private AuthenticatedUser authenticatedUser;
   @Mock
   private BinderValidationStatus<Passwords> passwordsValidationStatus;
   @Captor
@@ -121,7 +121,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
   @BeforeEach
   public void beforeTest() {
     presenter =
-        new UserFormPresenter(laboratoryService, authorizationService, defaultAddressConfiguration);
+        new UserFormPresenter(laboratoryService, authenticatedUser, defaultAddressConfiguration);
     form.email = new TextField();
     form.name = new TextField();
     form.admin = new Checkbox();
@@ -140,7 +140,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
     form.number = new TextField();
     form.extension = new TextField();
     currentUser = userRepository.findById(3L).orElse(null);
-    when(authorizationService.getCurrentUser()).thenReturn(Optional.of(currentUser));
+    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(currentUser));
     laboratories = laboratoryRepository.findAll();
     laboratories.forEach(lab -> entityManager.detach(lab));
     when(laboratoryService.all()).thenReturn(laboratories);
@@ -183,7 +183,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void currentUser_Manager() {
-    when(authorizationService.hasAnyRole(any()))
+    when(authenticatedUser.hasAnyRole(any()))
         .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     presenter.init(form);
     presenter.localeChange(locale);
@@ -198,9 +198,9 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void currentUser_Admin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     assertTrue(form.admin.isVisible());
@@ -228,8 +228,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void laboratory_Admin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     assertFalse(form.laboratory.isAllowCustomValue());
@@ -244,8 +244,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void checkAdmin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     form.admin.setValue(true);
@@ -261,8 +261,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void uncheckAdmin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     form.admin.setValue(true);
@@ -279,7 +279,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void checkManager_Manager() {
-    when(authorizationService.hasAnyRole(any()))
+    when(authenticatedUser.hasAnyRole(any()))
         .thenAnswer(i -> Stream.of(i.getArguments()).filter(MANAGER::equals).findAny().isPresent());
     presenter.init(form);
     presenter.localeChange(locale);
@@ -296,8 +296,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void checkManager_Admin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     form.manager.setValue(true);
@@ -313,8 +313,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void checkManagerAndCheckCreateNewLaboratory_Admin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     form.manager.setValue(true);
@@ -331,8 +331,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void uncheckManager_Admin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     form.manager.setValue(true);
@@ -349,9 +349,9 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void uncheckManagerAndCheckCreateNewLaboratory_Admin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     form.manager.setValue(true);
@@ -385,7 +385,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void setUser_NewUser() {
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.init(form);
     User user = new User();
 
@@ -427,9 +427,9 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void setUser_NewUserAdmin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.init(form);
     User user = new User();
 
@@ -513,7 +513,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
   public void setUser_UserCanWrite() {
     presenter.init(form);
     User user = userRepository.findById(3L).get();
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
 
     presenter.localeChange(locale);
     presenter.setUser(user);
@@ -554,9 +554,9 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void setUser_UserAdmin() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.init(form);
     User user = userRepository.findById(3L).get();
 
@@ -641,7 +641,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
   public void setUser_UserCanWriteBeforeLocaleChange() {
     presenter.init(form);
     User user = userRepository.findById(3L).get();
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
 
     presenter.setUser(user);
     presenter.localeChange(locale);
@@ -682,9 +682,9 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void setUser_UserAdminBeforeLocaleChange() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.init(form);
     User user = userRepository.findById(3L).get();
 
@@ -823,8 +823,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_LaboratoryEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     when(laboratoryService.all()).thenReturn(new ArrayList<>());
     presenter.init(form);
     presenter.localeChange(locale);
@@ -844,8 +844,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_AdminLaboratoryEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     when(laboratoryService.all()).thenReturn(new ArrayList<>());
     presenter.init(form);
     presenter.localeChange(locale);
@@ -866,8 +866,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_NewLaboratoryNameEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     fillForm();
@@ -889,8 +889,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_AddressLineEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     fillForm();
@@ -910,8 +910,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_TownEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     fillForm();
@@ -931,8 +931,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_StateEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     fillForm();
@@ -952,8 +952,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_CountryEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     fillForm();
@@ -973,8 +973,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_PostalCodeEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     fillForm();
@@ -994,8 +994,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_NumberEmpty() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     fillForm();
@@ -1069,8 +1069,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void isValid_NewManagerNewLaboratory() {
     when(form.passwords.getPassword()).thenReturn(password);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     fillForm();
@@ -1102,7 +1102,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
     when(form.passwords.getPassword()).thenReturn(password);
     presenter.init(form);
     User user = userRepository.findById(3L).get();
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.setUser(user);
     presenter.localeChange(locale);
     fillForm();
@@ -1129,11 +1129,11 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void isValid_UpdateUserLaboratory() {
     when(form.passwords.getPassword()).thenReturn(password);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     User user = userRepository.findById(26L).get();
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.setUser(user);
     presenter.localeChange(locale);
     fillForm();
@@ -1161,7 +1161,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
   public void isValid_UpdateUserNoPassword() {
     presenter.init(form);
     User user = userRepository.findById(3L).get();
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.setUser(user);
     presenter.localeChange(locale);
     fillForm();
@@ -1188,8 +1188,8 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void isValid_NewAdmin() {
     when(form.passwords.getPassword()).thenReturn(password);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     presenter.localeChange(locale);
     fillForm();
@@ -1217,11 +1217,11 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void isValid_UpdateAdmin() {
     when(form.passwords.getPassword()).thenReturn(password);
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     User user = userRepository.findById(1L).get();
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.setUser(user);
     presenter.localeChange(locale);
     fillForm();
@@ -1246,11 +1246,11 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_UpdateAdminNoPassword() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     User user = userRepository.findById(1L).get();
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.setUser(user);
     presenter.localeChange(locale);
     fillForm();
@@ -1275,11 +1275,11 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_UpdateAdmin_RemoveAdminAddManager() {
-    when(authorizationService.hasAnyRole(any())).thenReturn(true);
-    when(authorizationService.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
     presenter.init(form);
     User user = userRepository.findById(1L).get();
-    when(authorizationService.hasPermission(any(), any())).thenReturn(true);
+    when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
     presenter.setUser(user);
     presenter.localeChange(locale);
     fillForm();
