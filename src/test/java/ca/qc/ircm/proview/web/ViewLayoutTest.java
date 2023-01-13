@@ -95,7 +95,7 @@ public class ViewLayoutTest extends AbstractKaribuTestCase {
     ui.setLocale(locale);
     ui.addAfterNavigationListener(navigationListener);
     view = new ViewLayout(authenticatedUser);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     view.init();
   }
 

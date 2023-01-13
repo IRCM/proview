@@ -62,7 +62,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
   @BeforeEach
   public void beforeTest() {
     user = new User(4L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
   }
 
   @Test

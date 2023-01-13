@@ -136,7 +136,7 @@ public class EmailService {
 
     StringBuilder message = new StringBuilder();
     message.append("User:");
-    message.append(authenticatedUser.getCurrentUser().map(User::getEmail).orElse("null"));
+    message.append(authenticatedUser.getUser().map(User::getEmail).orElse("null"));
     message.append("\n");
     message.append(error.getMessage());
     message.append("\n");

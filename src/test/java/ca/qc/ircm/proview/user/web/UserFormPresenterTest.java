@@ -140,7 +140,7 @@ public class UserFormPresenterTest extends AbstractKaribuTestCase {
     form.number = new TextField();
     form.extension = new TextField();
     currentUser = userRepository.findById(3L).orElse(null);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(currentUser));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(currentUser));
     laboratories = laboratoryRepository.findAll();
     laboratories.forEach(lab -> entityManager.detach(lab));
     when(laboratoryService.all()).thenReturn(laboratories);

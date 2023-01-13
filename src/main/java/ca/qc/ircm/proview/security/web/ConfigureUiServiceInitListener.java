@@ -63,7 +63,7 @@ public class ConfigureUiServiceInitListener implements VaadinServiceInitListener
   private void beforeEnter(BeforeEnterEvent event) {
     final boolean accessGranted = authenticatedUser.isAuthorized(event.getNavigationTarget());
     if (!accessGranted) {
-      User user = authenticatedUser.getCurrentUser().orElse(null);
+      User user = authenticatedUser.getUser().orElse(null);
       logger.debug("Access denied for user {} when accessing view {}",
           user != null ? user.getId() : "anonymous", event.getNavigationTarget());
       if (user != null) {

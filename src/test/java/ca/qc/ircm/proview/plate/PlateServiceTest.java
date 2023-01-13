@@ -141,7 +141,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_ProteomicTrue() throws Exception {
     User user = new User(1L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
 
     boolean available = service.nameAvailable("unit_test");
@@ -152,7 +152,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_ProteomicFalse() throws Exception {
     User user = new User(1L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
 
     boolean available = service.nameAvailable("A_20111108");
@@ -163,7 +163,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_SubmissionTrue() throws Exception {
     User user = new User(10L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(false);
 
     boolean available = service.nameAvailable("unit_test");
@@ -174,7 +174,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_SubmissionFalse() throws Exception {
     User user = new User(10L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(false);
 
     boolean available = service.nameAvailable("Andrew-20171108");
@@ -185,7 +185,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_OtherUser() throws Exception {
     User user = new User(3L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(false);
 
     boolean available = service.nameAvailable("Andrew-20171108");
@@ -196,7 +196,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_ProteomicNull() throws Exception {
     User user = new User(1L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
 
     boolean available = service.nameAvailable(null);
@@ -207,7 +207,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   public void nameAvailable_SubmissionNull() throws Exception {
     User user = new User(3L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(false);
 
     boolean available = service.nameAvailable(null);

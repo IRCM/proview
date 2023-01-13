@@ -84,14 +84,14 @@ public class AuthenticatedUserTest {
 
   @Test
   @WithAnonymousUser
-  public void getCurrentUser_Anonymous() throws Throwable {
-    assertFalse(authenticatedUser.getCurrentUser().isPresent());
+  public void getUser_Anonymous() throws Throwable {
+    assertFalse(authenticatedUser.getUser().isPresent());
   }
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void getCurrentUser() throws Throwable {
-    User user = authenticatedUser.getCurrentUser().orElse(null);
+  public void getUser() throws Throwable {
+    User user = authenticatedUser.getUser().orElse(null);
     assertNotNull(user);
     assertEquals((Long) 1L, user.getId());
   }

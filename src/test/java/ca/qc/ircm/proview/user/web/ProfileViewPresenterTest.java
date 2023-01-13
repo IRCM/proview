@@ -76,7 +76,7 @@ public class ProfileViewPresenterTest extends AbstractKaribuTestCase {
     view.buttonsLayout = new HorizontalLayout();
     view.save = new Button();
     when(service.get(any(Long.class))).thenReturn(Optional.of(user));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
   }
 
   @Test

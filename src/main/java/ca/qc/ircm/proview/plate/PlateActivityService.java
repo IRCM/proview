@@ -64,7 +64,7 @@ public class PlateActivityService {
    */
   @CheckReturnValue
   public Activity insert(final Plate plate) {
-    User user = authenticatedUser.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getUser().orElse(null);
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -85,7 +85,7 @@ public class PlateActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> update(final Plate plate) {
-    User user = authenticatedUser.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getUser().orElse(null);
 
     Plate oldPlate = repository.findById(plate.getId()).orElse(null);
 
@@ -151,7 +151,7 @@ public class PlateActivityService {
   @CheckReturnValue
   public Activity ban(final Collection<Well> wells, final String explanation) {
     validateSamePlate(wells);
-    final User user = authenticatedUser.getCurrentUser().orElse(null);
+    final User user = authenticatedUser.getUser().orElse(null);
     final Plate plate = wells.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
@@ -190,7 +190,7 @@ public class PlateActivityService {
   @CheckReturnValue
   public Activity activate(final Collection<Well> wells, final String explanation) {
     validateSamePlate(wells);
-    final User user = authenticatedUser.getCurrentUser().orElse(null);
+    final User user = authenticatedUser.getUser().orElse(null);
     Plate plate = wells.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();

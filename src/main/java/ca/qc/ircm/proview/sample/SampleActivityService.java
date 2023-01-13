@@ -64,7 +64,7 @@ public class SampleActivityService {
    */
   @CheckReturnValue
   public Activity insertControl(final Control control) {
-    User user = authenticatedUser.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getUser().orElse(null);
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -85,7 +85,7 @@ public class SampleActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> updateStatus(final SubmissionSample sample) {
-    User user = authenticatedUser.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getUser().orElse(null);
 
     final SubmissionSample oldSample =
         submissionSampleRepository.findById(sample.getId()).orElse(null);
@@ -136,7 +136,7 @@ public class SampleActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> update(final Sample newSample, final String explanation) {
-    User user = authenticatedUser.getCurrentUser().orElse(null);
+    User user = authenticatedUser.getUser().orElse(null);
 
     final Sample oldSample = repository.findById(newSample.getId()).orElse(null);
 

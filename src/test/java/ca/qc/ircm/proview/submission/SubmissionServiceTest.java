@@ -138,7 +138,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @BeforeEach
   public void beforeTest() throws Throwable {
     user = userRepository.findById(4L).orElse(null);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(emailService.htmlEmail()).thenReturn(email);
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
     optionalActivity = Optional.of(activity);
@@ -303,7 +303,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     List<Submission> submissions = service.all(null);
 
@@ -334,7 +334,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_User() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     List<Submission> submissions = service.all(null);
 
@@ -348,7 +348,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_Manager() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
 
     List<Submission> submissions = service.all(null);
@@ -367,7 +367,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_Admin() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
 
     List<Submission> submissions = service.all(null);
@@ -385,7 +385,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_Filter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = mock(SubmissionFilter.class);
     when(filter.predicate()).thenReturn(submission.isNotNull());
 
@@ -401,7 +401,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_FilterExperiment() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.experimentContains = "exp";
 
@@ -416,7 +416,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_FilterOffset() throws Throwable {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.sortOrders = Arrays.asList(submission.id.asc());
     filter.offset = 2;
@@ -434,7 +434,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_FilterOffsetJoin() throws Throwable {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.anySampleNameContains = "POLR2A";
     filter.sortOrders = Arrays.asList(submission.id.asc());
@@ -453,7 +453,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_SortExperiment() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.sortOrders = Arrays.asList(submission.experiment.asc());
 
@@ -469,7 +469,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_SortSampleName() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.sortOrders = Arrays.asList(submission.samples.any().name.asc());
 
@@ -485,7 +485,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_SortSampleStatus() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.sortOrders = Arrays.asList(submission.samples.any().status.asc());
 
@@ -501,7 +501,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_SortResults() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.sortOrders = Arrays.asList(submission.samples.any().status.desc());
 
@@ -516,7 +516,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void all_NullFilter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     List<Submission> submissions = service.all(null);
 
@@ -540,7 +540,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void count_Filter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = mock(SubmissionFilter.class);
     when(filter.predicate()).thenReturn(submission.isNotNull());
 
@@ -554,7 +554,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void count_FilterExperiment() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.experimentContains = "exp";
 
@@ -567,7 +567,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void count_FilterOffset() throws Throwable {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.offset = 2;
     filter.limit = 2;
@@ -581,7 +581,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void count_FilterOffsetJoin() throws Throwable {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.anySampleNameContains = "POLR2A";
     filter.sortOrders = Arrays.asList(submission.id.asc());
@@ -597,7 +597,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void count_NullFilter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     int count = service.count(null);
 

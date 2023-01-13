@@ -125,7 +125,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     when(service.all(any(), any(Laboratory.class))).thenReturn(users);
     when(service.all(any())).thenReturn(users);
     currentUser = repository.findById(2L).orElse(null);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(currentUser));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(currentUser));
   }
 
   @Test

@@ -132,7 +132,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_True() throws Throwable {
     User user = new User(3L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists("CAP_20111013_05");
 
@@ -142,7 +142,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_False() throws Throwable {
     User user = new User(3L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists("CAP_20111013_80");
 
@@ -152,7 +152,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_OtherUser() throws Throwable {
     User user = new User(10L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists("CAP_20111013_05");
 
@@ -162,7 +162,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_ControlName() throws Throwable {
     User user = new User(3L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists("control_01");
 
@@ -172,7 +172,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   public void exists_Null() throws Throwable {
     User user = new User(3L);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     boolean exists = service.exists(null);
 

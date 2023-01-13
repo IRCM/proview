@@ -68,7 +68,7 @@ public class AuthenticatedUser {
    *
    * @return authenticated user
    */
-  public Optional<User> getCurrentUser() {
+  public Optional<User> getUser() {
     return getUserDetails().filter(ud -> ud instanceof UserDetailsWithId)
         .map(ud -> (UserDetailsWithId) ud).map(au -> au.getId())
         .map(id -> repository.findById(id).orElse(null));

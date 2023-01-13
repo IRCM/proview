@@ -80,7 +80,7 @@ public class MdcFilterTest {
   public void doFilter_User() throws Throwable {
     Long userId = 3L;
     String email = "test@ircm.qc.ca";
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(new User(userId, email)));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(new User(userId, email)));
     doAnswer(i -> {
       assertEquals("3:test", MDC.get(USER_CONTEXT_KEY));
       return null;
@@ -94,7 +94,7 @@ public class MdcFilterTest {
 
   @Test
   public void doFilter_EmptyUser() throws Throwable {
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.empty());
+    when(authenticatedUser.getUser()).thenReturn(Optional.empty());
     doAnswer(i -> {
       assertNull(MDC.get(USER_CONTEXT_KEY));
       return null;

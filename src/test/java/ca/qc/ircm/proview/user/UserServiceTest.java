@@ -296,7 +296,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   @Test
   public void save_Insert_Admin() throws Throwable {
     final User manager = repository.findById(1L).orElse(null);
-    when(authenticatedUser.getCurrentUser()).thenReturn(Optional.of(manager));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(manager));
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -376,7 +376,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     user.setPhoneNumbers(phoneNumbers);
     user.setLaboratory(laboratoryRepository.findById(2L).get());
     user.getLaboratory().setName("Ribonucleoprotein Biochemistry");
-    when(authenticatedUser.getCurrentUser()).thenReturn(repository.findById(3L));
+    when(authenticatedUser.getUser()).thenReturn(repository.findById(3L));
 
     service.save(user, "password");
 
