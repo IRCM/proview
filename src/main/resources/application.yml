@@ -59,7 +59,6 @@ server:
 vaadin:
   productionMode: false
   closeIdleSessions: true
-  compatibilityMode: false
 
 security:
   lockAttemps: 5
@@ -133,7 +132,8 @@ spring:
       ddl-auto: none
   mail:
     port: 30025
-    host: localhost
+    host: localhost
+
 security:
   rememberMeKey: 'JfYMi0qUQVt8FObsZHW7'
   passwords:
