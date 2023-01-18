@@ -127,8 +127,6 @@ public class LcmsmsSubmissionFormPresenter {
    */
   void init(LcmsmsSubmissionForm form) {
     this.form = form;
-    form.samplesNames.addValueChangeListener(
-        e -> logger.debug("sampleNames: {}", samplesBinder.getBean().getSamplesNames()));
     form.sampleType.addValueChangeListener(e -> sampleTypeChanged());
     form.coloration.addValueChangeListener(e -> colorationChanged());
     form.digestion.addValueChangeListener(e -> digestionChanged());
