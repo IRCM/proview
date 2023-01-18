@@ -39,7 +39,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.BeforeEvent;
@@ -67,12 +67,12 @@ public class HistoryView extends VerticalLayout
   public static final String DESCRIPTION = "description";
   public static final String VIEW_ERROR = "description";
   public static final String VIEW_BUTTON =
-      "<vaadin-button class='" + VIEW + "' theme='icon' on-click='view'>"
-          + "<iron-icon icon='vaadin:eye' slot='prefix'></iron-icon>" + "</vaadin-button>";
+      "<vaadin-button class='" + VIEW + "' theme='icon' @click='${view}'>"
+          + "<vaadin-icon icon='vaadin:eye' slot='prefix'></vaadin-icon>" + "</vaadin-button>";
   public static final String DESCRIPTION_SPAN =
-      "<span title$='[[item.descriptionTitle]]'>[[item.descriptionValue]]</span>";
+      "<span .title='${item.descriptionTitle}'>${item.descriptionValue}</span>";
   public static final String EXPLANATION_SPAN =
-      "<span title$='[[item.explanationTitle]]'>[[item.explanationValue]]</span>";
+      "<span .title='${item.explanationTitle}'>${item.explanationValue}</span>";
   private static final long serialVersionUID = -6131172448162015562L;
   private static final Logger logger = LoggerFactory.getLogger(HistoryView.class);
   protected H2 header = new H2();
@@ -107,10 +107,11 @@ public class HistoryView extends VerticalLayout
     header.setId(HEADER);
     activities.setId(ACTIVITIES);
     activities.setSizeFull();
-    view = activities
-        .addColumn(TemplateRenderer.<Activity>of(VIEW_BUTTON).withEventHandler("view",
-            ac -> presenter.view(ac, getLocale())), VIEW)
-        .setKey(VIEW).setSortable(false).setFlexGrow(0);
+    view =
+        activities
+            .addColumn(LitRenderer.<Activity>of(VIEW_BUTTON).withFunction("view",
+                ac -> presenter.view(ac, getLocale())))
+            .setKey(VIEW).setSortable(false).setFlexGrow(0);
     user = activities.addColumn(ac -> ac.getUser().getName(), USER).setKey(USER).setFlexGrow(5);
     type = activities.addColumn(ac -> ac.getActionType().getLabel(getLocale()), ACTION_TYPE)
         .setKey(ACTION_TYPE);
@@ -118,14 +119,14 @@ public class HistoryView extends VerticalLayout
     date = activities.addColumn(ac -> dateFormatter.format(ac.getTimestamp()), TIMESTAMP)
         .setKey(TIMESTAMP).setFlexGrow(3);
     description = activities
-        .addColumn(TemplateRenderer.<Activity>of(DESCRIPTION_SPAN)
+        .addColumn(LitRenderer.<Activity>of(DESCRIPTION_SPAN)
             .withProperty("descriptionTitle", ac -> description(ac))
-            .withProperty("descriptionValue", ac -> description(ac)), DESCRIPTION)
+            .withProperty("descriptionValue", ac -> description(ac)))
         .setKey(DESCRIPTION).setSortable(false).setFlexGrow(5);
     explanation = activities
-        .addColumn(TemplateRenderer.<Activity>of(EXPLANATION_SPAN)
+        .addColumn(LitRenderer.<Activity>of(EXPLANATION_SPAN)
             .withProperty("explanationTitle", ac -> ac.getExplanation())
-            .withProperty("explanationValue", ac -> ac.getExplanation()), EXPLANATION)
+            .withProperty("explanationValue", ac -> ac.getExplanation()))
         .setKey(EXPLANATION).setSortable(false).setFlexGrow(5);
     activities.addItemDoubleClickListener(e -> presenter.view(e.getItem(), getLocale()));
     presenter.init(this);
