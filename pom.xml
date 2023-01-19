@@ -556,11 +556,5 @@
         <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
       </properties>
     </profile>
-    <profile>
-      <id>opera</id>
-      <properties>
-        <testbench.driver>org.openqa.selenium.opera.OperaDriver</testbench.driver>
-      </properties>
-    </profile>
   </profiles>
 </project>
