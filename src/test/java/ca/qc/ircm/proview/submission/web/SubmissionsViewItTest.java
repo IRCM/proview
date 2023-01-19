@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.submission.web.SubmissionsView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -85,7 +84,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
@@ -97,7 +96,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Admin() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
@@ -109,7 +108,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void hide() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
     view.submissions().visible(0).click();
     waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
@@ -123,7 +122,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void show() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
     view.submissions().visible(0).click();
     waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
         .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
@@ -139,7 +138,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void view() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
     view.submissions().view(0).click();
 
@@ -152,7 +151,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void statusDialog() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
     view.submissions().experimentCell(0).click(0, 0, Keys.SHIFT);
 
@@ -167,7 +166,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void history_Grid() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
     view.submissions().experimentCell(0).click(0, 0, Keys.ALT);
 
@@ -177,7 +176,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void add() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
     view.add().click();
 
@@ -188,7 +187,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void editStatus() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
     view.submissions().experimentCell(0).click();
     view.editStatus().click();
@@ -204,7 +203,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void history() throws Throwable {
     open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
     view.submissions().experimentCell(0).click();
     view.history().click();

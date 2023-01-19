@@ -29,7 +29,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.FILES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.text.Strings.property;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.UploadInternationalization.uploadI18N;
 
 import ca.qc.ircm.proview.AppResources;
@@ -80,7 +79,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SubmissionView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver, NotificationComponent {
   public static final String VIEW_NAME = "submission";
-  public static final String ID = styleName(VIEW_NAME, "view");
+  public static final String ID = "submission-view";
   public static final String HEADER = "header";
   public static final String FILES_IOEXCEPTION = property(FILES, "ioexception");
   public static final String FILES_OVER_MAXIMUM = property(FILES, "overmaximum");

@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.user.web.UsersView.ID;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -29,6 +28,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.web.AccessDeniedError;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
@@ -104,7 +104,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
     assertFalse(optional(() -> view.switchFailed()).isPresent());
@@ -115,7 +115,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void edit() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
 
     view.users().edit(0).click();
 
@@ -125,7 +125,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void add() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
 
     view.add().click();
 
@@ -135,11 +135,12 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void switchUser() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(1);
 
     view.switchUser().click();
 
+    $(SubmissionsViewElement.class).waitForFirst();
     Locale locale = currentLocale();
     assertEquals(
         new AppResources(SubmissionsView.class, locale).message(TITLE,
@@ -151,7 +152,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Disabled("Admins are allowed to switch to another admin right now")
   public void switchUser_Fail() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
 
     view.switchUser().click();
@@ -162,7 +163,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void view_Laboratory() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
     view.viewLaboratory().click();
     assertTrue(view.laboratoryDialog().isOpen());

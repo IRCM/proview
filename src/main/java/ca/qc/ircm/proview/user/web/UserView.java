@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
@@ -57,7 +56,7 @@ public class UserView extends VerticalLayout
   private static final long serialVersionUID = 4760310643370830640L;
   private static final Logger logger = LoggerFactory.getLogger(UserView.class);
   public static final String VIEW_NAME = "user";
-  public static final String ID = styleName(VIEW_NAME, "view");
+  public static final String ID = "user-view";
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
   protected H2 header = new H2();

@@ -39,12 +39,14 @@ import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
 import com.vaadin.flow.component.formlayout.testbench.FormLayoutElement;
 import com.vaadin.flow.component.textfield.testbench.PasswordFieldElement;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link UserForm} element.
  */
 @Element("vaadin-form-layout")
+@Attribute(name = "id", value = UserForm.ID)
 public class UserFormElement extends FormLayoutElement {
   public TextFieldElement email() {
     return $(TextFieldElement.class).id(id(EMAIL));

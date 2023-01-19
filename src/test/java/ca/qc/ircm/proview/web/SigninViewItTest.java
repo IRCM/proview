@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.web.SigninView.DISABLED;
 import static ca.qc.ircm.proview.web.SigninView.FAIL;
-import static ca.qc.ircm.proview.web.SigninView.ID;
 import static ca.qc.ircm.proview.web.SigninView.LOCKED;
 import static ca.qc.ircm.proview.web.SigninView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,7 +60,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    SigninViewElement view = $(SigninViewElement.class).id(ID);
+    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.getUsernameField()).isPresent());
     assertTrue(optional(() -> view.getPasswordField()).isPresent());
     assertTrue(optional(() -> view.getSubmitButton()).isPresent());
@@ -71,7 +70,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void sign_Fail() throws Throwable {
     open();
-    SigninViewElement view = $(SigninViewElement.class).id(ID);
+    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     view.getPasswordField().setValue("notright");
     view.getSubmitButton().click();
@@ -83,7 +82,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void sign_Disabled() throws Throwable {
     open();
-    SigninViewElement view = $(SigninViewElement.class).id(ID);
+    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     view.getUsernameField().setValue("robert.stlouis@ircm.qc.ca");
     view.getPasswordField().setValue("password");
     view.getSubmitButton().click();
@@ -95,7 +94,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void sign_Locked() throws Throwable {
     open();
-    SigninViewElement view = $(SigninViewElement.class).id(ID);
+    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     for (int i = 0; i < 6; i++) {
       view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
       view.getPasswordField().setValue("notright");
@@ -109,7 +108,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void sign() throws Throwable {
     open();
-    SigninViewElement view = $(SigninViewElement.class).id(ID);
+    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     view.getPasswordField().setValue("password");
     view.getSubmitButton().click();
@@ -119,7 +118,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void forgotPassword() throws Throwable {
     open();
-    SigninViewElement view = $(SigninViewElement.class).id(ID);
+    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     view.getForgotPasswordButton().click();
     assertEquals(viewUrl(ForgotPasswordView.VIEW_NAME), getDriver().getCurrentUrl());
   }

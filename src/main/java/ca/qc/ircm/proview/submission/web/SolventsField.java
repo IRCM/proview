@@ -32,6 +32,7 @@ import java.util.stream.Stream;
  * Small molecule solvents field.
  */
 public class SolventsField extends CustomField<List<Solvent>> implements LocaleChangeObserver {
+  public static final String CLASS_NAME = "solvents";
   private static final long serialVersionUID = -6917758838566523871L;
   protected final Map<Solvent, Checkbox> fields = new LinkedHashMap<>();
 
@@ -39,6 +40,7 @@ public class SolventsField extends CustomField<List<Solvent>> implements LocaleC
    * Creates solvents field.
    */
   public SolventsField() {
+    addClassName(CLASS_NAME);
     Stream.of(Solvent.values()).forEach(solvent -> {
       Checkbox field = new Checkbox();
       field.addClassName(solvent.name());

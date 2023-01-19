@@ -30,12 +30,14 @@ import com.vaadin.flow.component.combobox.testbench.ComboBoxElement;
 import com.vaadin.flow.component.datepicker.testbench.DatePickerElement;
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
 import com.vaadin.flow.component.html.testbench.H3Element;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link SubmissionDialog} element.
  */
 @Element("vaadin-dialog")
+@Attribute(name = "id", value = SubmissionDialog.ID)
 public class SubmissionDialogElement extends DialogElement {
   public H3Element header() {
     return $(H3Element.class).id(id(HEADER));

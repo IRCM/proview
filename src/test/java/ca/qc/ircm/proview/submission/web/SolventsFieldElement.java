@@ -25,12 +25,14 @@ import static ca.qc.ircm.proview.treatment.Solvent.OTHER;
 import ca.qc.ircm.proview.treatment.Solvent;
 import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import com.vaadin.flow.component.formlayout.testbench.FormLayoutElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link SolventsField} element.
  */
 @Element("vaadin-custom-field")
+@Attribute(name = "class", value = SolventsField.CLASS_NAME)
 public class SolventsFieldElement extends FormLayoutElement {
   public CheckboxElement solvent(Solvent solvent) {
     return $(CheckboxElement.class).attribute("class", solvent.name()).first();

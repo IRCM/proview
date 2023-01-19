@@ -29,12 +29,14 @@ import com.vaadin.flow.component.html.testbench.AnchorElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link ContactView} element.
  */
 @Element("vaadin-vertical-layout")
+@Attribute(name = "id", value = ContactView.ID)
 public class ContactViewElement extends VerticalLayoutElement {
   public H2Element header() {
     return $(H2Element.class).id(HEADER);

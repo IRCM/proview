@@ -17,15 +17,19 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
+
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.grid.testbench.GridTHTDElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link SubmissionsView#submissions SubmissionsView submissions} element.
  */
 @Element("vaadin-grid")
+@Attribute(name = "id", value = SUBMISSIONS)
 public class SubmissionsViewSubmissionsElement extends GridElement {
   private static final int EXPERIMENT_COLUMN = 1;
   private static final int VISIBLE_COLUMN = 11;

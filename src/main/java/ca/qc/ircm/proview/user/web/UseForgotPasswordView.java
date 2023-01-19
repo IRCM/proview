@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -53,7 +52,7 @@ public class UseForgotPasswordView extends VerticalLayout implements LocaleChang
   private static final long serialVersionUID = 4760310643370830640L;
   private static final Logger logger = LoggerFactory.getLogger(UseForgotPasswordView.class);
   public static final String VIEW_NAME = "useforgotpassword";
-  public static final String ID = styleName(VIEW_NAME, "view");
+  public static final String ID = "useforgotpassword-view";
   public static final String SEPARATOR = "/";
   public static final String HEADER = "header";
   public static final String MESSAGE = "message";

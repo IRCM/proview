@@ -54,7 +54,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
     view.viewLaboratory().click();
     LaboratoryDialogElement dialog = view.laboratoryDialog();
@@ -67,7 +67,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void save() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
     view.viewLaboratory().click();
     LaboratoryDialogElement dialog = view.laboratoryDialog();
@@ -87,7 +87,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void cancel() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(UsersView.ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
     view.viewLaboratory().click();
     LaboratoryDialogElement dialog = view.laboratoryDialog();

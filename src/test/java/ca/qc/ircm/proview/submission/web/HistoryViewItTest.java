@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.submission.web.HistoryView.ID;
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -96,7 +95,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    HistoryViewElement view = $(HistoryViewElement.class).id(ID);
+    HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.activities()).isPresent());
   }
@@ -104,7 +103,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void dialog() throws Throwable {
     open();
-    HistoryViewElement view = $(HistoryViewElement.class).id(ID);
+    HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     view.activities().view(6).click();
     SubmissionDialogElement dialog = view.dialog();
     assertTrue(dialog.isOpen());
@@ -114,7 +113,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void msAnalysisDialog() throws Throwable {
     open();
-    HistoryViewElement view = $(HistoryViewElement.class).id(ID);
+    HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     view.activities().view(5).click();
     MsAnalysisDialogElement dialog = view.msAnalysisDialog();
     assertTrue(dialog.isOpen());
@@ -125,7 +124,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void treatmentDialog() throws Throwable {
     open();
-    HistoryViewElement view = $(HistoryViewElement.class).id(ID);
+    HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     view.activities().view(0).click();
     TreatmentDialogElement dialog = view.treatmentDialog();
     assertTrue(dialog.isOpen());

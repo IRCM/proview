@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.AppResources;
@@ -53,7 +52,7 @@ public class ProfileView extends VerticalLayout
   private static final long serialVersionUID = 4760310643370830640L;
   private static final Logger logger = LoggerFactory.getLogger(ProfileView.class);
   public static final String VIEW_NAME = "profile";
-  public static final String ID = styleName(VIEW_NAME, "view");
+  public static final String ID = "profile-view";
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
   protected H2 header = new H2();

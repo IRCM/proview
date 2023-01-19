@@ -23,7 +23,6 @@ import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.FILES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.HEADER;
 
@@ -34,12 +33,14 @@ import com.vaadin.flow.component.tabs.testbench.TabElement;
 import com.vaadin.flow.component.tabs.testbench.TabsElement;
 import com.vaadin.flow.component.textfield.testbench.TextAreaElement;
 import com.vaadin.flow.component.upload.testbench.UploadElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link SubmissionView} element.
  */
 @Element("vaadin-vertical-layout")
+@Attribute(name = "id", value = SubmissionView.ID)
 public class SubmissionViewElement extends VerticalLayoutElement {
   public H2Element header() {
     return $(H2Element.class).id(HEADER);
@@ -54,7 +55,7 @@ public class SubmissionViewElement extends VerticalLayoutElement {
   }
 
   public LcmsmsSubmissionFormElement lcmsmsSubmissionForm() {
-    return $(LcmsmsSubmissionFormElement.class).id(LcmsmsSubmissionForm.ID);
+    return $(LcmsmsSubmissionFormElement.class).first();
   }
 
   public TabElement smallMolecule() {
@@ -62,7 +63,7 @@ public class SubmissionViewElement extends VerticalLayoutElement {
   }
 
   public SmallMoleculeSubmissionFormElement smallMoleculeSubmissionForm() {
-    return $(SmallMoleculeSubmissionFormElement.class).id(SmallMoleculeSubmissionForm.ID);
+    return $(SmallMoleculeSubmissionFormElement.class).first();
   }
 
   public TabElement intactProtein() {
@@ -70,7 +71,7 @@ public class SubmissionViewElement extends VerticalLayoutElement {
   }
 
   public IntactProteinSubmissionFormElement intactProteinSubmissionForm() {
-    return $(IntactProteinSubmissionFormElement.class).id(IntactProteinSubmissionForm.ID);
+    return $(IntactProteinSubmissionFormElement.class).first();
   }
 
   public TextAreaElement comment() {
@@ -82,7 +83,7 @@ public class SubmissionViewElement extends VerticalLayoutElement {
   }
 
   public SubmissionViewFilesElement files() {
-    return $(SubmissionViewFilesElement.class).id(FILES);
+    return $(SubmissionViewFilesElement.class).first();
   }
 
   public ButtonElement save() {

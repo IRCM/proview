@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.web.ContactView.VIEW_NAME;
-import static ca.qc.ircm.proview.web.ViewLayout.ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
-import ca.qc.ircm.proview.submission.web.SubmissionDialog;
 import ca.qc.ircm.proview.submission.web.SubmissionDialogElement;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
@@ -65,7 +63,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void fieldsExistence_User() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.profile()).isPresent());
     assertFalse(optional(() -> view.users()).isPresent());
@@ -82,7 +80,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void fieldsExistence_Manager() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.profile()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
@@ -99,7 +97,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Admin() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.profile()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
@@ -115,14 +113,14 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence_Runas() throws Throwable {
     openView(UsersView.VIEW_NAME);
-    SigninViewElement signinView = $(SigninViewElement.class).id(SigninView.ID);
+    SigninViewElement signinView = $(SigninViewElement.class).waitForFirst();
     signinView.getUsernameField().setValue("proview@ircm.qc.ca");
     signinView.getPasswordField().setValue("password");
     signinView.getSubmitButton().click();
-    UsersViewElement usersView = $(UsersViewElement.class).id(UsersView.ID);
+    UsersViewElement usersView = $(UsersViewElement.class).waitForFirst();
     usersView.users().select(1);
     usersView.switchUser().click();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.profile()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
@@ -139,7 +137,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void submissions() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.submissions().click();
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
   }
@@ -148,7 +146,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void profile() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.profile().click();
     assertEquals(viewUrl(ProfileView.VIEW_NAME), getDriver().getCurrentUrl());
   }
@@ -157,7 +155,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void users() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.users().click();
     assertEquals(viewUrl(UsersView.VIEW_NAME), getDriver().getCurrentUrl());
   }
@@ -165,15 +163,17 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @Test
   public void exitSwitchUser() throws Throwable {
     openView(UsersView.VIEW_NAME);
-    SigninViewElement signinView = $(SigninViewElement.class).id(SigninView.ID);
+    SigninViewElement signinView = $(SigninViewElement.class).waitForFirst();
     signinView.getUsernameField().setValue("proview@ircm.qc.ca");
     signinView.getPasswordField().setValue("password");
     signinView.getSubmitButton().click();
-    UsersViewElement usersView = $(UsersViewElement.class).id(UsersView.ID);
+    UsersViewElement usersView = $(UsersViewElement.class).waitForFirst();
     usersView.users().select(1);
     usersView.switchUser().click();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    $(SubmissionsViewElement.class).waitForFirst();
+    ViewLayoutElement view = $(ViewLayoutElement.class).first();
     view.exitSwitchUser().click();
+    $(SubmissionsViewElement.class).waitForFirst();
     assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
     assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
   }
@@ -181,11 +181,11 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @Test
   public void signout() throws Throwable {
     open();
-    SigninViewElement signinView = $(SigninViewElement.class).id(SigninView.ID);
+    SigninViewElement signinView = $(SigninViewElement.class).waitForFirst();
     signinView.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     signinView.getPasswordField().setValue("password");
     signinView.getSubmitButton().click();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.signout().click();
     assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
   }
@@ -195,7 +195,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void changeLanguage() throws Throwable {
     open();
     final Locale before = currentLocale();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.changeLanguage().click();
     assertEquals(viewUrl(ContactView.VIEW_NAME), getDriver().getCurrentUrl());
     assertEquals(ENGLISH.equals(before) ? FRENCH : ENGLISH, currentLocale());
@@ -205,7 +205,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void contact() throws Throwable {
     openView(GuidelinesView.VIEW_NAME);
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.contact().click();
     assertEquals(viewUrl(ContactView.VIEW_NAME), getDriver().getCurrentUrl());
   }
@@ -214,7 +214,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void guidelines() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.guidelines().click();
     assertEquals(viewUrl(GuidelinesView.VIEW_NAME), getDriver().getCurrentUrl());
   }
@@ -223,9 +223,9 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void add() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.submissions().click();
-    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
+    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).waitForFirst();
     submissionsView.add().click();
     assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.add()).isPresent());
@@ -238,12 +238,11 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void edit() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.submissions().click();
-    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
+    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).waitForFirst();
     submissionsView.submissions().experimentCell(0).doubleClick();
-    SubmissionDialogElement submissionDialog =
-        $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
+    SubmissionDialogElement submissionDialog = $(SubmissionDialogElement.class).waitForFirst();
     submissionDialog.clickEdit();
     assertEquals(viewUrl(SubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.edit()).isPresent());
@@ -256,12 +255,11 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void print() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.submissions().click();
-    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
+    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).waitForFirst();
     submissionsView.submissions().experimentCell(0).doubleClick();
-    SubmissionDialogElement submissionDialog =
-        $(SubmissionDialogElement.class).id(SubmissionDialog.ID);
+    SubmissionDialogElement submissionDialog = $(SubmissionDialogElement.class).waitForFirst();
     submissionDialog.clickPrint();
     assertEquals(viewUrl(PrintSubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.print()).isPresent());
@@ -274,9 +272,9 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @WithUserDetails("proview@ircm.qc.ca")
   public void history() throws Throwable {
     open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).id(ID);
+    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.submissions().click();
-    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).id(SubmissionsView.ID);
+    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).waitForFirst();
     submissionsView.submissions().experimentCell(0).click(0, 0, Keys.ALT);
     assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.history()).isPresent());

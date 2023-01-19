@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.submission.web.SolventsField.CLASS_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -53,6 +54,7 @@ public class SolventsFieldTest extends AbstractKaribuTestCase {
 
   @Test
   public void styles() {
+    assertTrue(fields.hasClassName(CLASS_NAME));
     for (Solvent value : Solvent.values()) {
       assertTrue(fields.fields.get(value).hasClassName(value.name()));
     }

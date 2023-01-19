@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.submission.web.HistoryView.ACTIVITIES;
 import static ca.qc.ircm.proview.submission.web.HistoryView.HEADER;
 
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
@@ -27,6 +26,7 @@ import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.TestBenchElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 import org.openqa.selenium.By;
 
@@ -34,13 +34,14 @@ import org.openqa.selenium.By;
  * {@link HistoryView} element.
  */
 @Element("vaadin-vertical-layout")
+@Attribute(name = "id", value = HistoryView.ID)
 public class HistoryViewElement extends VerticalLayoutElement {
   public H2Element header() {
     return $(H2Element.class).id(HEADER);
   }
 
   public HistoryViewActivitiesElement activities() {
-    return $(HistoryViewActivitiesElement.class).id(ACTIVITIES);
+    return $(HistoryViewActivitiesElement.class).first();
   }
 
   public SubmissionDialogElement dialog() {

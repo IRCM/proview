@@ -31,12 +31,14 @@ import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.DivElement;
 import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.flow.component.html.testbench.H4Element;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link TreatmentDialog} element.
  */
 @Element("vaadin-dialog")
+@Attribute(name = "id", value = TreatmentDialog.ID)
 public class TreatmentDialogElement extends DialogElement {
   public H3Element header() {
     return $(H3Element.class).id(id(HEADER));

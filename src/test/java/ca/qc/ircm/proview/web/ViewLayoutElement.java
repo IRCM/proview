@@ -35,12 +35,14 @@ import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.flow.component.tabs.testbench.TabElement;
 import com.vaadin.flow.component.tabs.testbench.TabsElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link ViewLayout} element.
  */
 @Element("vaadin-vertical-layout")
+@Attribute(name = "id", value = ViewLayout.ID)
 public class ViewLayoutElement extends VerticalLayoutElement {
   public TabsElement tabs() {
     return $(TabsElement.class).first();

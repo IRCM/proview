@@ -26,7 +26,6 @@ import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USERNAME_PARAMETER;
 import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USER_URL;
 import static ca.qc.ircm.proview.text.Strings.property;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserProperties.ACTIVE;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
@@ -77,7 +76,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UsersView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle,
     AfterNavigationObserver, NotificationComponent {
   public static final String VIEW_NAME = "users";
-  public static final String ID = styleName(VIEW_NAME, "view");
+  public static final String ID = "users-view";
   public static final String HEADER = "header";
   public static final String USERS = "users";
   public static final String USERS_REQUIRED = property(USERS, REQUIRED);

@@ -28,6 +28,7 @@ import com.vaadin.flow.component.html.testbench.DivElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.TestBenchElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 import org.openqa.selenium.By;
 
@@ -35,6 +36,7 @@ import org.openqa.selenium.By;
  * {@link UsersView} element.
  */
 @Element("vaadin-vertical-layout")
+@Attribute(name = "id", value = UsersView.ID)
 public class UsersViewElement extends VerticalLayoutElement {
   public H2Element header() {
     return $(H2Element.class).id(HEADER);

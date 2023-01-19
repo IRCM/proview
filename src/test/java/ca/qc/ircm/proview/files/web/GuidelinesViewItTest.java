@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.files.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -88,7 +87,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
 
-    GuidelinesViewElement view = $(GuidelinesViewElement.class).id(ID);
+    GuidelinesViewElement view = $(GuidelinesViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
     List<Category> categories = guidelinesConfiguration.categories(currentLocale());
     assertEquals(categories.size(), view.categories().size());
@@ -114,7 +113,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
 
     open();
 
-    GuidelinesViewElement view = $(GuidelinesViewElement.class).id(ID);
+    GuidelinesViewElement view = $(GuidelinesViewElement.class).waitForFirst();
     AnchorElement guidelineElement = view.categories().get(0).guidelines().get(0);
     guidelineElement.click();
     // Wait for file to download.

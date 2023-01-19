@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.sample.web;
 
-import static ca.qc.ircm.proview.submission.web.SubmissionsView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -45,7 +44,7 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
 
   private SamplesStatusDialogElement open() {
     openView(VIEW_NAME);
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).id(ID);
+    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
     view.submissions().experimentCell(1).click(0, 0, Keys.SHIFT);
     return view.statusDialog();
   }

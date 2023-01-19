@@ -34,12 +34,14 @@ import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import com.vaadin.flow.component.customfield.testbench.CustomFieldElement;
 import com.vaadin.flow.component.radiobutton.testbench.RadioButtonGroupElement;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link SmallMoleculeSubmissionForm} element.
  */
 @Element("vaadin-form-layout")
+@Attribute(name = "id", value = SmallMoleculeSubmissionForm.ID)
 public class SmallMoleculeSubmissionFormElement extends CustomFieldElement {
   public RadioButtonGroupElement sampleType() {
     return $(RadioButtonGroupElement.class).id(id(SAMPLE_TYPE));

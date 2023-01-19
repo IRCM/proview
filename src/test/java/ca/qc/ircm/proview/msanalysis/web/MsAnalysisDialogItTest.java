@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.msanalysis.web;
 
-import static ca.qc.ircm.proview.submission.web.HistoryView.ID;
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,15 +35,15 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class MsAnalysisDialogItTest extends AbstractTestBenchTestCase {
   private void open() {
     openView(VIEW_NAME, "1");
-    HistoryViewElement view = $(HistoryViewElement.class).id(ID);
+    HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     view.activities().view(5).click();
-    waitUntil(driver -> $(MsAnalysisDialogElement.class).id(MsAnalysisDialog.ID));
+    $(MsAnalysisDialogElement.class).waitForFirst();
   }
 
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    MsAnalysisDialogElement dialog = $(MsAnalysisDialogElement.class).id(MsAnalysisDialog.ID);
+    MsAnalysisDialogElement dialog = $(MsAnalysisDialogElement.class).waitForFirst();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertFalse(optional(() -> dialog.deleted()).isPresent());
     assertTrue(optional(() -> dialog.instrument()).isPresent());

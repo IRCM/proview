@@ -25,19 +25,21 @@ import static ca.qc.ircm.proview.user.web.UserDialog.id;
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
 import com.vaadin.flow.component.html.testbench.H3Element;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link UserDialog} element.
  */
 @Element("vaadin-dialog")
+@Attribute(name = "id", value = UserDialog.ID)
 public class UserDialogElement extends DialogElement {
   public H3Element header() {
     return $(H3Element.class).id(id(HEADER));
   }
 
   public UserFormElement userForm() {
-    return $(UserFormElement.class).id(UserForm.ID);
+    return $(UserFormElement.class).first();
   }
 
   public ButtonElement save() {

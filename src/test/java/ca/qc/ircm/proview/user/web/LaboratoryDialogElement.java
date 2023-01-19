@@ -27,12 +27,14 @@ import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
 import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link LaboratoryDialog} element.
  */
 @Element("vaadin-dialog")
+@Attribute(name = "id", value = LaboratoryDialog.ID)
 public class LaboratoryDialogElement extends DialogElement {
   public H3Element header() {
     return $(H3Element.class).id(id(HEADER));

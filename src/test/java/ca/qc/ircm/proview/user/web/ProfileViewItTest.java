@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.user.web.ProfileView.ID;
 import static ca.qc.ircm.proview.user.web.ProfileView.SAVED;
 import static ca.qc.ircm.proview.user.web.ProfileView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -97,7 +96,7 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    ProfileViewElement view = $(ProfileViewElement.class).id(ID);
+    ProfileViewElement view = $(ProfileViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.userForm()).isPresent());
     assertTrue(optional(() -> view.save()).isPresent());
@@ -106,7 +105,7 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void save() throws Throwable {
     open();
-    ProfileViewElement view = $(ProfileViewElement.class).id(ID);
+    ProfileViewElement view = $(ProfileViewElement.class).waitForFirst();
     final Locale locale = currentLocale();
 
     view.userForm().email().setValue(email);

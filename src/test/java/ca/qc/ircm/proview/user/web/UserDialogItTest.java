@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.user.web.UsersView.ID;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -76,7 +75,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().edit(0).click();
     UserDialogElement dialog = view.dialog();
     assertTrue(optional(() -> dialog.header()).isPresent());
@@ -103,7 +102,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void update() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
@@ -155,7 +154,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void update_Cancel() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
@@ -185,7 +184,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void add() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
@@ -237,7 +236,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void add_Cancel() throws Throwable {
     open();
-    UsersViewElement view = $(UsersViewElement.class).id(ID);
+    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 

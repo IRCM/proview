@@ -26,6 +26,7 @@ import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.grid.testbench.GridTHTDElement;
 import com.vaadin.flow.component.html.testbench.DivElement;
 import com.vaadin.testbench.TestBenchElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 import org.openqa.selenium.By;
 
@@ -33,6 +34,7 @@ import org.openqa.selenium.By;
  * {@link UsersView} users element.
  */
 @Element("vaadin-grid")
+@Attribute(name = "id", value = UsersView.USERS)
 public class UsersViewUsersElement extends GridElement {
   private static final int EMAIL_COLUMN = 1;
   private static final int LABORATORY_COLUMN = 3;

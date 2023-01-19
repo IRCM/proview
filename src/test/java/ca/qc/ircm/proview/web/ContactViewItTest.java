@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.web.ContactView.ID;
 import static ca.qc.ircm.proview.web.ContactView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,7 +59,7 @@ public class ContactViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    ContactViewElement view = $(ContactViewElement.class).id(ID);
+    ContactViewElement view = $(ContactViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.proteomicHeader()).isPresent());
     assertTrue(optional(() -> view.proteomicName()).isPresent());

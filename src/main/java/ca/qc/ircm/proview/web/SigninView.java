@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.text.Strings.property;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.HASHED_PASSWORD;
 
@@ -56,7 +55,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SigninView extends LoginOverlay
     implements LocaleChangeObserver, HasDynamicTitle, AfterNavigationObserver, BeforeEnterObserver {
   public static final String VIEW_NAME = "signin";
-  public static final String ID = styleName(VIEW_NAME, "view");
+  public static final String ID = "signin-view";
   public static final String HEADER = "header";
   public static final String DESCRIPTION = "description";
   public static final String ADDITIONAL_INFORMATION = "additionalInformation";

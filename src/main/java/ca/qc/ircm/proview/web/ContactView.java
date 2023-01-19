@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 @RolesAllowed({ USER })
 public class ContactView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle {
   public static final String VIEW_NAME = "contact";
-  public static final String ID = styleName(VIEW_NAME, "view");
+  public static final String ID = "contact-view";
   public static final String HEADER = "header";
   public static final String PROTEOMIC = "proteomic";
   public static final String WEBSITE = "website";

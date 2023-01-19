@@ -20,7 +20,6 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
-import static ca.qc.ircm.proview.submission.web.SubmissionView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
 import static ca.qc.ircm.proview.text.Strings.property;
@@ -241,7 +240,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).id(ID);
+    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.service()).isPresent());
     assertTrue(optional(() -> view.lcmsms()).isPresent());
@@ -262,7 +261,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void save_LcmsmsSolution() throws Throwable {
     open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).id(ID);
+    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
     view.lcmsms().click();
     setFields(view.lcmsmsSubmissionForm(), sampleType);
     setFields(view);
@@ -319,7 +318,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void save_LcmsmsGel() throws Throwable {
     open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).id(ID);
+    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
     view.lcmsms().click();
     setFields(view.lcmsmsSubmissionForm(), SampleType.GEL);
     setFields(view);
@@ -382,7 +381,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void save_SmallMolecule() throws Throwable {
     open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).id(ID);
+    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
     view.smallMolecule().click();
     setFields(view.smallMoleculeSubmissionForm());
     setFields(view);
@@ -423,7 +422,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void save_IntactProtein() throws Throwable {
     open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).id(ID);
+    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
     view.intactProtein().click();
     setFields(view.intactProteinSubmissionForm());
     setFields(view);
@@ -469,7 +468,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     Files.deleteIfExists(downloaded);
     Path source = Paths.get(getClass().getResource("/submissionfile1.txt").toURI());
     openView(VIEW_NAME, "1");
-    SubmissionViewElement view = $(SubmissionViewElement.class).id(ID);
+    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
     AnchorElement filename = view.files().filename(0);
     filename.click();
 

@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.user.web.UserView.ID;
 import static ca.qc.ircm.proview.user.web.UserView.SAVED;
 import static ca.qc.ircm.proview.user.web.UserView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -127,7 +126,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    UserViewElement view = $(UserViewElement.class).id(ID);
+    UserViewElement view = $(UserViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.userForm()).isPresent());
     assertTrue(optional(() -> view.save()).isPresent());
@@ -136,7 +135,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void update() throws Throwable {
     open(2L);
-    UserViewElement view = $(UserViewElement.class).id(ID);
+    UserViewElement view = $(UserViewElement.class).waitForFirst();
     final Locale locale = currentLocale();
 
     view.userForm().email().setValue(email);
@@ -184,7 +183,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   @Test
   public void add() throws Throwable {
     open();
-    UserViewElement view = $(UserViewElement.class).id(ID);
+    UserViewElement view = $(UserViewElement.class).waitForFirst();
     final Locale locale = currentLocale();
 
     view.userForm().email().setValue(email);

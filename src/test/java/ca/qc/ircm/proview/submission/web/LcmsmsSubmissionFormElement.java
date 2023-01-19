@@ -55,12 +55,14 @@ import com.vaadin.flow.component.formlayout.testbench.FormLayoutElement;
 import com.vaadin.flow.component.radiobutton.testbench.RadioButtonGroupElement;
 import com.vaadin.flow.component.textfield.testbench.TextAreaElement;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
+import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link LcmsmsSubmissionForm} element.
  */
 @Element("vaadin-form-layout")
+@Attribute(name = "id", value = LcmsmsSubmissionForm.ID)
 public class LcmsmsSubmissionFormElement extends FormLayoutElement {
   public TextFieldElement experiment() {
     return $(TextFieldElement.class).id(id(EXPERIMENT));

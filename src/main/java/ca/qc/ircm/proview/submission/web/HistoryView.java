@@ -24,7 +24,6 @@ import static ca.qc.ircm.proview.history.ActivityProperties.ACTION_TYPE;
 import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
 import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
 import static ca.qc.ircm.proview.history.ActivityProperties.USER;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -61,7 +60,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class HistoryView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver, NotificationComponent {
   public static final String VIEW_NAME = "history";
-  public static final String ID = styleName(VIEW_NAME, "view");
+  public static final String ID = "history-view";
   public static final String HEADER = "header";
   public static final String ACTIVITIES = "activities";
   public static final String DESCRIPTION = "description";

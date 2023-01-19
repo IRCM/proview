@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.treatment.web;
 
-import static ca.qc.ircm.proview.submission.web.HistoryView.ID;
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,15 +35,15 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class TreatmentDialogItTest extends AbstractTestBenchTestCase {
   private void open() throws Throwable {
     openView(VIEW_NAME, "1");
-    HistoryViewElement view = $(HistoryViewElement.class).id(ID);
+    HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     view.activities().view(3).click();
-    waitUntil(driver -> $(TreatmentDialogElement.class).id(TreatmentDialog.ID));
+    $(TreatmentDialogElement.class).waitForFirst();
   }
 
   @Test
   public void fieldsExistence() throws Throwable {
     open();
-    TreatmentDialogElement dialog = $(TreatmentDialogElement.class).id(TreatmentDialog.ID);
+    TreatmentDialogElement dialog = $(TreatmentDialogElement.class).waitForFirst();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertFalse(optional(() -> dialog.deleted()).isPresent());
     assertFalse(optional(() -> dialog.protocol()).isPresent());
