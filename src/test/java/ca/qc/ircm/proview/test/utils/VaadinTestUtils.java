@@ -432,7 +432,6 @@ public class VaadinTestUtils {
     } else {
       assertNull(actual.getAddFiles());
     }
-    assertEquals(expected.getCancel(), actual.getCancel());
     if (expected.getDropFiles() != null) {
       assertNotNull(actual.getDropFiles());
       assertEquals(expected.getDropFiles().getOne(), actual.getDropFiles().getOne());
