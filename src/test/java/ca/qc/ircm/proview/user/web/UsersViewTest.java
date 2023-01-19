@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_US
 import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USER_URL;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.functions;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
@@ -58,6 +59,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -76,7 +78,7 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Element;
@@ -106,7 +108,7 @@ public class UsersViewTest extends AbstractKaribuTestCase {
   @Captor
   private ArgumentCaptor<ValueProvider<User, String>> valueProviderCaptor;
   @Captor
-  private ArgumentCaptor<TemplateRenderer<User>> templateRendererCaptor;
+  private ArgumentCaptor<LitRenderer<User>> litRendererCaptor;
   @Captor
   private ArgumentCaptor<Comparator<User>> comparatorCaptor;
   @Autowired
@@ -134,7 +136,8 @@ public class UsersViewTest extends AbstractKaribuTestCase {
     view.users = mock(Grid.class);
     when(view.users.getElement()).thenReturn(usersElement);
     view.edit = mock(Column.class);
-    when(view.users.addColumn(any(TemplateRenderer.class), eq(EDIT))).thenReturn(view.edit);
+    view.active = mock(Column.class);
+    when(view.users.addColumn(any(LitRenderer.class))).thenReturn(view.edit, view.active);
     when(view.edit.setKey(any())).thenReturn(view.edit);
     when(view.edit.setSortable(anyBoolean())).thenReturn(view.edit);
     when(view.edit.setFlexGrow(anyInt())).thenReturn(view.edit);
@@ -158,8 +161,6 @@ public class UsersViewTest extends AbstractKaribuTestCase {
     when(view.laboratory.setComparator(any(Comparator.class))).thenReturn(view.laboratory);
     when(view.laboratory.setHeader(any(String.class))).thenReturn(view.laboratory);
     when(view.laboratory.setFlexGrow(anyInt())).thenReturn(view.laboratory);
-    view.active = mock(Column.class);
-    when(view.users.addColumn(any(TemplateRenderer.class), eq(ACTIVE))).thenReturn(view.active);
     when(view.active.setKey(any())).thenReturn(view.active);
     when(view.active.setComparator(any(Comparator.class))).thenReturn(view.active);
     when(view.active.setHeader(any(String.class))).thenReturn(view.active);
@@ -311,12 +312,12 @@ public class UsersViewTest extends AbstractKaribuTestCase {
     mockColumns();
     when(view.users.getDataProvider()).thenReturn(mock(DataProvider.class));
     view.init();
-    verify(view.users).addColumn(templateRendererCaptor.capture(), eq(EDIT));
-    TemplateRenderer<User> templateRenderer = templateRendererCaptor.getValue();
+    verify(view.users, times(2)).addColumn(litRendererCaptor.capture());
+    LitRenderer<User> litRenderer = litRendererCaptor.getAllValues().get(0);
     for (User user : users) {
-      assertEquals(EDIT_BUTTON, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getEventHandlers().containsKey("edit"));
-      templateRenderer.getEventHandlers().get("edit").accept(user);
+      assertEquals(EDIT_BUTTON, rendererTemplate(litRenderer));
+      assertTrue(functions(litRenderer).containsKey("edit"));
+      functions(litRenderer).get("edit").accept(user, null);
       verify(presenter).view(user);
     }
     verify(view.users).addColumn(valueProviderCaptor.capture(), eq(EMAIL));
@@ -356,23 +357,22 @@ public class UsersViewTest extends AbstractKaribuTestCase {
       assertEquals(user.getLaboratory().getName(),
           ((NormalizedComparator<User>) comparator).getConverter().apply(user));
     }
-    verify(view.users).addColumn(templateRendererCaptor.capture(), eq(ACTIVE));
-    templateRenderer = templateRendererCaptor.getValue();
+    litRenderer = litRendererCaptor.getAllValues().get(1);
     for (User user : users) {
-      assertEquals(ACTIVE_BUTTON, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getValueProviders().containsKey("activeTheme"));
+      assertEquals(ACTIVE_BUTTON, rendererTemplate(litRenderer));
+      assertTrue(litRenderer.getValueProviders().containsKey("activeTheme"));
       assertEquals(
           user.isActive() ? ButtonVariant.LUMO_SUCCESS.getVariantName()
               : ButtonVariant.LUMO_ERROR.getVariantName(),
-          templateRenderer.getValueProviders().get("activeTheme").apply(user));
-      assertTrue(templateRenderer.getValueProviders().containsKey("activeValue"));
+          litRenderer.getValueProviders().get("activeTheme").apply(user));
+      assertTrue(litRenderer.getValueProviders().containsKey("activeValue"));
       assertEquals(userResources.message(property(ACTIVE, user.isActive())),
-          templateRenderer.getValueProviders().get("activeValue").apply(user));
-      assertTrue(templateRenderer.getValueProviders().containsKey("activeIcon"));
+          litRenderer.getValueProviders().get("activeValue").apply(user));
+      assertTrue(litRenderer.getValueProviders().containsKey("activeIcon"));
       assertEquals(user.isActive() ? "vaadin:eye" : "vaadin:eye-slash",
-          templateRenderer.getValueProviders().get("activeIcon").apply(user));
-      assertTrue(templateRenderer.getEventHandlers().containsKey("toggleActive"));
-      templateRenderer.getEventHandlers().get("toggleActive").accept(user);
+          litRenderer.getValueProviders().get("activeIcon").apply(user));
+      assertTrue(functions(litRenderer).containsKey("toggleActive"));
+      functions(litRenderer).get("toggleActive").accept(user, null);
       verify(presenter).toggleActive(user);
       verify(view.users.getDataProvider()).refreshItem(user);
     }

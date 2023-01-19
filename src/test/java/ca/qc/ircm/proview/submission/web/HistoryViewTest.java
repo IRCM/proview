@@ -34,6 +34,7 @@ import static ca.qc.ircm.proview.submission.web.HistoryView.HEADER;
 import static ca.qc.ircm.proview.submission.web.HistoryView.ID;
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_BUTTON;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.functions;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -60,7 +61,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -95,7 +96,7 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
   @Captor
   private ArgumentCaptor<ValueProvider<Activity, String>> valueProviderCaptor;
   @Captor
-  private ArgumentCaptor<TemplateRenderer<Activity>> templateRendererCaptor;
+  private ArgumentCaptor<LitRenderer<Activity>> litRendererCaptor;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(HistoryView.class, locale);
   private AppResources webResources = new AppResources(Constants.class, locale);
@@ -120,7 +121,10 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
     view.activities = mock(Grid.class);
     when(view.activities.getElement()).thenReturn(gridElement);
     view.view = mock(Column.class);
-    when(view.activities.addColumn(any(TemplateRenderer.class), eq(VIEW))).thenReturn(view.view);
+    view.description = mock(Column.class);
+    view.explanation = mock(Column.class);
+    when(view.activities.addColumn(any(LitRenderer.class))).thenReturn(view.view, view.description,
+        view.explanation);
     when(view.view.setKey(any())).thenReturn(view.view);
     when(view.view.setSortable(anyBoolean())).thenReturn(view.view);
     when(view.view.setFlexGrow(anyInt())).thenReturn(view.view);
@@ -141,16 +145,10 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
     when(view.date.setKey(any())).thenReturn(view.date);
     when(view.date.setFlexGrow(anyInt())).thenReturn(view.date);
     when(view.date.setHeader(any(String.class))).thenReturn(view.date);
-    view.description = mock(Column.class);
-    when(view.activities.addColumn(any(TemplateRenderer.class), eq(DESCRIPTION)))
-        .thenReturn(view.description);
     when(view.description.setKey(any())).thenReturn(view.description);
     when(view.description.setSortable(anyBoolean())).thenReturn(view.description);
     when(view.description.setFlexGrow(anyInt())).thenReturn(view.description);
     when(view.description.setHeader(any(String.class))).thenReturn(view.description);
-    view.explanation = mock(Column.class);
-    when(view.activities.addColumn(any(TemplateRenderer.class), eq(EXPLANATION)))
-        .thenReturn(view.explanation);
     when(view.explanation.setKey(any())).thenReturn(view.explanation);
     when(view.explanation.setSortable(anyBoolean())).thenReturn(view.explanation);
     when(view.explanation.setFlexGrow(anyInt())).thenReturn(view.explanation);
@@ -237,12 +235,12 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
     when(presenter.description(any(), any())).thenAnswer(i -> descriptions.get(i.getArgument(0)));
     mockColumns();
     view.init();
-    verify(view.activities).addColumn(templateRendererCaptor.capture(), eq(VIEW));
-    TemplateRenderer<Activity> templateRenderer = templateRendererCaptor.getValue();
+    verify(view.activities, times(3)).addColumn(litRendererCaptor.capture());
+    LitRenderer<Activity> litRenderer = litRendererCaptor.getAllValues().get(0);
     for (Activity activity : activities) {
-      assertEquals(VIEW_BUTTON, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getEventHandlers().containsKey("view"));
-      templateRenderer.getEventHandlers().get("view").accept(activity);
+      assertEquals(VIEW_BUTTON, rendererTemplate(litRenderer));
+      assertTrue(functions(litRenderer).containsKey("view"));
+      functions(litRenderer).get("view").accept(activity, null);
       verify(presenter).view(activity, locale);
     }
     verify(view.activities).addColumn(valueProviderCaptor.capture(), eq(USER));
@@ -261,28 +259,26 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
     for (Activity activity : activities) {
       assertEquals(dateFormatter.format(activity.getTimestamp()), valueProvider.apply(activity));
     }
-    verify(view.activities).addColumn(templateRendererCaptor.capture(), eq(DESCRIPTION));
-    templateRenderer = templateRendererCaptor.getValue();
+    litRenderer = litRendererCaptor.getAllValues().get(1);
     for (Activity activity : activities) {
-      assertEquals(DESCRIPTION_SPAN, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getValueProviders().containsKey("descriptionValue"));
+      assertEquals(DESCRIPTION_SPAN, rendererTemplate(litRenderer));
+      assertTrue(litRenderer.getValueProviders().containsKey("descriptionValue"));
       assertEquals(descriptions.get(activity),
-          templateRenderer.getValueProviders().get("descriptionValue").apply(activity));
-      assertTrue(templateRenderer.getValueProviders().containsKey("descriptionTitle"));
+          litRenderer.getValueProviders().get("descriptionValue").apply(activity));
+      assertTrue(litRenderer.getValueProviders().containsKey("descriptionTitle"));
       assertEquals(descriptions.get(activity),
-          templateRenderer.getValueProviders().get("descriptionTitle").apply(activity));
+          litRenderer.getValueProviders().get("descriptionTitle").apply(activity));
       verify(presenter, times(2)).description(activity, locale);
     }
-    verify(view.activities).addColumn(templateRendererCaptor.capture(), eq(EXPLANATION));
-    templateRenderer = templateRendererCaptor.getValue();
+    litRenderer = litRendererCaptor.getAllValues().get(2);
     for (Activity activity : activities) {
-      assertEquals(EXPLANATION_SPAN, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getValueProviders().containsKey("explanationValue"));
+      assertEquals(EXPLANATION_SPAN, rendererTemplate(litRenderer));
+      assertTrue(litRenderer.getValueProviders().containsKey("explanationValue"));
       assertEquals(activity.getExplanation(),
-          templateRenderer.getValueProviders().get("explanationValue").apply(activity));
-      assertTrue(templateRenderer.getValueProviders().containsKey("explanationTitle"));
+          litRenderer.getValueProviders().get("explanationValue").apply(activity));
+      assertTrue(litRenderer.getValueProviders().containsKey("explanationTitle"));
       assertEquals(activity.getExplanation(),
-          templateRenderer.getValueProviders().get("explanationTitle").apply(activity));
+          litRenderer.getValueProviders().get("explanationTitle").apply(activity));
     }
   }
 

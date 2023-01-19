@@ -56,15 +56,14 @@
     <spring-boot.version>2.7.7</spring-boot.version>
     <querydsl.version>5.0.0</querydsl.version>
     <shiro.version>1.10.0</shiro.version>
-    <vaadin.version>14.8.13</vaadin.version>
+    <vaadin.version>23.1.17</vaadin.version>
     <guava.version>31.0.1-jre</guava.version>
     <commons-email.version>1.5</commons-email.version>
     <mariadb-java-client.version>2.7.7</mariadb-java-client.version>
     <spotbugs.version>4.7.1</spotbugs.version>
     <generate-property-names.version>1.1</generate-property-names.version>
-    <karibu-testing.version>1.3.0</karibu-testing.version>
+    <karibu-testing.version>1.3.23</karibu-testing.version>
     <greenmail.version>1.6.1</greenmail.version>
-    <okhttp3.version>3.14.9</okhttp3.version>
     <testbench.skip>false</testbench.skip>
     <testbench.maxAttempts>3</testbench.maxAttempts>
     <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
@@ -91,15 +90,14 @@
   </dependencyManagement>
   <dependencies>
     <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -115,38 +113,11 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-testbench</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
-        <exclusion>
-          <groupId>com.vaadin.webjar</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.insites</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.polymer</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.polymerelements</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.vaadin</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.webcomponents</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>${okhttp3.version}</version>
+      <groupId>com.github.mvysny.kaributesting</groupId>
+      <artifactId>karibu-testing-v23</artifactId>
+      <version>${karibu-testing.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -249,33 +220,6 @@
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-core</artifactId>
-      <exclusions>
-        <!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
-        <exclusion>
-          <groupId>com.vaadin.webjar</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.insites</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.polymer</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.polymerelements</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.vaadin</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.webcomponents</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
@@ -284,33 +228,6 @@
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-confirm-dialog-flow</artifactId>
-      <exclusions>
-        <!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
-        <exclusion>
-          <groupId>com.vaadin.webjar</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.insites</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.polymer</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.polymerelements</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.vaadin</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.webjars.bowergithub.webcomponents</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -372,11 +289,13 @@
               <fileset>
                 <directory>${basedir}</directory>
                 <includes>
-                  <include>build/**</include>
-                  <include>config/**</include>
                   <include>node_modules/**</include>
                   <include>package.json</include>
                   <include>package-lock.json</include>
+                  <include>tsconfig.json</include>
+                  <include>types.d.ts</include>
+                  <include>vite.config.ts</include>
+                  <include>vite.generated.ts</include>
                   <include>webpack.config.js</include>
                   <include>webpack.generated.js</include>
                 </includes>
@@ -519,10 +438,12 @@
               <exclude>**/*.txt</exclude>
               <exclude>**/*.ser</exclude>
               <exclude>*.log*</exclude>
+              <exclude>/frontend/generated/**</exclude>
+              <exclude>/frontend/index.html</exclude>
               <exclude>node_modules/**</exclude>
-              <exclude>build/**</exclude>
-              <exclude>config/**</exclude>
               <exclude>package*.json</exclude>
+              <exclude>types.d.ts</exclude>
+              <exclude>vite.*.ts</exclude>
               <exclude>webpack.*.js</exclude>
             </excludes>
           </configuration>

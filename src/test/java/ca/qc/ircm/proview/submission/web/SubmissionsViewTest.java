@@ -48,6 +48,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_BUTTON;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.functions;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
@@ -91,7 +92,7 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Element;
@@ -124,7 +125,7 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   @Captor
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
-  private ArgumentCaptor<TemplateRenderer<Submission>> templateRendererCaptor;
+  private ArgumentCaptor<LitRenderer<Submission>> litRendererCaptor;
   @Captor
   private ArgumentCaptor<Comparator<Submission>> comparatorCaptor;
   @Autowired
@@ -155,7 +156,11 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     view.submissions = mock(Grid.class);
     when(view.submissions.getElement()).thenReturn(usersElement);
     view.view = mock(Column.class);
-    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(VIEW))).thenReturn(view.view);
+    view.samples = mock(Column.class);
+    view.status = mock(Column.class);
+    view.hidden = mock(Column.class);
+    when(view.submissions.addColumn(any(LitRenderer.class))).thenReturn(view.view, view.samples,
+        view.status, view.hidden);
     when(view.view.setKey(any())).thenReturn(view.view);
     when(view.view.setHeader(any(String.class))).thenReturn(view.view);
     when(view.view.setSortable(anyBoolean())).thenReturn(view.view);
@@ -210,23 +215,14 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     when(view.samplesCount.setKey(any())).thenReturn(view.samplesCount);
     when(view.samplesCount.setHeader(any(String.class))).thenReturn(view.samplesCount);
     when(view.samplesCount.setFlexGrow(anyInt())).thenReturn(view.samplesCount);
-    view.samples = mock(Column.class);
-    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(SAMPLES)))
-        .thenReturn(view.samples);
     when(view.samples.setKey(any())).thenReturn(view.samples);
     when(view.samples.setHeader(any(String.class))).thenReturn(view.samples);
     when(view.samples.setSortable(anyBoolean())).thenReturn(view.samples);
     when(view.samples.setFlexGrow(anyInt())).thenReturn(view.samples);
-    view.status = mock(Column.class);
-    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(STATUS)))
-        .thenReturn(view.status);
     when(view.status.setKey(any())).thenReturn(view.status);
     when(view.status.setHeader(any(String.class))).thenReturn(view.status);
     when(view.status.setSortable(anyBoolean())).thenReturn(view.status);
     when(view.status.setFlexGrow(anyInt())).thenReturn(view.status);
-    view.hidden = mock(Column.class);
-    when(view.submissions.addColumn(any(TemplateRenderer.class), eq(HIDDEN)))
-        .thenReturn(view.hidden);
     when(view.hidden.setKey(any())).thenReturn(view.hidden);
     when(view.hidden.setHeader(any(String.class))).thenReturn(view.hidden);
     when(view.hidden.setSortProperty(any())).thenReturn(view.hidden);
@@ -279,10 +275,10 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   public void labels() {
     mockColumns();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
-    view.instrumentFilter.setDataProvider(mock(DataProvider.class));
-    view.serviceFilter.setDataProvider(mock(DataProvider.class));
-    view.statusFilter.setDataProvider(mock(DataProvider.class));
-    view.hiddenFilter.setDataProvider(mock(DataProvider.class));
+    view.instrumentFilter.setItems(mock(DataProvider.class));
+    view.serviceFilter.setItems(mock(DataProvider.class));
+    view.statusFilter.setItems(mock(DataProvider.class));
+    view.hiddenFilter.setItems(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     verify(view.view).setHeader(webResources.message(VIEW));
@@ -328,10 +324,10 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     mockColumns();
     view.init();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
-    view.instrumentFilter.setDataProvider(mock(DataProvider.class));
-    view.serviceFilter.setDataProvider(mock(DataProvider.class));
-    view.statusFilter.setDataProvider(mock(DataProvider.class));
-    view.hiddenFilter.setDataProvider(mock(DataProvider.class));
+    view.instrumentFilter.setItems(mock(DataProvider.class));
+    view.serviceFilter.setItems(mock(DataProvider.class));
+    view.statusFilter.setItems(mock(DataProvider.class));
+    view.hiddenFilter.setItems(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(SubmissionsView.class, locale);
@@ -429,12 +425,12 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     mockColumns();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
     view.init();
-    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(VIEW));
-    TemplateRenderer<Submission> templateRenderer = templateRendererCaptor.getValue();
+    verify(view.submissions, times(4)).addColumn(litRendererCaptor.capture());
+    LitRenderer<Submission> litRenderer = litRendererCaptor.getAllValues().get(0);
     for (Submission submission : submissions) {
-      assertEquals(VIEW_BUTTON, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getEventHandlers().containsKey("view"));
-      templateRenderer.getEventHandlers().get("view").accept(submission);
+      assertEquals(VIEW_BUTTON, rendererTemplate(litRenderer));
+      assertTrue(functions(litRenderer).containsKey("view"));
+      functions(litRenderer).get("view").accept(submission, null);
       verify(presenter).view(submission);
     }
     verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(EXPERIMENT));
@@ -505,54 +501,51 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     for (Submission submission : submissions) {
       assertEquals(submission.getSamples().size(), valueProvider.apply(submission));
     }
-    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(SAMPLES));
-    templateRenderer = templateRendererCaptor.getValue();
+    litRenderer = litRendererCaptor.getAllValues().get(1);
     for (Submission submission : submissions) {
-      assertEquals(SAMPLES_SPAN, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getValueProviders().containsKey("samplesValue"));
+      assertEquals(SAMPLES_SPAN, rendererTemplate(litRenderer));
+      assertTrue(litRenderer.getValueProviders().containsKey("samplesValue"));
       assertEquals(
           resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
               submission.getSamples().size()),
-          templateRenderer.getValueProviders().get("samplesValue").apply(submission));
-      assertTrue(templateRenderer.getValueProviders().containsKey("samplesTitle"));
+          litRenderer.getValueProviders().get("samplesValue").apply(submission));
+      assertTrue(litRenderer.getValueProviders().containsKey("samplesTitle"));
       assertEquals(
           submission.getSamples().stream().map(SubmissionSample::getName)
               .collect(Collectors.joining("\n")),
-          templateRenderer.getValueProviders().get("samplesTitle").apply(submission));
+          litRenderer.getValueProviders().get("samplesTitle").apply(submission));
     }
-    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(STATUS));
-    templateRenderer = templateRendererCaptor.getValue();
+    litRenderer = litRendererCaptor.getAllValues().get(2);
     for (Submission submission : submissions) {
       List<SampleStatus> statuses = submission.getSamples().stream()
           .map(SubmissionSample::getStatus).distinct().collect(Collectors.toList());
-      assertEquals(STATUS_SPAN, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getValueProviders().containsKey("statusValue"));
+      assertEquals(STATUS_SPAN, rendererTemplate(litRenderer));
+      assertTrue(litRenderer.getValueProviders().containsKey("statusValue"));
       assertEquals(
           resources.message(STATUS_VALUE, statuses.get(0).getLabel(locale), statuses.size()),
-          templateRenderer.getValueProviders().get("statusValue").apply(submission));
-      assertTrue(templateRenderer.getValueProviders().containsKey("statusTitle"));
+          litRenderer.getValueProviders().get("statusValue").apply(submission));
+      assertTrue(litRenderer.getValueProviders().containsKey("statusTitle"));
       assertEquals(
           statuses.stream().map(status -> status.getLabel(locale))
               .collect(Collectors.joining("\n")),
-          templateRenderer.getValueProviders().get("statusTitle").apply(submission));
+          litRenderer.getValueProviders().get("statusTitle").apply(submission));
     }
-    verify(view.submissions).addColumn(templateRendererCaptor.capture(), eq(HIDDEN));
-    templateRenderer = templateRendererCaptor.getValue();
+    litRenderer = litRendererCaptor.getAllValues().get(3);
     for (Submission submission : submissions) {
-      assertEquals(HIDDEN_BUTTON, rendererTemplate(templateRenderer));
-      assertTrue(templateRenderer.getValueProviders().containsKey("hiddenTheme"));
+      assertEquals(HIDDEN_BUTTON, rendererTemplate(litRenderer));
+      assertTrue(litRenderer.getValueProviders().containsKey("hiddenTheme"));
       assertEquals(
           submission.isHidden() ? ButtonVariant.LUMO_ERROR.getVariantName()
               : ButtonVariant.LUMO_SUCCESS.getVariantName(),
-          templateRenderer.getValueProviders().get("hiddenTheme").apply(submission));
-      assertTrue(templateRenderer.getValueProviders().containsKey("hiddenValue"));
+          litRenderer.getValueProviders().get("hiddenTheme").apply(submission));
+      assertTrue(litRenderer.getValueProviders().containsKey("hiddenValue"));
       assertEquals(submissionResources.message(property(HIDDEN, submission.isHidden())),
-          templateRenderer.getValueProviders().get("hiddenValue").apply(submission));
-      assertTrue(templateRenderer.getValueProviders().containsKey("hiddenIcon"));
+          litRenderer.getValueProviders().get("hiddenValue").apply(submission));
+      assertTrue(litRenderer.getValueProviders().containsKey("hiddenIcon"));
       assertEquals(submission.isHidden() ? "vaadin:eye-slash" : "vaadin:eye",
-          templateRenderer.getValueProviders().get("hiddenIcon").apply(submission));
-      assertTrue(templateRenderer.getEventHandlers().containsKey("toggleHidden"));
-      templateRenderer.getEventHandlers().get("toggleHidden").accept(submission);
+          litRenderer.getValueProviders().get("hiddenIcon").apply(submission));
+      assertTrue(functions(litRenderer).containsKey("toggleHidden"));
+      functions(litRenderer).get("toggleHidden").accept(submission, null);
       verify(presenter).toggleHidden(submission);
       verify(view.submissions.getDataProvider()).refreshItem(submission);
     }

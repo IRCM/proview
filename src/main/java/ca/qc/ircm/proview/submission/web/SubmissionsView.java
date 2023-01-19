@@ -61,7 +61,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -96,16 +96,16 @@ public class SubmissionsView extends VerticalLayout
   public static final String HISTORY = "history";
   public static final String ADD = "add";
   public static final String SAMPLES_SPAN =
-      "<span title$='[[item.samplesTitle]]'>[[item.samplesValue]]</span>";
+      "<span .title='${item.samplesTitle}'>${item.samplesValue}</span>";
   public static final String STATUS_SPAN =
-      "<span title$='[[item.statusTitle]]'>[[item.statusValue]]</span>";
+      "<span .title='${item.statusTitle}'>${item.statusValue}</span>";
   public static final String HIDDEN_BUTTON =
-      "<vaadin-button class='" + HIDDEN + "' theme$='[[item.hiddenTheme]]' on-click='toggleHidden'>"
-          + "<iron-icon icon$='[[item.hiddenIcon]]' slot='prefix'></iron-icon>"
-          + "[[item.hiddenValue]]" + "</vaadin-button>";
+      "<vaadin-button class='" + HIDDEN + "' .theme='${item.hiddenTheme}' @click='${toggleHidden}'>"
+          + "<vaadin-icon .icon='${item.hiddenIcon}' slot='prefix'></vaadin-icon>"
+          + "${item.hiddenValue}" + "</vaadin-button>";
   public static final String VIEW_BUTTON =
-      "<vaadin-button class='" + VIEW + "' theme='icon' on-click='view'>"
-          + "<iron-icon icon='vaadin:eye' slot='prefix'></iron-icon>" + "</vaadin-button>";
+      "<vaadin-button class='" + VIEW + "' theme='icon' @click='${view}'>"
+          + "<vaadin-icon icon='vaadin:eye' slot='prefix'></vaadin-icon>" + "</vaadin-button>";
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
   protected H2 header = new H2();
@@ -171,8 +171,8 @@ public class SubmissionsView extends VerticalLayout
       }
     });
     view = submissions
-        .addColumn(TemplateRenderer.<Submission>of(VIEW_BUTTON).withEventHandler("view",
-            submission -> presenter.view(submission)), VIEW)
+        .addColumn(LitRenderer.<Submission>of(VIEW_BUTTON).withFunction("view",
+            submission -> presenter.view(submission)))
         .setKey(VIEW).setSortable(false).setFlexGrow(0);
     ValueProvider<Submission, String> submissionExperiment =
         submission -> Objects.toString(submission.getExperiment(), "");
@@ -209,23 +209,23 @@ public class SubmissionsView extends VerticalLayout
         submissions.addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
             .setKey(SAMPLES_COUNT).setFlexGrow(0);
     samples = submissions
-        .addColumn(TemplateRenderer.<Submission>of(SAMPLES_SPAN)
+        .addColumn(LitRenderer.<Submission>of(SAMPLES_SPAN)
             .withProperty("samplesValue", submission -> sampleNamesValue(submission))
-            .withProperty("samplesTitle", submission -> sampleNamesTitle(submission)), SAMPLES)
+            .withProperty("samplesTitle", submission -> sampleNamesTitle(submission)))
         .setKey(SAMPLES).setSortable(false).setFlexGrow(3);
     status = submissions
-        .addColumn(TemplateRenderer.<Submission>of(STATUS_SPAN)
+        .addColumn(LitRenderer.<Submission>of(STATUS_SPAN)
             .withProperty("statusValue", submission -> statusesValue(submission))
-            .withProperty("statusTitle", submission -> statusesTitle(submission)), STATUS)
+            .withProperty("statusTitle", submission -> statusesTitle(submission)))
         .setKey(STATUS).setSortable(false).setFlexGrow(2);
-    hidden = submissions.addColumn(TemplateRenderer.<Submission>of(HIDDEN_BUTTON)
+    hidden = submissions.addColumn(LitRenderer.<Submission>of(HIDDEN_BUTTON)
         .withProperty("hiddenTheme", submission -> hiddenTheme(submission))
         .withProperty("hiddenValue", submission -> hiddenValue(submission))
         .withProperty("hiddenIcon", submission -> hiddenIcon(submission))
-        .withEventHandler("toggleHidden", submission -> {
+        .withFunction("toggleHidden", submission -> {
           presenter.toggleHidden(submission);
           submissions.getDataProvider().refreshItem(submission);
-        }), HIDDEN).setKey(HIDDEN).setSortProperty(HIDDEN)
+        })).setKey(HIDDEN).setSortProperty(HIDDEN)
         .setComparator((s1, s2) -> Boolean.compare(s1.isHidden(), s2.isHidden()));
     submissions.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = submissions.appendHeaderRow();

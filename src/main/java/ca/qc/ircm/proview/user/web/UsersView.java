@@ -54,7 +54,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -88,12 +88,12 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   public static final String ADD = "add";
   public static final String VIEW_LABORATORY = "viewLaboratory";
   public static final String ACTIVE_BUTTON =
-      "<vaadin-button class='" + ACTIVE + "' theme$='[[item.activeTheme]]' on-click='toggleActive'>"
-          + "<iron-icon icon$='[[item.activeIcon]]' slot='prefix'></iron-icon>"
-          + "[[item.activeValue]]" + "</vaadin-button>";
+      "<vaadin-button class='" + ACTIVE + "' .theme='${item.activeTheme}' @click='${toggleActive}'>"
+          + "<vaadin-icon .icon='${item.activeIcon}' slot='prefix'></vaadin-icon>"
+          + "${item.activeValue}" + "</vaadin-button>";
   public static final String EDIT_BUTTON =
-      "<vaadin-button class='" + EDIT + "' theme='icon' on-click='edit'>"
-          + "<iron-icon icon='vaadin:edit' slot='prefix'></iron-icon>" + "</vaadin-button>";
+      "<vaadin-button class='" + EDIT + "' theme='icon' @click='${edit}'>"
+          + "<vaadin-icon icon='vaadin:edit' slot='prefix'></vaadin-icon>" + "</vaadin-button>";
   private static final long serialVersionUID = 1051684045824404864L;
   private static final Logger logger = LoggerFactory.getLogger(UsersView.class);
   protected H2 header = new H2();
@@ -145,8 +145,10 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
         presenter.view(e.getItem());
       }
     });
-    edit = users.addColumn(TemplateRenderer.<User>of(EDIT_BUTTON).withEventHandler("edit",
-        user -> presenter.view(user)), EDIT).setKey(EDIT).setSortable(false).setFlexGrow(0);
+    edit = users
+        .addColumn(
+            LitRenderer.<User>of(EDIT_BUTTON).withFunction("edit", user -> presenter.view(user)))
+        .setKey(EDIT).setSortable(false).setFlexGrow(0);
     email = users.addColumn(user -> user.getEmail(), EMAIL).setKey(EMAIL)
         .setComparator(NormalizedComparator.of(user -> user.getEmail())).setFlexGrow(3);
     name = users.addColumn(user -> user.getName(), NAME).setKey(NAME)
@@ -155,15 +157,13 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
         users.addColumn(user -> user.getLaboratory().getName(), LABORATORY).setKey(LABORATORY)
             .setComparator(NormalizedComparator.of(user -> user.getLaboratory().getName()))
             .setFlexGrow(3);
-    active = users.addColumn(TemplateRenderer.<User>of(ACTIVE_BUTTON)
+    active = users.addColumn(LitRenderer.<User>of(ACTIVE_BUTTON)
         .withProperty("activeTheme", user -> activeTheme(user))
         .withProperty("activeValue", user -> activeValue(user))
-        .withProperty("activeIcon", user -> activeIcon(user))
-        .withEventHandler("toggleActive", user -> {
+        .withProperty("activeIcon", user -> activeIcon(user)).withFunction("toggleActive", user -> {
           presenter.toggleActive(user);
           users.getDataProvider().refreshItem(user);
-        }), ACTIVE).setKey(ACTIVE)
-        .setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
+        })).setKey(ACTIVE).setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
     users.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = users.appendHeaderRow();
     filtersRow.getCell(email).setComponent(emailFilter);

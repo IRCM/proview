@@ -28,6 +28,7 @@ import com.vaadin.flow.component.ComponentEventBus;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.dataview.ComboBoxDataView;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
@@ -35,6 +36,7 @@ import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.grid.editor.EditorImpl;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.radiobutton.dataview.RadioButtonGroupDataView;
 import com.vaadin.flow.component.upload.UploadI18N;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
@@ -42,14 +44,18 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.BasicRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.function.SerializableBiConsumer;
 import com.vaadin.flow.function.ValueProvider;
+import elemental.json.JsonArray;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -205,9 +211,26 @@ public class VaadinTestUtils {
    */
   public static String rendererTemplate(Renderer<?> renderer) {
     try {
-      Field field = Renderer.class.getDeclaredField("template");
+      Field field;
+      if (renderer instanceof LitRenderer) {
+        field = LitRenderer.class.getDeclaredField("templateExpression");
+      } else {
+        field = Renderer.class.getDeclaredField("template");
+      }
       field.setAccessible(true);
       return (String) field.get(renderer);
+    } catch (SecurityException | NoSuchFieldException | IllegalArgumentException
+        | IllegalAccessException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  public static <SOURCE> Map<String, SerializableBiConsumer<SOURCE, JsonArray>>
+      functions(LitRenderer renderer) {
+    try {
+      Field field = LitRenderer.class.getDeclaredField("clientCallables");
+      field.setAccessible(true);
+      return (Map<String, SerializableBiConsumer<SOURCE, JsonArray>>) field.get(renderer);
     } catch (SecurityException | NoSuchFieldException | IllegalArgumentException
         | IllegalAccessException e) {
       throw new IllegalStateException(e);
@@ -268,13 +291,13 @@ public class VaadinTestUtils {
   }
 
   @SuppressWarnings("unchecked")
-  public static <V> ListDataProvider<V> dataProvider(ComboBox<V> comboBox) {
-    return (ListDataProvider<V>) comboBox.getDataProvider();
+  public static <V> ComboBoxDataView<V> dataView(ComboBox<V> comboBox) {
+    return comboBox.getGenericDataView();
   }
 
   @SuppressWarnings("unchecked")
-  public static <V> ListDataProvider<V> dataProvider(RadioButtonGroup<V> radios) {
-    return (ListDataProvider<V>) radios.getDataProvider();
+  public static <V> RadioButtonGroupDataView<V> dataView(RadioButtonGroup<V> radios) {
+    return radios.getGenericDataView();
   }
 
   /**
@@ -295,11 +318,11 @@ public class VaadinTestUtils {
   }
 
   public static <V> List<V> items(ComboBox<V> comboBox) {
-    return new ArrayList<>(dataProvider(comboBox).getItems());
+    return dataView(comboBox).getItems().collect(Collectors.toList());
   }
 
   public static <V> List<V> items(RadioButtonGroup<V> radios) {
-    return new ArrayList<>(dataProvider(radios).getItems());
+    return dataView(radios).getItems().collect(Collectors.toList());
   }
 
   public static Optional<BindingValidationStatus<?>>
@@ -385,8 +408,6 @@ public class VaadinTestUtils {
    */
   public static void validateEquals(DatePickerI18n expected, DatePickerI18n actual) {
     assertEquals(expected.getWeek(), actual.getWeek());
-    assertEquals(expected.getCalendar(), actual.getCalendar());
-    assertEquals(expected.getClear(), actual.getClear());
     assertEquals(expected.getToday(), actual.getToday());
     assertEquals(expected.getCancel(), actual.getCancel());
     assertEquals(expected.getFirstDayOfWeek(), actual.getFirstDayOfWeek());
@@ -411,7 +432,6 @@ public class VaadinTestUtils {
     } else {
       assertNull(actual.getAddFiles());
     }
-    assertEquals(expected.getCancel(), actual.getCancel());
     if (expected.getDropFiles() != null) {
       assertNotNull(actual.getDropFiles());
       assertEquals(expected.getDropFiles().getOne(), actual.getDropFiles().getOne());
