@@ -87,7 +87,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @MockBean
   private AuthenticatedUser authenticatedUser;
   @Mock
-  private DataProvider<User, ?> dataProvider;
+  private DataProvider<User, Void> dataProvider;
   @Captor
   private ArgumentCaptor<User> userCaptor;
   @Captor
@@ -191,7 +191,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void filterEmail() {
     presenter.init(view);
-    view.users.setDataProvider(dataProvider);
+    view.users.setItems(dataProvider);
 
     presenter.filterEmail("test");
 
@@ -202,7 +202,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void filterEmail_Empty() {
     presenter.init(view);
-    view.users.setDataProvider(dataProvider);
+    view.users.setItems(dataProvider);
 
     presenter.filterEmail("");
 
@@ -213,7 +213,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void filterName() {
     presenter.init(view);
-    view.users.setDataProvider(dataProvider);
+    view.users.setItems(dataProvider);
 
     presenter.filterName("test");
 
@@ -224,7 +224,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void filterName_Empty() {
     presenter.init(view);
-    view.users.setDataProvider(dataProvider);
+    view.users.setItems(dataProvider);
 
     presenter.filterName("");
 
@@ -235,7 +235,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void filterLaboratory() {
     presenter.init(view);
-    view.users.setDataProvider(dataProvider);
+    view.users.setItems(dataProvider);
 
     presenter.filterLaboratory("test");
 
@@ -246,7 +246,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void filterLaboratory_Empty() {
     presenter.init(view);
-    view.users.setDataProvider(dataProvider);
+    view.users.setItems(dataProvider);
 
     presenter.filterLaboratory("");
 
@@ -257,7 +257,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void filterActive_False() {
     presenter.init(view);
-    view.users.setDataProvider(dataProvider);
+    view.users.setItems(dataProvider);
 
     presenter.filterActive(false);
 
@@ -268,7 +268,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void filterActive_True() {
     presenter.init(view);
-    view.users.setDataProvider(dataProvider);
+    view.users.setItems(dataProvider);
 
     presenter.filterActive(true);
 
@@ -279,7 +279,7 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void filterActive_Null() {
     presenter.init(view);
-    view.users.setDataProvider(dataProvider);
+    view.users.setItems(dataProvider);
 
     presenter.filterActive(null);
 

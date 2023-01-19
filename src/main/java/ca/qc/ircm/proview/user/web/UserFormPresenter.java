@@ -104,7 +104,7 @@ public class UserFormPresenter {
       laboratoriesDataProvider =
           DataProvider.fromStream(Stream.of(authenticatedUser.getUser().get().getLaboratory()));
     }
-    form.laboratory.setDataProvider(laboratoriesDataProvider);
+    form.laboratory.setItems(laboratoriesDataProvider);
     form.laboratory.setRequiredIndicatorVisible(true);
     form.laboratory.setReadOnly(!authenticatedUser.hasRole(UserRole.ADMIN));
     form.laboratory.setEnabled(authenticatedUser.hasRole(UserRole.ADMIN));

@@ -28,6 +28,7 @@ import com.vaadin.flow.component.ComponentEventBus;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.dataview.ComboBoxDataView;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
@@ -35,6 +36,7 @@ import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.grid.editor.EditorImpl;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.radiobutton.dataview.RadioButtonGroupDataView;
 import com.vaadin.flow.component.upload.UploadI18N;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
@@ -289,13 +291,13 @@ public class VaadinTestUtils {
   }
 
   @SuppressWarnings("unchecked")
-  public static <V> ListDataProvider<V> dataProvider(ComboBox<V> comboBox) {
-    return (ListDataProvider<V>) comboBox.getDataProvider();
+  public static <V> ComboBoxDataView<V> dataView(ComboBox<V> comboBox) {
+    return comboBox.getGenericDataView();
   }
 
   @SuppressWarnings("unchecked")
-  public static <V> ListDataProvider<V> dataProvider(RadioButtonGroup<V> radios) {
-    return (ListDataProvider<V>) radios.getDataProvider();
+  public static <V> RadioButtonGroupDataView<V> dataView(RadioButtonGroup<V> radios) {
+    return radios.getGenericDataView();
   }
 
   /**
@@ -316,11 +318,11 @@ public class VaadinTestUtils {
   }
 
   public static <V> List<V> items(ComboBox<V> comboBox) {
-    return new ArrayList<>(dataProvider(comboBox).getItems());
+    return dataView(comboBox).getItems().collect(Collectors.toList());
   }
 
   public static <V> List<V> items(RadioButtonGroup<V> radios) {
-    return new ArrayList<>(dataProvider(radios).getItems());
+    return dataView(radios).getItems().collect(Collectors.toList());
   }
 
   public static Optional<BindingValidationStatus<?>>

@@ -89,7 +89,7 @@ public class SubmissionViewPresenter {
    */
   void init(SubmissionView view) {
     this.view = view;
-    view.files.setDataProvider(filesDataProvider);
+    view.files.setItems(filesDataProvider);
     setSubmission(null);
   }
 

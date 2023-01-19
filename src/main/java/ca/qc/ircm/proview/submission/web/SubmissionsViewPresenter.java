@@ -119,7 +119,7 @@ public class SubmissionsViewPresenter {
   }
 
   private void loadSubmissions() {
-    view.submissions.setDataProvider(dataProvider());
+    view.submissions.setItems(dataProvider());
   }
 
   private DataProvider<Submission, Void> dataProvider() {

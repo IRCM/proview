@@ -275,10 +275,10 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   public void labels() {
     mockColumns();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
-    view.instrumentFilter.setDataProvider(mock(DataProvider.class));
-    view.serviceFilter.setDataProvider(mock(DataProvider.class));
-    view.statusFilter.setDataProvider(mock(DataProvider.class));
-    view.hiddenFilter.setDataProvider(mock(DataProvider.class));
+    view.instrumentFilter.setItems(mock(DataProvider.class));
+    view.serviceFilter.setItems(mock(DataProvider.class));
+    view.statusFilter.setItems(mock(DataProvider.class));
+    view.hiddenFilter.setItems(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     verify(view.view).setHeader(webResources.message(VIEW));
@@ -324,10 +324,10 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     mockColumns();
     view.init();
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
-    view.instrumentFilter.setDataProvider(mock(DataProvider.class));
-    view.serviceFilter.setDataProvider(mock(DataProvider.class));
-    view.statusFilter.setDataProvider(mock(DataProvider.class));
-    view.hiddenFilter.setDataProvider(mock(DataProvider.class));
+    view.instrumentFilter.setItems(mock(DataProvider.class));
+    view.serviceFilter.setItems(mock(DataProvider.class));
+    view.statusFilter.setItems(mock(DataProvider.class));
+    view.hiddenFilter.setItems(mock(DataProvider.class));
     view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(SubmissionsView.class, locale);

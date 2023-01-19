@@ -96,8 +96,6 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @Captor
   private ArgumentCaptor<SubmissionFilter> filterCaptor;
   @Captor
-  private ArgumentCaptor<DataProvider<Submission, ?>> dataProviderCaptor;
-  @Captor
   private ArgumentCaptor<
       ComponentEventListener<SavedEvent<SubmissionDialog>>> submissionSavedListenerCaptor;
   @Captor
@@ -146,7 +144,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void init_User() {
     presenter.init(view);
-    verify(view.submissions).setDataProvider(any());
+    verify(view.submissions).setItems(any(DataProvider.class));
     verify(view.user).setVisible(false);
     verify(view.director).setVisible(false);
     verify(view.service).setVisible(false);
@@ -160,7 +158,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   public void init_Manager() {
     when(authenticatedUser.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
     presenter.init(view);
-    verify(view.submissions).setDataProvider(any());
+    verify(view.submissions).setItems(any(DataProvider.class));
     verify(view.user).setVisible(true);
     verify(view.director).setVisible(false);
     verify(view.service).setVisible(false);
@@ -175,7 +173,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(authenticatedUser.hasRole(any())).thenReturn(true);
     when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
-    verify(view.submissions).setDataProvider(any());
+    verify(view.submissions).setItems(any(DataProvider.class));
     verify(view.user).setVisible(true);
     verify(view.director).setVisible(true);
     verify(view.service).setVisible(true);
@@ -188,9 +186,12 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void submissions() {
     presenter.init(view);
-    verify(view.submissions).setDataProvider(dataProviderCaptor.capture());
-    List<Submission> submissions = dataProviderCaptor.getValue()
-        .fetch(new Query<>(0, Integer.MAX_VALUE, null, null, null)).collect(Collectors.toList());
+    ArgumentCaptor<DataProvider> dataProviderCaptor = ArgumentCaptor.forClass(DataProvider.class);
+    verify(view.submissions).setItems(dataProviderCaptor.capture());
+    List<Submission> submissions =
+        ((DataProvider<Submission, SubmissionFilter>) dataProviderCaptor.getValue())
+            .fetch(new Query<>(0, Integer.MAX_VALUE, null, null, null))
+            .collect(Collectors.toList());
     assertEquals(this.submissions, submissions);
     verify(service).all(filterCaptor.capture());
     SubmissionFilter filter = filterCaptor.getValue();
@@ -201,13 +202,15 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void submissions_SortOrder() {
     presenter.init(view);
-    verify(view.submissions).setDataProvider(dataProviderCaptor.capture());
+    ArgumentCaptor<DataProvider> dataProviderCaptor = ArgumentCaptor.forClass(DataProvider.class);
+    verify(view.submissions).setItems(dataProviderCaptor.capture());
     List<QuerySortOrder> sortOrders =
         Arrays.asList(new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
             new QuerySortOrder(USER, SortDirection.DESCENDING));
-    List<Submission> submissions = dataProviderCaptor.getValue()
-        .fetch(new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null))
-        .collect(Collectors.toList());
+    List<Submission> submissions =
+        ((DataProvider<Submission, SubmissionFilter>) dataProviderCaptor.getValue())
+            .fetch(new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null))
+            .collect(Collectors.toList());
     assertEquals(this.submissions, submissions);
     verify(service).all(filterCaptor.capture());
     SubmissionFilter filter = filterCaptor.getValue();
@@ -394,7 +397,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener =
         submissionSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
-    verify(view.submissions, times(2)).setDataProvider(any());
+    verify(view.submissions, times(2)).setItems(any(DataProvider.class));
   }
 
   @Test
@@ -405,7 +408,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     ComponentEventListener<SavedEvent<SamplesStatusDialog>> savedListener =
         statusSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
-    verify(view.submissions, times(2)).setDataProvider(any());
+    verify(view.submissions, times(2)).setItems(any(DataProvider.class));
   }
 
   @Test
