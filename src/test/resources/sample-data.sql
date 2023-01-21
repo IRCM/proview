@@ -56,11 +56,11 @@ VALUES (163,'LC_MS_MS','POLR2B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYP
 INSERT INTO submission (id,service,experiment,goal,taxonomy,instrument,source,injectiontype,digestion,useddigestion,otherdigestion,identification,identificationlink,highresolution,proteincontent,protein,posttranslationmodification,separation,thickness,coloration,othercoloration,developmenttime,decoloration,weightmarkerquantity,proteinquantity,formula,monoisotopicmass,averagemass,solutionsolvent,othersolvent,toxicity,lightsensitive,storagetemperature,quantification,quantificationcomment,contaminants,standards,submissiondate,sampledeliverydate,digestiondate,analysisdate,dataavailabledate,comment,version,laboratory_id,user_id,hidden)
 VALUES (164,'LC_MS_MS','POLR3B-Flag',NULL,'Homo Sapiens','VELOS',NULL,NULL,'TRYPSIN',NULL,NULL,'REFSEQ',NULL,0,'XLARGE',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,'2018-05-03',NULL,NULL,NULL,NULL,NULL,0,2,10,0);
 INSERT INTO submissionfiles (id,files_id,filename,content)
-VALUES (1,1,'protocol.txt',FILE_READ('${project.build.testOutputDirectory}/submissionfile1.txt'));
+VALUES (1,1,'protocol.txt',FILE_READ('@project.build.testOutputDirectory@/submissionfile1.txt'));
 INSERT INTO submissionfiles (id,files_id,filename,content)
-VALUES (2,1,'frag.jpg',FILE_READ('${project.build.testOutputDirectory}/gelimages1.png'));
+VALUES (2,1,'frag.jpg',FILE_READ('@project.build.testOutputDirectory@/gelimages1.png'));
 INSERT INTO submissionfiles (id,files_id,filename,content)
-VALUES (3,33,'glucose.png',FILE_READ('${project.build.testOutputDirectory}/structure1.png'));
+VALUES (3,33,'glucose.png',FILE_READ('@project.build.testOutputDirectory@/structure1.png'));
 INSERT INTO plate (id,name,columncount,rowcount,submission_id,inserttime)
 VALUES (26,'A_20111108',12,8,NULL,'2011-11-08 13:33:21');
 INSERT INTO plate (id,name,columncount,rowcount,submission_id,inserttime)

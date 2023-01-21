@@ -114,10 +114,10 @@ VALUES (1,'ca.qc.ircm.proview.user.UserPreferenceServiceTest', 'preference_1');
 INSERT INTO preference (id,referer,name)
 VALUES (2,'ca.qc.ircm.proview.user.UserPreferenceServiceTest', 'preference_2');
 INSERT INTO userpreference (id,preference_id,user_id,content)
-VALUES (1,1,2,FILE_READ('${project.build.testOutputDirectory}/preference1.ser'));
+VALUES (1,1,2,FILE_READ('@project.build.testOutputDirectory@/preference1.ser'));
 INSERT INTO userpreference (id,preference_id,user_id,content)
-VALUES (2,2,2,FILE_READ('${project.build.testOutputDirectory}/preference2.ser'));
+VALUES (2,2,2,FILE_READ('@project.build.testOutputDirectory@/preference2.ser'));
 INSERT INTO userpreference (id,preference_id,user_id,content)
-VALUES (3,1,3,FILE_READ('${project.build.testOutputDirectory}/preference1.ser'));
+VALUES (3,1,3,FILE_READ('@project.build.testOutputDirectory@/preference1.ser'));
 INSERT INTO userpreference (id,preference_id,user_id,content)
-VALUES (4,2,3,FILE_READ('${project.build.testOutputDirectory}/preference2.ser'));
+VALUES (4,2,3,FILE_READ('@project.build.testOutputDirectory@/preference2.ser'));
