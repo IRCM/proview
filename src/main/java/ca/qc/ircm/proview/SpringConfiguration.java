@@ -17,13 +17,10 @@
 
 package ca.qc.ircm.proview;
 
-import ca.qc.ircm.proview.mail.MailConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.messageresolver.StandardMessageResolver;
@@ -35,11 +32,6 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 @Configuration
 @EnableTransactionManagement
 public class SpringConfiguration {
-  @Autowired
-  private MailConfiguration mailConfiguration;
-  @Autowired
-  private JavaMailSender mailSender;
-
   @Bean
   public MessageSource messageSource() {
     ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
