@@ -225,6 +225,13 @@ public class VaadinTestUtils {
     }
   }
 
+  /**
+   * Returns all registered functions of this renderer.
+   *
+   * @param renderer renderer
+   * @return all registered functions of this renderer
+   * @param <SOURCE>
+   */
   public static <SOURCE> Map<String, SerializableBiConsumer<SOURCE, JsonArray>>
       functions(LitRenderer renderer) {
     try {
