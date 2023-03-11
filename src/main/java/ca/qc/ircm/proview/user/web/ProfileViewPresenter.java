@@ -23,8 +23,6 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.MainView;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.Locale;
 import org.slf4j.Logger;
@@ -63,7 +61,6 @@ public class ProfileViewPresenter {
       service.save(user, password);
       final AppResources resources = new AppResources(ProfileView.class, locale);
       view.showNotification(resources.message(SAVED));
-      UI.getCurrent().navigate(MainView.class);
     }
   }
 }

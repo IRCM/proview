@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.PhoneNumberType;
@@ -146,6 +145,6 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
     assertEquals(state, user.getAddress().getState());
     assertEquals(country, user.getAddress().getCountry());
     assertEquals(postalCode, user.getAddress().getPostalCode());
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    assertEquals(viewUrl(ProfileView.VIEW_NAME), getDriver().getCurrentUrl());
   }
 }
