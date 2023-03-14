@@ -77,7 +77,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final String SIGNIN_DISABLED_URL =
       SIGNIN_PROCESSING_URL + "?" + SigninView.DISABLED;
   private static final String SIGNIN_URL = SIGNIN_PROCESSING_URL;
-  private static final String SIGNOUT_SUCCESS_URL = "/" + MainView.VIEW_NAME;
   private static final String SWITCH_USER_FAILURE_URL =
       "/" + UsersView.VIEW_NAME + "?" + UsersView.SWITCH_FAILED;
   private static final String SWITCH_USER_TRAGET_URL = "/" + MainView.VIEW_NAME;
@@ -221,9 +220,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Register the success handler that redirects users to the page they last tried
         // to access
         .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
-
-        // Configure logout
-        .and().logout().logoutUrl(SIGNOUT_URL).logoutSuccessUrl(SIGNOUT_SUCCESS_URL)
 
         // Remember me
         .and().rememberMe().alwaysRemember(true).key(configuration.getRememberMeKey());

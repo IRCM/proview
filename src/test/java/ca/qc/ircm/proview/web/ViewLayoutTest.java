@@ -39,6 +39,7 @@ import static ca.qc.ircm.proview.web.ViewLayout.TABS;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -68,6 +69,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
@@ -365,8 +367,7 @@ public class ViewLayoutTest extends AbstractKaribuTestCase {
     view.tabs.setSelectedTab(view.signout);
 
     verify(navigationListener, never()).afterNavigation(any());
-    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
-        i -> i.getInvocation().getExpression().equals("location.assign('" + SIGNOUT_URL + "')")));
+    assertNull(SecurityContextHolder.getContext().getAuthentication());
   }
 
   @Test

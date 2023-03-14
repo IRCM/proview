@@ -27,7 +27,6 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
-import ca.qc.ircm.proview.security.web.WebSecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
@@ -45,6 +44,8 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLayout;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinServletResponse;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -54,6 +55,9 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 /**
@@ -167,10 +171,12 @@ public class ViewLayout extends VerticalLayout
 
   private void selectTab(Tab previous) {
     if (tabs.getSelectedTab() == signout) {
-      // Sign-out requires a request to be made outside of Vaadin.
-      logger.debug("Redirect to sign out");
-      UI.getCurrent().getPage()
-          .executeJs("location.assign('" + WebSecurityConfiguration.SIGNOUT_URL + "')");
+      logger.debug("Sign out user {}", authenticatedUser);
+      UI.getCurrent().getPage().setLocation("/");
+      CompositeLogoutHandler logoutHandler = new CompositeLogoutHandler(
+          new CookieClearingLogoutHandler("remember-me"), new SecurityContextLogoutHandler());
+      logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(),
+          VaadinServletResponse.getCurrent().getHttpServletResponse(), null);
     } else if (tabs.getSelectedTab() == exitSwitchUser) {
       // Exit switch user requires a request to be made outside of Vaadin.
       logger.debug("Redirect to exit switch user");
