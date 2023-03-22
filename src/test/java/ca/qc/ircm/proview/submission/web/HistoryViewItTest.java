@@ -27,7 +27,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialogElement;
-import ca.qc.ircm.proview.security.web.AccessDeniedError;
+import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatmentType;
@@ -67,7 +67,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
 
     Locale locale = currentLocale();
     assertEquals(
-        new AppResources(AccessDeniedError.class, locale).message(TITLE,
+        new AppResources(AccessDeniedView.class, locale).message(TITLE,
             new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
@@ -79,7 +79,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
 
     Locale locale = currentLocale();
     assertEquals(
-        new AppResources(AccessDeniedError.class, locale).message(TITLE,
+        new AppResources(AccessDeniedView.class, locale).message(TITLE,
             new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
         getDriver().getTitle());
   }
