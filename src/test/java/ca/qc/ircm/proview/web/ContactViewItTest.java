@@ -45,7 +45,7 @@ public class ContactViewItTest extends AbstractTestBenchTestCase {
   public void security_Anonymous() throws Throwable {
     open();
 
-    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test

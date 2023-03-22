@@ -24,15 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.web.AccessDeniedView;
-import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.security.web.AccessDeniedViewElement;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.web.SigninView;
-import java.util.Locale;
+import ca.qc.ircm.proview.web.SigninViewElement;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,11 +54,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   public void security_Anonymous() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
@@ -69,11 +62,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   public void security_User() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(AccessDeniedView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(AccessDeniedViewElement.class).waitForFirst();
   }
 
   @Test
@@ -81,16 +70,14 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   public void security_Manager() throws Throwable {
     open();
 
-    assertEquals(resources(UsersView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    $(UsersViewElement.class).waitForFirst();
   }
 
   @Test
   public void security_Admin() throws Throwable {
     open();
 
-    assertEquals(resources(UsersView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    $(UsersViewElement.class).waitForFirst();
   }
 
   @Test
@@ -141,11 +128,6 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     view.switchUser().click();
 
     $(SubmissionsViewElement.class).waitForFirst();
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(SubmissionsView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
   }
 
   @Test

@@ -29,10 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.user.web.ForgotPasswordView;
+import ca.qc.ircm.proview.user.web.ForgotPasswordViewElement;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -112,7 +112,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     view.getPasswordField().setValue("password");
     view.getSubmitButton().click();
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 
   @Test
@@ -120,13 +120,13 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     open();
     SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     view.getForgotPasswordButton().click();
-    assertEquals(viewUrl(ForgotPasswordView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(ForgotPasswordViewElement.class).waitForFirst();
   }
 
   @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void already_User() throws Throwable {
     open();
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 }

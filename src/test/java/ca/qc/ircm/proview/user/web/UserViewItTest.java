@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.web.AccessDeniedView;
+import ca.qc.ircm.proview.security.web.AccessDeniedViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -36,7 +36,7 @@ import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
-import ca.qc.ircm.proview.web.SigninView;
+import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -87,11 +87,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   public void security_Anonymous() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
@@ -99,11 +95,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   public void security_User() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(AccessDeniedView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(AccessDeniedViewElement.class).waitForFirst();
   }
 
   @Test
@@ -111,8 +103,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   public void security_Manager() throws Throwable {
     open();
 
-    assertEquals(resources(UserView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    $(UserViewElement.class).waitForFirst();
   }
 
   @Test
@@ -177,7 +168,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     assertEquals(state, user.getAddress().getState());
     assertEquals(country, user.getAddress().getCountry());
     assertEquals(postalCode, user.getAddress().getPostalCode());
-    assertEquals(viewUrl(UsersView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(UsersViewElement.class).waitForFirst();
   }
 
   @Test
@@ -226,6 +217,6 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     assertEquals(state, user.getAddress().getState());
     assertEquals(country, user.getAddress().getCountry());
     assertEquals(postalCode, user.getAddress().getPostalCode());
-    assertEquals(viewUrl(UsersView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(UsersViewElement.class).waitForFirst();
   }
 }

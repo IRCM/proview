@@ -32,9 +32,8 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.web.SigninView;
+import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.button.ButtonVariant;
-import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import org.slf4j.Logger;
@@ -66,11 +65,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   public void security_Anonymous() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
@@ -170,6 +165,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
     view.submissions().experimentCell(0).click(0, 0, Keys.ALT);
 
+    $(HistoryViewElement.class).waitForFirst();
     assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 
@@ -180,7 +176,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
     view.add().click();
 
-    assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionViewElement.class).waitForFirst();
   }
 
   @Test
@@ -208,6 +204,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     view.submissions().experimentCell(0).click();
     view.history().click();
 
+    $(HistoryViewElement.class).waitForFirst();
     assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 }

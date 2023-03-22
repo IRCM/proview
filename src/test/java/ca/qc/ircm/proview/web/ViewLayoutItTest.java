@@ -25,15 +25,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
+import ca.qc.ircm.proview.files.web.GuidelinesViewElement;
 import ca.qc.ircm.proview.submission.web.HistoryView;
+import ca.qc.ircm.proview.submission.web.HistoryViewElement;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
+import ca.qc.ircm.proview.submission.web.PrintSubmissionViewElement;
 import ca.qc.ircm.proview.submission.web.SubmissionDialogElement;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
-import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.submission.web.SubmissionViewElement;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.user.web.ProfileView;
+import ca.qc.ircm.proview.user.web.ProfileViewElement;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.user.web.UsersViewElement;
 import java.util.Locale;
@@ -56,7 +59,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void security_Anonymous() throws Throwable {
     open();
 
-    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
@@ -139,7 +142,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.submissions().click();
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 
   @Test
@@ -148,7 +151,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.profile().click();
-    assertEquals(viewUrl(ProfileView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(ProfileViewElement.class).waitForFirst();
   }
 
   @Test
@@ -157,7 +160,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.users().click();
-    assertEquals(viewUrl(UsersView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(UsersViewElement.class).waitForFirst();
   }
 
   @Test
@@ -174,7 +177,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     ViewLayoutElement view = $(ViewLayoutElement.class).first();
     view.exitSwitchUser().click();
     $(SubmissionsViewElement.class).waitForFirst();
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
     assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
   }
 
@@ -187,7 +189,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     signinView.getSubmitButton().click();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.signout().click();
-    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
@@ -197,7 +199,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     final Locale before = currentLocale();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.changeLanguage().click();
-    assertEquals(viewUrl(ContactView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(ContactViewElement.class).waitForFirst();
     assertEquals(ENGLISH.equals(before) ? FRENCH : ENGLISH, currentLocale());
   }
 
@@ -207,7 +209,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     openView(GuidelinesView.VIEW_NAME);
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.contact().click();
-    assertEquals(viewUrl(ContactView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(ContactViewElement.class).waitForFirst();
   }
 
   @Test
@@ -216,7 +218,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.guidelines().click();
-    assertEquals(viewUrl(GuidelinesView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(GuidelinesViewElement.class).waitForFirst();
   }
 
   @Test
@@ -227,10 +229,10 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).waitForFirst();
     submissionsView.add().click();
-    assertEquals(viewUrl(SubmissionView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.add()).isPresent());
     view.guidelines().click();
-    assertEquals(viewUrl(GuidelinesView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(GuidelinesViewElement.class).waitForFirst();
     assertEquals("true", view.add().getAttribute("hidden"));
   }
 
@@ -244,10 +246,11 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     submissionsView.submissions().experimentCell(0).doubleClick();
     SubmissionDialogElement submissionDialog = $(SubmissionDialogElement.class).waitForFirst();
     submissionDialog.clickEdit();
+    $(SubmissionViewElement.class).waitForFirst();
     assertEquals(viewUrl(SubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.edit()).isPresent());
     view.guidelines().click();
-    assertEquals(viewUrl(GuidelinesView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(GuidelinesViewElement.class).waitForFirst();
     assertEquals("true", view.edit().getAttribute("hidden"));
   }
 
@@ -261,10 +264,11 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     submissionsView.submissions().experimentCell(0).doubleClick();
     SubmissionDialogElement submissionDialog = $(SubmissionDialogElement.class).waitForFirst();
     submissionDialog.clickPrint();
+    $(PrintSubmissionViewElement.class).waitForFirst();
     assertEquals(viewUrl(PrintSubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.print()).isPresent());
     view.guidelines().click();
-    assertEquals(viewUrl(GuidelinesView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(GuidelinesViewElement.class).waitForFirst();
     assertEquals("true", view.print().getAttribute("hidden"));
   }
 
@@ -276,10 +280,11 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     view.submissions().click();
     SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).waitForFirst();
     submissionsView.submissions().experimentCell(0).click(0, 0, Keys.ALT);
+    $(HistoryViewElement.class).waitForFirst();
     assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
     assertTrue(optional(() -> view.history()).isPresent());
     view.guidelines().click();
-    assertEquals(viewUrl(GuidelinesView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(GuidelinesViewElement.class).waitForFirst();
     assertEquals("true", view.history().getAttribute("hidden"));
   }
 }

@@ -30,7 +30,7 @@ import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordRepository;
-import ca.qc.ircm.proview.web.SigninView;
+import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -83,6 +83,6 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
     assertEquals(resources.message(SAVED, email), notification.getText());
     List<ForgotPassword> forgotPasswords = repository.findByUserEmail(email);
     assertEquals(4, forgotPasswords.size());
-    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SigninViewElement.class).waitForFirst();
   }
 }

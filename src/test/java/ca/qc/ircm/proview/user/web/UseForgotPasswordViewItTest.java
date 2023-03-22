@@ -34,7 +34,7 @@ import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordRepository;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
-import ca.qc.ircm.proview.web.SigninView;
+import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -104,6 +104,6 @@ public class UseForgotPasswordViewItTest extends AbstractTestBenchTestCase {
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
     assertNull(user.getSalt());
-    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SigninViewElement.class).waitForFirst();
   }
 }

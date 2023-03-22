@@ -107,6 +107,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
     dialog.clickPrint();
 
+    $(PrintSubmissionViewElement.class).waitForFirst();
     assertEquals(viewUrl(PrintSubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 
@@ -116,6 +117,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
     dialog.clickEdit();
 
+    $(SubmissionViewElement.class).waitForFirst();
     assertEquals(viewUrl(SubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 }

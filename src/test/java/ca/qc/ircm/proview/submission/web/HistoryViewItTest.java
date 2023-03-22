@@ -23,17 +23,15 @@ import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialogElement;
-import ca.qc.ircm.proview.security.web.AccessDeniedView;
+import ca.qc.ircm.proview.security.web.AccessDeniedViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
-import ca.qc.ircm.proview.web.SigninView;
-import java.util.Locale;
+import ca.qc.ircm.proview.web.SigninViewElement;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -53,11 +51,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   public void security_Anonymous() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
@@ -65,11 +59,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   public void security_User() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(AccessDeniedView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(AccessDeniedViewElement.class).waitForFirst();
   }
 
   @Test
@@ -77,11 +67,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   public void security_Manager() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(AccessDeniedView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(AccessDeniedViewElement.class).waitForFirst();
   }
 
   @Test

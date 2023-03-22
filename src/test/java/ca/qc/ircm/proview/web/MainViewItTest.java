@@ -18,9 +18,8 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.web.MainView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import org.junit.jupiter.api.Test;
@@ -42,14 +41,14 @@ public class MainViewItTest extends AbstractTestBenchTestCase {
   public void security_Anonymous() throws Throwable {
     open();
 
-    assertEquals(viewUrl(SigninView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
   public void userRedirected() throws Throwable {
     open();
 
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 
   @Test
@@ -57,7 +56,7 @@ public class MainViewItTest extends AbstractTestBenchTestCase {
   public void managerRedirected() throws Throwable {
     open();
 
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 
   @Test
@@ -65,6 +64,6 @@ public class MainViewItTest extends AbstractTestBenchTestCase {
   public void adminRedirected() throws Throwable {
     open();
 
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 }

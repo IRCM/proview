@@ -48,7 +48,7 @@ import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.Download;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
-import ca.qc.ircm.proview.web.SigninView;
+import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.html.testbench.AnchorElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import java.nio.file.Files;
@@ -222,11 +222,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   public void security_Anonymous() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
@@ -312,7 +308,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 
   @Test
@@ -375,7 +371,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 
   @Test
@@ -416,7 +412,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 
   @Test
@@ -456,7 +452,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    assertEquals(viewUrl(SubmissionsView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(SubmissionsViewElement.class).waitForFirst();
   }
 
   @Test

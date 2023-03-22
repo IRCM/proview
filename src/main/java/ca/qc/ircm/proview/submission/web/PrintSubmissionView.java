@@ -19,7 +19,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -52,7 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PrintSubmissionView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver {
   public static final String VIEW_NAME = "print-submission";
-  public static final String ID = styleName(VIEW_NAME, "view");
+  public static final String ID = "print-submission-view";
   public static final String HEADER = "header";
   public static final String SECOND_HEADER = "header-2";
   private static final long serialVersionUID = 7704703308278059432L;

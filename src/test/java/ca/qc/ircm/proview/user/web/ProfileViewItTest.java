@@ -33,7 +33,7 @@ import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
-import ca.qc.ircm.proview.web.SigninView;
+import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -77,11 +77,7 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
   public void security_Anonymous() throws Throwable {
     open();
 
-    Locale locale = currentLocale();
-    assertEquals(
-        new AppResources(SigninView.class, locale).message(TITLE,
-            new AppResources(Constants.class, locale).message(APPLICATION_NAME)),
-        getDriver().getTitle());
+    $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
@@ -145,6 +141,6 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
     assertEquals(state, user.getAddress().getState());
     assertEquals(country, user.getAddress().getCountry());
     assertEquals(postalCode, user.getAddress().getPostalCode());
-    assertEquals(viewUrl(ProfileView.VIEW_NAME), getDriver().getCurrentUrl());
+    $(ProfileViewElement.class).waitForFirst();
   }
 }
