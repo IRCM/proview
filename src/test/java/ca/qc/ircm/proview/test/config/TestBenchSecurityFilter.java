@@ -63,6 +63,7 @@ public class TestBenchSecurityFilter extends GenericFilterBean
     HttpServletResponse response = (HttpServletResponse) res;
     if (copyAuthenticationOnFilter && authentication != null) {
       logger.debug("set authentication {} in security context", authentication);
+      copyAuthenticationOnFilter = false;
       SecurityContext securityContext = repo.loadContext(request).get();
       securityContext.setAuthentication(authentication);
       repo.saveContext(securityContext, request, response);
@@ -78,13 +79,13 @@ public class TestBenchSecurityFilter extends GenericFilterBean
   @Override
   public void beforeTestClass(TestContext testContext) throws Exception {
     testContext.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(this);
-    copyAuthenticationOnFilter = isTestBenchTest(testContext);
   }
 
   @Override
   public void beforeTestMethod(TestContext testContext) throws Exception {
     authentication = SecurityContextHolder.getContext().getAuthentication();
     logger.trace("saving authentication {}", authentication);
+    copyAuthenticationOnFilter = isTestBenchTest(testContext);
   }
 
   private boolean isTestBenchTest(TestContext testContext) {
