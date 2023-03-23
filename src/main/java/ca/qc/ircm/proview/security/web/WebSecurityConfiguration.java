@@ -17,8 +17,6 @@
 
 package ca.qc.ircm.proview.security.web;
 
-import static ca.qc.ircm.proview.user.UserRole.ADMIN;
-
 import ca.qc.ircm.proview.security.DaoAuthenticationProviderWithLdap;
 import ca.qc.ircm.proview.security.LdapConfiguration;
 import ca.qc.ircm.proview.security.LdapService;
@@ -27,8 +25,6 @@ import ca.qc.ircm.proview.security.ShiroPasswordEncoder;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import ca.qc.ircm.proview.user.web.UseForgotPasswordView;
-import ca.qc.ircm.proview.user.web.UsersView;
-import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SigninView;
 import com.vaadin.flow.server.HandlerHelper.RequestType;
 import com.vaadin.flow.shared.ApplicationConstants;
@@ -55,7 +51,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 /**
@@ -66,9 +61,6 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   public static final String SIGNIN_PROCESSING_URL = "/" + SigninView.VIEW_NAME;
   public static final String SIGNOUT_URL = "/signout";
-  public static final String SWITCH_USER_URL = "/switchUser";
-  public static final String SWITCH_USERNAME_PARAMETER = "username";
-  public static final String SWITCH_USER_EXIT_URL = "/switchUser/exit";
   private static final String SIGNIN_FAILURE_URL_PATTERN =
       Pattern.quote(SIGNIN_PROCESSING_URL) + "\\?.*";
   private static final String SIGNIN_DEFAULT_FAILURE_URL =
@@ -77,9 +69,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   private static final String SIGNIN_DISABLED_URL =
       SIGNIN_PROCESSING_URL + "?" + SigninView.DISABLED;
   private static final String SIGNIN_URL = SIGNIN_PROCESSING_URL;
-  private static final String SWITCH_USER_FAILURE_URL =
-      "/" + UsersView.VIEW_NAME + "?" + UsersView.SWITCH_FAILED;
-  private static final String SWITCH_USER_TRAGET_URL = "/" + MainView.VIEW_NAME;
   private static final String PASSWORD_ENCRYPTION = "bcrypt";
   @Autowired
   private UserDetailsService userDetailsService;
@@ -150,24 +139,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   /**
-   * Returns {@link SwitchUserFilter}.<br>
-   * TODO Creates a custom implementation that rejects switching to another admin.
-   *
-   * @return {@link SwitchUserFilter}
-   */
-  @Bean
-  public SwitchUserFilter switchUserFilter() {
-    SwitchUserFilter filter = new SwitchUserFilter();
-    filter.setUserDetailsService(userDetailsService());
-    filter.setSwitchUserUrl(SWITCH_USER_URL);
-    filter.setSwitchFailureUrl(SWITCH_USER_FAILURE_URL);
-    filter.setTargetUrl(SWITCH_USER_TRAGET_URL);
-    filter.setExitUserUrl(SWITCH_USER_EXIT_URL);
-    filter.setUsernameParameter(SWITCH_USERNAME_PARAMETER);
-    return filter;
-  }
-
-  /**
    * Registers our UserDetailsService and the password encoder to be used on login attempts.
    */
   @Override
@@ -200,10 +171,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // Allow test URLs.
         .regexMatchers("/testvaadinservice").permitAll()
-
-        // Only admins can switch users.
-        .antMatchers(SWITCH_USER_URL).hasAuthority(ADMIN).antMatchers(SWITCH_USER_EXIT_URL)
-        .authenticated()
 
         // Allow anonymous views.
         .antMatchers("/" + ForgotPasswordView.VIEW_NAME,

@@ -20,20 +20,21 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
-import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USERNAME;
-import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER_FORM;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS_REQUIRED;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.security.SwitchUserService;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.function.SerializablePredicate;
+import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.List;
 import java.util.Locale;
@@ -51,6 +52,7 @@ public class UsersViewPresenter {
   private UsersView view;
   private UserService service;
   private LaboratoryService laboratoryService;
+  private SwitchUserService switchUserService;
   private AuthenticatedUser authenticatedUser;
   private Locale locale;
   private ListDataProvider<User> usersDataProvider;
@@ -58,9 +60,10 @@ public class UsersViewPresenter {
 
   @Autowired
   protected UsersViewPresenter(UserService service, LaboratoryService laboratoryService,
-      AuthenticatedUser authenticatedUser) {
+      SwitchUserService switchUserService, AuthenticatedUser authenticatedUser) {
     this.service = service;
     this.laboratoryService = laboratoryService;
+    this.switchUserService = switchUserService;
     this.authenticatedUser = authenticatedUser;
   }
 
@@ -71,7 +74,6 @@ public class UsersViewPresenter {
     view.error.setVisible(false);
     view.add.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
     view.switchUser.setVisible(authenticatedUser.hasRole(ADMIN));
-    view.switchUserForm.setVisible(authenticatedUser.hasRole(ADMIN));
     view.viewLaboratory.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
     view.dialog.addSavedListener(e -> loadUsers());
     view.laboratoryDialog.addSavedListener(e -> loadUsers());
@@ -155,10 +157,8 @@ public class UsersViewPresenter {
       view.error.setText(resources.message(USERS_REQUIRED));
       view.error.setVisible(true);
     } else {
-      // Switch user requires a request to be made outside of Vaadin.
-      UI.getCurrent().getPage().executeJs(
-          "document.getElementById(\"" + SWITCH_USERNAME + "\").value = \"" + user.getEmail()
-              + "\"; document.getElementById(\"" + SWITCH_USER_FORM + "\").submit()");
+      switchUserService.switchUser(user, VaadinServletRequest.getCurrent());
+      UI.getCurrent().navigate(MainView.class);
     }
   }
 

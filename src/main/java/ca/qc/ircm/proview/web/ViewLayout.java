@@ -20,20 +20,19 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.ADD;
 import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.PRINT;
-import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USER_EXIT_URL;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.security.SwitchUserService;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -94,17 +93,18 @@ public class ViewLayout extends VerticalLayout
   protected Tab edit = new Tab();
   protected Tab print = new Tab();
   protected Tab history = new Tab();
-  protected Html exitSwitchUserForm = new Html("<form action=\"" + SWITCH_USER_EXIT_URL
-      + "\" method=\"post\" style=\"display:none;\"></form>");
   private Map<Tab, String> tabsHref = new HashMap<>();
   private String currentHref;
+  @Autowired
+  private transient SwitchUserService switchUserService;
   @Autowired
   private transient AuthenticatedUser authenticatedUser;
 
   protected ViewLayout() {
   }
 
-  protected ViewLayout(AuthenticatedUser authenticatedUser) {
+  protected ViewLayout(SwitchUserService switchUserService, AuthenticatedUser authenticatedUser) {
+    this.switchUserService = switchUserService;
     this.authenticatedUser = authenticatedUser;
   }
 
@@ -117,17 +117,13 @@ public class ViewLayout extends VerticalLayout
     add(tabs);
     tabs.setId(TABS);
     tabs.add(submissions, profile, users, exitSwitchUser, signout, changeLanguage, contact,
-        guidelines, add, edit, print, history, exitSwitchUserForm);
+        guidelines, add, edit, print, history);
     submissions.setId(styleName(SUBMISSIONS, TAB));
     profile.setId(styleName(PROFILE, TAB));
     users.setId(styleName(USERS, TAB));
-    users.setVisible(authenticatedUser.isAuthorized(UsersView.class));
+    users.setVisible(false);
     exitSwitchUser.setId(styleName(EXIT_SWITCH_USER, TAB));
-    exitSwitchUser
-        .setVisible(authenticatedUser.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
-    exitSwitchUserForm.setId(styleName(EXIT_SWITCH_USER_FORM, TAB));
-    exitSwitchUserForm
-        .setVisible(authenticatedUser.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
+    exitSwitchUser.setVisible(false);
     signout.setId(styleName(SIGNOUT, TAB));
     changeLanguage.setId(styleName(CHANGE_LANGUAGE, TAB));
     contact.setId(styleName(CONTACT, TAB));
@@ -178,10 +174,9 @@ public class ViewLayout extends VerticalLayout
       logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(),
           VaadinServletResponse.getCurrent().getHttpServletResponse(), null);
     } else if (tabs.getSelectedTab() == exitSwitchUser) {
-      // Exit switch user requires a request to be made outside of Vaadin.
-      logger.debug("Redirect to exit switch user");
-      UI.getCurrent().getPage().executeJs(
-          "document.getElementById(\"" + styleName(EXIT_SWITCH_USER_FORM, TAB) + "\").submit()");
+      logger.debug("Exit switch user");
+      switchUserService.exitSwitchUser();
+      UI.getCurrent().navigate(MainView.class);
     } else if (tabs.getSelectedTab() == changeLanguage) {
       Locale locale = UI.getCurrent().getLocale();
       Locale newLocale = Constants.getLocales().stream().filter(lo -> !lo.equals(locale))
@@ -206,6 +201,9 @@ public class ViewLayout extends VerticalLayout
     edit.setVisible(false);
     print.setVisible(false);
     history.setVisible(false);
+    users.setVisible(authenticatedUser.isAuthorized(UsersView.class));
+    exitSwitchUser
+        .setVisible(authenticatedUser.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
     currentHref = event.getLocation().getPath();
     Optional<Tab> currentTab = tabsHref.entrySet().stream()
         .filter(e -> Pattern.matches(e.getValue(), currentHref)).map(e -> e.getKey()).findFirst();

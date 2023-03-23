@@ -20,8 +20,6 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
-import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USERNAME;
-import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER_FORM;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS_REQUIRED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -36,6 +34,8 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.security.SwitchUserService;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -47,8 +47,6 @@ import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Html;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -56,6 +54,7 @@ import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.server.VaadinServletRequest;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +83,8 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   private UserService service;
   @MockBean
   private LaboratoryService laboratoryService;
+  @MockBean
+  private SwitchUserService switchUserService;
   @MockBean
   private AuthenticatedUser authenticatedUser;
   @Mock
@@ -118,7 +119,6 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     view.add = new Button();
     view.switchUser = new Button();
     view.viewLaboratory = new Button();
-    view.switchUserForm = new Html("<form></form>");
     view.dialog = mock(UserDialog.class);
     view.laboratoryDialog = mock(LaboratoryDialog.class);
     users = repository.findAll();
@@ -143,7 +143,6 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     verify(view.active).setVisible(false);
     assertFalse(view.add.isVisible());
     assertFalse(view.switchUser.isVisible());
-    assertFalse(view.switchUserForm.isVisible());
     assertFalse(view.viewLaboratory.isVisible());
   }
 
@@ -163,7 +162,6 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     verify(view.active).setVisible(true);
     assertTrue(view.add.isVisible());
     assertFalse(view.switchUser.isVisible());
-    assertFalse(view.switchUserForm.isVisible());
     assertTrue(view.viewLaboratory.isVisible());
   }
 
@@ -184,7 +182,6 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     verify(view.active).setVisible(true);
     assertTrue(view.add.isVisible());
     assertTrue(view.switchUser.isVisible());
-    assertTrue(view.switchUserForm.isVisible());
     assertTrue(view.viewLaboratory.isVisible());
   }
 
@@ -420,10 +417,8 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     view.users.select(user);
     presenter.switchUser();
     assertFalse(view.error.isVisible());
-    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
-        .anyMatch(i -> ("document.getElementById(\"" + SWITCH_USERNAME + "\").value = \""
-            + user.getEmail() + "\"; document.getElementById(\"" + SWITCH_USER_FORM
-            + "\").submit()").equals(i.getInvocation().getExpression())));
+    verify(switchUserService).switchUser(user, VaadinServletRequest.getCurrent());
+    assertCurrentView(SubmissionsView.class);
   }
 
   @Test
@@ -435,8 +430,8 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     presenter.switchUser();
     assertEquals(resources.message(USERS_REQUIRED), view.error.getText());
     assertTrue(view.error.isVisible());
-    assertFalse(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
-        .anyMatch(i -> i.getInvocation().getExpression().contains(SWITCH_USER_FORM)));
+    verify(switchUserService, never()).switchUser(any(), any());
+    assertCurrentView(UsersView.class);
   }
 
   @Test

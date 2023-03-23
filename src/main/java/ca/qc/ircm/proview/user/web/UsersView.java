@@ -23,8 +23,6 @@ import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USERNAME_PARAMETER;
-import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SWITCH_USER_URL;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.UserProperties.ACTIVE;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
@@ -40,7 +38,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -110,9 +107,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected Button add = new Button();
   protected Button switchUser = new Button();
   protected Button viewLaboratory = new Button();
-  protected Html switchUserForm = new Html(
-      "<form action=\"" + SWITCH_USER_URL + "\" method=\"post\" style=\"display:none;\"></form>");
-  protected Html switchUsername = new Html("<input name=\"" + SWITCH_USERNAME_PARAMETER + "\">");
   protected UserDialog dialog;
   protected LaboratoryDialog laboratoryDialog;
   private transient UsersViewPresenter presenter;
@@ -132,7 +126,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     setId(ID);
     setSizeFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    add(header, users, error, buttonsLayout, switchUserForm);
+    add(header, users, error, buttonsLayout);
     expand(users);
     buttonsLayout.add(add, switchUser, viewLaboratory);
     header.setId(HEADER);
@@ -186,9 +180,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     add.addClickListener(e -> presenter.add());
     switchUser.setId(SWITCH_USER);
     switchUser.addClickListener(e -> presenter.switchUser());
-    switchUserForm.setId(SWITCH_USER_FORM);
-    switchUserForm.getElement().appendChild(switchUsername.getElement());
-    switchUsername.setId(SWITCH_USERNAME);
     viewLaboratory.setId(VIEW_LABORATORY);
     viewLaboratory.addClickListener(e -> presenter.viewLaboratory());
     presenter.init(this);

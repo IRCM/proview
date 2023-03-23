@@ -28,8 +28,10 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.web.AccessDeniedViewElement;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.Headless;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninViewElement;
+import ca.qc.ircm.proview.web.ViewLayoutElement;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -120,14 +122,18 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
+  @Headless(false)
   public void switchUser() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
-    view.users().select(1);
+    view.users().select(4);
 
     view.switchUser().click();
 
     $(SubmissionsViewElement.class).waitForFirst();
+    ViewLayoutElement viewLayout = $(ViewLayoutElement.class).waitForFirst();
+    assertTrue(viewLayout.exitSwitchUser().isDisplayed());
+    assertFalse(viewLayout.users().isDisplayed());
   }
 
   @Test

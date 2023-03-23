@@ -1,0 +1,172 @@
+/*
+ * Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package ca.qc.ircm.proview.security;
+
+import static ca.qc.ircm.proview.security.SwitchUserService.ROLE_PREVIOUS_ADMINISTRATOR;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.USER;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserRole;
+import com.vaadin.flow.server.VaadinServletRequest;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsChecker;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.web.authentication.switchuser.SwitchUserGrantedAuthority;
+
+/**
+ * Tests for {@link SwitchUserService}.
+ */
+@ServiceTestAnnotations
+@WithMockUser
+public class SwitchUserServiceTest extends AbstractKaribuTestCase {
+  @Autowired
+  private SwitchUserService service;
+  @Autowired
+  private UserDetailsService userDetailsService;
+  @Autowired
+  private UserRepository repository;
+  @MockBean
+  private ApplicationEventPublisher eventPublisher;
+  @MockBean
+  private UserDetailsChecker userDetailsChecker;
+
+  @BeforeEach
+  public void beforeEach() {
+    service.setUserDetailsChecker(userDetailsChecker);
+  }
+
+  private org.springframework.security.core.userdetails.User userDetails(User user,
+      String... roles) {
+    Collection<GrantedAuthority> authorities =
+        Stream.of(roles).map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+    org.springframework.security.core.userdetails.User userDetails =
+        new org.springframework.security.core.userdetails.User(user.getEmail(),
+            user.getHashedPassword(), authorities);
+    return userDetails;
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void switchUser() {
+    User user = repository.findById(10L).get();
+    service.switchUser(user, VaadinServletRequest.getCurrent());
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    assertTrue(authentication.getPrincipal() instanceof UserDetailsWithId);
+    UserDetailsWithId userDetails = (UserDetailsWithId) authentication.getPrincipal();
+    assertEquals(10L, userDetails.getId());
+    assertEquals("christopher.anderson@ircm.qc.ca", userDetails.getUsername());
+    assertEquals(user.getHashedPassword(), userDetails.getPassword());
+    assertTrue(authentication.getAuthorities().contains(new SimpleGrantedAuthority(USER)));
+    Optional<SwitchUserGrantedAuthority> optionalSwitchUserGrantedAuthority =
+        authentication.getAuthorities().stream()
+            .filter(authority -> authority instanceof SwitchUserGrantedAuthority)
+            .map(authority -> (SwitchUserGrantedAuthority) authority).findFirst();
+    assertTrue(optionalSwitchUserGrantedAuthority.isPresent());
+    SwitchUserGrantedAuthority switchUserGrantedAuthority =
+        optionalSwitchUserGrantedAuthority.get();
+    assertEquals(ROLE_PREVIOUS_ADMINISTRATOR, switchUserGrantedAuthority.getAuthority());
+    assertNotNull(switchUserGrantedAuthority.getSource());
+    Authentication previousAuthentication = switchUserGrantedAuthority.getSource();
+    assertTrue(previousAuthentication.getPrincipal() instanceof UserDetailsWithId);
+    UserDetailsWithId previousUserDetails =
+        (UserDetailsWithId) previousAuthentication.getPrincipal();
+    assertEquals(1L, previousUserDetails.getId());
+    assertEquals("proview@ircm.qc.ca", previousUserDetails.getUsername());
+    assertTrue(previousAuthentication.getAuthorities().contains(new SimpleGrantedAuthority(ADMIN)));
+  }
+
+  @Test
+  @WithAnonymousUser
+  public void switchUser_AccessDenied_Anonymous() {
+    User user = repository.findById(10L).get();
+    assertThrows(AccessDeniedException.class, () -> {
+      service.switchUser(user, VaadinServletRequest.getCurrent());
+    });
+  }
+
+  @Test
+  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  public void switchUser_AccessDenied() {
+    User user = repository.findById(10L).get();
+    assertThrows(AccessDeniedException.class, () -> {
+      service.switchUser(user, VaadinServletRequest.getCurrent());
+    });
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void switchUser_NullSwitchTo() {
+    assertThrows(NullPointerException.class, () -> {
+      service.switchUser(null, VaadinServletRequest.getCurrent());
+    });
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void switchUser_NullRequest() {
+    User user = repository.findById(10L).get();
+    assertThrows(NullPointerException.class, () -> {
+      service.switchUser(user, null);
+    });
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void exitSwitchUser() {
+    User user = repository.findById(10L).get();
+    service.switchUser(user, VaadinServletRequest.getCurrent());
+    service.exitSwitchUser();
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    assertTrue(authentication.getPrincipal() instanceof UserDetailsWithId);
+    UserDetailsWithId userDetails = (UserDetailsWithId) authentication.getPrincipal();
+    assertEquals(1L, userDetails.getId());
+    assertEquals("proview@ircm.qc.ca", userDetails.getUsername());
+    assertTrue(authentication.getAuthorities().contains(new SimpleGrantedAuthority(ADMIN)));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void exitSwitchUser_NotSwitched() {
+    assertThrows(AuthenticationCredentialsNotFoundException.class, () -> service.exitSwitchUser());
+  }
+}
