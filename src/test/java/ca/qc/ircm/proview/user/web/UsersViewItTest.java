@@ -28,7 +28,6 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.web.AccessDeniedViewElement;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
-import ca.qc.ircm.proview.test.config.Headless;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import ca.qc.ircm.proview.web.ViewLayoutElement;
@@ -122,7 +121,6 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  @Headless(false)
   public void switchUser() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
