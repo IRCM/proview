@@ -75,6 +75,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  * Tests for {@link UsersViewPresenter}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("proview@ircm.qc.ca")
 public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @Autowired
   private UsersViewPresenter presenter;

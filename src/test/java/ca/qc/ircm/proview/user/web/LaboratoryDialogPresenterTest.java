@@ -53,11 +53,13 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link LaboratoryDialogPresenter}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("proview@ircm.qc.ca")
 public class LaboratoryDialogPresenterTest extends AbstractKaribuTestCase {
   @Autowired
   private LaboratoryDialogPresenter presenter;

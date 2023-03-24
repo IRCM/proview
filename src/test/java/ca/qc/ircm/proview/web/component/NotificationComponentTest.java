@@ -25,11 +25,13 @@ import com.github.mvysny.kaributesting.v10.NotificationsKt;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link NotificationComponent}.
  */
 @NonTransactionalTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class NotificationComponentTest extends AbstractKaribuTestCase {
   private NotificationComponentForTest notificationComponent = new NotificationComponentForTest();
 

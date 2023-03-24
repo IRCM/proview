@@ -79,11 +79,13 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link HistoryView}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("proview@ircm.qc.ca")
 public class HistoryViewTest extends AbstractKaribuTestCase {
   private HistoryView view;
   @Mock

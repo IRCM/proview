@@ -62,11 +62,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link UserForm}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class UserFormTest extends AbstractKaribuTestCase {
   private UserForm form;
   @Mock

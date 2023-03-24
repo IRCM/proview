@@ -43,11 +43,13 @@ import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link GuidelinesView}.
  */
 @NonTransactionalTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class GuidelinesViewTest extends AbstractKaribuTestCase {
   private GuidelinesView view;
   @Autowired

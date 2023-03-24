@@ -34,11 +34,13 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link CategoryComponent}.
  */
 @NonTransactionalTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class CategoryComponentTest extends AbstractKaribuTestCase {
   private CategoryComponent component;
   @Mock

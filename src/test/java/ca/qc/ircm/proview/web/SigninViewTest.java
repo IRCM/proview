@@ -64,11 +64,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 
 /**
  * Tests for {@link SigninView}.
  */
 @NonTransactionalTestAnnotations
+@WithAnonymousUser
 public class SigninViewTest extends AbstractKaribuTestCase {
   private SigninView view;
   @Autowired

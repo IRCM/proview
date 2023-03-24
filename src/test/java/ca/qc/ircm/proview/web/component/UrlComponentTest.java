@@ -23,11 +23,13 @@ import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.ContactView;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link UrlComponent}.
  */
 @NonTransactionalTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class UrlComponentTest extends AbstractKaribuTestCase {
   private UrlComponentForTest urlComponent = new UrlComponentForTest();
 

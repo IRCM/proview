@@ -91,11 +91,13 @@ import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link LcmsmsSubmissionForm}.
  */
 @NonTransactionalTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class LcmsmsSubmissionFormTest extends AbstractKaribuTestCase {
   private LcmsmsSubmissionForm form;
   @Mock

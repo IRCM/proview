@@ -36,11 +36,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link UserDialogPresenter}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("proview@ircm.qc.ca")
 public class UserDialogPresenterTest extends AbstractKaribuTestCase {
   private UserDialogPresenter presenter;
   @Mock

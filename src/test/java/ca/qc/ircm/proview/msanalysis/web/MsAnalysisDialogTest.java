@@ -70,11 +70,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link MsAnalysisDialog}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("proview@ircm.qc.ca")
 public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
   private MsAnalysisDialog dialog;
   @Mock

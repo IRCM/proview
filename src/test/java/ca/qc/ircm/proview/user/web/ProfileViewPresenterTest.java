@@ -32,7 +32,6 @@ import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
-import ca.qc.ircm.proview.web.SigninView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -43,11 +42,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link ProfileViewPresenter}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ProfileViewPresenterTest extends AbstractKaribuTestCase {
   private ProfileViewPresenter presenter;
   @Mock
@@ -109,7 +110,7 @@ public class ProfileViewPresenterTest extends AbstractKaribuTestCase {
 
     verify(view.form).isValid();
     verify(service).save(eq(user), eq(password));
-    assertCurrentView(SigninView.class);
+    assertCurrentView(ProfileView.class);
     verify(view).showNotification(resources.message(SAVED));
   }
 }

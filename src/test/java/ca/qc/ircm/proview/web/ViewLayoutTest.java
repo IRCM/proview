@@ -79,6 +79,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
  * Tests for {@link ViewLayout}.
  */
 @NonTransactionalTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ViewLayoutTest extends AbstractKaribuTestCase {
   private ViewLayout view;
   @MockBean

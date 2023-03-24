@@ -64,11 +64,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link SubmissionDialog}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionDialogTest extends AbstractKaribuTestCase {
   private SubmissionDialog dialog;
   @Mock

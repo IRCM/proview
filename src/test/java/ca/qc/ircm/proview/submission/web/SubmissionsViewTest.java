@@ -112,11 +112,13 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link SubmissionsView}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionsViewTest extends AbstractKaribuTestCase {
   private SubmissionsView view;
   @Mock

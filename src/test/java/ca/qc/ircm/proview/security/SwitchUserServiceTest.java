@@ -57,7 +57,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserGran
  * Tests for {@link SwitchUserService}.
  */
 @ServiceTestAnnotations
-@WithMockUser
+@WithUserDetails("proview@ircm.qc.ca")
 public class SwitchUserServiceTest extends AbstractKaribuTestCase {
   @Autowired
   private SwitchUserService service;
@@ -86,7 +86,6 @@ public class SwitchUserServiceTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  @WithUserDetails("proview@ircm.qc.ca")
   public void switchUser() {
     User user = repository.findById(10L).get();
     service.switchUser(user, VaadinServletRequest.getCurrent());
@@ -134,7 +133,6 @@ public class SwitchUserServiceTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  @WithUserDetails("proview@ircm.qc.ca")
   public void switchUser_NullSwitchTo() {
     assertThrows(NullPointerException.class, () -> {
       service.switchUser(null, VaadinServletRequest.getCurrent());
@@ -142,7 +140,6 @@ public class SwitchUserServiceTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  @WithUserDetails("proview@ircm.qc.ca")
   public void switchUser_NullRequest() {
     User user = repository.findById(10L).get();
     assertThrows(NullPointerException.class, () -> {
@@ -151,7 +148,6 @@ public class SwitchUserServiceTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  @WithUserDetails("proview@ircm.qc.ca")
   public void exitSwitchUser() {
     User user = repository.findById(10L).get();
     service.switchUser(user, VaadinServletRequest.getCurrent());
@@ -165,7 +161,6 @@ public class SwitchUserServiceTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  @WithUserDetails("proview@ircm.qc.ca")
   public void exitSwitchUser_NotSwitched() {
     assertThrows(AuthenticationCredentialsNotFoundException.class, () -> service.exitSwitchUser());
   }

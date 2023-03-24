@@ -46,11 +46,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 
 /**
  * Tests for {@link UseForgotPasswordViewPresenter}.
  */
 @ServiceTestAnnotations
+@WithAnonymousUser
 public class UseForgotPasswordViewPresenterTest extends AbstractKaribuTestCase {
   private UseForgotPasswordViewPresenter presenter;
   @Mock

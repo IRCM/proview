@@ -42,11 +42,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link PrintSubmissionView}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class PrintSubmissionViewTest extends AbstractKaribuTestCase {
   private PrintSubmissionView view;
   @Mock

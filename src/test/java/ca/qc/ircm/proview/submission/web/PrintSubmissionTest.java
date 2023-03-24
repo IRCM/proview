@@ -54,11 +54,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link PrintSubmission}.
  */
 @ServiceTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class PrintSubmissionTest extends AbstractKaribuTestCase {
   @Autowired
   private PrintSubmission component;

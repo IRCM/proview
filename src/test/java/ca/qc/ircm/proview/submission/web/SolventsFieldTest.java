@@ -34,11 +34,13 @@ import java.util.List;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link SolventsField}.
  */
 @NonTransactionalTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SolventsFieldTest extends AbstractKaribuTestCase {
   private SolventsField fields;
   private Locale locale = ENGLISH;
