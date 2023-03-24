@@ -63,8 +63,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link SigninView}.
@@ -75,7 +75,7 @@ public class SigninViewTest extends AbstractKaribuTestCase {
   private SigninView view;
   @Autowired
   private SecurityConfiguration configuration;
-  @MockBean
+  @Autowired
   private AuthenticatedUser authenticatedUser;
   @Mock
   private AfterNavigationEvent afterNavigationEvent;
@@ -230,14 +230,13 @@ public class SigninViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void beforeEnter_Anonymous() {
-    when(authenticatedUser.isAnonymous()).thenReturn(true);
     view.beforeEnter(beforeEnterEvent);
     verifyNoInteractions(beforeEnterEvent);
   }
 
   @Test
+  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void beforeEnter_User() {
-    when(authenticatedUser.isAnonymous()).thenReturn(false);
     view.beforeEnter(beforeEnterEvent);
     verify(beforeEnterEvent).forwardTo(MainView.class);
   }
