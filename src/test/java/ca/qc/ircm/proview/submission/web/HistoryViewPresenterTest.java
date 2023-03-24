@@ -56,6 +56,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -69,6 +70,18 @@ public class HistoryViewPresenterTest extends AbstractKaribuTestCase {
   private ActivityService service;
   @MockBean
   private SubmissionService submissionService;
+  @MockBean
+  private SubmissionDialog dialog;
+  @Autowired
+  private ObjectFactory<SubmissionDialog> dialogFactory;
+  @MockBean
+  private MsAnalysisDialog msAnalysisDialog;
+  @Autowired
+  private ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
+  @MockBean
+  private TreatmentDialog treatmentDialog;
+  @Autowired
+  private ObjectFactory<TreatmentDialog> treatmentDialogFactory;
   @Mock
   private HistoryView view;
   @Mock
@@ -107,9 +120,9 @@ public class HistoryViewPresenterTest extends AbstractKaribuTestCase {
     view.date = mock(Grid.Column.class);
     view.description = mock(Grid.Column.class);
     view.explanation = mock(Grid.Column.class);
-    view.dialog = mock(SubmissionDialog.class);
-    view.treatmentDialog = mock(TreatmentDialog.class);
-    view.msAnalysisDialog = mock(MsAnalysisDialog.class);
+    view.dialogFactory = dialogFactory;
+    view.treatmentDialogFactory = treatmentDialogFactory;
+    view.msAnalysisDialogFactory = msAnalysisDialogFactory;
     submission = submissionRepository.findById(163L).get();
     activities = repository.findAll();
     presenter.init(view);
@@ -141,9 +154,9 @@ public class HistoryViewPresenterTest extends AbstractKaribuTestCase {
     when(service.record(any())).thenReturn(Optional.of(submission));
     presenter.view(activity, locale);
     verify(service).record(activity);
-    verify(view.dialog).setSubmission(submission);
-    verify(view.dialog).open();
-    verify(view.dialog).addSavedListener(submissionSavedListenerCaptor.capture());
+    verify(dialog).setSubmission(submission);
+    verify(dialog).open();
+    verify(dialog).addSavedListener(submissionSavedListenerCaptor.capture());
     ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener =
         submissionSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
@@ -155,16 +168,16 @@ public class HistoryViewPresenterTest extends AbstractKaribuTestCase {
   public void view_MsAnalysis() {
     when(service.record(any())).thenReturn(Optional.of(msAnalysis));
     presenter.view(activity, locale);
-    verify(view.msAnalysisDialog).setMsAnalysis(msAnalysis);
-    verify(view.msAnalysisDialog).open();
+    verify(msAnalysisDialog).setMsAnalysis(msAnalysis);
+    verify(msAnalysisDialog).open();
   }
 
   @Test
   public void view_Treatment() {
     when(service.record(any())).thenReturn(Optional.of(treatment));
     presenter.view(activity, locale);
-    verify(view.treatmentDialog).setTreatment(treatment);
-    verify(view.treatmentDialog).open();
+    verify(treatmentDialog).setTreatment(treatment);
+    verify(treatmentDialog).open();
   }
 
   @Test

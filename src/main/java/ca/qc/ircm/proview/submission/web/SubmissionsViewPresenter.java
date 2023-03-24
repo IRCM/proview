@@ -37,6 +37,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.SampleStatus;
+import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
@@ -114,8 +115,6 @@ public class SubmissionsViewPresenter {
     view.editStatus.setVisible(authenticatedUser.hasRole(ADMIN));
     view.history.setVisible(authenticatedUser.hasRole(ADMIN));
     loadSubmissions();
-    view.dialog.addSavedListener(e -> loadSubmissions());
-    view.statusDialog.addSavedListener(e -> loadSubmissions());
   }
 
   private void loadSubmissions() {
@@ -204,15 +203,19 @@ public class SubmissionsViewPresenter {
 
   void view(Submission submission) {
     Submission database = service.get(submission.getId()).orElse(null);
-    view.dialog.setSubmission(database);
-    view.dialog.open();
+    SubmissionDialog dialog = view.dialogFactory.getObject();
+    dialog.setSubmission(database);
+    dialog.open();
+    dialog.addSavedListener(e -> loadSubmissions());
   }
 
   void editStatus(Submission submission) {
     if (authenticatedUser.hasRole(ADMIN)) {
       Submission database = service.get(submission.getId()).orElse(null);
-      view.statusDialog.setSubmission(database);
-      view.statusDialog.open();
+      SamplesStatusDialog statusDialog = view.statusDialogFactory.getObject();
+      statusDialog.setSubmission(database);
+      statusDialog.open();
+      statusDialog.addSavedListener(e -> loadSubmissions());
     }
   }
 

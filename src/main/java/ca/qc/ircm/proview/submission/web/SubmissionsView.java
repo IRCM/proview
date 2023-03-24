@@ -75,6 +75,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -134,17 +135,18 @@ public class SubmissionsView extends VerticalLayout
   protected Button add = new Button();
   protected Button editStatus = new Button();
   protected Button history = new Button();
-  protected SubmissionDialog dialog;
-  protected SamplesStatusDialog statusDialog;
+  protected ObjectFactory<SubmissionDialog> dialogFactory;
+  protected ObjectFactory<SamplesStatusDialog> statusDialogFactory;
   private transient AuthenticatedUser authenticatedUser;
   private transient SubmissionsViewPresenter presenter;
 
   @Autowired
-  protected SubmissionsView(SubmissionsViewPresenter presenter, SubmissionDialog dialog,
-      SamplesStatusDialog statusDialog, AuthenticatedUser authenticatedUser) {
+  protected SubmissionsView(SubmissionsViewPresenter presenter,
+      ObjectFactory<SubmissionDialog> dialogFactory,
+      ObjectFactory<SamplesStatusDialog> statusDialogFactory, AuthenticatedUser authenticatedUser) {
     this.presenter = presenter;
-    this.dialog = dialog;
-    this.statusDialog = statusDialog;
+    this.dialogFactory = dialogFactory;
+    this.statusDialogFactory = statusDialogFactory;
     this.authenticatedUser = authenticatedUser;
   }
 

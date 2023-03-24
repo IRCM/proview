@@ -109,6 +109,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -120,6 +121,10 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   private SubmissionsView view;
   @Mock
   private SubmissionsViewPresenter presenter;
+  @Mock
+  private ObjectFactory<SubmissionDialog> dialogFactory;
+  @Mock
+  private ObjectFactory<SamplesStatusDialog> statusDialogFactory;
   @MockBean
   private AuthenticatedUser authenticatedUser;
   @Captor
@@ -144,8 +149,7 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   @BeforeEach
   public void beforeTest() {
     ui.setLocale(locale);
-    view = new SubmissionsView(presenter, new SubmissionDialog(), new SamplesStatusDialog(),
-        authenticatedUser);
+    view = new SubmissionsView(presenter, dialogFactory, statusDialogFactory, authenticatedUser);
     view.init();
     submissions = repository.findAll();
   }

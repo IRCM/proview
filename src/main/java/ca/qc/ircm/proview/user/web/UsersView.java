@@ -63,6 +63,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -107,16 +108,16 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected Button add = new Button();
   protected Button switchUser = new Button();
   protected Button viewLaboratory = new Button();
-  protected UserDialog dialog;
-  protected LaboratoryDialog laboratoryDialog;
+  protected ObjectFactory<UserDialog> dialogFactory;
+  protected ObjectFactory<LaboratoryDialog> laboratoryDialogFactory;
   private transient UsersViewPresenter presenter;
 
   @Autowired
-  protected UsersView(UsersViewPresenter presenter, UserDialog dialog,
-      LaboratoryDialog laboratoryDialog) {
+  protected UsersView(UsersViewPresenter presenter, ObjectFactory<UserDialog> dialogFactory,
+      ObjectFactory<LaboratoryDialog> laboratoryDialogFactory) {
     this.presenter = presenter;
-    this.dialog = dialog;
-    this.laboratoryDialog = laboratoryDialog;
+    this.dialogFactory = dialogFactory;
+    this.laboratoryDialogFactory = laboratoryDialogFactory;
   }
 
   @SuppressWarnings("unchecked")

@@ -73,6 +73,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -89,6 +90,14 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   private SubmissionService service;
   @MockBean
   private AuthenticatedUser authenticatedUser;
+  @MockBean
+  private SubmissionDialog dialog;
+  @Autowired
+  private ObjectFactory<SubmissionDialog> dialogFactory;
+  @MockBean
+  private SamplesStatusDialog statusDialog;
+  @Autowired
+  private ObjectFactory<SamplesStatusDialog> statusDialogFactory;
   @Autowired
   private SubmissionRepository repository;
   @Captor
@@ -135,8 +144,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     view.add = new Button();
     view.editStatus = new Button();
     view.history = new Button();
-    view.dialog = mock(SubmissionDialog.class);
-    view.statusDialog = mock(SamplesStatusDialog.class);
+    view.dialogFactory = dialogFactory;
+    view.statusDialogFactory = statusDialogFactory;
     submissions = repository.findAll();
     when(service.all(any())).thenReturn(submissions);
   }
@@ -310,8 +319,9 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
     presenter.view(submission);
     verify(service).get(32L);
-    verify(view.dialog).setSubmission(databaseSubmission);
-    verify(view.dialog).open();
+    verify(dialog).setSubmission(databaseSubmission);
+    verify(dialog).open();
+    verify(dialog).addSavedListener(any());
   }
 
   @Test
@@ -322,8 +332,9 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(service.get(any(Long.class))).thenReturn(Optional.empty());
     presenter.view(submission);
     verify(service).get(2L);
-    verify(view.dialog).setSubmission(null);
-    verify(view.dialog).open();
+    verify(dialog).setSubmission(null);
+    verify(dialog).open();
+    verify(dialog).addSavedListener(any());
   }
 
   @Test
@@ -335,8 +346,9 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
     presenter.editStatus(submission);
     verify(service, never()).get(any());
-    verify(view.statusDialog, never()).setSubmission(any());
-    verify(view.statusDialog, never()).open();
+    verify(statusDialog, never()).setSubmission(any());
+    verify(statusDialog, never()).open();
+    verify(statusDialog, never()).addSavedListener(any());
   }
 
   @Test
@@ -350,8 +362,9 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
     presenter.editStatus(submission);
     verify(service).get(32L);
-    verify(view.statusDialog).setSubmission(databaseSubmission);
-    verify(view.statusDialog).open();
+    verify(statusDialog).setSubmission(databaseSubmission);
+    verify(statusDialog).open();
+    verify(statusDialog).addSavedListener(any());
   }
 
   @Test
@@ -364,8 +377,9 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(service.get(any(Long.class))).thenReturn(Optional.empty());
     presenter.editStatus(submission);
     verify(service).get(2L);
-    verify(view.statusDialog).setSubmission(null);
-    verify(view.statusDialog).open();
+    verify(statusDialog).setSubmission(null);
+    verify(statusDialog).open();
+    verify(statusDialog).addSavedListener(any());
   }
 
   @Test
@@ -393,7 +407,12 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @SuppressWarnings("unchecked")
   public void refreshOnSaved_Dialog() {
     presenter.init(view);
-    verify(view.dialog).addSavedListener(submissionSavedListenerCaptor.capture());
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(32L);
+    Submission databaseSubmission = repository.findById(32L).get();
+    when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
+    presenter.view(submission);
+    verify(dialog).addSavedListener(submissionSavedListenerCaptor.capture());
     ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener =
         submissionSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
@@ -403,8 +422,15 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   @SuppressWarnings("unchecked")
   public void refreshOnSaved_StatusDialog() {
+    when(authenticatedUser.hasRole(any())).thenReturn(true);
+    when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
     presenter.init(view);
-    verify(view.statusDialog).addSavedListener(statusSavedListenerCaptor.capture());
+    Submission submission = mock(Submission.class);
+    when(submission.getId()).thenReturn(32L);
+    Submission databaseSubmission = repository.findById(32L).get();
+    when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
+    presenter.editStatus(submission);
+    verify(statusDialog).addSavedListener(statusSavedListenerCaptor.capture());
     ComponentEventListener<SavedEvent<SamplesStatusDialog>> savedListener =
         statusSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
@@ -430,8 +456,9 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(service.get(any(Long.class))).thenReturn(Optional.of(databaseSubmission));
     presenter.editSelectedStatus(locale);
     verify(service).get(32L);
-    verify(view.statusDialog).setSubmission(databaseSubmission);
-    verify(view.statusDialog).open();
+    verify(statusDialog).setSubmission(databaseSubmission);
+    verify(statusDialog).open();
+    verify(statusDialog).addSavedListener(any());
     verify(view, never()).showNotification(any());
   }
 
@@ -446,8 +473,9 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(service.get(any(Long.class))).thenReturn(Optional.empty());
     presenter.editSelectedStatus(locale);
     verify(service).get(2L);
-    verify(view.statusDialog).setSubmission(null);
-    verify(view.statusDialog).open();
+    verify(statusDialog).setSubmission(null);
+    verify(statusDialog).open();
+    verify(statusDialog).addSavedListener(any());
     verify(view, never()).showNotification(any());
   }
 
@@ -459,8 +487,9 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(view.submissions.getSelectedItems()).thenReturn(Collections.emptySet());
     presenter.editSelectedStatus(locale);
     verify(service, never()).get(any());
-    verify(view.statusDialog, never()).setSubmission(any());
-    verify(view.statusDialog, never()).open();
+    verify(statusDialog, never()).setSubmission(any());
+    verify(statusDialog, never()).open();
+    verify(statusDialog, never()).addSavedListener(any());
     verify(view).showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
   }
 

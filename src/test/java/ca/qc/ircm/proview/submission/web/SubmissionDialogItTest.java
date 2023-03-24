@@ -54,7 +54,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   private SubmissionDialogElement openDialog(int row) {
     openView(VIEW_NAME);
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
-    view.submissions().view(row).doubleClick();
+    view.submissions().view(row).click();
     return view.dialog();
   }
 

@@ -75,8 +75,6 @@ public class UsersViewPresenter {
     view.add.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
     view.switchUser.setVisible(authenticatedUser.hasRole(ADMIN));
     view.viewLaboratory.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
-    view.dialog.addSavedListener(e -> loadUsers());
-    view.laboratoryDialog.addSavedListener(e -> loadUsers());
   }
 
   private void loadUsers() {
@@ -119,8 +117,10 @@ public class UsersViewPresenter {
 
   void view(User user) {
     clearError();
-    view.dialog.setUser(service.get(user.getId()).orElse(null));
-    view.dialog.open();
+    UserDialog dialog = view.dialogFactory.getObject();
+    dialog.setUser(service.get(user.getId()).orElse(null));
+    dialog.open();
+    dialog.addSavedListener(e -> loadUsers());
   }
 
   void viewLaboratory() {
@@ -131,16 +131,16 @@ public class UsersViewPresenter {
       view.error.setText(resources.message(USERS_REQUIRED));
       view.error.setVisible(true);
     } else {
-      view.laboratoryDialog
-          .setLaboratory(laboratoryService.get(user.getLaboratory().getId()).orElse(null));
-      view.laboratoryDialog.open();
+      viewLaboratory(user.getLaboratory());
     }
   }
 
   void viewLaboratory(Laboratory laboratory) {
     clearError();
-    view.laboratoryDialog.setLaboratory(laboratoryService.get(laboratory.getId()).orElse(null));
-    view.laboratoryDialog.open();
+    LaboratoryDialog laboratoryDialog = view.laboratoryDialogFactory.getObject();
+    laboratoryDialog.setLaboratory(laboratoryService.get(laboratory.getId()).orElse(null));
+    laboratoryDialog.open();
+    laboratoryDialog.addSavedListener(e -> loadUsers());
   }
 
   void toggleActive(User user) {
@@ -163,8 +163,10 @@ public class UsersViewPresenter {
   }
 
   void add() {
-    view.dialog.setUser(new User());
-    view.dialog.open();
+    UserDialog dialog = view.dialogFactory.getObject();
+    dialog.setUser(new User());
+    dialog.open();
+    dialog.addSavedListener(e -> loadUsers());
   }
 
   void showError(Map<String, List<String>> parameters, Locale locale) {

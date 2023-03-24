@@ -66,6 +66,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -87,6 +88,14 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   private SwitchUserService switchUserService;
   @MockBean
   private AuthenticatedUser authenticatedUser;
+  @MockBean
+  private UserDialog dialog;
+  @Autowired
+  private ObjectFactory<UserDialog> dialogFactory;
+  @MockBean
+  private LaboratoryDialog laboratoryDialog;
+  @Autowired
+  private ObjectFactory<LaboratoryDialog> laboratoryDialogFactory;
   @Mock
   private DataProvider<User, Void> dataProvider;
   @Captor
@@ -119,8 +128,8 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     view.add = new Button();
     view.switchUser = new Button();
     view.viewLaboratory = new Button();
-    view.dialog = mock(UserDialog.class);
-    view.laboratoryDialog = mock(LaboratoryDialog.class);
+    view.dialogFactory = dialogFactory;
+    view.laboratoryDialogFactory = laboratoryDialogFactory;
     users = repository.findAll();
     when(service.all(any(), any(Laboratory.class))).thenReturn(users);
     when(service.all(any())).thenReturn(users);
@@ -300,8 +309,9 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     when(service.get(any(Long.class))).thenReturn(Optional.of(databaseUser));
     presenter.view(user);
     verify(service).get(2L);
-    verify(view.dialog).setUser(databaseUser);
-    verify(view.dialog).open();
+    verify(dialog).setUser(databaseUser);
+    verify(dialog).open();
+    verify(dialog).addSavedListener(any());
   }
 
   @Test
@@ -312,8 +322,9 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     when(service.get(any(Long.class))).thenReturn(Optional.empty());
     presenter.view(user);
     verify(service).get(2L);
-    verify(view.dialog).setUser(null);
-    verify(view.dialog).open();
+    verify(dialog).setUser(null);
+    verify(dialog).open();
+    verify(dialog).addSavedListener(any());
   }
 
   @Test
@@ -327,8 +338,9 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     presenter.viewLaboratory();
     assertFalse(view.error.isVisible());
     verify(laboratoryService).get(2L);
-    verify(view.laboratoryDialog).setLaboratory(databaseLaboratory);
-    verify(view.laboratoryDialog).open();
+    verify(laboratoryDialog).setLaboratory(databaseLaboratory);
+    verify(laboratoryDialog).open();
+    verify(laboratoryDialog).addSavedListener(any());
   }
 
   @Test
@@ -339,8 +351,9 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     assertEquals(resources.message(USERS_REQUIRED), view.error.getText());
     assertTrue(view.error.isVisible());
     verify(laboratoryService, never()).get(any());
-    verify(view.laboratoryDialog, never()).setLaboratory(any());
-    verify(view.laboratoryDialog, never()).open();
+    verify(laboratoryDialog, never()).setLaboratory(any());
+    verify(laboratoryDialog, never()).open();
+    verify(laboratoryDialog, never()).addSavedListener(any());
   }
 
   @Test
@@ -352,8 +365,9 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     when(laboratoryService.get(any(Long.class))).thenReturn(Optional.of(databaseLaboratory));
     presenter.viewLaboratory(laboratory);
     verify(laboratoryService).get(2L);
-    verify(view.laboratoryDialog).setLaboratory(databaseLaboratory);
-    verify(view.laboratoryDialog).open();
+    verify(laboratoryDialog).setLaboratory(databaseLaboratory);
+    verify(laboratoryDialog).open();
+    verify(laboratoryDialog).addSavedListener(any());
   }
 
   @Test
@@ -364,15 +378,22 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
     when(laboratoryService.get(any(Long.class))).thenReturn(Optional.empty());
     presenter.viewLaboratory(laboratory);
     verify(laboratoryService).get(2L);
-    verify(view.laboratoryDialog).setLaboratory(null);
-    verify(view.laboratoryDialog).open();
+    verify(laboratoryDialog).setLaboratory(null);
+    verify(laboratoryDialog).open();
+    verify(laboratoryDialog).addSavedListener(any());
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void refreshOnSaved() {
     presenter.init(view);
-    verify(view.dialog).addSavedListener(userSavedListenerCaptor.capture());
+    User user = mock(User.class);
+    when(user.getId()).thenReturn(2L);
+    User databaseUser = repository.findById(2L).orElse(null);
+    when(service.get(any(Long.class))).thenReturn(Optional.of(databaseUser));
+    presenter.view(user);
+    verify(service).get(2L);
+    verify(dialog).addSavedListener(userSavedListenerCaptor.capture());
     ComponentEventListener<SavedEvent<UserDialog>> savedListener =
         userSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
@@ -383,7 +404,12 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   @SuppressWarnings("unchecked")
   public void refreshOnSaved_Laboratory() {
     presenter.init(view);
-    verify(view.laboratoryDialog).addSavedListener(laboratorySavedListenerCaptor.capture());
+    Laboratory laboratory = mock(Laboratory.class);
+    when(laboratory.getId()).thenReturn(2L);
+    Laboratory databaseLaboratory = laboratoryRepository.findById(2L).orElse(null);
+    when(laboratoryService.get(any(Long.class))).thenReturn(Optional.of(databaseLaboratory));
+    presenter.viewLaboratory(laboratory);
+    verify(laboratoryDialog).addSavedListener(laboratorySavedListenerCaptor.capture());
     ComponentEventListener<SavedEvent<LaboratoryDialog>> savedListener =
         laboratorySavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
@@ -447,13 +473,14 @@ public class UsersViewPresenterTest extends AbstractKaribuTestCase {
   public void add() {
     presenter.init(view);
     presenter.add();
-    verify(view.dialog).setUser(userCaptor.capture());
+    verify(dialog).setUser(userCaptor.capture());
     User user = userCaptor.getValue();
     assertNull(user.getId());
     assertNull(user.getEmail());
     assertNull(user.getName());
     assertNull(user.getLaboratory());
-    verify(view.dialog).open();
+    verify(dialog).open();
+    verify(dialog).addSavedListener(any());
   }
 
   @Test

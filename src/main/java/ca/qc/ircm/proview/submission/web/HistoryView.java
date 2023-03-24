@@ -50,6 +50,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -82,18 +83,20 @@ public class HistoryView extends VerticalLayout
   protected Column<Activity> date;
   protected Column<Activity> description;
   protected Column<Activity> explanation;
-  protected SubmissionDialog dialog;
-  protected MsAnalysisDialog msAnalysisDialog;
-  protected TreatmentDialog treatmentDialog;
+  protected ObjectFactory<SubmissionDialog> dialogFactory;
+  protected ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
+  protected ObjectFactory<TreatmentDialog> treatmentDialogFactory;
   private transient HistoryViewPresenter presenter;
 
   @Autowired
-  protected HistoryView(HistoryViewPresenter presenter, SubmissionDialog dialog,
-      MsAnalysisDialog msAnalysisDialog, TreatmentDialog treatmentDialog) {
+  protected HistoryView(HistoryViewPresenter presenter,
+      ObjectFactory<SubmissionDialog> dialogFactory,
+      ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory,
+      ObjectFactory<TreatmentDialog> treatmentDialogFactory) {
     this.presenter = presenter;
-    this.dialog = dialog;
-    this.msAnalysisDialog = msAnalysisDialog;
-    this.treatmentDialog = treatmentDialog;
+    this.dialogFactory = dialogFactory;
+    this.msAnalysisDialogFactory = msAnalysisDialogFactory;
+    this.treatmentDialogFactory = treatmentDialogFactory;
   }
 
   @PostConstruct

@@ -24,10 +24,12 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityComparator;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.Collections;
 import java.util.List;
@@ -68,15 +70,18 @@ public class HistoryViewPresenter {
       record = ((SubmissionSample) record).getSubmission();
     }
     if (record instanceof Submission) {
-      view.dialog.setSubmission((Submission) record);
-      view.dialog.open();
-      view.dialog.addSavedListener(e -> updateActivities());
+      SubmissionDialog dialog = view.dialogFactory.getObject();
+      dialog.setSubmission((Submission) record);
+      dialog.open();
+      dialog.addSavedListener(e -> updateActivities());
     } else if (record instanceof MsAnalysis) {
-      view.msAnalysisDialog.setMsAnalysis((MsAnalysis) record);
-      view.msAnalysisDialog.open();
+      MsAnalysisDialog msAnalysisDialog = view.msAnalysisDialogFactory.getObject();
+      msAnalysisDialog.setMsAnalysis((MsAnalysis) record);
+      msAnalysisDialog.open();
     } else if (record instanceof Treatment) {
-      view.treatmentDialog.setTreatment((Treatment) record);
-      view.treatmentDialog.open();
+      TreatmentDialog treatmentDialog = view.treatmentDialogFactory.getObject();
+      treatmentDialog.setTreatment((Treatment) record);
+      treatmentDialog.open();
     } else {
       AppResources resources = new AppResources(HistoryView.class, locale);
       view.showNotification(resources.message(VIEW_ERROR, record.getClass().getSimpleName()));

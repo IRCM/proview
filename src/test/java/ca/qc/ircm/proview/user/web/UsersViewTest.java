@@ -91,6 +91,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -101,6 +102,10 @@ public class UsersViewTest extends AbstractKaribuTestCase {
   private UsersView view;
   @Mock
   private UsersViewPresenter presenter;
+  @Mock
+  private ObjectFactory<UserDialog> dialogFactory;
+  @Mock
+  private ObjectFactory<LaboratoryDialog> laboratoryDialogFactory;
   @Captor
   private ArgumentCaptor<ValueProvider<User, String>> valueProviderCaptor;
   @Captor
@@ -121,7 +126,7 @@ public class UsersViewTest extends AbstractKaribuTestCase {
   @BeforeEach
   public void beforeTest() {
     ui.setLocale(locale);
-    view = new UsersView(presenter, new UserDialog(), new LaboratoryDialog());
+    view = new UsersView(presenter, dialogFactory, laboratoryDialogFactory);
     view.init();
     users = userRepository.findAll();
   }

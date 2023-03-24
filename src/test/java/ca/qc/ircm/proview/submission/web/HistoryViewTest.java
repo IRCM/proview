@@ -77,6 +77,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -91,6 +92,12 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
   private Submission submission;
   @Mock
   private BeforeEvent beforeEvent;
+  @Mock
+  private ObjectFactory<SubmissionDialog> dialogFactory;
+  @Mock
+  private ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
+  @Mock
+  private ObjectFactory<TreatmentDialog> treatmentDialogFactory;
   @Autowired
   private ActivityRepository repository;
   @Captor
@@ -109,8 +116,8 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
   @BeforeEach
   public void beforeTest() {
     ui.setLocale(locale);
-    view = new HistoryView(presenter, new SubmissionDialog(), new MsAnalysisDialog(),
-        new TreatmentDialog());
+    view =
+        new HistoryView(presenter, dialogFactory, msAnalysisDialogFactory, treatmentDialogFactory);
     view.init();
     activities = repository.findAll();
   }
