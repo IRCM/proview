@@ -37,7 +37,6 @@ import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.web.ProfileViewElement;
-import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.user.web.UsersViewElement;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
@@ -49,6 +48,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  * Integration tests for {@link ViewLayout}.
  */
 @TestBenchTestAnnotations
+@WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   private void open() {
     openView(VIEW_NAME);
@@ -63,7 +63,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void fieldsExistence_User() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -114,12 +113,10 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
+  @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Runas() throws Throwable {
-    openView(UsersView.VIEW_NAME);
-    SigninViewElement signinView = $(SigninViewElement.class).waitForFirst();
-    signinView.getUsernameField().setValue("proview@ircm.qc.ca");
-    signinView.getPasswordField().setValue("password");
-    signinView.getSubmitButton().click();
+    open();
+    $(ViewLayoutElement.class).waitForFirst().users().click();
     UsersViewElement usersView = $(UsersViewElement.class).waitForFirst();
     usersView.users().select(1);
     usersView.switchUser().click();
@@ -137,7 +134,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void submissions() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -146,7 +142,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void profile() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -164,12 +159,10 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
+  @WithUserDetails("proview@ircm.qc.ca")
   public void exitSwitchUser() throws Throwable {
-    openView(UsersView.VIEW_NAME);
-    SigninViewElement signinView = $(SigninViewElement.class).waitForFirst();
-    signinView.getUsernameField().setValue("proview@ircm.qc.ca");
-    signinView.getPasswordField().setValue("password");
-    signinView.getSubmitButton().click();
+    open();
+    $(ViewLayoutElement.class).waitForFirst().users().click();
     UsersViewElement usersView = $(UsersViewElement.class).waitForFirst();
     usersView.users().select(1);
     usersView.switchUser().click();
@@ -185,17 +178,12 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   @Test
   public void signout() throws Throwable {
     open();
-    SigninViewElement signinView = $(SigninViewElement.class).waitForFirst();
-    signinView.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
-    signinView.getPasswordField().setValue("password");
-    signinView.getSubmitButton().click();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.signout().click();
     $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void changeLanguage() throws Throwable {
     open();
     final Locale before = currentLocale();
@@ -206,7 +194,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void contact() throws Throwable {
     openView(GuidelinesView.VIEW_NAME);
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -215,7 +202,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void guidelines() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -224,7 +210,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void add() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -239,7 +224,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void edit() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -257,7 +241,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void print() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
