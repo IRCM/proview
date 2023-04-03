@@ -29,7 +29,6 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +59,6 @@ public class UserDialogPresenterTest extends AbstractKaribuTestCase {
   @BeforeEach
   public void beforeTest() {
     presenter = new UserDialogPresenter(userService);
-    dialog.header = new H3();
     dialog.form = mock(UserForm.class);
     dialog.buttonsLayout = new HorizontalLayout();
     dialog.save = new Button();

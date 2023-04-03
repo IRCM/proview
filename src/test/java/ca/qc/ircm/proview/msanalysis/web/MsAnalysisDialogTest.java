@@ -167,7 +167,6 @@ public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertEquals(id(HEADER), dialog.header.getId().orElse(""));
     assertEquals(id(DELETED), dialog.deleted.getId().orElse(""));
     assertEquals(id(MASS_DETECTION_INSTRUMENT), dialog.instrument.getId().orElse(""));
     assertEquals(id(SOURCE), dialog.source.getId().orElse(""));
@@ -180,7 +179,7 @@ public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
   public void labels() {
     mockColumns();
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(msAnalysisResources.message(DELETED), dialog.deleted.getText());
     assertEquals(msAnalysisResources.message(ACQUISITIONS), dialog.acquisitionsHeader.getText());
     verify(dialog.sample).setHeader(acquisitionResources.message(SAMPLE));
@@ -203,7 +202,7 @@ public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
     final AppResources acquisitionResources = new AppResources(Acquisition.class, locale);
     ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(msAnalysisResources.message(DELETED), dialog.deleted.getText());
     assertEquals(msAnalysisResources.message(ACQUISITIONS), dialog.acquisitionsHeader.getText());
     verify(dialog.sample).setHeader(acquisitionResources.message(SAMPLE));

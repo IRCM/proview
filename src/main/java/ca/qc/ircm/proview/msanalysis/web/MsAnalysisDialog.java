@@ -39,7 +39,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -63,7 +62,6 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
   public static final String HEADER = "header";
   private static final long serialVersionUID = -6114501684325516594L;
   private static final Logger logger = LoggerFactory.getLogger(MsAnalysisDialog.class);
-  protected H3 header = new H3();
   protected Div deleted = new Div();
   protected Div instrument = new Div();
   protected Div source = new Div();
@@ -94,10 +92,9 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
     setResizable(true);
     VerticalLayout layout = new VerticalLayout();
     add(layout);
-    layout.add(header, deleted, instrument, source, date, acquisitionsHeader, acquisitions);
+    layout.add(deleted, instrument, source, date, acquisitionsHeader, acquisitions);
     layout.setSizeFull();
     layout.expand(acquisitions);
-    header.setId(id(HEADER));
     deleted.setId(id(DELETED));
     deleted.setVisible(false);
     instrument.setId(id(MASS_DETECTION_INSTRUMENT));
@@ -126,7 +123,7 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
     final AppResources resource = new AppResources(MsAnalysisDialog.class, getLocale());
     final AppResources treatmentResource = new AppResources(MsAnalysis.class, getLocale());
     final AppResources treatedSampleResource = new AppResources(Acquisition.class, getLocale());
-    header.setText(resource.message(HEADER));
+    setHeaderTitle(resource.message(HEADER));
     deleted.setText(treatmentResource.message(property(DELETED, true)));
     acquisitionsHeader.setText(treatmentResource.message(ACQUISITIONS));
     sample.setHeader(treatedSampleResource.message(SAMPLE));

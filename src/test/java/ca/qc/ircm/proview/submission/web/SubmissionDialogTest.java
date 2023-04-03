@@ -123,7 +123,6 @@ public class SubmissionDialogTest extends AbstractKaribuTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertEquals(id(HEADER), dialog.header.getId().orElse(""));
     assertEquals(id(INSTRUMENT), dialog.instrument.getId().orElse(""));
     assertEquals(id(DATA_AVAILABLE_DATE), dialog.dataAvailableDate.getId().orElse(""));
     assertEquals(id(SAVE), dialog.save.getId().orElse(""));
@@ -138,7 +137,7 @@ public class SubmissionDialogTest extends AbstractKaribuTestCase {
   @Test
   public void labels() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
@@ -163,7 +162,7 @@ public class SubmissionDialogTest extends AbstractKaribuTestCase {
     final AppResources submissionResources = new AppResources(Submission.class, locale);
     ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
@@ -236,7 +235,7 @@ public class SubmissionDialogTest extends AbstractKaribuTestCase {
     dialog.setSubmission(submission);
 
     verify(presenter).setSubmission(submission);
-    assertEquals(experiment, dialog.header.getText());
+    assertEquals(experiment, dialog.getHeaderTitle());
   }
 
   @Test
@@ -250,7 +249,7 @@ public class SubmissionDialogTest extends AbstractKaribuTestCase {
     dialog.localeChange(mock(LocaleChangeEvent.class));
 
     verify(presenter).setSubmission(submission);
-    assertEquals(experiment, dialog.header.getText());
+    assertEquals(experiment, dialog.getHeaderTitle());
   }
 
   @Test
@@ -261,7 +260,7 @@ public class SubmissionDialogTest extends AbstractKaribuTestCase {
     dialog.setSubmission(submission);
 
     verify(presenter).setSubmission(submission);
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
   }
 
   @Test
@@ -278,6 +277,6 @@ public class SubmissionDialogTest extends AbstractKaribuTestCase {
     dialog.setSubmission(submission);
 
     verify(presenter).setSubmission(submission);
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
   }
 }

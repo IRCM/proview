@@ -91,7 +91,6 @@ public class LaboratoryDialogTest extends AbstractKaribuTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertEquals(id(HEADER), dialog.header.getId().orElse(""));
     assertEquals(id(NAME), dialog.name.getId().orElse(""));
     assertEquals(id(SAVE), dialog.save.getId().orElse(""));
     assertTrue(dialog.save.hasThemeName(ButtonVariant.LUMO_PRIMARY.getVariantName()));
@@ -103,7 +102,7 @@ public class LaboratoryDialogTest extends AbstractKaribuTestCase {
   @Test
   public void labels() {
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER, 0), dialog.header.getText());
+    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
     assertEquals(laboratoryResources.message(NAME), dialog.name.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -119,7 +118,7 @@ public class LaboratoryDialogTest extends AbstractKaribuTestCase {
     final AppResources webResources = new AppResources(Constants.class, locale);
     ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER, 0), dialog.header.getText());
+    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
     assertEquals(laboratoryResources.message(NAME), dialog.name.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -156,7 +155,7 @@ public class LaboratoryDialogTest extends AbstractKaribuTestCase {
     dialog.setLaboratory(laboratory);
 
     verify(presenter).setLaboratory(laboratory);
-    assertEquals(resources.message(HEADER, 0), dialog.header.getText());
+    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
   }
 
   @Test
@@ -168,7 +167,7 @@ public class LaboratoryDialogTest extends AbstractKaribuTestCase {
     dialog.setLaboratory(laboratory);
 
     verify(presenter).setLaboratory(laboratory);
-    assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.header.getText());
+    assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.getHeaderTitle());
   }
 
   @Test
@@ -180,7 +179,7 @@ public class LaboratoryDialogTest extends AbstractKaribuTestCase {
     dialog.localeChange(mock(LocaleChangeEvent.class));
 
     verify(presenter).setLaboratory(laboratory);
-    assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.header.getText());
+    assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.getHeaderTitle());
   }
 
   @Test
@@ -189,7 +188,7 @@ public class LaboratoryDialogTest extends AbstractKaribuTestCase {
     dialog.setLaboratory(null);
 
     verify(presenter).setLaboratory(null);
-    assertEquals(resources.message(HEADER, 0), dialog.header.getText());
+    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
   }
 
   @Test

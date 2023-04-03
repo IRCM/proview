@@ -29,7 +29,7 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import com.vaadin.flow.component.dialog.testbench.DialogElement;
 import com.vaadin.flow.component.grid.testbench.GridElement;
 import com.vaadin.flow.component.html.testbench.DivElement;
-import com.vaadin.flow.component.html.testbench.H3Element;
+import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.html.testbench.H4Element;
 import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
@@ -40,8 +40,8 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-dialog")
 @Attribute(name = "id", value = MsAnalysisDialog.ID)
 public class MsAnalysisDialogElement extends DialogElement {
-  public H3Element header() {
-    return $(H3Element.class).id(id(HEADER));
+  public H2Element header() {
+    return $(H2Element.class).first();
   }
 
   public DivElement deleted() {

@@ -145,7 +145,6 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertEquals(id(HEADER), dialog.header.getId().orElse(""));
     assertEquals(id(SAMPLES), dialog.samples.getId().orElse(""));
     assertEquals(id(styleName(STATUS, ALL)), dialog.allStatus.getId().orElse(""));
     assertEquals(id(SAVE), dialog.save.getId().orElse(""));
@@ -156,7 +155,7 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
   public void labels() {
     mockColumns();
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -177,7 +176,7 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
     final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -293,7 +292,7 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
     dialog.setSubmission(submission);
 
     verify(presenter).setSubmission(submission);
-    assertEquals(resources.message(HEADER, experiment), dialog.header.getText());
+    assertEquals(resources.message(HEADER, experiment), dialog.getHeaderTitle());
   }
 
   @Test
@@ -307,7 +306,7 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
     dialog.localeChange(mock(LocaleChangeEvent.class));
 
     verify(presenter).setSubmission(submission);
-    assertEquals(resources.message(HEADER, experiment), dialog.header.getText());
+    assertEquals(resources.message(HEADER, experiment), dialog.getHeaderTitle());
   }
 
   @Test
@@ -318,7 +317,7 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
     dialog.setSubmission(submission);
 
     verify(presenter).setSubmission(submission);
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
   }
 
   @Test
@@ -335,6 +334,6 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
     dialog.setSubmission(submission);
 
     verify(presenter).setSubmission(submission);
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
   }
 }

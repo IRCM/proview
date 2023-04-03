@@ -43,7 +43,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -75,7 +74,6 @@ public class SamplesStatusDialog extends Dialog
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
   private static final Logger logger = LoggerFactory.getLogger(SamplesStatusDialog.class);
-  protected H3 header = new H3();
   protected Grid<SubmissionSample> samples = new Grid<>();
   protected Column<SubmissionSample> name;
   protected Column<SubmissionSample> status;
@@ -106,11 +104,10 @@ public class SamplesStatusDialog extends Dialog
     VerticalLayout layout = new VerticalLayout();
     add(layout);
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    layout.add(header, samples, buttonsLayout);
+    layout.add(samples, buttonsLayout);
     layout.setSizeFull();
     layout.expand(samples);
     buttonsLayout.add(save, cancel);
-    header.setId(id(HEADER));
     samples.setId(id(SAMPLES));
     ValueProvider<SubmissionSample, String> sampleName =
         sample -> Objects.toString(sample.getName(), "");
@@ -196,9 +193,9 @@ public class SamplesStatusDialog extends Dialog
     final AppResources resources = new AppResources(SamplesStatusDialog.class, getLocale());
     Submission submission = presenter.getSubmission();
     if (submission != null && submission.getId() != null) {
-      header.setText(resources.message(HEADER, submission.getExperiment()));
+      setHeaderTitle(resources.message(HEADER, submission.getExperiment()));
     } else {
-      header.setText(resources.message(HEADER));
+      setHeaderTitle(resources.message(HEADER));
     }
   }
 }

@@ -40,7 +40,6 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.html.H3;
 import java.time.LocalDate;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,7 +75,6 @@ public class SubmissionDialogPresenterTest extends AbstractKaribuTestCase {
   @BeforeEach
   public void beforeTest() {
     ui.setLocale(locale);
-    dialog.header = new H3();
     dialog.printContent = mock(PrintSubmission.class);
     dialog.instrument = new ComboBox<>();
     dialog.instrument.setItems(MassDetectionInstrument.platformChoices());

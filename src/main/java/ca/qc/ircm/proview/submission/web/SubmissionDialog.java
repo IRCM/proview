@@ -41,7 +41,6 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -68,7 +67,6 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   public static final String ID = "submission-dialog";
   public static final String HEADER = "header";
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
-  protected H3 header = new H3();
   protected FormLayout submissionForm = new FormLayout();
   protected ComboBox<MassDetectionInstrument> instrument = new ComboBox<>();
   protected DatePicker dataAvailableDate = new DatePicker();
@@ -118,10 +116,9 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     submissionForm.setVisible(authenticatedUser.hasRole(ADMIN));
     HorizontalLayout buttons = new HorizontalLayout(print, edit);
     buttons.setWidthFull();
-    layout.add(header, formLayout, buttons);
+    layout.add(formLayout, buttons);
     layout.setSizeFull();
     layout.expand(formLayout);
-    header.setId(id(HEADER));
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
     instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
@@ -186,10 +183,10 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   private void updateHeader() {
     Submission submission = presenter.getSubmission();
     if (submission != null && submission.getId() != null) {
-      header.setText(submission.getExperiment());
+      setHeaderTitle(submission.getExperiment());
     } else {
       final AppResources resources = new AppResources(SubmissionDialog.class, getLocale());
-      header.setText(resources.message(HEADER));
+      setHeaderTitle(resources.message(HEADER));
     }
   }
 }

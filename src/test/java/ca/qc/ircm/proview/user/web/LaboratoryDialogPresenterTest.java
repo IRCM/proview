@@ -39,7 +39,6 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -85,7 +84,6 @@ public class LaboratoryDialogPresenterTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    dialog.header = new H3();
     dialog.name = new TextField();
     dialog.buttonsLayout = new HorizontalLayout();
     dialog.save = new Button();

@@ -49,7 +49,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -73,7 +72,6 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   public static final String HEADER = "header";
   private static final long serialVersionUID = -3458086086713549138L;
   private static final Logger logger = LoggerFactory.getLogger(TreatmentDialog.class);
-  protected H3 header = new H3();
   protected Div deleted = new Div();
   protected Div protocol = new Div();
   protected Div fractionationType = new Div();
@@ -108,10 +106,9 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     setResizable(true);
     VerticalLayout layout = new VerticalLayout();
     add(layout);
-    layout.add(header, deleted, protocol, fractionationType, date, samplesHeader, samples);
+    layout.add(deleted, protocol, fractionationType, date, samplesHeader, samples);
     layout.setSizeFull();
     layout.expand(samples);
-    header.setId(id(HEADER));
     deleted.setId(id(DELETED));
     deleted.setVisible(false);
     protocol.setId(id(PROTOCOL));
@@ -154,7 +151,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     final AppResources treatmentResource = new AppResources(Treatment.class, getLocale());
     final AppResources treatedSampleResource = new AppResources(TreatedSample.class, getLocale());
     if (treatment == null) {
-      header.setText(resource.message(HEADER));
+      setHeaderTitle(resource.message(HEADER));
     }
     deleted.setText(treatmentResource.message(property(DELETED, true)));
     samplesHeader.setText(treatmentResource.message(TREATED_SAMPLES));
@@ -185,7 +182,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     Objects.requireNonNull(treatment);
     this.treatment = treatment;
     AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
-    header.setText(treatment.getType().getLabel(getLocale()));
+    setHeaderTitle(treatment.getType().getLabel(getLocale()));
     if (treatment.getProtocol() != null) {
       protocol.setText(resource.message(PROTOCOL, treatment.getProtocol().getName()));
       protocol.setVisible(true);

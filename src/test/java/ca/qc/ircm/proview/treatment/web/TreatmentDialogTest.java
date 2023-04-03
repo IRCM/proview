@@ -184,7 +184,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
-    assertEquals(id(HEADER), dialog.header.getId().orElse(""));
     assertEquals(id(DELETED), dialog.deleted.getId().orElse(""));
     assertEquals(id(PROTOCOL), dialog.protocol.getId().orElse(""));
     assertEquals(id(FRACTIONATION_TYPE), dialog.fractionationType.getId().orElse(""));
@@ -197,7 +196,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   public void labels() {
     mockColumns();
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(treatmentResources.message(DELETED), dialog.deleted.getText());
     assertEquals(treatmentResources.message(TREATED_SAMPLES), dialog.samplesHeader.getText());
     verify(dialog.sample).setHeader(treatedSampleResources.message(SAMPLE));
@@ -224,7 +223,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
     final AppResources treatedSampleResources = new AppResources(TreatedSample.class, locale);
     ui.setLocale(locale);
     dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.header.getText());
+    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(treatmentResources.message(DELETED), dialog.deleted.getText());
     assertEquals(treatmentResources.message(TREATED_SAMPLES), dialog.samplesHeader.getText());
     verify(dialog.sample).setHeader(treatedSampleResources.message(SAMPLE));
@@ -346,7 +345,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
     dialog.setTreatment(treatment);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
@@ -370,7 +369,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
     dialog.setTreatment(treatment);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
@@ -398,7 +397,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
     dialog.setTreatment(treatment);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
@@ -425,7 +424,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
     dialog.setTreatment(treatment);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
@@ -449,7 +448,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
     dialog.setTreatment(treatment);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
@@ -473,7 +472,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
     dialog.setTreatment(treatment);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
@@ -497,7 +496,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
     dialog.setTreatment(treatment);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertTrue(dialog.protocol.isVisible());
     assertEquals(resources.message(PROTOCOL, treatment.getProtocol().getName()),
@@ -523,7 +522,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
     dialog.setTreatment(treatment);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertTrue(dialog.protocol.isVisible());
     assertEquals(resources.message(PROTOCOL, treatment.getProtocol().getName()),
@@ -549,7 +548,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
     dialog.setTreatment(treatment);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertTrue(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
@@ -573,7 +572,7 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
     dialog.setTreatment(treatment);
     dialog.localeChange(mock(LocaleChangeEvent.class));
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.header.getText());
+    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertTrue(dialog.protocol.isVisible());
     assertEquals(resources.message(PROTOCOL, treatment.getProtocol().getName()),

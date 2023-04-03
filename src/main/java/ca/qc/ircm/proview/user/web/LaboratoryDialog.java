@@ -33,7 +33,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -61,7 +60,6 @@ public class LaboratoryDialog extends Dialog
   public static final String ID = "laboratory-dialog";
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
-  protected H3 header = new H3();
   protected TextField name = new TextField();
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
@@ -92,12 +90,11 @@ public class LaboratoryDialog extends Dialog
     VerticalLayout layout = new VerticalLayout();
     add(layout);
     FormLayout form = new FormLayout();
-    layout.add(header, form, buttonsLayout);
+    layout.add(form, buttonsLayout);
     layout.setSizeFull();
     form.add(name);
     form.setResponsiveSteps(new ResponsiveStep("15em", 1));
     buttonsLayout.add(save, cancel);
-    header.setId(id(HEADER));
     name.setId(id(NAME));
     save.setId(id(SAVE));
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -123,9 +120,9 @@ public class LaboratoryDialog extends Dialog
   private void updateHeader() {
     final AppResources resources = new AppResources(LaboratoryDialog.class, getLocale());
     if (presenter.getLaboratory() != null && presenter.getLaboratory().getId() != null) {
-      header.setText(resources.message(HEADER, 1, presenter.getLaboratory().getName()));
+      setHeaderTitle(resources.message(HEADER, 1, presenter.getLaboratory().getName()));
     } else {
-      header.setText(resources.message(HEADER, 0));
+      setHeaderTitle(resources.message(HEADER, 0));
     }
   }
 

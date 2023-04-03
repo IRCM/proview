@@ -29,7 +29,6 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -54,7 +53,6 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   private static final Logger logger = LoggerFactory.getLogger(UserDialog.class);
   public static final String ID = "user-dialog";
   public static final String HEADER = "header";
-  protected H3 header = new H3();
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected Button cancel = new Button();
@@ -86,10 +84,9 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     setResizable(true);
     VerticalLayout layout = new VerticalLayout();
     add(layout);
-    layout.add(header, form, buttonsLayout);
+    layout.add(form, buttonsLayout);
     layout.setSizeFull();
     buttonsLayout.add(save, cancel);
-    header.setId(id(HEADER));
     save.setId(id(SAVE));
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
@@ -111,9 +108,9 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   private void updateHeader() {
     final AppResources resources = new AppResources(UserDialog.class, getLocale());
     if (form.getUser() != null && form.getUser().getId() != null) {
-      header.setText(resources.message(HEADER, 1, form.getUser().getName()));
+      setHeaderTitle(resources.message(HEADER, 1, form.getUser().getName()));
     } else {
-      header.setText(resources.message(HEADER, 0));
+      setHeaderTitle(resources.message(HEADER, 0));
     }
   }
 
