@@ -34,7 +34,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -61,7 +60,6 @@ public class LaboratoryDialog extends Dialog
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
   protected TextField name = new TextField();
-  protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected Button cancel = new Button();
   @Autowired
@@ -90,11 +88,11 @@ public class LaboratoryDialog extends Dialog
     VerticalLayout layout = new VerticalLayout();
     add(layout);
     FormLayout form = new FormLayout();
-    layout.add(form, buttonsLayout);
+    layout.add(form);
     layout.setSizeFull();
     form.add(name);
     form.setResponsiveSteps(new ResponsiveStep("15em", 1));
-    buttonsLayout.add(save, cancel);
+    getFooter().add(cancel, save);
     name.setId(id(NAME));
     save.setId(id(SAVE));
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

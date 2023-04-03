@@ -57,6 +57,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -148,6 +149,7 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
     assertEquals(id(SAMPLES), dialog.samples.getId().orElse(""));
     assertEquals(id(styleName(STATUS, ALL)), dialog.allStatus.getId().orElse(""));
     assertEquals(id(SAVE), dialog.save.getId().orElse(""));
+    assertTrue(dialog.save.getThemeNames().contains(ButtonVariant.LUMO_PRIMARY.getVariantName()));
     assertEquals(id(CANCEL), dialog.cancel.getId().orElse(""));
   }
 

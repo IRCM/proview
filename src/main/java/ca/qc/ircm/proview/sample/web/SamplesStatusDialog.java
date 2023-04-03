@@ -44,7 +44,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.function.ValueProvider;
@@ -103,11 +102,10 @@ public class SamplesStatusDialog extends Dialog
     setResizable(true);
     VerticalLayout layout = new VerticalLayout();
     add(layout);
-    HorizontalLayout buttonsLayout = new HorizontalLayout();
-    layout.add(samples, buttonsLayout);
+    layout.add(samples);
     layout.setSizeFull();
     layout.expand(samples);
-    buttonsLayout.add(save, cancel);
+    getFooter().add(cancel, save);
     samples.setId(id(SAMPLES));
     ValueProvider<SubmissionSample, String> sampleName =
         sample -> Objects.toString(sample.getName(), "");
@@ -123,7 +121,7 @@ public class SamplesStatusDialog extends Dialog
     allStatus.setItems(SampleStatus.values());
     allStatus.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     allStatus.addValueChangeListener(e -> presenter.setAllStatus(allStatus.getValue()));
-    save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setId(id(SAVE));
     save.setIcon(VaadinIcon.CHECK.create());
     save.addClickListener(e -> presenter.save());

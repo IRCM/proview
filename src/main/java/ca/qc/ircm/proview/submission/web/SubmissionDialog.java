@@ -114,11 +114,10 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     submissionForm.add(instrument, dataAvailableDate, save);
     submissionForm.setMaxWidth("400px");
     submissionForm.setVisible(authenticatedUser.hasRole(ADMIN));
-    HorizontalLayout buttons = new HorizontalLayout(print, edit);
-    buttons.setWidthFull();
-    layout.add(formLayout, buttons);
+    layout.add(formLayout);
     layout.setSizeFull();
     layout.expand(formLayout);
+    getFooter().add(print, edit);
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
     instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
