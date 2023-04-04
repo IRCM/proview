@@ -111,8 +111,8 @@ public class SamplesStatusDialog extends Dialog
         sample -> Objects.toString(sample.getName(), "");
     name = samples.addColumn(sampleName, NAME).setKey(NAME)
         .setComparator(NormalizedComparator.of(Sample::getName)).setFlexGrow(2);
-    status = samples.addColumn(new ComponentRenderer<>(sample -> status(sample)), STATUS)
-        .setKey(STATUS).setSortable(false);
+    status = samples.addColumn(new ComponentRenderer<>(sample -> status(sample))).setKey(STATUS)
+        .setSortable(false);
     samples.appendHeaderRow(); // Headers.
     HeaderRow allRow = samples.appendHeaderRow();
     allRow.getCell(status).setComponent(allStatus);

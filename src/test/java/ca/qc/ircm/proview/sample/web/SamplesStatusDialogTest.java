@@ -131,8 +131,7 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
     when(dialog.name.setHeader(any(String.class))).thenReturn(dialog.name);
     when(dialog.name.setFlexGrow(anyInt())).thenReturn(dialog.name);
     dialog.status = mock(Column.class);
-    when(dialog.samples.addColumn(any(ComponentRenderer.class), eq(STATUS)))
-        .thenReturn(dialog.status);
+    when(dialog.samples.addColumn(any(ComponentRenderer.class))).thenReturn(dialog.status);
     when(dialog.status.setKey(any())).thenReturn(dialog.status);
     when(dialog.status.setHeader(any(String.class))).thenReturn(dialog.status);
     when(dialog.status.setSortable(anyBoolean())).thenReturn(dialog.status);
@@ -214,7 +213,7 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
       assertEquals(sample.getName(),
           ((NormalizedComparator<SubmissionSample>) comparator).getConverter().apply(sample));
     }
-    verify(dialog.samples).addColumn(statusRendererCaptor.capture(), eq(STATUS));
+    verify(dialog.samples).addColumn(statusRendererCaptor.capture());
     ComponentRenderer<ComboBox<SampleStatus>, SubmissionSample> statusRenderer =
         statusRendererCaptor.getValue();
     for (SubmissionSample sample : samples) {
