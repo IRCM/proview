@@ -18,6 +18,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import ca.qc.ircm.proview.treatment.Solvent;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -66,7 +67,7 @@ public class SolventsField extends CustomField<List<Solvent>> implements LocaleC
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    fields.entrySet()
-        .forEach(entry -> entry.getValue().setLabelAsHtml(entry.getKey().getLabel(getLocale())));
+    fields.entrySet().forEach(entry -> entry.getValue()
+        .setLabelComponent(new Html("<span>" + entry.getKey().getLabel(getLocale()) + "</span>")));
   }
 }

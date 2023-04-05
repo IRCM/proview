@@ -45,8 +45,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -139,14 +139,13 @@ public class SubmissionViewTest extends AbstractKaribuTestCase {
     view.files = mock(Grid.class);
     when(view.files.getElement()).thenReturn(element);
     view.filename = mock(Column.class);
-    when(view.files.addColumn(any(ComponentRenderer.class), eq(FILENAME)))
-        .thenReturn(view.filename);
+    view.remove = mock(Column.class);
+    when(view.files.addColumn(any(ComponentRenderer.class))).thenReturn(view.filename, view.remove);
     when(view.filename.setKey(any())).thenReturn(view.filename);
+    when(view.filename.setSortProperty(any())).thenReturn(view.filename);
     when(view.filename.setComparator(any(Comparator.class))).thenReturn(view.filename);
     when(view.filename.setFlexGrow(anyInt())).thenReturn(view.filename);
     when(view.filename.setHeader(any(String.class))).thenReturn(view.filename);
-    view.remove = mock(Column.class);
-    when(view.files.addColumn(any(ComponentRenderer.class), eq(REMOVE))).thenReturn(view.remove);
     when(view.remove.setKey(any())).thenReturn(view.remove);
     when(view.remove.setFlexGrow(anyInt())).thenReturn(view.remove);
     when(view.remove.setHeader(any(String.class))).thenReturn(view.remove);
@@ -256,8 +255,9 @@ public class SubmissionViewTest extends AbstractKaribuTestCase {
         intactProteinSubmissionForm);
     mockColumns();
     view.init();
-    verify(view.files).addColumn(anchorRendererCaptor.capture(), eq(FILENAME));
-    ComponentRenderer<Anchor, SubmissionFile> anchorRenderer = anchorRendererCaptor.getValue();
+    verify(view.files, times(2)).addColumn(anchorRendererCaptor.capture());
+    ComponentRenderer<Anchor, SubmissionFile> anchorRenderer =
+        anchorRendererCaptor.getAllValues().get(0);
     for (SubmissionFile file : files) {
       Anchor anchor = anchorRenderer.createComponent(file);
       assertEquals(file.getFilename(), anchor.getText());
@@ -271,8 +271,9 @@ public class SubmissionViewTest extends AbstractKaribuTestCase {
       assertEquals(file.getFilename(),
           ((NormalizedComparator<SubmissionFile>) comparator).getConverter().apply(file));
     }
-    verify(view.files).addColumn(buttonRendererCaptor.capture(), eq(REMOVE));
-    ComponentRenderer<Button, SubmissionFile> buttonRenderer = buttonRendererCaptor.getValue();
+    verify(view.files, times(2)).addColumn(buttonRendererCaptor.capture());
+    ComponentRenderer<Button, SubmissionFile> buttonRenderer =
+        buttonRendererCaptor.getAllValues().get(1);
     for (SubmissionFile file : files) {
       Button button = buttonRenderer.createComponent(file);
       assertEquals("", button.getText());
