@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.security.web;
 
+import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SigninView;
@@ -61,15 +62,19 @@ public class ConfigureUiServiceInitListener implements VaadinServiceInitListener
    *          before navigation event with event details
    */
   private void beforeEnter(BeforeEnterEvent event) {
-    final boolean accessGranted = authenticatedUser.isAuthorized(event.getNavigationTarget());
-    if (!accessGranted) {
-      User user = authenticatedUser.getUser().orElse(null);
-      logger.debug("Access denied for user {} when accessing view {}",
-          user != null ? user.getId() : "anonymous", event.getNavigationTarget());
-      if (user != null) {
-        event.rerouteToError(new AccessDeniedException("Access denied"), "Access denied");
+    if (!authenticatedUser.isAuthorized(event.getNavigationTarget())) {
+      if (authenticatedUser.isAnonymous()) {
+        logger.debug("user is anonymous, redirect to {}", SigninView.class.getSimpleName());
+        UI.getCurrent().navigate(SigninView.class);
       } else {
-        event.rerouteTo(SigninView.class);
+        UI ui = event.getUI();
+        AppResources resources =
+            new AppResources(ConfigureUiServiceInitListener.class, ui.getLocale());
+        String email = authenticatedUser.getUser().map(User::getEmail).orElse("<anonymous>");
+        String message = resources.message(AccessDeniedException.class.getSimpleName(), email,
+            event.getNavigationTarget().getSimpleName());
+        logger.info(message);
+        event.rerouteToError(new AccessDeniedException(message), message);
       }
     }
   }

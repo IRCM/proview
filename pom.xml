@@ -150,6 +150,12 @@
       <artifactId>vaadin-testbench</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Required for vaadin-testbench-unit -->
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-charts-flow</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>com.github.mvysny.kaributesting</groupId>
       <artifactId>karibu-testing-v23</artifactId>
