@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,29 +96,27 @@ public class UserPreferenceService {
    *          object that gets / saves preference
    * @param name
    *          preference's name
-   * @param defaultValue
-   *          preference's default value, if none is available
    * @return current user's preference value
    */
   @SuppressWarnings("unchecked")
-  public <T> T get(Object referer, String name, T defaultValue) {
+  public <T> Optional<T> get(Object referer, String name) {
     if (referer == null || name == null) {
-      return defaultValue;
+      return Optional.empty();
     }
     User user = authenticatedUser.getUser().orElse(null);
     if (user == null) {
-      return defaultValue;
+      return Optional.empty();
     }
 
     UserPreference userPreference = find(user, toString(referer), name);
     if (userPreference != null) {
       try {
-        return (T) toObject(userPreference.getContent());
+        return Optional.of((T) toObject(userPreference.getContent()));
       } catch (ClassNotFoundException | IOException e) {
-        return defaultValue;
+        return Optional.empty();
       }
     } else {
-      return defaultValue;
+      return Optional.empty();
     }
   }
 

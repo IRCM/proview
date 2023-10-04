@@ -88,43 +88,43 @@ public class UserPreferenceServiceTest {
 
   @Test
   public void get() {
-    assertEquals("value 1", service.get(this, PREFERENCE_1, "default value"));
-    assertEquals((Integer) 208, service.get(this, PREFERENCE_2, 20));
+    assertEquals("value 1", service.get(this, PREFERENCE_1).orElse("default value"));
+    assertEquals((Integer) 208, service.get(this, PREFERENCE_2).orElse(20));
   }
 
   @Test
   public void get_MissingUserPreference() {
     when(authenticatedUser.getUser()).thenReturn(userRepository.findById(10L));
 
-    assertEquals("default value", service.get(this, PREFERENCE_1, "default value"));
-    assertEquals((Integer) 20, service.get(this, PREFERENCE_2, 20));
+    assertEquals("default value", service.get(this, PREFERENCE_1).orElse("default value"));
+    assertEquals((Integer) 20, service.get(this, PREFERENCE_2).orElse(20));
   }
 
   @Test
   public void get_MissingPreference() {
-    assertEquals("default value", service.get(this, "missing reference", "default value"));
+    assertEquals("default value", service.get(this, "missing reference").orElse("default value"));
   }
 
   @Test
   public void get_NullReferer() {
-    assertEquals("default value", service.get(null, PREFERENCE_1, "default value"));
+    assertEquals("default value", service.get(null, PREFERENCE_1).orElse("default value"));
   }
 
   @Test
   public void get_NullName() {
-    assertEquals("default value", service.get(this, null, "default value"));
+    assertEquals("default value", service.get(this, null).orElse("default value"));
   }
 
   @Test
   public void get_NoCurrentUser() {
     when(authenticatedUser.getUser()).thenReturn(Optional.empty());
 
-    assertEquals("default value", service.get(this, PREFERENCE_1, "default value"));
+    assertEquals("default value", service.get(this, PREFERENCE_1).orElse("default value"));
   }
 
   @Test
   public void get_NullDefaultValue() {
-    assertNull(service.get(this, "missing reference", null));
+    assertNull(service.get(this, "missing reference").orElse(null));
   }
 
   @Test
