@@ -19,16 +19,27 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.VIEW;
+import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_COUNT;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
 import static ca.qc.ircm.proview.text.Strings.property;
+import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -48,6 +59,7 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.google.common.collect.Range;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -93,6 +105,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @MockBean
   private AuthenticatedUser authenticatedUser;
   @MockBean
+  private UserPreferenceService userPreferenceService;
+  @MockBean
   private SubmissionDialog dialog;
   @Autowired
   private ObjectFactory<SubmissionDialog> dialogFactory;
@@ -125,17 +139,33 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     view.header = new H2();
     view.submissions = mock(Grid.class);
     when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
+    view.view = mock(Column.class);
+    when(view.view.getKey()).thenReturn(VIEW);
     view.experiment = mock(Column.class);
+    when(view.experiment.getKey()).thenReturn(EXPERIMENT);
     view.user = mock(Column.class);
+    when(view.user.getKey()).thenReturn(USER);
     view.director = mock(Column.class);
+    when(view.director.getKey()).thenReturn(DIRECTOR);
     view.service = mock(Column.class);
+    when(view.service.getKey()).thenReturn(SERVICE);
     view.dataAvailableDate = mock(Column.class);
+    when(view.dataAvailableDate.getKey()).thenReturn(DATA_AVAILABLE_DATE);
     view.date = mock(Column.class);
+    when(view.date.getKey()).thenReturn(SUBMISSION_DATE);
     view.instrument = mock(Column.class);
+    when(view.instrument.getKey()).thenReturn(INSTRUMENT);
     view.samplesCount = mock(Column.class);
+    when(view.samplesCount.getKey()).thenReturn(SAMPLES_COUNT);
     view.samples = mock(Column.class);
+    when(view.samples.getKey()).thenReturn(SAMPLES);
     view.status = mock(Column.class);
+    when(view.status.getKey()).thenReturn(STATUS);
     view.hidden = mock(Column.class);
+    when(view.hidden.getKey()).thenReturn(HIDDEN);
+    when(view.submissions.getColumns()).thenReturn(
+        Arrays.asList(view.view, view.experiment, view.user, view.director, view.service, view.date,
+            view.date, view.instrument, view.samplesCount, view.samples, view.status, view.hidden));
     view.experimentFilter = new TextField();
     view.userFilter = new TextField();
     view.directorFilter = new TextField();
@@ -146,6 +176,8 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     view.add = new Button();
     view.editStatus = new Button();
     view.history = new Button();
+    view.hideColumns = new Button();
+    view.hideColumnsContextMenu = mock(SubmissionsView.ColumnToggleContextMenu.class);
     view.dialogFactory = dialogFactory;
     view.statusDialogFactory = statusDialogFactory;
     submissions = repository.findAll();
@@ -154,7 +186,9 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
 
   @Test
   public void init_User() {
+    when(view.getHeaderText(any())).thenAnswer(i -> i.getArgument(0, Column.class).getKey());
     presenter.init(view);
+    presenter.localeChange(locale);
     verify(view.submissions).setItems(any(DataProvider.class));
     verify(view.user).setVisible(false);
     verify(view.director).setVisible(false);
@@ -163,12 +197,36 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     verify(view.hidden).setVisible(false);
     assertFalse(view.editStatus.isVisible());
     assertFalse(view.history.isVisible());
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.view));
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.experiment));
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(view.user.getKey(), view.user);
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.director));
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.service));
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.dataAvailableDate.getKey(),
+        view.dataAvailableDate);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.date.getKey(), view.date);
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.instrument));
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.samplesCount.getKey(),
+        view.samplesCount);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.samples.getKey(), view.samples);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.status.getKey(), view.status);
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.hidden));
+    verify(userPreferenceService, never()).get(presenter, view.view.getKey());
+    verify(userPreferenceService, never()).get(presenter, view.experiment.getKey());
+    verify(userPreferenceService).get(presenter, view.dataAvailableDate.getKey());
+    verify(userPreferenceService).get(presenter, view.date.getKey());
+    verify(userPreferenceService).get(presenter, view.samplesCount.getKey());
+    verify(userPreferenceService).get(presenter, view.samples.getKey());
+    verify(userPreferenceService).get(presenter, view.status.getKey());
+    verify(userPreferenceService, never()).get(presenter, view.hidden.getKey());
   }
 
   @Test
   public void init_Manager() {
     when(authenticatedUser.hasAnyRole(MANAGER, ADMIN)).thenReturn(true);
+    when(view.getHeaderText(any())).thenAnswer(i -> i.getArgument(0, Column.class).getKey());
     presenter.init(view);
+    presenter.localeChange(locale);
     verify(view.submissions).setItems(any(DataProvider.class));
     verify(view.user).setVisible(true);
     verify(view.director).setVisible(false);
@@ -177,13 +235,38 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     verify(view.hidden).setVisible(false);
     assertFalse(view.editStatus.isVisible());
     assertFalse(view.history.isVisible());
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.view));
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.experiment));
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.user.getKey(), view.user);
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.director));
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.service));
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.dataAvailableDate.getKey(),
+        view.dataAvailableDate);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.date.getKey(), view.date);
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.instrument));
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.samplesCount.getKey(),
+        view.samplesCount);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.samples.getKey(), view.samples);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.status.getKey(), view.status);
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.hidden));
+    verify(userPreferenceService, never()).get(presenter, view.view.getKey());
+    verify(userPreferenceService, never()).get(presenter, view.experiment.getKey());
+    verify(userPreferenceService).get(presenter, view.user.getKey());
+    verify(userPreferenceService).get(presenter, view.dataAvailableDate.getKey());
+    verify(userPreferenceService).get(presenter, view.date.getKey());
+    verify(userPreferenceService).get(presenter, view.samplesCount.getKey());
+    verify(userPreferenceService).get(presenter, view.samples.getKey());
+    verify(userPreferenceService).get(presenter, view.status.getKey());
+    verify(userPreferenceService, never()).get(presenter, view.hidden.getKey());
   }
 
   @Test
   public void init_Admin() {
     when(authenticatedUser.hasRole(any())).thenReturn(true);
     when(authenticatedUser.hasAnyRole(any())).thenReturn(true);
+    when(view.getHeaderText(any())).thenAnswer(i -> i.getArgument(0, Column.class).getKey());
     presenter.init(view);
+    presenter.localeChange(locale);
     verify(view.submissions).setItems(any(DataProvider.class));
     verify(view.user).setVisible(true);
     verify(view.director).setVisible(true);
@@ -192,6 +275,33 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     verify(view.hidden).setVisible(true);
     assertTrue(view.editStatus.isVisible());
     assertTrue(view.history.isVisible());
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.view));
+    verify(view.hideColumnsContextMenu, never()).addColumnToggleItem(any(), eq(view.experiment));
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.user.getKey(), view.user);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.director.getKey(), view.director);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.service.getKey(), view.service);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.dataAvailableDate.getKey(),
+        view.dataAvailableDate);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.date.getKey(), view.date);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.instrument.getKey(),
+        view.instrument);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.samplesCount.getKey(),
+        view.samplesCount);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.samples.getKey(), view.samples);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.status.getKey(), view.status);
+    verify(view.hideColumnsContextMenu).addColumnToggleItem(view.hidden.getKey(), view.hidden);
+    verify(userPreferenceService, never()).get(presenter, view.view.getKey());
+    verify(userPreferenceService, never()).get(presenter, view.experiment.getKey());
+    verify(userPreferenceService).get(presenter, view.user.getKey());
+    verify(userPreferenceService).get(presenter, view.director.getKey());
+    verify(userPreferenceService).get(presenter, view.service.getKey());
+    verify(userPreferenceService).get(presenter, view.dataAvailableDate.getKey());
+    verify(userPreferenceService).get(presenter, view.date.getKey());
+    verify(userPreferenceService).get(presenter, view.instrument.getKey());
+    verify(userPreferenceService).get(presenter, view.samplesCount.getKey());
+    verify(userPreferenceService).get(presenter, view.samples.getKey());
+    verify(userPreferenceService).get(presenter, view.status.getKey());
+    verify(userPreferenceService).get(presenter, view.hidden.getKey());
   }
 
   @Test
@@ -538,5 +648,19 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     verify(service).update(submission, null);
     assertTrue(submission.isHidden());
     verify(view.submissions.getDataProvider()).refreshAll();
+  }
+
+  @Test
+  public void toggleHideColumn_Visible() {
+    when(view.samplesCount.isVisible()).thenReturn(true);
+    presenter.toggleHideColumn(view.samplesCount);
+    userPreferenceService.save(presenter, view.samplesCount.getKey(), false);
+  }
+
+  @Test
+  public void toggleHideColumn_Invisible() {
+    when(view.samplesCount.isVisible()).thenReturn(false);
+    presenter.toggleHideColumn(view.samplesCount);
+    userPreferenceService.save(presenter, view.samplesCount.getKey(), false);
   }
 }

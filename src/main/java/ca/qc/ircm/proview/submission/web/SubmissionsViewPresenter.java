@@ -43,10 +43,12 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.user.UserPreferenceService;
 import com.google.common.collect.Range;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.CallbackDataProvider.CountCallback;
 import com.vaadin.flow.data.provider.CallbackDataProvider.FetchCallback;
@@ -56,6 +58,7 @@ import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -82,12 +85,14 @@ public class SubmissionsViewPresenter {
   private SubmissionFilter filter = new SubmissionFilter();
   private SubmissionService service;
   private AuthenticatedUser authenticatedUser;
+  private UserPreferenceService userPreferenceService;
 
   @Autowired
-  protected SubmissionsViewPresenter(SubmissionService service,
-      AuthenticatedUser authenticatedUser) {
+  protected SubmissionsViewPresenter(SubmissionService service, AuthenticatedUser authenticatedUser,
+      UserPreferenceService userPreferenceService) {
     this.service = service;
     this.authenticatedUser = authenticatedUser;
+    this.userPreferenceService = userPreferenceService;
   }
 
   /**
@@ -107,11 +112,24 @@ public class SubmissionsViewPresenter {
     columnProperties.put(SAMPLES_COUNT, submission.samples.size());
     columnProperties.put(SUBMISSION_DATE, submission.submissionDate);
     columnProperties.put(HIDDEN, submission.hidden);
-    view.user.setVisible(authenticatedUser.hasAnyRole(MANAGER, ADMIN));
-    view.director.setVisible(authenticatedUser.hasRole(ADMIN));
-    view.service.setVisible(authenticatedUser.hasRole(ADMIN));
-    view.instrument.setVisible(authenticatedUser.hasRole(ADMIN));
-    view.hidden.setVisible(authenticatedUser.hasRole(ADMIN));
+    Function<Grid.Column<Submission>, Boolean> columnVisibility = column -> {
+      Optional<Boolean> value = userPreferenceService.get(this, column.getKey());
+      return value.orElse(true);
+    };
+    view.user.setVisible(
+        authenticatedUser.hasAnyRole(MANAGER, ADMIN) && columnVisibility.apply(view.user));
+    view.director
+        .setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(view.director));
+    view.dataAvailableDate.setVisible(columnVisibility.apply(view.dataAvailableDate));
+    view.date.setVisible(columnVisibility.apply(view.date));
+    view.instrument
+        .setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(view.instrument));
+    view.service
+        .setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(view.service));
+    view.samplesCount.setVisible(columnVisibility.apply(view.samplesCount));
+    view.samples.setVisible(columnVisibility.apply(view.samples));
+    view.status.setVisible(columnVisibility.apply(view.status));
+    view.hidden.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(view.hidden));
     view.editStatus.setVisible(authenticatedUser.hasRole(ADMIN));
     view.history.setVisible(authenticatedUser.hasRole(ADMIN));
     loadSubmissions();
@@ -149,6 +167,28 @@ public class SubmissionsViewPresenter {
         dataProvider.withConfigurableFilter();
     wrapper.setFilter(filter);
     return wrapper;
+  }
+
+  void localeChange(Locale locale) {
+    List<Grid.Column> hidableColumns = new ArrayList<>();
+    hidableColumns.add(view.dataAvailableDate);
+    hidableColumns.add(view.date);
+    hidableColumns.add(view.samplesCount);
+    hidableColumns.add(view.samples);
+    hidableColumns.add(view.status);
+    if (authenticatedUser.hasAnyRole(MANAGER, ADMIN)) {
+      hidableColumns.add(view.user);
+    }
+    if (authenticatedUser.hasAnyRole(ADMIN)) {
+      hidableColumns.add(view.director);
+      hidableColumns.add(view.instrument);
+      hidableColumns.add(view.service);
+      hidableColumns.add(view.hidden);
+    }
+    hidableColumns.sort((c1, c2) -> view.submissions.getColumns().indexOf(c1)
+        - view.submissions.getColumns().indexOf(c2));
+    hidableColumns.forEach(column -> view.hideColumnsContextMenu
+        .addColumnToggleItem(view.getHeaderText(column), column));
   }
 
   void filterExperiment(String value) {
@@ -254,6 +294,10 @@ public class SubmissionsViewPresenter {
     logger.debug("Change submission {} hidden to {}", submission, submission.isHidden());
     service.update(submission, null);
     view.submissions.getDataProvider().refreshAll();
+  }
+
+  void toggleHideColumn(Grid.Column<Submission> column) {
+    userPreferenceService.save(this, column.getKey(), column.isVisible());
   }
 
   SubmissionFilter filter() {

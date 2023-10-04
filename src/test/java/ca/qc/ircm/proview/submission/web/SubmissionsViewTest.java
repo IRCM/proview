@@ -36,6 +36,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.EDIT_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HIDDEN_BUTTON;
+import static ca.qc.ircm.proview.submission.web.SubmissionsView.HIDE_COLUMNS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HISTORY;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_COUNT;
@@ -76,15 +77,14 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
-import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
 import com.google.common.collect.Range;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -98,6 +98,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -108,7 +109,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mock;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -119,16 +119,14 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionsViewTest extends AbstractKaribuTestCase {
+public class SubmissionsViewTest extends SpringUIUnitTest {
   private SubmissionsView view;
-  @Mock
-  private SubmissionsViewPresenter presenter;
-  @Mock
-  private ObjectFactory<SubmissionDialog> dialogFactory;
-  @Mock
-  private ObjectFactory<SamplesStatusDialog> statusDialogFactory;
   @MockBean
-  private AuthenticatedUser authenticatedUser;
+  private SubmissionsViewPresenter presenter;
+  @MockBean
+  private ObjectFactory<SubmissionDialog> dialogFactory;
+  @MockBean
+  private ObjectFactory<SamplesStatusDialog> statusDialogFactory;
   @Captor
   private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
   @Captor
@@ -150,8 +148,8 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    view = new SubmissionsView(presenter, dialogFactory, statusDialogFactory, authenticatedUser);
+    UI.getCurrent().setLocale(locale);
+    view = new SubmissionsView(presenter, dialogFactory, statusDialogFactory);
     view.init();
     submissions = repository.findAll();
   }
@@ -261,6 +259,7 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   @Test
   public void presenter_Init() {
     verify(presenter).init(view);
+    verify(presenter).localeChange(locale);
   }
 
   @Test
@@ -274,6 +273,8 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     validateIcon(VaadinIcon.EDIT.create(), view.editStatus.getIcon());
     assertEquals(HISTORY, view.history.getId().orElse(""));
     validateIcon(VaadinIcon.ARCHIVE.create(), view.history.getIcon());
+    assertEquals(HIDE_COLUMNS, view.hideColumns.getId().orElse(""));
+    validateIcon(VaadinIcon.COG.create(), view.hideColumns.getIcon());
   }
 
   @Test
@@ -322,6 +323,7 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     assertEquals(resources.message(ADD), view.add.getText());
     assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
     assertEquals(resources.message(HISTORY), view.history.getText());
+    assertEquals(resources.message(HIDE_COLUMNS), view.hideColumns.getText());
   }
 
   @Test
@@ -340,7 +342,7 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     final AppResources submissionResources = new AppResources(Submission.class, locale);
     final AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
     final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-    ui.setLocale(locale);
+    UI.getCurrent().setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     verify(view.view).setHeader(webResources.message(VIEW));
@@ -378,11 +380,13 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
     assertEquals(resources.message(ADD), view.add.getText());
     assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
     assertEquals(resources.message(HISTORY), view.history.getText());
+    assertEquals(resources.message(HIDE_COLUMNS), view.hideColumns.getText());
     verify(view.submissions.getDataProvider(), times(2)).refreshAll();
     verify(view.instrumentFilter.getDataProvider(), times(2)).refreshAll();
     verify(view.serviceFilter.getDataProvider(), times(2)).refreshAll();
     verify(view.statusFilter.getDataProvider(), times(2)).refreshAll();
     verify(view.hiddenFilter.getDataProvider(), times(2)).refreshAll();
+    verify(presenter, atLeastOnce()).localeChange(locale);
   }
 
   @Test
@@ -768,6 +772,24 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   }
 
   @Test
+  public void getHeaderText() {
+    view = navigate(SubmissionsView.class);
+    assertEquals(webResources.message(VIEW), view.getHeaderText(view.view));
+    assertEquals(submissionResources.message(EXPERIMENT), view.getHeaderText(view.experiment));
+    assertEquals(submissionResources.message(USER), view.getHeaderText(view.user));
+    assertEquals(laboratoryResources.message(DIRECTOR), view.getHeaderText(view.director));
+    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+        view.getHeaderText(view.dataAvailableDate));
+    assertEquals(submissionResources.message(SUBMISSION_DATE), view.getHeaderText(view.date));
+    assertEquals(submissionResources.message(INSTRUMENT), view.getHeaderText(view.instrument));
+    assertEquals(submissionResources.message(SERVICE), view.getHeaderText(view.service));
+    assertEquals(resources.message(SAMPLES_COUNT), view.getHeaderText(view.samplesCount));
+    assertEquals(submissionResources.message(SAMPLES), view.getHeaderText(view.samples));
+    assertEquals(submissionSampleResources.message(STATUS), view.getHeaderText(view.status));
+    assertEquals(submissionResources.message(HIDDEN), view.getHeaderText(view.hidden));
+  }
+
+  @Test
   public void add() {
     clickButton(view.add);
     verify(presenter).add();
@@ -783,5 +805,25 @@ public class SubmissionsViewTest extends AbstractKaribuTestCase {
   public void history() {
     clickButton(view.history);
     verify(presenter).historySelected(locale);
+  }
+
+  @Test
+  public void hideColumns() {
+    assertTrue(view.hideColumnsContextMenu.isOpenOnClick());
+    assertEquals(view.hideColumns, view.hideColumnsContextMenu.getTarget());
+  }
+
+  @Test
+  public void hideColumns_date() {
+    SubmissionsView view = navigate(SubmissionsView.class);
+    String dateHeader = view.submissions.getHeaderRows().get(0).getCell(view.date).getText();
+    view.hideColumnsContextMenu.addColumnToggleItem(dateHeader, view.date);
+    assertTrue(view.date.isVisible());
+    test(view.hideColumnsContextMenu).open();
+    assertTrue(test(view.hideColumnsContextMenu).isItemChecked(dateHeader));
+    test(view.hideColumnsContextMenu).clickItem(dateHeader);
+    assertFalse(view.date.isVisible());
+    assertFalse(test(view.hideColumnsContextMenu).isItemChecked(dateHeader));
+    verify(presenter).toggleHideColumn(view.date);
   }
 }

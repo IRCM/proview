@@ -32,7 +32,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
-import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -40,7 +39,6 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
-import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.text.NormalizedComparator;
@@ -49,9 +47,12 @@ import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.DateRangeField;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.contextmenu.ContextMenu;
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -95,6 +96,7 @@ public class SubmissionsView extends VerticalLayout
   public static final String EDIT_STATUS = "editStatus";
   public static final String HISTORY = "history";
   public static final String ADD = "add";
+  public static final String HIDE_COLUMNS = "hideColumns";
   public static final String SAMPLES_SPAN =
       "<span .title='${item.samplesTitle}'>${item.samplesValue}</span>";
   public static final String STATUS_SPAN =
@@ -135,19 +137,19 @@ public class SubmissionsView extends VerticalLayout
   protected Button add = new Button();
   protected Button editStatus = new Button();
   protected Button history = new Button();
+  protected Button hideColumns = new Button();
+  protected ColumnToggleContextMenu hideColumnsContextMenu;
   protected ObjectFactory<SubmissionDialog> dialogFactory;
   protected ObjectFactory<SamplesStatusDialog> statusDialogFactory;
-  private transient AuthenticatedUser authenticatedUser;
   private transient SubmissionsViewPresenter presenter;
 
   @Autowired
   protected SubmissionsView(SubmissionsViewPresenter presenter,
       ObjectFactory<SubmissionDialog> dialogFactory,
-      ObjectFactory<SamplesStatusDialog> statusDialogFactory, AuthenticatedUser authenticatedUser) {
+      ObjectFactory<SamplesStatusDialog> statusDialogFactory) {
     this.presenter = presenter;
     this.dialogFactory = dialogFactory;
     this.statusDialogFactory = statusDialogFactory;
-    this.authenticatedUser = authenticatedUser;
   }
 
   @PostConstruct
@@ -156,13 +158,12 @@ public class SubmissionsView extends VerticalLayout
     setId(ID);
     setSizeFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    buttonsLayout.add(add, editStatus, history);
+    buttonsLayout.add(add, editStatus, history, hideColumns);
     add(header, submissions, buttonsLayout);
     expand(submissions);
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
     submissions.setMinHeight("500px");
-    submissions.setWidth(authenticatedUser.hasRole(ADMIN) ? "2500px" : "100%");
     submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
     submissions.addItemClickListener(e -> {
       if (e.isShiftKey() || e.isCtrlKey() || e.isMetaKey()) {
@@ -287,6 +288,9 @@ public class SubmissionsView extends VerticalLayout
     history.setId(HISTORY);
     history.setIcon(VaadinIcon.ARCHIVE.create());
     history.addClickListener(e -> presenter.historySelected(getLocale()));
+    hideColumns.setId(HIDE_COLUMNS);
+    hideColumns.setIcon(VaadinIcon.COG.create());
+    hideColumnsContextMenu = new ColumnToggleContextMenu(hideColumns, presenter);
     presenter.init(this);
   }
 
@@ -373,11 +377,17 @@ public class SubmissionsView extends VerticalLayout
     add.setText(resources.message(ADD));
     editStatus.setText(resources.message(EDIT_STATUS));
     history.setText(resources.message(HISTORY));
+    hideColumns.setText(resources.message(HIDE_COLUMNS));
     submissions.getDataProvider().refreshAll();
     instrumentFilter.getDataProvider().refreshAll();
     serviceFilter.getDataProvider().refreshAll();
     statusFilter.getDataProvider().refreshAll();
     hiddenFilter.getDataProvider().refreshAll();
+    presenter.localeChange(getLocale());
+  }
+
+  protected String getHeaderText(Column<Submission> column) {
+    return submissions.getHeaderRows().get(0).getCell(column).getText();
   }
 
   @Override
@@ -385,5 +395,25 @@ public class SubmissionsView extends VerticalLayout
     final AppResources resources = new AppResources(getClass(), getLocale());
     final AppResources generalResources = new AppResources(Constants.class, getLocale());
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+  }
+
+  protected static class ColumnToggleContextMenu extends ContextMenu {
+    private transient SubmissionsViewPresenter presenter;
+
+    public ColumnToggleContextMenu(Component target, SubmissionsViewPresenter presenter) {
+      super(target);
+      this.presenter = presenter;
+      setOpenOnClick(true);
+    }
+
+    protected MenuItem addColumnToggleItem(String label, Grid.Column<Submission> column) {
+      MenuItem menuItem = this.addItem(label, e -> {
+        column.setVisible(e.getSource().isChecked());
+        presenter.toggleHideColumn(column);
+      });
+      menuItem.setCheckable(true);
+      menuItem.setChecked(column.isVisible());
+      return menuItem;
+    }
   }
 }
