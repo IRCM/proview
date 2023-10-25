@@ -70,7 +70,7 @@
     <start-class>ca.qc.ircm.proview.Main</start-class>
     <java.version>11</java.version>
     <shiro.version>1.10.0</shiro.version>
-    <vaadin.version>23.2.16</vaadin.version>
+    <vaadin.version>23.3.26</vaadin.version>
     <guava.version>32.0.0-jre</guava.version>
     <commons-email.version>1.5</commons-email.version>
     <spotbugs.version>4.7.1</spotbugs.version>
