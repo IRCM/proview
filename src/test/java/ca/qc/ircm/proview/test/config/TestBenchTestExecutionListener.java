@@ -23,9 +23,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.TestBenchTestCase;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -47,11 +44,6 @@ import org.springframework.test.context.TestExecutionListener;
  */
 @Order(0)
 public class TestBenchTestExecutionListener implements TestExecutionListener, InjectDependencies {
-  private static final String LICENSE_ERROR_MESSAGE =
-      "License for Vaadin TestBench not found. Skipping test class {0} .";
-  private static final String[] LICENSE_PATHS = new String[] { ".vaadin/proKey",
-      "vaadin.testbench.developer.license", ".vaadin.testbench.developer.license" };
-  private static final String LICENSE_SYSTEM_PROPERTY = "vaadin.testbench.developer.license";
   private static final String SKIP_TESTS_ERROR_MESSAGE = "TestBench tests are skipped";
   private static final String SKIP_TESTS_SYSTEM_PROPERTY = "testbench.skip";
   private static final String DRIVER_SYSTEM_PROPERTY = "testbench.driver";
@@ -74,17 +66,6 @@ public class TestBenchTestExecutionListener implements TestExecutionListener, In
         assumeTrue(false, SKIP_TESTS_ERROR_MESSAGE);
       }
 
-      boolean licenseFileExists = false;
-      for (String licencePath : LICENSE_PATHS) {
-        licenseFileExists |=
-            Files.exists(Paths.get(System.getProperty("user.home")).resolve(licencePath));
-      }
-      if (!licenseFileExists && System.getProperty(LICENSE_SYSTEM_PROPERTY) == null) {
-        String message =
-            MessageFormat.format(LICENSE_ERROR_MESSAGE, testContext.getTestClass().getName());
-        logger.info(message);
-        assumeTrue(false, message);
-      }
       setRetries();
     }
   }

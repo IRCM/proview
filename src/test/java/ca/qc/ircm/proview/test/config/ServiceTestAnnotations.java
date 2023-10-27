@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 @WebAppConfiguration
 @TestExecutionListeners(
-    value = { KaribuTestExecutionListener.class },
+    value = { VaadinLicenseExecutionListener.class, KaribuTestExecutionListener.class },
     mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
 @Transactional
 @Sql({ "/drop-schema.sql", "/schema-h2.sql", "/database-before-insert.sql", "/user-data.sql",
