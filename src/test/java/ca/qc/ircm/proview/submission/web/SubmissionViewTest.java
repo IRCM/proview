@@ -52,6 +52,8 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
@@ -97,8 +99,8 @@ public class SubmissionViewTest extends AbstractKaribuTestCase {
       new LcmsmsSubmissionForm(mock(LcmsmsSubmissionFormPresenter.class));
   private SmallMoleculeSubmissionForm smallMoleculeSubmissionForm =
       new SmallMoleculeSubmissionForm(mock(SmallMoleculeSubmissionFormPresenter.class));
-  private IntactProteinSubmissionForm intactProteinSubmissionForm =
-      new IntactProteinSubmissionForm(mock(IntactProteinSubmissionFormPresenter.class));
+  private IntactProteinSubmissionForm intactProteinSubmissionForm = new IntactProteinSubmissionForm(
+      mock(SubmissionSampleService.class), mock(AuthenticatedUser.class));
   @Mock
   private BeforeEvent beforeEvent;
   @Captor
