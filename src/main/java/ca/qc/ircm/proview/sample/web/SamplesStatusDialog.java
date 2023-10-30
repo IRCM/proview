@@ -19,6 +19,7 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.CANCEL;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
@@ -31,6 +32,7 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.web.SavedEvent;
@@ -45,6 +47,9 @@ import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -52,8 +57,11 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,14 +88,16 @@ public class SamplesStatusDialog extends Dialog
   protected Button save = new Button();
   protected Button cancel = new Button();
   private Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
-  @Autowired
-  private transient SamplesStatusDialogPresenter presenter;
+  private Submission submission;
+  private Map<SubmissionSample, Binder<SubmissionSample>> binders = new HashMap<>();
+  private transient SubmissionSampleService service;
 
   public SamplesStatusDialog() {
   }
 
-  SamplesStatusDialog(SamplesStatusDialogPresenter presenter) {
-    this.presenter = presenter;
+  @Autowired
+  SamplesStatusDialog(SubmissionSampleService service) {
+    this.service = service;
   }
 
   public static String id(String baseId) {
@@ -120,15 +130,17 @@ public class SamplesStatusDialog extends Dialog
     allStatus.setClearButtonVisible(true);
     allStatus.setItems(SampleStatus.values());
     allStatus.setItemLabelGenerator(value -> value.getLabel(getLocale()));
-    allStatus.addValueChangeListener(e -> presenter.setAllStatus(allStatus.getValue()));
+    allStatus.addValueChangeListener(
+        e -> Optional.ofNullable(e.getValue()).ifPresent(status -> submission.getSamples().stream()
+            .forEach(sample -> status(sample).setValue(status))));
+    addOpenedChangeListener(e -> allStatus.clear());
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setId(id(SAVE));
     save.setIcon(VaadinIcon.CHECK.create());
-    save.addClickListener(e -> presenter.save());
+    save.addClickListener(e -> save());
     cancel.setId(id(CANCEL));
     cancel.setIcon(VaadinIcon.CLOSE.create());
-    cancel.addClickListener(e -> presenter.cancel());
-    presenter.init(this);
+    cancel.addClickListener(e -> close());
   }
 
   ComboBox<SampleStatus> status(SubmissionSample sample) {
@@ -145,6 +157,10 @@ public class SamplesStatusDialog extends Dialog
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
+    localeChanged();
+  }
+
+  private void localeChanged() {
     final AppResources resources = new AppResources(SamplesStatusDialog.class, getLocale());
     final AppResources webResources = new AppResources(Constants.class, getLocale());
     final AppResources sampleResources = new AppResources(Sample.class, getLocale());
@@ -157,8 +173,18 @@ public class SamplesStatusDialog extends Dialog
     allStatus.setLabel(resources.message(property(STATUS, ALL)));
     save.setText(webResources.message(SAVE));
     cancel.setText(webResources.message(CANCEL));
-    updateHeader();
-    presenter.localeChange(getLocale());
+    setHeaderTitle(resources.message(HEADER));
+    if (submission != null) {
+      for (SubmissionSample sample : submission.getSamples()) {
+        Binder<SubmissionSample> binder = new BeanValidationBinder<>(SubmissionSample.class);
+        binder.forField(status(sample)).asRequired(webResources.message(REQUIRED)).bind(STATUS);
+        binder.setBean(sample);
+        binders.put(sample, binder);
+      }
+      if (submission.getId() != null) {
+        setHeaderTitle(resources.message(HEADER, submission.getExperiment()));
+      }
+    }
   }
 
   /**
@@ -179,21 +205,35 @@ public class SamplesStatusDialog extends Dialog
   }
 
   public Submission getSubmission() {
-    return presenter.getSubmission();
+    return submission;
   }
 
   public void setSubmission(Submission submission) {
-    presenter.setSubmission(submission);
-    updateHeader();
+    Objects.requireNonNull(submission);
+    Objects.requireNonNull(submission.getSamples());
+    this.submission = submission;
+    samples.setItems(submission.getSamples());
+    localeChanged();
   }
 
-  private void updateHeader() {
-    final AppResources resources = new AppResources(SamplesStatusDialog.class, getLocale());
-    Submission submission = presenter.getSubmission();
-    if (submission != null && submission.getId() != null) {
-      setHeaderTitle(resources.message(HEADER, submission.getExperiment()));
-    } else {
-      setHeaderTitle(resources.message(HEADER));
+  List<BinderValidationStatus<SubmissionSample>> validateSamples() {
+    return submission.getSamples().stream().map(sample -> binders.get(sample).validate())
+        .collect(Collectors.toList());
+  }
+
+  private boolean validate() {
+    return submission != null && !submission.getSamples().isEmpty()
+        && !validateSamples().stream().filter(status -> !status.isOk()).findAny().isPresent();
+  }
+
+  private void save() {
+    if (validate()) {
+      logger.debug("update samples' status of submission {}", submission);
+      AppResources resources = new AppResources(SamplesStatusDialog.class, getLocale());
+      service.updateStatus(submission.getSamples());
+      showNotification(resources.message(SAVED, submission.getExperiment()));
+      close();
+      fireSavedEvent();
     }
   }
 }

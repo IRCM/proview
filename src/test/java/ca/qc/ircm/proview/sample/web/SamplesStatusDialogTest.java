@@ -21,30 +21,28 @@ import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.HEADER;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.ID;
+import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.SAVED;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.id;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -52,6 +50,7 @@ import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -62,23 +61,21 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.provider.SortDirection;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.dom.Element;
-import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.testbench.unit.MetaKeys;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -92,16 +89,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class SamplesStatusDialogTest extends SpringUIUnitTest {
   private SamplesStatusDialog dialog;
   @MockBean
-  private SamplesStatusDialogPresenter presenter;
-  @Mock
-  private Submission submission;
-  @Captor
-  private ArgumentCaptor<ValueProvider<SubmissionSample, String>> valueProviderCaptor;
-  @Captor
-  private ArgumentCaptor<
-      ComponentRenderer<ComboBox<SampleStatus>, SubmissionSample>> statusRendererCaptor;
-  @Captor
-  private ArgumentCaptor<Comparator<SubmissionSample>> comparatorCaptor;
+  private SubmissionSampleService service;
   @Mock
   private ComponentEventListener<SavedEvent<SamplesStatusDialog>> savedListener;
   @Autowired
@@ -112,6 +100,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   private AppResources sampleResources = new AppResources(Sample.class, locale);
   private AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
   private List<SubmissionSample> samples;
+  private SampleStatus status1 = SampleStatus.ANALYSED;
+  private SampleStatus status2 = SampleStatus.DIGESTED;
 
   /**
    * Before tests.
@@ -130,27 +120,10 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     return test(dialog.samples).getColumnPosition(property);
   }
 
-  @SuppressWarnings("unchecked")
-  private void mockColumns() {
-    Element gridElement = dialog.samples.getElement();
-    dialog.samples = mock(Grid.class);
-    when(dialog.samples.getElement()).thenReturn(gridElement);
-    dialog.name = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(NAME))).thenReturn(dialog.name);
-    when(dialog.name.setKey(any())).thenReturn(dialog.name);
-    when(dialog.name.setComparator(any(Comparator.class))).thenReturn(dialog.name);
-    when(dialog.name.setHeader(any(String.class))).thenReturn(dialog.name);
-    when(dialog.name.setFlexGrow(anyInt())).thenReturn(dialog.name);
-    dialog.status = mock(Column.class);
-    when(dialog.samples.addColumn(any(ComponentRenderer.class))).thenReturn(dialog.status);
-    when(dialog.status.setKey(any())).thenReturn(dialog.status);
-    when(dialog.status.setHeader(any(String.class))).thenReturn(dialog.status);
-    when(dialog.status.setSortable(anyBoolean())).thenReturn(dialog.status);
-    when(dialog.status.setFlexGrow(anyInt())).thenReturn(dialog.status);
-    HeaderRow allRow = mock(HeaderRow.class);
-    when(dialog.samples.appendHeaderRow()).thenReturn(allRow);
-    HeaderCell allStatusCell = mock(HeaderCell.class);
-    when(allRow.getCell(dialog.status)).thenReturn(allStatusCell);
+  private void setFields() {
+    dialog.status(dialog.getSubmission().getSamples().get(0)).setValue(status1);
+    dialog.getSubmission().getSamples().stream().skip(1)
+        .forEach(sample -> dialog.status(sample).setValue(status2));
   }
 
   @Test
@@ -165,16 +138,17 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
+    assertEquals(resources.message(HEADER, dialog.getSubmission().getExperiment()),
+        dialog.getHeaderTitle());
     assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    HeaderRow header = dialog.samples.getHeaderRows().get(0);
     FooterRow footer = dialog.samples.getFooterRows().get(0);
-    assertEquals(sampleResources.message(NAME),
-        test(dialog.samples).getHeaderCell(indexOfColumn(NAME)));
+    assertEquals(sampleResources.message(NAME), header.getCell(dialog.name).getText());
     assertEquals(sampleResources.message(NAME), footer.getCell(dialog.name).getText());
     assertEquals(submissionSampleResources.message(STATUS),
-        test(dialog.samples).getHeaderCell(indexOfColumn(STATUS)));
+        header.getCell(dialog.status).getText());
     assertEquals(submissionSampleResources.message(STATUS),
         footer.getCell(dialog.status).getText());
   }
@@ -187,16 +161,17 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     final AppResources sampleResources = new AppResources(Sample.class, locale);
     final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
+    assertEquals(resources.message(HEADER, dialog.getSubmission().getExperiment()),
+        dialog.getHeaderTitle());
     assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    HeaderRow header = dialog.samples.getHeaderRows().get(0);
     FooterRow footer = dialog.samples.getFooterRows().get(0);
-    assertEquals(sampleResources.message(NAME),
-        test(dialog.samples).getHeaderCell(indexOfColumn(NAME)));
+    assertEquals(sampleResources.message(NAME), header.getCell(dialog.name).getText());
     assertEquals(sampleResources.message(NAME), footer.getCell(dialog.name).getText());
     assertEquals(submissionSampleResources.message(STATUS),
-        test(dialog.samples).getHeaderCell(indexOfColumn(STATUS)));
+        header.getCell(dialog.status).getText());
     assertEquals(submissionSampleResources.message(STATUS),
         footer.getCell(dialog.status).getText());
   }
@@ -212,13 +187,17 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void samples_ColumnsValueProvider() {
-    dialog.samples.setItems(samples);
+    Submission submission = new Submission();
+    submission.setSamples(samples);
+    dialog.setSubmission(submission);
     for (int i = 0; i < samples.size(); i++) {
       SubmissionSample sample = samples.get(i);
       assertEquals(sample.getName(), test(dialog.samples).getCellText(i, indexOfColumn(NAME)));
       ComboBox<SampleStatus> statusBox =
           test(test(dialog.samples).getCellComponent(i, STATUS)).find(ComboBox.class).first();
+      assertEquals(sample.getStatus(), statusBox.getValue(), i + ", " + sample);
       assertTrue(statusBox.hasClassName(STATUS));
+      assertTrue(statusBox.isRequiredIndicatorVisible());
       List<SampleStatus> statuses = items(statusBox);
       assertEquals(Arrays.asList(SampleStatus.values()), statuses);
       for (SampleStatus status : statuses) {
@@ -247,16 +226,29 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void allStatus_Changed() {
+    assertTrue(dialog.getSubmission().getSamples().stream()
+        .filter(sa -> sa.getStatus() != SampleStatus.ANALYSED).findFirst().isPresent());
     dialog.allStatus.setValue(SampleStatus.ANALYSED);
-    verify(presenter).setAllStatus(SampleStatus.ANALYSED);
+    for (SubmissionSample sample : dialog.getSubmission().getSamples()) {
+      assertEquals(SampleStatus.ANALYSED, dialog.status(sample).getValue());
+    }
   }
 
   @Test
   public void allStatus_Clear() {
     dialog.allStatus.setValue(SampleStatus.ANALYSED);
     dialog.allStatus.clear();
-    verify(presenter).setAllStatus(SampleStatus.ANALYSED);
-    verify(presenter).setAllStatus(null);
+    for (SubmissionSample sample : dialog.getSubmission().getSamples()) {
+      assertEquals(SampleStatus.ANALYSED, dialog.status(sample).getValue());
+    }
+  }
+
+  @Test
+  public void allStatus_ResetOnOpen() {
+    dialog.allStatus.setValue(SampleStatus.ANALYSED);
+    dialog.close();
+    dialog.open();
+    assertNull(dialog.allStatus.getValue());
   }
 
   @Test
@@ -274,50 +266,96 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void save() {
+  public void save_EmptySamples() {
+    Submission submission = new Submission();
+    submission.setSamples(new ArrayList<>());
+    dialog.setSubmission(submission);
     dialog.save.click();
-    verify(presenter).save();
+    verify(service, never()).updateStatus(any());
+  }
+
+  @Test
+  public void save_EmptyStatus_First() {
+    setFields();
+    SubmissionSample sample = dialog.getSubmission().getSamples().get(0);
+    dialog.status(sample).setValue(null);
+    dialog.save.click();
+    verify(service, never()).updateStatus(any());
+    List<BinderValidationStatus<SubmissionSample>> statuses = dialog.validateSamples();
+    BinderValidationStatus<SubmissionSample> status = statuses.get(0);
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, dialog.status(sample));
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void save_EmptyStatus_Second() {
+    setFields();
+    SubmissionSample sample = dialog.getSubmission().getSamples().get(1);
+    dialog.status(sample).setValue(null);
+    dialog.save.click();
+    verify(service, never()).updateStatus(any());
+    List<BinderValidationStatus<SubmissionSample>> statuses = dialog.validateSamples();
+    BinderValidationStatus<SubmissionSample> status = statuses.get(1);
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, dialog.status(sample));
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void save() {
+    dialog.addSavedListener(savedListener);
+    setFields();
+    dialog.save.click();
+    verify(service).updateStatus(dialog.getSubmission().getSamples());
+    Notification notification = $(Notification.class).first();
+    assertEquals(resources.message(SAVED, dialog.getSubmission().getExperiment()),
+        test(notification).getText());
+    assertFalse(dialog.isOpened());
+    verify(savedListener).onComponentEvent(any());
   }
 
   @Test
   public void cancel() {
     dialog.cancel.click();
-    verify(presenter).cancel();
+    assertFalse(dialog.isOpened());
   }
 
   @Test
   public void getSubmission() {
-    when(presenter.getSubmission()).thenReturn(submission);
-    Submission submission = dialog.getSubmission();
-    verify(presenter, atLeastOnce()).getSubmission();
-    assertEquals(this.submission, submission);
+    assertEquals(163L, dialog.getSubmission().getId());
   }
 
   @Test
-  public void setSubmission() {
+  public void setSubmission_New() {
     Submission submission = new Submission(1L);
     String experiment = "test submission";
     submission.setExperiment(experiment);
-    when(presenter.getSubmission()).thenReturn(submission);
+    submission.setSamples(new ArrayList<>());
 
     dialog.setSubmission(submission);
 
-    verify(presenter).setSubmission(submission);
+    assertEquals(submission, dialog.getSubmission());
     assertEquals(resources.message(HEADER, experiment), dialog.getHeaderTitle());
   }
 
   @Test
-  public void setSubmission_LocalChange() {
+  public void setSubmission_NewLocalChange() {
     Submission submission = new Submission(1L);
     String experiment = "test submission";
     submission.setExperiment(experiment);
-    when(presenter.getSubmission()).thenReturn(submission);
+    submission.setSamples(new ArrayList<>());
     dialog.setSubmission(submission);
 
     locale = Locale.FRENCH;
     UI.getCurrent().setLocale(locale);
 
-    verify(presenter).setSubmission(submission);
     final AppResources resources = new AppResources(SamplesStatusDialog.class, locale);
     assertEquals(resources.message(HEADER, experiment), dialog.getHeaderTitle());
   }
@@ -325,10 +363,10 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   @Test
   public void setSubmission_NoId() {
     Submission submission = new Submission();
-    when(presenter.getSubmission()).thenReturn(submission);
+    submission.setSamples(new ArrayList<>());
+
     dialog.setSubmission(submission);
 
-    verify(presenter).setSubmission(submission);
     assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
   }
 
@@ -337,14 +375,13 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     Submission submission = new Submission(1L);
     String experiment = "test submission";
     submission.setExperiment(experiment);
-    when(presenter.getSubmission()).thenReturn(submission);
+    submission.setSamples(new ArrayList<>());
     dialog.setSubmission(submission);
     submission = new Submission();
-    when(presenter.getSubmission()).thenReturn(submission);
+    submission.setSamples(new ArrayList<>());
 
     dialog.setSubmission(submission);
 
-    verify(presenter).setSubmission(submission);
     assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
   }
 }
