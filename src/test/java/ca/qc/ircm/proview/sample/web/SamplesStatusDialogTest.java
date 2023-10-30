@@ -40,6 +40,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -52,21 +53,24 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
+import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.testbench.unit.MetaKeys;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -77,6 +81,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -84,9 +89,9 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
+public class SamplesStatusDialogTest extends SpringUIUnitTest {
   private SamplesStatusDialog dialog;
-  @Mock
+  @MockBean
   private SamplesStatusDialogPresenter presenter;
   @Mock
   private Submission submission;
@@ -113,10 +118,16 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    dialog = new SamplesStatusDialog(presenter);
-    dialog.init();
+    UI.getCurrent().setLocale(locale);
+    SubmissionsView view = navigate(SubmissionsView.class);
+    Grid<Submission> submissions = test(view).find(Grid.class).id(SubmissionsView.SUBMISSIONS);
+    test(submissions).clickRow(1, new MetaKeys().shift());
+    dialog = $(SamplesStatusDialog.class).id(ID);
     samples = repository.findAll();
+  }
+
+  private int indexOfColumn(String property) {
+    return test(dialog.samples).getColumnPosition(property);
   }
 
   @SuppressWarnings("unchecked")
@@ -154,37 +165,40 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    mockColumns();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
-    verify(dialog.name).setHeader(sampleResources.message(NAME));
-    verify(dialog.name).setFooter(sampleResources.message(NAME));
-    verify(dialog.status).setHeader(submissionSampleResources.message(STATUS));
-    verify(dialog.status).setFooter(submissionSampleResources.message(STATUS));
+    FooterRow footer = dialog.samples.getFooterRows().get(0);
+    assertEquals(sampleResources.message(NAME),
+        test(dialog.samples).getHeaderCell(indexOfColumn(NAME)));
+    assertEquals(sampleResources.message(NAME), footer.getCell(dialog.name).getText());
+    assertEquals(submissionSampleResources.message(STATUS),
+        test(dialog.samples).getHeaderCell(indexOfColumn(STATUS)));
+    assertEquals(submissionSampleResources.message(STATUS),
+        footer.getCell(dialog.status).getText());
   }
 
   @Test
   public void localeChange() {
-    mockColumns();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(SamplesStatusDialog.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
     final AppResources sampleResources = new AppResources(Sample.class, locale);
     final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-    ui.setLocale(locale);
-    dialog.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
-    verify(dialog.name).setHeader(sampleResources.message(NAME));
-    verify(dialog.name).setFooter(sampleResources.message(NAME));
-    verify(dialog.status).setHeader(submissionSampleResources.message(STATUS));
-    verify(dialog.status).setFooter(submissionSampleResources.message(STATUS));
+    FooterRow footer = dialog.samples.getFooterRows().get(0);
+    assertEquals(sampleResources.message(NAME),
+        test(dialog.samples).getHeaderCell(indexOfColumn(NAME)));
+    assertEquals(sampleResources.message(NAME), footer.getCell(dialog.name).getText());
+    assertEquals(submissionSampleResources.message(STATUS),
+        test(dialog.samples).getHeaderCell(indexOfColumn(STATUS)));
+    assertEquals(submissionSampleResources.message(STATUS),
+        footer.getCell(dialog.status).getText());
   }
 
   @Test
@@ -198,34 +212,31 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
 
   @Test
   public void samples_ColumnsValueProvider() {
-    dialog = new SamplesStatusDialog(presenter);
-    mockColumns();
-    dialog.init();
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(NAME));
-    ValueProvider<SubmissionSample, String> valueProvider = valueProviderCaptor.getValue();
-    for (SubmissionSample sample : samples) {
-      assertEquals(sample.getName() != null ? sample.getName() : "", valueProvider.apply(sample));
-    }
-    verify(dialog.name).setComparator(comparatorCaptor.capture());
-    Comparator<SubmissionSample> comparator = comparatorCaptor.getValue();
-    assertTrue(comparator instanceof NormalizedComparator);
-    for (SubmissionSample sample : samples) {
-      assertEquals(sample.getName(),
-          ((NormalizedComparator<SubmissionSample>) comparator).getConverter().apply(sample));
-    }
-    verify(dialog.samples).addColumn(statusRendererCaptor.capture());
-    ComponentRenderer<ComboBox<SampleStatus>, SubmissionSample> statusRenderer =
-        statusRendererCaptor.getValue();
-    for (SubmissionSample sample : samples) {
-      ComboBox<SampleStatus> comboBox = statusRenderer.createComponent(sample);
-      assertTrue(comboBox.hasClassName(STATUS));
-      List<SampleStatus> statuses = items(comboBox);
+    dialog.samples.setItems(samples);
+    for (int i = 0; i < samples.size(); i++) {
+      SubmissionSample sample = samples.get(i);
+      assertEquals(sample.getName(), test(dialog.samples).getCellText(i, indexOfColumn(NAME)));
+      ComboBox<SampleStatus> statusBox =
+          test(test(dialog.samples).getCellComponent(i, STATUS)).find(ComboBox.class).first();
+      assertTrue(statusBox.hasClassName(STATUS));
+      List<SampleStatus> statuses = items(statusBox);
       assertEquals(Arrays.asList(SampleStatus.values()), statuses);
       for (SampleStatus status : statuses) {
-        assertEquals(status.getLabel(locale), comboBox.getItemLabelGenerator().apply(status));
+        assertEquals(status.getLabel(locale), statusBox.getItemLabelGenerator().apply(status));
       }
-      assertSame(comboBox, dialog.status(sample));
+      assertSame(statusBox, dialog.status(sample));
     }
+  }
+
+  @Test
+  public void samples_NameColumnComparator() {
+    Comparator<SubmissionSample> nameComparator =
+        test(dialog.samples).getColumn(NAME).getComparator(SortDirection.ASCENDING);
+    assertEquals(0, nameComparator.compare(new SubmissionSample("éê"), new SubmissionSample("ee")));
+    assertTrue(nameComparator.compare(new SubmissionSample("a"), new SubmissionSample("e")) < 0);
+    assertTrue(nameComparator.compare(new SubmissionSample("a"), new SubmissionSample("é")) < 0);
+    assertTrue(nameComparator.compare(new SubmissionSample("e"), new SubmissionSample("a")) > 0);
+    assertTrue(nameComparator.compare(new SubmissionSample("é"), new SubmissionSample("a")) > 0);
   }
 
   @Test
@@ -278,7 +289,7 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
   public void getSubmission() {
     when(presenter.getSubmission()).thenReturn(submission);
     Submission submission = dialog.getSubmission();
-    verify(presenter).getSubmission();
+    verify(presenter, atLeastOnce()).getSubmission();
     assertEquals(this.submission, submission);
   }
 
@@ -287,7 +298,6 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
     Submission submission = new Submission(1L);
     String experiment = "test submission";
     submission.setExperiment(experiment);
-    dialog.localeChange(mock(LocaleChangeEvent.class));
     when(presenter.getSubmission()).thenReturn(submission);
 
     dialog.setSubmission(submission);
@@ -297,23 +307,24 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  public void setSubmission_BeforeLocalChange() {
+  public void setSubmission_LocalChange() {
     Submission submission = new Submission(1L);
     String experiment = "test submission";
     submission.setExperiment(experiment);
     when(presenter.getSubmission()).thenReturn(submission);
-
     dialog.setSubmission(submission);
-    dialog.localeChange(mock(LocaleChangeEvent.class));
+
+    locale = Locale.FRENCH;
+    UI.getCurrent().setLocale(locale);
 
     verify(presenter).setSubmission(submission);
+    final AppResources resources = new AppResources(SamplesStatusDialog.class, locale);
     assertEquals(resources.message(HEADER, experiment), dialog.getHeaderTitle());
   }
 
   @Test
   public void setSubmission_NoId() {
     Submission submission = new Submission();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
     when(presenter.getSubmission()).thenReturn(submission);
     dialog.setSubmission(submission);
 
@@ -323,7 +334,6 @@ public class SamplesStatusDialogTest extends AbstractKaribuTestCase {
 
   @Test
   public void setSubmission_IdThenNoId() {
-    dialog.localeChange(mock(LocaleChangeEvent.class));
     Submission submission = new Submission(1L);
     String experiment = "test submission";
     submission.setExperiment(experiment);
