@@ -33,18 +33,16 @@ import static ca.qc.ircm.proview.submission.web.HistoryView.EXPLANATION_SPAN;
 import static ca.qc.ircm.proview.submission.web.HistoryView.HEADER;
 import static ca.qc.ircm.proview.submission.web.HistoryView.ID;
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_BUTTON;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
+import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_ERROR;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.functions;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,22 +52,31 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityRepository;
+import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
+import ca.qc.ircm.proview.plate.Plate;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.grid.FooterRow;
+import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.renderer.LitRenderer;
-import com.vaadin.flow.dom.Element;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,8 +84,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -86,22 +93,24 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class HistoryViewTest extends AbstractKaribuTestCase {
+public class HistoryViewTest extends SpringUIUnitTest {
   private HistoryView view;
-  @Mock
-  private HistoryViewPresenter presenter;
-  @Mock
-  private Submission submission;
+  @MockBean
+  private ActivityService service;
+  @MockBean
+  private SubmissionService submissionService;
   @Mock
   private BeforeEvent beforeEvent;
-  @Mock
-  private ObjectFactory<SubmissionDialog> dialogFactory;
-  @Mock
-  private ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
-  @Mock
-  private ObjectFactory<TreatmentDialog> treatmentDialogFactory;
+  @MockBean
+  private SubmissionDialog dialog;
+  @MockBean
+  private MsAnalysisDialog msAnalysisDialog;
+  @MockBean
+  private TreatmentDialog treatmentDialog;
   @Autowired
   private ActivityRepository repository;
+  @Autowired
+  private SubmissionRepository submissionRepository;
   @Captor
   private ArgumentCaptor<ValueProvider<Activity, String>> valueProviderCaptor;
   @Captor
@@ -117,56 +126,16 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    view =
-        new HistoryView(presenter, dialogFactory, msAnalysisDialogFactory, treatmentDialogFactory);
-    view.init();
+    UI.getCurrent().setLocale(locale);
     activities = repository.findAll();
+    when(service.all(any())).thenReturn(activities);
+    when(submissionService.get(any())).thenAnswer(i -> Optional.ofNullable((Long) i.getArgument(0))
+        .map(id -> submissionRepository.findById(id)).orElse(Optional.empty()));
+    view = navigate(HistoryView.class, 1L);
   }
 
-  @SuppressWarnings("unchecked")
-  private void mockColumns() {
-    Element gridElement = view.activities.getElement();
-    view.activities = mock(Grid.class);
-    when(view.activities.getElement()).thenReturn(gridElement);
-    view.view = mock(Column.class);
-    view.description = mock(Column.class);
-    view.explanation = mock(Column.class);
-    when(view.activities.addColumn(any(LitRenderer.class))).thenReturn(view.view, view.description,
-        view.explanation);
-    when(view.view.setKey(any())).thenReturn(view.view);
-    when(view.view.setSortable(anyBoolean())).thenReturn(view.view);
-    when(view.view.setFlexGrow(anyInt())).thenReturn(view.view);
-    when(view.view.setHeader(any(String.class))).thenReturn(view.view);
-    view.user = mock(Column.class);
-    when(view.activities.addColumn(any(ValueProvider.class), eq(USER))).thenReturn(view.user);
-    when(view.user.setKey(any())).thenReturn(view.user);
-    when(view.user.setFlexGrow(anyInt())).thenReturn(view.user);
-    when(view.user.setHeader(any(String.class))).thenReturn(view.user);
-    view.type = mock(Column.class);
-    when(view.activities.addColumn(any(ValueProvider.class), eq(ACTION_TYPE)))
-        .thenReturn(view.type);
-    when(view.type.setKey(any())).thenReturn(view.type);
-    when(view.type.setFlexGrow(anyInt())).thenReturn(view.type);
-    when(view.type.setHeader(any(String.class))).thenReturn(view.type);
-    view.date = mock(Column.class);
-    when(view.activities.addColumn(any(ValueProvider.class), eq(TIMESTAMP))).thenReturn(view.date);
-    when(view.date.setKey(any())).thenReturn(view.date);
-    when(view.date.setFlexGrow(anyInt())).thenReturn(view.date);
-    when(view.date.setHeader(any(String.class))).thenReturn(view.date);
-    when(view.description.setKey(any())).thenReturn(view.description);
-    when(view.description.setSortable(anyBoolean())).thenReturn(view.description);
-    when(view.description.setFlexGrow(anyInt())).thenReturn(view.description);
-    when(view.description.setHeader(any(String.class))).thenReturn(view.description);
-    when(view.explanation.setKey(any())).thenReturn(view.explanation);
-    when(view.explanation.setSortable(anyBoolean())).thenReturn(view.explanation);
-    when(view.explanation.setFlexGrow(anyInt())).thenReturn(view.explanation);
-    when(view.explanation.setHeader(any(String.class))).thenReturn(view.explanation);
-  }
-
-  @Test
-  public void init() {
-    verify(presenter).init(view);
+  private int indexOfColumn(String property) {
+    return test(view.activities).getColumnPosition(property);
   }
 
   @Test
@@ -178,46 +147,51 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    mockColumns();
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER, ""), view.header.getText());
-    verify(view.view).setHeader(webResources.message(VIEW));
-    verify(view.view).setFooter(webResources.message(VIEW));
-    verify(view.user).setHeader(activityResources.message(USER));
-    verify(view.user).setFooter(activityResources.message(USER));
-    verify(view.type).setHeader(activityResources.message(ACTION_TYPE));
-    verify(view.type).setFooter(activityResources.message(ACTION_TYPE));
-    verify(view.date).setHeader(activityResources.message(TIMESTAMP));
-    verify(view.date).setFooter(activityResources.message(TIMESTAMP));
-    verify(view.description).setHeader(resources.message(DESCRIPTION));
-    verify(view.description).setFooter(resources.message(DESCRIPTION));
-    verify(view.explanation).setHeader(activityResources.message(EXPLANATION));
-    verify(view.explanation).setFooter(activityResources.message(EXPLANATION));
+    assertEquals(resources.message(HEADER, view.getSubmission().getExperiment()),
+        view.header.getText());
+    HeaderRow header = view.activities.getHeaderRows().get(0);
+    FooterRow footer = view.activities.getFooterRows().get(0);
+    assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
+    assertEquals(webResources.message(VIEW), footer.getCell(view.view).getText());
+    assertEquals(activityResources.message(USER), header.getCell(view.user).getText());
+    assertEquals(activityResources.message(USER), footer.getCell(view.user).getText());
+    assertEquals(activityResources.message(ACTION_TYPE), header.getCell(view.type).getText());
+    assertEquals(activityResources.message(ACTION_TYPE), footer.getCell(view.type).getText());
+    assertEquals(activityResources.message(TIMESTAMP), header.getCell(view.date).getText());
+    assertEquals(activityResources.message(TIMESTAMP), footer.getCell(view.date).getText());
+    assertEquals(resources.message(DESCRIPTION), header.getCell(view.description).getText());
+    assertEquals(resources.message(DESCRIPTION), footer.getCell(view.description).getText());
+    assertEquals(activityResources.message(EXPLANATION),
+        header.getCell(view.explanation).getText());
+    assertEquals(activityResources.message(EXPLANATION),
+        footer.getCell(view.explanation).getText());
   }
 
   @Test
   public void localeChange() {
-    mockColumns();
-    view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(HistoryView.class, locale);
     final AppResources activityResources = new AppResources(Activity.class, locale);
-    final AppResources viewResources = new AppResources(Constants.class, locale);
-    ui.setLocale(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER, ""), view.header.getText());
-    verify(view.view).setHeader(webResources.message(VIEW));
-    verify(view.view).setFooter(webResources.message(VIEW));
-    verify(view.user).setHeader(activityResources.message(USER));
-    verify(view.user).setFooter(activityResources.message(USER));
-    verify(view.type, atLeastOnce()).setHeader(activityResources.message(ACTION_TYPE));
-    verify(view.type, atLeastOnce()).setFooter(activityResources.message(ACTION_TYPE));
-    verify(view.date, atLeastOnce()).setHeader(activityResources.message(TIMESTAMP));
-    verify(view.date, atLeastOnce()).setFooter(activityResources.message(TIMESTAMP));
-    verify(view.description, atLeastOnce()).setHeader(resources.message(DESCRIPTION));
-    verify(view.description, atLeastOnce()).setFooter(resources.message(DESCRIPTION));
-    verify(view.explanation).setHeader(activityResources.message(EXPLANATION));
-    verify(view.explanation).setFooter(activityResources.message(EXPLANATION));
+    final AppResources webResources = new AppResources(Constants.class, locale);
+    UI.getCurrent().setLocale(locale);
+    assertEquals(resources.message(HEADER, view.getSubmission().getExperiment()),
+        view.header.getText());
+    HeaderRow header = view.activities.getHeaderRows().get(0);
+    FooterRow footer = view.activities.getFooterRows().get(0);
+    assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
+    assertEquals(webResources.message(VIEW), footer.getCell(view.view).getText());
+    assertEquals(activityResources.message(USER), header.getCell(view.user).getText());
+    assertEquals(activityResources.message(USER), footer.getCell(view.user).getText());
+    assertEquals(activityResources.message(ACTION_TYPE), header.getCell(view.type).getText());
+    assertEquals(activityResources.message(ACTION_TYPE), footer.getCell(view.type).getText());
+    assertEquals(activityResources.message(TIMESTAMP), header.getCell(view.date).getText());
+    assertEquals(activityResources.message(TIMESTAMP), footer.getCell(view.date).getText());
+    assertEquals(resources.message(DESCRIPTION), header.getCell(view.description).getText());
+    assertEquals(resources.message(DESCRIPTION), footer.getCell(view.description).getText());
+    assertEquals(activityResources.message(EXPLANATION),
+        header.getCell(view.explanation).getText());
+    assertEquals(activityResources.message(EXPLANATION),
+        footer.getCell(view.explanation).getText());
   }
 
   @Test
@@ -241,62 +215,129 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
   public void activities_ColumnsValueProvider() {
     Map<Activity, String> descriptions = IntStream.range(0, activities.size()).boxed()
         .collect(Collectors.toMap(in -> activities.get(in), in -> "description " + in));
-    when(presenter.description(any(), any())).thenAnswer(i -> descriptions.get(i.getArgument(0)));
-    mockColumns();
-    view.init();
-    verify(view.activities, times(3)).addColumn(litRendererCaptor.capture());
-    LitRenderer<Activity> litRenderer = litRendererCaptor.getAllValues().get(0);
-    for (Activity activity : activities) {
-      assertEquals(VIEW_BUTTON, rendererTemplate(litRenderer));
-      assertTrue(functions(litRenderer).containsKey("view"));
-      functions(litRenderer).get("view").accept(activity, null);
-      verify(presenter).view(activity, locale);
-    }
-    verify(view.activities).addColumn(valueProviderCaptor.capture(), eq(USER));
-    ValueProvider<Activity, String> valueProvider = valueProviderCaptor.getValue();
-    for (Activity activity : activities) {
-      assertEquals(activity.getUser().getName(), valueProvider.apply(activity));
-    }
-    verify(view.activities).addColumn(valueProviderCaptor.capture(), eq(ACTION_TYPE));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Activity activity : activities) {
-      assertEquals(activity.getActionType().getLabel(locale), valueProvider.apply(activity));
-    }
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    verify(view.activities).addColumn(valueProviderCaptor.capture(), eq(TIMESTAMP));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Activity activity : activities) {
-      assertEquals(dateFormatter.format(activity.getTimestamp()), valueProvider.apply(activity));
-    }
-    litRenderer = litRendererCaptor.getAllValues().get(1);
-    for (Activity activity : activities) {
-      assertEquals(DESCRIPTION_SPAN, rendererTemplate(litRenderer));
-      assertTrue(litRenderer.getValueProviders().containsKey("descriptionValue"));
+    when(service.description(any(), any()))
+        .thenAnswer(i -> Optional.of(descriptions.get(i.getArgument(0))));
+    view.setParameter(mock(BeforeEvent.class), 1L);
+    for (int i = 0; i < activities.size(); i++) {
+      Activity activity = activities.get(i);
+      Renderer<Activity> viewRawRenderer = test(view.activities).getColumn(VIEW).getRenderer();
+      assertTrue(viewRawRenderer instanceof LitRenderer<Activity>);
+      LitRenderer<Activity> viewRenderer = (LitRenderer<Activity>) viewRawRenderer;
+      assertEquals(VIEW_BUTTON, rendererTemplate(viewRenderer));
+      assertTrue(functions(viewRenderer).containsKey("view"));
+      functions(viewRenderer).get("view").accept(activity, null);
+      // TODO Test view
+      assertEquals(activity.getUser().getName(),
+          test(view.activities).getCellText(i, indexOfColumn(USER)));
+      assertEquals(activity.getActionType().getLabel(locale),
+          test(view.activities).getCellText(i, indexOfColumn(ACTION_TYPE)));
+      assertEquals(DateTimeFormatter.ISO_DATE_TIME.format(activity.getTimestamp()),
+          test(view.activities).getCellText(i, indexOfColumn(TIMESTAMP)));
+      Renderer<Activity> descriptionRawRenderer =
+          test(view.activities).getColumn(DESCRIPTION).getRenderer();
+      assertTrue(descriptionRawRenderer instanceof LitRenderer<Activity>);
+      LitRenderer<Activity> descriptionRenderer = (LitRenderer<Activity>) descriptionRawRenderer;
+      assertEquals(DESCRIPTION_SPAN, rendererTemplate(descriptionRenderer));
+      assertTrue(descriptionRenderer.getValueProviders().containsKey("descriptionValue"));
       assertEquals(descriptions.get(activity),
-          litRenderer.getValueProviders().get("descriptionValue").apply(activity));
-      assertTrue(litRenderer.getValueProviders().containsKey("descriptionTitle"));
+          descriptionRenderer.getValueProviders().get("descriptionValue").apply(activity));
+      assertTrue(descriptionRenderer.getValueProviders().containsKey("descriptionTitle"));
       assertEquals(descriptions.get(activity),
-          litRenderer.getValueProviders().get("descriptionTitle").apply(activity));
-      verify(presenter, times(2)).description(activity, locale);
-    }
-    litRenderer = litRendererCaptor.getAllValues().get(2);
-    for (Activity activity : activities) {
-      assertEquals(EXPLANATION_SPAN, rendererTemplate(litRenderer));
-      assertTrue(litRenderer.getValueProviders().containsKey("explanationValue"));
+          descriptionRenderer.getValueProviders().get("descriptionTitle").apply(activity));
+      verify(service, times(2)).description(activity, locale);
+      Renderer<Activity> explanationRawRenderer =
+          test(view.activities).getColumn(EXPLANATION).getRenderer();
+      assertTrue(explanationRawRenderer instanceof LitRenderer<Activity>);
+      LitRenderer<Activity> explanationRenderer = (LitRenderer<Activity>) explanationRawRenderer;
+      assertEquals(EXPLANATION_SPAN, rendererTemplate(explanationRenderer));
+      assertTrue(explanationRenderer.getValueProviders().containsKey("explanationValue"));
       assertEquals(activity.getExplanation(),
-          litRenderer.getValueProviders().get("explanationValue").apply(activity));
-      assertTrue(litRenderer.getValueProviders().containsKey("explanationTitle"));
+          explanationRenderer.getValueProviders().get("explanationValue").apply(activity));
+      assertTrue(explanationRenderer.getValueProviders().containsKey("explanationTitle"));
       assertEquals(activity.getExplanation(),
-          litRenderer.getValueProviders().get("explanationTitle").apply(activity));
+          explanationRenderer.getValueProviders().get("explanationTitle").apply(activity));
     }
   }
 
   @Test
-  public void activities_DoubleClick() {
-    Activity activity = activities.get(0);
-    doubleClickItem(view.activities, activity, null);
+  public void view_Submission() {
+    Submission submission = mock(Submission.class);
+    Activity activity = items(view.activities).get(0);
+    when(service.record(activity)).thenReturn(Optional.of(submission));
+    test(view.activities).doubleClickRow(0);
 
-    verify(presenter).view(activity, locale);
+    verify(dialog).setSubmission(submission);
+    verify(dialog).open();
+  }
+
+  @Test
+  public void view_SubmissionSample() {
+    Submission submission = mock(Submission.class);
+    SubmissionSample sample = mock(SubmissionSample.class);
+    when(sample.getSubmission()).thenReturn(submission);
+    Activity activity = items(view.activities).get(0);
+    when(service.record(activity)).thenReturn(Optional.of(sample));
+    test(view.activities).doubleClickRow(0);
+
+    verify(dialog).setSubmission(submission);
+    verify(dialog).open();
+  }
+
+  @Test
+  public void view_MsAnalysis() {
+    MsAnalysis msAnalysis = mock(MsAnalysis.class);
+    Activity activity = items(view.activities).get(0);
+    when(service.record(activity)).thenReturn(Optional.of(msAnalysis));
+    test(view.activities).doubleClickRow(0);
+
+    verify(msAnalysisDialog).setMsAnalysis(msAnalysis);
+    verify(msAnalysisDialog).open();
+  }
+
+  @Test
+  public void view_Treatment() {
+    Treatment treatment = mock(Treatment.class);
+    Activity activity = items(view.activities).get(0);
+    when(service.record(activity)).thenReturn(Optional.of(treatment));
+    test(view.activities).doubleClickRow(0);
+
+    verify(treatmentDialog).setTreatment(treatment);
+    verify(treatmentDialog).open();
+  }
+
+  @Test
+  public void view_Plate() {
+    Plate plate = mock(Plate.class);
+    Activity activity = items(view.activities).get(0);
+    when(service.record(activity)).thenReturn(Optional.of(plate));
+    test(view.activities).doubleClickRow(0);
+
+    Notification notification = $(Notification.class).first();
+    assertEquals(resources.message(VIEW_ERROR, Plate.class.getSimpleName()),
+        test(notification).getText());
+  }
+
+  @Test
+  public void view_Other() {
+    Object object = mock(Object.class);
+    Activity activity = items(view.activities).get(0);
+    when(service.record(activity)).thenReturn(Optional.of(object));
+    test(view.activities).doubleClickRow(0);
+
+    Notification notification = $(Notification.class).first();
+    assertEquals(resources.message(VIEW_ERROR, Object.class.getSimpleName()),
+        test(notification).getText());
+  }
+
+  @Test
+  public void view_Empty() {
+    Activity activity = items(view.activities).get(0);
+    when(service.record(activity)).thenReturn(Optional.empty());
+    test(view.activities).doubleClickRow(0);
+
+    Notification notification = $(Notification.class).first();
+    assertEquals(resources.message(VIEW_ERROR, Object.class.getSimpleName()),
+        test(notification).getText());
   }
 
   @Test
@@ -310,16 +351,27 @@ public class HistoryViewTest extends AbstractKaribuTestCase {
     Submission submission = new Submission(1L);
     String experiment = "test submission";
     submission.setExperiment(experiment);
-    when(presenter.getSubmission()).thenReturn(submission);
+    when(submissionService.get(any())).thenReturn(Optional.of(submission));
     view.setParameter(beforeEvent, 12L);
-    verify(presenter).setParameter(12L);
+    verify(submissionService).get(12L);
+    assertEquals(submission, view.getSubmission());
     assertEquals(resources.message(HEADER, experiment), view.header.getText());
+  }
+
+  @Test
+  public void setParameter_EmptySubmission() {
+    when(submissionService.get(any())).thenReturn(Optional.empty());
+    view.setParameter(beforeEvent, 12L);
+    verify(submissionService).get(12L);
+    assertNull(view.getSubmission());
+    assertEquals(resources.message(HEADER, ""), view.header.getText());
   }
 
   @Test
   public void setParameter_Null() {
     view.setParameter(beforeEvent, null);
-    verify(presenter).setParameter(null);
-    assertEquals(resources.message(HEADER, ""), view.header.getText());
+    assertEquals(1L, view.getSubmission().getId());
+    assertEquals(resources.message(HEADER, view.getSubmission().getExperiment()),
+        view.header.getText());
   }
 }

@@ -28,8 +28,14 @@ import static ca.qc.ircm.proview.history.ActivityProperties.USER;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.history.ActivityComparator;
+import ca.qc.ircm.proview.history.ActivityService;
+import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
+import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
+import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
@@ -46,6 +52,9 @@ import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
@@ -83,17 +92,20 @@ public class HistoryView extends VerticalLayout
   protected Column<Activity> date;
   protected Column<Activity> description;
   protected Column<Activity> explanation;
+  private Submission submission;
   protected ObjectFactory<SubmissionDialog> dialogFactory;
   protected ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
   protected ObjectFactory<TreatmentDialog> treatmentDialogFactory;
-  private transient HistoryViewPresenter presenter;
+  private transient ActivityService service;
+  private transient SubmissionService submissionService;
 
   @Autowired
-  protected HistoryView(HistoryViewPresenter presenter,
+  protected HistoryView(ActivityService service, SubmissionService submissionService,
       ObjectFactory<SubmissionDialog> dialogFactory,
       ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory,
       ObjectFactory<TreatmentDialog> treatmentDialogFactory) {
-    this.presenter = presenter;
+    this.service = service;
+    this.submissionService = submissionService;
     this.dialogFactory = dialogFactory;
     this.msAnalysisDialogFactory = msAnalysisDialogFactory;
     this.treatmentDialogFactory = treatmentDialogFactory;
@@ -109,11 +121,10 @@ public class HistoryView extends VerticalLayout
     header.setId(HEADER);
     activities.setId(ACTIVITIES);
     activities.setSizeFull();
-    view =
-        activities
-            .addColumn(LitRenderer.<Activity>of(VIEW_BUTTON).withFunction("view",
-                ac -> presenter.view(ac, getLocale())))
-            .setKey(VIEW).setSortable(false).setFlexGrow(0);
+    view = activities
+        .addColumn(
+            LitRenderer.<Activity>of(VIEW_BUTTON).withFunction("view", ac -> view(ac, getLocale())))
+        .setKey(VIEW).setSortable(false).setFlexGrow(0);
     user = activities.addColumn(ac -> ac.getUser().getName(), USER).setKey(USER).setFlexGrow(5);
     type = activities.addColumn(ac -> ac.getActionType().getLabel(getLocale()), ACTION_TYPE)
         .setKey(ACTION_TYPE);
@@ -130,8 +141,7 @@ public class HistoryView extends VerticalLayout
             .withProperty("explanationTitle", ac -> ac.getExplanation())
             .withProperty("explanationValue", ac -> ac.getExplanation()))
         .setKey(EXPLANATION).setSortable(false).setFlexGrow(5);
-    activities.addItemDoubleClickListener(e -> presenter.view(e.getItem(), getLocale()));
-    presenter.init(this);
+    activities.addItemDoubleClickListener(e -> view(e.getItem(), getLocale()));
   }
 
   @Override
@@ -155,12 +165,11 @@ public class HistoryView extends VerticalLayout
   }
 
   private String description(Activity activity) {
-    return presenter.description(activity, getLocale());
+    return service.description(activity, getLocale()).orElse("");
   }
 
   private void updateHeader() {
     AppResources resources = new AppResources(getClass(), getLocale());
-    Submission submission = presenter.getSubmission();
     if (submission != null && submission.getId() != null) {
       header.setText(resources.message(HEADER, submission.getExperiment()));
     } else {
@@ -177,7 +186,48 @@ public class HistoryView extends VerticalLayout
 
   @Override
   public void setParameter(BeforeEvent event, Long parameter) {
-    presenter.setParameter(parameter);
+    if (parameter != null) {
+      submission = submissionService.get(parameter).orElse(null);
+      updateActivities();
+    }
     updateHeader();
+  }
+
+  public Submission getSubmission() {
+    return submission;
+  }
+
+  private void updateActivities() {
+    if (submission != null) {
+      List<Activity> activities = service.all(submission);
+      Collections.sort(activities,
+          new ActivityComparator(ActivityComparator.Compare.TIMESTAMP).reversed());
+      this.activities.setItems(activities);
+    }
+  }
+
+  void view(Activity activity, Locale locale) {
+    Object record = service.record(activity).orElse(new Object());
+    if (record instanceof SubmissionSample) {
+      record = ((SubmissionSample) record).getSubmission();
+    }
+    if (record instanceof Submission) {
+      SubmissionDialog dialog = dialogFactory.getObject();
+      dialog.setSubmission((Submission) record);
+      dialog.open();
+      dialog.addSavedListener(e -> updateActivities());
+    } else if (record instanceof MsAnalysis) {
+      MsAnalysisDialog msAnalysisDialog = msAnalysisDialogFactory.getObject();
+      msAnalysisDialog.setMsAnalysis((MsAnalysis) record);
+      msAnalysisDialog.open();
+    } else if (record instanceof Treatment) {
+      TreatmentDialog treatmentDialog = treatmentDialogFactory.getObject();
+      treatmentDialog.setTreatment((Treatment) record);
+      treatmentDialog.open();
+    } else {
+      AppResources resources = new AppResources(HistoryView.class, locale);
+      showNotification(resources.message(VIEW_ERROR, record.getClass().getSimpleName()));
+    }
+    logger.trace("view activity {}", activity);
   }
 }
