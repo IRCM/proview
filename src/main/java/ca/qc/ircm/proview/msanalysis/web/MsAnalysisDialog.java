@@ -120,6 +120,10 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
+    localeChanged();
+  }
+
+  private void localeChanged() {
     final AppResources resource = new AppResources(MsAnalysisDialog.class, getLocale());
     final AppResources treatmentResource = new AppResources(MsAnalysis.class, getLocale());
     final AppResources treatedSampleResource = new AppResources(Acquisition.class, getLocale());
@@ -133,6 +137,13 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
     acquisitionFile.setHeader(treatedSampleResource.message(ACQUISITION_FILE));
     position.setHeader(treatedSampleResource.message(POSITION));
     comment.setHeader(treatedSampleResource.message(COMMENT));
+    instrument.setText(resource.message(MASS_DETECTION_INSTRUMENT,
+        msAnalysis.getMassDetectionInstrument().getLabel(getLocale())));
+    source.setText(resource.message(SOURCE, msAnalysis.getSource().getLabel(getLocale())));
+    deleted.setVisible(msAnalysis.isDeleted());
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
+    date.setText(resource.message(INSERT_TIME, dateFormatter.format(msAnalysis.getInsertTime())));
+    acquisitions.setItems(msAnalysis.getAcquisitions());
   }
 
   public MsAnalysis getMsAnalysis() {
@@ -148,13 +159,6 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
   public void setMsAnalysis(MsAnalysis msAnalysis) {
     Objects.requireNonNull(msAnalysis);
     this.msAnalysis = msAnalysis;
-    AppResources resource = new AppResources(MsAnalysisDialog.class, getLocale());
-    instrument.setText(resource.message(MASS_DETECTION_INSTRUMENT,
-        msAnalysis.getMassDetectionInstrument().getLabel(getLocale())));
-    source.setText(resource.message(SOURCE, msAnalysis.getSource().getLabel(getLocale())));
-    deleted.setVisible(msAnalysis.isDeleted());
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    date.setText(resource.message(INSERT_TIME, dateFormatter.format(msAnalysis.getInsertTime())));
-    acquisitions.setItems(msAnalysis.getAcquisitions());
+    localeChanged();
   }
 }
