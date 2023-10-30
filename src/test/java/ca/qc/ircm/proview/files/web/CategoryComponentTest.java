@@ -25,9 +25,9 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @NonTransactionalTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class CategoryComponentTest extends AbstractKaribuTestCase {
+public class CategoryComponentTest extends SpringUIUnitTest {
   private CategoryComponent component;
   @Mock
   private Category category;
