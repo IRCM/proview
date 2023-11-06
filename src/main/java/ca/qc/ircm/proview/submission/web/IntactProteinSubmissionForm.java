@@ -28,18 +28,15 @@ import static ca.qc.ircm.proview.sample.SampleType.DRY;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEIGHT;
 import static ca.qc.ircm.proview.security.Permission.WRITE;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.DEVELOPMENT_TIME;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.GOAL;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INJECTION_TYPE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.POST_TRANSLATION_MODIFICATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.PROTEIN_QUANTITY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOURCE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
-import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_QUANTITY;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
@@ -108,10 +105,6 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   public static final String SAMPLES_NAMES_WRONG_COUNT = property(SAMPLES + "Names", "wrongCount");
   public static final String QUANTITY_PLACEHOLDER = property(QUANTITY, PLACEHOLDER);
   public static final String VOLUME_PLACEHOLDER = property(VOLUME, PLACEHOLDER);
-  public static final String DEVELOPMENT_TIME_PLACEHOLDER = property(DEVELOPMENT_TIME, PLACEHOLDER);
-  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER =
-      property(WEIGHT_MARKER_QUANTITY, PLACEHOLDER);
-  public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
   private static final long serialVersionUID = 7704703308278059432L;
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
