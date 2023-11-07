@@ -97,8 +97,8 @@ public class SubmissionViewTest extends AbstractKaribuTestCase {
   private SubmissionViewPresenter presenter;
   private LcmsmsSubmissionForm lcmsmsSubmissionForm =
       new LcmsmsSubmissionForm(mock(SubmissionSampleService.class), mock(AuthenticatedUser.class));
-  private SmallMoleculeSubmissionForm smallMoleculeSubmissionForm =
-      new SmallMoleculeSubmissionForm(mock(SmallMoleculeSubmissionFormPresenter.class));
+  private SmallMoleculeSubmissionForm smallMoleculeSubmissionForm = new SmallMoleculeSubmissionForm(
+      mock(SubmissionSampleService.class), mock(AuthenticatedUser.class));
   private IntactProteinSubmissionForm intactProteinSubmissionForm = new IntactProteinSubmissionForm(
       mock(SubmissionSampleService.class), mock(AuthenticatedUser.class));
   @Mock

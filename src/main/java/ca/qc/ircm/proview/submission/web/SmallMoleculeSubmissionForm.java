@@ -17,8 +17,14 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.ALREADY_EXISTS;
+import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
+import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleType.DRY;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
+import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.AVERAGE_MASS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.FORMULA;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
@@ -33,20 +39,37 @@ import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.SampleType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.treatment.Solvent;
+import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.binder.Validator;
+import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -62,6 +85,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   public static final String SAMPLE_TYPE = SAMPLE + "Type";
   public static final String SAMPLE_NAME = SAMPLE + "Name";
   private static final long serialVersionUID = 7704703308278059432L;
+  private static final Logger logger = LoggerFactory.getLogger(SmallMoleculeSubmissionForm.class);
   protected RadioButtonGroup<SampleType> sampleType = new RadioButtonGroup<>();
   protected TextField sampleName = new TextField();
   protected TextField solvent = new TextField();
@@ -74,11 +98,17 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   protected RadioButtonGroup<Boolean> highResolution = new RadioButtonGroup<>();
   protected SolventsField solvents = new SolventsField();
   protected TextField otherSolvent = new TextField();
-  private transient SmallMoleculeSubmissionFormPresenter presenter;
+  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+  private Binder<SubmissionSample> firstSampleBinder =
+      new BeanValidationBinder<>(SubmissionSample.class);
+  private SubmissionSampleService sampleService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
-  protected SmallMoleculeSubmissionForm(SmallMoleculeSubmissionFormPresenter presenter) {
-    this.presenter = presenter;
+  protected SmallMoleculeSubmissionForm(SubmissionSampleService sampleService,
+      AuthenticatedUser authenticatedUser) {
+    this.sampleService = sampleService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   public static String id(String baseId) {
@@ -98,8 +128,10 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     sampleType.setItems(DRY, SOLUTION);
     sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+    sampleType.addValueChangeListener(e -> sampleTypeChanged());
     sampleName.setId(id(SAMPLE_NAME));
     solvent.setId(id(SOLUTION_SOLVENT));
+    solvents.addValueChangeListener(e -> solventsChanged());
     formula.setId(id(FORMULA));
     monoisotopicMass.setId(id(MONOISOTOPIC_MASS));
     averageMass.setId(id(AVERAGE_MASS));
@@ -116,13 +148,14 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
             .message(property(HIGH_RESOLUTION, value))));
     highResolution.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     otherSolvent.setId(id(OTHER_SOLVENT));
-    presenter.init(this);
   }
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(SmallMoleculeSubmissionForm.class, getLocale());
-    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
+    Locale locale = event.getLocale();
+    final AppResources resources = new AppResources(SmallMoleculeSubmissionForm.class, locale);
+    final AppResources submissionResources = new AppResources(Submission.class, locale);
+    final AppResources webResources = new AppResources(Constants.class, locale);
     sampleType.setLabel(resources.message(SAMPLE_TYPE));
     sampleName.setLabel(resources.message(SAMPLE_NAME));
     solvent.setLabel(submissionResources.message(SOLUTION_SOLVENT));
@@ -135,18 +168,102 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     highResolution.setLabel(submissionResources.message(HIGH_RESOLUTION));
     solvents.setLabel(submissionResources.message(SOLVENTS));
     otherSolvent.setLabel(submissionResources.message(OTHER_SOLVENT));
-    presenter.localeChange(getLocale());
+    firstSampleBinder.forField(sampleType).asRequired(webResources.message(REQUIRED)).bind(TYPE);
+    firstSampleBinder.forField(sampleName).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").withValidator(sampleNameExists(locale)).bind(NAME);
+    solvent.setRequiredIndicatorVisible(true);
+    binder.forField(solvent)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withNullRepresentation("").bind(SOLUTION_SOLVENT);
+    binder.forField(formula).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
+        .bind(FORMULA);
+    binder.forField(monoisotopicMass).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("")
+        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .bind(MONOISOTOPIC_MASS);
+    binder.forField(averageMass).withNullRepresentation("")
+        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .bind(AVERAGE_MASS);
+    binder.forField(toxicity).withNullRepresentation("").bind(TOXICITY);
+    binder.forField(lightSensitive).bind(LIGHT_SENSITIVE);
+    binder.forField(storageTemperature).asRequired(webResources.message(REQUIRED))
+        .bind(STORAGE_TEMPERATURE);
+    binder.forField(highResolution).asRequired(webResources.message(REQUIRED))
+        .bind(HIGH_RESOLUTION);
+    binder.forField(solvents).asRequired(webResources.message(REQUIRED))
+        .withValidator(solventsNotEmpty(locale)).bind(SOLVENTS);
+    otherSolvent.setRequiredIndicatorVisible(true);
+    binder.forField(otherSolvent)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(OTHER_SOLVENT);
+    sampleTypeChanged();
+    solventsChanged();
+    setReadOnly();
   }
 
-  public boolean isValid() {
-    return presenter.isValid();
+  private void sampleTypeChanged() {
+    SampleType type = sampleType.getValue();
+    solvent.setEnabled(type == SOLUTION);
   }
 
-  public Submission getSubmission() {
-    return presenter.getSubmission();
+  private void solventsChanged() {
+    List<Solvent> solvents = this.solvents.getValue();
+    otherSolvent.setEnabled(solvents != null && solvents.contains(Solvent.OTHER));
   }
 
-  public void setSubmission(Submission submission) {
-    presenter.setSubmission(submission);
+  private Validator<String> sampleNameExists(Locale locale) {
+    return (value, context) -> {
+      if (sampleService.exists(value)) {
+        final AppResources resources = new AppResources(Constants.class, locale);
+        return ValidationResult.error(resources.message(ALREADY_EXISTS, value));
+      }
+      return ValidationResult.ok();
+    };
+  }
+
+  private Validator<List<Solvent>> solventsNotEmpty(Locale locale) {
+    return (value, context) -> {
+      if (value.isEmpty()) {
+        final AppResources resources = new AppResources(Constants.class, locale);
+        return ValidationResult.error(resources.message(REQUIRED, value));
+      }
+      return ValidationResult.ok();
+    };
+  }
+
+  BinderValidationStatus<Submission> validateSubmission() {
+    return binder.validate();
+  }
+
+  BinderValidationStatus<SubmissionSample> validateFirstSample() {
+    return firstSampleBinder.validate();
+  }
+
+  boolean isValid() {
+    boolean valid = true;
+    logger.debug("solvents: {}", binder.getBean().getSolvents());
+    valid = validateSubmission().isOk() && valid;
+    valid = validateFirstSample().isOk() && valid;
+    return valid;
+  }
+
+  Submission getSubmission() {
+    return binder.getBean();
+  }
+
+  void setSubmission(Submission submission) {
+    Objects.requireNonNull(submission);
+    if (submission.getSamples() == null || submission.getSamples().isEmpty()) {
+      throw new IllegalArgumentException("submission must contain at least one sample");
+    }
+    binder.setBean(submission);
+    firstSampleBinder.setBean(submission.getSamples().get(0));
+    setReadOnly();
+  }
+
+  private void setReadOnly() {
+    boolean readOnly = !authenticatedUser.hasPermission(binder.getBean(), WRITE);
+    binder.setReadOnly(readOnly);
+    firstSampleBinder.setReadOnly(readOnly);
   }
 }
