@@ -18,17 +18,11 @@
 package ca.qc.ircm.proview.security;
 
 import ca.qc.ircm.proview.plate.Plate;
-import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.sample.Sample;
-import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.user.Laboratory;
-import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.access.PermissionEvaluator;
@@ -41,36 +35,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Primary
 public class PermissionEvaluatorDelegator implements PermissionEvaluator {
-  @Autowired
-  private RoleValidator roleValidator;
-  @Autowired
-  private UserRepository userRepository;
-  @Autowired
-  private LaboratoryRepository laboratoryRepository;
-  @Autowired
-  private SubmissionRepository submissionRepository;
-  @Autowired
-  private SampleRepository sampleRepository;
-  @Autowired
-  private PlateRepository plateRepository;
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
   private UserPermissionEvaluator userPermissionEvaluator;
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
   private SamplePermissionEvaluator samplePermissionEvaluator;
   private PlatePermissionEvaluator platePermissionEvaluator;
-
-  @PostConstruct
-  protected void init() {
-    laboratoryPermissionEvaluator =
-        new LaboratoryPermissionEvaluator(laboratoryRepository, userRepository, roleValidator);
-    userPermissionEvaluator = new UserPermissionEvaluator(userRepository, roleValidator);
-    submissionPermissionEvaluator =
-        new SubmissionPermissionEvaluator(submissionRepository, userRepository, roleValidator);
-    samplePermissionEvaluator = new SamplePermissionEvaluator(sampleRepository, userRepository,
-        roleValidator, submissionPermissionEvaluator);
-    platePermissionEvaluator = new PlatePermissionEvaluator(plateRepository, userRepository,
-        roleValidator, submissionPermissionEvaluator);
-  }
 
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
@@ -114,24 +83,29 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
     return false;
   }
 
+  @Autowired
   void setLaboratoryPermissionEvaluator(
       LaboratoryPermissionEvaluator laboratoryPermissionEvaluator) {
     this.laboratoryPermissionEvaluator = laboratoryPermissionEvaluator;
   }
 
+  @Autowired
   void setUserPermissionEvaluator(UserPermissionEvaluator userPermissionEvaluator) {
     this.userPermissionEvaluator = userPermissionEvaluator;
   }
 
+  @Autowired
   void setSubmissionPermissionEvaluator(
       SubmissionPermissionEvaluator submissionPermissionEvaluator) {
     this.submissionPermissionEvaluator = submissionPermissionEvaluator;
   }
 
+  @Autowired
   void setSamplePermissionEvaluator(SamplePermissionEvaluator samplePermissionEvaluator) {
     this.samplePermissionEvaluator = samplePermissionEvaluator;
   }
 
+  @Autowired
   void setPlatePermissionEvaluator(PlatePermissionEvaluator platePermissionEvaluator) {
     this.platePermissionEvaluator = platePermissionEvaluator;
   }

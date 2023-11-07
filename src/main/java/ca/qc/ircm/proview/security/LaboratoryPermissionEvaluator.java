@@ -26,16 +26,20 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserAuthority;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 /**
  * {@link PermissionEvaluator} that can evaluate permission for {@link Laboratory}.
  */
+@Component
 public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
   private LaboratoryRepository repository;
   private RoleValidator roleValidator;
 
+  @Autowired
   LaboratoryPermissionEvaluator(LaboratoryRepository repository, UserRepository userRepository,
       RoleValidator roleValidator) {
     super(userRepository);

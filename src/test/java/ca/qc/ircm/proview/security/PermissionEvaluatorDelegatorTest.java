@@ -33,6 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -53,15 +54,15 @@ public class PermissionEvaluatorDelegatorTest {
   private static final Permission BASE_WRITE = Permission.WRITE;
   @Autowired
   private PermissionEvaluatorDelegator permissionEvaluator;
-  @Mock
+  @MockBean
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
-  @Mock
+  @MockBean
   private UserPermissionEvaluator userPermissionEvaluator;
-  @Mock
+  @MockBean
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
-  @Mock
+  @MockBean
   private SamplePermissionEvaluator samplePermissionEvaluator;
-  @Mock
+  @MockBean
   private PlatePermissionEvaluator platePermissionEvaluator;
   @Mock
   private Laboratory laboratory;
