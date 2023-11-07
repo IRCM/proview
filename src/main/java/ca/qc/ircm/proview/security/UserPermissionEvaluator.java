@@ -26,18 +26,22 @@ import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 /**
  * {@link PermissionEvaluator} that can evaluate permission for {@link User}.
  */
+@Component
 public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
   private static final long ROBOT_ID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(UserPermissionEvaluator.class);
   private UserRepository repository;
   private RoleValidator roleValidator;
 
+  @Autowired
   UserPermissionEvaluator(UserRepository repository, RoleValidator roleValidator) {
     super(repository);
     this.repository = repository;

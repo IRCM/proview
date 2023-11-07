@@ -26,17 +26,21 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 /**
  * {@link PermissionEvaluator} that can evaluate permission for {@link Plate}.
  */
+@Component
 public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
   private PlateRepository repository;
   private RoleValidator roleValidator;
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;
 
+  @Autowired
   PlatePermissionEvaluator(PlateRepository repository, UserRepository userRepository,
       RoleValidator roleValidator, SubmissionPermissionEvaluator submissionPermissionEvaluator) {
     super(userRepository);

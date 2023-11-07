@@ -30,16 +30,20 @@ import ca.qc.ircm.proview.user.UserAuthority;
 import ca.qc.ircm.proview.user.UserRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.io.Serializable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 /**
  * {@link PermissionEvaluator} that can evaluate permission for {@link Submission}.
  */
+@Component
 public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
   private SubmissionRepository repository;
   private RoleValidator roleValidator;
 
+  @Autowired
   SubmissionPermissionEvaluator(SubmissionRepository repository, UserRepository userRepository,
       RoleValidator roleValidator) {
     super(userRepository);
