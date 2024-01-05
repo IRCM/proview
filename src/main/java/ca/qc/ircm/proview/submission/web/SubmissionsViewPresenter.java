@@ -49,11 +49,6 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.data.provider.CallbackDataProvider;
-import com.vaadin.flow.data.provider.CallbackDataProvider.CountCallback;
-import com.vaadin.flow.data.provider.CallbackDataProvider.FetchCallback;
-import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
-import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -136,11 +131,7 @@ public class SubmissionsViewPresenter {
   }
 
   private void loadSubmissions() {
-    view.submissions.setItems(dataProvider());
-  }
-
-  private DataProvider<Submission, Void> dataProvider() {
-    Function<Query<Submission, SubmissionFilter>, List<OrderSpecifier<?>>> filterSortOrders =
+    Function<Query<Submission, Void>, List<OrderSpecifier<?>>> filterSortOrders =
         query -> query.getSortOrders() != null && !query.getSortOrders().isEmpty()
             ? query.getSortOrders().stream()
                 .filter(order -> columnProperties.containsKey(order.getSorted()))
@@ -148,25 +139,12 @@ public class SubmissionsViewPresenter {
                     order.getDirection() == SortDirection.DESCENDING))
                 .collect(Collectors.toList())
             : Arrays.asList(submission.id.desc());
-    FetchCallback<Submission, SubmissionFilter> fetchCallback = query -> {
-      SubmissionFilter filter = query.getFilter().orElse(new SubmissionFilter());
+    view.submissions.setItems(query -> {
       filter.sortOrders = filterSortOrders.apply(query);
       filter.offset = query.getOffset();
       filter.limit = query.getLimit();
       return service.all(filter).stream();
-    };
-    CountCallback<Submission, SubmissionFilter> countCallback = query -> {
-      SubmissionFilter filter = query.getFilter().orElse(new SubmissionFilter());
-      filter.sortOrders = filterSortOrders.apply(query);
-      int count = service.count(filter);
-      return count;
-    };
-    DataProvider<Submission, SubmissionFilter> dataProvider =
-        new CallbackDataProvider<>(fetchCallback, countCallback);
-    ConfigurableFilterDataProvider<Submission, Void, SubmissionFilter> wrapper =
-        dataProvider.withConfigurableFilter();
-    wrapper.setFilter(filter);
-    return wrapper;
+    });
   }
 
   void localeChange(Locale locale) {

@@ -69,6 +69,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
@@ -189,7 +190,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(view.getHeaderText(any())).thenAnswer(i -> i.getArgument(0, Column.class).getKey());
     presenter.init(view);
     presenter.localeChange(locale);
-    verify(view.submissions).setItems(any(DataProvider.class));
+    verify(view.submissions).setItems(any(CallbackDataProvider.FetchCallback.class));
     verify(view.user).setVisible(false);
     verify(view.director).setVisible(false);
     verify(view.service).setVisible(false);
@@ -227,7 +228,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(view.getHeaderText(any())).thenAnswer(i -> i.getArgument(0, Column.class).getKey());
     presenter.init(view);
     presenter.localeChange(locale);
-    verify(view.submissions).setItems(any(DataProvider.class));
+    verify(view.submissions).setItems(any(CallbackDataProvider.FetchCallback.class));
     verify(view.user).setVisible(true);
     verify(view.director).setVisible(false);
     verify(view.service).setVisible(false);
@@ -267,7 +268,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     when(view.getHeaderText(any())).thenAnswer(i -> i.getArgument(0, Column.class).getKey());
     presenter.init(view);
     presenter.localeChange(locale);
-    verify(view.submissions).setItems(any(DataProvider.class));
+    verify(view.submissions).setItems(any(CallbackDataProvider.FetchCallback.class));
     verify(view.user).setVisible(true);
     verify(view.director).setVisible(true);
     verify(view.service).setVisible(true);
@@ -307,10 +308,11 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void submissions() {
     presenter.init(view);
-    ArgumentCaptor<DataProvider> dataProviderCaptor = ArgumentCaptor.forClass(DataProvider.class);
-    verify(view.submissions).setItems(dataProviderCaptor.capture());
+    ArgumentCaptor<CallbackDataProvider.FetchCallback> callbackCaptor =
+        ArgumentCaptor.forClass(CallbackDataProvider.FetchCallback.class);
+    verify(view.submissions).setItems(callbackCaptor.capture());
     List<Submission> submissions =
-        ((DataProvider<Submission, SubmissionFilter>) dataProviderCaptor.getValue())
+        ((CallbackDataProvider.FetchCallback<Submission, Void>) callbackCaptor.getValue())
             .fetch(new Query<>(0, Integer.MAX_VALUE, null, null, null))
             .collect(Collectors.toList());
     assertEquals(this.submissions, submissions);
@@ -323,13 +325,14 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
   @Test
   public void submissions_SortOrder() {
     presenter.init(view);
-    ArgumentCaptor<DataProvider> dataProviderCaptor = ArgumentCaptor.forClass(DataProvider.class);
-    verify(view.submissions).setItems(dataProviderCaptor.capture());
+    ArgumentCaptor<CallbackDataProvider.FetchCallback> callbackCaptor =
+        ArgumentCaptor.forClass(CallbackDataProvider.FetchCallback.class);
+    verify(view.submissions).setItems(callbackCaptor.capture());
     List<QuerySortOrder> sortOrders =
         Arrays.asList(new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
             new QuerySortOrder(USER, SortDirection.DESCENDING));
     List<Submission> submissions =
-        ((DataProvider<Submission, SubmissionFilter>) dataProviderCaptor.getValue())
+        ((CallbackDataProvider.FetchCallback<Submission, Void>) callbackCaptor.getValue())
             .fetch(new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null))
             .collect(Collectors.toList());
     assertEquals(this.submissions, submissions);
@@ -528,7 +531,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener =
         submissionSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
-    verify(view.submissions, times(2)).setItems(any(DataProvider.class));
+    verify(view.submissions, times(2)).setItems(any(CallbackDataProvider.FetchCallback.class));
   }
 
   @Test
@@ -546,7 +549,7 @@ public class SubmissionsViewPresenterTest extends AbstractKaribuTestCase {
     ComponentEventListener<SavedEvent<SamplesStatusDialog>> savedListener =
         statusSavedListenerCaptor.getValue();
     savedListener.onComponentEvent(mock(SavedEvent.class));
-    verify(view.submissions, times(2)).setItems(any(DataProvider.class));
+    verify(view.submissions, times(2)).setItems(any(CallbackDataProvider.FetchCallback.class));
   }
 
   @Test
