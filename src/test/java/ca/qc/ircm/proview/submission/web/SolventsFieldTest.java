@@ -19,16 +19,20 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.web.SolventsField.CLASS_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -41,7 +45,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @NonTransactionalTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SolventsFieldTest extends AbstractKaribuTestCase {
+public class SolventsFieldTest extends SpringUIUnitTest {
   private SolventsField fields;
   private Locale locale = ENGLISH;
 
@@ -50,8 +54,10 @@ public class SolventsFieldTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    fields = new SolventsField();
+    UI.getCurrent().setLocale(locale);
+    SubmissionView view = navigate(SubmissionView.class);
+    test(test(view).find(Tabs.class).id(SERVICE)).select(SMALL_MOLECULE.getLabel(locale));
+    fields = test(view).find(SolventsField.class).first();
   }
 
   @Test
@@ -75,7 +81,7 @@ public class SolventsFieldTest extends AbstractKaribuTestCase {
   public void localeChange() {
     fields.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
-    ui.setLocale(locale);
+    UI.getCurrent().setLocale(locale);
     fields.localeChange(mock(LocaleChangeEvent.class));
     for (Solvent value : Solvent.values()) {
       assertTrue(fields.fields.get(value).getElement().getOuterHTML().replaceAll("\\s", "")
