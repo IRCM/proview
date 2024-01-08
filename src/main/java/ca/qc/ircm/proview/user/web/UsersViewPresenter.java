@@ -31,9 +31,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.MainView;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.List;
@@ -80,11 +78,7 @@ public class UsersViewPresenter {
   private void loadUsers() {
     List<User> users = authenticatedUser.hasRole(ADMIN) ? service.all(null)
         : service.all(null, authenticatedUser.getUser().get().getLaboratory());
-    usersDataProvider = new ListDataProvider<>(users);
-    ConfigurableFilterDataProvider<User, Void, SerializablePredicate<User>> dataProvider =
-        usersDataProvider.withConfigurableFilter();
-    dataProvider.setFilter(filter);
-    view.users.setItems(dataProvider);
+    view.users.setItems(users);
   }
 
   void localeChange(Locale locale) {
