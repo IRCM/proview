@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.Constants.RIGHT;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.text.Strings.styleName;
@@ -32,8 +33,10 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -45,6 +48,9 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.shared.Registration;
@@ -73,20 +79,16 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   protected Button save = new Button();
   protected Button print = new Button();
   protected Button edit = new Button();
-  @Autowired
+  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   protected PrintSubmission printContent;
-  @Autowired
-  private transient SubmissionDialogPresenter presenter;
-  @Autowired
+  private transient SubmissionService service;
   private transient AuthenticatedUser authenticatedUser;
 
-  public SubmissionDialog() {
-  }
-
-  SubmissionDialog(SubmissionDialogPresenter presenter, PrintSubmission printContent,
+  @Autowired
+  protected SubmissionDialog(PrintSubmission printContent, SubmissionService service,
       AuthenticatedUser authenticatedUser) {
-    this.presenter = presenter;
     this.printContent = printContent;
+    this.service = service;
     this.authenticatedUser = authenticatedUser;
   }
 
@@ -125,16 +127,15 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
     save.setId(id(SAVE));
     save.setIcon(VaadinIcon.CHECK.create());
-    save.addClickListener(e -> presenter.save());
+    save.addClickListener(e -> save());
     print.setId(id(PRINT));
     print.setIcon(VaadinIcon.PRINT.create());
-    print.addClickListener(e -> presenter.print());
+    print.addClickListener(e -> print());
     edit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     edit.setId(id(EDIT));
     edit.addClassName(RIGHT);
     edit.setIcon(VaadinIcon.EDIT.create());
-    edit.addClickListener(e -> presenter.edit());
-    presenter.init(this);
+    edit.addClickListener(e -> edit());
   }
 
   @Override
@@ -150,7 +151,9 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     save.setText(webResources.message(SAVE));
     edit.setText(webResources.message(EDIT));
     print.setText(webResources.message(PRINT));
-    presenter.localeChange(getLocale());
+    binder.forField(instrument).withNullRepresentation(MassDetectionInstrument.NULL)
+        .bind(INSTRUMENT);
+    binder.forField(dataAvailableDate).bind(DATA_AVAILABLE_DATE);
   }
 
   /**
@@ -170,22 +173,54 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     fireEvent(new SavedEvent<>(this, true));
   }
 
-  public Submission getSubmission() {
-    return presenter.getSubmission();
-  }
-
-  public void setSubmission(Submission submission) {
-    presenter.setSubmission(submission);
-    updateHeader();
-  }
-
   private void updateHeader() {
-    Submission submission = presenter.getSubmission();
+    Submission submission = binder.getBean();
     if (submission != null && submission.getId() != null) {
       setHeaderTitle(submission.getExperiment());
     } else {
       final AppResources resources = new AppResources(SubmissionDialog.class, getLocale());
       setHeaderTitle(resources.message(HEADER));
     }
+  }
+
+  private boolean validate() {
+    return validateSubmission().isOk();
+  }
+
+  BinderValidationStatus<Submission> validateSubmission() {
+    return binder.validate();
+  }
+
+  void save() {
+    if (validate()) {
+      service.update(binder.getBean(), null);
+      close();
+      fireSavedEvent();
+    }
+  }
+
+  void edit() {
+    UI.getCurrent().navigate(SubmissionView.class, binder.getBean().getId());
+    close();
+  }
+
+  void print() {
+    UI.getCurrent().navigate(PrintSubmissionView.class, binder.getBean().getId());
+    close();
+  }
+
+  Submission getSubmission() {
+    return binder.getBean();
+  }
+
+  void setSubmission(Submission submission) {
+    if (submission == null) {
+      submission = new Submission();
+    }
+    binder.setBean(submission);
+    printContent.setSubmission(submission);
+    edit.setEnabled(
+        submission.getId() == null || authenticatedUser.hasPermission(submission, WRITE));
+    updateHeader();
   }
 }
