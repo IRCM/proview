@@ -19,9 +19,11 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
+import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
@@ -32,22 +34,33 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
+import static ca.qc.ircm.proview.user.UserRole.ADMIN;
+import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFilter;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.DateRangeField;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
+import com.google.common.collect.Range;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -61,6 +74,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.ValueProvider;
@@ -68,9 +83,17 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -141,15 +164,22 @@ public class SubmissionsView extends VerticalLayout
   protected ColumnToggleContextMenu hideColumnsContextMenu;
   protected ObjectFactory<SubmissionDialog> dialogFactory;
   protected ObjectFactory<SamplesStatusDialog> statusDialogFactory;
-  private transient SubmissionsViewPresenter presenter;
+  private Map<String, ComparableExpressionBase<?>> columnProperties = new HashMap<>();
+  private List<Grid.Column> hidableColumns = new ArrayList<>();
+  private SubmissionFilter filter = new SubmissionFilter();
+  private transient SubmissionService submissionService;
+  private transient AuthenticatedUser authenticatedUser;
+  private transient UserPreferenceService userPreferenceService;
 
   @Autowired
-  protected SubmissionsView(SubmissionsViewPresenter presenter,
-      ObjectFactory<SubmissionDialog> dialogFactory,
-      ObjectFactory<SamplesStatusDialog> statusDialogFactory) {
-    this.presenter = presenter;
+  protected SubmissionsView(ObjectFactory<SubmissionDialog> dialogFactory,
+      ObjectFactory<SamplesStatusDialog> statusDialogFactory, SubmissionService submissionService,
+      AuthenticatedUser authenticatedUser, UserPreferenceService userPreferenceService) {
     this.dialogFactory = dialogFactory;
     this.statusDialogFactory = statusDialogFactory;
+    this.submissionService = submissionService;
+    this.authenticatedUser = authenticatedUser;
+    this.userPreferenceService = userPreferenceService;
   }
 
   @PostConstruct
@@ -161,21 +191,34 @@ public class SubmissionsView extends VerticalLayout
     buttonsLayout.add(add, editStatus, history, hideColumns);
     add(header, submissions, buttonsLayout);
     expand(submissions);
+
+    columnProperties.put(EXPERIMENT, submission.experiment);
+    columnProperties.put(USER, submission.user.name);
+    columnProperties.put(DIRECTOR, submission.laboratory.director);
+    columnProperties.put(DATA_AVAILABLE_DATE, submission.dataAvailableDate);
+    columnProperties.put(SERVICE, submission.service);
+    columnProperties.put(INSTRUMENT, submission.instrument);
+    columnProperties.put(SAMPLES_COUNT, submission.samples.size());
+    columnProperties.put(SUBMISSION_DATE, submission.submissionDate);
+    columnProperties.put(HIDDEN, submission.hidden);
+
     header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
     submissions.setMinHeight("500px");
-    submissions.addItemDoubleClickListener(e -> presenter.view(e.getItem()));
+    submissions.addItemDoubleClickListener(e -> view(e.getItem()));
     submissions.addItemClickListener(e -> {
       if (e.isShiftKey() || e.isCtrlKey() || e.isMetaKey()) {
-        presenter.editStatus(e.getItem());
+        editStatus(e.getItem());
       } else if (e.isAltKey()) {
-        presenter.history(e.getItem());
+        history(e.getItem());
       }
     });
-    view = submissions
-        .addColumn(LitRenderer.<Submission>of(VIEW_BUTTON).withFunction("view",
-            submission -> presenter.view(submission)))
-        .setKey(VIEW).setSortable(false).setFlexGrow(0);
+    Function<Column<Submission>, Boolean> columnVisibility = column -> {
+      Optional<Boolean> value = userPreferenceService.get(this, column.getKey());
+      return value.orElse(true);
+    };
+    view = submissions.addColumn(LitRenderer.<Submission>of(VIEW_BUTTON).withFunction("view",
+        submission -> view(submission))).setKey(VIEW).setSortable(false).setFlexGrow(0);
     ValueProvider<Submission, String> submissionExperiment =
         submission -> Objects.toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
@@ -186,112 +229,153 @@ public class SubmissionsView extends VerticalLayout
             : "";
     user = submissions.addColumn(submissionUser, USER).setKey(USER)
         .setComparator(NormalizedComparator.of(s -> s.getUser().getName())).setFlexGrow(3);
+    user.setVisible(authenticatedUser.hasAnyRole(MANAGER, ADMIN) && columnVisibility.apply(user));
     ValueProvider<Submission, String> submissionDirector =
         submission -> Objects.toString(submission.getLaboratory().getDirector(), "");
     director = submissions.addColumn(submissionDirector, DIRECTOR).setKey(DIRECTOR)
         .setComparator(NormalizedComparator.of(s -> s.getLaboratory().getDirector()))
         .setFlexGrow(3);
+    director.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(director));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     dataAvailableDate =
         submissions.addColumn(submission -> submission.getDataAvailableDate() != null
             ? dateFormatter.format(submission.getDataAvailableDate())
             : "", DATA_AVAILABLE_DATE).setKey(DATA_AVAILABLE_DATE).setFlexGrow(2);
+    dataAvailableDate.setVisible(columnVisibility.apply(dataAvailableDate));
     date = submissions.addColumn(submission -> submission.getSubmissionDate().toLocalDate() != null
         ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
         : "", SUBMISSION_DATE).setKey(SUBMISSION_DATE).setFlexGrow(2);
+    date.setVisible(columnVisibility.apply(date));
     instrument = submissions
         .addColumn(submission -> submission.getInstrument() != null
             ? submission.getInstrument().getLabel(getLocale())
             : MassDetectionInstrument.getNullLabel(getLocale()), INSTRUMENT)
         .setKey(INSTRUMENT).setFlexGrow(2);
+    instrument.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(instrument));
     service = submissions.addColumn(submission -> submission.getService() != null
         ? submission.getService().getLabel(getLocale())
         : Service.getNullLabel(getLocale()), SERVICE).setKey(SERVICE).setFlexGrow(2);
+    service.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(service));
     samplesCount =
         submissions.addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
             .setKey(SAMPLES_COUNT).setFlexGrow(0);
+    samplesCount.setVisible(columnVisibility.apply(samplesCount));
     samples = submissions
         .addColumn(LitRenderer.<Submission>of(SAMPLES_SPAN)
             .withProperty("samplesValue", submission -> sampleNamesValue(submission))
             .withProperty("samplesTitle", submission -> sampleNamesTitle(submission)))
         .setKey(SAMPLES).setSortable(false).setFlexGrow(3);
+    samples.setVisible(columnVisibility.apply(samples));
     status = submissions
         .addColumn(LitRenderer.<Submission>of(STATUS_SPAN)
             .withProperty("statusValue", submission -> statusesValue(submission))
             .withProperty("statusTitle", submission -> statusesTitle(submission)))
         .setKey(STATUS).setSortable(false).setFlexGrow(2);
+    status.setVisible(columnVisibility.apply(status));
     hidden = submissions.addColumn(LitRenderer.<Submission>of(HIDDEN_BUTTON)
         .withProperty("hiddenTheme", submission -> hiddenTheme(submission))
         .withProperty("hiddenValue", submission -> hiddenValue(submission))
         .withProperty("hiddenIcon", submission -> hiddenIcon(submission))
         .withFunction("toggleHidden", submission -> {
-          presenter.toggleHidden(submission);
+          toggleHidden(submission);
           submissions.getDataProvider().refreshItem(submission);
         })).setKey(HIDDEN).setSortProperty(HIDDEN)
         .setComparator((s1, s2) -> Boolean.compare(s1.isHidden(), s2.isHidden()));
+    hidden.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(hidden));
     submissions.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = submissions.appendHeaderRow();
     filtersRow.getCell(experiment).setComponent(experimentFilter);
-    experimentFilter.addValueChangeListener(e -> presenter.filterExperiment(e.getValue()));
+    experimentFilter.addValueChangeListener(e -> filterExperiment(e.getValue()));
     experimentFilter.setValueChangeMode(ValueChangeMode.EAGER);
     experimentFilter.setSizeFull();
     filtersRow.getCell(user).setComponent(userFilter);
-    userFilter.addValueChangeListener(e -> presenter.filterUser(e.getValue()));
+    userFilter.addValueChangeListener(e -> filterUser(e.getValue()));
     userFilter.setValueChangeMode(ValueChangeMode.EAGER);
     userFilter.setSizeFull();
     filtersRow.getCell(director).setComponent(directorFilter);
-    directorFilter.addValueChangeListener(e -> presenter.filterDirector(e.getValue()));
+    directorFilter.addValueChangeListener(e -> filterDirector(e.getValue()));
     directorFilter.setValueChangeMode(ValueChangeMode.EAGER);
     directorFilter.setSizeFull();
     filtersRow.getCell(dataAvailableDate).setComponent(dataAvailableDateFilter);
-    dataAvailableDateFilter
-        .addValueChangeListener(e -> presenter.filterDataAvailableDate(e.getValue()));
+    dataAvailableDateFilter.addValueChangeListener(e -> filterDataAvailableDate(e.getValue()));
     dataAvailableDateFilter.setSizeFull();
     filtersRow.getCell(date).setComponent(dateFilter);
-    dateFilter.addValueChangeListener(e -> presenter.filterDate(e.getValue()));
+    dateFilter.addValueChangeListener(e -> filterDate(e.getValue()));
     dateFilter.setSizeFull();
     filtersRow.getCell(instrument).setComponent(instrumentFilter);
     instrumentFilter.setItems(MassDetectionInstrument.values());
-    instrumentFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     instrumentFilter.setClearButtonVisible(true);
-    instrumentFilter.addValueChangeListener(e -> presenter.filterInstrument(e.getValue()));
+    instrumentFilter.addValueChangeListener(e -> filterInstrument(e.getValue()));
     instrumentFilter.setSizeFull();
     filtersRow.getCell(service).setComponent(serviceFilter);
     serviceFilter.setItems(Service.values());
-    serviceFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     serviceFilter.setClearButtonVisible(true);
-    serviceFilter.addValueChangeListener(e -> presenter.filterService(e.getValue()));
+    serviceFilter.addValueChangeListener(e -> filterService(e.getValue()));
     serviceFilter.setSizeFull();
     filtersRow.getCell(samples).setComponent(samplesFilter);
-    samplesFilter.addValueChangeListener(e -> presenter.filterSamples(e.getValue()));
+    samplesFilter.addValueChangeListener(e -> filterSamples(e.getValue()));
     samplesFilter.setValueChangeMode(ValueChangeMode.EAGER);
     samplesFilter.setSizeFull();
     filtersRow.getCell(status).setComponent(statusFilter);
     statusFilter.setItems(SampleStatus.values());
-    statusFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     statusFilter.setClearButtonVisible(true);
-    statusFilter.addValueChangeListener(e -> presenter.filterStatus(e.getValue()));
+    statusFilter.addValueChangeListener(e -> filterStatus(e.getValue()));
     statusFilter.setSizeFull();
     filtersRow.getCell(hidden).setComponent(hiddenFilter);
     hiddenFilter.setItems(false, true);
-    hiddenFilter.setItemLabelGenerator(
-        value -> new AppResources(Submission.class, getLocale()).message(property(HIDDEN, value)));
     hiddenFilter.setClearButtonVisible(true);
-    hiddenFilter.addValueChangeListener(e -> presenter.filterHidden(e.getValue()));
+    hiddenFilter.addValueChangeListener(e -> filterHidden(e.getValue()));
     hiddenFilter.setSizeFull();
+
     add.setId(ADD);
     add.setIcon(VaadinIcon.PLUS.create());
-    add.addClickListener(e -> presenter.add());
+    add.addClickListener(e -> add());
     editStatus.setId(EDIT_STATUS);
     editStatus.setIcon(VaadinIcon.EDIT.create());
-    editStatus.addClickListener(e -> presenter.editSelectedStatus(getLocale()));
+    editStatus.addClickListener(e -> editSelectedStatus(getLocale()));
+    editStatus.setVisible(authenticatedUser.hasRole(ADMIN));
     history.setId(HISTORY);
     history.setIcon(VaadinIcon.ARCHIVE.create());
-    history.addClickListener(e -> presenter.historySelected(getLocale()));
+    history.addClickListener(e -> historySelected(getLocale()));
+    history.setVisible(authenticatedUser.hasRole(ADMIN));
     hideColumns.setId(HIDE_COLUMNS);
     hideColumns.setIcon(VaadinIcon.COG.create());
-    hideColumnsContextMenu = new ColumnToggleContextMenu(hideColumns, presenter);
-    presenter.init(this);
+    hideColumnsContextMenu = new ColumnToggleContextMenu(hideColumns);
+
+    hidableColumns.add(dataAvailableDate);
+    hidableColumns.add(date);
+    hidableColumns.add(samplesCount);
+    hidableColumns.add(samples);
+    hidableColumns.add(status);
+    if (authenticatedUser.hasAnyRole(MANAGER, ADMIN)) {
+      hidableColumns.add(user);
+    }
+    if (authenticatedUser.hasAnyRole(ADMIN)) {
+      hidableColumns.add(director);
+      hidableColumns.add(instrument);
+      hidableColumns.add(service);
+      hidableColumns.add(hidden);
+    }
+    hidableColumns.sort(
+        (c1, c2) -> submissions.getColumns().indexOf(c1) - submissions.getColumns().indexOf(c2));
+    loadSubmissions();
+  }
+
+  private void loadSubmissions() {
+    Function<Query<Submission, Void>, List<OrderSpecifier<?>>> filterSortOrders =
+        query -> query.getSortOrders() != null && !query.getSortOrders().isEmpty()
+            ? query.getSortOrders().stream()
+                .filter(order -> columnProperties.containsKey(order.getSorted()))
+                .map(order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
+                    order.getDirection() == SortDirection.DESCENDING))
+                .collect(Collectors.toList())
+            : Arrays.asList(submission.id.desc());
+    submissions.setItems(query -> {
+      filter.sortOrders = filterSortOrders.apply(query);
+      filter.offset = query.getOffset();
+      filter.limit = query.getLimit();
+      return submissionService.all(filter).stream();
+    });
   }
 
   private String sampleNamesValue(Submission submission) {
@@ -370,20 +454,23 @@ public class SubmissionsView extends VerticalLayout
     userFilter.setPlaceholder(resources.message(ALL));
     directorFilter.setPlaceholder(resources.message(ALL));
     instrumentFilter.setPlaceholder(resources.message(ALL));
+    instrumentFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     serviceFilter.setPlaceholder(resources.message(ALL));
+    serviceFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     samplesFilter.setPlaceholder(resources.message(ALL));
     statusFilter.setPlaceholder(resources.message(ALL));
+    statusFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     hiddenFilter.setPlaceholder(resources.message(ALL));
+    hiddenFilter.setItemLabelGenerator(
+        value -> new AppResources(Submission.class, getLocale()).message(property(HIDDEN, value)));
     add.setText(resources.message(ADD));
     editStatus.setText(resources.message(EDIT_STATUS));
     history.setText(resources.message(HISTORY));
     hideColumns.setText(resources.message(HIDE_COLUMNS));
+    hideColumnsContextMenu.removeAll();
+    hidableColumns.forEach(
+        column -> hideColumnsContextMenu.addColumnToggleItem(getHeaderText(column), column));
     submissions.getDataProvider().refreshAll();
-    instrumentFilter.getDataProvider().refreshAll();
-    serviceFilter.getDataProvider().refreshAll();
-    statusFilter.getDataProvider().refreshAll();
-    hiddenFilter.getDataProvider().refreshAll();
-    presenter.localeChange(getLocale());
   }
 
   protected String getHeaderText(Column<Submission> column) {
@@ -397,19 +484,129 @@ public class SubmissionsView extends VerticalLayout
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 
-  protected static class ColumnToggleContextMenu extends ContextMenu {
-    private transient SubmissionsViewPresenter presenter;
+  void filterExperiment(String value) {
+    filter.experimentContains = value;
+    submissions.getDataProvider().refreshAll();
+  }
 
-    public ColumnToggleContextMenu(Component target, SubmissionsViewPresenter presenter) {
+  void filterUser(String value) {
+    filter.userContains = value;
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void filterDirector(String value) {
+    filter.directorContains = value;
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void filterDataAvailableDate(Range<LocalDate> range) {
+    filter.dataAvailableDateRange = range;
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void filterDate(Range<LocalDate> range) {
+    filter.dateRange = range;
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void filterService(Service value) {
+    filter.service = value;
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void filterInstrument(MassDetectionInstrument value) {
+    filter.instrument = value;
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void filterSamples(String value) {
+    filter.anySampleNameContains = value;
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void filterStatus(SampleStatus value) {
+    filter.anySampleStatus = value;
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void filterHidden(Boolean value) {
+    filter.hidden = value;
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void view(Submission submission) {
+    Submission database = submissionService.get(submission.getId()).orElse(null);
+    SubmissionDialog dialog = dialogFactory.getObject();
+    dialog.setSubmission(database);
+    dialog.open();
+    dialog.addSavedListener(e -> loadSubmissions());
+  }
+
+  void editStatus(Submission submission) {
+    if (authenticatedUser.hasRole(ADMIN)) {
+      Submission database = submissionService.get(submission.getId()).orElse(null);
+      SamplesStatusDialog statusDialog = statusDialogFactory.getObject();
+      statusDialog.setSubmission(database);
+      statusDialog.open();
+      statusDialog.addSavedListener(e -> loadSubmissions());
+    }
+  }
+
+  void history(Submission submission) {
+    if (authenticatedUser.hasRole(ADMIN)) {
+      UI.getCurrent().navigate(HistoryView.class, submission.getId());
+    }
+  }
+
+  void add() {
+    UI.getCurrent().navigate(SubmissionView.class);
+  }
+
+  void editSelectedStatus(Locale locale) {
+    Optional<Submission> os = submissions.getSelectedItems().stream().findFirst();
+    if (os.isPresent()) {
+      editStatus(os.get());
+    } else {
+      AppResources resources = new AppResources(SubmissionsView.class, locale);
+      showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
+    }
+  }
+
+  void historySelected(Locale locale) {
+    Optional<Submission> os = submissions.getSelectedItems().stream().findFirst();
+    if (os.isPresent()) {
+      history(os.get());
+    } else {
+      AppResources resources = new AppResources(SubmissionsView.class, locale);
+      showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
+    }
+  }
+
+  void toggleHidden(Submission submission) {
+    submission.setHidden(!submission.isHidden());
+    logger.debug("Change submission {} hidden to {}", submission, submission.isHidden());
+    submissionService.update(submission, null);
+    submissions.getDataProvider().refreshAll();
+  }
+
+  void toggleHideColumn(Grid.Column<Submission> column) {
+    userPreferenceService.save(this, column.getKey(), column.isVisible());
+  }
+
+  SubmissionFilter filter() {
+    return filter;
+  }
+
+  protected class ColumnToggleContextMenu extends ContextMenu {
+    public ColumnToggleContextMenu(Component target) {
       super(target);
-      this.presenter = presenter;
       setOpenOnClick(true);
     }
 
     protected MenuItem addColumnToggleItem(String label, Grid.Column<Submission> column) {
       MenuItem menuItem = this.addItem(label, e -> {
         column.setVisible(e.getSource().isChecked());
-        presenter.toggleHideColumn(column);
+        toggleHideColumn(column);
       });
       menuItem.setCheckable(true);
       menuItem.setChecked(column.isVisible());
