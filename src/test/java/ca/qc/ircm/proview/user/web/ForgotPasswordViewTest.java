@@ -20,32 +20,49 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.INVALID_EMAIL;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.HEADER;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.ID;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.MESSAGE;
+import static ca.qc.ircm.proview.user.web.ForgotPasswordView.SAVED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.ForgotPassword;
+import ca.qc.ircm.proview.user.ForgotPasswordService;
+import ca.qc.ircm.proview.user.ForgotPasswordWebContext;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
-import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.binder.BindingValidationStatus;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 
 /**
@@ -53,12 +70,14 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
  */
 @ServiceTestAnnotations
 @WithAnonymousUser
-public class ForgotPasswordViewTest extends AbstractKaribuTestCase {
+public class ForgotPasswordViewTest extends SpringUIUnitTest {
   private ForgotPasswordView view;
-  @Mock
-  private ForgotPasswordViewPresenter presenter;
-  @Mock
-  private BeforeEvent beforeEvent;
+  @MockBean
+  private ForgotPasswordService service;
+  @MockBean
+  private UserService userService;
+  @Captor
+  private ArgumentCaptor<ForgotPasswordWebContext> webContextCaptor;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(ForgotPasswordView.class, locale);
   private AppResources userResources = new AppResources(User.class, locale);
@@ -69,14 +88,8 @@ public class ForgotPasswordViewTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    view = new ForgotPasswordView(presenter);
-    view.init();
-  }
-
-  @Test
-  public void presenter_Init() {
-    verify(presenter).init(view);
+    UI.getCurrent().setLocale(locale);
+    view = navigate(ForgotPasswordView.class);
   }
 
   @Test
@@ -91,42 +104,103 @@ public class ForgotPasswordViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(resources.message(MESSAGE), view.message.getText());
     assertEquals(userResources.message(EMAIL), view.email.getLabel());
     assertEquals(webResources.message(SAVE), view.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), view.save.getIcon());
-    verify(presenter).localeChange(locale);
   }
 
   @Test
   public void localeChange() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(ForgotPasswordView.class, locale);
     final AppResources userResources = new AppResources(User.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
-    ui.setLocale(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
-    verify(presenter).localeChange(locale);
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(resources.message(MESSAGE), view.message.getText());
     assertEquals(userResources.message(EMAIL), view.email.getLabel());
     assertEquals(webResources.message(SAVE), view.save.getText());
-    verify(presenter).localeChange(locale);
-  }
-
-  @Test
-  public void save() {
-    clickButton(view.save);
-
-    verify(presenter).save(locale);
   }
 
   @Test
   public void getPageTitle() {
     assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
         view.getPageTitle());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void save_EmailEmtpy() {
+    view.email.setValue("");
+
+    test(view.save).click();
+
+    BinderValidationStatus<User> status = view.validateUser();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, view.email);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    verify(service, never()).insert(any(), any());
+    assertTrue($(ForgotPasswordView.class).exists());
+    assertFalse($(Notification.class).exists());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void save_EmailInvalid() {
+    view.email.setValue("test");
+
+    test(view.save).click();
+
+    BinderValidationStatus<User> status = view.validateUser();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, view.email);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(INVALID_EMAIL)), error.getMessage());
+    verify(service, never()).insert(any(), any());
+    assertTrue($(ForgotPasswordView.class).exists());
+    assertFalse($(Notification.class).exists());
+  }
+
+  @Test
+  public void save_EmailNotExists() {
+    String email = "test@ircm.qc.ca";
+    test(view.email).setValue(email);
+
+    test(view.save).click();
+
+    verify(userService).exists(email);
+    verify(service, never()).insert(any(), any());
+    assertTrue($(SigninView.class).exists());
+    Notification notification = $(Notification.class).first();
+    assertEquals(resources.message(SAVED, email), test(notification).getText());
+  }
+
+  @Test
+  public void save() {
+    when(userService.exists(any())).thenReturn(true);
+    String email = "test@ircm.qc.ca";
+    test(view.email).setValue(email);
+
+    test(view.save).click();
+
+    verify(userService).exists(email);
+    verify(service).insert(eq(email), webContextCaptor.capture());
+    ForgotPasswordWebContext webContext = webContextCaptor.getValue();
+    ForgotPassword forgotPassword = new ForgotPassword();
+    forgotPassword.setId(34925L);
+    forgotPassword.setConfirmNumber("feafet23ts");
+    String url = webContext.getChangeForgottenPasswordUrl(forgotPassword, locale);
+    assertEquals("/" + UseForgotPasswordView.VIEW_NAME + "/" + forgotPassword.getId()
+        + UseForgotPasswordView.SEPARATOR + forgotPassword.getConfirmNumber(), url);
+    assertTrue($(SigninView.class).exists());
+    Notification notification = $(Notification.class).first();
+    assertEquals(resources.message(SAVED, email), test(notification).getText());
   }
 }
