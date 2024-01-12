@@ -44,35 +44,29 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.history.Activity;
+import ca.qc.ircm.proview.sample.SampleContainer;
+import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.FractionationType;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatedSampleRepository;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentRepository;
+import ca.qc.ircm.proview.treatment.TreatmentType;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.Grid.Column;
-import com.vaadin.flow.dom.Element;
-import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -81,12 +75,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class TreatmentDialogTest extends AbstractKaribuTestCase {
+public class TreatmentDialogTest extends SpringUIUnitTest {
   private TreatmentDialog dialog;
-  @Mock
-  private Treatment treatment;
-  @Captor
-  private ArgumentCaptor<ValueProvider<TreatedSample, String>> valueProviderCaptor;
   @Autowired
   private TreatmentRepository repository;
   @Autowired
@@ -102,83 +92,16 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    dialog = new TreatmentDialog();
-    dialog.init();
+    UI.getCurrent().setLocale(locale);
     treatedSamples = treatedSampleRepository.findAll();
+    HistoryView view = navigate(HistoryView.class, 147L);
+    Grid<Activity> activities = test(view).find(Grid.class).id(HistoryView.ACTIVITIES);
+    test(activities).doubleClickRow(3);
+    dialog = $(TreatmentDialog.class).first();
   }
 
-  @SuppressWarnings("unchecked")
-  private void mockColumns() {
-    Element gridElement = dialog.samples.getElement();
-    dialog.samples = mock(Grid.class);
-    when(dialog.samples.getElement()).thenReturn(gridElement);
-    dialog.sample = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(SAMPLE))).thenReturn(dialog.sample);
-    when(dialog.sample.setKey(any())).thenReturn(dialog.sample);
-    when(dialog.sample.setComparator(any(Comparator.class))).thenReturn(dialog.sample);
-    when(dialog.sample.setHeader(any(String.class))).thenReturn(dialog.sample);
-    dialog.container = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(CONTAINER)))
-        .thenReturn(dialog.container);
-    when(dialog.container.setKey(any())).thenReturn(dialog.container);
-    when(dialog.container.setComparator(any(Comparator.class))).thenReturn(dialog.container);
-    when(dialog.container.setHeader(any(String.class))).thenReturn(dialog.container);
-    dialog.sourceVolume = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(SOURCE_VOLUME)))
-        .thenReturn(dialog.sourceVolume);
-    when(dialog.sourceVolume.setKey(any())).thenReturn(dialog.sourceVolume);
-    when(dialog.sourceVolume.setComparator(any(Comparator.class))).thenReturn(dialog.sourceVolume);
-    when(dialog.sourceVolume.setHeader(any(String.class))).thenReturn(dialog.sourceVolume);
-    dialog.solvent = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(SOLVENT)))
-        .thenReturn(dialog.solvent);
-    when(dialog.solvent.setKey(any())).thenReturn(dialog.solvent);
-    when(dialog.solvent.setComparator(any(Comparator.class))).thenReturn(dialog.solvent);
-    when(dialog.solvent.setHeader(any(String.class))).thenReturn(dialog.solvent);
-    dialog.solventVolume = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(SOLVENT_VOLUME)))
-        .thenReturn(dialog.solventVolume);
-    when(dialog.solventVolume.setKey(any())).thenReturn(dialog.solventVolume);
-    when(dialog.solventVolume.setComparator(any(Comparator.class)))
-        .thenReturn(dialog.solventVolume);
-    when(dialog.solventVolume.setHeader(any(String.class))).thenReturn(dialog.solventVolume);
-    dialog.name = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(NAME))).thenReturn(dialog.name);
-    when(dialog.name.setKey(any())).thenReturn(dialog.name);
-    when(dialog.name.setComparator(any(Comparator.class))).thenReturn(dialog.name);
-    when(dialog.name.setHeader(any(String.class))).thenReturn(dialog.name);
-    dialog.quantity = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(QUANTITY)))
-        .thenReturn(dialog.quantity);
-    when(dialog.quantity.setKey(any())).thenReturn(dialog.quantity);
-    when(dialog.quantity.setComparator(any(Comparator.class))).thenReturn(dialog.quantity);
-    when(dialog.quantity.setHeader(any(String.class))).thenReturn(dialog.quantity);
-    dialog.destinationContainer = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(DESTINATION_CONTAINER)))
-        .thenReturn(dialog.destinationContainer);
-    when(dialog.destinationContainer.setKey(any())).thenReturn(dialog.destinationContainer);
-    when(dialog.destinationContainer.setComparator(any(Comparator.class)))
-        .thenReturn(dialog.destinationContainer);
-    when(dialog.destinationContainer.setHeader(any(String.class)))
-        .thenReturn(dialog.destinationContainer);
-    dialog.number = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(NUMBER))).thenReturn(dialog.number);
-    when(dialog.number.setKey(any())).thenReturn(dialog.number);
-    when(dialog.number.setComparator(any(Comparator.class))).thenReturn(dialog.number);
-    when(dialog.number.setHeader(any(String.class))).thenReturn(dialog.number);
-    dialog.piInterval = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(PI_INTERVAL)))
-        .thenReturn(dialog.piInterval);
-    when(dialog.piInterval.setKey(any())).thenReturn(dialog.piInterval);
-    when(dialog.piInterval.setComparator(any(Comparator.class))).thenReturn(dialog.piInterval);
-    when(dialog.piInterval.setHeader(any(String.class))).thenReturn(dialog.piInterval);
-    dialog.comment = mock(Column.class);
-    when(dialog.samples.addColumn(any(ValueProvider.class), eq(COMMENT)))
-        .thenReturn(dialog.comment);
-    when(dialog.comment.setKey(any())).thenReturn(dialog.comment);
-    when(dialog.comment.setComparator(any(Comparator.class))).thenReturn(dialog.comment);
-    when(dialog.comment.setHeader(any(String.class))).thenReturn(dialog.comment);
+  private int indexOfColumn(String property) {
+    return test(dialog.samples).getColumnPosition(property);
   }
 
   @Test
@@ -194,50 +117,65 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    mockColumns();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
+    assertEquals(TreatmentType.TRANSFER.getLabel(locale), dialog.getHeaderTitle());
     assertEquals(treatmentResources.message(DELETED), dialog.deleted.getText());
     assertEquals(treatmentResources.message(TREATED_SAMPLES), dialog.samplesHeader.getText());
-    verify(dialog.sample).setHeader(treatedSampleResources.message(SAMPLE));
-    verify(dialog.container).setHeader(treatedSampleResources.message(CONTAINER));
-    verify(dialog.sourceVolume).setHeader(treatedSampleResources.message(SOURCE_VOLUME));
-    verify(dialog.solvent).setHeader(treatedSampleResources.message(SOLVENT));
-    verify(dialog.solventVolume).setHeader(treatedSampleResources.message(SOLVENT_VOLUME));
-    verify(dialog.name).setHeader(treatedSampleResources.message(NAME));
-    verify(dialog.quantity).setHeader(treatedSampleResources.message(QUANTITY));
-    verify(dialog.destinationContainer)
-        .setHeader(treatedSampleResources.message(DESTINATION_CONTAINER));
-    verify(dialog.number).setHeader(treatedSampleResources.message(NUMBER));
-    verify(dialog.piInterval).setHeader(treatedSampleResources.message(PI_INTERVAL));
-    verify(dialog.comment).setHeader(treatedSampleResources.message(COMMENT));
+    HeaderRow headerRow = dialog.samples.getHeaderRows().get(0);
+    assertEquals(treatedSampleResources.message(SAMPLE),
+        headerRow.getCell(dialog.sample).getText());
+    assertEquals(treatedSampleResources.message(CONTAINER),
+        headerRow.getCell(dialog.container).getText());
+    assertEquals(treatedSampleResources.message(SOURCE_VOLUME),
+        headerRow.getCell(dialog.sourceVolume).getText());
+    assertEquals(treatedSampleResources.message(SOLVENT),
+        headerRow.getCell(dialog.solvent).getText());
+    assertEquals(treatedSampleResources.message(SOLVENT_VOLUME),
+        headerRow.getCell(dialog.solventVolume).getText());
+    assertEquals(treatedSampleResources.message(NAME), headerRow.getCell(dialog.name).getText());
+    assertEquals(treatedSampleResources.message(QUANTITY),
+        headerRow.getCell(dialog.quantity).getText());
+    assertEquals(treatedSampleResources.message(DESTINATION_CONTAINER),
+        headerRow.getCell(dialog.destinationContainer).getText());
+    assertEquals(treatedSampleResources.message(NUMBER),
+        headerRow.getCell(dialog.number).getText());
+    assertEquals(treatedSampleResources.message(PI_INTERVAL),
+        headerRow.getCell(dialog.piInterval).getText());
+    assertEquals(treatedSampleResources.message(COMMENT),
+        headerRow.getCell(dialog.comment).getText());
   }
 
   @Test
   public void localeChange() {
-    mockColumns();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(TreatmentDialog.class, locale);
     final AppResources treatmentResources = new AppResources(Treatment.class, locale);
     final AppResources treatedSampleResources = new AppResources(TreatedSample.class, locale);
-    ui.setLocale(locale);
-    dialog.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
+    UI.getCurrent().setLocale(locale);
+    assertEquals(TreatmentType.TRANSFER.getLabel(locale), dialog.getHeaderTitle());
     assertEquals(treatmentResources.message(DELETED), dialog.deleted.getText());
     assertEquals(treatmentResources.message(TREATED_SAMPLES), dialog.samplesHeader.getText());
-    verify(dialog.sample).setHeader(treatedSampleResources.message(SAMPLE));
-    verify(dialog.container).setHeader(treatedSampleResources.message(CONTAINER));
-    verify(dialog.sourceVolume).setHeader(treatedSampleResources.message(SOURCE_VOLUME));
-    verify(dialog.solvent, atLeastOnce()).setHeader(treatedSampleResources.message(SOLVENT));
-    verify(dialog.solventVolume).setHeader(treatedSampleResources.message(SOLVENT_VOLUME));
-    verify(dialog.name).setHeader(treatedSampleResources.message(NAME));
-    verify(dialog.quantity).setHeader(treatedSampleResources.message(QUANTITY));
-    verify(dialog.destinationContainer, atLeastOnce())
-        .setHeader(treatedSampleResources.message(DESTINATION_CONTAINER));
-    verify(dialog.number).setHeader(treatedSampleResources.message(NUMBER));
-    verify(dialog.piInterval).setHeader(treatedSampleResources.message(PI_INTERVAL));
-    verify(dialog.comment).setHeader(treatedSampleResources.message(COMMENT));
+    HeaderRow headerRow = dialog.samples.getHeaderRows().get(0);
+    assertEquals(treatedSampleResources.message(SAMPLE),
+        headerRow.getCell(dialog.sample).getText());
+    assertEquals(treatedSampleResources.message(CONTAINER),
+        headerRow.getCell(dialog.container).getText());
+    assertEquals(treatedSampleResources.message(SOURCE_VOLUME),
+        headerRow.getCell(dialog.sourceVolume).getText());
+    assertEquals(treatedSampleResources.message(SOLVENT),
+        headerRow.getCell(dialog.solvent).getText());
+    assertEquals(treatedSampleResources.message(SOLVENT_VOLUME),
+        headerRow.getCell(dialog.solventVolume).getText());
+    assertEquals(treatedSampleResources.message(NAME), headerRow.getCell(dialog.name).getText());
+    assertEquals(treatedSampleResources.message(QUANTITY),
+        headerRow.getCell(dialog.quantity).getText());
+    assertEquals(treatedSampleResources.message(DESTINATION_CONTAINER),
+        headerRow.getCell(dialog.destinationContainer).getText());
+    assertEquals(treatedSampleResources.message(NUMBER),
+        headerRow.getCell(dialog.number).getText());
+    assertEquals(treatedSampleResources.message(PI_INTERVAL),
+        headerRow.getCell(dialog.piInterval).getText());
+    assertEquals(treatedSampleResources.message(COMMENT),
+        headerRow.getCell(dialog.comment).getText());
   }
 
   @Test
@@ -269,65 +207,34 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
 
   @Test
   public void samples_ColumnsValueProvider() {
-    dialog = new TreatmentDialog();
-    mockColumns();
-    dialog.init();
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(SAMPLE));
-    ValueProvider<TreatedSample, String> valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getSample().getName(), valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(CONTAINER));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getContainer().getFullName(), valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(SOURCE_VOLUME));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getSourceVolume(), valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(SOLVENT));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getSolvent(), valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(SOLVENT_VOLUME));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getSolventVolume(), valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(NAME));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getName(), valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(QUANTITY));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getQuantity(), valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(DESTINATION_CONTAINER));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
+    dialog.samples.setItems(treatedSamples);
+    dialog.samples.getColumns().forEach(col -> col.setVisible(true));
+    for (int i = 0; i < treatedSamples.size(); i++) {
+      TreatedSample treatedSample = treatedSamples.get(i);
+      assertEquals(treatedSample.getSample().getName(),
+          test(dialog.samples).getCellText(i, indexOfColumn(SAMPLE)));
+      assertEquals(treatedSample.getContainer().getFullName(),
+          test(dialog.samples).getCellText(i, indexOfColumn(CONTAINER)));
+      assertEquals(Objects.toString(treatedSample.getSourceVolume(), ""),
+          test(dialog.samples).getCellText(i, indexOfColumn(SOURCE_VOLUME)));
+      assertEquals(Objects.toString(treatedSample.getSolvent(), ""),
+          test(dialog.samples).getCellText(i, indexOfColumn(SOLVENT)));
+      assertEquals(Objects.toString(treatedSample.getSolventVolume(), ""),
+          test(dialog.samples).getCellText(i, indexOfColumn(SOLVENT_VOLUME)));
+      assertEquals(Objects.toString(treatedSample.getName(), ""),
+          test(dialog.samples).getCellText(i, indexOfColumn(NAME)));
+      assertEquals(Objects.toString(treatedSample.getQuantity(), ""),
+          test(dialog.samples).getCellText(i, indexOfColumn(QUANTITY)));
       assertEquals(
-          ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName() : "",
-          valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(NUMBER));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getNumber(), valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(PI_INTERVAL));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getPiInterval(), valueProvider.apply(ts));
-    }
-    verify(dialog.samples).addColumn(valueProviderCaptor.capture(), eq(COMMENT));
-    valueProvider = valueProviderCaptor.getValue();
-    for (TreatedSample ts : treatedSamples) {
-      assertEquals(ts.getComment(), valueProvider.apply(ts));
+          Optional.ofNullable(treatedSample.getDestinationContainer())
+              .map(SampleContainer::getFullName).orElse(""),
+          test(dialog.samples).getCellText(i, indexOfColumn(DESTINATION_CONTAINER)));
+      assertEquals(Objects.toString(treatedSample.getNumber(), ""),
+          test(dialog.samples).getCellText(i, indexOfColumn(NUMBER)));
+      assertEquals(Objects.toString(treatedSample.getPiInterval(), ""),
+          test(dialog.samples).getCellText(i, indexOfColumn(PI_INTERVAL)));
+      assertEquals(Objects.toString(treatedSample.getComment(), ""),
+          test(dialog.samples).getCellText(i, indexOfColumn(COMMENT)));
     }
   }
 
@@ -341,7 +248,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   @Test
   public void setTreatment_Solubilisation() {
     Treatment treatment = repository.findById(1L).get();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setTreatment(treatment);
 
@@ -365,7 +271,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   @Test
   public void setTreatment_FractionationMudPit() {
     Treatment treatment = repository.findById(2L).get();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setTreatment(treatment);
 
@@ -393,7 +298,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   public void setTreatment_FractionationPi() {
     Treatment treatment = repository.findById(2L).get();
     treatment.setFractionationType(FractionationType.PI);
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setTreatment(treatment);
 
@@ -420,7 +324,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   @Test
   public void setTreatment_Transfer() {
     Treatment treatment = repository.findById(3L).get();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setTreatment(treatment);
 
@@ -444,7 +347,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   @Test
   public void setTreatment_Dilution() {
     Treatment treatment = repository.findById(4L).get();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setTreatment(treatment);
 
@@ -468,7 +370,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   @Test
   public void setTreatment_StandardAddition() {
     Treatment treatment = repository.findById(5L).get();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setTreatment(treatment);
 
@@ -492,7 +393,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   @Test
   public void setTreatment_Digestion() {
     Treatment treatment = repository.findById(6L).get();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setTreatment(treatment);
 
@@ -518,7 +418,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   @Test
   public void setTreatment_Enrichment() {
     Treatment treatment = repository.findById(7L).get();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setTreatment(treatment);
 
@@ -544,7 +443,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
   @Test
   public void setTreatment_Deleted() {
     Treatment treatment = repository.findById(323L).get();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setTreatment(treatment);
 
@@ -561,32 +459,6 @@ public class TreatmentDialogTest extends AbstractKaribuTestCase {
     assertFalse(dialog.name.isVisible());
     assertFalse(dialog.quantity.isVisible());
     assertTrue(dialog.destinationContainer.isVisible());
-    assertFalse(dialog.number.isVisible());
-    assertFalse(dialog.piInterval.isVisible());
-  }
-
-  @Test
-  public void setTreatment_BeforeLocalChange() {
-    Treatment treatment = repository.findById(6L).get();
-
-    dialog.setTreatment(treatment);
-    dialog.localeChange(mock(LocaleChangeEvent.class));
-
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
-    assertFalse(dialog.deleted.isVisible());
-    assertTrue(dialog.protocol.isVisible());
-    assertEquals(resources.message(PROTOCOL, treatment.getProtocol().getName()),
-        dialog.protocol.getText());
-    assertFalse(dialog.fractionationType.isVisible());
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
-    assertFalse(dialog.sourceVolume.isVisible());
-    assertFalse(dialog.solvent.isVisible());
-    assertFalse(dialog.solventVolume.isVisible());
-    assertFalse(dialog.name.isVisible());
-    assertFalse(dialog.quantity.isVisible());
-    assertFalse(dialog.destinationContainer.isVisible());
     assertFalse(dialog.number.isVisible());
     assertFalse(dialog.piInterval.isVisible());
   }

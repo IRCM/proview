@@ -56,6 +56,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,9 +151,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     final AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
     final AppResources treatmentResource = new AppResources(Treatment.class, getLocale());
     final AppResources treatedSampleResource = new AppResources(TreatedSample.class, getLocale());
-    if (treatment == null) {
-      setHeaderTitle(resource.message(HEADER));
-    }
+    updateHeaderTitle();
     deleted.setText(treatmentResource.message(property(DELETED, true)));
     samplesHeader.setText(treatmentResource.message(TREATED_SAMPLES));
     sample.setHeader(treatedSampleResource.message(SAMPLE));
@@ -166,6 +165,12 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     number.setHeader(treatedSampleResource.message(NUMBER));
     piInterval.setHeader(treatedSampleResource.message(PI_INTERVAL));
     comment.setHeader(treatedSampleResource.message(COMMENT));
+  }
+
+  private void updateHeaderTitle() {
+    final AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
+    setHeaderTitle(Optional.ofNullable(treatment).map(tr -> tr.getType().getLabel(getLocale()))
+        .orElse(resource.message(HEADER)));
   }
 
   public Treatment getTreatment() {
@@ -182,7 +187,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     Objects.requireNonNull(treatment);
     this.treatment = treatment;
     AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
-    setHeaderTitle(treatment.getType().getLabel(getLocale()));
+    updateHeaderTitle();
     if (treatment.getProtocol() != null) {
       protocol.setText(resource.message(PROTOCOL, treatment.getProtocol().getName()));
       protocol.setVisible(true);
