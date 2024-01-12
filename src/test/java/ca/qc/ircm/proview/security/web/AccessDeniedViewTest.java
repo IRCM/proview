@@ -24,14 +24,16 @@ import static ca.qc.ircm.proview.security.web.AccessDeniedView.HOME;
 import static ca.qc.ircm.proview.security.web.AccessDeniedView.MESSAGE;
 import static ca.qc.ircm.proview.security.web.AccessDeniedView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import ca.qc.ircm.proview.user.web.UsersView;
+import com.vaadin.flow.component.UI;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +44,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @NonTransactionalTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class AccessDeniedViewTest extends AbstractKaribuTestCase {
+public class AccessDeniedViewTest extends SpringUIUnitTest {
   private AccessDeniedView view;
   private Locale locale = Locale.ENGLISH;
   private AppResources resources = new AppResources(AccessDeniedView.class, locale);
@@ -50,8 +52,9 @@ public class AccessDeniedViewTest extends AbstractKaribuTestCase {
 
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    view = new AccessDeniedView();
+    UI.getCurrent().setLocale(locale);
+    assertThrows(IllegalArgumentException.class, () -> navigate(UsersView.class));
+    view = $(AccessDeniedView.class).first();
   }
 
   @Test
@@ -64,7 +67,6 @@ public class AccessDeniedViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(resources.message(MESSAGE), view.message.getText());
     assertEquals(resources.message(HOME), view.home.getText());
@@ -72,11 +74,9 @@ public class AccessDeniedViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void localeChange() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = Locale.FRENCH;
     final AppResources resources = new AppResources(AccessDeniedView.class, locale);
-    ui.setLocale(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(resources.message(MESSAGE), view.message.getText());
     assertEquals(resources.message(HOME), view.home.getText());
@@ -86,5 +86,11 @@ public class AccessDeniedViewTest extends AbstractKaribuTestCase {
   public void getPageTitle() {
     assertEquals(resources.message(TITLE, generalResources.message(APPLICATION_NAME)),
         view.getPageTitle());
+  }
+
+  @Test
+  public void home() {
+    test(view.home).click();
+    assertTrue($(SubmissionsView.class).exists());
   }
 }
