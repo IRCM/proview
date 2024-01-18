@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SavedEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -54,17 +55,13 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   public static final String HEADER = "header";
   protected Button save = new Button();
   protected Button cancel = new Button();
-  @Autowired
   protected UserForm form;
+  private transient UserService userService;
+
   @Autowired
-  private transient UserDialogPresenter presenter;
-
-  public UserDialog() {
-  }
-
-  UserDialog(UserForm form, UserDialogPresenter presenter) {
+  UserDialog(UserForm form, UserService userService) {
     this.form = form;
-    this.presenter = presenter;
+    this.userService = userService;
   }
 
   public static String id(String baseId) {
@@ -88,11 +85,10 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     save.setId(id(SAVE));
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
-    save.addClickListener(e -> presenter.save());
+    save.addClickListener(e -> save());
     cancel.setId(id(CANCEL));
     cancel.setIcon(VaadinIcon.CLOSE.create());
-    cancel.addClickListener(e -> presenter.cancel());
-    presenter.init(this);
+    cancel.addClickListener(e -> cancel());
   }
 
   @Override
@@ -141,5 +137,20 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   public void setUser(User user) {
     form.setUser(user);
     updateHeader();
+  }
+
+  void save() {
+    if (form.isValid()) {
+      User user = form.getUser();
+      String password = form.getPassword();
+      logger.debug("save user {} in laboratory {}", user, user.getLaboratory());
+      userService.save(user, password);
+      close();
+      fireSavedEvent();
+    }
+  }
+
+  void cancel() {
+    close();
   }
 }
