@@ -19,6 +19,11 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.INVALID_EMAIL;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.security.Permission.WRITE;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
 import static ca.qc.ircm.proview.user.AddressProperties.LINE;
 import static ca.qc.ircm.proview.user.AddressProperties.POSTAL_CODE;
@@ -42,26 +47,40 @@ import static ca.qc.ircm.proview.user.web.UserForm.NUMBER_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserForm.id;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.security.UserPermissionEvaluator;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
+import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.binder.BindingValidationStatus;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -69,35 +88,66 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class UserFormTest extends AbstractKaribuTestCase {
+public class UserFormTest extends SpringUIUnitTest {
   private UserForm form;
-  @Mock
-  private UserFormPresenter presenter;
-  @Mock
-  private User user;
   @Autowired
   private UserRepository userRepository;
   @Autowired
+  private AuthenticatedUser authenticatedUser;
+  @Autowired
   private DefaultAddressConfiguration defaultAddressConfiguration;
+  @Autowired
+  private LaboratoryRepository laboratoryRepository;
+  @SpyBean
+  private UserPermissionEvaluator userPermissionEvaluator;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(UserForm.class, locale);
   private AppResources userResources = new AppResources(User.class, locale);
   private AppResources addressResources = new AppResources(Address.class, locale);
   private AppResources phoneNumberResources = new AppResources(PhoneNumber.class, locale);
+  private AppResources webResources = new AppResources(Constants.class, locale);
+  private List<Laboratory> laboratories;
+  private String email = "test@ircm.qc.ca";
+  private String name = "Test User";
+  private String password = "test_password";
+  private String newLaboratoryName = "Test Laboratory";
+  private String addressLine = "200 My Street";
+  private String town = "My Town";
+  private String state = "My State";
+  private String country = "My Country";
+  private String postalCode = "12345";
+  private PhoneNumberType phoneType = PhoneNumberType.MOBILE;
+  private String number = "514-555-1234";
+  private String extension = "443";
 
   /**
    * Before test.
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    form = new UserForm(presenter, defaultAddressConfiguration);
-    form.init();
+    UI.getCurrent().setLocale(locale);
+    laboratories = laboratoryRepository.findAll();
+    navigate(ProfileView.class);
+    form = $(UserForm.class).first();
   }
 
-  @Test
-  public void presenter_Init() {
-    verify(presenter).init(form);
+  private void fillForm() {
+    form.email.setValue(email);
+    form.name.setValue(name);
+    if (!items(form.laboratory).isEmpty()) {
+      form.laboratory.setValue(authenticatedUser.getUser().get().getLaboratory());
+    }
+    form.newLaboratoryName.setValue(newLaboratoryName);
+    form.addressLine.setValue(addressLine);
+    form.town.setValue(town);
+    form.state.setValue(state);
+    form.country.setValue(country);
+    form.postalCode.setValue(postalCode);
+    form.phoneType.setValue(phoneType);
+    form.number.setValue(number);
+    form.extension.setValue(extension);
+    form.passwords.password.setValue(password);
+    form.passwords.passwordConfirm.setValue(password);
   }
 
   @Test
@@ -122,7 +172,6 @@ public class UserFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void placeholder() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(EMAIL_PLACEHOLDER, form.email.getPlaceholder());
     assertEquals(NAME_PLACEHOLDER, form.name.getPlaceholder());
     assertEquals(LABORATORY_NAME_PLACEHOLDER, form.newLaboratoryName.getPlaceholder());
@@ -137,7 +186,6 @@ public class UserFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(userResources.message(EMAIL), form.email.getLabel());
     assertEquals(userResources.message(NAME), form.name.getLabel());
     assertEquals(userResources.message(ADMIN), form.admin.getLabel());
@@ -156,19 +204,16 @@ public class UserFormTest extends AbstractKaribuTestCase {
     }
     assertEquals(phoneNumberResources.message(NUMBER), form.number.getLabel());
     assertEquals(phoneNumberResources.message(EXTENSION), form.extension.getLabel());
-    verify(presenter).localeChange(locale);
   }
 
   @Test
   public void localeChange() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(UserForm.class, locale);
     final AppResources userResources = new AppResources(User.class, locale);
     final AppResources addressResources = new AppResources(Address.class, locale);
     final AppResources phoneNumberResources = new AppResources(PhoneNumber.class, locale);
-    ui.setLocale(locale);
-    form.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(userResources.message(EMAIL), form.email.getLabel());
     assertEquals(userResources.message(NAME), form.name.getLabel());
     assertEquals(userResources.message(ADMIN), form.admin.getLabel());
@@ -187,75 +232,875 @@ public class UserFormTest extends AbstractKaribuTestCase {
     }
     assertEquals(phoneNumberResources.message(NUMBER), form.number.getLabel());
     assertEquals(phoneNumberResources.message(EXTENSION), form.extension.getLabel());
-    verify(presenter).localeChange(locale);
   }
 
   @Test
-  public void isValid_True() {
-    when(presenter.isValid()).thenReturn(true);
-    assertTrue(form.isValid());
-    verify(presenter).isValid();
+  public void currentUser_User() {
+    assertFalse(form.admin.isVisible());
+    assertFalse(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertTrue(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
+    assertFalse(form.createNewLaboratory.isVisible());
+    assertFalse(form.newLaboratoryName.isVisible());
   }
 
   @Test
-  public void isValid_False() {
-    assertFalse(form.isValid());
-    verify(presenter).isValid();
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void currentUser_Manager() {
+    assertFalse(form.admin.isVisible());
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertTrue(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
+    assertFalse(form.createNewLaboratory.isVisible());
+    assertFalse(form.newLaboratoryName.isVisible());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void currentUser_Admin() {
+    assertTrue(form.admin.isVisible());
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
+    assertTrue(form.createNewLaboratory.isVisible());
+    assertTrue(form.createNewLaboratory.isEnabled());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
+  }
+
+  @Test
+  public void laboratory() {
+    assertFalse(form.laboratory.isAllowCustomValue());
+    assertTrue(form.laboratory.isRequiredIndicatorVisible());
+    List<Laboratory> values = items(form.laboratory);
+    assertEquals(1, values.size());
+    Laboratory laboratory = authenticatedUser.getUser().get().getLaboratory();
+    assertEquals(laboratory.getId(), values.get(0).getId());
+    assertEquals(laboratory.getName(), form.laboratory.getItemLabelGenerator().apply(laboratory));
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void laboratory_Manager() {
+    assertFalse(form.laboratory.isAllowCustomValue());
+    assertTrue(form.laboratory.isRequiredIndicatorVisible());
+    List<Laboratory> values = items(form.laboratory);
+    assertEquals(1, values.size());
+    Laboratory laboratory = authenticatedUser.getUser().get().getLaboratory();
+    assertEquals(laboratory.getId(), values.get(0).getId());
+    assertEquals(laboratory.getName(), form.laboratory.getItemLabelGenerator().apply(laboratory));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void laboratory_Admin() {
+    assertFalse(form.laboratory.isAllowCustomValue());
+    assertTrue(form.laboratory.isRequiredIndicatorVisible());
+    List<Laboratory> values = items(form.laboratory);
+    assertEquals(laboratories.size(), values.size());
+    for (Laboratory laboratory : laboratories) {
+      assertTrue(values.stream().filter(lab -> lab.getId().equals(laboratory.getId())).findAny()
+          .isPresent());
+      assertEquals(laboratory.getName(), form.laboratory.getItemLabelGenerator().apply(laboratory));
+    }
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void checkAdmin() {
+    form.admin.setValue(true);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
+    assertTrue(form.createNewLaboratory.isVisible());
+    assertTrue(form.createNewLaboratory.isEnabled());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void uncheckAdmin() {
+    form.admin.setValue(true);
+    form.admin.setValue(false);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
+    assertTrue(form.createNewLaboratory.isVisible());
+    assertTrue(form.createNewLaboratory.isEnabled());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void checkManager_Manager() {
+    form.manager.setValue(true);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertTrue(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
+    assertFalse(form.createNewLaboratory.isVisible());
+    assertFalse(form.createNewLaboratory.isEnabled());
+    assertFalse(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void checkManager_Admin() {
+    form.manager.setValue(true);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
+    assertTrue(form.createNewLaboratory.isVisible());
+    assertTrue(form.createNewLaboratory.isEnabled());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void checkManagerAndCheckCreateNewLaboratory_Admin() {
+    form.manager.setValue(true);
+    form.createNewLaboratory.setValue(true);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertFalse(form.laboratory.isEnabled());
+    assertTrue(form.createNewLaboratory.isVisible());
+    assertTrue(form.createNewLaboratory.isEnabled());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertTrue(form.newLaboratoryName.isEnabled());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void uncheckManager_Admin() {
+    form.manager.setValue(true);
+    form.manager.setValue(false);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertFalse(form.laboratory.isReadOnly());
+    assertTrue(form.laboratory.isEnabled());
+    assertTrue(form.createNewLaboratory.isVisible());
+    assertFalse(form.createNewLaboratory.isEnabled());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void uncheckManagerAndCheckCreateNewLaboratory_Admin() {
+    form.manager.setValue(true);
+    form.createNewLaboratory.setValue(true);
+    form.manager.setValue(false);
+    assertTrue(form.manager.isVisible());
+    assertTrue(form.laboratory.isVisible());
+    assertTrue(form.laboratory.isEnabled());
+    assertTrue(form.createNewLaboratory.isVisible());
+    assertFalse(form.createNewLaboratory.isEnabled());
+    assertFalse(form.createNewLaboratory.getValue());
+    assertTrue(form.newLaboratoryName.isVisible());
+    assertFalse(form.newLaboratoryName.isEnabled());
   }
 
   @Test
   public void getPassword() {
     String password = "test_password";
-    when(presenter.getPassword()).thenReturn(password);
+    form.passwords = mock(PasswordsForm.class);
+    when(form.passwords.getPassword()).thenReturn(password);
     assertEquals(password, form.getPassword());
-    verify(presenter).getPassword();
   }
 
   @Test
   public void getUser() {
-    when(presenter.getUser()).thenReturn(user);
+    User user = new User();
+    form.setUser(user);
     assertEquals(user, form.getUser());
-    verify(presenter).getUser();
   }
 
   @Test
   public void setUser_NewUser() {
     User user = new User();
-    when(presenter.getUser()).thenReturn(user);
 
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.setUser(user);
 
-    verify(presenter).setUser(user);
+    assertEquals("", form.email.getValue());
+    assertFalse(form.email.isReadOnly());
+    assertEquals("", form.name.getValue());
+    assertFalse(form.name.isReadOnly());
+    assertFalse(form.admin.getValue());
+    assertFalse(form.admin.isReadOnly());
+    assertFalse(form.manager.getValue());
+    assertFalse(form.manager.isReadOnly());
+    assertTrue(form.passwords.isVisible());
+    assertTrue(form.passwords.isRequired());
+    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+        form.laboratory.getValue().getId());
+    assertTrue(form.laboratory.isReadOnly());
+    Address address = defaultAddressConfiguration.getAddress();
+    assertEquals(address.getLine(), form.addressLine.getValue());
+    assertFalse(form.addressLine.isReadOnly());
+    assertEquals(address.getTown(), form.town.getValue());
+    assertFalse(form.town.isReadOnly());
+    assertEquals(address.getState(), form.state.getValue());
+    assertFalse(form.state.isReadOnly());
+    assertEquals(address.getCountry(), form.country.getValue());
+    assertFalse(form.country.isReadOnly());
+    assertEquals(address.getPostalCode(), form.postalCode.getValue());
+    assertFalse(form.postalCode.isReadOnly());
+    assertEquals(PhoneNumberType.WORK, form.phoneType.getValue());
+    assertFalse(form.phoneType.isReadOnly());
+    assertEquals("", form.number.getValue());
+    assertFalse(form.number.isReadOnly());
+    assertEquals("", form.extension.getValue());
+    assertFalse(form.extension.isReadOnly());
   }
 
   @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void setUser_NewUserAdmin() {
+    User user = new User();
+
+    form.setUser(user);
+
+    assertEquals("", form.email.getValue());
+    assertFalse(form.email.isReadOnly());
+    assertEquals("", form.name.getValue());
+    assertFalse(form.name.isReadOnly());
+    assertFalse(form.admin.getValue());
+    assertFalse(form.admin.isReadOnly());
+    assertFalse(form.manager.getValue());
+    assertFalse(form.manager.isReadOnly());
+    assertTrue(form.passwords.isVisible());
+    assertTrue(form.passwords.isRequired());
+    assertEquals((Long) 1L, form.laboratory.getValue().getId());
+    assertFalse(form.laboratory.isReadOnly());
+    Address address = defaultAddressConfiguration.getAddress();
+    assertEquals(address.getLine(), form.addressLine.getValue());
+    assertFalse(form.addressLine.isReadOnly());
+    assertEquals(address.getTown(), form.town.getValue());
+    assertFalse(form.town.isReadOnly());
+    assertEquals(address.getState(), form.state.getValue());
+    assertFalse(form.state.isReadOnly());
+    assertEquals(address.getCountry(), form.country.getValue());
+    assertFalse(form.country.isReadOnly());
+    assertEquals(address.getPostalCode(), form.postalCode.getValue());
+    assertFalse(form.postalCode.isReadOnly());
+    assertEquals(PhoneNumberType.WORK, form.phoneType.getValue());
+    assertFalse(form.phoneType.isReadOnly());
+    assertEquals("", form.number.getValue());
+    assertFalse(form.number.isReadOnly());
+    assertEquals("", form.extension.getValue());
+    assertFalse(form.extension.isReadOnly());
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void setUser_User() {
-    User user = userRepository.findById(2L).get();
-    when(presenter.getUser()).thenReturn(user);
+    User user = userRepository.findById(10L).get();
+    when(userPermissionEvaluator.hasPermission(any(), eq(user), eq(WRITE))).thenReturn(false);
 
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.setUser(user);
 
-    verify(presenter).setUser(user);
+    assertEquals(user.getEmail(), form.email.getValue());
+    assertTrue(form.email.isReadOnly());
+    assertEquals(user.getName(), form.name.getValue());
+    assertTrue(form.name.isReadOnly());
+    assertFalse(form.admin.getValue());
+    assertTrue(form.admin.isReadOnly());
+    assertFalse(form.manager.getValue());
+    assertTrue(form.manager.isReadOnly());
+    assertFalse(form.passwords.isVisible());
+    assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
+    assertTrue(form.laboratory.isReadOnly());
+    Address address = user.getAddress();
+    assertEquals(address.getLine(), form.addressLine.getValue());
+    assertTrue(form.addressLine.isReadOnly());
+    assertEquals(address.getTown(), form.town.getValue());
+    assertTrue(form.town.isReadOnly());
+    assertEquals(address.getState(), form.state.getValue());
+    assertTrue(form.state.isReadOnly());
+    assertEquals(address.getCountry(), form.country.getValue());
+    assertTrue(form.country.isReadOnly());
+    assertEquals(address.getPostalCode(), form.postalCode.getValue());
+    assertTrue(form.postalCode.isReadOnly());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(phoneNumber.getType(), form.phoneType.getValue());
+    assertTrue(form.phoneType.isReadOnly());
+    assertEquals(phoneNumber.getNumber(), form.number.getValue());
+    assertTrue(form.number.isReadOnly());
+    assertEquals(Objects.toString(phoneNumber.getExtension(), ""), form.extension.getValue());
+    assertTrue(form.extension.isReadOnly());
   }
 
   @Test
-  public void setUser_UserBeforeLocaleChange() {
-    User user = userRepository.findById(2L).get();
-    when(presenter.getUser()).thenReturn(user);
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void setUser_UserCanWrite() {
+    User user = userRepository.findById(3L).get();
 
     form.setUser(user);
-    form.localeChange(mock(LocaleChangeEvent.class));
 
-    verify(presenter).setUser(user);
+    assertEquals(user.getEmail(), form.email.getValue());
+    assertFalse(form.email.isReadOnly());
+    assertEquals(user.getName(), form.name.getValue());
+    assertFalse(form.name.isReadOnly());
+    assertFalse(form.admin.getValue());
+    assertFalse(form.admin.isReadOnly());
+    assertTrue(form.manager.getValue());
+    assertFalse(form.manager.isReadOnly());
+    assertTrue(form.passwords.isVisible());
+    assertFalse(form.passwords.isRequired());
+    assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
+    assertTrue(form.laboratory.isReadOnly());
+    Address address = user.getAddress();
+    assertEquals(address.getLine(), form.addressLine.getValue());
+    assertFalse(form.addressLine.isReadOnly());
+    assertEquals(address.getTown(), form.town.getValue());
+    assertFalse(form.town.isReadOnly());
+    assertEquals(address.getState(), form.state.getValue());
+    assertFalse(form.state.isReadOnly());
+    assertEquals(address.getCountry(), form.country.getValue());
+    assertFalse(form.country.isReadOnly());
+    assertEquals(address.getPostalCode(), form.postalCode.getValue());
+    assertFalse(form.postalCode.isReadOnly());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(phoneNumber.getType(), form.phoneType.getValue());
+    assertFalse(form.phoneType.isReadOnly());
+    assertEquals(phoneNumber.getNumber(), form.number.getValue());
+    assertFalse(form.number.isReadOnly());
+    assertEquals(Objects.toString(phoneNumber.getExtension(), ""), form.extension.getValue());
+    assertFalse(form.extension.isReadOnly());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void setUser_UserAdmin() {
+    User user = userRepository.findById(3L).get();
+
+    form.setUser(user);
+
+    assertEquals(user.getEmail(), form.email.getValue());
+    assertFalse(form.email.isReadOnly());
+    assertEquals(user.getName(), form.name.getValue());
+    assertFalse(form.name.isReadOnly());
+    assertFalse(form.admin.getValue());
+    assertFalse(form.admin.isReadOnly());
+    assertTrue(form.manager.getValue());
+    assertFalse(form.manager.isReadOnly());
+    assertTrue(form.passwords.isVisible());
+    assertFalse(form.passwords.isRequired());
+    assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
+    assertFalse(form.laboratory.isReadOnly());
+    Address address = user.getAddress();
+    assertEquals(address.getLine(), form.addressLine.getValue());
+    assertFalse(form.addressLine.isReadOnly());
+    assertEquals(address.getTown(), form.town.getValue());
+    assertFalse(form.town.isReadOnly());
+    assertEquals(address.getState(), form.state.getValue());
+    assertFalse(form.state.isReadOnly());
+    assertEquals(address.getCountry(), form.country.getValue());
+    assertFalse(form.country.isReadOnly());
+    assertEquals(address.getPostalCode(), form.postalCode.getValue());
+    assertFalse(form.postalCode.isReadOnly());
+    PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
+    assertEquals(phoneNumber.getType(), form.phoneType.getValue());
+    assertFalse(form.phoneType.isReadOnly());
+    assertEquals(phoneNumber.getNumber(), form.number.getValue());
+    assertFalse(form.number.isReadOnly());
+    assertEquals(Objects.toString(phoneNumber.getExtension(), ""), form.extension.getValue());
+    assertFalse(form.extension.isReadOnly());
   }
 
   @Test
   public void setUser_Null() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.setUser(null);
 
-    verify(presenter).setUser(null);
+    assertEquals("", form.email.getValue());
+    assertEquals("", form.name.getValue());
+    assertFalse(form.admin.getValue());
+    assertFalse(form.manager.getValue());
+    assertTrue(form.passwords.isVisible());
+    assertTrue(form.passwords.isRequired());
+    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+        form.laboratory.getValue().getId());
+    Address address = defaultAddressConfiguration.getAddress();
+    assertEquals(address.getLine(), form.addressLine.getValue());
+    assertEquals(address.getTown(), form.town.getValue());
+    assertEquals(address.getState(), form.state.getValue());
+    assertEquals(address.getCountry(), form.country.getValue());
+    assertEquals(address.getPostalCode(), form.postalCode.getValue());
+    assertEquals(PhoneNumberType.WORK, form.phoneType.getValue());
+    assertFalse(form.phoneType.isReadOnly());
+    assertEquals("", form.number.getValue());
+    assertFalse(form.number.isReadOnly());
+    assertEquals("", form.extension.getValue());
+    assertFalse(form.extension.isReadOnly());
+  }
+
+  @Test
+  public void isValid_EmailEmpty() {
+    form.email.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<User> status = form.validateUser();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.email);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_EmailInvalid() {
+    form.email.setValue("test");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<User> status = form.validateUser();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.email);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(INVALID_EMAIL)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_NameEmpty() {
+    form.name.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<User> status = form.validateUser();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.name);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_PasswordValidationFailed() {
+    form.passwords = mock(PasswordsForm.class);
+
+    assertFalse(form.isValid());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_LaboratoryEmpty() {
+    form.laboratory.setItems(new ArrayList<>());
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<User> status = form.validateUser();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.laboratory);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_AdminLaboratoryEmpty() {
+    form.laboratory.setItems(new ArrayList<>());
+    form.admin.setValue(true);
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<User> status = form.validateUser();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.laboratory);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_NewLaboratoryNameEmpty() {
+    form.manager.setValue(true);
+    form.createNewLaboratory.setValue(true);
+    form.newLaboratoryName.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<Laboratory> status = form.validateLaboratory();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.newLaboratoryName);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_AddressLineEmpty() {
+    form.addressLine.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<Address> status = form.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.addressLine);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_TownEmpty() {
+    form.town.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<Address> status = form.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.town);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_StateEmpty() {
+    form.state.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<Address> status = form.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.state);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_CountryEmpty() {
+    form.country.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<Address> status = form.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.country);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_PostalCodeEmpty() {
+    form.postalCode.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<Address> status = form.validateAddress();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.postalCode);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_NumberEmpty() {
+    form.number.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<PhoneNumber> status = form.validatePhoneNumber();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.number);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_NewUser() {
+    form.setUser(null);
+    fillForm();
+
+    assertTrue(form.isValid());
+
+    User user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertFalse(user.isAdmin());
+    assertFalse(user.isManager());
+    assertNotNull(user.getLaboratory());
+    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+        user.getLaboratory().getId());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_NewManager() {
+    form.setUser(null);
+    fillForm();
+    form.manager.setValue(true);
+
+    assertTrue(form.isValid());
+
+    User user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertFalse(user.isAdmin());
+    assertTrue(user.isManager());
+    assertNotNull(user.getLaboratory());
+    assertEquals(authenticatedUser.getUser().get().getId(), user.getLaboratory().getId());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_NewManagerNewLaboratory() {
+    form.setUser(null);
+    fillForm();
+    form.manager.setValue(true);
+    form.createNewLaboratory.setValue(true);
+
+    assertTrue(form.isValid());
+
+    User user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertFalse(user.isAdmin());
+    assertTrue(user.isManager());
+    assertNotNull(user.getLaboratory());
+    assertNull(user.getLaboratory().getId());
+    assertEquals(newLaboratoryName, user.getLaboratory().getName());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void isValid_UpdateUser() {
+    fillForm();
+
+    assertTrue(form.isValid());
+
+    User user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertFalse(user.isAdmin());
+    assertTrue(user.isManager());
+    assertNotNull(user.getLaboratory());
+    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+        user.getLaboratory().getId());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_UpdateUserLaboratory() {
+    User user = userRepository.findById(26L).get();
+    form.setUser(user);
+    fillForm();
+
+    assertTrue(form.isValid());
+
+    user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertFalse(user.isAdmin());
+    assertFalse(user.isManager());
+    assertNotNull(user.getLaboratory());
+    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+        user.getLaboratory().getId());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void isValid_UpdateUserNoPassword() {
+    fillForm();
+    form.passwords.password.setValue("");
+    form.passwords.passwordConfirm.setValue("");
+
+    assertTrue(form.isValid());
+
+    User user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertFalse(user.isAdmin());
+    assertTrue(user.isManager());
+    assertNotNull(user.getLaboratory());
+    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+        user.getLaboratory().getId());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_NewAdmin() {
+    form.setUser(null);
+    fillForm();
+    form.admin.setValue(true);
+
+    assertTrue(form.isValid());
+
+    User user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertTrue(user.isAdmin());
+    assertFalse(user.isManager());
+    assertNotNull(user.getLaboratory());
+    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+        user.getLaboratory().getId());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_UpdateAdmin() {
+    User user = userRepository.findById(1L).get();
+    form.setUser(user);
+    fillForm();
+
+    assertTrue(form.isValid());
+
+    user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertTrue(user.isAdmin());
+    assertTrue(user.isManager());
+    assertEquals((Long) 1L, user.getLaboratory().getId());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_UpdateAdminNoPassword() {
+    User user = userRepository.findById(1L).get();
+    form.setUser(user);
+    fillForm();
+    form.passwords.password.setValue("");
+    form.passwords.passwordConfirm.setValue("");
+
+    assertTrue(form.isValid());
+
+    user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertTrue(user.isAdmin());
+    assertTrue(user.isManager());
+    assertEquals((Long) 1L, user.getLaboratory().getId());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void isValid_UpdateAdmin_RemoveAdminAddManager() {
+    User user = userRepository.findById(1L).get();
+    form.setUser(user);
+    fillForm();
+    form.admin.setValue(false);
+    form.manager.setValue(true);
+
+    assertTrue(form.isValid());
+
+    user = form.getUser();
+    assertEquals(email, user.getEmail());
+    assertEquals(name, user.getName());
+    assertFalse(user.isAdmin());
+    assertTrue(user.isManager());
+    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+        user.getLaboratory().getId());
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
   }
 }

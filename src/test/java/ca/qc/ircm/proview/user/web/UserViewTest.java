@@ -33,9 +33,11 @@ import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
+import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -61,7 +63,9 @@ public class UserViewTest extends AbstractKaribuTestCase {
   @Mock
   private User user;
   @Mock
-  private UserFormPresenter formPresenter;
+  private LaboratoryService laboratoryService;
+  @Mock
+  private AuthenticatedUser authenticatedUser;
   @Mock
   private BeforeEvent beforeEvent;
   @Autowired
@@ -76,7 +80,9 @@ public class UserViewTest extends AbstractKaribuTestCase {
   @BeforeEach
   public void beforeTest() {
     ui.setLocale(locale);
-    form = new UserForm(formPresenter, defaultAddressConfiguration);
+    form = new UserForm(laboratoryService, authenticatedUser, defaultAddressConfiguration);
+    form.init();
+    form.setUser(null);
     view = new UserView(form, presenter);
     view.init();
   }
