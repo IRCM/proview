@@ -24,7 +24,6 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.functions;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
@@ -43,56 +42,59 @@ import static ca.qc.ircm.proview.user.web.UsersView.ID;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER;
 import static ca.qc.ircm.proview.user.web.UsersView.USERS;
+import static ca.qc.ircm.proview.user.web.UsersView.USERS_REQUIRED;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.security.SwitchUserService;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.text.NormalizedComparator;
+import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryRepository;
+import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.user.UserService;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.LitRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.dom.Element;
-import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.Location;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -100,22 +102,20 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UsersViewTest extends AbstractKaribuTestCase {
+public class UsersViewTest extends SpringUIUnitTest {
   private UsersView view;
-  @Mock
-  private UsersViewPresenter presenter;
-  @Mock
-  private ObjectFactory<UserDialog> dialogFactory;
-  @Mock
-  private ObjectFactory<LaboratoryDialog> laboratoryDialogFactory;
-  @Captor
-  private ArgumentCaptor<ValueProvider<User, String>> valueProviderCaptor;
-  @Captor
-  private ArgumentCaptor<LitRenderer<User>> litRendererCaptor;
-  @Captor
-  private ArgumentCaptor<Comparator<User>> comparatorCaptor;
+  @MockBean
+  private UserService service;
+  @MockBean
+  private LaboratoryService laboratoryService;
+  @MockBean
+  private SwitchUserService switchUserService;
   @Autowired
-  private UserRepository userRepository;
+  private UserRepository repository;
+  @Autowired
+  private LaboratoryRepository laboratoryRepository;
+  @Autowired
+  private AuthenticatedUser authenticatedUser;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(UsersView.class, locale);
   private AppResources userResources = new AppResources(User.class, locale);
@@ -127,62 +127,40 @@ public class UsersViewTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    view = new UsersView(presenter, dialogFactory, laboratoryDialogFactory);
-    view.init();
-    users = userRepository.findAll();
+    UI.getCurrent().setLocale(locale);
+    users = repository.findAll();
+    when(service.all(any())).thenReturn(users);
+    when(service.all(any(), any())).thenReturn(users);
+    view = navigate(UsersView.class);
   }
 
-  @SuppressWarnings("unchecked")
-  private void mockColumns() {
-    Element usersElement = view.users.getElement();
-    view.users = mock(Grid.class);
-    when(view.users.getElement()).thenReturn(usersElement);
-    view.edit = mock(Column.class);
-    view.active = mock(Column.class);
-    when(view.users.addColumn(any(LitRenderer.class))).thenReturn(view.edit, view.active);
-    when(view.edit.setKey(any())).thenReturn(view.edit);
-    when(view.edit.setSortable(anyBoolean())).thenReturn(view.edit);
-    when(view.edit.setFlexGrow(anyInt())).thenReturn(view.edit);
-    when(view.edit.setHeader(any(String.class))).thenReturn(view.edit);
-    view.email = mock(Column.class);
-    when(view.users.addColumn(any(ValueProvider.class), eq(EMAIL))).thenReturn(view.email);
-    when(view.email.setKey(any())).thenReturn(view.email);
-    when(view.email.setComparator(any(Comparator.class))).thenReturn(view.email);
-    when(view.email.setHeader(any(String.class))).thenReturn(view.email);
-    when(view.email.setFlexGrow(anyInt())).thenReturn(view.email);
-    view.name = mock(Column.class);
-    when(view.users.addColumn(any(ValueProvider.class), eq(NAME))).thenReturn(view.name);
-    when(view.name.setKey(any())).thenReturn(view.name);
-    when(view.name.setComparator(any(Comparator.class))).thenReturn(view.name);
-    when(view.name.setHeader(any(String.class))).thenReturn(view.name);
-    when(view.name.setFlexGrow(anyInt())).thenReturn(view.name);
-    view.laboratory = mock(Column.class);
-    when(view.users.addColumn(any(ValueProvider.class), eq(LABORATORY)))
-        .thenReturn(view.laboratory);
-    when(view.laboratory.setKey(any())).thenReturn(view.laboratory);
-    when(view.laboratory.setComparator(any(Comparator.class))).thenReturn(view.laboratory);
-    when(view.laboratory.setHeader(any(String.class))).thenReturn(view.laboratory);
-    when(view.laboratory.setFlexGrow(anyInt())).thenReturn(view.laboratory);
-    when(view.active.setKey(any())).thenReturn(view.active);
-    when(view.active.setComparator(any(Comparator.class))).thenReturn(view.active);
-    when(view.active.setHeader(any(String.class))).thenReturn(view.active);
-    when(view.active.setFlexGrow(anyInt())).thenReturn(view.active);
-    HeaderRow filtersRow = mock(HeaderRow.class);
-    when(view.users.appendHeaderRow()).thenReturn(filtersRow);
-    HeaderCell emailFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.email)).thenReturn(emailFilterCell);
-    HeaderCell nameFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.name)).thenReturn(nameFilterCell);
-    HeaderCell laboratoryFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.laboratory)).thenReturn(laboratoryFilterCell);
-    HeaderCell activeFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.active)).thenReturn(activeFilterCell);
+  private int indexOfColumn(String property) {
+    return test(view.users).getColumnPosition(property);
   }
 
-  @Test
-  public void presenter_Init() {
-    verify(presenter).init(view);
+  private User email(String email) {
+    User user = new User();
+    user.setEmail(email);
+    return user;
+  }
+
+  private User name(String name) {
+    User user = new User();
+    user.setName(name);
+    return user;
+  }
+
+  private User laboratory(String name) {
+    User user = new User();
+    user.setLaboratory(new Laboratory());
+    user.getLaboratory().setName(name);
+    return user;
+  }
+
+  private User active(boolean active) {
+    User user = new User();
+    user.setActive(active);
+    return user;
   }
 
   @Test
@@ -198,19 +176,19 @@ public class UsersViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    mockColumns();
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
-    verify(view.edit).setHeader(webResources.message(EDIT));
-    verify(view.edit).setFooter(webResources.message(EDIT));
-    verify(view.email).setHeader(userResources.message(EMAIL));
-    verify(view.email).setFooter(userResources.message(EMAIL));
-    verify(view.name).setHeader(userResources.message(NAME));
-    verify(view.name).setFooter(userResources.message(NAME));
-    verify(view.laboratory).setHeader(userResources.message(LABORATORY));
-    verify(view.laboratory).setFooter(userResources.message(LABORATORY));
-    verify(view.active).setHeader(userResources.message(ACTIVE));
-    verify(view.active).setFooter(userResources.message(ACTIVE));
+    HeaderRow headerRow = view.users.getHeaderRows().get(0);
+    FooterRow footerRow = view.users.getFooterRows().get(0);
+    assertEquals(webResources.message(EDIT), headerRow.getCell(view.edit).getText());
+    assertEquals(webResources.message(EDIT), footerRow.getCell(view.edit).getText());
+    assertEquals(userResources.message(EMAIL), headerRow.getCell(view.email).getText());
+    assertEquals(userResources.message(EMAIL), footerRow.getCell(view.email).getText());
+    assertEquals(userResources.message(NAME), headerRow.getCell(view.name).getText());
+    assertEquals(userResources.message(NAME), footerRow.getCell(view.name).getText());
+    assertEquals(userResources.message(LABORATORY), headerRow.getCell(view.laboratory).getText());
+    assertEquals(userResources.message(LABORATORY), footerRow.getCell(view.laboratory).getText());
+    assertEquals(userResources.message(ACTIVE), headerRow.getCell(view.active).getText());
+    assertEquals(userResources.message(ACTIVE), footerRow.getCell(view.active).getText());
     assertEquals(webResources.message(ALL), view.emailFilter.getPlaceholder());
     assertEquals(webResources.message(ALL), view.nameFilter.getPlaceholder());
     assertEquals(webResources.message(ALL), view.laboratoryFilter.getPlaceholder());
@@ -226,31 +204,28 @@ public class UsersViewTest extends AbstractKaribuTestCase {
     validateIcon(VaadinIcon.BUG.create(), view.switchUser.getIcon());
     assertEquals(resources.message(VIEW_LABORATORY), view.viewLaboratory.getText());
     validateIcon(VaadinIcon.EDIT.create(), view.viewLaboratory.getIcon());
-    verify(presenter).localeChange(locale);
   }
 
   @Test
   public void localeChange() {
-    mockColumns();
-    view.init();
-    view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(UsersView.class, locale);
     final AppResources userResources = new AppResources(User.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
-    ui.setLocale(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), view.header.getText());
-    verify(view.edit).setHeader(webResources.message(EDIT));
-    verify(view.edit).setFooter(webResources.message(EDIT));
-    verify(view.email).setHeader(userResources.message(EMAIL));
-    verify(view.email).setFooter(userResources.message(EMAIL));
-    verify(view.name).setHeader(userResources.message(NAME));
-    verify(view.name).setFooter(userResources.message(NAME));
-    verify(view.laboratory).setHeader(userResources.message(LABORATORY));
-    verify(view.laboratory).setFooter(userResources.message(LABORATORY));
-    verify(view.active).setHeader(userResources.message(ACTIVE));
-    verify(view.active).setFooter(userResources.message(ACTIVE));
+    HeaderRow headerRow = view.users.getHeaderRows().get(0);
+    FooterRow footerRow = view.users.getFooterRows().get(0);
+    assertEquals(webResources.message(EDIT), headerRow.getCell(view.edit).getText());
+    assertEquals(webResources.message(EDIT), footerRow.getCell(view.edit).getText());
+    assertEquals(userResources.message(EMAIL), headerRow.getCell(view.email).getText());
+    assertEquals(userResources.message(EMAIL), footerRow.getCell(view.email).getText());
+    assertEquals(userResources.message(NAME), headerRow.getCell(view.name).getText());
+    assertEquals(userResources.message(NAME), footerRow.getCell(view.name).getText());
+    assertEquals(userResources.message(LABORATORY), headerRow.getCell(view.laboratory).getText());
+    assertEquals(userResources.message(LABORATORY), footerRow.getCell(view.laboratory).getText());
+    assertEquals(userResources.message(ACTIVE), headerRow.getCell(view.active).getText());
+    assertEquals(userResources.message(ACTIVE), footerRow.getCell(view.active).getText());
     assertEquals(webResources.message(ALL), view.emailFilter.getPlaceholder());
     assertEquals(webResources.message(ALL), view.nameFilter.getPlaceholder());
     assertEquals(webResources.message(ALL), view.laboratoryFilter.getPlaceholder());
@@ -266,7 +241,6 @@ public class UsersViewTest extends AbstractKaribuTestCase {
     validateIcon(VaadinIcon.BUG.create(), view.switchUser.getIcon());
     assertEquals(resources.message(VIEW_LABORATORY), view.viewLaboratory.getText());
     validateIcon(VaadinIcon.EDIT.create(), view.viewLaboratory.getIcon());
-    verify(presenter).localeChange(locale);
   }
 
   @Test
@@ -278,6 +252,41 @@ public class UsersViewTest extends AbstractKaribuTestCase {
   @Test
   public void users_SelectionMode() {
     assertTrue(view.users.getSelectionModel() instanceof SelectionModel.Single);
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void users_Manager() {
+    verify(service).all(null, authenticatedUser.getUser().get().getLaboratory());
+    List<User> users = items(view.users);
+    assertEquals(this.users.size(), users.size());
+    for (User user : this.users) {
+      assertTrue(users.contains(user), user.toString());
+    }
+    assertEquals(0, view.users.getSelectedItems().size());
+    users.forEach(user -> view.users.select(user));
+    assertEquals(1, view.users.getSelectedItems().size());
+    assertTrue(view.active.isVisible());
+    assertTrue(view.add.isVisible());
+    assertFalse(view.switchUser.isVisible());
+    assertTrue(view.viewLaboratory.isVisible());
+  }
+
+  @Test
+  public void users_Admin() {
+    verify(service).all(null);
+    List<User> users = items(view.users);
+    assertEquals(this.users.size(), users.size());
+    for (User user : this.users) {
+      assertTrue(users.contains(user), user.toString());
+    }
+    assertEquals(0, view.users.getSelectedItems().size());
+    users.forEach(user -> view.users.select(user));
+    assertEquals(1, view.users.getSelectedItems().size());
+    assertTrue(view.active.isVisible());
+    assertTrue(view.add.isVisible());
+    assertTrue(view.switchUser.isVisible());
+    assertTrue(view.viewLaboratory.isVisible());
   }
 
   @Test
@@ -296,82 +305,85 @@ public class UsersViewTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void users_ColumnsValueProvider() {
-    doAnswer(i -> {
-      User user = i.getArgument(0);
-      user.setActive(!user.isActive());
-      return null;
-    }).when(presenter).toggleActive(any());
-    mockColumns();
-    when(view.users.getDataProvider()).thenReturn(mock(DataProvider.class));
-    view.init();
-    verify(view.users, times(2)).addColumn(litRendererCaptor.capture());
-    LitRenderer<User> litRenderer = litRendererCaptor.getAllValues().get(0);
-    for (User user : users) {
-      assertEquals(EDIT_BUTTON, rendererTemplate(litRenderer));
-      assertTrue(functions(litRenderer).containsKey("edit"));
-      functions(litRenderer).get("edit").accept(user, null);
-      verify(presenter).view(user);
-    }
-    verify(view.users).addColumn(valueProviderCaptor.capture(), eq(EMAIL));
-    ValueProvider<User, String> valueProvider = valueProviderCaptor.getValue();
-    for (User user : users) {
-      assertEquals(user.getEmail() != null ? user.getEmail() : "", valueProvider.apply(user));
-    }
-    verify(view.email).setComparator(comparatorCaptor.capture());
-    Comparator<User> comparator = comparatorCaptor.getValue();
-    assertTrue(comparator instanceof NormalizedComparator);
-    for (User user : users) {
-      assertEquals(user.getEmail(),
-          ((NormalizedComparator<User>) comparator).getConverter().apply(user));
-    }
-    verify(view.users).addColumn(valueProviderCaptor.capture(), eq(NAME));
-    valueProvider = valueProviderCaptor.getValue();
-    for (User user : users) {
-      assertEquals(user.getName() != null ? user.getName() : "", valueProvider.apply(user));
-    }
-    verify(view.name).setComparator(comparatorCaptor.capture());
-    comparator = comparatorCaptor.getValue();
-    assertTrue(comparator instanceof NormalizedComparator);
-    for (User user : users) {
-      assertEquals(user.getName(),
-          ((NormalizedComparator<User>) comparator).getConverter().apply(user));
-    }
-    verify(view.users).addColumn(valueProviderCaptor.capture(), eq(LABORATORY));
-    valueProvider = valueProviderCaptor.getValue();
-    for (User user : users) {
+    when(service.get(any(Long.class))).thenAnswer(i -> repository.findById(i.getArgument(0)));
+    for (int i = 0; i < users.size(); i++) {
+      User user = users.get(i);
+      Renderer<User> editRawRenderer = view.users.getColumnByKey(EDIT).getRenderer();
+      assertTrue(editRawRenderer instanceof LitRenderer<User>);
+      LitRenderer<User> editRenderer = (LitRenderer<User>) editRawRenderer;
+      assertEquals(EDIT_BUTTON, rendererTemplate(editRenderer));
+      assertTrue(functions(editRenderer).containsKey("edit"));
+      functions(editRenderer).get("edit").accept(user, null);
+      UserDialog dialog = $(UserDialog.class).last();
+      assertEquals(user, dialog.getUser());
+      verify(service).get(user.getId());
+      assertEquals(user.getEmail() != null ? user.getEmail() : "",
+          test(view.users).getCellText(i, indexOfColumn(EMAIL)));
+      assertEquals(user.getName() != null ? user.getName() : "",
+          test(view.users).getCellText(i, indexOfColumn(NAME)));
       assertEquals(user.getLaboratory().getName() != null ? user.getLaboratory().getName() : "",
-          valueProvider.apply(user));
-    }
-    verify(view.laboratory).setComparator(comparatorCaptor.capture());
-    comparator = comparatorCaptor.getValue();
-    assertTrue(comparator instanceof NormalizedComparator);
-    for (User user : users) {
-      assertEquals(user.getLaboratory().getName(),
-          ((NormalizedComparator<User>) comparator).getConverter().apply(user));
-    }
-    litRenderer = litRendererCaptor.getAllValues().get(1);
-    for (User user : users) {
-      assertEquals(ACTIVE_BUTTON, rendererTemplate(litRenderer));
-      assertTrue(litRenderer.getValueProviders().containsKey("activeTheme"));
+          test(view.users).getCellText(i, indexOfColumn(LABORATORY)));
+      Renderer<User> activeRawRenderer = view.users.getColumnByKey(ACTIVE).getRenderer();
+      assertTrue(activeRawRenderer instanceof LitRenderer<User>);
+      LitRenderer<User> activeRenderer = (LitRenderer<User>) activeRawRenderer;
+      assertEquals(ACTIVE_BUTTON, rendererTemplate(activeRenderer));
+      assertTrue(activeRenderer.getValueProviders().containsKey("activeTheme"));
       assertEquals(
           user.isActive() ? ButtonVariant.LUMO_SUCCESS.getVariantName()
               : ButtonVariant.LUMO_ERROR.getVariantName(),
-          litRenderer.getValueProviders().get("activeTheme").apply(user));
-      assertTrue(litRenderer.getValueProviders().containsKey("activeValue"));
+          activeRenderer.getValueProviders().get("activeTheme").apply(user));
+      assertTrue(activeRenderer.getValueProviders().containsKey("activeValue"));
       assertEquals(userResources.message(property(ACTIVE, user.isActive())),
-          litRenderer.getValueProviders().get("activeValue").apply(user));
-      assertTrue(litRenderer.getValueProviders().containsKey("activeIcon"));
+          activeRenderer.getValueProviders().get("activeValue").apply(user));
+      assertTrue(activeRenderer.getValueProviders().containsKey("activeIcon"));
       assertEquals(user.isActive() ? "vaadin:eye" : "vaadin:eye-slash",
-          litRenderer.getValueProviders().get("activeIcon").apply(user));
-      assertTrue(functions(litRenderer).containsKey("toggleActive"));
-      functions(litRenderer).get("toggleActive").accept(user, null);
-      verify(presenter).toggleActive(user);
-      verify(view.users.getDataProvider()).refreshItem(user);
+          activeRenderer.getValueProviders().get("activeIcon").apply(user));
+      assertTrue(functions(activeRenderer).containsKey("toggleActive"));
+      boolean active = user.isActive();
+      functions(activeRenderer).get("toggleActive").accept(user, null);
+      verify(service, atLeastOnce()).save(user, null);
+      assertEquals(!active, user.isActive());
     }
-    verify(view.active).setComparator(comparatorCaptor.capture());
-    comparator = comparatorCaptor.getValue();
+  }
+
+  @Test
+  public void users_EmailColumnComparator() {
+    Comparator<User> comparator =
+        test(view.users).getColumn(EMAIL).getComparator(SortDirection.ASCENDING);
+    assertEquals(0, comparator.compare(email("éê"), email("ee")));
+    assertTrue(comparator.compare(email("a"), email("e")) < 0);
+    assertTrue(comparator.compare(email("a"), email("é")) < 0);
+    assertTrue(comparator.compare(email("e"), email("a")) > 0);
+    assertTrue(comparator.compare(email("é"), email("a")) > 0);
+  }
+
+  @Test
+  public void users_NameColumnComparator() {
+    Comparator<User> comparator =
+        test(view.users).getColumn(NAME).getComparator(SortDirection.ASCENDING);
+    assertEquals(0, comparator.compare(name("éê"), name("ee")));
+    assertTrue(comparator.compare(name("a"), name("e")) < 0);
+    assertTrue(comparator.compare(name("a"), name("é")) < 0);
+    assertTrue(comparator.compare(name("e"), name("a")) > 0);
+    assertTrue(comparator.compare(name("é"), name("a")) > 0);
+  }
+
+  @Test
+  public void users_LaboratoryColumnComparator() {
+    Comparator<User> comparator =
+        test(view.users).getColumn(LABORATORY).getComparator(SortDirection.ASCENDING);
+    assertEquals(0, comparator.compare(laboratory("éê"), laboratory("ee")));
+    assertTrue(comparator.compare(laboratory("a"), laboratory("e")) < 0);
+    assertTrue(comparator.compare(laboratory("a"), laboratory("é")) < 0);
+    assertTrue(comparator.compare(laboratory("e"), laboratory("a")) > 0);
+    assertTrue(comparator.compare(laboratory("é"), laboratory("a")) > 0);
+  }
+
+  @Test
+  public void users_ActiveColumnComparator() {
+    Comparator<User> comparator =
+        test(view.users).getColumn(ACTIVE).getComparator(SortDirection.ASCENDING);
     assertTrue(comparator.compare(active(false), active(true)) < 0);
     assertTrue(comparator.compare(active(false), active(false)) == 0);
     assertTrue(comparator.compare(active(true), active(true)) == 0);
@@ -379,25 +391,69 @@ public class UsersViewTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  public void view() {
+  public void users_DoubleClick() {
+    when(service.get(any(Long.class))).thenAnswer(i -> repository.findById(i.getArgument(0)));
     User user = users.get(0);
-    doubleClickItem(view.users, user, null);
+    test(view.users).doubleClickRow(0);
 
-    verify(presenter).view(user);
+    UserDialog dialog = $(UserDialog.class).first();
+    assertEquals(user, dialog.getUser());
+    verify(service).get(1L);
   }
 
   @Test
-  public void viewLaboratory_Grid() {
+  public void users_DoubleClick_Empty() {
+    when(service.get(any(Long.class))).thenReturn(Optional.empty());
+    test(view.users).doubleClickRow(0);
+
+    UserDialog dialog = $(UserDialog.class).first();
+    assertNull(dialog.getUser().getId());
+    verify(service).get(1L);
+  }
+
+  @Test
+  public void users_DoubleClickLaboratory() {
+    when(laboratoryService.get(any(Long.class)))
+        .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)));
     User user = users.get(0);
     doubleClickItem(view.users, user, view.laboratory);
 
-    verify(presenter).viewLaboratory(user.getLaboratory());
+    LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
+    assertEquals(user.getLaboratory(), dialog.getLaboratory());
+    verify(laboratoryService).get(user.getLaboratory().getId());
   }
 
-  private User active(boolean active) {
-    User user = new User();
-    user.setActive(active);
-    return user;
+  @Test
+  public void users_DoubleClickLaboratory_Empty() {
+    when(laboratoryService.get(any(Long.class))).thenReturn(Optional.empty());
+    User user = users.get(0);
+    doubleClickItem(view.users, user, view.laboratory);
+
+    LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
+    assertNull(dialog.getLaboratory().getId());
+    verify(laboratoryService).get(user.getLaboratory().getId());
+  }
+
+  @Test
+  public void dialog_RefreshOnSave() {
+    when(service.get(any(Long.class))).thenAnswer(i -> repository.findById(i.getArgument(0)));
+    test(view.users).doubleClickRow(1);
+
+    UserDialog dialog = $(UserDialog.class).first();
+    test(dialog.save).click();
+    verify(service, times(2)).all(any());
+  }
+
+  @Test
+  public void laboratoryDialog_RefreshOnSave() {
+    when(laboratoryService.get(any(Long.class)))
+        .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)));
+    User user = users.get(1);
+    doubleClickItem(view.users, user, view.laboratory);
+
+    LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
+    test(dialog.save).click();
+    verify(service, times(2)).all(any());
   }
 
   @Test
@@ -408,9 +464,21 @@ public class UsersViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void filterEmail() {
+    view.users.setItems(mock(DataProvider.class));
     view.emailFilter.setValue("test");
 
-    verify(presenter).filterEmail("test");
+    assertEquals("test", view.filter().emailContains);
+    verify(view.users.getDataProvider()).refreshAll();
+  }
+
+  @Test
+  public void filterEmail_Empty() {
+    view.users.setItems(mock(DataProvider.class));
+    view.emailFilter.setValue("test");
+    view.emailFilter.setValue("");
+
+    assertEquals(null, view.filter().emailContains);
+    verify(view.users.getDataProvider(), times(2)).refreshAll();
   }
 
   @Test
@@ -421,9 +489,21 @@ public class UsersViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void filterName() {
+    view.users.setItems(mock(DataProvider.class));
     view.nameFilter.setValue("test");
 
-    verify(presenter).filterName("test");
+    assertEquals("test", view.filter().nameContains);
+    verify(view.users.getDataProvider()).refreshAll();
+  }
+
+  @Test
+  public void filterName_Empty() {
+    view.users.setItems(mock(DataProvider.class));
+    view.nameFilter.setValue("test");
+    view.nameFilter.setValue("");
+
+    assertEquals(null, view.filter().nameContains);
+    verify(view.users.getDataProvider(), times(2)).refreshAll();
   }
 
   @Test
@@ -434,9 +514,21 @@ public class UsersViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void filterLaboratory() {
+    view.users.setItems(mock(DataProvider.class));
     view.laboratoryFilter.setValue("test");
 
-    verify(presenter).filterLaboratory("test");
+    assertEquals("test", view.filter().laboratoryNameContains);
+    verify(view.users.getDataProvider()).refreshAll();
+  }
+
+  @Test
+  public void filterLaboratory_Empty() {
+    view.users.setItems(mock(DataProvider.class));
+    view.laboratoryFilter.setValue("test");
+    view.laboratoryFilter.setValue("");
+
+    assertEquals(null, view.filter().laboratoryNameContains);
+    verify(view.users.getDataProvider(), times(2)).refreshAll();
   }
 
   @Test
@@ -452,44 +544,141 @@ public class UsersViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void filterActive_False() {
+    view.users.setItems(mock(DataProvider.class));
     view.activeFilter.setValue(Optional.of(false));
 
-    verify(presenter).filterActive(false);
+    assertFalse(view.filter().active);
+    verify(view.users.getDataProvider()).refreshAll();
   }
 
   @Test
   public void filterActive_True() {
+    view.users.setItems(mock(DataProvider.class));
     view.activeFilter.setValue(Optional.of(true));
 
-    verify(presenter).filterActive(true);
+    assertTrue(view.filter().active);
+    verify(view.users.getDataProvider()).refreshAll();
+  }
+
+  @Test
+  public void filterActive_Empty() {
+    view.users.setItems(mock(DataProvider.class));
+    view.activeFilter.setValue(Optional.of(true));
+    view.activeFilter.setValue(Optional.empty());
+
+    assertNull(view.filter().active);
+    verify(view.users.getDataProvider(), times(2)).refreshAll();
+  }
+
+  @Test
+  public void error() {
+    assertFalse(view.error.isVisible());
+  }
+
+  @Test
+  public void error_VisibileThanHidden() {
+    test(view.switchUser).click();
+    assertTrue(view.error.isVisible());
+    test(view.users).doubleClickRow(0);
+    assertFalse(view.error.isVisible());
   }
 
   @Test
   public void add() {
-    clickButton(view.add);
-    verify(presenter).add();
+    test(view.add).click();
+
+    UserDialog dialog = $(UserDialog.class).first();
+    assertNull(dialog.getUser().getId());
+  }
+
+  @Test
+  public void switchUser_NoSelection() {
+    test(view.switchUser).click();
+
+    verify(switchUserService, never()).switchUser(any(), any());
+    assertTrue($(UsersView.class).exists());
+    assertTrue(view.error.isVisible());
+    assertEquals(resources.message(USERS_REQUIRED), view.error.getText());
   }
 
   @Test
   public void switchUser() {
-    clickButton(view.switchUser);
-    verify(presenter).switchUser();
+    User user = repository.findById(10L).get();
+    view.users.select(user);
+
+    test(view.switchUser).click();
+    verify(switchUserService).switchUser(user, VaadinServletRequest.getCurrent());
+    assertTrue($(SubmissionsView.class).exists());
+    assertFalse(view.error.isVisible());
+  }
+
+  @Test
+  public void viewLaboratory_NoSelection() {
+    test(view.viewLaboratory).click();
+
+    verify(laboratoryService, never()).get(any());
+    assertFalse($(LaboratoryDialog.class).exists());
+    assertTrue(view.error.isVisible());
+    assertEquals(resources.message(USERS_REQUIRED), view.error.getText());
   }
 
   @Test
   public void viewLaboratory() {
-    clickButton(view.viewLaboratory);
-    verify(presenter).viewLaboratory();
+    when(laboratoryService.get(any(Long.class)))
+        .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)));
+    User user = repository.findById(10L).get();
+    view.users.select(user);
+
+    test(view.viewLaboratory).click();
+
+    verify(laboratoryService).get(user.getLaboratory().getId());
+    LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
+    assertEquals(user.getLaboratory(), dialog.getLaboratory());
+    assertFalse(view.error.isVisible());
+  }
+
+  @Test
+  public void toggleActive_Inactive() {
+    view.users.setItems(mock(DataProvider.class));
+    User user = repository.findById(3L).get();
+    view.toggleActive(user);
+
+    verify(service).save(user, null);
+    assertFalse(user.isActive());
+    verify(view.users.getDataProvider()).refreshItem(user);
+  }
+
+  @Test
+  public void toggleActive() {
+    view.users.setItems(mock(DataProvider.class));
+    User user = repository.findById(11L).get();
+    view.toggleActive(user);
+
+    verify(service).save(user, null);
+    assertTrue(user.isActive());
+    verify(view.users.getDataProvider()).refreshItem(user);
   }
 
   @Test
   public void afterNavigation() {
+    AfterNavigationEvent event = mock(AfterNavigationEvent.class);
+    Location location = new Location(VIEW_NAME);
+    when(event.getLocation()).thenReturn(location);
+
+    view.afterNavigation(event);
+
+    assertFalse($(Notification.class).exists());
+  }
+
+  @Test
+  public void afterNavigation_SwitchFailed() {
     AfterNavigationEvent event = mock(AfterNavigationEvent.class);
     Location location = new Location(VIEW_NAME + "?" + SWITCH_FAILED);
     when(event.getLocation()).thenReturn(location);
 
     view.afterNavigation(event);
 
-    verify(presenter).showError(location.getQueryParameters().getParameters(), locale);
+    Notification notification = $(Notification.class).first();
+    assertEquals(resources.message(SWITCH_FAILED), test(notification).getText());
   }
 }
