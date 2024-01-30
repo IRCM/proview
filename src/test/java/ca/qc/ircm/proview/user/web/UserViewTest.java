@@ -22,32 +22,40 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.web.UserView.HEADER;
 import static ca.qc.ircm.proview.user.web.UserView.ID;
+import static ca.qc.ircm.proview.user.web.UserView.SAVED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.AuthenticatedUser;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -55,17 +63,12 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UserViewTest extends AbstractKaribuTestCase {
+public class UserViewTest extends SpringUIUnitTest {
   private UserView view;
-  private UserForm form;
-  @Mock
-  private UserViewPresenter presenter;
-  @Mock
-  private User user;
-  @Mock
+  @MockBean
+  private UserService service;
+  @MockBean
   private LaboratoryService laboratoryService;
-  @Mock
-  private AuthenticatedUser authenticatedUser;
   @Mock
   private BeforeEvent beforeEvent;
   @Autowired
@@ -79,17 +82,8 @@ public class UserViewTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    form = new UserForm(laboratoryService, authenticatedUser, defaultAddressConfiguration);
-    form.init();
-    form.setUser(null);
-    view = new UserView(form, presenter);
-    view.init();
-  }
-
-  @Test
-  public void presenter_Init() {
-    verify(presenter).init(view);
+    UI.getCurrent().setLocale(locale);
+    view = navigate(UserView.class);
   }
 
   @Test
@@ -102,7 +96,6 @@ public class UserViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, 0), view.header.getText());
     assertEquals(webResources.message(SAVE), view.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), view.save.getIcon());
@@ -110,21 +103,13 @@ public class UserViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void localeChange() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(UserView.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
-    ui.setLocale(locale);
+    UI.getCurrent().setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER, 0), view.header.getText());
     assertEquals(webResources.message(SAVE), view.save.getText());
-  }
-
-  @Test
-  public void save() {
-    clickButton(view.save);
-
-    verify(presenter).save(locale);
   }
 
   @Test
@@ -135,13 +120,51 @@ public class UserViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void setParameter() {
+    view.form = mock(UserForm.class);
+    User user = mock(User.class);
+    when(service.get(any(Long.class))).thenReturn(Optional.of(user));
+
     view.setParameter(beforeEvent, 12L);
-    verify(presenter).setParameter(12L);
+
+    verify(view.form).setUser(user);
+    verify(service).get(12L);
   }
 
   @Test
   public void setParameter_Null() {
+    view.form = mock(UserForm.class);
+
     view.setParameter(beforeEvent, null);
-    verify(presenter).setParameter(null);
+
+    verify(view.form, never()).setUser(any());
+    verify(service, never()).get(any(Long.class));
+  }
+
+  @Test
+  public void save_Invalid() {
+    view.form = mock(UserForm.class);
+
+    test(view.save).click();
+
+    verify(view.form).isValid();
+    verify(service, never()).save(any(), any());
+  }
+
+  @Test
+  public void save() {
+    String password = "test_password";
+    User user = mock(User.class);
+    view.form = mock(UserForm.class);
+    when(view.form.isValid()).thenReturn(true);
+    when(view.form.getPassword()).thenReturn(password);
+    when(view.form.getUser()).thenReturn(user);
+
+    test(view.save).click();
+
+    verify(view.form).isValid();
+    verify(service).save(eq(user), eq(password));
+    Notification notification = $(Notification.class).last();
+    assertEquals(resources.message(SAVED, user.getName()), test(notification).getText());
+    assertTrue($(UsersView.class).exists());
   }
 }

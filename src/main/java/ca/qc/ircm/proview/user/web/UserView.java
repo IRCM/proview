@@ -25,8 +25,11 @@ import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H2;
@@ -63,12 +66,12 @@ public class UserView extends VerticalLayout
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected UserForm form;
-  private transient UserViewPresenter presenter;
+  private transient UserService service;
 
   @Autowired
-  protected UserView(UserForm form, UserViewPresenter presenter) {
+  protected UserView(UserForm form, UserService service) {
     this.form = form;
-    this.presenter = presenter;
+    this.service = service;
   }
 
   /**
@@ -84,8 +87,7 @@ public class UserView extends VerticalLayout
     save.setId(SAVE);
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
-    save.addClickListener(e -> presenter.save(getLocale()));
-    presenter.init(this);
+    save.addClickListener(e -> save());
   }
 
   @Override
@@ -113,6 +115,20 @@ public class UserView extends VerticalLayout
 
   @Override
   public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
-    presenter.setParameter(parameter);
+    if (parameter != null) {
+      form.setUser(service.get(parameter).orElse(null));
+    }
+  }
+
+  void save() {
+    if (form.isValid()) {
+      User user = form.getUser();
+      String password = form.getPassword();
+      logger.debug("save user {} in laboratory {}", user, user.getLaboratory());
+      service.save(user, password);
+      final AppResources resources = new AppResources(UserView.class, getLocale());
+      showNotification(resources.message(SAVED, user.getName()));
+      UI.getCurrent().navigate(UsersView.class);
+    }
   }
 }
