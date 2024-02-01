@@ -33,22 +33,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionProperties;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.DateRangeField.Dates;
 import com.google.common.collect.Range;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -56,10 +59,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @NonTransactionalTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class DateRangeFieldTest extends AbstractKaribuTestCase {
+public class DateRangeFieldTest extends SpringUIUnitTest {
   private DateRangeField dateRange;
-  @Mock
-  private LocaleChangeEvent localeChangeEvent;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(DateRangeField.class, locale);
 
@@ -68,10 +69,13 @@ public class DateRangeFieldTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    dateRange = new DateRangeField();
-    when(localeChangeEvent.getLocale()).thenReturn(locale);
-    dateRange.localeChange(localeChangeEvent);
+    UI.getCurrent().setLocale(locale);
+    navigate(SubmissionsView.class);
+    Grid<Submission> submissions = $(Grid.class).first();
+    HeaderRow filtersRow = submissions.getHeaderRows().get(1);
+    dateRange = test(
+        filtersRow.getCell(submissions.getColumnByKey(SubmissionProperties.DATA_AVAILABLE_DATE))
+            .getComponent()).find(DateRangeField.class).first();
   }
 
   @Test
@@ -96,9 +100,7 @@ public class DateRangeFieldTest extends AbstractKaribuTestCase {
   @Test
   public void localeChange() {
     locale = FRENCH;
-    ui.setLocale(locale);
-    when(localeChangeEvent.getLocale()).thenReturn(locale);
-    dateRange.localeChange(localeChangeEvent);
+    UI.getCurrent().setLocale(locale);
     AppResources resources = new AppResources(DateRangeField.class, locale);
     assertEquals(resources.message(property(FROM, PLACEHOLDER)), dateRange.from.getPlaceholder());
     validateEquals(frenchDatePickerI18n(), dateRange.from.getI18n());
