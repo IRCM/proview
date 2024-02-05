@@ -77,6 +77,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,8 @@ public class UserFormTest extends SpringUIUnitTest {
   private DefaultAddressConfiguration defaultAddressConfiguration;
   @Autowired
   private LaboratoryRepository laboratoryRepository;
+  @Autowired
+  private EntityManager entityManager;
   @SpyBean
   private UserPermissionEvaluator userPermissionEvaluator;
   private Locale locale = ENGLISH;
@@ -129,6 +132,7 @@ public class UserFormTest extends SpringUIUnitTest {
     laboratories = laboratoryRepository.findAll();
     navigate(ProfileView.class);
     form = $(UserForm.class).first();
+    entityManager.detach(form.getUser());
   }
 
   private void fillForm() {
@@ -1028,6 +1032,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void isValid_UpdateAdmin() {
     User user = userRepository.findById(1L).get();
+    entityManager.detach(user);
     form.setUser(user);
     fillForm();
 
@@ -1053,6 +1058,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void isValid_UpdateAdminNoPassword() {
     User user = userRepository.findById(1L).get();
+    entityManager.detach(user);
     form.setUser(user);
     fillForm();
     form.passwords.password.setValue("");
@@ -1080,6 +1086,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void isValid_UpdateAdmin_RemoveAdminAddManager() {
     User user = userRepository.findById(1L).get();
+    entityManager.detach(user);
     form.setUser(user);
     fillForm();
     form.admin.setValue(false);
