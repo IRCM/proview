@@ -97,6 +97,14 @@ public class AuthenticatedUserTest {
   }
 
   @Test
+  @WithMockUser("proview@ircm.qc.ca")
+  public void getUser_NoId() throws Throwable {
+    User user = authenticatedUser.getUser().orElse(null);
+    assertNotNull(user);
+    assertEquals((Long) 1L, user.getId());
+  }
+
+  @Test
   @WithAnonymousUser
   public void isAnonymous_True() throws Throwable {
     assertTrue(authenticatedUser.isAnonymous());
