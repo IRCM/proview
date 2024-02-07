@@ -69,8 +69,19 @@ public class AuthenticatedUser {
    * @return authenticated user
    */
   public Optional<User> getUser() {
-    return getUserDetails().map(au -> au.getUsername())
-        .map(email -> repository.findByEmail(email).orElse(null));
+    Optional<UserDetails> optionalUserDetails = getUserDetails();
+    if (optionalUserDetails.isPresent()) {
+      UserDetails userDetails = optionalUserDetails.get();
+      if (userDetails instanceof UserDetailsWithId) {
+        return repository.findById(((UserDetailsWithId) userDetails).getId());
+      } else {
+        logger.warn("UserDetails {} is not an instanceof {}", userDetails,
+            UserDetailsWithId.class.getSimpleName());
+        return repository.findByEmail(userDetails.getUsername());
+      }
+    } else {
+      return Optional.empty();
+    }
   }
 
   /**

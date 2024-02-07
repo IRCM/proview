@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,8 @@ public class AuthenticatedUserTest {
   private RoleValidator roleValidator;
   @MockBean
   private PermissionEvaluator permissionEvaluator;
+  @Autowired
+  private UserRepository repository;
   @Mock
   private Object object;
 
@@ -100,6 +103,17 @@ public class AuthenticatedUserTest {
   @WithMockUser("proview@ircm.qc.ca")
   public void getUser_NoId() throws Throwable {
     User user = authenticatedUser.getUser().orElse(null);
+    assertNotNull(user);
+    assertEquals((Long) 1L, user.getId());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void getUser_UsernameMissmatchId() throws Throwable {
+    User user = repository.findById(1L).get();
+    user.setEmail("other_email@ircm.qc.ca");
+    repository.save(user);
+    user = authenticatedUser.getUser().orElse(null);
     assertNotNull(user);
     assertEquals((Long) 1L, user.getId());
   }
