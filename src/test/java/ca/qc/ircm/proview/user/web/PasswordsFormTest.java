@@ -29,15 +29,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +48,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class PasswordsFormTest extends AbstractKaribuTestCase {
+public class PasswordsFormTest extends SpringUIUnitTest {
   private PasswordsForm form;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(PasswordsForm.class, locale);
@@ -61,8 +60,9 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    form = new PasswordsForm();
+    UI.getCurrent().setLocale(locale);
+    navigate(ProfileView.class);
+    form = $(PasswordsForm.class).first();
   }
 
   private void fillForm() {
@@ -79,25 +79,21 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(PASSWORD), form.password.getLabel());
     assertEquals(resources.message(PASSWORD_CONFIRM), form.passwordConfirm.getLabel());
   }
 
   @Test
   public void localeChange() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(PasswordsForm.class, locale);
-    ui.setLocale(locale);
-    form.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(PASSWORD), form.password.getLabel());
     assertEquals(resources.message(PASSWORD_CONFIRM), form.passwordConfirm.getLabel());
   }
 
   @Test
   public void getPassword() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     fillForm();
 
     assertEquals(password, form.getPassword());
@@ -105,7 +101,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void getPassword_Empty() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.password.setValue("");
     form.passwordConfirm.setValue("");
 
@@ -114,7 +109,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void required_Default() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     assertFalse(form.isRequired());
     assertFalse(form.password.isRequiredIndicatorVisible());
     assertFalse(form.passwordConfirm.isRequiredIndicatorVisible());
@@ -122,7 +116,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void required_False() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.setRequired(true);
     form.setRequired(false);
     assertFalse(form.isRequired());
@@ -132,7 +125,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void required_True() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.setRequired(true);
     assertTrue(form.isRequired());
     assertTrue(form.password.isRequiredIndicatorVisible());
@@ -141,7 +133,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void validate_PasswordEmpty() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     fillForm();
     form.password.setValue("");
 
@@ -152,25 +143,7 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void validate_RequiredPasswordEmpty() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.setRequired(true);
-    fillForm();
-    form.password.setValue("");
-
-    BinderValidationStatus<Passwords> status = form.validate();
-
-    assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.password);
-    assertTrue(optionalError.isPresent());
-    BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
-  }
-
-  @Test
-  public void validate_RequiredBeforeLocaleChangePasswordEmpty() {
-    form.setRequired(true);
-    form.localeChange(mock(LocaleChangeEvent.class));
     fillForm();
     form.password.setValue("");
 
@@ -186,7 +159,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void validate_PasswordsNotMatch() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     fillForm();
     form.password.setValue("test");
     form.passwordConfirm.setValue("test2");
@@ -203,7 +175,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void validate_PasswordConfirmEmpty() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     fillForm();
     form.passwordConfirm.setValue("");
 
@@ -214,7 +185,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void validate_RequiredPasswordConfirmEmpty() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.setRequired(true);
     fillForm();
     form.passwordConfirm.setValue("");
@@ -231,7 +201,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_PasswordEmpty() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     fillForm();
     form.password.setValue("");
 
@@ -242,20 +211,7 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_RequiredPasswordEmpty() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.setRequired(true);
-    fillForm();
-    form.password.setValue("");
-
-    boolean valid = form.isValid();
-
-    assertFalse(valid);
-  }
-
-  @Test
-  public void isValid_RequiredBeforeLocaleChangePasswordEmpty() {
-    form.setRequired(true);
-    form.localeChange(mock(LocaleChangeEvent.class));
     fillForm();
     form.password.setValue("");
 
@@ -266,7 +222,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_PasswordsNotMatch() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     fillForm();
     form.password.setValue("test");
     form.passwordConfirm.setValue("test2");
@@ -278,7 +233,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_PasswordConfirmEmpty() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     fillForm();
     form.passwordConfirm.setValue("");
 
@@ -289,7 +243,6 @@ public class PasswordsFormTest extends AbstractKaribuTestCase {
 
   @Test
   public void isValid_RequiredPasswordConfirmEmpty() {
-    form.localeChange(mock(LocaleChangeEvent.class));
     form.setRequired(true);
     fillForm();
     form.passwordConfirm.setValue("");

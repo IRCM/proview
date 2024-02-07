@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
@@ -34,15 +33,14 @@ import static ca.qc.ircm.proview.web.ContactView.PHONE;
 import static ca.qc.ircm.proview.web.ContactView.PROTEOMIC;
 import static ca.qc.ircm.proview.web.ContactView.WEBSITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +51,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @NonTransactionalTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class ContactViewTest extends AbstractKaribuTestCase {
+public class ContactViewTest extends SpringUIUnitTest {
   private ContactView view;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(ContactView.class, locale);
@@ -64,9 +62,8 @@ public class ContactViewTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    view = new ContactView();
-    view.init();
+    UI.getCurrent().setLocale(locale);
+    view = navigate(ContactView.class);
   }
 
   @Test
@@ -85,7 +82,6 @@ public class ContactViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(resources.message(PROTEOMIC), view.proteomicHeader.getText());
     assertEquals(resources.message(property(PROTEOMIC, NAME)), view.proteomicName.getText());
@@ -99,11 +95,9 @@ public class ContactViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void localeChange() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(ContactView.class, locale);
-    ui.setLocale(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(resources.message(PROTEOMIC), view.proteomicHeader.getText());
     assertEquals(resources.message(property(PROTEOMIC, NAME)), view.proteomicName.getText());
@@ -118,19 +112,20 @@ public class ContactViewTest extends AbstractKaribuTestCase {
   @Test
   public void icons() {
     validateIcon(VaadinIcon.ENVELOPE.create(),
-        findChild(view.proteomicNameAnchor, Icon.class).get());
+        test(view.proteomicNameAnchor).find(Icon.class).first());
     validateIcon(VaadinIcon.MAP_MARKER.create(),
-        findChild(view.proteomicAddressAnchor, Icon.class).get());
-    validateIcon(VaadinIcon.PHONE.create(), findChild(view.proteomicPhoneAnchor, Icon.class).get());
-    validateIcon(VaadinIcon.ENVELOPE.create(), findChild(view.websiteNameAnchor, Icon.class).get());
+        test(view.proteomicAddressAnchor).find(Icon.class).first());
+    validateIcon(VaadinIcon.PHONE.create(),
+        test(view.proteomicPhoneAnchor).find(Icon.class).first());
+    validateIcon(VaadinIcon.ENVELOPE.create(),
+        test(view.websiteNameAnchor).find(Icon.class).first());
     validateIcon(VaadinIcon.MAP_MARKER.create(),
-        findChild(view.websiteAddressAnchor, Icon.class).get());
-    validateIcon(VaadinIcon.PHONE.create(), findChild(view.websitePhoneAnchor, Icon.class).get());
+        test(view.websiteAddressAnchor).find(Icon.class).first());
+    validateIcon(VaadinIcon.PHONE.create(), test(view.websitePhoneAnchor).find(Icon.class).first());
   }
 
   @Test
   public void hrefs() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(property(PROTEOMIC, NAME, LINK)),
         view.proteomicNameAnchor.getHref());
     assertEquals(resources.message(property(PROTEOMIC, ADDRESS, LINK)),

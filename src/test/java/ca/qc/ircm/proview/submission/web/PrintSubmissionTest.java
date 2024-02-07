@@ -27,31 +27,29 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.SubmissionFile;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.Html;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.AbstractStreamResource;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -61,20 +59,19 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class PrintSubmissionTest extends AbstractKaribuTestCase {
-  @Autowired
+public class PrintSubmissionTest extends SpringUIUnitTest {
   private PrintSubmission component;
   @MockBean
   private SubmissionService service;
-  @Mock
-  private Submission submission;
+  @Autowired
+  private SubmissionRepository repository;
   private Locale locale = ENGLISH;
-  private final Random random = new Random();
 
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    component.init();
+    UI.getCurrent().setLocale(locale);
+    navigate(PrintSubmissionView.class, 164L);
+    component = $(PrintSubmission.class).first();
   }
 
   @Test
@@ -86,7 +83,7 @@ public class PrintSubmissionTest extends AbstractKaribuTestCase {
   public void printContent() {
     String content = "<div id=\"test-div\">test content</div>";
     when(service.print(any(), any())).thenReturn(content);
-    component.localeChange(mock(LocaleChangeEvent.class));
+    Submission submission = repository.findById(164L).get();
     component.setSubmission(submission);
 
     verify(service).print(submission, locale);
@@ -99,17 +96,7 @@ public class PrintSubmissionTest extends AbstractKaribuTestCase {
   public void printContent_ReplaceHref() throws Throwable {
     String content = "<div><a href=\"files-0\">abc.txt</a><a href=\"files-1\">def.txt</a></div>";
     when(service.print(any(), any())).thenReturn(content);
-    SubmissionFile file1 = new SubmissionFile();
-    file1.setFilename("file_1.txt");
-    byte[] fileContent = new byte[1024];
-    random.nextBytes(fileContent);
-    file1.setContent(fileContent);
-    SubmissionFile file2 = new SubmissionFile();
-    file2.setFilename("file_2.xlsx");
-    random.nextBytes(fileContent);
-    file2.setContent(fileContent);
-    when(submission.getFiles()).thenReturn(Arrays.asList(file1, file2));
-    component.localeChange(mock(LocaleChangeEvent.class));
+    Submission submission = repository.findById(1L).get();
     component.setSubmission(submission);
 
     verify(service).print(submission, locale);
@@ -126,7 +113,9 @@ public class PrintSubmissionTest extends AbstractKaribuTestCase {
     assertTrue(optionalResource.get() instanceof StreamResource);
     StreamResource resource = (StreamResource) optionalResource.get();
     resource.getWriter().accept(output, VaadinSession.getCurrent());
-    assertArrayEquals(file1.getContent(), output.toByteArray());
+    byte[] file1Content =
+        Files.readAllBytes(Path.of(getClass().getResource("/submissionfile1.txt").toURI()));
+    assertArrayEquals(file1Content, output.toByteArray());
     output.reset();
     assertTrue(matcher.find(matcher.end()));
     uri = matcher.group(1);
@@ -135,20 +124,21 @@ public class PrintSubmissionTest extends AbstractKaribuTestCase {
     assertTrue(optionalResource.get() instanceof StreamResource);
     resource = (StreamResource) optionalResource.get();
     resource.getWriter().accept(output, VaadinSession.getCurrent());
-    assertArrayEquals(file2.getContent(), output.toByteArray());
+    byte[] file2Content =
+        Files.readAllBytes(Path.of(getClass().getResource("/gelimages1.png").toURI()));
+    assertArrayEquals(file2Content, output.toByteArray());
   }
 
   @Test
   public void localeChange() {
     String content = "<div id=\"test-div\">test content</div>";
     when(service.print(any(), any())).thenReturn(content);
-    component.localeChange(mock(LocaleChangeEvent.class));
+    Submission submission = repository.findById(164L).get();
     component.setSubmission(submission);
     Locale locale = FRENCH;
     String frenchcontent = "<div id=\"test-div\">test de contenu</div>";
     when(service.print(any(), eq(locale))).thenReturn(frenchcontent);
-    ui.setLocale(locale);
-    component.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
 
     verify(service).print(submission, locale);
     Html html = findChild(component, Html.class).orElse(null);

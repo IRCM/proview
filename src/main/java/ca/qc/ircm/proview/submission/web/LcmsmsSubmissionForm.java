@@ -17,11 +17,18 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.INVALID_INTEGER;
+import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
+import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
+import static ca.qc.ircm.proview.sample.SampleType.DRY;
+import static ca.qc.ircm.proview.sample.SampleType.GEL;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEIGHT;
+import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COLORATION;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.CONTAMINANTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DECOLORATION;
@@ -51,12 +58,15 @@ import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.sample.SubmissionSampleService;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.GelColoration;
 import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
@@ -64,6 +74,8 @@ import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.web.IgnoreConversionIfDisabledConverter;
+import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -71,11 +83,32 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.binder.Validator;
+import com.vaadin.flow.data.binder.ValueContext;
+import com.vaadin.flow.data.converter.Converter;
+import com.vaadin.flow.data.converter.StringToDoubleConverter;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -108,6 +141,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT =
       property(QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
   private static final long serialVersionUID = 1460183864073097086L;
+  private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionForm.class);
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
   protected TextField taxonomy = new TextField();
@@ -138,11 +172,18 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   protected TextField identificationLink = new TextField();
   protected ComboBox<Quantification> quantification = new ComboBox<>();
   protected TextArea quantificationComment = new TextArea();
-  private transient LcmsmsSubmissionFormPresenter presenter;
+  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+  private Binder<SubmissionSample> firstSampleBinder =
+      new BeanValidationBinder<>(SubmissionSample.class);
+  private Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
+  private transient SubmissionSampleService sampleService;
+  private transient AuthenticatedUser authenticatedUser;
 
   @Autowired
-  protected LcmsmsSubmissionForm(LcmsmsSubmissionFormPresenter presenter) {
-    this.presenter = presenter;
+  protected LcmsmsSubmissionForm(SubmissionSampleService sampleService,
+      AuthenticatedUser authenticatedUser) {
+    this.sampleService = sampleService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   public static String id(String baseId) {
@@ -176,6 +217,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     sampleType.setItems(SampleType.values());
     sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+    sampleType.addValueChangeListener(e -> sampleTypeChanged());
     samplesCount.setId(id(SAMPLES_COUNT));
     samplesNames.setId(id(SAMPLES_NAMES));
     samplesNames.setMinHeight("10em");
@@ -188,6 +230,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     coloration.setId(id(COLORATION));
     coloration.setItems(GelColoration.values());
     coloration.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    coloration.addValueChangeListener(e -> colorationChanged());
     otherColoration.setId(id(OTHER_COLORATION));
     developmentTime.setId(id(DEVELOPMENT_TIME));
     destained.setId(id(DECOLORATION));
@@ -196,6 +239,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     digestion.setId(id(DIGESTION));
     digestion.setItems(ProteolyticDigestion.values());
     digestion.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    digestion.addValueChangeListener(e -> digestionChanged());
     usedDigestion.setId(id(USED_DIGESTION));
     otherDigestion.setId(id(OTHER_DIGESTION));
     proteinContent.setId(id(PROTEIN_CONTENT));
@@ -209,23 +253,24 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     identification.setItems(ProteinIdentification.availables());
     identification.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
     identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+    identification.addValueChangeListener(e -> identificationChanged());
     identificationLink.setId(id(IDENTIFICATION_LINK));
     quantification.setId(id(QUANTIFICATION));
     quantification.setItems(Quantification.values());
     quantification.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     quantification.addValueChangeListener(e -> updateQuantificationComment());
+    quantification.addValueChangeListener(e -> quantificationChanged());
     quantificationComment.setId(id(QUANTIFICATION_COMMENT));
-    identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
-    presenter.init(this);
   }
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, getLocale());
-    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
-    final AppResources sampleResources = new AppResources(Sample.class, getLocale());
-    final AppResources submissionSampleResources =
-        new AppResources(SubmissionSample.class, getLocale());
+    Locale locale = getLocale();
+    final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
+    final AppResources submissionResources = new AppResources(Submission.class, locale);
+    final AppResources sampleResources = new AppResources(Sample.class, locale);
+    final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
+    final AppResources webResources = new AppResources(Constants.class, locale);
     experiment.setLabel(submissionResources.message(EXPERIMENT));
     goal.setLabel(submissionResources.message(GOAL));
     taxonomy.setLabel(submissionResources.message(TAXONOMY));
@@ -267,7 +312,86 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     quantification.setLabel(submissionResources.message(QUANTIFICATION));
     quantificationComment.setLabel(submissionResources.message(QUANTIFICATION_COMMENT));
     quantificationComment.setPlaceholder(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER));
-    presenter.localeChange(getLocale());
+    binder.forField(experiment).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(EXPERIMENT);
+    binder.forField(goal).withNullRepresentation("").bind(GOAL);
+    binder.forField(taxonomy).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
+        .bind(TAXONOMY);
+    binder.forField(protein).withNullRepresentation("").bind(PROTEIN);
+    firstSampleBinder.forField(molecularWeight).withNullRepresentation("")
+        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .bind(MOLECULAR_WEIGHT);
+    binder.forField(postTranslationModification).withNullRepresentation("")
+        .bind(POST_TRANSLATION_MODIFICATION);
+    firstSampleBinder.forField(sampleType).asRequired(webResources.message(REQUIRED)).bind(TYPE);
+    samplesBinder.forField(samplesCount).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("")
+        .withConverter(new StringToIntegerConverter(webResources.message(INVALID_INTEGER)))
+        .bind(SAMPLES_COUNT);
+    samplesBinder.forField(samplesNames).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").withConverter(new SamplesNamesConverter())
+        .withValidator(samplesNamesDuplicates(locale)).withValidator(samplesNamesExists(locale))
+        .withValidator(samplesNamesCount(locale)).bind(SAMPLES_NAMES);
+    quantity.setRequiredIndicatorVisible(true);
+    firstSampleBinder.forField(quantity)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withNullRepresentation("").bind(QUANTITY);
+    volume.setRequiredIndicatorVisible(true);
+    firstSampleBinder.forField(volume)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withNullRepresentation("").bind(VOLUME);
+    separation.setRequiredIndicatorVisible(true);
+    binder.forField(separation)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(SEPARATION);
+    thickness.setRequiredIndicatorVisible(true);
+    binder.forField(thickness)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(THICKNESS);
+    coloration.setRequiredIndicatorVisible(true);
+    binder.forField(coloration)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(COLORATION);
+    otherColoration.setRequiredIndicatorVisible(true);
+    binder.forField(otherColoration)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(OTHER_COLORATION);
+    binder.forField(developmentTime).bind(DEVELOPMENT_TIME);
+    binder.forField(destained).bind(DECOLORATION);
+    binder.forField(weightMarkerQuantity).withNullRepresentation("")
+        .withConverter(new IgnoreConversionIfDisabledConverter<>(
+            new StringToDoubleConverter(webResources.message(INVALID_NUMBER))))
+        .bind(WEIGHT_MARKER_QUANTITY);
+    binder.forField(proteinQuantity).bind(PROTEIN_QUANTITY);
+    binder.forField(digestion).asRequired(webResources.message(REQUIRED)).bind(DIGESTION);
+    usedDigestion.setRequiredIndicatorVisible(true);
+    binder.forField(usedDigestion)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(USED_DIGESTION);
+    otherDigestion.setRequiredIndicatorVisible(true);
+    binder.forField(otherDigestion)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(OTHER_DIGESTION);
+    binder.forField(proteinContent).asRequired(webResources.message(REQUIRED))
+        .bind(PROTEIN_CONTENT);
+    binder.forField(instrument).withNullRepresentation(MassDetectionInstrument.NULL)
+        .bind(INSTRUMENT);
+    binder.forField(identification).asRequired(webResources.message(REQUIRED)).bind(IDENTIFICATION);
+    identificationLink.setRequiredIndicatorVisible(true);
+    binder.forField(identificationLink)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(IDENTIFICATION_LINK);
+    binder.forField(quantification).withNullRepresentation(Quantification.NULL)
+        .bind(QUANTIFICATION);
+    quantificationComment.setRequiredIndicatorVisible(true);
+    binder.forField(quantificationComment)
+        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .bind(QUANTIFICATION_COMMENT);
+    sampleTypeChanged();
+    digestionChanged();
+    identificationChanged();
+    quantificationChanged();
+    setReadOnly();
   }
 
   private void updateQuantificationComment() {
@@ -280,15 +404,201 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     }
   }
 
-  public boolean isValid() {
-    return presenter.isValid();
+  private void sampleTypeChanged() {
+    SampleType type = sampleType.getValue();
+    quantity.setEnabled(type != GEL);
+    volume.setEnabled(type != GEL && type != DRY);
+    separation.setEnabled(type == GEL);
+    thickness.setEnabled(type == GEL);
+    coloration.setEnabled(type == GEL);
+    developmentTime.setEnabled(type == GEL);
+    destained.setEnabled(type == GEL);
+    weightMarkerQuantity.setEnabled(type == GEL);
+    proteinQuantity.setEnabled(type == GEL);
+    colorationChanged();
   }
 
-  public Submission getSubmission() {
-    return presenter.getSubmission();
+  private void colorationChanged() {
+    SampleType type = sampleType.getValue();
+    GelColoration coloration = this.coloration.getValue();
+    otherColoration.setEnabled(type == SampleType.GEL && coloration == GelColoration.OTHER);
   }
 
-  public void setSubmission(Submission submission) {
-    presenter.setSubmission(submission);
+  private void digestionChanged() {
+    ProteolyticDigestion digestion = this.digestion.getValue();
+    usedDigestion.setEnabled(digestion == ProteolyticDigestion.DIGESTED);
+    otherDigestion.setEnabled(digestion == ProteolyticDigestion.OTHER);
+  }
+
+  private void identificationChanged() {
+    ProteinIdentification identification = this.identification.getValue();
+    identificationLink.setEnabled(identification == ProteinIdentification.OTHER);
+  }
+
+  private void quantificationChanged() {
+    Quantification quantification = this.quantification.getValue();
+    quantificationComment
+        .setEnabled(quantification == Quantification.SILAC || quantification == Quantification.TMT);
+  }
+
+  private Optional<Integer> samplesCount() {
+    try {
+      return Optional.of(Integer.parseInt(samplesCount.getValue()));
+    } catch (NumberFormatException e) {
+      return Optional.empty();
+    }
+  }
+
+  private Validator<List<String>> samplesNamesDuplicates(Locale locale) {
+    return (values, context) -> {
+      Set<String> duplicates = new HashSet<>();
+      Optional<String> duplicate =
+          values.stream().filter(name -> !duplicates.add(name)).findFirst();
+      if (duplicate.isPresent()) {
+        final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
+        return ValidationResult.error(resources.message(SAMPLES_NAMES_DUPLICATES, duplicate.get()));
+      }
+      return ValidationResult.ok();
+    };
+  }
+
+  private Validator<List<String>> samplesNamesExists(Locale locale) {
+    return (values, context) -> {
+      Set<String> oldNames =
+          binder.getBean().getSamples().stream().map(Sample::getName).collect(Collectors.toSet());
+      Optional<String> exists = values.stream()
+          .filter(name -> sampleService.exists(name) && !oldNames.contains(name)).findFirst();
+      if (exists.isPresent()) {
+        final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
+        return ValidationResult.error(resources.message(SAMPLES_NAMES_EXISTS, exists.get()));
+      }
+      return ValidationResult.ok();
+    };
+  }
+
+  private Validator<List<String>> samplesNamesCount(Locale locale) {
+    return (values, context) -> {
+      Optional<Integer> samplesCount = samplesCount();
+      if (samplesCount.isPresent() && samplesCount.get() != values.size()) {
+        final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
+        return ValidationResult
+            .error(resources.message(SAMPLES_NAMES_WRONG_COUNT, values.size(), samplesCount.get()));
+      }
+      return ValidationResult.ok();
+    };
+  }
+
+  BinderValidationStatus<Submission> validateSubmission() {
+    return binder.validate();
+  }
+
+  BinderValidationStatus<SubmissionSample> validateFirstSample() {
+    return firstSampleBinder.validate();
+  }
+
+  BinderValidationStatus<Samples> validateSamples() {
+    return samplesBinder.validate();
+  }
+
+  boolean isValid() {
+    boolean valid = validateSubmission().isOk();
+    valid = validateFirstSample().isOk() && valid;
+    valid = validateSamples().isOk() && valid;
+    if (valid) {
+      try {
+        updateSubmissionSamples();
+      } catch (ValidationException e) {
+        return false;
+      }
+    }
+    return valid;
+  }
+
+  private void updateSubmissionSamples() throws ValidationException {
+    Submission submission = binder.getBean();
+    Samples samples = samplesBinder.getBean();
+    submission.getSamples().get(0).setName(samples.getSamplesNames().get(0));
+    while (submission.getSamples().size() < samples.samplesCount) {
+      submission.getSamples().add(new SubmissionSample());
+    }
+    while (submission.getSamples().size() > samples.samplesCount) {
+      submission.getSamples().remove(submission.getSamples().size() - 1);
+    }
+    for (int i = 0; i < samples.samplesCount; i++) {
+      SubmissionSample sample = submission.getSamples().get(i);
+      try {
+        firstSampleBinder.writeBean(sample);
+      } catch (ValidationException e) {
+        logger.warn(
+            "firstSampleBinder validation passed, but failed when writing to sample " + sample);
+        throw e;
+      }
+      submission.getSamples().get(i).setName(samples.getSamplesNames().get(i));
+    }
+  }
+
+  Submission getSubmission() {
+    return binder.getBean();
+  }
+
+  void setSubmission(Submission submission) {
+    Objects.requireNonNull(submission);
+    if (submission.getSamples() == null || submission.getSamples().isEmpty()) {
+      throw new IllegalArgumentException("submission must contain at least one sample");
+    }
+    binder.setBean(submission);
+    firstSampleBinder.setBean(submission.getSamples().get(0));
+    Samples samples = new Samples();
+    samples.setSamplesCount(submission.getSamples().size());
+    samples.setSamplesNames(
+        submission.getSamples().stream().map(Sample::getName).collect(Collectors.toList()));
+    samplesBinder.setBean(samples);
+    setReadOnly();
+  }
+
+  private void setReadOnly() {
+    boolean readOnly = !authenticatedUser.hasPermission(binder.getBean(), WRITE);
+    binder.setReadOnly(readOnly);
+    firstSampleBinder.setReadOnly(readOnly);
+    samplesBinder.setReadOnly(readOnly);
+  }
+
+  /**
+   * Represents a list of sample names.
+   */
+  protected static class Samples {
+    private int samplesCount;
+    private List<String> samplesNames;
+
+    public int getSamplesCount() {
+      return samplesCount;
+    }
+
+    public void setSamplesCount(int samplesCount) {
+      this.samplesCount = samplesCount;
+    }
+
+    public List<String> getSamplesNames() {
+      return samplesNames;
+    }
+
+    public void setSamplesNames(List<String> samplesNames) {
+      this.samplesNames = samplesNames;
+    }
+  }
+
+  private static class SamplesNamesConverter implements Converter<String, List<String>> {
+    private static final long serialVersionUID = 8024859234735628305L;
+
+    @Override
+    public Result<List<String>> convertToModel(String value, ValueContext context) {
+      return Result.ok(Arrays.asList(value.split("\\s*[,;\\t\\n]\\s*")).stream()
+          .filter(val -> !val.isEmpty()).collect(Collectors.toList()));
+    }
+
+    @Override
+    public String convertToPresentation(List<String> value, ValueContext context) {
+      return value.stream().map(val -> Objects.toString(val, "")).collect(Collectors.joining(", "));
+    }
   }
 }

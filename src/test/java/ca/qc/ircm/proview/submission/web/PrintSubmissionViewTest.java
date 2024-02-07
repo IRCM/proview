@@ -25,6 +25,8 @@ import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.HEADER;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.ID;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.SECOND_HEADER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,15 +35,18 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -49,12 +54,12 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class PrintSubmissionViewTest extends AbstractKaribuTestCase {
+public class PrintSubmissionViewTest extends SpringUIUnitTest {
   private PrintSubmissionView view;
-  @Mock
-  private PrintSubmissionViewPresenter presenter;
+  @MockBean
+  private SubmissionService service;
   @Autowired
-  private PrintSubmission printContent;
+  private SubmissionRepository repository;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(PrintSubmissionView.class, locale);
   private AppResources webResources = new AppResources(Constants.class, locale);
@@ -64,14 +69,9 @@ public class PrintSubmissionViewTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    view = new PrintSubmissionView(presenter, printContent);
-    view.init();
-  }
-
-  @Test
-  public void init() {
-    verify(presenter).init(view);
+    UI.getCurrent().setLocale(locale);
+    when(service.get(any())).thenReturn(repository.findById(164L));
+    view = navigate(PrintSubmissionView.class, 164L);
   }
 
   @Test
@@ -83,18 +83,15 @@ public class PrintSubmissionViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(Service.LC_MS_MS.getLabel(locale), view.secondHeader.getText());
   }
 
   @Test
   public void localeChange() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     AppResources resources = new AppResources(PrintSubmissionView.class, locale);
-    ui.setLocale(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), view.header.getText());
     assertEquals(Service.LC_MS_MS.getLabel(locale), view.secondHeader.getText());
   }
@@ -107,53 +104,34 @@ public class PrintSubmissionViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void setParameter() {
-    view.localeChange(mock(LocaleChangeEvent.class));
-    Long parameter = 12L;
-    Submission submission = new Submission(parameter);
-    submission.setService(Service.INTACT_PROTEIN);
-    when(presenter.getSubmission()).thenReturn(submission);
+    Submission submission = repository.findById(33L).get();
+    when(service.get(any())).thenReturn(Optional.of(submission));
 
-    view.setParameter(mock(BeforeEvent.class), parameter);
+    view.setParameter(mock(BeforeEvent.class), 33L);
 
-    verify(presenter).setParameter(parameter);
-    assertEquals(Service.INTACT_PROTEIN.getLabel(locale), view.secondHeader.getText());
+    verify(service).get(33L);
+    assertEquals(Service.SMALL_MOLECULE.getLabel(locale), view.secondHeader.getText());
+    assertEquals(submission, view.printContent.getSubmission());
   }
 
   @Test
-  public void setParameter_BeforeLocalChange() {
-    Long parameter = 12L;
-    Submission submission = new Submission(parameter);
-    submission.setService(Service.INTACT_PROTEIN);
-    when(presenter.getSubmission()).thenReturn(submission);
+  public void setParameter_EmptySubmission() {
+    when(service.get(any())).thenReturn(Optional.empty());
 
-    view.setParameter(mock(BeforeEvent.class), parameter);
-    view.localeChange(mock(LocaleChangeEvent.class));
+    view.setParameter(mock(BeforeEvent.class), 35L);
 
-    verify(presenter).setParameter(parameter);
-    assertEquals(Service.INTACT_PROTEIN.getLabel(locale), view.secondHeader.getText());
-  }
-
-  @Test
-  public void setParameter_NullId() {
-    view.localeChange(mock(LocaleChangeEvent.class));
-    Long parameter = 12L;
-    Submission submission = new Submission();
-    submission.setService(Service.INTACT_PROTEIN);
-    when(presenter.getSubmission()).thenReturn(submission);
-
-    view.setParameter(mock(BeforeEvent.class), parameter);
-
-    verify(presenter).setParameter(parameter);
+    verify(service).get(35L);
     assertEquals(Service.LC_MS_MS.getLabel(locale), view.secondHeader.getText());
+    assertNull(view.printContent.getSubmission());
   }
 
   @Test
   public void setParameter_NullParameter() {
-    view.localeChange(mock(LocaleChangeEvent.class));
+    when(service.get(any())).thenReturn(Optional.empty());
 
     view.setParameter(mock(BeforeEvent.class), null);
 
-    verify(presenter).setParameter(null);
     assertEquals(Service.LC_MS_MS.getLabel(locale), view.secondHeader.getText());
+    assertNull(view.printContent.getSubmission());
   }
 }

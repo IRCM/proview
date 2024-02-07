@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
@@ -46,9 +47,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_SPAN;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_BUTTON;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickButton;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.clickItem;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.functions;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
@@ -56,18 +54,17 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -77,39 +74,48 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
+import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserPreferenceService;
+import ca.qc.ircm.proview.web.ContactView;
 import com.google.common.collect.Range;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.grid.HeaderRow.HeaderCell;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.data.provider.QuerySortOrder;
+import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.LitRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.dom.Element;
-import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.testbench.unit.MetaKeys;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -122,19 +128,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class SubmissionsViewTest extends SpringUIUnitTest {
   private SubmissionsView view;
   @MockBean
-  private SubmissionsViewPresenter presenter;
+  private SubmissionService service;
   @MockBean
-  private ObjectFactory<SubmissionDialog> dialogFactory;
-  @MockBean
-  private ObjectFactory<SamplesStatusDialog> statusDialogFactory;
-  @Captor
-  private ArgumentCaptor<ValueProvider<Submission, String>> valueProviderCaptor;
-  @Captor
-  private ArgumentCaptor<LitRenderer<Submission>> litRendererCaptor;
-  @Captor
-  private ArgumentCaptor<Comparator<Submission>> comparatorCaptor;
+  private UserPreferenceService userPreferenceService;
   @Autowired
   private SubmissionRepository repository;
+  @Captor
+  private ArgumentCaptor<SubmissionFilter> filterCaptor;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(SubmissionsView.class, locale);
   private AppResources submissionResources = new AppResources(Submission.class, locale);
@@ -148,118 +148,42 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
+    when(userPreferenceService.get(any(), eq(SAMPLES))).thenReturn(Optional.of(false));
+    when(userPreferenceService.get(any(), eq(STATUS))).thenReturn(Optional.of(true));
     UI.getCurrent().setLocale(locale);
-    view = new SubmissionsView(presenter, dialogFactory, statusDialogFactory);
-    view.init();
     submissions = repository.findAll();
+    navigate(ContactView.class);
+    view = navigate(SubmissionsView.class);
   }
 
-  @SuppressWarnings("unchecked")
-  private void mockColumns() {
-    Element usersElement = view.submissions.getElement();
-    view.submissions = mock(Grid.class);
-    when(view.submissions.getElement()).thenReturn(usersElement);
-    view.view = mock(Column.class);
-    view.samples = mock(Column.class);
-    view.status = mock(Column.class);
-    view.hidden = mock(Column.class);
-    when(view.submissions.addColumn(any(LitRenderer.class))).thenReturn(view.view, view.samples,
-        view.status, view.hidden);
-    when(view.view.setKey(any())).thenReturn(view.view);
-    when(view.view.setHeader(any(String.class))).thenReturn(view.view);
-    when(view.view.setSortable(anyBoolean())).thenReturn(view.view);
-    when(view.view.setFlexGrow(anyInt())).thenReturn(view.view);
-    view.experiment = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(EXPERIMENT)))
-        .thenReturn(view.experiment);
-    when(view.experiment.setKey(any())).thenReturn(view.experiment);
-    when(view.experiment.setComparator(any(Comparator.class))).thenReturn(view.experiment);
-    when(view.experiment.setHeader(any(String.class))).thenReturn(view.experiment);
-    when(view.experiment.setFlexGrow(anyInt())).thenReturn(view.experiment);
-    view.user = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(USER))).thenReturn(view.user);
-    when(view.user.setKey(any())).thenReturn(view.user);
-    when(view.user.setComparator(any(Comparator.class))).thenReturn(view.user);
-    when(view.user.setHeader(any(String.class))).thenReturn(view.user);
-    when(view.user.setFlexGrow(anyInt())).thenReturn(view.user);
-    view.director = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(DIRECTOR)))
-        .thenReturn(view.director);
-    when(view.director.setKey(any())).thenReturn(view.director);
-    when(view.director.setComparator(any(Comparator.class))).thenReturn(view.director);
-    when(view.director.setHeader(any(String.class))).thenReturn(view.director);
-    when(view.director.setFlexGrow(anyInt())).thenReturn(view.director);
-    view.dataAvailableDate = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(DATA_AVAILABLE_DATE)))
-        .thenReturn(view.dataAvailableDate);
-    when(view.dataAvailableDate.setKey(any())).thenReturn(view.dataAvailableDate);
-    when(view.dataAvailableDate.setHeader(any(String.class))).thenReturn(view.dataAvailableDate);
-    when(view.dataAvailableDate.setFlexGrow(anyInt())).thenReturn(view.dataAvailableDate);
-    view.date = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(SUBMISSION_DATE)))
-        .thenReturn(view.date);
-    when(view.date.setKey(any())).thenReturn(view.date);
-    when(view.date.setHeader(any(String.class))).thenReturn(view.date);
-    when(view.date.setFlexGrow(anyInt())).thenReturn(view.date);
-    view.instrument = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(INSTRUMENT)))
-        .thenReturn(view.instrument);
-    when(view.instrument.setKey(any())).thenReturn(view.instrument);
-    when(view.instrument.setHeader(any(String.class))).thenReturn(view.instrument);
-    when(view.instrument.setFlexGrow(anyInt())).thenReturn(view.instrument);
-    view.service = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(SERVICE)))
-        .thenReturn(view.service);
-    when(view.service.setKey(any())).thenReturn(view.service);
-    when(view.service.setHeader(any(String.class))).thenReturn(view.service);
-    when(view.service.setFlexGrow(anyInt())).thenReturn(view.service);
-    view.samplesCount = mock(Column.class);
-    when(view.submissions.addColumn(any(ValueProvider.class), eq(SAMPLES_COUNT)))
-        .thenReturn(view.samplesCount);
-    when(view.samplesCount.setKey(any())).thenReturn(view.samplesCount);
-    when(view.samplesCount.setHeader(any(String.class))).thenReturn(view.samplesCount);
-    when(view.samplesCount.setFlexGrow(anyInt())).thenReturn(view.samplesCount);
-    when(view.samples.setKey(any())).thenReturn(view.samples);
-    when(view.samples.setHeader(any(String.class))).thenReturn(view.samples);
-    when(view.samples.setSortable(anyBoolean())).thenReturn(view.samples);
-    when(view.samples.setFlexGrow(anyInt())).thenReturn(view.samples);
-    when(view.status.setKey(any())).thenReturn(view.status);
-    when(view.status.setHeader(any(String.class))).thenReturn(view.status);
-    when(view.status.setSortable(anyBoolean())).thenReturn(view.status);
-    when(view.status.setFlexGrow(anyInt())).thenReturn(view.status);
-    when(view.hidden.setKey(any())).thenReturn(view.hidden);
-    when(view.hidden.setHeader(any(String.class))).thenReturn(view.hidden);
-    when(view.hidden.setSortProperty(any())).thenReturn(view.hidden);
-    when(view.hidden.setComparator(any(Comparator.class))).thenReturn(view.hidden);
-    when(view.hidden.setFlexGrow(anyInt())).thenReturn(view.hidden);
-    HeaderRow filtersRow = mock(HeaderRow.class);
-    when(view.submissions.appendHeaderRow()).thenReturn(filtersRow);
-    HeaderCell experienceFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.experiment)).thenReturn(experienceFilterCell);
-    HeaderCell userFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.user)).thenReturn(userFilterCell);
-    HeaderCell directorFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.director)).thenReturn(directorFilterCell);
-    HeaderCell dataAvailableDateFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.dataAvailableDate)).thenReturn(dataAvailableDateFilterCell);
-    HeaderCell dateFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.date)).thenReturn(dateFilterCell);
-    HeaderCell serviceFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.service)).thenReturn(serviceFilterCell);
-    HeaderCell instrumentFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.instrument)).thenReturn(instrumentFilterCell);
-    HeaderCell samplesFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.samples)).thenReturn(samplesFilterCell);
-    HeaderCell statusFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.status)).thenReturn(statusFilterCell);
-    HeaderCell hiddenFilterCell = mock(HeaderCell.class);
-    when(filtersRow.getCell(view.hidden)).thenReturn(hiddenFilterCell);
+  private int indexOfColumn(String property) {
+    return test(view.submissions).getColumnPosition(property);
   }
 
-  @Test
-  public void presenter_Init() {
-    verify(presenter).init(view);
-    verify(presenter).localeChange(locale);
+  private Submission experiment(String experiment) {
+    Submission submission = new Submission();
+    submission.setExperiment(experiment);
+    return submission;
+  }
+
+  private Submission user(String name) {
+    Submission submission = new Submission();
+    submission.setUser(new User());
+    submission.getUser().setName(name);
+    return submission;
+  }
+
+  private Submission director(String director) {
+    Submission submission = new Submission();
+    submission.setLaboratory(new Laboratory());
+    submission.getLaboratory().setDirector(director);
+    return submission;
+  }
+
+  private Submission hidden(boolean hidden) {
+    Submission submission = new Submission();
+    submission.setHidden(hidden);
+    return submission;
   }
 
   @Test
@@ -278,121 +202,201 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @WithUserDetails("proview@ircm.qc.ca")
   public void labels() {
-    mockColumns();
-    when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
-    view.instrumentFilter.setItems(mock(DataProvider.class));
-    view.serviceFilter.setItems(mock(DataProvider.class));
-    view.statusFilter.setItems(mock(DataProvider.class));
-    view.hiddenFilter.setItems(mock(DataProvider.class));
-    view.localeChange(mock(LocaleChangeEvent.class));
+    view.submissions.setItems(submissions);
     assertEquals(resources.message(HEADER), view.header.getText());
-    verify(view.view).setHeader(webResources.message(VIEW));
-    verify(view.view).setFooter(webResources.message(VIEW));
-    verify(view.experiment).setHeader(submissionResources.message(EXPERIMENT));
-    verify(view.experiment).setFooter(submissionResources.message(EXPERIMENT));
-    verify(view.user).setHeader(submissionResources.message(USER));
-    verify(view.user).setFooter(submissionResources.message(USER));
-    verify(view.director).setHeader(laboratoryResources.message(DIRECTOR));
-    verify(view.director).setFooter(laboratoryResources.message(DIRECTOR));
-    verify(view.dataAvailableDate).setHeader(submissionResources.message(DATA_AVAILABLE_DATE));
-    verify(view.dataAvailableDate).setFooter(submissionResources.message(DATA_AVAILABLE_DATE));
-    verify(view.date).setHeader(submissionResources.message(SUBMISSION_DATE));
-    verify(view.date).setFooter(submissionResources.message(SUBMISSION_DATE));
-    verify(view.instrument).setHeader(submissionResources.message(INSTRUMENT));
-    verify(view.instrument).setFooter(submissionResources.message(INSTRUMENT));
-    verify(view.service).setHeader(submissionResources.message(SERVICE));
-    verify(view.service).setFooter(submissionResources.message(SERVICE));
-    verify(view.samplesCount).setHeader(resources.message(SAMPLES_COUNT));
-    verify(view.samplesCount).setFooter(resources.message(SAMPLES_COUNT));
-    verify(view.samples).setHeader(submissionResources.message(SAMPLES));
-    verify(view.samples).setFooter(submissionResources.message(SAMPLES));
-    verify(view.status).setHeader(submissionSampleResources.message(STATUS));
-    verify(view.status).setFooter(submissionSampleResources.message(STATUS));
-    verify(view.hidden).setHeader(submissionResources.message(HIDDEN));
-    verify(view.hidden).setFooter(submissionResources.message(HIDDEN));
+    HeaderRow header = view.submissions.getHeaderRows().get(0);
+    FooterRow footer = view.submissions.getFooterRows().get(0);
+    assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
+    assertEquals(webResources.message(VIEW), footer.getCell(view.view).getText());
+    assertEquals(submissionResources.message(EXPERIMENT),
+        header.getCell(view.experiment).getText());
+    assertEquals(submissionResources.message(EXPERIMENT),
+        footer.getCell(view.experiment).getText());
+    assertEquals(submissionResources.message(USER), header.getCell(view.user).getText());
+    assertEquals(submissionResources.message(USER), footer.getCell(view.user).getText());
+    assertEquals(laboratoryResources.message(DIRECTOR), header.getCell(view.director).getText());
+    assertEquals(laboratoryResources.message(DIRECTOR), footer.getCell(view.director).getText());
+    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+        header.getCell(view.dataAvailableDate).getText());
+    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+        footer.getCell(view.dataAvailableDate).getText());
+    assertEquals(submissionResources.message(SUBMISSION_DATE), header.getCell(view.date).getText());
+    assertEquals(submissionResources.message(SUBMISSION_DATE), footer.getCell(view.date).getText());
+    assertEquals(submissionResources.message(INSTRUMENT),
+        header.getCell(view.instrument).getText());
+    assertEquals(submissionResources.message(INSTRUMENT),
+        footer.getCell(view.instrument).getText());
+    assertEquals(submissionResources.message(SERVICE), header.getCell(view.service).getText());
+    assertEquals(submissionResources.message(SERVICE), footer.getCell(view.service).getText());
+    assertEquals(resources.message(SAMPLES_COUNT), header.getCell(view.samplesCount).getText());
+    assertEquals(resources.message(SAMPLES_COUNT), footer.getCell(view.samplesCount).getText());
+    assertEquals(submissionResources.message(SAMPLES), header.getCell(view.samples).getText());
+    assertEquals(submissionResources.message(SAMPLES), footer.getCell(view.samples).getText());
+    assertEquals(submissionSampleResources.message(STATUS), header.getCell(view.status).getText());
+    assertEquals(submissionSampleResources.message(STATUS), footer.getCell(view.status).getText());
+    assertEquals(submissionResources.message(HIDDEN), header.getCell(view.hidden).getText());
+    assertEquals(submissionResources.message(HIDDEN), footer.getCell(view.hidden).getText());
     assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
+    view.instrumentFilter.getListDataView().getItems()
+        .forEach(instrument -> assertEquals(instrument.getLabel(locale),
+            view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
     assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
+    view.serviceFilter.getListDataView().getItems()
+        .forEach(service -> assertEquals(service.getLabel(locale),
+            view.serviceFilter.getItemLabelGenerator().apply(service)));
     assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
+    view.statusFilter.getListDataView().getItems()
+        .forEach(status -> assertEquals(status.getLabel(locale),
+            view.statusFilter.getItemLabelGenerator().apply(status)));
     assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
+    view.hiddenFilter.getListDataView().getItems()
+        .forEach(hidden -> assertEquals(submissionResources.message(property(HIDDEN, hidden)),
+            view.hiddenFilter.getItemLabelGenerator().apply(hidden)));
     assertEquals(resources.message(ADD), view.add.getText());
     assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
     assertEquals(resources.message(HISTORY), view.history.getText());
     assertEquals(resources.message(HIDE_COLUMNS), view.hideColumns.getText());
+    assertEquals(MassDetectionInstrument.getNullLabel(locale),
+        test(view.submissions).getCellText(2, 6));
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @WithUserDetails("proview@ircm.qc.ca")
   public void localeChange() {
-    mockColumns();
-    view.init();
-    when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
-    view.instrumentFilter.setItems(mock(DataProvider.class));
-    view.serviceFilter.setItems(mock(DataProvider.class));
-    view.statusFilter.setItems(mock(DataProvider.class));
-    view.hiddenFilter.setItems(mock(DataProvider.class));
-    view.localeChange(mock(LocaleChangeEvent.class));
+    view.submissions.setItems(submissions);
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(SubmissionsView.class, locale);
+    final AppResources webResources = new AppResources(Constants.class, locale);
     final AppResources submissionResources = new AppResources(Submission.class, locale);
     final AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
     final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     UI.getCurrent().setLocale(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
-    verify(view.view).setHeader(webResources.message(VIEW));
-    verify(view.view).setFooter(webResources.message(VIEW));
-    verify(view.experiment).setHeader(submissionResources.message(EXPERIMENT));
-    verify(view.experiment).setFooter(submissionResources.message(EXPERIMENT));
-    verify(view.user).setHeader(submissionResources.message(USER));
-    verify(view.user).setFooter(submissionResources.message(USER));
-    verify(view.director).setHeader(laboratoryResources.message(DIRECTOR));
-    verify(view.director).setFooter(laboratoryResources.message(DIRECTOR));
-    verify(view.dataAvailableDate).setHeader(submissionResources.message(DATA_AVAILABLE_DATE));
-    verify(view.dataAvailableDate).setFooter(submissionResources.message(DATA_AVAILABLE_DATE));
-    verify(view.date, atLeastOnce()).setHeader(submissionResources.message(SUBMISSION_DATE));
-    verify(view.date, atLeastOnce()).setFooter(submissionResources.message(SUBMISSION_DATE));
-    verify(view.instrument).setHeader(submissionResources.message(INSTRUMENT));
-    verify(view.instrument).setFooter(submissionResources.message(INSTRUMENT));
-    verify(view.service).setHeader(submissionResources.message(SERVICE));
-    verify(view.service).setFooter(submissionResources.message(SERVICE));
-    verify(view.samplesCount).setHeader(resources.message(SAMPLES_COUNT));
-    verify(view.samplesCount).setFooter(resources.message(SAMPLES_COUNT));
-    verify(view.samples).setHeader(submissionResources.message(SAMPLES));
-    verify(view.samples).setFooter(submissionResources.message(SAMPLES));
-    verify(view.status).setHeader(submissionSampleResources.message(STATUS));
-    verify(view.status).setFooter(submissionSampleResources.message(STATUS));
-    verify(view.hidden).setHeader(submissionResources.message(HIDDEN));
-    verify(view.hidden).setFooter(submissionResources.message(HIDDEN));
+    HeaderRow header = view.submissions.getHeaderRows().get(0);
+    FooterRow footer = view.submissions.getFooterRows().get(0);
+    assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
+    assertEquals(webResources.message(VIEW), footer.getCell(view.view).getText());
+    assertEquals(submissionResources.message(EXPERIMENT),
+        header.getCell(view.experiment).getText());
+    assertEquals(submissionResources.message(EXPERIMENT),
+        footer.getCell(view.experiment).getText());
+    assertEquals(submissionResources.message(USER), header.getCell(view.user).getText());
+    assertEquals(submissionResources.message(USER), footer.getCell(view.user).getText());
+    assertEquals(laboratoryResources.message(DIRECTOR), header.getCell(view.director).getText());
+    assertEquals(laboratoryResources.message(DIRECTOR), footer.getCell(view.director).getText());
+    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+        header.getCell(view.dataAvailableDate).getText());
+    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+        footer.getCell(view.dataAvailableDate).getText());
+    assertEquals(submissionResources.message(SUBMISSION_DATE), header.getCell(view.date).getText());
+    assertEquals(submissionResources.message(SUBMISSION_DATE), footer.getCell(view.date).getText());
+    assertEquals(submissionResources.message(INSTRUMENT),
+        header.getCell(view.instrument).getText());
+    assertEquals(submissionResources.message(INSTRUMENT),
+        footer.getCell(view.instrument).getText());
+    assertEquals(submissionResources.message(SERVICE), header.getCell(view.service).getText());
+    assertEquals(submissionResources.message(SERVICE), footer.getCell(view.service).getText());
+    assertEquals(resources.message(SAMPLES_COUNT), header.getCell(view.samplesCount).getText());
+    assertEquals(resources.message(SAMPLES_COUNT), footer.getCell(view.samplesCount).getText());
+    assertEquals(submissionResources.message(SAMPLES), header.getCell(view.samples).getText());
+    assertEquals(submissionResources.message(SAMPLES), footer.getCell(view.samples).getText());
+    assertEquals(submissionSampleResources.message(STATUS), header.getCell(view.status).getText());
+    assertEquals(submissionSampleResources.message(STATUS), footer.getCell(view.status).getText());
+    assertEquals(submissionResources.message(HIDDEN), header.getCell(view.hidden).getText());
+    assertEquals(submissionResources.message(HIDDEN), footer.getCell(view.hidden).getText());
     assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
+    view.instrumentFilter.getListDataView().getItems()
+        .forEach(instrument -> assertEquals(instrument.getLabel(locale),
+            view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
     assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
+    view.serviceFilter.getListDataView().getItems()
+        .forEach(service -> assertEquals(service.getLabel(locale),
+            view.serviceFilter.getItemLabelGenerator().apply(service)));
     assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
+    view.statusFilter.getListDataView().getItems()
+        .forEach(status -> assertEquals(status.getLabel(locale),
+            view.statusFilter.getItemLabelGenerator().apply(status)));
     assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
+    view.hiddenFilter.getListDataView().getItems()
+        .forEach(hidden -> assertEquals(submissionResources.message(property(HIDDEN, hidden)),
+            view.hiddenFilter.getItemLabelGenerator().apply(hidden)));
     assertEquals(resources.message(ADD), view.add.getText());
     assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
     assertEquals(resources.message(HISTORY), view.history.getText());
     assertEquals(resources.message(HIDE_COLUMNS), view.hideColumns.getText());
-    verify(view.submissions.getDataProvider(), times(2)).refreshAll();
-    verify(view.instrumentFilter.getDataProvider(), times(2)).refreshAll();
-    verify(view.serviceFilter.getDataProvider(), times(2)).refreshAll();
-    verify(view.statusFilter.getDataProvider(), times(2)).refreshAll();
-    verify(view.hiddenFilter.getDataProvider(), times(2)).refreshAll();
-    verify(presenter, atLeastOnce()).localeChange(locale);
+    assertEquals(MassDetectionInstrument.getNullLabel(locale),
+        test(view.submissions).getCellText(2, 6));
+  }
+
+  @Test
+  public void hiddenButton_User() {
+    assertFalse(view.editStatus.isVisible());
+    assertFalse(view.history.isVisible());
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void hiddenButton_Manager() {
+    assertFalse(view.editStatus.isVisible());
+    assertFalse(view.history.isVisible());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void hiddenButton_Admin() {
+    assertTrue(view.editStatus.isVisible());
+    assertTrue(view.history.isVisible());
   }
 
   @Test
   public void getPageTitle() {
     assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
         view.getPageTitle());
+  }
+
+  @Test
+  public void submissions() {
+    when(service.all(any())).thenReturn(submissions);
+    assertThrows(IllegalStateException.class, () -> view.submissions.getListDataView());
+    assertDoesNotThrow(() -> view.submissions.getLazyDataView());
+    DataProvider<Submission, ?> dataProvider = view.submissions.getDataProvider();
+    List<Submission> submissions = dataProvider
+        .fetch(new Query<>(0, Integer.MAX_VALUE, null, null, null)).collect(Collectors.toList());
+    assertEquals(this.submissions, submissions);
+    verify(service).all(filterCaptor.capture());
+    SubmissionFilter filter = filterCaptor.getValue();
+    assertEquals(1, filter.sortOrders.size());
+    assertEquals(QSubmission.submission.id.desc(), filter.sortOrders.get(0));
+  }
+
+  @Test
+  public void submissions_SortOrder() {
+    when(service.all(any())).thenReturn(submissions);
+    assertThrows(IllegalStateException.class, () -> view.submissions.getListDataView());
+    assertDoesNotThrow(() -> view.submissions.getLazyDataView());
+    List<QuerySortOrder> sortOrders =
+        Arrays.asList(new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
+            new QuerySortOrder(USER, SortDirection.DESCENDING));
+    DataProvider<Submission, ?> dataProvider = view.submissions.getDataProvider();
+    List<Submission> submissions =
+        dataProvider.fetch(new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null))
+            .collect(Collectors.toList());
+    assertEquals(this.submissions, submissions);
+    verify(service).all(filterCaptor.capture());
+    SubmissionFilter filter = filterCaptor.getValue();
+    assertEquals(2, filter.sortOrders.size());
+    assertEquals(QSubmission.submission.experiment.asc(), filter.sortOrders.get(0));
+    assertEquals(QSubmission.submission.user.name.desc(), filter.sortOrders.get(1));
   }
 
   @Test
@@ -430,137 +434,135 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @WithUserDetails("proview@ircm.qc.ca")
   public void submissions_ColumnsValueProvider() {
-    mockColumns();
-    when(view.submissions.getDataProvider()).thenReturn(mock(DataProvider.class));
-    view.init();
-    verify(view.submissions, times(4)).addColumn(litRendererCaptor.capture());
-    LitRenderer<Submission> litRenderer = litRendererCaptor.getAllValues().get(0);
-    for (Submission submission : submissions) {
-      assertEquals(VIEW_BUTTON, rendererTemplate(litRenderer));
-      assertTrue(functions(litRenderer).containsKey("view"));
-      functions(litRenderer).get("view").accept(submission, null);
-      verify(presenter).view(submission);
-    }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(EXPERIMENT));
-    ValueProvider<Submission, String> valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(submission.getExperiment() != null ? submission.getExperiment() : "",
-          valueProvider.apply(submission));
-    }
-    verify(view.experiment).setComparator(comparatorCaptor.capture());
-    Comparator<Submission> comparator = comparatorCaptor.getValue();
-    assertTrue(comparator instanceof NormalizedComparator);
-    for (Submission submission : submissions) {
+    view.submissions.setItems(submissions);
+    view.samples.setVisible(true);
+    for (int i = 0; i < submissions.size(); i++) {
+      Submission submission = submissions.get(i);
+      Renderer<Submission> viewRawRenderer = view.submissions.getColumnByKey(VIEW).getRenderer();
+      assertTrue(viewRawRenderer instanceof LitRenderer<Submission>);
+      LitRenderer<Submission> viewRenderer = (LitRenderer<Submission>) viewRawRenderer;
+      assertEquals(VIEW_BUTTON, rendererTemplate(viewRenderer));
+      assertTrue(functions(viewRenderer).containsKey("view"));
+      functions(viewRenderer).get("view").accept(submission, null);
+      SubmissionDialog dialog = $(SubmissionDialog.class).first();
+      assertTrue(dialog.isOpened());
       assertEquals(submission.getExperiment(),
-          ((NormalizedComparator<Submission>) comparator).getConverter().apply(submission));
-    }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(USER));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(submission.getUser().getName(), valueProvider.apply(submission));
-    }
-    verify(view.user).setComparator(comparatorCaptor.capture());
-    comparator = comparatorCaptor.getValue();
-    assertTrue(comparator instanceof NormalizedComparator);
-    for (Submission submission : submissions) {
+          test(view.submissions).getCellText(i, indexOfColumn(EXPERIMENT)));
       assertEquals(submission.getUser().getName(),
-          ((NormalizedComparator<Submission>) comparator).getConverter().apply(submission));
-    }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(DIRECTOR));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(submission.getLaboratory().getDirector(), valueProvider.apply(submission));
-    }
-    verify(view.director).setComparator(comparatorCaptor.capture());
-    comparator = comparatorCaptor.getValue();
-    assertTrue(comparator instanceof NormalizedComparator);
-    for (Submission submission : submissions) {
+          test(view.submissions).getCellText(i, indexOfColumn(USER)));
       assertEquals(submission.getLaboratory().getDirector(),
-          ((NormalizedComparator<Submission>) comparator).getConverter().apply(submission));
-    }
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(DATA_AVAILABLE_DATE));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
+          test(view.submissions).getCellText(i, indexOfColumn(DIRECTOR)));
+      DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
       assertEquals(submission.getDataAvailableDate() != null
           ? dateFormatter.format(submission.getDataAvailableDate())
-          : "", valueProvider.apply(submission));
-    }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SUBMISSION_DATE));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
+          : "", test(view.submissions).getCellText(i, indexOfColumn(DATA_AVAILABLE_DATE)));
       assertEquals(submission.getSubmissionDate() != null
           ? dateFormatter.format(submission.getSubmissionDate())
-          : "", valueProvider.apply(submission));
-    }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(INSTRUMENT));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(submission.getInstrument() != null ? submission.getInstrument().getLabel(locale)
-          : MassDetectionInstrument.getNullLabel(locale), valueProvider.apply(submission));
-    }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SERVICE));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(submission.getService().getLabel(locale), valueProvider.apply(submission));
-    }
-    verify(view.submissions).addColumn(valueProviderCaptor.capture(), eq(SAMPLES_COUNT));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Submission submission : submissions) {
-      assertEquals(submission.getSamples().size(), valueProvider.apply(submission));
-    }
-    litRenderer = litRendererCaptor.getAllValues().get(1);
-    for (Submission submission : submissions) {
-      assertEquals(SAMPLES_SPAN, rendererTemplate(litRenderer));
-      assertTrue(litRenderer.getValueProviders().containsKey("samplesValue"));
+          : "", test(view.submissions).getCellText(i, indexOfColumn(SUBMISSION_DATE)));
+      assertEquals(
+          submission.getInstrument() != null ? submission.getInstrument().getLabel(locale)
+              : MassDetectionInstrument.getNullLabel(locale),
+          test(view.submissions).getCellText(i, indexOfColumn(INSTRUMENT)));
+      assertEquals(submission.getService().getLabel(locale),
+          test(view.submissions).getCellText(i, indexOfColumn(SERVICE)));
+      assertEquals(Objects.toString(submission.getSamples().size()),
+          test(view.submissions).getCellText(i, indexOfColumn(SAMPLES_COUNT)));
+      Renderer<Submission> samplesRawRenderer =
+          view.submissions.getColumnByKey(SAMPLES).getRenderer();
+      assertTrue(samplesRawRenderer instanceof LitRenderer<Submission>);
+      LitRenderer<Submission> samplesRenderer = (LitRenderer<Submission>) samplesRawRenderer;
+      assertEquals(SAMPLES_SPAN, rendererTemplate(samplesRenderer));
+      assertTrue(samplesRenderer.getValueProviders().containsKey("samplesValue"));
       assertEquals(
           resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
               submission.getSamples().size()),
-          litRenderer.getValueProviders().get("samplesValue").apply(submission));
-      assertTrue(litRenderer.getValueProviders().containsKey("samplesTitle"));
+          samplesRenderer.getValueProviders().get("samplesValue").apply(submission));
+      assertTrue(samplesRenderer.getValueProviders().containsKey("samplesTitle"));
       assertEquals(
           submission.getSamples().stream().map(SubmissionSample::getName)
               .collect(Collectors.joining("\n")),
-          litRenderer.getValueProviders().get("samplesTitle").apply(submission));
-    }
-    litRenderer = litRendererCaptor.getAllValues().get(2);
-    for (Submission submission : submissions) {
+          samplesRenderer.getValueProviders().get("samplesTitle").apply(submission));
       List<SampleStatus> statuses = submission.getSamples().stream()
           .map(SubmissionSample::getStatus).distinct().collect(Collectors.toList());
-      assertEquals(STATUS_SPAN, rendererTemplate(litRenderer));
-      assertTrue(litRenderer.getValueProviders().containsKey("statusValue"));
+      Renderer<Submission> statusRawRenderer =
+          view.submissions.getColumnByKey(STATUS).getRenderer();
+      assertTrue(statusRawRenderer instanceof LitRenderer<Submission>);
+      LitRenderer<Submission> statusRenderer = (LitRenderer<Submission>) statusRawRenderer;
+      assertEquals(STATUS_SPAN, rendererTemplate(statusRenderer));
+      assertTrue(statusRenderer.getValueProviders().containsKey("statusValue"));
       assertEquals(
           resources.message(STATUS_VALUE, statuses.get(0).getLabel(locale), statuses.size()),
-          litRenderer.getValueProviders().get("statusValue").apply(submission));
-      assertTrue(litRenderer.getValueProviders().containsKey("statusTitle"));
+          statusRenderer.getValueProviders().get("statusValue").apply(submission));
+      assertTrue(statusRenderer.getValueProviders().containsKey("statusTitle"));
       assertEquals(
           statuses.stream().map(status -> status.getLabel(locale))
               .collect(Collectors.joining("\n")),
-          litRenderer.getValueProviders().get("statusTitle").apply(submission));
-    }
-    litRenderer = litRendererCaptor.getAllValues().get(3);
-    for (Submission submission : submissions) {
-      assertEquals(HIDDEN_BUTTON, rendererTemplate(litRenderer));
-      assertTrue(litRenderer.getValueProviders().containsKey("hiddenTheme"));
+          statusRenderer.getValueProviders().get("statusTitle").apply(submission));
+      Renderer<Submission> hiddenRawRenderer =
+          view.submissions.getColumnByKey(HIDDEN).getRenderer();
+      assertTrue(hiddenRawRenderer instanceof LitRenderer<Submission>);
+      LitRenderer<Submission> hiddenRenderer = (LitRenderer<Submission>) hiddenRawRenderer;
+      assertEquals(HIDDEN_BUTTON, rendererTemplate(hiddenRenderer));
+      assertTrue(hiddenRenderer.getValueProviders().containsKey("hiddenTheme"));
       assertEquals(
           submission.isHidden() ? ButtonVariant.LUMO_ERROR.getVariantName()
               : ButtonVariant.LUMO_SUCCESS.getVariantName(),
-          litRenderer.getValueProviders().get("hiddenTheme").apply(submission));
-      assertTrue(litRenderer.getValueProviders().containsKey("hiddenValue"));
+          hiddenRenderer.getValueProviders().get("hiddenTheme").apply(submission));
+      assertTrue(hiddenRenderer.getValueProviders().containsKey("hiddenValue"));
       assertEquals(submissionResources.message(property(HIDDEN, submission.isHidden())),
-          litRenderer.getValueProviders().get("hiddenValue").apply(submission));
-      assertTrue(litRenderer.getValueProviders().containsKey("hiddenIcon"));
+          hiddenRenderer.getValueProviders().get("hiddenValue").apply(submission));
+      assertTrue(hiddenRenderer.getValueProviders().containsKey("hiddenIcon"));
       assertEquals(submission.isHidden() ? "vaadin:eye-slash" : "vaadin:eye",
-          litRenderer.getValueProviders().get("hiddenIcon").apply(submission));
-      assertTrue(functions(litRenderer).containsKey("toggleHidden"));
-      functions(litRenderer).get("toggleHidden").accept(submission, null);
-      verify(presenter).toggleHidden(submission);
-      verify(view.submissions.getDataProvider()).refreshItem(submission);
+          hiddenRenderer.getValueProviders().get("hiddenIcon").apply(submission));
+      assertTrue(functions(hiddenRenderer).containsKey("toggleHidden"));
+      boolean hiddenBefore = submission.isHidden();
+      functions(hiddenRenderer).get("toggleHidden").accept(submission, null);
+      verify(service).update(submission, null);
+      assertEquals(!hiddenBefore, submission.isHidden());
+      assertEquals(submission.isHidden() ? "vaadin:eye-slash" : "vaadin:eye",
+          hiddenRenderer.getValueProviders().get("hiddenIcon").apply(submission));
     }
-    verify(view.hidden).setComparator(comparatorCaptor.capture());
-    comparator = comparatorCaptor.getValue();
+  }
+
+  @Test
+  public void submissions_ExperimentColumnComparator() {
+    Comparator<Submission> comparator =
+        test(view.submissions).getColumn(EXPERIMENT).getComparator(SortDirection.ASCENDING);
+    assertEquals(0, comparator.compare(experiment("éê"), experiment("ee")));
+    assertTrue(comparator.compare(experiment("a"), experiment("e")) < 0);
+    assertTrue(comparator.compare(experiment("a"), experiment("é")) < 0);
+    assertTrue(comparator.compare(experiment("e"), experiment("a")) > 0);
+    assertTrue(comparator.compare(experiment("é"), experiment("a")) > 0);
+  }
+
+  @Test
+  public void submissions_UserColumnComparator() {
+    Comparator<Submission> comparator =
+        test(view.submissions).getColumn(USER).getComparator(SortDirection.ASCENDING);
+    assertEquals(0, comparator.compare(user("éê"), user("ee")));
+    assertTrue(comparator.compare(user("a"), user("e")) < 0);
+    assertTrue(comparator.compare(user("a"), user("é")) < 0);
+    assertTrue(comparator.compare(user("e"), user("a")) > 0);
+    assertTrue(comparator.compare(user("é"), user("a")) > 0);
+  }
+
+  @Test
+  public void submissions_DirectorColumnComparator() {
+    Comparator<Submission> comparator =
+        test(view.submissions).getColumn(DIRECTOR).getComparator(SortDirection.ASCENDING);
+    assertEquals(0, comparator.compare(director("éê"), director("ee")));
+    assertTrue(comparator.compare(director("a"), director("e")) < 0);
+    assertTrue(comparator.compare(director("a"), director("é")) < 0);
+    assertTrue(comparator.compare(director("e"), director("a")) > 0);
+    assertTrue(comparator.compare(director("é"), director("a")) > 0);
+  }
+
+  @Test
+  public void submissions_HiddenColumnComparator() {
+    Comparator<Submission> comparator =
+        test(view.submissions).getColumn(HIDDEN).getComparator(SortDirection.ASCENDING);
     assertTrue(comparator.compare(hidden(false), hidden(true)) < 0);
     assertTrue(comparator.compare(hidden(false), hidden(false)) == 0);
     assertTrue(comparator.compare(hidden(true), hidden(true)) == 0);
@@ -568,63 +570,357 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void submissions_HiddenColumnsUser() {
+    verify(userPreferenceService, never()).get(view, view.view.getKey());
+    verify(userPreferenceService, never()).get(view, view.experiment.getKey());
+    verify(userPreferenceService, never()).get(view, view.user.getKey());
+    verify(userPreferenceService, never()).get(view, view.director.getKey());
+    verify(userPreferenceService, never()).get(view, view.service.getKey());
+    verify(userPreferenceService).get(view, view.dataAvailableDate.getKey());
+    verify(userPreferenceService).get(view, view.date.getKey());
+    verify(userPreferenceService, never()).get(view, view.instrument.getKey());
+    verify(userPreferenceService).get(view, view.samplesCount.getKey());
+    verify(userPreferenceService).get(view, view.samples.getKey());
+    verify(userPreferenceService).get(view, view.status.getKey());
+    verify(userPreferenceService, never()).get(view, view.hidden.getKey());
+    HeaderRow header = view.submissions.getHeaderRows().get(0);
+    assertTrue(view.view.isVisible());
+    assertTrue(view.experiment.isVisible());
+    assertFalse(view.user.isVisible());
+    assertFalse(view.director.isVisible());
+    assertFalse(view.service.isVisible());
+    assertTrue(view.dataAvailableDate.isVisible());
+    assertTrue(view.date.isVisible());
+    assertFalse(view.instrument.isVisible());
+    assertTrue(view.samplesCount.isVisible());
+    assertFalse(view.samples.isVisible());
+    assertTrue(view.status.isVisible());
+    assertFalse(view.hidden.isVisible());
+    test(view.hideColumnsContextMenu).open();
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.view).getText()).exists());
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.experiment).getText()).exists());
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.user).getText()).exists());
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.director).getText()).exists());
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.service).getText()).exists());
+    assertTrue(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.dataAvailableDate).getText());
+    verify(userPreferenceService).save(view, view.dataAvailableDate.getKey(), false);
+    assertFalse(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.date).getText());
+    verify(userPreferenceService).save(view, view.date.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.instrument).getText()).exists());
+    assertTrue(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samplesCount).getText());
+    verify(userPreferenceService).save(view, view.samplesCount.getKey(), false);
+    assertFalse(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.samples).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samples).getText());
+    verify(userPreferenceService).save(view, view.samples.getKey(), true);
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.samples).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.status).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.status).getText());
+    verify(userPreferenceService).save(view, view.status.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.status).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.hidden).getText()).exists());
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void submissions_HiddenColumnsManager() {
+    verify(userPreferenceService, never()).get(view, view.view.getKey());
+    verify(userPreferenceService, never()).get(view, view.experiment.getKey());
+    verify(userPreferenceService).get(view, view.user.getKey());
+    verify(userPreferenceService, never()).get(view, view.director.getKey());
+    verify(userPreferenceService, never()).get(view, view.service.getKey());
+    verify(userPreferenceService).get(view, view.dataAvailableDate.getKey());
+    verify(userPreferenceService).get(view, view.date.getKey());
+    verify(userPreferenceService, never()).get(view, view.instrument.getKey());
+    verify(userPreferenceService).get(view, view.samplesCount.getKey());
+    verify(userPreferenceService).get(view, view.samples.getKey());
+    verify(userPreferenceService).get(view, view.status.getKey());
+    verify(userPreferenceService, never()).get(view, view.hidden.getKey());
+    HeaderRow header = view.submissions.getHeaderRows().get(0);
+    assertTrue(view.view.isVisible());
+    assertTrue(view.experiment.isVisible());
+    assertTrue(view.user.isVisible());
+    assertFalse(view.director.isVisible());
+    assertFalse(view.service.isVisible());
+    assertTrue(view.dataAvailableDate.isVisible());
+    assertTrue(view.date.isVisible());
+    assertFalse(view.instrument.isVisible());
+    assertTrue(view.samplesCount.isVisible());
+    assertFalse(view.samples.isVisible());
+    assertTrue(view.status.isVisible());
+    assertFalse(view.hidden.isVisible());
+    test(view.hideColumnsContextMenu).open();
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.view).getText()).exists());
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.experiment).getText()).exists());
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.user).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.user).getText());
+    verify(userPreferenceService).save(view, view.user.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.user).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.director).getText()).exists());
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.service).getText()).exists());
+    assertTrue(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.dataAvailableDate).getText());
+    verify(userPreferenceService).save(view, view.dataAvailableDate.getKey(), false);
+    assertFalse(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.date).getText());
+    verify(userPreferenceService).save(view, view.date.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.instrument).getText()).exists());
+    assertTrue(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samplesCount).getText());
+    verify(userPreferenceService).save(view, view.samplesCount.getKey(), false);
+    assertFalse(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.samples).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samples).getText());
+    verify(userPreferenceService).save(view, view.samples.getKey(), true);
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.samples).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.status).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.status).getText());
+    verify(userPreferenceService).save(view, view.status.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.status).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.hidden).getText()).exists());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void submissions_HiddenColumnsAdmin() {
+    verify(userPreferenceService, never()).get(view, view.view.getKey());
+    verify(userPreferenceService, never()).get(view, view.experiment.getKey());
+    verify(userPreferenceService).get(view, view.user.getKey());
+    verify(userPreferenceService).get(view, view.director.getKey());
+    verify(userPreferenceService).get(view, view.service.getKey());
+    verify(userPreferenceService).get(view, view.dataAvailableDate.getKey());
+    verify(userPreferenceService).get(view, view.date.getKey());
+    verify(userPreferenceService).get(view, view.instrument.getKey());
+    verify(userPreferenceService).get(view, view.samplesCount.getKey());
+    verify(userPreferenceService).get(view, view.samples.getKey());
+    verify(userPreferenceService).get(view, view.status.getKey());
+    verify(userPreferenceService).get(view, view.hidden.getKey());
+    HeaderRow header = view.submissions.getHeaderRows().get(0);
+    assertTrue(view.view.isVisible());
+    assertTrue(view.experiment.isVisible());
+    assertTrue(view.user.isVisible());
+    assertTrue(view.director.isVisible());
+    assertTrue(view.service.isVisible());
+    assertTrue(view.dataAvailableDate.isVisible());
+    assertTrue(view.date.isVisible());
+    assertTrue(view.instrument.isVisible());
+    assertTrue(view.samplesCount.isVisible());
+    assertFalse(view.samples.isVisible());
+    assertTrue(view.status.isVisible());
+    assertTrue(view.hidden.isVisible());
+    test(view.hideColumnsContextMenu).open();
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.view).getText()).exists());
+    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
+        .withText(header.getCell(view.experiment).getText()).exists());
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.user).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.user).getText());
+    verify(userPreferenceService).save(view, view.user.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.user).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.director).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.director).getText());
+    verify(userPreferenceService).save(view, view.director.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.director).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.service).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.service).getText());
+    verify(userPreferenceService).save(view, view.service.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.service).getText()));
+    assertTrue(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.dataAvailableDate).getText());
+    verify(userPreferenceService).save(view, view.dataAvailableDate.getKey(), false);
+    assertFalse(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.date).getText());
+    verify(userPreferenceService).save(view, view.date.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.instrument).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.instrument).getText());
+    verify(userPreferenceService).save(view, view.instrument.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.instrument).getText()));
+    assertTrue(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samplesCount).getText());
+    verify(userPreferenceService).save(view, view.samplesCount.getKey(), false);
+    assertFalse(test(view.hideColumnsContextMenu)
+        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.samples).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samples).getText());
+    verify(userPreferenceService).save(view, view.samples.getKey(), true);
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.samples).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.status).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.status).getText());
+    verify(userPreferenceService).save(view, view.status.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.status).getText()));
+    assertTrue(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.hidden).getText()));
+    test(view.hideColumnsContextMenu).clickItem(header.getCell(view.hidden).getText());
+    verify(userPreferenceService).save(view, view.hidden.getKey(), false);
+    assertFalse(
+        test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.hidden).getText()));
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
   public void singleClickSubmission() {
-    Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission, null);
+    view.submissions.setItems(submissions);
+    test(view.submissions).clickRow(0);
 
-    verify(presenter, never()).view(any());
-    verify(presenter, never()).editStatus(any());
+    assertEquals(0, $(SubmissionDialog.class).all().size());
+    assertEquals(0, $(SamplesStatusDialog.class).all().size());
   }
 
   @Test
-  public void singleClickSubmission_Shift() {
-    Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission, null, false, true, false, false);
+  public void singleClickSubmission_ShiftUser() {
+    view.submissions.setItems(submissions);
+    test(view.submissions).clickRow(0, new MetaKeys().shift());
 
-    verify(presenter, never()).view(any());
-    verify(presenter).editStatus(submission);
+    assertFalse($(SamplesStatusDialog.class).exists());
   }
 
   @Test
-  public void singleClickSubmission_Control() {
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void singleClickSubmission_ShiftAdmin() {
+    view.submissions.setItems(submissions);
     Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission, null, true, false, false, false);
+    when(service.get(any())).thenReturn(Optional.of(submission));
+    test(view.submissions).clickRow(0, new MetaKeys().shift());
 
-    verify(presenter, never()).view(any());
-    verify(presenter).editStatus(submission);
+    verify(service).get(1L);
+    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
+    assertEquals(submission, dialog.getSubmission());
   }
 
   @Test
-  public void singleClickSubmission_Meta() {
-    Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission, null, false, false, false, true);
+  public void singleClickSubmission_ControlUser() {
+    view.submissions.setItems(submissions);
+    test(view.submissions).clickRow(0, new MetaKeys().ctrl());
 
-    verify(presenter, never()).view(any());
-    verify(presenter).editStatus(submission);
+    assertFalse($(SamplesStatusDialog.class).exists());
   }
 
   @Test
-  public void singleClickSubmission_Alt() {
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void singleClickSubmission_ControlAdmin() {
+    view.submissions.setItems(submissions);
     Submission submission = submissions.get(0);
-    clickItem(view.submissions, submission, null, false, false, true, false);
+    when(service.get(any())).thenReturn(Optional.of(submission));
+    test(view.submissions).clickRow(0, new MetaKeys().ctrl());
 
-    verify(presenter, never()).view(any());
-    verify(presenter).history(submission);
+    verify(service).get(1L);
+    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
+    assertEquals(submission, dialog.getSubmission());
+  }
+
+  @Test
+  public void singleClickSubmission_MetaUser() {
+    view.submissions.setItems(submissions);
+    test(view.submissions).clickRow(0, new MetaKeys().meta());
+
+    assertFalse($(SamplesStatusDialog.class).exists());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void singleClickSubmission_MetaAdmin() {
+    view.submissions.setItems(submissions);
+    Submission submission = submissions.get(0);
+    when(service.get(any())).thenReturn(Optional.of(submission));
+    test(view.submissions).clickRow(0, new MetaKeys().meta());
+
+    verify(service).get(1L);
+    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
+    assertEquals(submission, dialog.getSubmission());
+  }
+
+  @Test
+  public void singleClickSubmission_AltUser() {
+    view.submissions.setItems(submissions);
+    test(view.submissions).clickRow(0, new MetaKeys().alt());
+
+    assertFalse($(HistoryView.class).exists());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void singleClickSubmission_AltAdmin() {
+    view.submissions.setItems(submissions);
+    Submission submission = submissions.get(0);
+    when(service.get(any())).thenReturn(Optional.of(submission));
+    test(view.submissions).clickRow(0, new MetaKeys().alt());
+
+    verify(service).get(1L);
+    HistoryView view = $(HistoryView.class).first();
+    assertEquals(submission, view.getSubmission());
   }
 
   @Test
   public void doubleClickSubmission() {
+    view.submissions.setItems(submissions);
     Submission submission = submissions.get(0);
-    doubleClickItem(view.submissions, submission, null);
+    when(service.get(any())).thenReturn(Optional.of(submission));
+    test(view.submissions).doubleClickRow(0);
 
-    verify(presenter).view(submission);
-    verify(presenter, never()).editStatus(any());
-  }
-
-  private Submission hidden(boolean hidden) {
-    Submission submission = new Submission();
-    submission.setHidden(hidden);
-    return submission;
+    verify(service).get(1L);
+    SubmissionDialog dialog = $(SubmissionDialog.class).first();
+    assertEquals(submission, dialog.getSubmission());
   }
 
   @Test
@@ -635,9 +931,11 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterExperiment() {
+    view.submissions.setItems(mock(DataProvider.class));
     view.experimentFilter.setValue("test");
 
-    verify(presenter).filterExperiment("test");
+    assertEquals("test", view.filter().experimentContains);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
@@ -648,9 +946,11 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterUser() {
+    view.submissions.setItems(mock(DataProvider.class));
     view.userFilter.setValue("test");
 
-    verify(presenter).filterUser("test");
+    assertEquals("test", view.filter().userContains);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
@@ -661,25 +961,31 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterDirector() {
+    view.submissions.setItems(mock(DataProvider.class));
     view.directorFilter.setValue("test");
 
-    verify(presenter).filterDirector("test");
+    assertEquals("test", view.filter().directorContains);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
   public void filterDataAvailableDate() {
+    view.submissions.setItems(mock(DataProvider.class));
     Range<LocalDate> range = Range.closed(LocalDate.now().minusDays(1), LocalDate.now());
     view.dataAvailableDateFilter.setValue(range);
 
-    verify(presenter).filterDataAvailableDate(range);
+    assertEquals(range, view.filter().dataAvailableDateRange);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
   public void filterDate() {
+    view.submissions.setItems(mock(DataProvider.class));
     Range<LocalDate> range = Range.closed(LocalDate.now().minusDays(1), LocalDate.now());
     view.dateFilter.setValue(range);
 
-    verify(presenter).filterDate(range);
+    assertEquals(range, view.filter().dateRange);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
@@ -697,9 +1003,11 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterInstrument() {
+    view.submissions.setItems(mock(DataProvider.class));
     view.instrumentFilter.setValue(MassDetectionInstrument.VELOS);
 
-    verify(presenter).filterInstrument(MassDetectionInstrument.VELOS);
+    assertEquals(MassDetectionInstrument.VELOS, view.filter().instrument);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
@@ -715,9 +1023,11 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterService() {
+    view.submissions.setItems(mock(DataProvider.class));
     view.serviceFilter.setValue(Service.INTACT_PROTEIN);
 
-    verify(presenter).filterService(Service.INTACT_PROTEIN);
+    assertEquals(Service.INTACT_PROTEIN, view.filter().service);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
@@ -728,9 +1038,11 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterSamples() {
+    view.submissions.setItems(mock(DataProvider.class));
     view.samplesFilter.setValue("test");
 
-    verify(presenter).filterSamples("test");
+    assertEquals("test", view.filter().anySampleNameContains);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
@@ -747,9 +1059,11 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterStatus() {
+    view.submissions.setItems(mock(DataProvider.class));
     view.statusFilter.setValue(SampleStatus.ANALYSED);
 
-    verify(presenter).filterStatus(SampleStatus.ANALYSED);
+    assertEquals(SampleStatus.ANALYSED, view.filter().anySampleStatus);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
@@ -766,9 +1080,11 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterHidden() {
+    view.submissions.setItems(mock(DataProvider.class));
     view.hiddenFilter.setValue(true);
 
-    verify(presenter).filterHidden(true);
+    assertEquals(true, view.filter().hidden);
+    verify(view.submissions.getDataProvider()).refreshAll();
   }
 
   @Test
@@ -791,39 +1107,67 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void add() {
-    clickButton(view.add);
-    verify(presenter).add();
+    test(view.add).click();
+
+    SubmissionView view = $(SubmissionView.class).first();
+    assertNull(view.getSubmission().getId());
   }
 
   @Test
+  @WithUserDetails("proview@ircm.qc.ca")
   public void editStatus() {
-    clickButton(view.editStatus);
-    verify(presenter).editSelectedStatus(locale);
+    view.submissions.setItems(submissions);
+    Submission submission = submissions.get(1);
+    when(service.get(any())).thenReturn(Optional.of(submission));
+    test(view.submissions).select(1);
+
+    test(view.editStatus).click();
+
+    verify(service).get(32L);
+    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
+    assertEquals(submission, dialog.getSubmission());
   }
 
   @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void editStatus_NoSelection() {
+    view.submissions.setItems(submissions);
+    test(view.editStatus).click();
+
+    assertFalse($(SamplesStatusDialog.class).exists());
+    Notification notification = $(Notification.class).first();
+    assertEquals(resources.message(property(SUBMISSIONS, REQUIRED)), test(notification).getText());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
   public void history() {
-    clickButton(view.history);
-    verify(presenter).historySelected(locale);
+    view.submissions.setItems(submissions);
+    Submission submission = submissions.get(1);
+    when(service.get(any())).thenReturn(Optional.of(submission));
+    test(view.submissions).select(1);
+
+    test(view.history).click();
+
+    verify(service).get(32L);
+    HistoryView view = $(HistoryView.class).first();
+    assertEquals(submission, view.getSubmission());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void history_NoSelection() {
+    view.submissions.setItems(submissions);
+    test(view.history).click();
+
+    assertFalse($(HistoryView.class).exists());
+    Notification notification = $(Notification.class).first();
+    assertEquals(resources.message(property(SUBMISSIONS, REQUIRED)), test(notification).getText());
   }
 
   @Test
   public void hideColumns() {
     assertTrue(view.hideColumnsContextMenu.isOpenOnClick());
     assertEquals(view.hideColumns, view.hideColumnsContextMenu.getTarget());
-  }
-
-  @Test
-  public void hideColumns_date() {
-    SubmissionsView view = navigate(SubmissionsView.class);
-    String dateHeader = view.submissions.getHeaderRows().get(0).getCell(view.date).getText();
-    view.hideColumnsContextMenu.addColumnToggleItem(dateHeader, view.date);
-    assertTrue(view.date.isVisible());
-    test(view.hideColumnsContextMenu).open();
-    assertTrue(test(view.hideColumnsContextMenu).isItemChecked(dateHeader));
-    test(view.hideColumnsContextMenu).clickItem(dateHeader);
-    assertFalse(view.date.isVisible());
-    assertFalse(test(view.hideColumnsContextMenu).isItemChecked(dateHeader));
-    verify(presenter).toggleHideColumn(view.date);
   }
 }

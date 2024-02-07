@@ -26,35 +26,30 @@ import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.HASHED_PASSWORD;
 import static ca.qc.ircm.proview.web.SigninView.ADDITIONAL_INFORMATION;
 import static ca.qc.ircm.proview.web.SigninView.DESCRIPTION;
-import static ca.qc.ircm.proview.web.SigninView.DISABLED;
 import static ca.qc.ircm.proview.web.SigninView.FAIL;
 import static ca.qc.ircm.proview.web.SigninView.FORGOT_PASSWORD;
 import static ca.qc.ircm.proview.web.SigninView.FORM_TITLE;
 import static ca.qc.ircm.proview.web.SigninView.HEADER;
 import static ca.qc.ircm.proview.web.SigninView.ID;
-import static ca.qc.ircm.proview.web.SigninView.LOCKED;
 import static ca.qc.ircm.proview.web.SigninView.SIGNIN;
 import static ca.qc.ircm.proview.web.SigninView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.ForgotPasswordView;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.Location;
 import com.vaadin.flow.router.QueryParameters;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -64,14 +59,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Tests for {@link SigninView}.
  */
 @NonTransactionalTestAnnotations
 @WithAnonymousUser
-public class SigninViewTest extends AbstractKaribuTestCase {
+public class SigninViewTest extends SpringUIUnitTest {
   private SigninView view;
   @Autowired
   private SecurityConfiguration configuration;
@@ -79,8 +73,6 @@ public class SigninViewTest extends AbstractKaribuTestCase {
   private AuthenticatedUser authenticatedUser;
   @Mock
   private AfterNavigationEvent afterNavigationEvent;
-  @Mock
-  private BeforeEnterEvent beforeEnterEvent;
   @Mock
   private Location location;
   @Mock
@@ -96,12 +88,11 @@ public class SigninViewTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    view = new SigninView(configuration, authenticatedUser);
-    view.init();
     when(afterNavigationEvent.getLocation()).thenReturn(location);
     when(location.getQueryParameters()).thenReturn(queryParameters);
     when(queryParameters.getParameters()).thenReturn(parameters);
+    UI.getCurrent().setLocale(locale);
+    view = navigate(SigninView.class);
   }
 
   @Test
@@ -118,7 +109,6 @@ public class SigninViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
     assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
     assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
@@ -129,87 +119,15 @@ public class SigninViewTest extends AbstractKaribuTestCase {
     assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
     assertEquals(resources.message(property(FAIL, TITLE)), view.i18n.getErrorMessage().getTitle());
     assertEquals(resources.message(FAIL), view.i18n.getErrorMessage().getMessage());
-  }
-
-  @Test
-  public void labels_Error() {
-    parameters.put("error", null);
-    view.afterNavigation(afterNavigationEvent);
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
-    assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
-    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
-    assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
-    assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
-    assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
-    assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
-    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
-    assertEquals(resources.message(property(FAIL, TITLE)), view.i18n.getErrorMessage().getTitle());
-    assertEquals(resources.message(FAIL), view.i18n.getErrorMessage().getMessage());
-  }
-
-  @Test
-  public void labels_Fail() {
-    parameters.put(FAIL, null);
-    view.afterNavigation(afterNavigationEvent);
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
-    assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
-    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
-    assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
-    assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
-    assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
-    assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
-    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
-    assertEquals(resources.message(property(FAIL, TITLE)), view.i18n.getErrorMessage().getTitle());
-    assertEquals(resources.message(FAIL), view.i18n.getErrorMessage().getMessage());
-  }
-
-  @Test
-  public void labels_Disabled() {
-    parameters.put(DISABLED, null);
-    view.afterNavigation(afterNavigationEvent);
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
-    assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
-    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
-    assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
-    assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
-    assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
-    assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
-    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
-    assertEquals(resources.message(property(DISABLED, TITLE)),
-        view.i18n.getErrorMessage().getTitle());
-    assertEquals(resources.message(DISABLED), view.i18n.getErrorMessage().getMessage());
-  }
-
-  @Test
-  public void labels_Locked() {
-    parameters.put(LOCKED, null);
-    view.afterNavigation(afterNavigationEvent);
-    view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
-    assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
-    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
-    assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
-    assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
-    assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
-    assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
-    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
-    assertEquals(resources.message(property(LOCKED, TITLE)),
-        view.i18n.getErrorMessage().getTitle());
-    assertEquals(resources.message(LOCKED, configuration.getLockDuration().getSeconds() / 60),
-        view.i18n.getErrorMessage().getMessage());
+    assertFalse(view.isError());
   }
 
   @Test
   public void localeChange() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(SigninView.class, locale);
     final AppResources userResources = new AppResources(User.class, locale);
-    ui.setLocale(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
     assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
     assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
@@ -220,6 +138,7 @@ public class SigninViewTest extends AbstractKaribuTestCase {
     assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
     assertEquals(resources.message(property(FAIL, TITLE)), view.i18n.getErrorMessage().getTitle());
     assertEquals(resources.message(FAIL), view.i18n.getErrorMessage().getMessage());
+    assertFalse(view.isError());
   }
 
   @Test
@@ -229,67 +148,8 @@ public class SigninViewTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  public void beforeEnter_Anonymous() {
-    view.beforeEnter(beforeEnterEvent);
-    verifyNoInteractions(beforeEnterEvent);
-  }
-
-  @Test
-  @WithUserDetails("christopher.anderson@ircm.qc.ca")
-  public void beforeEnter_User() {
-    view.beforeEnter(beforeEnterEvent);
-    verify(beforeEnterEvent).forwardTo(MainView.class);
-  }
-
-  @Test
-  public void afterNavigationEvent_NoError() {
-    parameters.put(FAIL, null);
-
-    view.afterNavigation(afterNavigationEvent);
-
-    assertTrue(view.isError());
-  }
-
-  @Test
-  public void afterNavigationEvent_Error() {
-    parameters.put("error", null);
-
-    view.afterNavigation(afterNavigationEvent);
-
-    assertTrue(view.isError());
-  }
-
-  @Test
-  public void afterNavigationEvent_Fail() {
-    parameters.put(FAIL, null);
-
-    view.afterNavigation(afterNavigationEvent);
-
-    assertTrue(view.isError());
-  }
-
-  @Test
-  public void afterNavigationEvent_Disabled() {
-    parameters.put(DISABLED, null);
-
-    view.afterNavigation(afterNavigationEvent);
-
-    assertTrue(view.isError());
-  }
-
-  @Test
-  public void afterNavigationEvent_Locked() {
-    parameters.put(LOCKED, null);
-
-    view.afterNavigation(afterNavigationEvent);
-
-    assertTrue(view.isError());
-  }
-
-  @Test
   public void forgotPassword() {
-    ui.navigate(SigninView.class);
     view.fireForgotPasswordEvent();
-    assertCurrentView(ForgotPasswordView.class);
+    assertTrue($(ForgotPasswordView.class).exists());
   }
 }

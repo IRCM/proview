@@ -34,7 +34,7 @@ import org.springframework.test.context.TestExecutionListeners.MergeMode;
 @SpringBootTest
 @ActiveProfiles("test")
 @TestExecutionListeners(
-    value = { VaadinLicenseExecutionListener.class, KaribuTestExecutionListener.class },
+    value = { VaadinLicenseExecutionListener.class },
     mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
 public @interface NonTransactionalTestAnnotations {
 

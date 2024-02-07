@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.INVALID_EMAIL;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
 import static ca.qc.ircm.proview.user.AddressProperties.LINE;
@@ -33,20 +35,36 @@ import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.user.Address;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryProperties;
+import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRole;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
+import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.binder.Validator;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -84,13 +102,21 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   protected ComboBox<PhoneNumberType> phoneType = new ComboBox<>();
   protected TextField number = new TextField();
   protected TextField extension = new TextField();
-  private transient UserFormPresenter presenter;
+  private Binder<User> binder = new BeanValidationBinder<>(User.class);
+  private ListDataProvider<Laboratory> laboratoriesDataProvider;
+  private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
+  private Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
+  private Binder<PhoneNumber> phoneNumberBinder = new BeanValidationBinder<>(PhoneNumber.class);
+  private User user;
+  private transient LaboratoryService laboratoryService;
+  private transient AuthenticatedUser authenticatedUser;
   private transient DefaultAddressConfiguration defaultAddressConfiguration;
 
   @Autowired
-  protected UserForm(UserFormPresenter presenter,
+  protected UserForm(LaboratoryService laboratoryService, AuthenticatedUser authenticatedUser,
       DefaultAddressConfiguration defaultAddressConfiguration) {
-    this.presenter = presenter;
+    this.laboratoryService = laboratoryService;
+    this.authenticatedUser = authenticatedUser;
     this.defaultAddressConfiguration = defaultAddressConfiguration;
   }
 
@@ -114,11 +140,30 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     name.setId(id(NAME));
     name.setPlaceholder(NAME_PLACEHOLDER);
     admin.setId(id(ADMIN));
+    admin.setVisible(authenticatedUser.hasRole(UserRole.ADMIN));
     manager.setId(id(MANAGER));
+    manager.setVisible(authenticatedUser.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
+    manager.addValueChangeListener(e -> updateManager());
     laboratory.setId(id(LABORATORY));
+    if (authenticatedUser.hasRole(UserRole.ADMIN)) {
+      laboratoriesDataProvider = DataProvider.ofCollection(laboratoryService.all());
+    } else {
+      laboratoriesDataProvider = DataProvider.fromStream(
+          Stream.of(authenticatedUser.getUser().map(User::getLaboratory).orElse(new Laboratory())));
+    }
+    laboratory.setItems(laboratoriesDataProvider);
+    laboratory.setRequiredIndicatorVisible(true);
+    laboratory.setReadOnly(!authenticatedUser.hasRole(UserRole.ADMIN));
+    laboratory.setEnabled(authenticatedUser.hasRole(UserRole.ADMIN));
+    laboratory.setItemLabelGenerator(lab -> Objects.toString(lab.getName(), ""));
     createNewLaboratory.setId(id(CREATE_NEW_LABORATORY));
+    createNewLaboratory.setVisible(authenticatedUser.hasRole(UserRole.ADMIN));
+    createNewLaboratory.setEnabled(false);
+    createNewLaboratory.addValueChangeListener(e -> updateCreateNewLaboratory());
     newLaboratoryName.setId(id(NEW_LABORATORY_NAME));
     newLaboratoryName.setPlaceholder(LABORATORY_NAME_PLACEHOLDER);
+    newLaboratoryName.setVisible(authenticatedUser.hasRole(UserRole.ADMIN));
+    newLaboratoryName.setEnabled(false);
     Address address = defaultAddressConfiguration.getAddress();
     addressLine.setId(id(LINE));
     addressLine.setPlaceholder(address.getLine());
@@ -137,7 +182,10 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     number.setId(id(NUMBER));
     number.setPlaceholder(NUMBER_PLACEHOLDER);
     extension.setId(id(EXTENSION));
-    presenter.init(this);
+
+    setUser(null);
+    updateManager();
+    updateCreateNewLaboratory();
   }
 
   @Override
@@ -146,6 +194,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     final AppResources userResources = new AppResources(User.class, getLocale());
     final AppResources addressResources = new AppResources(Address.class, getLocale());
     final AppResources phoneNumberResources = new AppResources(PhoneNumber.class, getLocale());
+    final AppResources webResources = new AppResources(Constants.class, getLocale());
     email.setLabel(userResources.message(EMAIL));
     name.setLabel(userResources.message(NAME));
     admin.setLabel(userResources.message(ADMIN));
@@ -161,22 +210,143 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     phoneType.setLabel(phoneNumberResources.message(TYPE));
     number.setLabel(phoneNumberResources.message(NUMBER));
     extension.setLabel(phoneNumberResources.message(EXTENSION));
-    presenter.localeChange(getLocale());
+
+    binder.forField(email).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
+        .withValidator(new EmailValidator(webResources.message(INVALID_EMAIL))).bind(EMAIL);
+    binder.forField(name).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
+        .bind(NAME);
+    binder.forField(admin).bind(ADMIN);
+    binder.forField(manager).bind(MANAGER);
+    binder.forField(laboratory)
+        .withValidator(laboratoryRequiredValidator(webResources.message(REQUIRED)))
+        .withNullRepresentation(null).bind(LABORATORY);
+    laboratoryBinder.forField(newLaboratoryName).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(LABORATORY_NAME);
+    addressBinder.forField(addressLine).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(LINE);
+    addressBinder.forField(town).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(TOWN);
+    addressBinder.forField(state).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(STATE);
+    addressBinder.forField(country).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(COUNTRY);
+    addressBinder.forField(postalCode).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(POSTAL_CODE);
+    phoneNumberBinder.forField(phoneType).asRequired(webResources.message(REQUIRED)).bind(TYPE);
+    phoneNumberBinder.forField(number).asRequired(webResources.message(REQUIRED))
+        .withNullRepresentation("").bind(NUMBER);
+    phoneNumberBinder.forField(extension).withNullRepresentation("").bind(EXTENSION);
+    updateReadOnly();
   }
 
-  public boolean isValid() {
-    return presenter.isValid();
+  private Validator<Laboratory> laboratoryRequiredValidator(String errorMessage) {
+    return (value,
+        context) -> !createNewLaboratory.getValue() && (value == null || value.getName() == null)
+            ? ValidationResult.error(errorMessage)
+            : ValidationResult.ok();
+  }
+
+  private void updateReadOnly() {
+    boolean readOnly =
+        user.getId() != null && !authenticatedUser.hasPermission(user, Permission.WRITE);
+    binder.setReadOnly(readOnly);
+    laboratory.setReadOnly(!authenticatedUser.hasRole(UserRole.ADMIN));
+    laboratory
+        .setEnabled(!authenticatedUser.hasRole(UserRole.ADMIN) || !createNewLaboratory.getValue());
+    passwords.setVisible(!readOnly);
+    addressBinder.setReadOnly(readOnly);
+    phoneNumberBinder.setReadOnly(readOnly);
+  }
+
+  private void updateManager() {
+    if (authenticatedUser.hasRole(UserRole.ADMIN)) {
+      createNewLaboratory.setEnabled(manager.getValue());
+      if (!manager.getValue()) {
+        createNewLaboratory.setValue(false);
+        laboratory.setEnabled(true);
+        newLaboratoryName.setEnabled(false);
+      }
+    }
+  }
+
+  private void updateCreateNewLaboratory() {
+    laboratory.setEnabled(!createNewLaboratory.getValue());
+    newLaboratoryName.setEnabled(createNewLaboratory.getValue());
+  }
+
+  BinderValidationStatus<User> validateUser() {
+    return binder.validate();
+  }
+
+  BinderValidationStatus<Laboratory> validateLaboratory() {
+    return laboratoryBinder.validate();
+  }
+
+  BinderValidationStatus<Address> validateAddress() {
+    return addressBinder.validate();
+  }
+
+  BinderValidationStatus<PhoneNumber> validatePhoneNumber() {
+    return phoneNumberBinder.validate();
+  }
+
+  boolean isValid() {
+    boolean valid = true;
+    valid = validateUser().isOk() && valid;
+    valid = passwords.isValid() && valid;
+    if (createNewLaboratory.getValue()) {
+      valid = validateLaboratory().isOk() && valid;
+    }
+    valid = validateAddress().isOk() && valid;
+    valid = validatePhoneNumber().isOk() && valid;
+    return valid;
   }
 
   public String getPassword() {
-    return presenter.getPassword();
+    return passwords.getPassword();
   }
 
-  public User getUser() {
-    return presenter.getUser();
+  User getUser() {
+    if (laboratory.getValue() != null
+        && (!createNewLaboratory.isEnabled() || !createNewLaboratory.getValue())) {
+      user.getLaboratory().setId(laboratory.getValue().getId());
+      user.getLaboratory().setName(laboratory.getValue().getName());
+    } else {
+      user.getLaboratory().setId(null);
+      user.getLaboratory().setName(newLaboratoryName.getValue());
+    }
+    return user;
   }
 
-  public void setUser(User user) {
-    presenter.setUser(user);
+  void setUser(User user) {
+    if (user == null) {
+      user = new User();
+    }
+    if (user.getLaboratory() == null) {
+      user.setLaboratory(new Laboratory());
+    }
+    if (!laboratoriesDataProvider.getItems().isEmpty()) {
+      final Laboratory laboratory = user.getLaboratory();
+      this.laboratory.setValue(laboratoriesDataProvider.getItems().stream()
+          .filter(lab -> lab.getId() != null && lab.getId().equals(laboratory.getId())).findAny()
+          .orElse(laboratoriesDataProvider.getItems().iterator().next()));
+      user.setLaboratory(
+          laboratoryService.get(this.laboratory.getValue().getId()).orElse(new Laboratory()));
+    }
+    if (user.getAddress() == null) {
+      user.setAddress(defaultAddressConfiguration.getAddress());
+    }
+    if (user.getPhoneNumbers() == null || user.getPhoneNumbers().isEmpty()) {
+      user.setPhoneNumbers(new ArrayList<>());
+      PhoneNumber phoneNumber = new PhoneNumber();
+      phoneNumber.setType(PhoneNumberType.WORK);
+      user.getPhoneNumbers().add(phoneNumber);
+    }
+    this.user = user;
+    binder.setBean(user);
+    passwords.setRequired(user.getId() == null);
+    addressBinder.setBean(user.getAddress());
+    phoneNumberBinder.setBean(user.getPhoneNumbers().get(0));
+    updateReadOnly();
   }
 }

@@ -40,35 +40,24 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
+import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.AcquisitionRepository;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
+import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.Grid.Column;
-import com.vaadin.flow.dom.Element;
-import com.vaadin.flow.function.ValueProvider;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -77,12 +66,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
+public class MsAnalysisDialogTest extends SpringUIUnitTest {
   private MsAnalysisDialog dialog;
-  @Mock
-  private MsAnalysis msAnalysis;
-  @Captor
-  private ArgumentCaptor<ValueProvider<Acquisition, String>> valueProviderCaptor;
   @Autowired
   private MsAnalysisRepository repository;
   @Autowired
@@ -97,71 +82,17 @@ public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
    * Before tests.
    */
   @BeforeEach
-  public void beforeTest() {
-    ui.setLocale(locale);
-    dialog = new MsAnalysisDialog();
-    dialog.init();
+  public void beforeTest() throws NoSuchFieldException, IllegalAccessException {
+    UI.getCurrent().setLocale(locale);
+    HistoryView view = navigate(HistoryView.class, 32L);
+    Grid<Activity> activities = test(view).find(Grid.class).id(HistoryView.ACTIVITIES);
+    test(activities).doubleClickRow(1);
+    dialog = $(MsAnalysisDialog.class).id(ID);
     acquisitions = acquisitionRepository.findAll();
   }
 
-  @SuppressWarnings("unchecked")
-  private void mockColumns() {
-    Element gridElement = dialog.acquisitions.getElement();
-    dialog.acquisitions = mock(Grid.class);
-    when(dialog.acquisitions.getElement()).thenReturn(gridElement);
-    dialog.sample = mock(Column.class);
-    when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(SAMPLE)))
-        .thenReturn(dialog.sample);
-    when(dialog.sample.setKey(any())).thenReturn(dialog.sample);
-    when(dialog.sample.setComparator(any(Comparator.class))).thenReturn(dialog.sample);
-    when(dialog.sample.setHeader(any(String.class))).thenReturn(dialog.sample);
-    when(dialog.sample.setFlexGrow(anyInt())).thenReturn(dialog.sample);
-    dialog.container = mock(Column.class);
-    when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(CONTAINER)))
-        .thenReturn(dialog.container);
-    when(dialog.container.setKey(any())).thenReturn(dialog.container);
-    when(dialog.container.setComparator(any(Comparator.class))).thenReturn(dialog.container);
-    when(dialog.container.setHeader(any(String.class))).thenReturn(dialog.container);
-    when(dialog.container.setFlexGrow(anyInt())).thenReturn(dialog.container);
-    dialog.numberOfAcquisition = mock(Column.class);
-    when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(NUMBER_OF_ACQUISITION)))
-        .thenReturn(dialog.numberOfAcquisition);
-    when(dialog.numberOfAcquisition.setKey(any())).thenReturn(dialog.numberOfAcquisition);
-    when(dialog.numberOfAcquisition.setComparator(any(Comparator.class)))
-        .thenReturn(dialog.numberOfAcquisition);
-    when(dialog.numberOfAcquisition.setHeader(any(String.class)))
-        .thenReturn(dialog.numberOfAcquisition);
-    when(dialog.numberOfAcquisition.setFlexGrow(anyInt())).thenReturn(dialog.numberOfAcquisition);
-    dialog.sampleListName = mock(Column.class);
-    when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(SAMPLE_LIST_NAME)))
-        .thenReturn(dialog.sampleListName);
-    when(dialog.sampleListName.setKey(any())).thenReturn(dialog.sampleListName);
-    when(dialog.sampleListName.setComparator(any(Comparator.class)))
-        .thenReturn(dialog.sampleListName);
-    when(dialog.sampleListName.setHeader(any(String.class))).thenReturn(dialog.sampleListName);
-    when(dialog.sampleListName.setFlexGrow(anyInt())).thenReturn(dialog.sampleListName);
-    dialog.acquisitionFile = mock(Column.class);
-    when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(ACQUISITION_FILE)))
-        .thenReturn(dialog.acquisitionFile);
-    when(dialog.acquisitionFile.setKey(any())).thenReturn(dialog.acquisitionFile);
-    when(dialog.acquisitionFile.setComparator(any(Comparator.class)))
-        .thenReturn(dialog.acquisitionFile);
-    when(dialog.acquisitionFile.setHeader(any(String.class))).thenReturn(dialog.acquisitionFile);
-    when(dialog.acquisitionFile.setFlexGrow(anyInt())).thenReturn(dialog.acquisitionFile);
-    dialog.position = mock(Column.class);
-    when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(POSITION)))
-        .thenReturn(dialog.position);
-    when(dialog.position.setKey(any())).thenReturn(dialog.position);
-    when(dialog.position.setComparator(any(Comparator.class))).thenReturn(dialog.position);
-    when(dialog.position.setHeader(any(String.class))).thenReturn(dialog.position);
-    when(dialog.position.setFlexGrow(anyInt())).thenReturn(dialog.position);
-    dialog.comment = mock(Column.class);
-    when(dialog.acquisitions.addColumn(any(ValueProvider.class), eq(COMMENT)))
-        .thenReturn(dialog.comment);
-    when(dialog.comment.setKey(any())).thenReturn(dialog.comment);
-    when(dialog.comment.setComparator(any(Comparator.class))).thenReturn(dialog.comment);
-    when(dialog.comment.setHeader(any(String.class))).thenReturn(dialog.comment);
-    when(dialog.comment.setFlexGrow(anyInt())).thenReturn(dialog.comment);
+  private int indexOfColumn(String property) {
+    return test(dialog.acquisitions).getColumnPosition(property);
   }
 
   @Test
@@ -177,43 +108,49 @@ public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    mockColumns();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(msAnalysisResources.message(DELETED), dialog.deleted.getText());
     assertEquals(msAnalysisResources.message(ACQUISITIONS), dialog.acquisitionsHeader.getText());
-    verify(dialog.sample).setHeader(acquisitionResources.message(SAMPLE));
-    verify(dialog.container).setHeader(acquisitionResources.message(CONTAINER));
-    verify(dialog.numberOfAcquisition)
-        .setHeader(acquisitionResources.message(NUMBER_OF_ACQUISITION));
-    verify(dialog.sampleListName).setHeader(acquisitionResources.message(SAMPLE_LIST_NAME));
-    verify(dialog.acquisitionFile).setHeader(acquisitionResources.message(ACQUISITION_FILE));
-    verify(dialog.position).setHeader(acquisitionResources.message(POSITION));
-    verify(dialog.comment).setHeader(acquisitionResources.message(COMMENT));
+    assertEquals(acquisitionResources.message(SAMPLE),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(SAMPLE)));
+    assertEquals(acquisitionResources.message(CONTAINER),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(CONTAINER)));
+    assertEquals(acquisitionResources.message(NUMBER_OF_ACQUISITION),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(NUMBER_OF_ACQUISITION)));
+    assertEquals(acquisitionResources.message(SAMPLE_LIST_NAME),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(SAMPLE_LIST_NAME)));
+    assertEquals(acquisitionResources.message(ACQUISITION_FILE),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(ACQUISITION_FILE)));
+    assertEquals(acquisitionResources.message(POSITION),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(POSITION)));
+    assertEquals(acquisitionResources.message(COMMENT),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(COMMENT)));
   }
 
   @Test
   public void localeChange() {
-    mockColumns();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(MsAnalysisDialog.class, locale);
     final AppResources msAnalysisResources = new AppResources(MsAnalysis.class, locale);
     final AppResources acquisitionResources = new AppResources(Acquisition.class, locale);
-    ui.setLocale(locale);
-    dialog.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(msAnalysisResources.message(DELETED), dialog.deleted.getText());
     assertEquals(msAnalysisResources.message(ACQUISITIONS), dialog.acquisitionsHeader.getText());
-    verify(dialog.sample).setHeader(acquisitionResources.message(SAMPLE));
-    verify(dialog.container).setHeader(acquisitionResources.message(CONTAINER));
-    verify(dialog.numberOfAcquisition)
-        .setHeader(acquisitionResources.message(NUMBER_OF_ACQUISITION));
-    verify(dialog.sampleListName, atLeastOnce())
-        .setHeader(acquisitionResources.message(SAMPLE_LIST_NAME));
-    verify(dialog.acquisitionFile).setHeader(acquisitionResources.message(ACQUISITION_FILE));
-    verify(dialog.position, atLeastOnce()).setHeader(acquisitionResources.message(POSITION));
-    verify(dialog.comment).setHeader(acquisitionResources.message(COMMENT));
+    assertEquals(acquisitionResources.message(SAMPLE),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(SAMPLE)));
+    assertEquals(acquisitionResources.message(CONTAINER),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(CONTAINER)));
+    assertEquals(acquisitionResources.message(NUMBER_OF_ACQUISITION),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(NUMBER_OF_ACQUISITION)));
+    assertEquals(acquisitionResources.message(SAMPLE_LIST_NAME),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(SAMPLE_LIST_NAME)));
+    assertEquals(acquisitionResources.message(ACQUISITION_FILE),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(ACQUISITION_FILE)));
+    assertEquals(acquisitionResources.message(POSITION),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(POSITION)));
+    assertEquals(acquisitionResources.message(COMMENT),
+        test(dialog.acquisitions).getHeaderCell(indexOfColumn(COMMENT)));
   }
 
   @Test
@@ -245,43 +182,23 @@ public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
 
   @Test
   public void samples_ColumnsValueProvider() {
-    dialog = new MsAnalysisDialog();
-    mockColumns();
-    dialog.init();
-    verify(dialog.acquisitions).addColumn(valueProviderCaptor.capture(), eq(SAMPLE));
-    ValueProvider<Acquisition, String> valueProvider = valueProviderCaptor.getValue();
-    for (Acquisition ac : acquisitions) {
-      assertEquals(ac.getSample().getName(), valueProvider.apply(ac));
-    }
-    verify(dialog.acquisitions).addColumn(valueProviderCaptor.capture(), eq(CONTAINER));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Acquisition ac : acquisitions) {
-      assertEquals(ac.getContainer().getFullName(), valueProvider.apply(ac));
-    }
-    verify(dialog.acquisitions).addColumn(valueProviderCaptor.capture(), eq(NUMBER_OF_ACQUISITION));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Acquisition ac : acquisitions) {
-      assertEquals(ac.getNumberOfAcquisition(), valueProvider.apply(ac));
-    }
-    verify(dialog.acquisitions).addColumn(valueProviderCaptor.capture(), eq(SAMPLE_LIST_NAME));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Acquisition ac : acquisitions) {
-      assertEquals(ac.getSampleListName(), valueProvider.apply(ac));
-    }
-    verify(dialog.acquisitions).addColumn(valueProviderCaptor.capture(), eq(ACQUISITION_FILE));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Acquisition ac : acquisitions) {
-      assertEquals(ac.getAcquisitionFile(), valueProvider.apply(ac));
-    }
-    verify(dialog.acquisitions).addColumn(valueProviderCaptor.capture(), eq(POSITION));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Acquisition ac : acquisitions) {
-      assertEquals(ac.getPosition(), valueProvider.apply(ac));
-    }
-    verify(dialog.acquisitions).addColumn(valueProviderCaptor.capture(), eq(COMMENT));
-    valueProvider = valueProviderCaptor.getValue();
-    for (Acquisition ac : acquisitions) {
-      assertEquals(ac.getComment(), valueProvider.apply(ac));
+    dialog.acquisitions.setItems(acquisitions);
+    for (int i = 0; i < acquisitions.size(); i++) {
+      Acquisition acquisition = acquisitions.get(i);
+      assertEquals(acquisition.getSample().getName(),
+          test(dialog.acquisitions).getCellText(i, indexOfColumn(SAMPLE)));
+      assertEquals(acquisition.getContainer().getFullName(),
+          test(dialog.acquisitions).getCellText(i, indexOfColumn(CONTAINER)));
+      assertEquals(Objects.toString(acquisition.getNumberOfAcquisition()),
+          test(dialog.acquisitions).getCellText(i, indexOfColumn(NUMBER_OF_ACQUISITION)));
+      assertEquals(acquisition.getSampleListName(),
+          test(dialog.acquisitions).getCellText(i, indexOfColumn(SAMPLE_LIST_NAME)));
+      assertEquals(acquisition.getAcquisitionFile(),
+          test(dialog.acquisitions).getCellText(i, indexOfColumn(ACQUISITION_FILE)));
+      assertEquals(Objects.toString(acquisition.getPosition()),
+          test(dialog.acquisitions).getCellText(i, indexOfColumn(POSITION)));
+      assertEquals(Objects.toString(acquisition.getComment(), ""),
+          test(dialog.acquisitions).getCellText(i, indexOfColumn(COMMENT)));
     }
   }
 
@@ -295,7 +212,6 @@ public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
   @Test
   public void setMsAnalysis() {
     MsAnalysis msAnalysis = repository.findById(1L).get();
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setMsAnalysis(msAnalysis);
 
@@ -314,7 +230,6 @@ public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
     MsAnalysis msAnalysis = repository.findById(12L).get();
     msAnalysis.setDeleted(true);
     msAnalysis.setDeletionExplanation("Test deletion\nexplanation");
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
     dialog.setMsAnalysis(msAnalysis);
 
@@ -329,12 +244,14 @@ public class MsAnalysisDialogTest extends AbstractKaribuTestCase {
   }
 
   @Test
-  public void setMsAnalysis_BeforeLocalChange() {
+  public void setMsAnalysis_LocalChange() {
     MsAnalysis msAnalysis = repository.findById(1L).get();
-
     dialog.setMsAnalysis(msAnalysis);
-    dialog.localeChange(mock(LocaleChangeEvent.class));
 
+    Locale locale = Locale.FRENCH;
+    UI.getCurrent().setLocale(locale);
+
+    final AppResources resources = new AppResources(MsAnalysisDialog.class, locale);
     assertFalse(dialog.deleted.isVisible());
     assertEquals(resources.message(MASS_DETECTION_INSTRUMENT,
         msAnalysis.getMassDetectionInstrument().getLabel(locale)), dialog.instrument.getText());

@@ -21,6 +21,7 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.UPLOAD;
+import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
@@ -33,14 +34,28 @@ import static ca.qc.ircm.proview.web.UploadInternationalization.uploadI18N;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.msanalysis.InjectionType;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
+import ca.qc.ircm.proview.sample.ProteinIdentification;
+import ca.qc.ircm.proview.sample.ProteolyticDigestion;
+import ca.qc.ircm.proview.sample.SampleType;
+import ca.qc.ircm.proview.sample.SubmissionSample;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.submission.GelSeparation;
+import ca.qc.ircm.proview.submission.GelThickness;
+import ca.qc.ircm.proview.submission.ProteinContent;
+import ca.qc.ircm.proview.submission.Service;
+import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ByteArrayStreamResourceWriter;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -54,6 +69,10 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -63,6 +82,10 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -70,6 +93,7 @@ import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.FileCopyUtils;
 
 /**
  * Submission view.
@@ -105,14 +129,19 @@ public class SubmissionView extends VerticalLayout
   protected SmallMoleculeSubmissionForm smallMoleculeSubmissionForm;
   protected IntactProteinSubmissionForm intactProteinSubmissionForm;
   private Map<Tab, Component> tabsToComponents = new HashMap<>();
-  private transient SubmissionViewPresenter presenter;
+  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+  private ListDataProvider<SubmissionFile> filesDataProvider =
+      DataProvider.ofCollection(new ArrayList<>());
+  private SubmissionService submissionService;
+  private AuthenticatedUser authenticatedUser;
 
   @Autowired
-  protected SubmissionView(SubmissionViewPresenter presenter,
+  protected SubmissionView(SubmissionService submissionService, AuthenticatedUser authenticatedUser,
       LcmsmsSubmissionForm lcmsmsSubmissionForm,
       SmallMoleculeSubmissionForm smallMoleculeSubmissionForm,
       IntactProteinSubmissionForm intactProteinSubmissionForm) {
-    this.presenter = presenter;
+    this.submissionService = submissionService;
+    this.authenticatedUser = authenticatedUser;
     this.lcmsmsSubmissionForm = lcmsmsSubmissionForm;
     this.smallMoleculeSubmissionForm = smallMoleculeSubmissionForm;
     this.intactProteinSubmissionForm = intactProteinSubmissionForm;
@@ -148,8 +177,8 @@ public class SubmissionView extends VerticalLayout
     upload.setMaxFileSize(MAXIMUM_FILES_SIZE);
     upload.setMaxFiles(MAXIMUM_FILES_COUNT);
     upload.setMinHeight("2.5em");
-    upload.addSucceededListener(event -> presenter.addFile(event.getFileName(),
-        uploadBuffer.getInputStream(event.getFileName()), getLocale()));
+    upload.addSucceededListener(
+        event -> addFile(event.getFileName(), uploadBuffer.getInputStream(event.getFileName())));
     files.setId(FILES);
     files.setHeight("15em");
     files.setWidth("45em");
@@ -160,8 +189,9 @@ public class SubmissionView extends VerticalLayout
     save.setId(SAVE);
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
-    save.addClickListener(e -> presenter.save(getLocale()));
-    presenter.init(this);
+    save.addClickListener(e -> save());
+    files.setItems(filesDataProvider);
+    setSubmission(null);
   }
 
   private Anchor filenameAnchor(SubmissionFile file) {
@@ -176,7 +206,7 @@ public class SubmissionView extends VerticalLayout
   private Button removeButton(SubmissionFile file) {
     Button button = new Button();
     button.setIcon(VaadinIcon.TRASH.create());
-    button.addClickListener(e -> presenter.removeFile(file));
+    button.addClickListener(e -> removeFile(file));
     return button;
   }
 
@@ -194,7 +224,8 @@ public class SubmissionView extends VerticalLayout
     filename.setHeader(resources.message(FILENAME));
     remove.setHeader(resources.message(REMOVE));
     save.setText(webResources.message(SAVE));
-    presenter.localeChange(getLocale());
+    binder.forField(comment).withNullRepresentation("").bind(COMMENT);
+    setReadOnly();
   }
 
   @Override
@@ -204,8 +235,132 @@ public class SubmissionView extends VerticalLayout
     return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
   }
 
+  Service service() {
+    Tab tab = service.getSelectedTab();
+    if (tab == smallMolecule) {
+      return Service.SMALL_MOLECULE;
+    } else if (tab == intactProtein) {
+      return Service.INTACT_PROTEIN;
+    }
+    return Service.LC_MS_MS;
+  }
+
+  void addFile(String filename, InputStream input) {
+    logger.debug("received file {}", filename);
+    SubmissionFile file = new SubmissionFile();
+    file.setFilename(filename);
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    try {
+      FileCopyUtils.copy(input, output);
+    } catch (IOException e) {
+      AppResources resources = new AppResources(SubmissionView.class, getLocale());
+      showNotification(resources.message(FILES_IOEXCEPTION, filename));
+      return;
+    }
+    file.setContent(output.toByteArray());
+    if (filesDataProvider.getItems().size() >= MAXIMUM_FILES_COUNT) {
+      AppResources resources = new AppResources(SubmissionView.class, getLocale());
+      showNotification(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
+      return;
+    }
+    filesDataProvider.getItems().add(file);
+    filesDataProvider.refreshAll();
+  }
+
+  void removeFile(SubmissionFile file) {
+    filesDataProvider.getItems().remove(file);
+    filesDataProvider.refreshAll();
+  }
+
+  boolean valid() {
+    boolean valid = true;
+    Service service = service();
+    switch (service) {
+      case LC_MS_MS:
+        valid = lcmsmsSubmissionForm.isValid() && valid;
+        break;
+      case SMALL_MOLECULE:
+        valid = smallMoleculeSubmissionForm.isValid() && valid;
+        break;
+      case INTACT_PROTEIN:
+        valid = intactProteinSubmissionForm.isValid() && valid;
+        break;
+      default:
+        valid = false;
+        break;
+    }
+    valid = binder.isValid() && valid;
+    return valid;
+  }
+
+  void save() {
+    if (valid()) {
+      Submission submission = binder.getBean();
+      submission.setService(service());
+      submission.setFiles(new ArrayList<>(filesDataProvider.getItems()));
+      if (submission.getId() == null) {
+        logger.debug("save new submission {}", submission);
+        submissionService.insert(submission);
+      } else {
+        logger.debug("save submission {}", submission);
+        submissionService.update(submission, null);
+      }
+      final AppResources resources = new AppResources(SubmissionView.class, getLocale());
+      showNotification(resources.message(SAVED, submission.getExperiment()));
+      UI.getCurrent().navigate(SubmissionsView.class);
+    }
+  }
+
+  Submission getSubmission() {
+    return binder.getBean();
+  }
+
+  private void setSubmission(Submission submission) {
+    if (submission == null) {
+      submission = new Submission();
+      submission.setService(Service.LC_MS_MS);
+      submission.setStorageTemperature(StorageTemperature.MEDIUM);
+      submission.setSeparation(GelSeparation.ONE_DIMENSION);
+      submission.setThickness(GelThickness.ONE);
+      submission.setDigestion(ProteolyticDigestion.TRYPSIN);
+      submission.setProteinContent(ProteinContent.SMALL);
+      submission.setInjectionType(InjectionType.LC_MS);
+      submission.setSource(MassDetectionInstrumentSource.ESI);
+      submission.setIdentification(ProteinIdentification.REFSEQ);
+    }
+    if (submission.getSamples() == null) {
+      submission.setSamples(new ArrayList<>());
+    }
+    if (submission.getSamples() == null || submission.getSamples().isEmpty()) {
+      SubmissionSample sample = new SubmissionSample();
+      sample.setType(SampleType.SOLUTION);
+      submission.getSamples().add(sample);
+    }
+    if (submission.getFiles() == null) {
+      submission.setFiles(new ArrayList<>());
+    }
+    binder.setBean(submission);
+    filesDataProvider.getItems().clear();
+    filesDataProvider.getItems().addAll(submission.getFiles());
+    filesDataProvider.refreshAll();
+    lcmsmsSubmissionForm.setSubmission(submission);
+    smallMoleculeSubmissionForm.setSubmission(submission);
+    intactProteinSubmissionForm.setSubmission(submission);
+    setReadOnly();
+  }
+
+  private void setReadOnly() {
+    boolean readOnly = !authenticatedUser.hasPermission(binder.getBean(), WRITE);
+    binder.setReadOnly(readOnly);
+    upload.setVisible(!readOnly);
+    files.getColumnByKey(REMOVE).setVisible(!readOnly);
+    save.setEnabled(!readOnly);
+  }
+
   @Override
   public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
-    presenter.setParameter(parameter);
+    if (parameter != null) {
+      setSubmission(submissionService.get(parameter).orElse(null));
+    }
   }
 }

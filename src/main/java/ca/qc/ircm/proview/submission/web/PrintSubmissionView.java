@@ -24,6 +24,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -59,13 +60,13 @@ public class PrintSubmissionView extends VerticalLayout
   protected H2 header = new H2();
   protected H3 secondHeader = new H3();
   protected PrintSubmission printContent;
-  private transient PrintSubmissionViewPresenter presenter;
+  private Submission submission;
+  private transient SubmissionService service;
 
   @Autowired
-  protected PrintSubmissionView(PrintSubmissionViewPresenter presenter,
-      PrintSubmission printContent) {
-    this.presenter = presenter;
+  protected PrintSubmissionView(PrintSubmission printContent, SubmissionService service) {
     this.printContent = printContent;
+    this.service = service;
   }
 
   @PostConstruct
@@ -75,7 +76,6 @@ public class PrintSubmissionView extends VerticalLayout
     add(header, secondHeader, printContent);
     header.setId(HEADER);
     secondHeader.setId(SECOND_HEADER);
-    presenter.init(this);
   }
 
   @Override
@@ -94,16 +94,20 @@ public class PrintSubmissionView extends VerticalLayout
 
   @Override
   public void setParameter(BeforeEvent event, Long parameter) {
-    presenter.setParameter(parameter);
+    submission = service.get(parameter).orElse(null);
+    printContent.setSubmission(submission);
     updateSecondHeader();
   }
 
   private void updateSecondHeader() {
-    Submission submission = presenter.getSubmission();
     if (submission != null && submission.getId() != null) {
       secondHeader.setText(submission.getService().getLabel(getLocale()));
     } else {
       secondHeader.setText(Service.LC_MS_MS.getLabel(getLocale()));
     }
+  }
+
+  Submission getSubmission() {
+    return submission;
   }
 }

@@ -25,18 +25,17 @@ import static ca.qc.ircm.proview.files.web.GuidelinesView.HEADER;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import com.google.common.net.UrlEscapers;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
@@ -50,7 +49,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @NonTransactionalTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class GuidelinesViewTest extends AbstractKaribuTestCase {
+public class GuidelinesViewTest extends SpringUIUnitTest {
   private GuidelinesView view;
   @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
@@ -63,9 +62,8 @@ public class GuidelinesViewTest extends AbstractKaribuTestCase {
    */
   @BeforeEach
   public void beforeTest() {
-    ui.setLocale(locale);
-    view = new GuidelinesView(guidelinesConfiguration);
-    view.init();
+    UI.getCurrent().setLocale(locale);
+    view = navigate(GuidelinesView.class);
   }
 
   @Test
@@ -76,7 +74,6 @@ public class GuidelinesViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void labels() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(resources.message(HEADER), view.header.getText());
     List<Category> categories = guidelinesConfiguration.categories(locale);
     List<CategoryComponent> categoryComponents = findChildren(view, CategoryComponent.class);
@@ -95,12 +92,9 @@ public class GuidelinesViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void localeChange() {
-    view.localeChange(mock(LocaleChangeEvent.class));
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(GuidelinesView.class, locale);
-    ui.setLocale(locale);
-    view.localeChange(mock(LocaleChangeEvent.class));
-    view.localeChange(mock(LocaleChangeEvent.class));
+    UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), view.header.getText());
     List<Category> categories = guidelinesConfiguration.categories(locale);
     List<CategoryComponent> categoryComponents = findChildren(view, CategoryComponent.class);
@@ -119,7 +113,6 @@ public class GuidelinesViewTest extends AbstractKaribuTestCase {
 
   @Test
   public void hrefs() throws Throwable {
-    view.localeChange(mock(LocaleChangeEvent.class));
     List<Category> categories = guidelinesConfiguration.categories(locale);
     List<CategoryComponent> categoryComponents = findChildren(view, CategoryComponent.class);
     for (int i = 0; i < categories.size(); i++) {

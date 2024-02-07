@@ -25,12 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,7 +58,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserGran
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class SwitchUserServiceTest extends AbstractKaribuTestCase {
+public class SwitchUserServiceTest extends SpringUIUnitTest {
   @Autowired
   private SwitchUserService service;
   @Autowired

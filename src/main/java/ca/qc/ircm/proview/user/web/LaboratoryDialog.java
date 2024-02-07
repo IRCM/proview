@@ -18,13 +18,16 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.CANCEL;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.NAME;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.Laboratory;
+import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -36,6 +39,9 @@ import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.shared.Registration;
@@ -62,14 +68,14 @@ public class LaboratoryDialog extends Dialog
   protected TextField name = new TextField();
   protected Button save = new Button();
   protected Button cancel = new Button();
+  private Binder<Laboratory> binder = new BeanValidationBinder<>(Laboratory.class);
+  private transient LaboratoryService service;
+  private transient AuthenticatedUser authenticatedUser;
+
   @Autowired
-  private transient LaboratoryDialogPresenter presenter;
-
-  public LaboratoryDialog() {
-  }
-
-  LaboratoryDialog(LaboratoryDialogPresenter presenter) {
-    this.presenter = presenter;
+  protected LaboratoryDialog(LaboratoryService service, AuthenticatedUser authenticatedUser) {
+    this.service = service;
+    this.authenticatedUser = authenticatedUser;
   }
 
   public static String id(String baseId) {
@@ -97,11 +103,11 @@ public class LaboratoryDialog extends Dialog
     save.setId(id(SAVE));
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
-    save.addClickListener(e -> presenter.save(getLocale()));
+    save.addClickListener(e -> save());
     cancel.setId(id(CANCEL));
     cancel.setIcon(VaadinIcon.CLOSE.create());
-    cancel.addClickListener(e -> presenter.cancel());
-    presenter.init(this);
+    cancel.addClickListener(e -> cancel());
+    setLaboratory(null);
   }
 
   @Override
@@ -112,13 +118,14 @@ public class LaboratoryDialog extends Dialog
     name.setLabel(laboratoryResources.message(NAME));
     save.setText(webResources.message(SAVE));
     cancel.setText(webResources.message(CANCEL));
-    presenter.localeChange(getLocale());
+    binder.forField(name).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
+        .bind(NAME);
   }
 
   private void updateHeader() {
     final AppResources resources = new AppResources(LaboratoryDialog.class, getLocale());
-    if (presenter.getLaboratory() != null && presenter.getLaboratory().getId() != null) {
-      setHeaderTitle(resources.message(HEADER, 1, presenter.getLaboratory().getName()));
+    if (binder.getBean() != null && binder.getBean().getId() != null) {
+      setHeaderTitle(resources.message(HEADER, 1, binder.getBean().getName()));
     } else {
       setHeaderTitle(resources.message(HEADER, 0));
     }
@@ -142,11 +149,37 @@ public class LaboratoryDialog extends Dialog
   }
 
   public Laboratory getLaboratory() {
-    return presenter.getLaboratory();
+    return binder.getBean();
   }
 
   public void setLaboratory(Laboratory laboratory) {
-    presenter.setLaboratory(laboratory);
+    if (laboratory == null) {
+      laboratory = new Laboratory();
+    }
+    binder.setBean(laboratory);
     updateHeader();
+  }
+
+  BinderValidationStatus<Laboratory> validate() {
+    return binder.validate();
+  }
+
+  private boolean isValid() {
+    return validate().isOk();
+  }
+
+  void save() {
+    if (isValid()) {
+      Laboratory laboratory = binder.getBean();
+      final AppResources resources = new AppResources(LaboratoryDialog.class, getLocale());
+      service.save(laboratory);
+      showNotification(resources.message(SAVED, laboratory.getName()));
+      close();
+      fireSavedEvent();
+    }
+  }
+
+  void cancel() {
+    close();
   }
 }

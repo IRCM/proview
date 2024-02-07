@@ -19,9 +19,9 @@ package ca.qc.ircm.proview.web.component;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import ca.qc.ircm.proview.test.config.AbstractKaribuTestCase;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.web.ContactView;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -30,7 +30,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @NonTransactionalTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class UrlComponentTest extends AbstractKaribuTestCase {
+public class UrlComponentTest extends SpringUIUnitTest {
   private UrlComponentForTest urlComponent = new UrlComponentForTest();
 
   @Test
