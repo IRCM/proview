@@ -33,6 +33,7 @@ import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
+import ca.qc.ircm.proview.web.component.UrlComponent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -65,7 +66,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
  */
 @JsModule("./styles/shared-styles.js")
 public class ViewLayout extends VerticalLayout
-    implements RouterLayout, LocaleChangeObserver, AfterNavigationObserver {
+    implements RouterLayout, LocaleChangeObserver, AfterNavigationObserver, UrlComponent {
   public static final String ID = "view-layout";
   public static final String TABS = styleName(ID, "tabs");
   public static final String SUBMISSIONS = "submissions";
@@ -172,7 +173,7 @@ public class ViewLayout extends VerticalLayout
   private void selectTab(Tab previous) {
     if (tabs.getSelectedTab() == signout) {
       logger.debug("Sign out user {}", authenticatedUser);
-      UI.getCurrent().getPage().setLocation("/");
+      UI.getCurrent().getPage().setLocation(getUrl(MainView.VIEW_NAME));
       CompositeLogoutHandler logoutHandler = new CompositeLogoutHandler(
           new CookieClearingLogoutHandler("remember-me"), new SecurityContextLogoutHandler());
       logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(),
