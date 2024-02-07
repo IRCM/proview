@@ -181,7 +181,7 @@ public class ViewLayout extends VerticalLayout
     } else if (tabs.getSelectedTab() == exitSwitchUser) {
       logger.debug("Exit switch user");
       switchUserService.exitSwitchUser();
-      UI.getCurrent().navigate(MainView.class);
+      UI.getCurrent().getPage().setLocation(getUrl(MainView.VIEW_NAME));
     } else if (tabs.getSelectedTab() == changeLanguage) {
       Locale locale = UI.getCurrent().getLocale();
       Locale newLocale = Constants.getLocales().stream().filter(lo -> !lo.equals(locale))

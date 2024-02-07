@@ -43,6 +43,7 @@ import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
+import ca.qc.ircm.proview.web.component.UrlComponent;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -82,7 +83,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Route(value = UsersView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ MANAGER, ADMIN })
 public class UsersView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle,
-    AfterNavigationObserver, NotificationComponent {
+    AfterNavigationObserver, NotificationComponent, UrlComponent {
   public static final String VIEW_NAME = "users";
   public static final String ID = "users-view";
   public static final String HEADER = "header";
@@ -340,7 +341,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
       error.setVisible(true);
     } else {
       switchUserService.switchUser(user, VaadinServletRequest.getCurrent());
-      UI.getCurrent().navigate(MainView.class);
+      UI.getCurrent().getPage().setLocation(getUrl(MainView.VIEW_NAME));
     }
   }
 

@@ -57,8 +57,9 @@ public class ViewLayoutContextPathItTest extends AbstractTestBenchTestCase {
     view.contact().click();
     view.exitSwitchUser().click();
     $(SubmissionsViewElement.class).waitForFirst();
-    assertFalse(view.exitSwitchUser().isDisplayed());
-    assertTrue(view.users().isDisplayed());
+    ViewLayoutElement viewAfterExitSwitchUser = $(ViewLayoutElement.class).first();
+    assertFalse(optional(() -> viewAfterExitSwitchUser.exitSwitchUser()).isPresent());
+    assertTrue(optional(() -> viewAfterExitSwitchUser.users()).isPresent());
   }
 
   @Test

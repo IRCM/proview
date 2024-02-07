@@ -299,13 +299,14 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   public void tabs_SelectExitSwitchUser() {
     navigate(ContactView.class);
     view = $(ViewLayout.class).first();
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
 
     view.tabs.setSelectedTab(view.exitSwitchUser);
 
     verify(switchUserService).exitSwitchUser();
-    verify(navigationListener).afterNavigation(any());
-    assertTrue($(SubmissionsView.class).exists());
+    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
+        .anyMatch(i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
+            && i.getInvocation().getParameters().size() > 0
+            && i.getInvocation().getParameters().get(0).equals("/")));
   }
 
   @Test

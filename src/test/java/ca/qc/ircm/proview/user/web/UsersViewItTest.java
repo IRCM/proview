@@ -130,8 +130,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
 
     $(SubmissionsViewElement.class).waitForFirst();
     ViewLayoutElement viewLayout = $(ViewLayoutElement.class).waitForFirst();
-    assertTrue(viewLayout.exitSwitchUser().isDisplayed());
-    assertFalse(viewLayout.users().isDisplayed());
+    assertTrue(optional(() -> viewLayout.exitSwitchUser()).isPresent());
+    assertFalse(optional(() -> viewLayout.users()).isPresent());
   }
 
   @Test

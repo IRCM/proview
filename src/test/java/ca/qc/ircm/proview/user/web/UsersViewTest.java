@@ -62,7 +62,6 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.SwitchUserService;
-import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
@@ -608,8 +607,11 @@ public class UsersViewTest extends SpringUIUnitTest {
 
     test(view.switchUser).click();
     verify(switchUserService).switchUser(user, VaadinServletRequest.getCurrent());
-    assertTrue($(SubmissionsView.class).exists());
     assertFalse(view.error.isVisible());
+    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
+        .anyMatch(i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
+            && i.getInvocation().getParameters().size() > 0
+            && i.getInvocation().getParameters().get(0).equals("/")));
   }
 
   @Test
