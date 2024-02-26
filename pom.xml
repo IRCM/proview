@@ -72,7 +72,6 @@
     <shiro.version>1.13.0</shiro.version>
     <vaadin.version>23.3.26</vaadin.version>
     <guava.version>32.0.0-jre</guava.version>
-    <commons-email.version>1.5</commons-email.version>
     <spotbugs.version>4.7.1</spotbugs.version>
     <generate-property-names.version>1.1</generate-property-names.version>
     <selenium.version>4.5.3</selenium.version>
@@ -166,12 +165,6 @@
       <groupId>com.icegreen</groupId>
       <artifactId>greenmail-junit5</artifactId>
       <version>${greenmail.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-email</artifactId>
-      <version>${commons-email.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
