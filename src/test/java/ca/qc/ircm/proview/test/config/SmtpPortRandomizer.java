@@ -21,7 +21,6 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.springframework.test.util.TestSocketUtils;
-import org.springframework.util.SocketUtils;
 
 /**
  * Configures SMTP on a random port.
