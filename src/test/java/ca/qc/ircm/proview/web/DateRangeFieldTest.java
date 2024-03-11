@@ -38,7 +38,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionProperties;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.DateRangeField.Dates;
 import com.google.common.collect.Range;
 import com.vaadin.flow.component.UI;
@@ -57,7 +57,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link DateRangeField}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class DateRangeFieldTest extends SpringUIUnitTest {
   private DateRangeField dateRange;

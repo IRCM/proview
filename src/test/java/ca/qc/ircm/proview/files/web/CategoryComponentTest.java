@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Paths;
@@ -39,7 +39,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link CategoryComponent}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class CategoryComponentTest extends SpringUIUnitTest {
   private CategoryComponent component;

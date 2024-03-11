@@ -79,7 +79,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -108,6 +108,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.persistence.EntityManager;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,7 +122,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link SubmissionView}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionViewTest extends SpringUIUnitTest {
   private SubmissionView view;
@@ -131,6 +132,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   private AuthenticatedUser authenticatedUser;
   @Autowired
   private SubmissionRepository repository;
+  @Autowired
+  private EntityManager entityManager;
   @Mock
   private BeforeEvent beforeEvent;
   @Mock
@@ -637,6 +640,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void save_UpdateLcmsms() {
     Submission database = repository.findById(1L).get();
+    entityManager.detach(database);
     when(service.get(any())).thenReturn(Optional.of(database));
     final List<SubmissionFile> oldFiles = database.getFiles();
     view.setParameter(beforeEvent, 1L);
@@ -739,6 +743,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void save_UpdateSmallMolecule() {
     Submission database = repository.findById(1L).get();
+    entityManager.detach(database);
     when(service.get(any())).thenReturn(Optional.of(database));
     final List<SubmissionFile> oldFiles = database.getFiles();
     view.setParameter(beforeEvent, 1L);
@@ -827,6 +832,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void save_UpdateIntactProtein() {
     Submission database = repository.findById(1L).get();
+    entityManager.detach(database);
     when(service.get(any())).thenReturn(Optional.of(database));
     final List<SubmissionFile> oldFiles = database.getFiles();
     view.setParameter(beforeEvent, 1L);

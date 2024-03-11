@@ -31,7 +31,7 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.google.common.net.UrlEscapers;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Anchor;
@@ -47,7 +47,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link GuidelinesView}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class GuidelinesViewTest extends SpringUIUnitTest {
   private GuidelinesView view;

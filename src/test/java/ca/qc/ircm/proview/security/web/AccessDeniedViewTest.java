@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.web.UsersView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
@@ -42,7 +42,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link AccessDeniedView}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class AccessDeniedViewTest extends SpringUIUnitTest {
   private AccessDeniedView view;

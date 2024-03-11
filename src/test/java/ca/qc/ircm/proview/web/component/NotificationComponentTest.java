@@ -19,7 +19,7 @@ package ca.qc.ircm.proview.web.component;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
@@ -29,7 +29,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link NotificationComponent}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class NotificationComponentTest extends SpringUIUnitTest {
   private NotificationComponentForTest notificationComponent = new NotificationComponentForTest();

@@ -57,7 +57,7 @@ import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -78,7 +78,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link SmallMoleculeSubmissionForm}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   private SmallMoleculeSubmissionForm form;

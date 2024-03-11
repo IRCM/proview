@@ -95,7 +95,7 @@ import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -116,7 +116,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link LcmsmsSubmissionForm}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
   private LcmsmsSubmissionForm form;

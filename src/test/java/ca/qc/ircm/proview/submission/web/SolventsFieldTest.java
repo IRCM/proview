@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -43,7 +43,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link SolventsField}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SolventsFieldTest extends SpringUIUnitTest {
   private SolventsField fields;

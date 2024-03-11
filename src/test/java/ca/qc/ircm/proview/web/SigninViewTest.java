@@ -42,7 +42,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.ForgotPasswordView;
 import com.vaadin.flow.component.UI;
@@ -63,7 +63,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 /**
  * Tests for {@link SigninView}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithAnonymousUser
 public class SigninViewTest extends SpringUIUnitTest {
   private SigninView view;

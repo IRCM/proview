@@ -65,7 +65,7 @@ import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -86,7 +86,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Tests for {@link IntactProteinSubmissionForm}.
  */
-@NonTransactionalTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   private IntactProteinSubmissionForm form;
