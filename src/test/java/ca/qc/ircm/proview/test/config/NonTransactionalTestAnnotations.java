@@ -25,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.TestExecutionListeners.MergeMode;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 /**
  * Configuration for tests that do not use the database.
@@ -33,6 +34,7 @@ import org.springframework.test.context.TestExecutionListeners.MergeMode;
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest
 @ActiveProfiles("test")
+@WebAppConfiguration
 @TestExecutionListeners(
     value = { VaadinLicenseExecutionListener.class },
     mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
