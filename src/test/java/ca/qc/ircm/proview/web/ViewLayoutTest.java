@@ -57,6 +57,7 @@ import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.AfterNavigationListener;
+import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
@@ -302,7 +303,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     view.tabs.setSelectedTab(view.exitSwitchUser);
 
-    verify(switchUserService).exitSwitchUser();
+    verify(switchUserService).exitSwitchUser(VaadinServletRequest.getCurrent());
     assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
         .anyMatch(i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
             && i.getInvocation().getParameters().size() > 0
