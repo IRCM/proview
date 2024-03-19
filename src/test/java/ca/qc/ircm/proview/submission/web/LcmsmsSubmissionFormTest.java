@@ -72,9 +72,9 @@ import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.WEIGHT_MARK
 import static ca.qc.ircm.proview.submission.web.LcmsmsSubmissionForm.id;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
