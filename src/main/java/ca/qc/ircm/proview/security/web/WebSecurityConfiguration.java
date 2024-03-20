@@ -131,11 +131,8 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
    */
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    // Restrict access to our application.
-    http.authorizeRequests()
-
-        // Configure the login page.
-        .and().formLogin().failureHandler(authenticationFailureHandler())
+    // Configure the login page.
+    http.formLogin().failureHandler(authenticationFailureHandler())
 
         // Remember me
         .and().rememberMe().alwaysRemember(true).key(configuration.getRememberMeKey());
