@@ -38,8 +38,9 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("integration-test")
 @TestExecutionListeners(
-    value = { VaadinLicenseExecutionListener.class, TestBenchTestExecutionListener.class,
-        TestBenchSecurityFilter.class },
+    value = { VaadinLicenseExecutionListener.class,
+        FixSecurityContextHolderStrategyExecutionListener.class,
+        TestBenchTestExecutionListener.class, TestBenchSecurityFilter.class },
     mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
 @Headless
 @Transactional
