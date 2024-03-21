@@ -50,8 +50,8 @@ public class SolventTest {
 
   @Test
   public void getLabel_Chcl3() {
-    assertEquals("CHCl<sub>3</sub>", CHCL3.getLabel(Locale.ENGLISH));
-    assertEquals("CHCl<sub>3</sub>", CHCL3.getLabel(Locale.FRENCH));
+    assertEquals("CHCl\u2083", CHCL3.getLabel(Locale.ENGLISH));
+    assertEquals("CHCl\u2083", CHCL3.getLabel(Locale.FRENCH));
   }
 
   @Test

@@ -101,6 +101,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -244,7 +245,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
         view.smallMoleculeSubmissionForm.storageTemperature
             .setValue(submission.getStorageTemperature());
         view.smallMoleculeSubmissionForm.highResolution.setValue(submission.isHighResolution());
-        view.smallMoleculeSubmissionForm.solvents.setValue(submission.getSolvents());
+        view.smallMoleculeSubmissionForm.solvents.setValue(new HashSet<>(submission.getSolvents()));
         view.smallMoleculeSubmissionForm.otherSolvent.setValue(submission.getOtherSolvent());
       }
     }

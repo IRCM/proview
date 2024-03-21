@@ -50,6 +50,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.RequiredIfEnabledValidator;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
@@ -64,9 +65,12 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +100,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   protected Checkbox lightSensitive = new Checkbox();
   protected RadioButtonGroup<StorageTemperature> storageTemperature = new RadioButtonGroup<>();
   protected RadioButtonGroup<Boolean> highResolution = new RadioButtonGroup<>();
-  protected SolventsField solvents = new SolventsField();
+  protected CheckboxGroup<Solvent> solvents = new CheckboxGroup<>();
   protected TextField otherSolvent = new TextField();
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   private Binder<SubmissionSample> firstSampleBinder =
@@ -131,7 +135,6 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     sampleType.addValueChangeListener(e -> sampleTypeChanged());
     sampleName.setId(id(SAMPLE_NAME));
     solvent.setId(id(SOLUTION_SOLVENT));
-    solvents.addValueChangeListener(e -> solventsChanged());
     formula.setId(id(FORMULA));
     monoisotopicMass.setId(id(MONOISOTOPIC_MASS));
     averageMass.setId(id(AVERAGE_MASS));
@@ -147,6 +150,10 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
         .setRenderer(new TextRenderer<>(value -> new AppResources(Submission.class, getLocale())
             .message(property(HIGH_RESOLUTION, value))));
     highResolution.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+    solvents.setId(id(SOLVENTS));
+    solvents.setItems(Solvent.values());
+    solvents.setItemLabelGenerator(solvent -> solvent.getLabel(getLocale()));
+    solvents.addValueChangeListener(e -> solventsChanged());
     otherSolvent.setId(id(OTHER_SOLVENT));
   }
 
@@ -191,6 +198,8 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     binder.forField(highResolution).asRequired(webResources.message(REQUIRED))
         .bind(HIGH_RESOLUTION);
     binder.forField(solvents).asRequired(webResources.message(REQUIRED))
+        .withConverter(value -> value != null ? (List<Solvent>) new ArrayList<>(value) : null,
+            value -> value != null ? new HashSet<>(value) : new HashSet<>())
         .withValidator(solventsNotEmpty(locale)).bind(SOLVENTS);
     otherSolvent.setRequiredIndicatorVisible(true);
     binder.forField(otherSolvent)
@@ -207,7 +216,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   }
 
   private void solventsChanged() {
-    List<Solvent> solvents = this.solvents.getValue();
+    Set<Solvent> solvents = this.solvents.getValue();
     otherSolvent.setEnabled(solvents != null && solvents.contains(Solvent.OTHER));
   }
 

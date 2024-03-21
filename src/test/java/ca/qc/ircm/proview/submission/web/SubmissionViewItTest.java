@@ -57,6 +57,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -194,8 +195,9 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.storageTemperature().selectByText(storageTemperature.getLabel(locale));
     form.highResolution()
         .selectByText(submissionResource.message(property(HIGH_RESOLUTION, highResolution)));
-    solvents.forEach(
-        solvent -> form.solvents().solvent(solvent).setChecked(solvents.contains(solvent)));
+    Stream.of(Solvent.values())
+        .forEach(solvent -> form.solvents().deselectByText(solvent.getLabel(currentLocale())));
+    solvents.forEach(solvent -> form.solvents().selectByText(solvent.getLabel(currentLocale())));
     form.otherSolvent().setValue(otherSolvent);
   }
 

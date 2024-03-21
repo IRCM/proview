@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.LIGHT_SENSITIVE
 import static ca.qc.ircm.proview.submission.SubmissionProperties.MONOISOTOPIC_MASS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.OTHER_SOLVENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLUTION_SOLVENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SOLVENTS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.STORAGE_TEMPERATURE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
 import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.SAMPLE_NAME;
@@ -31,6 +32,7 @@ import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.SAMP
 import static ca.qc.ircm.proview.submission.web.SmallMoleculeSubmissionForm.id;
 
 import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
+import com.vaadin.flow.component.checkbox.testbench.CheckboxGroupElement;
 import com.vaadin.flow.component.customfield.testbench.CustomFieldElement;
 import com.vaadin.flow.component.radiobutton.testbench.RadioButtonGroupElement;
 import com.vaadin.flow.component.textfield.testbench.TextFieldElement;
@@ -83,8 +85,8 @@ public class SmallMoleculeSubmissionFormElement extends CustomFieldElement {
     return $(RadioButtonGroupElement.class).id(id(HIGH_RESOLUTION));
   }
 
-  public SolventsFieldElement solvents() {
-    return $(SolventsFieldElement.class).first();
+  public CheckboxGroupElement solvents() {
+    return $(CheckboxGroupElement.class).id(id(SOLVENTS));
   }
 
   public TextFieldElement otherSolvent() {

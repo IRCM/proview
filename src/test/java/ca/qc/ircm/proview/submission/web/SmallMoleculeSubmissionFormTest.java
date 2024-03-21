@@ -66,9 +66,13 @@ import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,7 +156,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     form.lightSensitive.setValue(lightSensitive);
     form.storageTemperature.setValue(storageTemperature);
     form.highResolution.setValue(highResolution);
-    form.solvents.setValue(solvents);
+    form.solvents.setValue(new HashSet<>(solvents));
     form.otherSolvent.setValue(otherSolvent);
   }
 
@@ -169,6 +173,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(id(LIGHT_SENSITIVE), form.lightSensitive.getId().orElse(""));
     assertEquals(id(STORAGE_TEMPERATURE), form.storageTemperature.getId().orElse(""));
     assertEquals(id(HIGH_RESOLUTION), form.highResolution.getId().orElse(""));
+    assertEquals(id(SOLVENTS), form.solvents.getId().orElse(""));
     assertEquals(id(OTHER_SOLVENT), form.otherSolvent.getId().orElse(""));
   }
 
@@ -233,6 +238,16 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void solvents() {
+    Set<Solvent> items = form.solvents.getListDataView().getItems().collect(Collectors.toSet());
+    assertEquals(Solvent.values().length, items.size());
+    for (Solvent solvent : Solvent.values()) {
+      assertTrue(items.contains(solvent));
+      assertEquals(solvent.getLabel(locale), form.solvents.getItemLabelGenerator().apply(solvent));
+    }
+  }
+
+  @Test
   public void highResolution() {
     List<Boolean> items = items(form.highResolution);
     assertEquals(2, items.size());
@@ -288,13 +303,13 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void enabled_MethanolSolvent() {
-    form.solvents.setValue(Arrays.asList(Solvent.METHANOL));
+    form.solvents.setValue(Collections.singleton(Solvent.METHANOL));
     assertFalse(form.otherSolvent.isEnabled());
   }
 
   @Test
   public void enabled_OtherSolvent() {
-    form.solvents.setValue(Arrays.asList(Solvent.OTHER));
+    form.solvents.setValue(Collections.singleton(Solvent.OTHER));
     assertTrue(form.otherSolvent.isEnabled());
   }
 
@@ -474,7 +489,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   public void isValid_EmptySolvents() {
     form.setSubmission(newSubmission);
     setFields();
-    form.solvents.setValue(null);
+    form.solvents.setValue(new HashSet<>());
 
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
@@ -570,7 +585,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.storageTemperature.isReadOnly());
     assertEquals(highResolution, form.highResolution.getValue());
     assertFalse(form.highResolution.isReadOnly());
-    assertEquals(solvents, form.solvents.getValue());
+    assertEquals(solvents.size(), form.solvents.getValue().size());
+    assertTrue(form.solvents.getValue().containsAll(solvents));
     assertFalse(form.solvents.isReadOnly());
     assertEquals(otherSolvent, form.otherSolvent.getValue());
     assertFalse(form.otherSolvent.isReadOnly());
@@ -602,7 +618,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertTrue(form.storageTemperature.isReadOnly());
     assertEquals(false, form.highResolution.getValue());
     assertTrue(form.highResolution.isReadOnly());
-    List<Solvent> solvents = form.solvents.getValue();
+    Set<Solvent> solvents = form.solvents.getValue();
     assertEquals(1, solvents.size());
     assertTrue(solvents.contains(Solvent.METHANOL));
     assertTrue(form.solvents.isReadOnly());
