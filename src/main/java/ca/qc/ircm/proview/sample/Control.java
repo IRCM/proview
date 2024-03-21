@@ -17,14 +17,14 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static javax.persistence.EnumType.STRING;
+import static jakarta.persistence.EnumType.STRING;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Named;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 
 /**
  * Control samples.

@@ -17,8 +17,8 @@
 
 package ca.qc.ircm.proview.test.config;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 /**
  * Additional functions for service testing.

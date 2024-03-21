@@ -21,8 +21,8 @@ import static ca.qc.ircm.proview.user.UserAuthority.FORCE_CHANGE_PASSWORD;
 
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.Optional;
-import javax.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

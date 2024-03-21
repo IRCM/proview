@@ -36,7 +36,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

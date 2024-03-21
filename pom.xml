@@ -22,13 +22,13 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.18</version>
+    <version>3.0.13</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>ca.qc.ircm.proteomique</groupId>
   <artifactId>proview</artifactId>
   <name>ProView</name>
-  <version>3.3-SNAPSHOT</version>
+  <version>3.2-SNAPSHOT</version>
   <inceptionYear>2006</inceptionYear>
   <packaging>war</packaging>
   <description>LIMS managing sample analysis by mass spectrometry (MS)</description>
@@ -70,12 +70,13 @@
     <start-class>ca.qc.ircm.proview.Main</start-class>
     <java.version>17</java.version>
     <shiro.version>1.13.0</shiro.version>
-    <vaadin.version>23.3.26</vaadin.version>
+    <vaadin.version>24.3.1</vaadin.version>
     <guava.version>32.0.0-jre</guava.version>
     <spotbugs.version>4.7.1</spotbugs.version>
-    <generate-property-names.version>1.1</generate-property-names.version>
-    <selenium.version>4.5.3</selenium.version>
-    <greenmail.version>1.6.1</greenmail.version>
+    <generate-property-names.version>2.1</generate-property-names.version>
+    <querydsl.version>5.0.0</querydsl.version>
+    <selenium.version>4.15.0</selenium.version>
+    <greenmail.version>2.0.1</greenmail.version>
     <testbench.skip>false</testbench.skip>
     <testbench.maxAttempts>3</testbench.maxAttempts>
     <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
@@ -141,6 +142,11 @@
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-testbench</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-testbench-unit-junit5</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Required for vaadin-testbench-unit -->
@@ -212,6 +218,8 @@
     <dependency>
       <groupId>com.querydsl</groupId>
       <artifactId>querydsl-jpa</artifactId>
+      <version>${querydsl.version}</version>
+      <classifier>jakarta</classifier>
     </dependency>
     <dependency>
       <groupId>org.apache.shiro</groupId>
@@ -353,6 +361,7 @@
               <groupId>com.querydsl</groupId>
               <artifactId>querydsl-apt</artifactId>
               <version>${querydsl.version}</version>
+              <classifier>jakarta</classifier>
             </dependency>
           </dependencies>
         </plugin>
@@ -456,8 +465,8 @@
         <artifactId>vaadin-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>pl.project13.maven</groupId>
-        <artifactId>git-commit-id-plugin</artifactId>
+        <groupId>io.github.git-commit-id</groupId>
+        <artifactId>git-commit-id-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>com.mysema.maven</groupId>

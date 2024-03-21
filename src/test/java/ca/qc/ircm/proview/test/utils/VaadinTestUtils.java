@@ -228,7 +228,8 @@ public class VaadinTestUtils {
   /**
    * Returns all registered functions of this renderer.
    *
-   * @param renderer renderer
+   * @param renderer
+   *          renderer
    * @return all registered functions of this renderer
    * @param <SOURCE>
    */
@@ -414,7 +415,6 @@ public class VaadinTestUtils {
    *          actual
    */
   public static void validateEquals(DatePickerI18n expected, DatePickerI18n actual) {
-    assertEquals(expected.getWeek(), actual.getWeek());
     assertEquals(expected.getToday(), actual.getToday());
     assertEquals(expected.getCancel(), actual.getCancel());
     assertEquals(expected.getFirstDayOfWeek(), actual.getFirstDayOfWeek());
