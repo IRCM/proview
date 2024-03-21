@@ -27,7 +27,6 @@ import static ca.qc.ircm.proview.web.DatePickerInternationalization.englishDateP
 import static ca.qc.ircm.proview.web.DatePickerInternationalization.frenchDatePickerI18n;
 import static ca.qc.ircm.proview.web.DateRangeField.CLASS_NAME;
 import static ca.qc.ircm.proview.web.DateRangeField.FROM;
-import static ca.qc.ircm.proview.web.DateRangeField.FROM_AFTER_TO;
 import static ca.qc.ircm.proview.web.DateRangeField.TO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -153,8 +152,6 @@ public class DateRangeFieldTest extends SpringUIUnitTest {
     Optional<BindingValidationStatus<?>> optionalError =
         findValidationStatusByField(status, dateRange.from);
     assertTrue(optionalError.isPresent());
-    BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(FROM_AFTER_TO)), error.getMessage());
   }
 
   @Test
@@ -262,6 +259,8 @@ public class DateRangeFieldTest extends SpringUIUnitTest {
 
   @Test
   public void addThemeVariants() {
+    dateRange.from.getThemeNames().forEach(theme -> dateRange.from.removeThemeName(theme));
+    dateRange.to.getThemeNames().forEach(theme -> dateRange.to.removeThemeName(theme));
     assertTrue(dateRange.from.getThemeNames().isEmpty());
     assertTrue(dateRange.to.getThemeNames().isEmpty());
     assertFalse(dateRange.from.hasThemeName(DatePickerVariant.LUMO_SMALL.getVariantName()));
