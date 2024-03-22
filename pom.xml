@@ -70,12 +70,12 @@
     <start-class>ca.qc.ircm.proview.Main</start-class>
     <java.version>17</java.version>
     <shiro.version>1.13.0</shiro.version>
-    <vaadin.version>24.3.1</vaadin.version>
-    <guava.version>32.0.0-jre</guava.version>
+    <vaadin.version>24.3.7</vaadin.version>
+    <guava.version>33.0.0-jre</guava.version>
     <spotbugs.version>4.7.1</spotbugs.version>
     <generate-property-names.version>2.1</generate-property-names.version>
     <querydsl.version>5.0.0</querydsl.version>
-    <selenium.version>4.15.0</selenium.version>
+    <selenium.version>4.18.0</selenium.version>
     <greenmail.version>2.0.1</greenmail.version>
     <testbench.skip>false</testbench.skip>
     <testbench.maxAttempts>3</testbench.maxAttempts>
