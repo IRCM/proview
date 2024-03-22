@@ -23,13 +23,13 @@ import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Locale;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 /**
  * A plate well.

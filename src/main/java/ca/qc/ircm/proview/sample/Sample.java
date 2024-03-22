@@ -17,24 +17,24 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static javax.persistence.EnumType.STRING;
-import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import javax.validation.constraints.Size;
 
 /**
  * Sample.

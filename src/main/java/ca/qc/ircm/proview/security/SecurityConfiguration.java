@@ -17,13 +17,13 @@
 
 package ca.qc.ircm.proview.security;
 
+import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.PostConstruct;
 import org.apache.shiro.crypto.UnknownAlgorithmException;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -41,7 +41,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = SecurityConfiguration.PREFIX)
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
   public static final String PREFIX = "security";
   private static final Logger logger = LoggerFactory.getLogger(SecurityConfiguration.class);

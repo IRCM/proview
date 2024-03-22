@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
-import static javax.persistence.EnumType.ORDINAL;
+import static jakarta.persistence.EnumType.ORDINAL;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Named;
@@ -25,13 +25,13 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryData;
 import ca.qc.ircm.proview.user.User;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.Min;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Min;
 
 /**
  * Sample submitted for MS analysis.

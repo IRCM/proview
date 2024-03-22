@@ -51,6 +51,7 @@ import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -111,20 +112,18 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
     assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(msAnalysisResources.message(DELETED), dialog.deleted.getText());
     assertEquals(msAnalysisResources.message(ACQUISITIONS), dialog.acquisitionsHeader.getText());
-    assertEquals(acquisitionResources.message(SAMPLE),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(SAMPLE)));
+    HeaderRow header = dialog.acquisitions.getHeaderRows().get(0);
+    assertEquals(acquisitionResources.message(SAMPLE), header.getCell(dialog.sample).getText());
     assertEquals(acquisitionResources.message(CONTAINER),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(CONTAINER)));
+        header.getCell(dialog.container).getText());
     assertEquals(acquisitionResources.message(NUMBER_OF_ACQUISITION),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(NUMBER_OF_ACQUISITION)));
+        header.getCell(dialog.numberOfAcquisition).getText());
     assertEquals(acquisitionResources.message(SAMPLE_LIST_NAME),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(SAMPLE_LIST_NAME)));
+        header.getCell(dialog.sampleListName).getText());
     assertEquals(acquisitionResources.message(ACQUISITION_FILE),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(ACQUISITION_FILE)));
-    assertEquals(acquisitionResources.message(POSITION),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(POSITION)));
-    assertEquals(acquisitionResources.message(COMMENT),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(COMMENT)));
+        header.getCell(dialog.acquisitionFile).getText());
+    assertEquals(acquisitionResources.message(POSITION), header.getCell(dialog.position).getText());
+    assertEquals(acquisitionResources.message(COMMENT), header.getCell(dialog.comment).getText());
   }
 
   @Test
@@ -137,20 +136,18 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
     assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
     assertEquals(msAnalysisResources.message(DELETED), dialog.deleted.getText());
     assertEquals(msAnalysisResources.message(ACQUISITIONS), dialog.acquisitionsHeader.getText());
-    assertEquals(acquisitionResources.message(SAMPLE),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(SAMPLE)));
+    HeaderRow header = dialog.acquisitions.getHeaderRows().get(0);
+    assertEquals(acquisitionResources.message(SAMPLE), header.getCell(dialog.sample).getText());
     assertEquals(acquisitionResources.message(CONTAINER),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(CONTAINER)));
+        header.getCell(dialog.container).getText());
     assertEquals(acquisitionResources.message(NUMBER_OF_ACQUISITION),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(NUMBER_OF_ACQUISITION)));
+        header.getCell(dialog.numberOfAcquisition).getText());
     assertEquals(acquisitionResources.message(SAMPLE_LIST_NAME),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(SAMPLE_LIST_NAME)));
+        header.getCell(dialog.sampleListName).getText());
     assertEquals(acquisitionResources.message(ACQUISITION_FILE),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(ACQUISITION_FILE)));
-    assertEquals(acquisitionResources.message(POSITION),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(POSITION)));
-    assertEquals(acquisitionResources.message(COMMENT),
-        test(dialog.acquisitions).getHeaderCell(indexOfColumn(COMMENT)));
+        header.getCell(dialog.acquisitionFile).getText());
+    assertEquals(acquisitionResources.message(POSITION), header.getCell(dialog.position).getText());
+    assertEquals(acquisitionResources.message(COMMENT), header.getCell(dialog.comment).getText());
   }
 
   @Test
