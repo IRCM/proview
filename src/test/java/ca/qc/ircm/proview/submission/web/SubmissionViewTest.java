@@ -392,9 +392,9 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   public void services() {
     assertEquals(3, view.service.getComponentCount());
-    assertEquals(view.lcmsms, view.service.getComponentAt(0));
-    assertEquals(view.smallMolecule, view.service.getComponentAt(1));
-    assertEquals(view.intactProtein, view.service.getComponentAt(2));
+    assertEquals(view.lcmsms, view.service.getTabAt(0));
+    assertEquals(view.smallMolecule, view.service.getTabAt(1));
+    assertEquals(view.intactProtein, view.service.getTabAt(2));
   }
 
   @Test
