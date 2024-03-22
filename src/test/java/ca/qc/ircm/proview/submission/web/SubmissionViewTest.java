@@ -727,7 +727,10 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     assertEquals(submission.isLightSensitive(), saved.isLightSensitive());
     assertEquals(submission.getStorageTemperature(), saved.getStorageTemperature());
     assertEquals(submission.isHighResolution(), saved.isHighResolution());
-    assertArrayEquals(submission.getSolvents().toArray(), saved.getSolvents().toArray());
+    assertEquals(submission.getSolvents().size(), saved.getSolvents().size());
+    for (Solvent solvent : submission.getSolvents()) {
+      assertTrue(saved.getSolvents().contains(solvent), solvent.name());
+    }
     assertEquals(submission.getOtherSolvent(), saved.getOtherSolvent());
     assertEquals(comment, saved.getComment());
     assertEquals(files.size(), saved.getFiles().size());
@@ -770,7 +773,10 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     assertEquals(submission.isLightSensitive(), saved.isLightSensitive());
     assertEquals(submission.getStorageTemperature(), saved.getStorageTemperature());
     assertEquals(submission.isHighResolution(), saved.isHighResolution());
-    assertArrayEquals(submission.getSolvents().toArray(), saved.getSolvents().toArray());
+    assertEquals(submission.getSolvents().size(), saved.getSolvents().size());
+    for (Solvent solvent : submission.getSolvents()) {
+      assertTrue(saved.getSolvents().contains(solvent), solvent.name());
+    }
     assertEquals(submission.getOtherSolvent(), saved.getOtherSolvent());
     assertEquals(comment, saved.getComment());
     assertEquals(oldFiles.size() + files.size(), saved.getFiles().size());
