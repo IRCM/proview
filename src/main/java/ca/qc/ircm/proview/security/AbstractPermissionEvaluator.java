@@ -23,7 +23,6 @@ import static ca.qc.ircm.proview.security.Permission.WRITE;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,11 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * Implements common methods to use for {@link PermissionEvaluator} implementations.
  */
 public abstract class AbstractPermissionEvaluator implements PermissionEvaluator {
-  @Autowired
   private UserRepository userRepository;
-
-  protected AbstractPermissionEvaluator() {
-  }
 
   protected AbstractPermissionEvaluator(UserRepository userRepository) {
     this.userRepository = userRepository;
