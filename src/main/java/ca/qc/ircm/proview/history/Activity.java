@@ -17,12 +17,14 @@
 
 package ca.qc.ircm.proview.history;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.user.User;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,6 +44,9 @@ import java.util.List;
 @Entity
 @Table(name = "activity")
 @GeneratePropertyNames
+@SuppressFBWarnings(
+    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    justification = ENTITY_EI_EXPOSE_REP)
 public class Activity implements Data {
   /**
    * Database identifier of activity.

@@ -17,12 +17,14 @@
 
 package ca.qc.ircm.proview.treatment;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,6 +42,9 @@ import java.io.Serializable;
 @Entity
 @Table(name = TreatedSample.TABLE_NAME)
 @GeneratePropertyNames
+@SuppressFBWarnings(
+    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    justification = ENTITY_EI_EXPOSE_REP)
 public class TreatedSample implements Data, Serializable {
   public static final String TABLE_NAME = "treatedsample";
   private static final long serialVersionUID = -1654046284723997439L;

@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.plate;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
@@ -24,6 +25,7 @@ import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.submission.Submission;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -49,6 +51,9 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = Plate.TABLE_NAME)
 @GeneratePropertyNames
+@SuppressFBWarnings(
+    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    justification = ENTITY_EI_EXPOSE_REP)
 public class Plate implements Data, Serializable, Named {
   public static final String TABLE_NAME = "plate";
   public static final int DEFAULT_COLUMN_COUNT = 12;

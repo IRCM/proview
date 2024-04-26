@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.EnumType.ORDINAL;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
@@ -25,6 +26,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryData;
 import ca.qc.ircm.proview.user.User;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -39,6 +41,9 @@ import jakarta.validation.constraints.Min;
 @Entity
 @DiscriminatorValue("SUBMISSION")
 @GeneratePropertyNames
+@SuppressFBWarnings(
+    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    justification = ENTITY_EI_EXPOSE_REP)
 public class SubmissionSample extends Sample implements LaboratoryData, Named {
   private static final long serialVersionUID = -7652364189294805763L;
 

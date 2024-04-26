@@ -17,12 +17,15 @@
 
 package ca.qc.ircm.proview.plate;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.ENTITY_EI_EXPOSE_REP;
+
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -37,6 +40,9 @@ import java.util.Locale;
 @Entity
 @DiscriminatorValue("WELL")
 @GeneratePropertyNames
+@SuppressFBWarnings(
+    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    justification = ENTITY_EI_EXPOSE_REP)
 public class Well extends SampleContainer implements Data, Named, Serializable {
   private static final long serialVersionUID = 212003765334493656L;
 

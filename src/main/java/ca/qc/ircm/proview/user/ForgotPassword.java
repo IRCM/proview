@@ -17,10 +17,12 @@
 
 package ca.qc.ircm.proview.user;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +39,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = ForgotPassword.TABLE_NAME)
 @GeneratePropertyNames
+@SuppressFBWarnings(
+    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    justification = ENTITY_EI_EXPOSE_REP)
 public class ForgotPassword implements Data, Serializable {
   public static final String TABLE_NAME = "forgotpassword";
   private static final long serialVersionUID = -2805056622482303376L;

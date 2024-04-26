@@ -17,6 +17,7 @@
 
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -33,6 +34,7 @@ import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryData;
 import ca.qc.ircm.proview.user.User;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -61,6 +63,9 @@ import java.util.List;
 @Entity
 @Table(name = Submission.TABLE_NAME)
 @GeneratePropertyNames
+@SuppressFBWarnings(
+    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    justification = ENTITY_EI_EXPOSE_REP)
 public class Submission implements Data, Named, LaboratoryData, Serializable {
   public static final String TABLE_NAME = "submission";
   private static final long serialVersionUID = 2223809698076034086L;
