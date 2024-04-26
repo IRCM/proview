@@ -18,14 +18,10 @@
 package ca.qc.ircm.proview.user;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Default address configuration.
  */
-@Configuration
-@EnableConfigurationProperties
 @ConfigurationProperties(prefix = DefaultAddressConfiguration.PREFIX)
 public class DefaultAddressConfiguration {
   public static final String PREFIX = "address";

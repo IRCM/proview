@@ -105,8 +105,8 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   private Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
-  private SubmissionSampleService sampleService;
-  private AuthenticatedUser authenticatedUser;
+  private transient SubmissionSampleService sampleService;
+  private transient AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected SmallMoleculeSubmissionForm(SubmissionSampleService sampleService,

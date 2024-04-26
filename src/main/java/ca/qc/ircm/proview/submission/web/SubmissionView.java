@@ -132,8 +132,8 @@ public class SubmissionView extends VerticalLayout
   private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   private ListDataProvider<SubmissionFile> filesDataProvider =
       DataProvider.ofCollection(new ArrayList<>());
-  private SubmissionService submissionService;
-  private AuthenticatedUser authenticatedUser;
+  private transient SubmissionService submissionService;
+  private transient AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected SubmissionView(SubmissionService submissionService, AuthenticatedUser authenticatedUser,

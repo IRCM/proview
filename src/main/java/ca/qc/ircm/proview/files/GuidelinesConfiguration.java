@@ -24,14 +24,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Guidelines' configuration.
  */
-@Configuration
-@EnableConfigurationProperties
 @ConfigurationProperties(prefix = GuidelinesConfiguration.PREFIX)
 public class GuidelinesConfiguration {
   public static final String PREFIX = "guidelines";

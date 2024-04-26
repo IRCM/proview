@@ -19,14 +19,10 @@ package ca.qc.ircm.proview.mail;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Mascot configuration.
  */
-@Configuration
-@EnableConfigurationProperties
 @ConfigurationProperties(prefix = MailConfiguration.PREFIX)
 public class MailConfiguration {
   public static final String PREFIX = "email";
