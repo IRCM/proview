@@ -122,7 +122,7 @@ public class SigninView extends LoginOverlay
     }
     i18n.getErrorMessage().setTitle(resources.message(property(error, TITLE)));
     i18n.getErrorMessage()
-        .setMessage(resources.message(error, configuration.getLockDuration().getSeconds() / 60));
+        .setMessage(resources.message(error, configuration.lockDuration().getSeconds() / 60));
     setI18n(i18n);
   }
 

@@ -82,10 +82,9 @@ public class DaoAuthenticationProviderWithLdap extends DaoAuthenticationProvider
 
   private boolean accountLocked(User user) {
     return user.getSignAttempts() > 0
-        && user.getSignAttempts() % securityConfiguration.getLockAttemps() == 0
+        && user.getSignAttempts() % securityConfiguration.lockAttemps() == 0
         && user.getLastSignAttempt() != null
-        && user.getLastSignAttempt()
-            .plusMinutes(securityConfiguration.getLockDuration().toMinutes())
+        && user.getLastSignAttempt().plusMinutes(securityConfiguration.lockDuration().toMinutes())
             .isAfter(LocalDateTime.now());
   }
 
@@ -104,7 +103,7 @@ public class DaoAuthenticationProviderWithLdap extends DaoAuthenticationProvider
   private void incrementSignAttemps(User user) {
     user.setSignAttempts(user.getSignAttempts() + 1);
     user.setLastSignAttempt(LocalDateTime.now());
-    if (user.getSignAttempts() >= securityConfiguration.getDisableSignAttemps()) {
+    if (user.getSignAttempts() >= securityConfiguration.disableSignAttemps()) {
       user.setActive(false);
     }
     userRepository.save(user);

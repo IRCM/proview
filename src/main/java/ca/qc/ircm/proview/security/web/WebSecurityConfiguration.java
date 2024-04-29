@@ -78,7 +78,7 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
     Map<String, PasswordEncoder> encoders = new HashMap<>();
     PasswordEncoder defaultPasswordEncoder = new BCryptPasswordEncoder();
     encoders.put(PASSWORD_ENCRYPTION, defaultPasswordEncoder);
-    configuration.getPasswords().forEach(pv -> {
+    configuration.passwords().forEach(pv -> {
       encoders.put(String.valueOf(pv.version()),
           new ShiroPasswordEncoder(pv.algorithm(), pv.iterations()));
     });
@@ -142,7 +142,7 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
     http.formLogin(login -> login.failureHandler(authenticationFailureHandler()));
     // Remember me
     http.rememberMe(
-        rememberMe -> rememberMe.alwaysRemember(true).key(configuration.getRememberMeKey()));
+        rememberMe -> rememberMe.alwaysRemember(true).key(configuration.rememberMeKey()));
 
     super.configure(http);
 

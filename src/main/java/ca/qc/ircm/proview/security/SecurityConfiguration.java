@@ -17,7 +17,6 @@
 
 package ca.qc.ircm.proview.security;
 
-import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,39 +29,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Security configuration.
  */
 @ConfigurationProperties(prefix = SecurityConfiguration.PREFIX)
 @EnableMethodSecurity(securedEnabled = true)
-public class SecurityConfiguration {
+public record SecurityConfiguration(int lockAttemps, Duration lockDuration, int disableSignAttemps,
+    String rememberMeKey, List<PasswordVersion> passwords) {
+
   public static final String PREFIX = "security";
   private static final Logger logger = LoggerFactory.getLogger(SecurityConfiguration.class);
-  private int lockAttemps;
-  private Duration lockDuration;
-  private int disableSignAttemps;
-  private String rememberMeKey;
-  private List<PasswordVersion> passwords;
 
-  @PostConstruct
-  protected void processPasswords() {
-    boolean valid = validatePasswordConfiguration();
+  public SecurityConfiguration(int lockAttemps, Duration lockDuration, int disableSignAttemps,
+      String rememberMeKey, List<PasswordVersion> passwords) {
+    this.lockAttemps = lockAttemps;
+    this.lockDuration = lockDuration;
+    this.disableSignAttemps = disableSignAttemps;
+    this.rememberMeKey = rememberMeKey;
+    passwords = passwords != null ? passwords : new ArrayList<>();
+    boolean valid = validatePasswordConfiguration(passwords);
     if (!valid) {
       throw new IllegalStateException("Password configuration is invalid");
     }
-    Collections.sort(passwords, new PasswordVersionComparator());
+    Collections.sort(passwords, (pv1, pv2) -> pv1.version() - pv2.version());
     Collections.reverse(passwords);
+    this.passwords = passwords;
   }
 
-  private boolean validatePasswordConfiguration() {
+  private boolean validatePasswordConfiguration(List<PasswordVersion> passwords) {
     boolean valid = true;
     Set<Integer> versions = new HashSet<>();
-    if (passwords == null) {
-      passwords = new ArrayList<>();
-    }
     for (int i = 0; i < passwords.size(); i++) {
       PasswordVersion passwordVersion = passwords.get(i);
       int version = passwordVersion.version();
@@ -95,52 +92,7 @@ public class SecurityConfiguration {
     return valid;
   }
 
-  /**
-   * Returns security context.
-   *
-   * @return security context
-   */
-  public SecurityContext getSecurityContext() {
-    return SecurityContextHolder.getContext();
-  }
-
-  public int getLockAttemps() {
-    return lockAttemps;
-  }
-
-  public void setLockAttemps(int lockAttemps) {
-    this.lockAttemps = lockAttemps;
-  }
-
-  public Duration getLockDuration() {
-    return lockDuration;
-  }
-
-  public void setLockDuration(Duration lockDuration) {
-    this.lockDuration = lockDuration;
-  }
-
-  public int getDisableSignAttemps() {
-    return disableSignAttemps;
-  }
-
-  public void setDisableSignAttemps(int disableSignAttemps) {
-    this.disableSignAttemps = disableSignAttemps;
-  }
-
-  public String getRememberMeKey() {
-    return rememberMeKey;
-  }
-
-  public void setRememberMeKey(String rememberMeKey) {
-    this.rememberMeKey = rememberMeKey;
-  }
-
-  public List<PasswordVersion> getPasswords() {
-    return passwords;
-  }
-
-  public void setPasswords(List<PasswordVersion> passwords) {
-    this.passwords = passwords;
+  public List<PasswordVersion> passwords() {
+    return new ArrayList<>(passwords);
   }
 }
