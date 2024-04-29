@@ -148,7 +148,6 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
     final AppResources treatmentResource = new AppResources(Treatment.class, getLocale());
     final AppResources treatedSampleResource = new AppResources(TreatedSample.class, getLocale());
     updateHeaderTitle();
