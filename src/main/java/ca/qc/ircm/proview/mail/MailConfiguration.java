@@ -17,46 +17,12 @@
 
 package ca.qc.ircm.proview.mail;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Mascot configuration.
  */
 @ConfigurationProperties(prefix = MailConfiguration.PREFIX)
-public class MailConfiguration {
+public record MailConfiguration(boolean enabled, String from, String to, String subject) {
   public static final String PREFIX = "email";
-  @Value("${spring.application.name}")
-  private String applicationName;
-  private boolean enabled;
-  private String from;
-  private String to;
-
-  public String getSubject() {
-    return applicationName;
-  }
-
-  public boolean isEnabled() {
-    return enabled;
-  }
-
-  void setEnabled(boolean enabled) {
-    this.enabled = enabled;
-  }
-
-  public String getFrom() {
-    return from;
-  }
-
-  void setFrom(String from) {
-    this.from = from;
-  }
-
-  public String getTo() {
-    return to;
-  }
-
-  void setTo(String to) {
-    this.to = to;
-  }
 }

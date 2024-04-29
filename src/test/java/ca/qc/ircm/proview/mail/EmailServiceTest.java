@@ -182,7 +182,7 @@ public class EmailServiceTest {
     assertEquals(subject, message.getSubject());
     assertNotNull(message.getFrom());
     assertEquals(1, message.getFrom().length);
-    assertEquals(new InternetAddress(mailConfiguration.getFrom()), message.getFrom()[0]);
+    assertEquals(new InternetAddress(mailConfiguration.from()), message.getFrom()[0]);
     assertNotNull(message.getRecipients(RecipientType.TO));
     assertEquals(1, message.getRecipients(RecipientType.TO).length);
     assertEquals(new InternetAddress(receiver), message.getRecipients(RecipientType.TO)[0]);
@@ -215,7 +215,7 @@ public class EmailServiceTest {
     assertEquals(subject, message.getSubject());
     assertNotNull(message.getFrom());
     assertEquals(1, message.getFrom().length);
-    assertEquals(new InternetAddress(mailConfiguration.getFrom()), message.getFrom()[0]);
+    assertEquals(new InternetAddress(mailConfiguration.from()), message.getFrom()[0]);
     assertNotNull(message.getRecipients(RecipientType.TO));
     assertEquals(1, message.getRecipients(RecipientType.TO).length);
     assertEquals(new InternetAddress(receiver), message.getRecipients(RecipientType.TO)[0]);
@@ -252,7 +252,7 @@ public class EmailServiceTest {
       assertEquals(subject, message.getSubject());
       assertNotNull(message.getFrom());
       assertEquals(1, message.getFrom().length);
-      assertEquals(new InternetAddress(mailConfiguration.getFrom()), message.getFrom()[0]);
+      assertEquals(new InternetAddress(mailConfiguration.from()), message.getFrom()[0]);
       assertNotNull(message.getRecipients(RecipientType.TO));
       assertEquals(1, message.getRecipients(RecipientType.TO).length);
       assertEquals(new InternetAddress(receiver), message.getRecipients(RecipientType.TO)[0]);
@@ -312,13 +312,13 @@ public class EmailServiceTest {
     MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
     MimeMessage message = messages[0];
-    assertEquals(mailConfiguration.getSubject(), message.getSubject());
+    assertEquals(mailConfiguration.subject(), message.getSubject());
     assertNotNull(message.getFrom());
     assertEquals(1, message.getFrom().length);
-    assertEquals(new InternetAddress(mailConfiguration.getFrom()), message.getFrom()[0]);
+    assertEquals(new InternetAddress(mailConfiguration.from()), message.getFrom()[0]);
     assertNotNull(message.getRecipients(RecipientType.TO));
     assertEquals(1, message.getRecipients(RecipientType.TO).length);
-    assertEquals(new InternetAddress(mailConfiguration.getTo()),
+    assertEquals(new InternetAddress(mailConfiguration.to()),
         message.getRecipients(RecipientType.TO)[0]);
     assertTrue(message.getRecipients(RecipientType.CC) == null
         || message.getRecipients(RecipientType.CC).length == 0);
@@ -344,13 +344,13 @@ public class EmailServiceTest {
     MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
     MimeMessage message = messages[0];
-    assertEquals(mailConfiguration.getSubject(), message.getSubject());
+    assertEquals(mailConfiguration.subject(), message.getSubject());
     assertNotNull(message.getFrom());
     assertEquals(1, message.getFrom().length);
-    assertEquals(new InternetAddress(mailConfiguration.getFrom()), message.getFrom()[0]);
+    assertEquals(new InternetAddress(mailConfiguration.from()), message.getFrom()[0]);
     assertNotNull(message.getRecipients(RecipientType.TO));
     assertEquals(1, message.getRecipients(RecipientType.TO).length);
-    assertEquals(new InternetAddress(mailConfiguration.getTo()),
+    assertEquals(new InternetAddress(mailConfiguration.to()),
         message.getRecipients(RecipientType.TO)[0]);
     assertTrue(message.getRecipients(RecipientType.CC) == null
         || message.getRecipients(RecipientType.CC).length == 0);

@@ -37,10 +37,10 @@ public class MailConfigurationTest {
 
   @Test
   public void defaultValues() {
-    assertTrue(mailConfiguration.isEnabled());
-    assertEquals("proview@ircm.qc.ca", mailConfiguration.getFrom());
-    assertEquals("christian.poitras@ircm.qc.ca", mailConfiguration.getTo());
-    assertEquals("proview", mailConfiguration.getSubject());
+    assertTrue(mailConfiguration.enabled());
+    assertEquals("proview@ircm.qc.ca", mailConfiguration.from());
+    assertEquals("christian.poitras@ircm.qc.ca", mailConfiguration.to());
+    assertEquals("proview", mailConfiguration.subject());
     assertEquals("localhost", mailSender.getHost());
   }
 }

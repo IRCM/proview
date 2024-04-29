@@ -74,6 +74,7 @@ email:
   enabled: true
   from: proview@ircm.qc.ca
   to: christian.poitras@ircm.qc.ca
+  subject: ${spring.application.name}
 
 guidelines:
   home: ${user.dir}/guidelines
