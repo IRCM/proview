@@ -23,6 +23,8 @@ package ca.qc.ircm.proview;
 public class FindbugsExplanations {
   public static final String ENTITY_EI_EXPOSE_REP =
       "Entities should expose internal representation like objects and lists to allow modification";
+  public static final String SPRING_BOOT_EI_EXPOSE_REP =
+      "Exposed internal representation for objects created by Spring Boot is acceptable";
   public static final String DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD =
       "Vaadin designer sets Design fields after parsing HTML file";
 }
