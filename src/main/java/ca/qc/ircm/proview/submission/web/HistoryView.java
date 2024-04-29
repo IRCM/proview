@@ -93,9 +93,9 @@ public class HistoryView extends VerticalLayout
   protected Column<Activity> description;
   protected Column<Activity> explanation;
   private Submission submission;
-  protected transient ObjectFactory<SubmissionDialog> dialogFactory;
-  protected transient ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
-  protected transient ObjectFactory<TreatmentDialog> treatmentDialogFactory;
+  private transient ObjectFactory<SubmissionDialog> dialogFactory;
+  private transient ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
+  private transient ObjectFactory<TreatmentDialog> treatmentDialogFactory;
   private transient ActivityService service;
   private transient SubmissionService submissionService;
 

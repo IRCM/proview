@@ -119,9 +119,9 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected Button add = new Button();
   protected Button switchUser = new Button();
   protected Button viewLaboratory = new Button();
-  protected transient ObjectFactory<UserDialog> dialogFactory;
-  protected transient ObjectFactory<LaboratoryDialog> laboratoryDialogFactory;
   private WebUserFilter filter = new WebUserFilter();
+  private transient ObjectFactory<UserDialog> dialogFactory;
+  private transient ObjectFactory<LaboratoryDialog> laboratoryDialogFactory;
   private transient UserService service;
   private transient LaboratoryService laboratoryService;
   private transient SwitchUserService switchUserService;
