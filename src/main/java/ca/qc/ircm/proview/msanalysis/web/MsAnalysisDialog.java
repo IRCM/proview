@@ -35,6 +35,7 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -46,9 +47,9 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.PostConstruct;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -76,8 +77,11 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
   protected Column<Acquisition> position;
   protected Column<Acquisition> comment;
   private MsAnalysis msAnalysis;
+  private transient MsAnalysisService service;
 
-  public MsAnalysisDialog() {
+  @Autowired
+  protected MsAnalysisDialog(MsAnalysisService service) {
+    this.service = service;
   }
 
   public static String id(String baseId) {
@@ -146,19 +150,12 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
     acquisitions.setItems(msAnalysis.getAcquisitions());
   }
 
-  public MsAnalysis getMsAnalysis() {
-    return msAnalysis;
+  public Long getMsAnalysisId() {
+    return msAnalysis.getId();
   }
 
-  /**
-   * Sets dialog's MS analysis.
-   *
-   * @param msAnalysis
-   *          MS analysis
-   */
-  public void setMsAnalysis(MsAnalysis msAnalysis) {
-    Objects.requireNonNull(msAnalysis);
-    this.msAnalysis = msAnalysis;
+  public void setMsAnalysisId(Long id) {
+    this.msAnalysis = service.get(id).orElseThrow();
     localeChanged();
   }
 }

@@ -40,6 +40,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.Activity;
@@ -47,6 +51,7 @@ import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.AcquisitionRepository;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
+import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.UI;
@@ -56,10 +61,12 @@ import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -69,6 +76,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("proview@ircm.qc.ca")
 public class MsAnalysisDialogTest extends SpringUIUnitTest {
   private MsAnalysisDialog dialog;
+  @MockBean
+  private MsAnalysisService service;
   @Autowired
   private MsAnalysisRepository repository;
   @Autowired
@@ -84,6 +93,7 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() throws NoSuchFieldException, IllegalAccessException {
+    when(service.get(anyLong())).then(i -> repository.findById(i.getArgument(0)));
     UI.getCurrent().setLocale(locale);
     HistoryView view = navigate(HistoryView.class, 32L);
     Grid<Activity> activities = test(view).find(Grid.class).id(HistoryView.ACTIVITIES);
@@ -200,18 +210,17 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void getMsAnalysis() {
-    MsAnalysis msAnalysis = repository.findById(1L).get();
-    dialog.setMsAnalysis(msAnalysis);
-    assertEquals(msAnalysis, dialog.getMsAnalysis());
+  public void getMsAnalysisId() {
+    assertEquals(12L, dialog.getMsAnalysisId());
   }
 
   @Test
-  public void setMsAnalysis() {
+  public void setMsAnalysisId() {
     MsAnalysis msAnalysis = repository.findById(1L).get();
 
-    dialog.setMsAnalysis(msAnalysis);
+    dialog.setMsAnalysisId(1L);
 
+    verify(service).get(1L);
     assertFalse(dialog.deleted.isVisible());
     assertEquals(resources.message(MASS_DETECTION_INSTRUMENT,
         msAnalysis.getMassDetectionInstrument().getLabel(locale)), dialog.instrument.getText());
@@ -223,13 +232,14 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setMsAnalysis_Deleted() {
+  public void setMsAnalysisId_Deleted() {
     MsAnalysis msAnalysis = repository.findById(12L).get();
     msAnalysis.setDeleted(true);
     msAnalysis.setDeletionExplanation("Test deletion\nexplanation");
 
-    dialog.setMsAnalysis(msAnalysis);
+    dialog.setMsAnalysisId(12L);
 
+    verify(service, times(2)).get(12L);
     assertTrue(dialog.deleted.isVisible());
     assertEquals(resources.message(MASS_DETECTION_INSTRUMENT,
         msAnalysis.getMassDetectionInstrument().getLabel(locale)), dialog.instrument.getText());
@@ -241,9 +251,10 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setMsAnalysis_LocalChange() {
+  public void setMsAnalysisId_LocalChange() {
     MsAnalysis msAnalysis = repository.findById(1L).get();
-    dialog.setMsAnalysis(msAnalysis);
+    dialog.setMsAnalysisId(1L);
+    verify(service).get(1L);
 
     Locale locale = Locale.FRENCH;
     UI.getCurrent().setLocale(locale);
@@ -260,9 +271,9 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setMsAnalysis_Null() {
-    assertThrows(NullPointerException.class, () -> {
-      dialog.setMsAnalysis(null);
+  public void setMsAnalysisId_Null() {
+    assertThrows(NoSuchElementException.class, () -> {
+      dialog.setMsAnalysisId(null);
     });
   }
 }

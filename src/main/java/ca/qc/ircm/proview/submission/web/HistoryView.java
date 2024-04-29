@@ -218,7 +218,7 @@ public class HistoryView extends VerticalLayout
       dialog.addSavedListener(e -> updateActivities());
     } else if (record instanceof MsAnalysis) {
       MsAnalysisDialog msAnalysisDialog = msAnalysisDialogFactory.getObject();
-      msAnalysisDialog.setMsAnalysis((MsAnalysis) record);
+      msAnalysisDialog.setMsAnalysisId(((MsAnalysis) record).getId());
       msAnalysisDialog.open();
     } else if (record instanceof Treatment) {
       TreatmentDialog treatmentDialog = treatmentDialogFactory.getObject();

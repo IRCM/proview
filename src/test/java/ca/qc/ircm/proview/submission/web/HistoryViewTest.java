@@ -290,7 +290,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(service.record(activity)).thenReturn(Optional.of(msAnalysis));
     test(view.activities).doubleClickRow(0);
 
-    verify(msAnalysisDialog).setMsAnalysis(msAnalysis);
+    verify(msAnalysisDialog).setMsAnalysisId(msAnalysis.getId());
     verify(msAnalysisDialog).open();
   }
 
