@@ -79,8 +79,8 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
     PasswordEncoder defaultPasswordEncoder = new BCryptPasswordEncoder();
     encoders.put(PASSWORD_ENCRYPTION, defaultPasswordEncoder);
     configuration.getPasswords().forEach(pv -> {
-      encoders.put(String.valueOf(pv.getVersion()),
-          new ShiroPasswordEncoder(pv.getAlgorithm(), pv.getIterations()));
+      encoders.put(String.valueOf(pv.version()),
+          new ShiroPasswordEncoder(pv.algorithm(), pv.iterations()));
     });
 
     DelegatingPasswordEncoder passworEncoder =

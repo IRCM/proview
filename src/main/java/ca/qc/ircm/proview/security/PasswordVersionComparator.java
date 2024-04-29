@@ -31,6 +31,6 @@ public class PasswordVersionComparator implements Comparator<PasswordVersion>, S
 
   @Override
   public int compare(PasswordVersion o1, PasswordVersion o2) {
-    return o1.getVersion() - o2.getVersion();
+    return o1.version() - o2.version();
   }
 }

@@ -65,9 +65,9 @@ public class SecurityConfiguration {
     }
     for (int i = 0; i < passwords.size(); i++) {
       PasswordVersion passwordVersion = passwords.get(i);
-      int version = passwordVersion.getVersion();
-      String algorithm = passwordVersion.getAlgorithm();
-      int iterations = passwordVersion.getIterations();
+      int version = passwordVersion.version();
+      String algorithm = passwordVersion.algorithm();
+      int iterations = passwordVersion.iterations();
       if (algorithm == null) {
         logger.error("Algorithm undefined for password {}", i);
         valid = false;
