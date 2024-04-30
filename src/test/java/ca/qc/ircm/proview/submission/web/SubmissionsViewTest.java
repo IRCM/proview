@@ -845,7 +845,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     verify(service).get(1L);
     SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
-    assertEquals(submission, dialog.getSubmission());
+    assertEquals(1L, dialog.getSubmissionId());
   }
 
   @Test
@@ -866,7 +866,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     verify(service).get(1L);
     SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
-    assertEquals(submission, dialog.getSubmission());
+    assertEquals(1L, dialog.getSubmissionId());
   }
 
   @Test
@@ -887,7 +887,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     verify(service).get(1L);
     SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
-    assertEquals(submission, dialog.getSubmission());
+    assertEquals(1L, dialog.getSubmissionId());
   }
 
   @Test
@@ -1125,7 +1125,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     verify(service).get(32L);
     SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
-    assertEquals(submission, dialog.getSubmission());
+    assertEquals(32L, dialog.getSubmissionId());
   }
 
   @Test

@@ -547,9 +547,8 @@ public class SubmissionsView extends VerticalLayout
 
   void editStatus(Submission submission) {
     if (authenticatedUser.hasRole(ADMIN)) {
-      Submission database = submissionService.get(submission.getId()).orElse(null);
       SamplesStatusDialog statusDialog = statusDialogFactory.getObject();
-      statusDialog.setSubmission(database);
+      statusDialog.setSubmissionId(submission.getId());
       statusDialog.open();
       statusDialog.addSavedListener(e -> loadSubmissions());
     }
