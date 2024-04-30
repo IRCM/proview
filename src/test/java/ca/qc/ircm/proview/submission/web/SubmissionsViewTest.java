@@ -908,7 +908,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     verify(service).get(1L);
     HistoryView view = $(HistoryView.class).first();
-    assertEquals(submission, view.getSubmission());
+    assertEquals(1L, view.getSubmissionId());
   }
 
   @Test
@@ -1151,7 +1151,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     verify(service).get(32L);
     HistoryView view = $(HistoryView.class).first();
-    assertEquals(submission, view.getSubmission());
+    assertEquals(32L, view.getSubmissionId());
   }
 
   @Test

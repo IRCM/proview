@@ -193,8 +193,8 @@ public class HistoryView extends VerticalLayout
     updateHeader();
   }
 
-  public Submission getSubmission() {
-    return submission;
+  public Long getSubmissionId() {
+    return submission != null ? submission.getId() : null;
   }
 
   private void updateActivities() {
