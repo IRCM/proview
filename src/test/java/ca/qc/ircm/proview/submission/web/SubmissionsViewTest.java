@@ -148,6 +148,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
+    when(service.get(any())).thenAnswer(
+        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
     when(userPreferenceService.get(any(), eq(SAMPLES))).thenReturn(Optional.of(false));
     when(userPreferenceService.get(any(), eq(STATUS))).thenReturn(Optional.of(true));
     UI.getCurrent().setLocale(locale);
@@ -920,7 +922,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     verify(service).get(1L);
     SubmissionDialog dialog = $(SubmissionDialog.class).first();
-    assertEquals(submission, dialog.getSubmission());
+    assertEquals(1L, dialog.getSubmissionId());
   }
 
   @Test

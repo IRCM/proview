@@ -213,7 +213,7 @@ public class HistoryView extends VerticalLayout
     }
     if (record instanceof Submission) {
       SubmissionDialog dialog = dialogFactory.getObject();
-      dialog.setSubmission((Submission) record);
+      dialog.setSubmissionId(((Submission) record).getId());
       dialog.open();
       dialog.addSavedListener(e -> updateActivities());
     } else if (record instanceof MsAnalysis) {

@@ -266,7 +266,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(service.record(activity)).thenReturn(Optional.of(submission));
     test(view.activities).doubleClickRow(0);
 
-    verify(dialog).setSubmission(submission);
+    verify(dialog).setSubmissionId(submission.getId());
     verify(dialog).open();
   }
 
@@ -279,7 +279,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(service.record(activity)).thenReturn(Optional.of(sample));
     test(view.activities).doubleClickRow(0);
 
-    verify(dialog).setSubmission(submission);
+    verify(dialog).setSubmissionId(submission.getId());
     verify(dialog).open();
   }
 

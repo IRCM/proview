@@ -538,9 +538,8 @@ public class SubmissionsView extends VerticalLayout
   }
 
   void view(Submission submission) {
-    Submission database = submissionService.get(submission.getId()).orElse(null);
     SubmissionDialog dialog = dialogFactory.getObject();
-    dialog.setSubmission(database);
+    dialog.setSubmissionId(submission.getId());
     dialog.open();
     dialog.addSavedListener(e -> loadSubmissions());
   }

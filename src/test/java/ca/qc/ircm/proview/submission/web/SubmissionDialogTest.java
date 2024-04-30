@@ -24,7 +24,6 @@ import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
-import static ca.qc.ircm.proview.submission.web.SubmissionDialog.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.id;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
@@ -59,6 +58,7 @@ import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,6 +92,8 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
+    when(service.get(any())).thenAnswer(
+        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
     UI.getCurrent().setLocale(locale);
     SubmissionsView view = navigate(SubmissionsView.class);
     view.submissions.setItems(repository.findAll());
@@ -131,7 +133,8 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
+    Submission submission = repository.findById(32L).get();
+    assertEquals(submission.getExperiment(), dialog.getHeaderTitle());
     assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
@@ -149,11 +152,11 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(SubmissionDialog.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
     final AppResources submissionResources = new AppResources(Submission.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
+    Submission submission = repository.findById(32L).get();
+    assertEquals(submission.getExperiment(), dialog.getHeaderTitle());
     assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
       assertEquals(instrument.getLabel(locale),
@@ -190,8 +193,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save() {
-    Submission submission = new Submission();
-    dialog.setSubmission(submission);
+    Submission submission = repository.findById(32L).get();
     setFields();
     dialog.addSavedListener(savedListener);
 
@@ -206,8 +208,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save_NullInstrument() {
-    Submission submission = new Submission();
-    dialog.setSubmission(submission);
+    Submission submission = repository.findById(32L).get();
     setFields();
     dialog.instrument.setValue(MassDetectionInstrument.NULL);
     dialog.addSavedListener(savedListener);
@@ -225,7 +226,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   public void edit() {
     Submission submission = repository.findById(164L).get();
     when(service.get(any())).thenReturn(Optional.of(submission));
-    dialog.setSubmission(submission);
+    dialog.setSubmissionId(164L);
     dialog.edit();
     SubmissionView submissionView = $(SubmissionView.class).first();
     assertNotNull(submissionView.getSubmission());
@@ -244,7 +245,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   public void print() {
     Submission submission = repository.findById(164L).get();
     when(service.get(any())).thenReturn(Optional.of(submission));
-    dialog.setSubmission(submission);
+    dialog.setSubmissionId(164L);
     dialog.print();
     PrintSubmissionView printView = $(PrintSubmissionView.class).first();
     assertNotNull(printView.printContent.getSubmission());
@@ -253,25 +254,15 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void print_New() {
-    assertThrows(IllegalArgumentException.class, () -> dialog.print());
-    $(SubmissionsView.class).first();
-    assertTrue(dialog.isOpened());
+  public void getSubmissionId() {
+    assertEquals(32L, dialog.getSubmissionId());
   }
 
   @Test
-  public void getSubmission() {
-    Submission submission = repository.findById(164L).get();
-    dialog.setSubmission(submission);
-    assertEquals(164L, dialog.getSubmission().getId());
-  }
+  public void setSubmissionId() {
+    dialog.setSubmissionId(164L);
 
-  @Test
-  public void setSubmission() {
-    Submission submission = repository.findById(164L).get();
-
-    dialog.setSubmission(submission);
-
+    verify(service).get(164L);
     assertEquals("POLR3B-Flag", dialog.getHeaderTitle());
     assertEquals(MassDetectionInstrument.VELOS, dialog.instrument.getValue());
     assertNull(dialog.dataAvailableDate.getValue());
@@ -279,11 +270,10 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setSubmission_ReadOnly() {
-    Submission submission = repository.findById(35L).get();
+  public void setSubmissionId_ReadOnly() {
+    dialog.setSubmissionId(35L);
 
-    dialog.setSubmission(submission);
-
+    verify(service).get(35L);
     assertEquals("cap_experiment", dialog.getHeaderTitle());
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, dialog.instrument.getValue());
     assertEquals(LocalDate.of(2011, 11, 10), dialog.dataAvailableDate.getValue());
@@ -291,24 +281,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setSubmission_Null() {
-    dialog.setSubmission(null);
-
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
-    assertEquals(MassDetectionInstrument.NULL, dialog.instrument.getValue());
-    assertEquals(null, dialog.dataAvailableDate.getValue());
-    assertTrue(dialog.edit.isEnabled());
-  }
-
-  @Test
-  public void setSubmission_SubmissionThenNull() {
-    Submission submission = repository.findById(164L).get();
-    dialog.setSubmission(submission);
-    dialog.setSubmission(null);
-
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
-    assertEquals(MassDetectionInstrument.NULL, dialog.instrument.getValue());
-    assertEquals(null, dialog.dataAvailableDate.getValue());
-    assertTrue(dialog.edit.isEnabled());
+  public void setSubmissionId_Null() {
+    assertThrows(NoSuchElementException.class, () -> dialog.setSubmissionId(null));
   }
 }
