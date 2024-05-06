@@ -222,7 +222,7 @@ public class HistoryView extends VerticalLayout
       msAnalysisDialog.open();
     } else if (record instanceof Treatment) {
       TreatmentDialog treatmentDialog = treatmentDialogFactory.getObject();
-      treatmentDialog.setTreatment((Treatment) record);
+      treatmentDialog.setTreatmentId(((Treatment) record).getId());
       treatmentDialog.open();
     } else {
       AppResources resources = new AppResources(HistoryView.class, locale);

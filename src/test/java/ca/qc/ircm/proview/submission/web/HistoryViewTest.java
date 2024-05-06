@@ -301,7 +301,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(service.record(activity)).thenReturn(Optional.of(treatment));
     test(view.activities).doubleClickRow(0);
 
-    verify(treatmentDialog).setTreatment(treatment);
+    verify(treatmentDialog).setTreatmentId(treatment.getId());
     verify(treatmentDialog).open();
   }
 

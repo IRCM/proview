@@ -44,6 +44,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.Activity;
@@ -55,6 +57,7 @@ import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.TreatedSampleRepository;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentRepository;
+import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
@@ -63,11 +66,13 @@ import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -77,6 +82,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("proview@ircm.qc.ca")
 public class TreatmentDialogTest extends SpringUIUnitTest {
   private TreatmentDialog dialog;
+  @MockBean
+  private TreatmentService service;
   @Autowired
   private TreatmentRepository repository;
   @Autowired
@@ -92,6 +99,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
+    when(service.get(anyLong())).then(
+        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
     UI.getCurrent().setLocale(locale);
     treatedSamples = treatedSampleRepository.findAll();
     HistoryView view = navigate(HistoryView.class, 147L);
@@ -239,17 +248,15 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void getTreatment() {
-    Treatment treatment = repository.findById(1L).get();
-    dialog.setTreatment(treatment);
-    assertEquals(treatment, dialog.getTreatment());
+  public void getTreatmentId() {
+    assertEquals(194L, dialog.getTreatmentId());
   }
 
   @Test
-  public void setTreatment_Solubilisation() {
+  public void setTreatmentId_Solubilisation() {
     Treatment treatment = repository.findById(1L).get();
 
-    dialog.setTreatment(treatment);
+    dialog.setTreatmentId(1L);
 
     assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
@@ -269,10 +276,10 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setTreatment_FractionationMudPit() {
+  public void setTreatmentId_FractionationMudPit() {
     Treatment treatment = repository.findById(2L).get();
 
-    dialog.setTreatment(treatment);
+    dialog.setTreatmentId(2L);
 
     assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
@@ -295,11 +302,11 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setTreatment_FractionationPi() {
+  public void setTreatmentId_FractionationPi() {
     Treatment treatment = repository.findById(2L).get();
     treatment.setFractionationType(FractionationType.PI);
 
-    dialog.setTreatment(treatment);
+    dialog.setTreatmentId(2L);
 
     assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
@@ -322,10 +329,10 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setTreatment_Transfer() {
+  public void setTreatmentId_Transfer() {
     Treatment treatment = repository.findById(3L).get();
 
-    dialog.setTreatment(treatment);
+    dialog.setTreatmentId(3L);
 
     assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
@@ -345,10 +352,10 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setTreatment_Dilution() {
+  public void setTreatmentId_Dilution() {
     Treatment treatment = repository.findById(4L).get();
 
-    dialog.setTreatment(treatment);
+    dialog.setTreatmentId(4L);
 
     assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
@@ -368,10 +375,10 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setTreatment_StandardAddition() {
+  public void setTreatmentId_StandardAddition() {
     Treatment treatment = repository.findById(5L).get();
 
-    dialog.setTreatment(treatment);
+    dialog.setTreatmentId(5L);
 
     assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
@@ -391,10 +398,10 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setTreatment_Digestion() {
+  public void setTreatmentId_Digestion() {
     Treatment treatment = repository.findById(6L).get();
 
-    dialog.setTreatment(treatment);
+    dialog.setTreatmentId(6L);
 
     assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
@@ -416,10 +423,10 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setTreatment_Enrichment() {
+  public void setTreatmentId_Enrichment() {
     Treatment treatment = repository.findById(7L).get();
 
-    dialog.setTreatment(treatment);
+    dialog.setTreatmentId(7L);
 
     assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
@@ -441,10 +448,10 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setTreatment_Deleted() {
+  public void setTreatmentId_Deleted() {
     Treatment treatment = repository.findById(323L).get();
 
-    dialog.setTreatment(treatment);
+    dialog.setTreatmentId(323L);
 
     assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
     assertTrue(dialog.deleted.isVisible());
@@ -464,9 +471,9 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setTreatment_Null() {
-    assertThrows(NullPointerException.class, () -> {
-      dialog.setTreatment(null);
+  public void setTreatmentId_Null() {
+    assertThrows(NoSuchElementException.class, () -> {
+      dialog.setTreatmentId(null);
     });
   }
 }

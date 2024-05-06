@@ -45,6 +45,7 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.treatment.FractionationType;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentService;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -56,10 +57,10 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.PostConstruct;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -91,8 +92,11 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   protected Column<TreatedSample> piInterval;
   protected Column<TreatedSample> comment;
   private Treatment treatment;
+  private transient TreatmentService service;
 
-  public TreatmentDialog() {
+  @Autowired
+  protected TreatmentDialog(TreatmentService service) {
+    this.service = service;
   }
 
   public static String id(String baseId) {
@@ -172,19 +176,18 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
         .orElse(resource.message(HEADER)));
   }
 
-  public Treatment getTreatment() {
-    return treatment;
+  public Long getTreatmentId() {
+    return treatment.getId();
   }
 
   /**
-   * Sets dialog's treatment.
+   * Sets dialog's treatment id.
    *
-   * @param treatment
-   *          treatment
+   * @param id
+   *          treatment id
    */
-  public void setTreatment(Treatment treatment) {
-    Objects.requireNonNull(treatment);
-    this.treatment = treatment;
+  public void setTreatmentId(Long id) {
+    treatment = service.get(id).orElseThrow();
     AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
     updateHeaderTitle();
     if (treatment.getProtocol() != null) {
