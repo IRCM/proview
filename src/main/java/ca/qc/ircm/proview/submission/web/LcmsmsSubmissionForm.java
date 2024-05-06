@@ -22,6 +22,7 @@ import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.FindbugsExplanations.INNER_CLASS_EI_EXPOSE_REP;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
@@ -98,6 +99,7 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -566,6 +568,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   /**
    * Represents a list of sample names.
    */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = INNER_CLASS_EI_EXPOSE_REP)
   protected static class Samples {
     private int samplesCount;
     private List<String> samplesNames;
