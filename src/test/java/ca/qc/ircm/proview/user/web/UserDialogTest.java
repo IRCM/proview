@@ -29,7 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -48,6 +50,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -79,6 +82,8 @@ public class UserDialogTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
+    when(service.get(anyLong())).then(
+        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
     UI.getCurrent().setLocale(locale);
     UsersView view = navigate(UsersView.class);
     view.users.setItems(repository.findAll());
@@ -96,7 +101,8 @@ public class UserDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
+    User user = repository.findById(dialog.getUserId()).get();
+    assertEquals(resources.message(HEADER, 1, user.getName()), dialog.getHeaderTitle());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), dialog.save.getIcon());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -109,7 +115,8 @@ public class UserDialogTest extends SpringUIUnitTest {
     final AppResources resources = new AppResources(UserDialog.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
+    User user = repository.findById(dialog.getUserId()).get();
+    assertEquals(resources.message(HEADER, 1, user.getName()), dialog.getHeaderTitle());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
   }
@@ -129,54 +136,43 @@ public class UserDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void getUser() {
+  public void getUserId() {
+    when(user.getId()).thenReturn(2L);
     dialog.form = mock(UserForm.class);
     when(dialog.form.getUser()).thenReturn(user);
-    assertEquals(user, dialog.getUser());
-    verify(dialog.form).getUser();
+    assertEquals(user.getId(), dialog.getUserId());
+    verify(dialog.form, atLeastOnce()).getUser();
   }
 
   @Test
-  public void setUser_NewUser() {
-    User user = new User();
-    dialog.form = mock(UserForm.class);
-    when(dialog.form.getUser()).thenReturn(user);
-
-    dialog.setUser(user);
-
-    verify(dialog.form).setUser(user);
-    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
-  }
-
-  @Test
-  public void setUser_User() {
+  public void setUserId_User() {
     User user = repository.findById(2L).get();
     dialog.form = mock(UserForm.class);
     when(dialog.form.getUser()).thenReturn(user);
 
-    dialog.setUser(user);
+    dialog.setUserId(user.getId());
 
     verify(dialog.form).setUser(user);
     assertEquals(resources.message(HEADER, 1, user.getName()), dialog.getHeaderTitle());
   }
 
   @Test
-  public void setUser_UserBeforeLocaleChange() {
+  public void setUserId_UserBeforeLocaleChange() {
     User user = repository.findById(2L).get();
     dialog.form = mock(UserForm.class);
     when(dialog.form.getUser()).thenReturn(user);
 
-    dialog.setUser(user);
+    dialog.setUserId(user.getId());
 
     verify(dialog.form).setUser(user);
     assertEquals(resources.message(HEADER, 1, user.getName()), dialog.getHeaderTitle());
   }
 
   @Test
-  public void setUser_Null() {
+  public void setUserId_Null() {
     dialog.form = mock(UserForm.class);
 
-    dialog.setUser(null);
+    dialog.setUserId(null);
 
     verify(dialog.form).setUser(null);
     assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());

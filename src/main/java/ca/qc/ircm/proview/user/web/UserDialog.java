@@ -56,12 +56,12 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected Button save = new Button();
   protected Button cancel = new Button();
   protected UserForm form;
-  private transient UserService userService;
+  private transient UserService service;
 
   @Autowired
-  UserDialog(UserForm form, UserService userService) {
+  UserDialog(UserForm form, UserService service) {
     this.form = form;
-    this.userService = userService;
+    this.service = service;
   }
 
   public static String id(String baseId) {
@@ -124,17 +124,18 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     fireEvent(new SavedEvent<>(this, true));
   }
 
-  public User getUser() {
-    return form.getUser();
+  public Long getUserId() {
+    return form.getUser().getId();
   }
 
   /**
-   * Sets user.
+   * Sets user's id.
    *
-   * @param user
-   *          user
+   * @param id
+   *          user's id
    */
-  public void setUser(User user) {
+  public void setUserId(Long id) {
+    User user = id != null ? service.get(id).orElseThrow() : null;
     form.setUser(user);
     updateHeader();
   }
@@ -144,7 +145,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
       User user = form.getUser();
       String password = form.getPassword();
       logger.debug("save user {} in laboratory {}", user, user.getLaboratory());
-      userService.save(user, password);
+      service.save(user, password);
       close();
       fireSavedEvent();
     }

@@ -300,7 +300,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   void view(User user) {
     clearError();
     UserDialog dialog = dialogFactory.getObject();
-    dialog.setUser(service.get(user.getId()).orElse(null));
+    dialog.setUserId(user.getId());
     dialog.open();
     dialog.addSavedListener(e -> loadUsers());
   }
@@ -347,7 +347,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
 
   void add() {
     UserDialog dialog = dialogFactory.getObject();
-    dialog.setUser(new User());
     dialog.open();
     dialog.addSavedListener(e -> loadUsers());
   }

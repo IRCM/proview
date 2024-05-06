@@ -51,6 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -126,6 +127,8 @@ public class UsersViewTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
+    when(service.get(anyLong())).then(
+        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
     UI.getCurrent().setLocale(locale);
     users = repository.findAll();
     when(service.all(any())).thenReturn(users);
@@ -315,7 +318,7 @@ public class UsersViewTest extends SpringUIUnitTest {
       assertTrue(functions(editRenderer).containsKey("edit"));
       functions(editRenderer).get("edit").accept(user, null);
       UserDialog dialog = $(UserDialog.class).last();
-      assertEquals(user, dialog.getUser());
+      assertEquals(user.getId(), dialog.getUserId());
       verify(service).get(user.getId());
       assertEquals(user.getEmail() != null ? user.getEmail() : "",
           test(view.users).getCellText(i, indexOfColumn(EMAIL)));
@@ -396,17 +399,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     test(view.users).doubleClickRow(0);
 
     UserDialog dialog = $(UserDialog.class).first();
-    assertEquals(user, dialog.getUser());
-    verify(service).get(1L);
-  }
-
-  @Test
-  public void users_DoubleClick_Empty() {
-    when(service.get(any(Long.class))).thenReturn(Optional.empty());
-    test(view.users).doubleClickRow(0);
-
-    UserDialog dialog = $(UserDialog.class).first();
-    assertNull(dialog.getUser().getId());
+    assertEquals(user.getId(), dialog.getUserId());
     verify(service).get(1L);
   }
 
@@ -576,7 +569,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     test(view.add).click();
 
     UserDialog dialog = $(UserDialog.class).first();
-    assertNull(dialog.getUser().getId());
+    assertNull(dialog.getUserId());
   }
 
   @Test
