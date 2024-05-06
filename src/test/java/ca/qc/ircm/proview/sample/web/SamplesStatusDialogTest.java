@@ -39,10 +39,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -52,6 +55,8 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SavedEvent;
@@ -72,6 +77,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,11 +95,15 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class SamplesStatusDialogTest extends SpringUIUnitTest {
   private SamplesStatusDialog dialog;
   @MockBean
-  private SubmissionSampleService service;
+  private SubmissionService service;
+  @MockBean
+  private SubmissionSampleService sampleService;
   @Mock
   private ComponentEventListener<SavedEvent<SamplesStatusDialog>> savedListener;
   @Autowired
-  private SubmissionSampleRepository repository;
+  private SubmissionRepository repository;
+  @Autowired
+  private SubmissionSampleRepository sampleRepository;
   private Locale locale = ENGLISH;
   private AppResources resources = new AppResources(SamplesStatusDialog.class, locale);
   private AppResources webResources = new AppResources(Constants.class, locale);
@@ -108,12 +118,15 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
+    when(service.get(anyLong())).then(
+        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
     UI.getCurrent().setLocale(locale);
     SubmissionsView view = navigate(SubmissionsView.class);
     Grid<Submission> submissions = test(view).find(Grid.class).id(SubmissionsView.SUBMISSIONS);
-    test(submissions).clickRow(1, new MetaKeys().shift());
+    submissions.setItems(repository.findAll());
+    test(submissions).clickRow(18, new MetaKeys().shift());
     dialog = $(SamplesStatusDialog.class).id(ID);
-    samples = repository.findAll();
+    samples = sampleRepository.findAll();
   }
 
   private int indexOfColumn(String property) {
@@ -121,9 +134,9 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   }
 
   private void setFields() {
-    dialog.status(dialog.getSubmission().getSamples().get(0)).setValue(status1);
-    dialog.getSubmission().getSamples().stream().skip(1)
-        .forEach(sample -> dialog.status(sample).setValue(status2));
+    List<SubmissionSample> samples = items(dialog.samples);
+    dialog.status(samples.get(0)).setValue(status1);
+    samples.stream().skip(1).forEach(sample -> dialog.status(sample).setValue(status2));
   }
 
   @Test
@@ -138,8 +151,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER, dialog.getSubmission().getExperiment()),
-        dialog.getHeaderTitle());
+    Submission submission = repository.findById(163L).get();
+    assertEquals(resources.message(HEADER, submission.getExperiment()), dialog.getHeaderTitle());
     assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -161,8 +174,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     final AppResources sampleResources = new AppResources(Sample.class, locale);
     final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER, dialog.getSubmission().getExperiment()),
-        dialog.getHeaderTitle());
+    Submission submission = repository.findById(163L).get();
+    assertEquals(resources.message(HEADER, submission.getExperiment()), dialog.getHeaderTitle());
     assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -187,9 +200,9 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void samples_ColumnsValueProvider() {
-    Submission submission = new Submission();
+    Submission submission = repository.findById(163L).get();
     submission.setSamples(samples);
-    dialog.setSubmission(submission);
+    dialog.setSubmissionId(163L);
     for (int i = 0; i < samples.size(); i++) {
       SubmissionSample sample = samples.get(i);
       assertEquals(sample.getName(), test(dialog.samples).getCellText(i, indexOfColumn(NAME)));
@@ -226,19 +239,21 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void allStatus_Changed() {
-    assertTrue(dialog.getSubmission().getSamples().stream()
+    Submission submission = repository.findById(163L).get();
+    assertTrue(submission.getSamples().stream()
         .filter(sa -> sa.getStatus() != SampleStatus.ANALYSED).findFirst().isPresent());
     dialog.allStatus.setValue(SampleStatus.ANALYSED);
-    for (SubmissionSample sample : dialog.getSubmission().getSamples()) {
+    for (SubmissionSample sample : submission.getSamples()) {
       assertEquals(SampleStatus.ANALYSED, dialog.status(sample).getValue());
     }
   }
 
   @Test
   public void allStatus_Clear() {
+    Submission submission = repository.findById(163L).get();
     dialog.allStatus.setValue(SampleStatus.ANALYSED);
     dialog.allStatus.clear();
-    for (SubmissionSample sample : dialog.getSubmission().getSamples()) {
+    for (SubmissionSample sample : submission.getSamples()) {
       assertEquals(SampleStatus.ANALYSED, dialog.status(sample).getValue());
     }
   }
@@ -267,20 +282,21 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save_EmptySamples() {
-    Submission submission = new Submission();
+    Submission submission = repository.findById(163L).get();
     submission.setSamples(new ArrayList<>());
-    dialog.setSubmission(submission);
+    dialog.setSubmissionId(163L);
     dialog.save.click();
-    verify(service, never()).updateStatus(any());
+    verify(sampleService, never()).updateStatus(any());
   }
 
   @Test
   public void save_EmptyStatus_First() {
+    Submission submission = repository.findById(163L).get();
     setFields();
-    SubmissionSample sample = dialog.getSubmission().getSamples().get(0);
+    SubmissionSample sample = submission.getSamples().get(0);
     dialog.status(sample).setValue(null);
     dialog.save.click();
-    verify(service, never()).updateStatus(any());
+    verify(sampleService, never()).updateStatus(any());
     List<BinderValidationStatus<SubmissionSample>> statuses = dialog.validateSamples();
     BinderValidationStatus<SubmissionSample> status = statuses.get(0);
     assertFalse(status.isOk());
@@ -293,11 +309,12 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save_EmptyStatus_Second() {
+    Submission submission = repository.findById(163L).get();
     setFields();
-    SubmissionSample sample = dialog.getSubmission().getSamples().get(1);
+    SubmissionSample sample = submission.getSamples().get(1);
     dialog.status(sample).setValue(null);
     dialog.save.click();
-    verify(service, never()).updateStatus(any());
+    verify(sampleService, never()).updateStatus(any());
     List<BinderValidationStatus<SubmissionSample>> statuses = dialog.validateSamples();
     BinderValidationStatus<SubmissionSample> status = statuses.get(1);
     assertFalse(status.isOk());
@@ -310,12 +327,13 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save() {
+    Submission submission = repository.findById(163L).get();
     dialog.addSavedListener(savedListener);
     setFields();
     dialog.save.click();
-    verify(service).updateStatus(dialog.getSubmission().getSamples());
+    verify(sampleService).updateStatus(submission.getSamples());
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, dialog.getSubmission().getExperiment()),
+    assertEquals(resources.message(SAVED, submission.getExperiment()),
         test(notification).getText());
     assertFalse(dialog.isOpened());
     verify(savedListener).onComponentEvent(any());
@@ -328,30 +346,17 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void getSubmission() {
-    assertEquals(163L, dialog.getSubmission().getId());
+  public void getSubmissionId() {
+    assertEquals(163L, dialog.getSubmissionId());
   }
 
   @Test
-  public void setSubmission_New() {
-    Submission submission = new Submission(1L);
+  public void setSubmissionId() {
+    Submission submission = repository.findById(163L).get();
     String experiment = "test submission";
     submission.setExperiment(experiment);
     submission.setSamples(new ArrayList<>());
-
-    dialog.setSubmission(submission);
-
-    assertEquals(submission, dialog.getSubmission());
-    assertEquals(resources.message(HEADER, experiment), dialog.getHeaderTitle());
-  }
-
-  @Test
-  public void setSubmission_NewLocalChange() {
-    Submission submission = new Submission(1L);
-    String experiment = "test submission";
-    submission.setExperiment(experiment);
-    submission.setSamples(new ArrayList<>());
-    dialog.setSubmission(submission);
+    dialog.setSubmissionId(163L);
 
     locale = Locale.FRENCH;
     UI.getCurrent().setLocale(locale);
@@ -361,27 +366,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setSubmission_NoId() {
-    Submission submission = new Submission();
-    submission.setSamples(new ArrayList<>());
-
-    dialog.setSubmission(submission);
-
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
-  }
-
-  @Test
-  public void setSubmission_IdThenNoId() {
-    Submission submission = new Submission(1L);
-    String experiment = "test submission";
-    submission.setExperiment(experiment);
-    submission.setSamples(new ArrayList<>());
-    dialog.setSubmission(submission);
-    submission = new Submission();
-    submission.setSamples(new ArrayList<>());
-
-    dialog.setSubmission(submission);
-
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
+  public void setSubmissionId_Null() {
+    assertThrows(NoSuchElementException.class, () -> dialog.setSubmissionId(null));
   }
 }

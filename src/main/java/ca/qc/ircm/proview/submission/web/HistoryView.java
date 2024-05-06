@@ -193,8 +193,8 @@ public class HistoryView extends VerticalLayout
     updateHeader();
   }
 
-  public Submission getSubmission() {
-    return submission;
+  public Long getSubmissionId() {
+    return submission != null ? submission.getId() : null;
   }
 
   private void updateActivities() {
@@ -213,16 +213,16 @@ public class HistoryView extends VerticalLayout
     }
     if (record instanceof Submission) {
       SubmissionDialog dialog = dialogFactory.getObject();
-      dialog.setSubmission((Submission) record);
+      dialog.setSubmissionId(((Submission) record).getId());
       dialog.open();
       dialog.addSavedListener(e -> updateActivities());
     } else if (record instanceof MsAnalysis) {
       MsAnalysisDialog msAnalysisDialog = msAnalysisDialogFactory.getObject();
-      msAnalysisDialog.setMsAnalysis((MsAnalysis) record);
+      msAnalysisDialog.setMsAnalysisId(((MsAnalysis) record).getId());
       msAnalysisDialog.open();
     } else if (record instanceof Treatment) {
       TreatmentDialog treatmentDialog = treatmentDialogFactory.getObject();
-      treatmentDialog.setTreatment((Treatment) record);
+      treatmentDialog.setTreatmentId(((Treatment) record).getId());
       treatmentDialog.open();
     } else {
       AppResources resources = new AppResources(HistoryView.class, locale);

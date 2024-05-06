@@ -209,14 +209,12 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     close();
   }
 
-  Submission getSubmission() {
-    return binder.getBean();
+  Long getSubmissionId() {
+    return binder.getBean() != null ? binder.getBean().getId() : null;
   }
 
-  void setSubmission(Submission submission) {
-    if (submission == null) {
-      submission = new Submission();
-    }
+  void setSubmissionId(Long id) {
+    Submission submission = service.get(id).orElseThrow();
     binder.setBean(submission);
     printContent.setSubmission(submission);
     edit.setEnabled(

@@ -107,7 +107,7 @@ public class PrintSubmissionView extends VerticalLayout
     }
   }
 
-  Submission getSubmission() {
-    return submission;
+  Long getSubmissionId() {
+    return submission != null ? submission.getId() : null;
   }
 }

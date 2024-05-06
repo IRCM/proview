@@ -34,8 +34,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -88,6 +90,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
+    when(service.get(anyLong())).then(
+        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
     UI.getCurrent().setLocale(locale);
     UsersView view = navigate(UsersView.class);
     test(view.users).select(0);
@@ -108,7 +112,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
+    Laboratory laboratory = repository.findById(dialog.getLaboratoryId()).get();
+    assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.getHeaderTitle());
     assertEquals(laboratoryResources.message(NAME), dialog.name.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -121,7 +126,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
     final AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
+    Laboratory laboratory = repository.findById(dialog.getLaboratoryId()).get();
+    assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.getHeaderTitle());
     assertEquals(laboratoryResources.message(NAME), dialog.name.getLabel());
     assertEquals(webResources.message(SAVE), dialog.save.getText());
     assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
@@ -142,16 +148,14 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void getLaboratory() {
-    Laboratory laboratory = repository.findById(2L).get();
-    dialog.setLaboratory(laboratory);
-    assertEquals(laboratory, dialog.getLaboratory());
+  public void getLaboratoryId() {
+    assertEquals(1L, dialog.getLaboratoryId());
   }
 
   @Test
-  public void setLaboratory() {
+  public void setLaboratoryId() {
     Laboratory laboratory = repository.findById(2L).get();
-    dialog.setLaboratory(laboratory);
+    dialog.setLaboratoryId(2L);
     assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.getHeaderTitle());
     assertEquals(laboratory.getName(), dialog.name.getValue());
     assertFalse(dialog.name.isReadOnly());
@@ -160,8 +164,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setLaboratory_Null() {
-    dialog.setLaboratory(null);
+  public void setLaboratoryId_Null() {
+    dialog.setLaboratoryId(null);
     assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
     assertEquals("", dialog.name.getValue());
     assertFalse(dialog.name.isReadOnly());
@@ -192,6 +196,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   @Test
   public void save_New() {
     dialog.addSavedListener(savedListener);
+    dialog.setLaboratoryId(null);
     String name = "My lab";
     dialog.name.setValue(name);
 
@@ -211,7 +216,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   @Test
   public void save_Update() {
     dialog.addSavedListener(savedListener);
-    dialog.setLaboratory(repository.findById(2L).get());
+    dialog.setLaboratoryId(2L);
     String name = "My lab";
     dialog.name.setValue(name);
 

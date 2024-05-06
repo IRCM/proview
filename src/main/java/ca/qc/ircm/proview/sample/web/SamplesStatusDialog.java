@@ -34,6 +34,7 @@ import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
@@ -90,14 +91,16 @@ public class SamplesStatusDialog extends Dialog
   private Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
   private Submission submission;
   private Map<SubmissionSample, Binder<SubmissionSample>> binders = new HashMap<>();
-  private transient SubmissionSampleService service;
+  private transient SubmissionService service;
+  private transient SubmissionSampleService sampleService;
 
   public SamplesStatusDialog() {
   }
 
   @Autowired
-  SamplesStatusDialog(SubmissionSampleService service) {
+  SamplesStatusDialog(SubmissionService service, SubmissionSampleService sampleService) {
     this.service = service;
+    this.sampleService = sampleService;
   }
 
   public static String id(String baseId) {
@@ -204,14 +207,12 @@ public class SamplesStatusDialog extends Dialog
     fireEvent(new SavedEvent<>(this, true));
   }
 
-  public Submission getSubmission() {
-    return submission;
+  public Long getSubmissionId() {
+    return submission.getId();
   }
 
-  public void setSubmission(Submission submission) {
-    Objects.requireNonNull(submission);
-    Objects.requireNonNull(submission.getSamples());
-    this.submission = submission;
+  public void setSubmissionId(Long id) {
+    submission = service.get(id).orElseThrow();
     samples.setItems(submission.getSamples());
     localeChanged();
   }
@@ -230,7 +231,7 @@ public class SamplesStatusDialog extends Dialog
     if (validate()) {
       logger.debug("update samples' status of submission {}", submission);
       AppResources resources = new AppResources(SamplesStatusDialog.class, getLocale());
-      service.updateStatus(submission.getSamples());
+      sampleService.updateStatus(submission.getSamples());
       showNotification(resources.message(SAVED, submission.getExperiment()));
       close();
       fireSavedEvent();

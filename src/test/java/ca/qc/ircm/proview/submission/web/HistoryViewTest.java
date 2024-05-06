@@ -147,8 +147,8 @@ public class HistoryViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER, view.getSubmission().getExperiment()),
-        view.header.getText());
+    Submission submission = submissionRepository.findById(1L).get();
+    assertEquals(resources.message(HEADER, submission.getExperiment()), view.header.getText());
     HeaderRow header = view.activities.getHeaderRows().get(0);
     FooterRow footer = view.activities.getFooterRows().get(0);
     assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
@@ -169,13 +169,13 @@ public class HistoryViewTest extends SpringUIUnitTest {
 
   @Test
   public void localeChange() {
+    Submission submission = submissionRepository.findById(1L).get();
     Locale locale = FRENCH;
     final AppResources resources = new AppResources(HistoryView.class, locale);
     final AppResources activityResources = new AppResources(Activity.class, locale);
     final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER, view.getSubmission().getExperiment()),
-        view.header.getText());
+    assertEquals(resources.message(HEADER, submission.getExperiment()), view.header.getText());
     HeaderRow header = view.activities.getHeaderRows().get(0);
     FooterRow footer = view.activities.getFooterRows().get(0);
     assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
@@ -266,7 +266,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(service.record(activity)).thenReturn(Optional.of(submission));
     test(view.activities).doubleClickRow(0);
 
-    verify(dialog).setSubmission(submission);
+    verify(dialog).setSubmissionId(submission.getId());
     verify(dialog).open();
   }
 
@@ -279,7 +279,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(service.record(activity)).thenReturn(Optional.of(sample));
     test(view.activities).doubleClickRow(0);
 
-    verify(dialog).setSubmission(submission);
+    verify(dialog).setSubmissionId(submission.getId());
     verify(dialog).open();
   }
 
@@ -290,7 +290,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(service.record(activity)).thenReturn(Optional.of(msAnalysis));
     test(view.activities).doubleClickRow(0);
 
-    verify(msAnalysisDialog).setMsAnalysis(msAnalysis);
+    verify(msAnalysisDialog).setMsAnalysisId(msAnalysis.getId());
     verify(msAnalysisDialog).open();
   }
 
@@ -301,7 +301,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(service.record(activity)).thenReturn(Optional.of(treatment));
     test(view.activities).doubleClickRow(0);
 
-    verify(treatmentDialog).setTreatment(treatment);
+    verify(treatmentDialog).setTreatmentId(treatment.getId());
     verify(treatmentDialog).open();
   }
 
@@ -354,7 +354,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(submissionService.get(any())).thenReturn(Optional.of(submission));
     view.setParameter(beforeEvent, 12L);
     verify(submissionService).get(12L);
-    assertEquals(submission, view.getSubmission());
+    assertEquals(1L, view.getSubmissionId());
     assertEquals(resources.message(HEADER, experiment), view.header.getText());
   }
 
@@ -363,15 +363,15 @@ public class HistoryViewTest extends SpringUIUnitTest {
     when(submissionService.get(any())).thenReturn(Optional.empty());
     view.setParameter(beforeEvent, 12L);
     verify(submissionService).get(12L);
-    assertNull(view.getSubmission());
+    assertNull(view.getSubmissionId());
     assertEquals(resources.message(HEADER, ""), view.header.getText());
   }
 
   @Test
   public void setParameter_Null() {
     view.setParameter(beforeEvent, null);
-    assertEquals(1L, view.getSubmission().getId());
-    assertEquals(resources.message(HEADER, view.getSubmission().getExperiment()),
-        view.header.getText());
+    Submission submission = submissionRepository.findById(1L).get();
+    assertEquals(1L, view.getSubmissionId());
+    assertEquals(resources.message(HEADER, submission.getExperiment()), view.header.getText());
   }
 }
