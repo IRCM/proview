@@ -27,6 +27,8 @@ public class FindbugsExplanations {
       "Exposed internal representation for objects created by Spring Boot is acceptable";
   public static final String INNER_CLASS_EI_EXPOSE_REP =
       "Exposed internal representation for inner classes is acceptable";
+  public static final String CHILD_COMPONENT_EI_EXPOSE_REP =
+      "Exposed internal representation for some sub components fields is acceptable";
   public static final String DESIGNER_NP_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD =
       "Vaadin designer sets Design fields after parsing HTML file";
 }

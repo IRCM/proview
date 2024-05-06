@@ -17,6 +17,8 @@
 
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.FindbugsExplanations.CHILD_COMPONENT_EI_EXPOSE_REP;
+
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
@@ -30,6 +32,7 @@ import com.vaadin.flow.server.StreamRegistration;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +50,7 @@ public class PrintSubmission extends VerticalLayout implements LocaleChangeObser
   public static final String ID = "print-submission";
   private static final long serialVersionUID = 480796342756791299L;
   private static final Logger logger = LoggerFactory.getLogger(PrintSubmission.class);
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = CHILD_COMPONENT_EI_EXPOSE_REP)
   private Submission submission;
   private transient SubmissionService service;
 
