@@ -418,18 +418,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     doubleClickItem(view.users, user, view.laboratory);
 
     LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
-    assertEquals(user.getLaboratory(), dialog.getLaboratory());
-    verify(laboratoryService).get(user.getLaboratory().getId());
-  }
-
-  @Test
-  public void users_DoubleClickLaboratory_Empty() {
-    when(laboratoryService.get(any(Long.class))).thenReturn(Optional.empty());
-    User user = users.get(0);
-    doubleClickItem(view.users, user, view.laboratory);
-
-    LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
-    assertNull(dialog.getLaboratory().getId());
+    assertEquals(user.getLaboratory().getId(), dialog.getLaboratoryId());
     verify(laboratoryService).get(user.getLaboratory().getId());
   }
 
@@ -635,7 +624,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
     verify(laboratoryService).get(user.getLaboratory().getId());
     LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
-    assertEquals(user.getLaboratory(), dialog.getLaboratory());
+    assertEquals(user.getLaboratory().getId(), dialog.getLaboratoryId());
     assertFalse(view.error.isVisible());
   }
 

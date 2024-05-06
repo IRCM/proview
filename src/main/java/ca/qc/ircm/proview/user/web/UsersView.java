@@ -320,7 +320,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   void viewLaboratory(Laboratory laboratory) {
     clearError();
     LaboratoryDialog laboratoryDialog = laboratoryDialogFactory.getObject();
-    laboratoryDialog.setLaboratory(laboratoryService.get(laboratory.getId()).orElse(null));
+    laboratoryDialog.setLaboratoryId(laboratory != null ? laboratory.getId() : null);
     laboratoryDialog.open();
     laboratoryDialog.addSavedListener(e -> loadUsers());
   }

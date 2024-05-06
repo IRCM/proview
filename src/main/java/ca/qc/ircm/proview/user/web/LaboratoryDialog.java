@@ -107,7 +107,7 @@ public class LaboratoryDialog extends Dialog
     cancel.setId(id(CANCEL));
     cancel.setIcon(VaadinIcon.CLOSE.create());
     cancel.addClickListener(e -> cancel());
-    setLaboratory(null);
+    setLaboratoryId(null);
   }
 
   @Override
@@ -148,14 +148,12 @@ public class LaboratoryDialog extends Dialog
     fireEvent(new SavedEvent<>(this, true));
   }
 
-  public Laboratory getLaboratory() {
-    return binder.getBean();
+  public Long getLaboratoryId() {
+    return binder.getBean().getId();
   }
 
-  public void setLaboratory(Laboratory laboratory) {
-    if (laboratory == null) {
-      laboratory = new Laboratory();
-    }
+  public void setLaboratoryId(Long id) {
+    Laboratory laboratory = id != null ? service.get(id).orElseThrow() : new Laboratory();
     binder.setBean(laboratory);
     updateHeader();
   }
