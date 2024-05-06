@@ -21,7 +21,7 @@ import static ca.qc.ircm.proview.Constants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
-import static ca.qc.ircm.proview.FindbugsExplanations.INNER_CLASS_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.SpotbugsJustifications.INNER_CLASS_EI_EXPOSE_REP;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;

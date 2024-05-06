@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.security;
 
-import static ca.qc.ircm.proview.FindbugsExplanations.SPRING_BOOT_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.SpotbugsJustifications.SPRING_BOOT_EI_EXPOSE_REP;
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;

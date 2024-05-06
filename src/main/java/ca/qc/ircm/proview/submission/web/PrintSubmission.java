@@ -17,7 +17,7 @@
 
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.FindbugsExplanations.CHILD_COMPONENT_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.SpotbugsJustifications.CHILD_COMPONENT_EI_EXPOSE_REP;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
