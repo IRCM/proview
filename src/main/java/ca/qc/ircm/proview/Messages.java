@@ -39,6 +39,6 @@ public class Messages {
    */
   public String message(String key, Object... replacements) {
     return messageSource.getMessage(prefix + "." + key, replacements,
-        "!{" + locale + ":" + prefix + "." + key + "}!", locale);
+        "'!{" + locale + ":" + prefix + "." + key + "}!'", locale);
   }
 }
