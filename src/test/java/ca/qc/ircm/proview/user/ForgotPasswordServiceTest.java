@@ -14,7 +14,6 @@ import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.text.MessageResource;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
@@ -175,7 +174,7 @@ public class ForgotPasswordServiceTest {
     verify(emailService).send(email);
     verify(email).addTo(user.getEmail());
     AppResources resources = new AppResources(ForgotPasswordService.class, locale);
-    MessageResource mailResources = new MessageResource("user.forgotpassword", locale);
+    AppResources mailResources = new AppResources("user.forgotpassword", locale);
     verify(email).setSubject(resources.message("subject"));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
