@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.VIEW;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.history.ActivityProperties.ACTION_TYPE;
 import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
 import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
@@ -10,6 +11,7 @@ import static ca.qc.ircm.proview.history.ActivityProperties.USER;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityComparator;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -65,6 +67,7 @@ public class HistoryView extends VerticalLayout
       "<span .title='${item.descriptionTitle}'>${item.descriptionValue}</span>";
   public static final String EXPLANATION_SPAN =
       "<span .title='${item.explanationTitle}'>${item.explanationValue}</span>";
+  private static final String ACTION_TYPE_PREFIX = messagePrefix(ActionType.class);
   private static final long serialVersionUID = -6131172448162015562L;
   private static final Logger logger = LoggerFactory.getLogger(HistoryView.class);
   protected H2 header = new H2();
@@ -109,8 +112,9 @@ public class HistoryView extends VerticalLayout
             LitRenderer.<Activity>of(VIEW_BUTTON).withFunction("view", ac -> view(ac, getLocale())))
         .setKey(VIEW).setSortable(false).setFlexGrow(0);
     user = activities.addColumn(ac -> ac.getUser().getName(), USER).setKey(USER).setFlexGrow(5);
-    type = activities.addColumn(ac -> ac.getActionType().getLabel(getLocale()), ACTION_TYPE)
-        .setKey(ACTION_TYPE);
+    type =
+        activities.addColumn(ac -> getTranslation(ACTION_TYPE_PREFIX + ac.getActionType().name()),
+            ACTION_TYPE).setKey(ACTION_TYPE);
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     date = activities.addColumn(ac -> dateFormatter.format(ac.getTimestamp()), TIMESTAMP)
         .setKey(TIMESTAMP).setFlexGrow(3);

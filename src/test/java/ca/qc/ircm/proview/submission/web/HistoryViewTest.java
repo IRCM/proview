@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.VIEW;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.history.ActivityProperties.ACTION_TYPE;
 import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
 import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityRepository;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -69,6 +71,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -77,6 +80,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class HistoryViewTest extends SpringUIUnitTest {
+  private static final String ACTION_TYPE_PREFIX = messagePrefix(ActionType.class);
   private HistoryView view;
   @MockBean
   private ActivityService service;
@@ -94,6 +98,8 @@ public class HistoryViewTest extends SpringUIUnitTest {
   private ActivityRepository repository;
   @Autowired
   private SubmissionRepository submissionRepository;
+  @Autowired
+  private MessageSource messageSource;
   @Captor
   private ArgumentCaptor<ValueProvider<Activity, String>> valueProviderCaptor;
   @Captor
@@ -212,7 +218,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
       // TODO Test view
       assertEquals(activity.getUser().getName(),
           test(view.activities).getCellText(i, indexOfColumn(USER)));
-      assertEquals(activity.getActionType().getLabel(locale),
+      assertEquals(view.getTranslation(ACTION_TYPE_PREFIX + activity.getActionType().name()),
           test(view.activities).getCellText(i, indexOfColumn(ACTION_TYPE)));
       assertEquals(DateTimeFormatter.ISO_DATE_TIME.format(activity.getTimestamp()),
           test(view.activities).getCellText(i, indexOfColumn(TIMESTAMP)));
