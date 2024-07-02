@@ -12,7 +12,7 @@ public class AppResources {
   /**
    * Resource bundle name.
    */
-  private static final String BUNDLE = AppResources.class.getSimpleName();
+  private static final String BUNDLE = "messages";
   /**
    * Strip this key from class name, if it matches.
    */
