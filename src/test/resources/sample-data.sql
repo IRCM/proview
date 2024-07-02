@@ -1,20 +1,3 @@
---
--- Copyright (c) 2006 Institut de recherches cliniques de Montreal (IRCM)
---
--- This program is free software: you can redistribute it and/or modify
--- it under the terms of the GNU Affero General Public License as published by
--- the Free Software Foundation, either version 3 of the License, or
--- (at your option) any later version.
---
--- This program is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU Affero General Public License
--- along with this program.  If not, see <http://www.gnu.org/licenses/>.
---
-
 INSERT INTO submission (id,service,experiment,goal,taxonomy,instrument,source,injectiontype,digestion,useddigestion,otherdigestion,identification,identificationlink,highresolution,proteincontent,protein,posttranslationmodification,separation,thickness,coloration,othercoloration,developmenttime,decoloration,weightmarkerquantity,proteinquantity,formula,monoisotopicmass,averagemass,solutionsolvent,othersolvent,toxicity,lightsensitive,storagetemperature,quantification,quantificationcomment,contaminants,standards,submissiondate,sampledeliverydate,digestiondate,analysisdate,dataavailabledate,comment,version,laboratory_id,user_id,hidden)
 VALUES (1,'LC_MS_MS','G100429',NULL,'Human','LTQ_ORBI_TRAP',NULL,NULL,'TRYPSIN',NULL,NULL,'NCBINR',NULL,0,'XLARGE',NULL,NULL,'ONE_DIMENSION','ONE','SILVER',NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,'2010-10-15','2010-12-09','2010-12-11','2010-12-13','2010-12-15','Philippe',0,2,3,0);
 INSERT INTO submission (id,service,experiment,goal,taxonomy,instrument,source,injectiontype,digestion,useddigestion,otherdigestion,identification,identificationlink,highresolution,proteincontent,protein,posttranslationmodification,separation,thickness,coloration,othercoloration,developmenttime,decoloration,weightmarkerquantity,proteinquantity,formula,monoisotopicmass,averagemass,solutionsolvent,othersolvent,toxicity,lightsensitive,storagetemperature,quantification,quantificationcomment,contaminants,standards,submissiondate,sampledeliverydate,digestiondate,analysisdate,dataavailabledate,comment,version,laboratory_id,user_id,hidden)
