@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -67,6 +68,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
@@ -81,6 +83,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String READ = "read";
   private static final String WRITE = "write";
+  private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -93,6 +96,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private LaboratoryRepository laboratoryRepository;
   @Autowired
   private PlateRepository plateRepository;
+  @Autowired
+  private MessageSource messageSource;
   @MockBean
   private SubmissionActivityService submissionActivityService;
   @MockBean
@@ -1570,7 +1575,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertTrue(content.contains("class=\"injectionType\""));
-    assertTrue(content.contains(submission.getInjectionType().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(INJECTION_TYPE_PREFIX + submission.getInjectionType().name(), null, locale)));
     assertTrue(content.contains("class=\"source\""));
     assertTrue(content.contains(submission.getSource().getLabel(locale)));
     assertFalse(content.contains("class=\"proteinContent\""));

@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
@@ -47,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -58,9 +60,12 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final QSubmission qsubmission = QSubmission.submission;
   @SuppressWarnings("unused")
+  private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
   private SubmissionRepository repository;
+  @Autowired
+  private MessageSource messageSource;
   @Value("${spring.application.name}")
   private String applicationName;
   @Value("${download-home}")
@@ -197,7 +202,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.samplesNames().setValue(sampleNamesString);
     form.quantity().setValue(quantity);
     form.volume().setValue(volume);
-    form.injection().selectByText(injection.getLabel(locale));
+    form.injection().selectByText(
+        messageSource.getMessage(INJECTION_TYPE_PREFIX + injection.name(), null, locale));
     form.source().selectByText(source.getLabel(locale));
     form.instrument().selectByText(instrument.getLabel(locale));
   }

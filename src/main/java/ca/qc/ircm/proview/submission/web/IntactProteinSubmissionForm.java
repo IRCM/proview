@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.SpotbugsJustifications.INNER_CLASS_EI_EXPOSE_REP;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
@@ -90,6 +91,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   public static final String SAMPLES_NAMES_WRONG_COUNT = property(SAMPLES + "Names", "wrongCount");
   public static final String QUANTITY_PLACEHOLDER = property(QUANTITY, PLACEHOLDER);
   public static final String VOLUME_PLACEHOLDER = property(VOLUME, PLACEHOLDER);
+  private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   private static final long serialVersionUID = 7704703308278059432L;
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
@@ -151,7 +153,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     samplesNames.setMinHeight("10em");
     injection.setId(id(INJECTION_TYPE));
     injection.setItems(InjectionType.values());
-    injection.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    injection.setRenderer(
+        new TextRenderer<>(value -> getTranslation(INJECTION_TYPE_PREFIX + value.name())));
     injection.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     source.setId(id(SOURCE));
     source.setItems(MassDetectionInstrumentSource.availables());

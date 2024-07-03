@@ -177,7 +177,8 @@
         </div>
         <div th:if="${submission.service.name() == 'INTACT_PROTEIN' && submission.injectionType != null}">
             <span class="label" th:text="#{submission.print.submission.injectionType}">Injection:</span>
-            <span class="injectionType" th:text="${submission.injectionType.getLabel(locale)}">LC/MS</span>
+            <span class="injectionType"
+                  th:text="#{${'msanalysis.InjectionType.' + submission.injectionType.name()}}">LC/MS</span>
         </div>
         <div th:if="${submission.service.name() == 'INTACT_PROTEIN' && submission.source != null}">
             <span class="label" th:text="#{submission.print.submission.source}">Ionization source:</span>

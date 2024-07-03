@@ -1,66 +1,46 @@
 package ca.qc.ircm.proview.msanalysis;
 
-import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
-import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.ORBITRAP_FUSION;
-import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.Q_EXACTIVE;
-import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.Q_TOF;
-import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TOF;
-import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TSQ_VANTAGE;
-import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.VELOS;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
+import static ca.qc.ircm.proview.msanalysis.InjectionType.DIRECT_INFUSION;
+import static ca.qc.ircm.proview.msanalysis.InjectionType.LC_MS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 
 /**
  * Tests for {@link InjectionType}.
  */
+@NonTransactionalTestAnnotations
 public class InjectionTypeTest {
+  private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
+  @Autowired
+  private MessageSource messageSource;
+
   @Test
   public void getNullLabel() {
-    assertEquals("Undetermined", InjectionType.getNullLabel(Locale.ENGLISH));
-    assertEquals("Indéterminée", InjectionType.getNullLabel(Locale.FRENCH));
+    assertEquals("Undetermined",
+        messageSource.getMessage(INJECTION_TYPE_PREFIX + "NULL", null, Locale.ENGLISH));
+    assertEquals("Indéterminée",
+        messageSource.getMessage(INJECTION_TYPE_PREFIX + "NULL", null, Locale.FRENCH));
   }
 
   @Test
-  public void getLabel_Velos() {
-    assertEquals("LTQ-ORBITRAP-VELOS", VELOS.getLabel(Locale.ENGLISH));
-    assertEquals("LTQ-ORBITRAP-VELOS", VELOS.getLabel(Locale.FRENCH));
+  public void getLabel_Lcms() {
+    assertEquals("LC/MS",
+        messageSource.getMessage(INJECTION_TYPE_PREFIX + LC_MS.name(), null, Locale.ENGLISH));
+    assertEquals("LC/MS",
+        messageSource.getMessage(INJECTION_TYPE_PREFIX + LC_MS.name(), null, Locale.FRENCH));
   }
 
   @Test
-  public void getLabel_Qexactive() {
-    assertEquals("Q-Exactive", Q_EXACTIVE.getLabel(Locale.ENGLISH));
-    assertEquals("Q-Exactive", Q_EXACTIVE.getLabel(Locale.FRENCH));
-  }
-
-  @Test
-  public void getLabel_Vantage() {
-    assertEquals("TSQ-Vantage", TSQ_VANTAGE.getLabel(Locale.ENGLISH));
-    assertEquals("TSQ-Vantage", TSQ_VANTAGE.getLabel(Locale.FRENCH));
-  }
-
-  @Test
-  public void getLabel_Fusion() {
-    assertEquals("Orbitrap-FUSION", ORBITRAP_FUSION.getLabel(Locale.ENGLISH));
-    assertEquals("Orbitrap-FUSION", ORBITRAP_FUSION.getLabel(Locale.FRENCH));
-  }
-
-  @Test
-  public void getLabel_Orbitrap() {
-    assertEquals("LTQ-ORBI Trap", LTQ_ORBI_TRAP.getLabel(Locale.ENGLISH));
-    assertEquals("LTQ-ORBI Trap", LTQ_ORBI_TRAP.getLabel(Locale.FRENCH));
-  }
-
-  @Test
-  public void getLabel_Qtof() {
-    assertEquals("Q-TOF II", Q_TOF.getLabel(Locale.ENGLISH));
-    assertEquals("Q-TOF II", Q_TOF.getLabel(Locale.FRENCH));
-  }
-
-  @Test
-  public void getLabel_Tof() {
-    assertEquals("MALDI TOF", TOF.getLabel(Locale.ENGLISH));
-    assertEquals("MALDI TOF", TOF.getLabel(Locale.FRENCH));
+  public void getLabel_DirectInfusion() {
+    assertEquals("Direct infusion", messageSource
+        .getMessage(INJECTION_TYPE_PREFIX + DIRECT_INFUSION.name(), null, Locale.ENGLISH));
+    assertEquals("Infusion directe", messageSource
+        .getMessage(INJECTION_TYPE_PREFIX + DIRECT_INFUSION.name(), null, Locale.FRENCH));
   }
 }

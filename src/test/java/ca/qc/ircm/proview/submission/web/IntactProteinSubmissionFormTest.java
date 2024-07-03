@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.SampleType.DRY;
@@ -72,6 +73,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
+  private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   private IntactProteinSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -283,7 +285,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(InjectionType.values().length, items.size());
     for (InjectionType value : InjectionType.values()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(INJECTION_TYPE_PREFIX + value.name()),
           form.injection.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
