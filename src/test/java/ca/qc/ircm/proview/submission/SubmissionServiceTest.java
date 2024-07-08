@@ -88,6 +88,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       messagePrefix(MassDetectionInstrument.class);
   private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
       messagePrefix(MassDetectionInstrumentSource.class);
+  private static final String PROTEIN_IDENTIFICATION_PREFIX =
+      messagePrefix(ProteinIdentification.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -759,7 +761,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(messageSource.getMessage(
         MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertTrue(content.contains("class=\"identification\""));
-    assertTrue(content.contains(submission.getIdentification().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEIN_IDENTIFICATION_PREFIX + submission.getIdentification().name(), null, locale)));
     assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains(submission.getQuantification().getLabel(locale)));
@@ -1154,7 +1157,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(messageSource.getMessage(
         MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertTrue(content.contains("class=\"identification\""));
-    assertTrue(content.contains(submission.getIdentification().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEIN_IDENTIFICATION_PREFIX + submission.getIdentification().name(), null, locale)));
     assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains(submission.getQuantification().getLabel(locale)));

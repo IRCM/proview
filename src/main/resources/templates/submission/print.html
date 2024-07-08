@@ -198,7 +198,8 @@
         <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.identification != null}">
             <span class="label"
                   th:text="#{submission.print.submission.identification}">Protein identification database:</span>
-            <span class="identification" th:text="${submission.identification.getLabel(locale)}">Refseq</span>
+            <span class="identification"
+                  th:text="#{${'sample.ProteinIdentification.' + submission.identification.name()}}">Refseq</span>
         </div>
         <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.identification != null && submission.identification.name() == 'OTHER'}">
             <span class="label" th:text="#{submission.print.submission.identificationLink}">Protein identification database:</span>

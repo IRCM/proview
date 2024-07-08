@@ -105,6 +105,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
+  private static final String PROTEIN_IDENTIFICATION_PREFIX =
+      messagePrefix(ProteinIdentification.class);
   private LcmsmsSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -460,7 +462,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(ProteinIdentification.availables().size(), items.size());
     for (ProteinIdentification value : ProteinIdentification.availables()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(PROTEIN_IDENTIFICATION_PREFIX + value.name()),
           form.identification.getItemRenderer().createComponent(value).getElement().getText());
     }
   }

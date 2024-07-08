@@ -128,6 +128,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
       property(QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
+  private static final String PROTEIN_IDENTIFICATION_PREFIX =
+      messagePrefix(ProteinIdentification.class);
   private static final long serialVersionUID = 1460183864073097086L;
   private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionForm.class);
   protected TextField experiment = new TextField();
@@ -240,7 +242,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
         value -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()));
     identification.setId(id(IDENTIFICATION));
     identification.setItems(ProteinIdentification.availables());
-    identification.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    identification.setRenderer(
+        new TextRenderer<>(value -> getTranslation(PROTEIN_IDENTIFICATION_PREFIX + value.name())));
     identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     identification.addValueChangeListener(e -> identificationChanged());
     identificationLink.setId(id(IDENTIFICATION_LINK));

@@ -1,8 +1,6 @@
 package ca.qc.ircm.proview.sample;
 
-import ca.qc.ircm.proview.AppResources;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,19 +19,5 @@ public enum ProteinIdentification {
   public static List<ProteinIdentification> availables() {
     return Stream.of(ProteinIdentification.values())
         .filter(identification -> identification.available).collect(Collectors.toList());
-  }
-
-  private static AppResources getResources(Locale locale) {
-    return new AppResources(ProteinIdentification.class, locale);
-  }
-
-  public static String getNullLabel(Locale locale) {
-    AppResources resources = getResources(locale);
-    return resources.message("NULL");
-  }
-
-  public String getLabel(Locale locale) {
-    AppResources resources = getResources(locale);
-    return resources.message(name());
   }
 }

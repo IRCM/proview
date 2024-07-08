@@ -64,6 +64,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
       messagePrefix(MassDetectionInstrument.class);
   private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
       messagePrefix(MassDetectionInstrumentSource.class);
+  private static final String PROTEIN_IDENTIFICATION_PREFIX =
+      messagePrefix(ProteinIdentification.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -168,7 +170,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.proteinContent().selectByText(proteinContent.getLabel(locale));
     form.instrument().selectByText(messageSource
         .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null, locale));
-    form.identification().selectByText(identification.getLabel(locale));
+    form.identification().selectByText(messageSource
+        .getMessage(PROTEIN_IDENTIFICATION_PREFIX + identification.name(), null, locale));
     form.identificationLink().setValue(identificationLink);
     form.quantification().selectByText(quantification.getLabel(locale));
     form.quantificationComment().setValue(quantificationComment);
