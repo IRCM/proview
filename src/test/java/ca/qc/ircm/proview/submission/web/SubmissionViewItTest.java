@@ -66,6 +66,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
       messagePrefix(MassDetectionInstrumentSource.class);
   private static final String PROTEIN_IDENTIFICATION_PREFIX =
       messagePrefix(ProteinIdentification.class);
+  private static final String PROTEOLYTIC_DIGESTION_PREFIX =
+      messagePrefix(ProteolyticDigestion.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -164,7 +166,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
       form.weightMarkerQuantity().setValue(String.valueOf(weightMarkerQuantity));
       form.proteinQuantity().setValue(proteinQuantity);
     }
-    form.digestion().selectByText(digestion.getLabel(locale));
+    form.digestion().selectByText(
+        messageSource.getMessage(PROTEOLYTIC_DIGESTION_PREFIX + digestion.name(), null, locale));
     form.usedDigestion().setValue(usedDigestion);
     form.otherDigestion().setValue(otherDigestion);
     form.proteinContent().selectByText(proteinContent.getLabel(locale));

@@ -90,6 +90,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       messagePrefix(MassDetectionInstrumentSource.class);
   private static final String PROTEIN_IDENTIFICATION_PREFIX =
       messagePrefix(ProteinIdentification.class);
+  private static final String PROTEOLYTIC_DIGESTION_PREFIX =
+      messagePrefix(ProteolyticDigestion.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -750,7 +752,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"lightSensitive\""));
     assertFalse(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains("class=\"digestion\""));
-    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertFalse(content.contains("class=\"injectionType\""));
@@ -916,7 +919,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"digestion\""));
-    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertTrue(content.contains("class=\"usedDigestion\""));
     assertTrue(content.contains(submission.getUsedDigestion()));
     assertFalse(content.contains("class=\"otherDigestion\""));
@@ -931,7 +935,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"digestion\""));
-    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertTrue(content.contains("class=\"otherDigestion\""));
     assertTrue(content.contains(submission.getOtherDigestion()));
@@ -1146,7 +1151,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"lightSensitive\""));
     assertFalse(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains("class=\"digestion\""));
-    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertFalse(content.contains("class=\"injectionType\""));

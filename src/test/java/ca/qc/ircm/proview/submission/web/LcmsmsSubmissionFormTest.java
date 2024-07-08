@@ -107,6 +107,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
       messagePrefix(MassDetectionInstrument.class);
   private static final String PROTEIN_IDENTIFICATION_PREFIX =
       messagePrefix(ProteinIdentification.class);
+  private static final String PROTEOLYTIC_DIGESTION_PREFIX =
+      messagePrefix(ProteolyticDigestion.class);
   private LcmsmsSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -430,7 +432,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(ProteolyticDigestion.values().length, items.size());
     for (ProteolyticDigestion value : ProteolyticDigestion.values()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale), form.digestion.getItemLabelGenerator().apply(value));
+      assertEquals(form.getTranslation(PROTEOLYTIC_DIGESTION_PREFIX + value.name()),
+          form.digestion.getItemLabelGenerator().apply(value));
     }
   }
 

@@ -130,6 +130,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
       messagePrefix(MassDetectionInstrument.class);
   private static final String PROTEIN_IDENTIFICATION_PREFIX =
       messagePrefix(ProteinIdentification.class);
+  private static final String PROTEOLYTIC_DIGESTION_PREFIX =
+      messagePrefix(ProteolyticDigestion.class);
   private static final long serialVersionUID = 1460183864073097086L;
   private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionForm.class);
   protected TextField experiment = new TextField();
@@ -228,7 +230,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     proteinQuantity.setId(id(PROTEIN_QUANTITY));
     digestion.setId(id(DIGESTION));
     digestion.setItems(ProteolyticDigestion.values());
-    digestion.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    digestion.setItemLabelGenerator(
+        value -> getTranslation(PROTEOLYTIC_DIGESTION_PREFIX + value.name()));
     digestion.addValueChangeListener(e -> digestionChanged());
     usedDigestion.setId(id(USED_DIGESTION));
     otherDigestion.setId(id(OTHER_DIGESTION));

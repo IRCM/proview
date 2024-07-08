@@ -165,7 +165,8 @@
     <div class="service-information section">
         <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.digestion != null}">
             <span class="label" th:text="#{submission.print.submission.digestion}">Proteolytic digestion:</span>
-            <span class="digestion" th:text="${submission.digestion.getLabel(locale)}">Trypsin</span>
+            <span class="digestion"
+                  th:text="#{${'sample.ProteolyticDigestion.' + submission.digestion.name()}}">Trypsin</span>
         </div>
         <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.digestion != null && submission.digestion.name() == 'DIGESTED' && submission.usedDigestion != null}">
             <span class="label" th:text="#{submission.print.submission.usedDigestion}">Used enzyme:</span>
