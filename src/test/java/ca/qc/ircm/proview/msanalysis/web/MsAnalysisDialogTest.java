@@ -34,6 +34,7 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.AcquisitionRepository;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
@@ -62,6 +63,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class MsAnalysisDialogTest extends SpringUIUnitTest {
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
   private MsAnalysisDialog dialog;
   @MockBean
   private MsAnalysisService service;
@@ -214,7 +217,10 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
             dialog.getTranslation(
                 MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())),
         dialog.instrument.getText());
-    assertEquals(resources.message(SOURCE, msAnalysis.getSource().getLabel(locale)),
+    assertEquals(
+        resources.message(SOURCE,
+            dialog.getTranslation(
+                MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
         dialog.source.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(resources.message(INSERT_TIME, dateFormatter.format(msAnalysis.getInsertTime())),
@@ -236,7 +242,10 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
             dialog.getTranslation(
                 MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())),
         dialog.instrument.getText());
-    assertEquals(resources.message(SOURCE, msAnalysis.getSource().getLabel(locale)),
+    assertEquals(
+        resources.message(SOURCE,
+            dialog.getTranslation(
+                MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
         dialog.source.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(resources.message(INSERT_TIME, dateFormatter.format(msAnalysis.getInsertTime())),
@@ -259,7 +268,10 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
             dialog.getTranslation(
                 MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())),
         dialog.instrument.getText());
-    assertEquals(resources.message(SOURCE, msAnalysis.getSource().getLabel(locale)),
+    assertEquals(
+        resources.message(SOURCE,
+            dialog.getTranslation(
+                MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
         dialog.source.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(resources.message(INSERT_TIME, dateFormatter.format(msAnalysis.getInsertTime())),

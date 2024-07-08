@@ -62,6 +62,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -207,7 +209,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.volume().setValue(volume);
     form.injection().selectByText(
         messageSource.getMessage(INJECTION_TYPE_PREFIX + injection.name(), null, locale));
-    form.source().selectByText(source.getLabel(locale));
+    form.source().selectByText(messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + source.name(), null, locale));
     form.instrument().selectByText(messageSource
         .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null, locale));
   }

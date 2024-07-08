@@ -94,6 +94,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
   private static final long serialVersionUID = 7704703308278059432L;
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
@@ -160,7 +162,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     injection.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     source.setId(id(SOURCE));
     source.setItems(MassDetectionInstrumentSource.availables());
-    source.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    source.setRenderer(new TextRenderer<>(
+        value -> getTranslation(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + value.name())));
     source.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());

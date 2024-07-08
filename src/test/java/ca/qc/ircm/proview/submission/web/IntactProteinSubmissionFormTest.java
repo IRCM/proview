@@ -76,6 +76,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
   private IntactProteinSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -298,7 +300,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(MassDetectionInstrumentSource.availables().size(), items.size());
     for (MassDetectionInstrumentSource value : MassDetectionInstrumentSource.availables()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + value.name()),
           form.source.getItemRenderer().createComponent(value).getElement().getText());
     }
   }

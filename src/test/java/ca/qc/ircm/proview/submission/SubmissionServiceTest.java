@@ -86,6 +86,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -1582,7 +1584,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(messageSource
         .getMessage(INJECTION_TYPE_PREFIX + submission.getInjectionType().name(), null, locale)));
     assertTrue(content.contains("class=\"source\""));
-    assertTrue(content.contains(submission.getSource().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + submission.getSource().name(), null, locale)));
     assertFalse(content.contains("class=\"proteinContent\""));
     assertTrue(content.contains("class=\"instrument\""));
     assertTrue(content.contains(messageSource.getMessage(
