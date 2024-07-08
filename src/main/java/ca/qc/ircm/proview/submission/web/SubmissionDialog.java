@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.Constants.RIGHT;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
@@ -55,6 +56,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   private static final long serialVersionUID = 8452988829428470601L;
   public static final String ID = "submission-dialog";
   public static final String HEADER = "header";
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
   protected FormLayout submissionForm = new FormLayout();
   protected ComboBox<MassDetectionInstrument> instrument = new ComboBox<>();
@@ -105,7 +108,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     getFooter().add(print, edit);
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
-    instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    instrument.setItemLabelGenerator(
+        value -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()));
     dataAvailableDate.setId(id(DATA_AVAILABLE_DATE));
     save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
     save.setId(id(SAVE));

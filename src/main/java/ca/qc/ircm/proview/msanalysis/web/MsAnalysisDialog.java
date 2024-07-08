@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.msanalysis.web;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.ACQUISITION_FILE;
 import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.COMMENT;
 import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.CONTAINER;
@@ -17,6 +18,7 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -44,6 +46,8 @@ import org.springframework.context.annotation.Scope;
 public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
   public static final String ID = "ms-analysis-dialog";
   public static final String HEADER = "header";
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   private static final long serialVersionUID = -6114501684325516594L;
   private static final Logger logger = LoggerFactory.getLogger(MsAnalysisDialog.class);
   protected Div deleted = new Div();
@@ -124,8 +128,8 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
     acquisitionFile.setHeader(treatedSampleResource.message(ACQUISITION_FILE));
     position.setHeader(treatedSampleResource.message(POSITION));
     comment.setHeader(treatedSampleResource.message(COMMENT));
-    instrument.setText(resource.message(MASS_DETECTION_INSTRUMENT,
-        msAnalysis.getMassDetectionInstrument().getLabel(getLocale())));
+    instrument.setText(resource.message(MASS_DETECTION_INSTRUMENT, getTranslation(
+        MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())));
     source.setText(resource.message(SOURCE, msAnalysis.getSource().getLabel(getLocale())));
     deleted.setVisible(msAnalysis.isDeleted());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;

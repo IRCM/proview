@@ -59,8 +59,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final QSubmission qsubmission = QSubmission.submission;
-  @SuppressWarnings("unused")
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
+  @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
   private SubmissionRepository repository;
@@ -162,7 +164,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.usedDigestion().setValue(usedDigestion);
     form.otherDigestion().setValue(otherDigestion);
     form.proteinContent().selectByText(proteinContent.getLabel(locale));
-    form.instrument().selectByText(instrument.getLabel(locale));
+    form.instrument().selectByText(messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null, locale));
     form.identification().selectByText(identification.getLabel(locale));
     form.identificationLink().setValue(identificationLink);
     form.quantification().selectByText(quantification.getLabel(locale));
@@ -205,7 +208,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.injection().selectByText(
         messageSource.getMessage(INJECTION_TYPE_PREFIX + injection.name(), null, locale));
     form.source().selectByText(source.getLabel(locale));
-    form.instrument().selectByText(instrument.getLabel(locale));
+    form.instrument().selectByText(messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null, locale));
   }
 
   @Test

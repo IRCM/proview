@@ -191,7 +191,7 @@
         <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
             <span class="label" th:text="#{submission.print.submission.instrument}">Instrument selection:</span>
             <span class="instrument" th:if="${submission.instrument != null}"
-                  th:text="${submission.instrument.getLabel(locale)}">Velos</span>
+                  th:text="#{${'msanalysis.MassDetectionInstrument.' + submission.instrument.name()}}">Velos</span>
             <span class="instrument" th:if="${submission.instrument == null}"
                   th:text="#{msanalysis.MassDetectionInstrument.NULL}">Velos</span>
         </div>

@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.VIEW;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
@@ -109,6 +110,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionsViewTest extends SpringUIUnitTest {
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   private SubmissionsView view;
   @MockBean
   private SubmissionService service;
@@ -228,7 +231,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
     view.instrumentFilter.getListDataView().getItems()
-        .forEach(instrument -> assertEquals(instrument.getLabel(locale),
+        .forEach(instrument -> assertEquals(
+            view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
             view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
     assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
     view.serviceFilter.getListDataView().getItems()
@@ -247,7 +251,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
     assertEquals(resources.message(HISTORY), view.history.getText());
     assertEquals(resources.message(HIDE_COLUMNS), view.hideColumns.getText());
-    assertEquals(MassDetectionInstrument.getNullLabel(locale),
+    assertEquals(view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL"),
         test(view.submissions).getCellText(2, 6));
   }
 
@@ -300,7 +304,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
     view.instrumentFilter.getListDataView().getItems()
-        .forEach(instrument -> assertEquals(instrument.getLabel(locale),
+        .forEach(instrument -> assertEquals(
+            view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
             view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
     assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
     view.serviceFilter.getListDataView().getItems()
@@ -319,7 +324,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
     assertEquals(resources.message(HISTORY), view.history.getText());
     assertEquals(resources.message(HIDE_COLUMNS), view.hideColumns.getText());
-    assertEquals(MassDetectionInstrument.getNullLabel(locale),
+    assertEquals(view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL"),
         test(view.submissions).getCellText(2, 6));
   }
 
@@ -447,8 +452,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           ? dateFormatter.format(submission.getSubmissionDate())
           : "", test(view.submissions).getCellText(i, indexOfColumn(SUBMISSION_DATE)));
       assertEquals(
-          submission.getInstrument() != null ? submission.getInstrument().getLabel(locale)
-              : MassDetectionInstrument.getNullLabel(locale),
+          view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + Optional
+              .ofNullable(submission.getInstrument()).orElse(MassDetectionInstrument.NULL).name()),
           test(view.submissions).getCellText(i, indexOfColumn(INSTRUMENT)));
       assertEquals(submission.getService().getLabel(locale),
           test(view.submissions).getCellText(i, indexOfColumn(SERVICE)));
@@ -981,7 +986,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertArrayEquals(MassDetectionInstrument.values(),
         instruments.toArray(new MassDetectionInstrument[0]));
     for (MassDetectionInstrument instrument : instruments) {
-      assertEquals(instrument.getLabel(locale),
+      assertEquals(view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
           view.instrumentFilter.getItemLabelGenerator().apply(instrument));
     }
   }

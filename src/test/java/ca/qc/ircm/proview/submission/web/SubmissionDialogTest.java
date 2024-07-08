@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
@@ -56,6 +57,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionDialogTest extends SpringUIUnitTest {
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   private SubmissionDialog dialog;
   @MockBean
   private SubmissionService service;
@@ -120,7 +123,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
     assertEquals(submission.getExperiment(), dialog.getHeaderTitle());
     assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
-      assertEquals(instrument.getLabel(locale),
+      assertEquals(dialog.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
           dialog.instrument.getItemLabelGenerator().apply(instrument));
     }
     assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
@@ -142,7 +145,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
     assertEquals(submission.getExperiment(), dialog.getHeaderTitle());
     assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
-      assertEquals(instrument.getLabel(locale),
+      assertEquals(dialog.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
           dialog.instrument.getItemLabelGenerator().apply(instrument));
     }
     assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),

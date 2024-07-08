@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.SpotbugsJustifications.INNER_CLASS_EI_EXPOSE_REP;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
@@ -125,6 +126,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
       property(QUANTIFICATION_COMMENT, PLACEHOLDER);
   public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT =
       property(QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   private static final long serialVersionUID = 1460183864073097086L;
   private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionForm.class);
   protected TextField experiment = new TextField();
@@ -233,7 +236,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     proteinContent.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
-    instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    instrument.setItemLabelGenerator(
+        value -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()));
     identification.setId(id(IDENTIFICATION));
     identification.setItems(ProteinIdentification.availables());
     identification.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));

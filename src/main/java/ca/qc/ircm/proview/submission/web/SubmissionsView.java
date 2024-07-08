@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.VIEW;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.SpotbugsJustifications.INNER_CLASS_EI_EXPOSE_REP;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
@@ -117,6 +118,8 @@ public class SubmissionsView extends VerticalLayout
   public static final String VIEW_BUTTON =
       "<vaadin-button class='" + VIEW + "' theme='icon' @click='${view}'>"
           + "<vaadin-icon icon='vaadin:eye' slot='prefix'></vaadin-icon>" + "</vaadin-button>";
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
   protected H2 header = new H2();
@@ -232,11 +235,10 @@ public class SubmissionsView extends VerticalLayout
         ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
         : "", SUBMISSION_DATE).setKey(SUBMISSION_DATE).setFlexGrow(2);
     date.setVisible(columnVisibility.apply(date));
-    instrument = submissions
-        .addColumn(submission -> submission.getInstrument() != null
-            ? submission.getInstrument().getLabel(getLocale())
-            : MassDetectionInstrument.getNullLabel(getLocale()), INSTRUMENT)
-        .setKey(INSTRUMENT).setFlexGrow(2);
+    instrument = submissions.addColumn(
+        submission -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + Optional
+            .ofNullable(submission.getInstrument()).orElse(MassDetectionInstrument.NULL).name()),
+        INSTRUMENT).setKey(INSTRUMENT).setFlexGrow(2);
     instrument.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(instrument));
     service = submissions.addColumn(submission -> submission.getService() != null
         ? submission.getService().getLabel(getLocale())
@@ -442,7 +444,8 @@ public class SubmissionsView extends VerticalLayout
     userFilter.setPlaceholder(resources.message(ALL));
     directorFilter.setPlaceholder(resources.message(ALL));
     instrumentFilter.setPlaceholder(resources.message(ALL));
-    instrumentFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    instrumentFilter.setItemLabelGenerator(
+        value -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()));
     serviceFilter.setPlaceholder(resources.message(ALL));
     serviceFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     samplesFilter.setPlaceholder(resources.message(ALL));

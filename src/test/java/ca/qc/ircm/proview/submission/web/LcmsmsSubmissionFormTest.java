@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.Constants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.MOLECULAR_WEIGHT;
@@ -102,6 +103,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   private LcmsmsSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -446,7 +449,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(MassDetectionInstrument.userChoices().size(), items.size());
     for (MassDetectionInstrument value : MassDetectionInstrument.userChoices()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale), form.instrument.getItemLabelGenerator().apply(value));
+      assertEquals(form.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()),
+          form.instrument.getItemLabelGenerator().apply(value));
     }
   }
 

@@ -84,6 +84,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String READ = "read";
   private static final String WRITE = "write";
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -752,7 +754,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"proteinContent\""));
     assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
     assertTrue(content.contains("class=\"instrument\""));
-    assertTrue(content.contains(submission.getInstrument().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertTrue(content.contains("class=\"identification\""));
     assertTrue(content.contains(submission.getIdentification().getLabel(locale)));
     assertFalse(content.contains("class=\"identificationLink\""));
@@ -949,9 +952,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"instrument\""));
-    assertTrue(
-        content.contains(MassDetectionInstrument.getNullLabel(locale).replaceAll("'", "&#39;")),
-        content + " vs " + MassDetectionInstrument.getNullLabel(locale).replaceAll("'", "&#39;"));
+    assertTrue(content
+        .contains(messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL", null, locale)
+            .replaceAll("'", "&#39;")));
   }
 
   @Test
@@ -1146,7 +1149,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"proteinContent\""));
     assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
     assertTrue(content.contains("class=\"instrument\""));
-    assertTrue(content.contains(submission.getInstrument().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertTrue(content.contains("class=\"identification\""));
     assertTrue(content.contains(submission.getIdentification().getLabel(locale)));
     assertFalse(content.contains("class=\"identificationLink\""));
@@ -1581,7 +1585,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(submission.getSource().getLabel(locale)));
     assertFalse(content.contains("class=\"proteinContent\""));
     assertTrue(content.contains("class=\"instrument\""));
-    assertTrue(content.contains(submission.getInstrument().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertFalse(content.contains("class=\"identification\""));
     assertFalse(content.contains("class=\"identificationLink\""));
     assertFalse(content.contains("class=\"quantification\""));

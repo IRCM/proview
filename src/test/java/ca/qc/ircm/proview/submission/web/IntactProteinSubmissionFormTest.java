@@ -74,6 +74,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   private IntactProteinSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -307,7 +309,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(MassDetectionInstrument.userChoices().size(), items.size());
     for (MassDetectionInstrument value : MassDetectionInstrument.userChoices()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale), form.instrument.getItemLabelGenerator().apply(value));
+      assertEquals(form.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()),
+          form.instrument.getItemLabelGenerator().apply(value));
     }
   }
 
