@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleType.DRY;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
@@ -68,6 +69,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private SmallMoleculeSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -204,7 +206,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(2, items.size());
     for (SampleType value : new SampleType[] { DRY, SOLUTION }) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(SAMPLE_TYPE_PREFIX + value.name()),
           form.sampleType.getItemRenderer().createComponent(value).getElement().getText());
     }
   }

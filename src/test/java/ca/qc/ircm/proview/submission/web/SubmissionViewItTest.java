@@ -68,6 +68,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
       messagePrefix(ProteinIdentification.class);
   private static final String PROTEOLYTIC_DIGESTION_PREFIX =
       messagePrefix(ProteolyticDigestion.class);
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -150,7 +151,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.protein().setValue(protein);
     form.molecularWeight().setValue(String.valueOf(molecularWeight));
     form.postTranslationModification().setValue(postTranslationModification);
-    form.sampleType().selectByText(sampleType.getLabel(locale));
+    form.sampleType().selectByText(
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
     form.samplesCount().setValue(String.valueOf(samplesCount));
     form.samplesNames().setValue(sampleNamesString);
     if (sampleType != SampleType.GEL) {
@@ -183,7 +185,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private void setFields(SmallMoleculeSubmissionFormElement form) {
     Locale locale = currentLocale();
     AppResources submissionResource = new AppResources(Submission.class, locale);
-    form.sampleType().selectByText(sampleType.getLabel(locale));
+    form.sampleType().selectByText(
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
     form.sampleName().setValue(sampleName1);
     form.solvent().setValue(solvent);
     form.formula().setValue(formula);
@@ -208,7 +211,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.protein().setValue(protein);
     form.molecularWeight().setValue(String.valueOf(molecularWeight));
     form.postTranslationModification().setValue(postTranslationModification);
-    form.sampleType().selectByText(sampleType.getLabel(locale));
+    form.sampleType().selectByText(
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
     form.samplesCount().setValue(String.valueOf(samplesCount));
     form.samplesNames().setValue(sampleNamesString);
     form.quantity().setValue(quantity);

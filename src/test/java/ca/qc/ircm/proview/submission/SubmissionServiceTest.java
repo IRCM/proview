@@ -92,6 +92,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       messagePrefix(ProteinIdentification.class);
   private static final String PROTEOLYTIC_DIGESTION_PREFIX =
       messagePrefix(ProteolyticDigestion.class);
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -724,7 +725,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"taxonomy\""));
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
     assertTrue(content.contains(submission.getProtein()));
     assertTrue(content.contains("class=\"sample-molecularWeight\""));
@@ -1118,7 +1120,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"taxonomy\""));
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
     assertTrue(content.contains(submission.getProtein()));
     assertTrue(content.contains("class=\"sample-molecularWeight\""));
@@ -1334,7 +1337,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"goal\""));
     assertFalse(content.contains("class=\"taxonomy\""));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertFalse(content.contains("class=\"protein\""));
     assertFalse(content.contains("class=\"sample-molecularWeight\""));
     assertFalse(content.contains("class=\"postTranslationModification\""));
@@ -1562,7 +1566,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"taxonomy\""));
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
     assertTrue(content.contains(submission.getProtein()));
     assertFalse(content.contains("class=\"sample-molecularWeight\""));

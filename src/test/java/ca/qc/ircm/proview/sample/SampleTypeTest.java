@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleType.AGAROSE_BEADS;
 import static ca.qc.ircm.proview.sample.SampleType.BIOID_BEADS;
 import static ca.qc.ircm.proview.sample.SampleType.DRY;
@@ -10,53 +11,75 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 
 /**
  * Tests for {@link SampleType}.
  */
+@NonTransactionalTestAnnotations
 public class SampleTypeTest {
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  @Autowired
+  private MessageSource messageSource;
+
   @Test
   public void getNullLabel() {
-    assertEquals("Undetermined", SampleType.getNullLabel(Locale.ENGLISH));
-    assertEquals("Indéterminé", SampleType.getNullLabel(Locale.FRENCH));
+    assertEquals("Undetermined",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + "NULL", null, Locale.ENGLISH));
+    assertEquals("Indéterminé",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + "NULL", null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Dry() {
-    assertEquals("Dry", DRY.getLabel(Locale.ENGLISH));
-    assertEquals("Sec", DRY.getLabel(Locale.FRENCH));
+    assertEquals("Dry",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + DRY.name(), null, Locale.ENGLISH));
+    assertEquals("Sec",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + DRY.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Solution() {
-    assertEquals("Solution", SOLUTION.getLabel(Locale.ENGLISH));
-    assertEquals("Solution", SOLUTION.getLabel(Locale.FRENCH));
+    assertEquals("Solution",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + SOLUTION.name(), null, Locale.ENGLISH));
+    assertEquals("Solution",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + SOLUTION.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Gel() {
-    assertEquals("Gel", GEL.getLabel(Locale.ENGLISH));
-    assertEquals("Gel", GEL.getLabel(Locale.FRENCH));
+    assertEquals("Gel",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + GEL.name(), null, Locale.ENGLISH));
+    assertEquals("Gel",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + GEL.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_BioidBeads() {
-    assertEquals("BioID beads", BIOID_BEADS.getLabel(Locale.ENGLISH));
-    assertEquals("Billes BioID", BIOID_BEADS.getLabel(Locale.FRENCH));
+    assertEquals("BioID beads",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + BIOID_BEADS.name(), null, Locale.ENGLISH));
+    assertEquals("Billes BioID",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + BIOID_BEADS.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_MagneticBeads() {
-    assertEquals("Magnetic beads", MAGNETIC_BEADS.getLabel(Locale.ENGLISH));
-    assertEquals("Billes magnétiques", MAGNETIC_BEADS.getLabel(Locale.FRENCH));
+    assertEquals("Magnetic beads",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + MAGNETIC_BEADS.name(), null, Locale.ENGLISH));
+    assertEquals("Billes magnétiques",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + MAGNETIC_BEADS.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_AgaroseBeads() {
-    assertEquals("Agarose beads", AGAROSE_BEADS.getLabel(Locale.ENGLISH));
-    assertEquals("Billes agaroses", AGAROSE_BEADS.getLabel(Locale.FRENCH));
+    assertEquals("Agarose beads",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + AGAROSE_BEADS.name(), null, Locale.ENGLISH));
+    assertEquals("Billes agaroses",
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + AGAROSE_BEADS.name(), null, Locale.FRENCH));
   }
 
   @Test

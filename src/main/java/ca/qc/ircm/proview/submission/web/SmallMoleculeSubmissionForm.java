@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.Constants.ALREADY_EXISTS;
 import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleType.DRY;
@@ -71,6 +72,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   public static final String SAMPLE = "sample";
   public static final String SAMPLE_TYPE = SAMPLE + "Type";
   public static final String SAMPLE_NAME = SAMPLE + "Name";
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SmallMoleculeSubmissionForm.class);
   protected RadioButtonGroup<SampleType> sampleType = new RadioButtonGroup<>();
@@ -113,7 +115,8 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
         new FormLayout(highResolution, solvents, otherSolvent));
     sampleType.setId(id(SAMPLE_TYPE));
     sampleType.setItems(DRY, SOLUTION);
-    sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    sampleType.setRenderer(
+        new TextRenderer<>(value -> getTranslation(SAMPLE_TYPE_PREFIX + value.name())));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     sampleType.addValueChangeListener(e -> sampleTypeChanged());
     sampleName.setId(id(SAMPLE_NAME));
