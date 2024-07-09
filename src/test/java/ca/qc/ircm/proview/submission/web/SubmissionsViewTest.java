@@ -112,6 +112,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class SubmissionsViewTest extends SpringUIUnitTest {
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
+  private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private SubmissionsView view;
   @MockBean
   private SubmissionService service;
@@ -241,7 +242,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
     view.statusFilter.getListDataView().getItems()
-        .forEach(status -> assertEquals(status.getLabel(locale),
+        .forEach(status -> assertEquals(view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
             view.statusFilter.getItemLabelGenerator().apply(status)));
     assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
     view.hiddenFilter.getListDataView().getItems()
@@ -314,7 +315,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
     view.statusFilter.getListDataView().getItems()
-        .forEach(status -> assertEquals(status.getLabel(locale),
+        .forEach(status -> assertEquals(view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
             view.statusFilter.getItemLabelGenerator().apply(status)));
     assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
     view.hiddenFilter.getListDataView().getItems()
@@ -483,11 +484,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
       assertEquals(STATUS_SPAN, rendererTemplate(statusRenderer));
       assertTrue(statusRenderer.getValueProviders().containsKey("statusValue"));
       assertEquals(
-          resources.message(STATUS_VALUE, statuses.get(0).getLabel(locale), statuses.size()),
+          resources.message(STATUS_VALUE,
+              view.getTranslation(SAMPLE_STATUS_PREFIX + statuses.get(0).name()), statuses.size()),
           statusRenderer.getValueProviders().get("statusValue").apply(submission));
       assertTrue(statusRenderer.getValueProviders().containsKey("statusTitle"));
       assertEquals(
-          statuses.stream().map(status -> status.getLabel(locale))
+          statuses.stream().map(status -> view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()))
               .collect(Collectors.joining("\n")),
           statusRenderer.getValueProviders().get("statusTitle").apply(submission));
       Renderer<Submission> hiddenRawRenderer =
@@ -1042,7 +1044,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     List<SampleStatus> statuses = items(view.statusFilter);
     assertArrayEquals(SampleStatus.values(), statuses.toArray(new SampleStatus[0]));
     for (SampleStatus status : statuses) {
-      assertEquals(status.getLabel(locale),
+      assertEquals(view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
           view.statusFilter.getItemLabelGenerator().apply(status));
     }
   }

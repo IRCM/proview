@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
@@ -64,6 +65,7 @@ public class SamplesStatusDialog extends Dialog
   public static final String ID = "samples-status-dialog";
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
+  private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private static final Logger logger = LoggerFactory.getLogger(SamplesStatusDialog.class);
   protected Grid<SubmissionSample> samples = new Grid<>();
   protected Column<SubmissionSample> name;
@@ -115,7 +117,7 @@ public class SamplesStatusDialog extends Dialog
     allStatus.setId(id(styleName(STATUS, ALL)));
     allStatus.setClearButtonVisible(true);
     allStatus.setItems(SampleStatus.values());
-    allStatus.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    allStatus.setItemLabelGenerator(value -> getTranslation(SAMPLE_STATUS_PREFIX + value.name()));
     allStatus.addValueChangeListener(
         e -> Optional.ofNullable(e.getValue()).ifPresent(status -> submission.getSamples().stream()
             .forEach(sample -> status(sample).setValue(status))));
@@ -136,7 +138,7 @@ public class SamplesStatusDialog extends Dialog
     ComboBox<SampleStatus> status = new ComboBox<>();
     status.addClassName(STATUS);
     status.setItems(SampleStatus.values());
-    status.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    status.setItemLabelGenerator(value -> getTranslation(SAMPLE_STATUS_PREFIX + value.name()));
     statusFields.put(sample, status);
     return status;
   }

@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.HEADER;
@@ -76,6 +77,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class SamplesStatusDialogTest extends SpringUIUnitTest {
+  private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private SamplesStatusDialog dialog;
   @MockBean
   private SubmissionService service;
@@ -197,7 +199,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
       List<SampleStatus> statuses = items(statusBox);
       assertEquals(Arrays.asList(SampleStatus.values()), statuses);
       for (SampleStatus status : statuses) {
-        assertEquals(status.getLabel(locale), statusBox.getItemLabelGenerator().apply(status));
+        assertEquals(dialog.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
+            statusBox.getItemLabelGenerator().apply(status));
       }
       assertSame(statusBox, dialog.status(sample));
     }

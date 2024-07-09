@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.sample.web;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -14,6 +15,7 @@ import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -22,8 +24,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
+  private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   @Autowired
   private SubmissionSampleRepository repository;
+  @Autowired
+  private MessageSource messageSource;
 
   private SamplesStatusDialogElement open() {
     openView(VIEW_NAME);
@@ -46,8 +51,10 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
   public void save() throws Throwable {
     SamplesStatusDialogElement dialog = open();
     Locale locale = currentLocale();
-    dialog.samples().status(0).selectByText(SampleStatus.ANALYSED.getLabel(locale));
-    dialog.samples().status(1).selectByText(SampleStatus.DIGESTED.getLabel(locale));
+    dialog.samples().status(0).selectByText(messageSource
+        .getMessage(SAMPLE_STATUS_PREFIX + SampleStatus.ANALYSED.name(), null, locale));
+    dialog.samples().status(1).selectByText(messageSource
+        .getMessage(SAMPLE_STATUS_PREFIX + SampleStatus.DIGESTED.name(), null, locale));
     dialog.save().click();
     assertFalse(dialog.isOpen());
     assertEquals(SampleStatus.ANALYSED, repository.findById(640L).get().getStatus());

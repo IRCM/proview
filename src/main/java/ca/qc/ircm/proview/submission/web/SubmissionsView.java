@@ -120,6 +120,7 @@ public class SubmissionsView extends VerticalLayout
           + "<vaadin-icon icon='vaadin:eye' slot='prefix'></vaadin-icon>" + "</vaadin-button>";
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
+  private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
   protected H2 header = new H2();
@@ -383,13 +384,14 @@ public class SubmissionsView extends VerticalLayout
     final AppResources resources = new AppResources(getClass(), getLocale());
     List<SampleStatus> statuses = submission.getSamples().stream().map(sample -> sample.getStatus())
         .distinct().collect(Collectors.toList());
-    return resources.message(STATUS_VALUE, statuses.get(0).getLabel(getLocale()), statuses.size());
+    return resources.message(STATUS_VALUE,
+        getTranslation(SAMPLE_STATUS_PREFIX + statuses.get(0).name()), statuses.size());
   }
 
   private String statusesTitle(Submission submission) {
     List<SampleStatus> statuses = submission.getSamples().stream().map(sample -> sample.getStatus())
         .distinct().collect(Collectors.toList());
-    return statuses.stream().map(status -> status.getLabel(getLocale()))
+    return statuses.stream().map(status -> getTranslation(SAMPLE_STATUS_PREFIX + status.name()))
         .collect(Collectors.joining("\n"));
   }
 
@@ -450,7 +452,8 @@ public class SubmissionsView extends VerticalLayout
     serviceFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     samplesFilter.setPlaceholder(resources.message(ALL));
     statusFilter.setPlaceholder(resources.message(ALL));
-    statusFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    statusFilter
+        .setItemLabelGenerator(value -> getTranslation(SAMPLE_STATUS_PREFIX + value.name()));
     hiddenFilter.setPlaceholder(resources.message(ALL));
     hiddenFilter.setItemLabelGenerator(
         value -> new AppResources(Submission.class, getLocale()).message(property(HIDDEN, value)));
