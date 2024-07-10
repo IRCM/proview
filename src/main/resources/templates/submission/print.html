@@ -160,7 +160,8 @@
         </div>
         <div th:if="${submission.service.name() == 'SMALL_MOLECULE' && submission.storageTemperature != null}">
             <span class="label" th:text="#{submission.print.submission.storageTemperature}">Storage temperature:</span>
-            <span class="storageTemperature" th:text="${submission.storageTemperature.getLabel(locale)}">4 °C</span>
+            <span class="storageTemperature"
+                  th:text="#{${'submission.StorageTemperature.' + submission.storageTemperature.name()}}">4 °C</span>
         </div>
     </div>
     <div class="service-information section">

@@ -74,6 +74,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
   private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
+  private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -204,7 +205,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.averageMass().setValue(String.valueOf(averageMass));
     form.toxicity().setValue(toxicity);
     form.lightSensitive().setChecked(lightSensitive);
-    form.storageTemperature().selectByText(storageTemperature.getLabel(locale));
+    form.storageTemperature().selectByText(messageSource
+        .getMessage(STORAGE_TEMPERATURE_PREFIX + storageTemperature.name(), null, locale));
     form.highResolution()
         .selectByText(submissionResource.message(property(HIGH_RESOLUTION, highResolution)));
     Stream.of(Solvent.values())

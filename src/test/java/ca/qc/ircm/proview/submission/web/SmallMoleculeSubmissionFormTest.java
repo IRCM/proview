@@ -72,6 +72,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
+  private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
   private SmallMoleculeSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -220,7 +221,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(StorageTemperature.values().length, items.size());
     for (StorageTemperature value : StorageTemperature.values()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(STORAGE_TEMPERATURE_PREFIX + value.name()),
           form.storageTemperature.getItemRenderer().createComponent(value).getElement().getText());
     }
   }

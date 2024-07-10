@@ -98,6 +98,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
   private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
+  private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -1377,7 +1378,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"lightSensitive\""));
     assertTrue(content.contains(resources.message("submission.lightSensitive.true")));
     assertTrue(content.contains("class=\"storageTemperature\""));
-    assertTrue(content.contains(submission.getStorageTemperature().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        STORAGE_TEMPERATURE_PREFIX + submission.getStorageTemperature().name(), null, locale)));
     assertFalse(content.contains("class=\"digestion\""));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
