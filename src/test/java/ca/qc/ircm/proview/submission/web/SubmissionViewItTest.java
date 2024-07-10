@@ -73,6 +73,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
   private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
+  private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -186,7 +187,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.identification().selectByText(messageSource
         .getMessage(PROTEIN_IDENTIFICATION_PREFIX + identification.name(), null, locale));
     form.identificationLink().setValue(identificationLink);
-    form.quantification().selectByText(quantification.getLabel(locale));
+    form.quantification().selectByText(
+        messageSource.getMessage(QUANTIFICATION_PREFIX + quantification.name(), null, locale));
     form.quantificationComment().setValue(quantificationComment);
   }
 

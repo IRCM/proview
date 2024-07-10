@@ -137,6 +137,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
   private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
+  private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   private static final long serialVersionUID = 1460183864073097086L;
   private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionForm.class);
   protected TextField experiment = new TextField();
@@ -259,7 +260,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     identificationLink.setId(id(IDENTIFICATION_LINK));
     quantification.setId(id(QUANTIFICATION));
     quantification.setItems(Quantification.values());
-    quantification.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    quantification
+        .setItemLabelGenerator(value -> getTranslation(QUANTIFICATION_PREFIX + value.name()));
     quantification.addValueChangeListener(e -> updateQuantificationComment());
     quantification.addValueChangeListener(e -> quantificationChanged());
     quantificationComment.setId(id(QUANTIFICATION_COMMENT));

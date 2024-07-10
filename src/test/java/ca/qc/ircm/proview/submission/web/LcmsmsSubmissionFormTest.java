@@ -114,6 +114,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
   private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
   private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
+  private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   private LcmsmsSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -484,7 +485,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(Quantification.values().length, items.size());
     for (Quantification value : Quantification.values()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(QUANTIFICATION_PREFIX + value.name()),
           form.quantification.getItemLabelGenerator().apply(value));
     }
   }

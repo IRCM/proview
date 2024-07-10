@@ -210,7 +210,8 @@
         </div>
         <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.quantification != null}">
             <span class="label" th:text="#{submission.print.submission.quantification}">Quantification:</span>
-            <span class="quantification" th:text="${submission.quantification.getLabel(locale)}">Silac</span>
+            <span class="quantification"
+                  th:text="#{${'submission.Quantification.' + submission.quantification.name()}}">Silac</span>
         </div>
         <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.quantification != null && (submission.quantification.name() == 'SILAC' || submission.quantification.name() == 'TMT')}">
             <span class="label" th:if="${submission.quantification.name() != 'TMT'}"
