@@ -106,7 +106,7 @@
         </div>
         <div th:if="${sample.type.name() == 'GEL' && submission.thickness != null}">
             <span class="label" th:text="#{submission.print.submission.thickness}">Gel thickness:</span>
-            <span class="thickness" th:text="${submission.thickness.getLabel(locale)}">1</span>
+            <span class="thickness" th:text="#{${'submission.GelThickness.' + submission.thickness.name()}}">1</span>
         </div>
         <div th:if="${sample.type.name() == 'GEL' && submission.coloration != null}">
             <span class="label" th:text="#{submission.print.submission.coloration}">Coloration:</span>

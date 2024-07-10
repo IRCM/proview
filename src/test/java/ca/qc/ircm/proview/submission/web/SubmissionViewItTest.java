@@ -71,6 +71,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
   private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
+  private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -163,7 +164,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     } else {
       form.separation().selectByText(
           messageSource.getMessage(GEL_SEPARATION_PREFIX + separation.name(), null, locale));
-      form.thickness().selectByText(thickness.getLabel(locale));
+      form.thickness().selectByText(
+          messageSource.getMessage(GEL_THICKNESS_PREFIX + thickness.name(), null, locale));
       form.coloration().selectByText(
           messageSource.getMessage(GEL_COLORATION_PREFIX + coloration.name(), null, locale));
       form.otherColoration().setValue(otherColoration);
