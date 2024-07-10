@@ -38,6 +38,7 @@ import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
@@ -70,6 +71,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private SmallMoleculeSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -107,7 +109,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     sample.setType(SampleType.DRY);
     newSubmission.getSamples().add(sample);
     SubmissionView view = navigate(SubmissionView.class);
-    test(test(view).find(Tabs.class).id(SERVICE)).select(SMALL_MOLECULE.getLabel(locale));
+    test(test(view).find(Tabs.class).id(SERVICE))
+        .select(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()));
     form = test(view).find(SmallMoleculeSubmissionForm.class).id(SmallMoleculeSubmissionForm.ID);
   }
 

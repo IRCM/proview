@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.UPLOAD;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
@@ -109,6 +110,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionViewTest extends SpringUIUnitTest {
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private SubmissionView view;
   @MockBean
   private SubmissionService service;
@@ -341,9 +343,11 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   public void labels() {
     assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(LC_MS_MS.getLabel(locale), view.lcmsms.getLabel());
-    assertEquals(SMALL_MOLECULE.getLabel(locale), view.smallMolecule.getLabel());
-    assertEquals(INTACT_PROTEIN.getLabel(locale), view.intactProtein.getLabel());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + LC_MS_MS.name()), view.lcmsms.getLabel());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()),
+        view.smallMolecule.getLabel());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()),
+        view.intactProtein.getLabel());
     assertEquals(submissionResources.message(COMMENT), view.comment.getLabel());
     validateEquals(englishUploadI18N(), view.upload.getI18n());
     HeaderRow headerRow = view.files.getHeaderRows().get(0);
@@ -361,9 +365,11 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
     assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(LC_MS_MS.getLabel(locale), view.lcmsms.getLabel());
-    assertEquals(SMALL_MOLECULE.getLabel(locale), view.smallMolecule.getLabel());
-    assertEquals(INTACT_PROTEIN.getLabel(locale), view.intactProtein.getLabel());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + LC_MS_MS.name()), view.lcmsms.getLabel());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()),
+        view.smallMolecule.getLabel());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()),
+        view.intactProtein.getLabel());
     assertEquals(submissionResources.message(COMMENT), view.comment.getLabel());
     validateEquals(frenchUploadI18N(), view.upload.getI18n());
     HeaderRow headerRow = view.files.getHeaderRows().get(0);

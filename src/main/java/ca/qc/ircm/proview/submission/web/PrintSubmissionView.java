@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 
 import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
@@ -38,6 +39,7 @@ public class PrintSubmissionView extends VerticalLayout
   public static final String ID = "print-submission-view";
   public static final String HEADER = "header";
   public static final String SECOND_HEADER = "header-2";
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(PrintSubmissionView.class);
   protected H2 header = new H2();
@@ -84,9 +86,9 @@ public class PrintSubmissionView extends VerticalLayout
 
   private void updateSecondHeader() {
     if (submission != null && submission.getId() != null) {
-      secondHeader.setText(submission.getService().getLabel(getLocale()));
+      secondHeader.setText(getTranslation(SERVICE_PREFIX + submission.getService().name()));
     } else {
-      secondHeader.setText(Service.LC_MS_MS.getLabel(getLocale()));
+      secondHeader.setText(getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()));
     }
   }
 

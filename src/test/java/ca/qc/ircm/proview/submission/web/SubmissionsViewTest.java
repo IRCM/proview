@@ -113,6 +113,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private SubmissionsView view;
   @MockBean
   private SubmissionService service;
@@ -237,7 +238,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
             view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
     assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
     view.serviceFilter.getListDataView().getItems()
-        .forEach(service -> assertEquals(service.getLabel(locale),
+        .forEach(service -> assertEquals(view.getTranslation(SERVICE_PREFIX + service.name()),
             view.serviceFilter.getItemLabelGenerator().apply(service)));
     assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
@@ -310,7 +311,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
             view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
     assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
     view.serviceFilter.getListDataView().getItems()
-        .forEach(service -> assertEquals(service.getLabel(locale),
+        .forEach(service -> assertEquals(view.getTranslation(SERVICE_PREFIX + service.name()),
             view.serviceFilter.getItemLabelGenerator().apply(service)));
     assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
     assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
@@ -456,7 +457,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + Optional
               .ofNullable(submission.getInstrument()).orElse(MassDetectionInstrument.NULL).name()),
           test(view.submissions).getCellText(i, indexOfColumn(INSTRUMENT)));
-      assertEquals(submission.getService().getLabel(locale),
+      assertEquals(view.getTranslation(SERVICE_PREFIX + submission.getService().name()),
           test(view.submissions).getCellText(i, indexOfColumn(SERVICE)));
       assertEquals(Objects.toString(submission.getSamples().size()),
           test(view.submissions).getCellText(i, indexOfColumn(SAMPLES_COUNT)));
@@ -1009,7 +1010,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     List<Service> values = items(view.serviceFilter);
     assertArrayEquals(Service.values(), values.toArray(new Service[0]));
     for (Service value : values) {
-      assertEquals(value.getLabel(locale), view.serviceFilter.getItemLabelGenerator().apply(value));
+      assertEquals(view.getTranslation(SERVICE_PREFIX + value.name()),
+          view.serviceFilter.getItemLabelGenerator().apply(value));
     }
   }
 

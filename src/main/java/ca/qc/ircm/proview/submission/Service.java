@@ -1,8 +1,6 @@
 package ca.qc.ircm.proview.submission;
 
-import ca.qc.ircm.proview.AppResources;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,19 +38,5 @@ public enum Service {
   public static List<Service> availables() {
     return Stream.of(Service.values()).filter(service -> service.available)
         .collect(Collectors.toList());
-  }
-
-  private static AppResources getResources(Locale locale) {
-    return new AppResources(Service.class, locale);
-  }
-
-  public static String getNullLabel(Locale locale) {
-    AppResources resources = getResources(locale);
-    return resources.message("NULL");
-  }
-
-  public String getLabel(Locale locale) {
-    AppResources resources = getResources(locale);
-    return resources.message(name());
   }
 }

@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.UPLOAD;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.submission.Service.INTACT_PROTEIN;
 import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
@@ -94,6 +95,7 @@ public class SubmissionView extends VerticalLayout
   public static final String SAVED = "saved";
   public static final int MAXIMUM_FILES_SIZE = 20 * 1024 * 1024; // 20MB
   public static final int MAXIMUM_FILES_COUNT = 6;
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionView.class);
   protected H2 header = new H2();
@@ -199,9 +201,9 @@ public class SubmissionView extends VerticalLayout
     final AppResources submissionResources = new AppResources(Submission.class, getLocale());
     final AppResources webResources = new AppResources(Constants.class, getLocale());
     header.setText(resources.message(HEADER));
-    lcmsms.setLabel(LC_MS_MS.getLabel(getLocale()));
-    smallMolecule.setLabel(SMALL_MOLECULE.getLabel(getLocale()));
-    intactProtein.setLabel(INTACT_PROTEIN.getLabel(getLocale()));
+    lcmsms.setLabel(getTranslation(SERVICE_PREFIX + LC_MS_MS.name()));
+    smallMolecule.setLabel(getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()));
+    intactProtein.setLabel(getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()));
     comment.setLabel(submissionResources.message(COMMENT));
     upload.setI18n(uploadI18N(getLocale()));
     filename.setHeader(resources.message(FILENAME));

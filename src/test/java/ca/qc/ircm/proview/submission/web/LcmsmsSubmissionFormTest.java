@@ -77,6 +77,7 @@ import ca.qc.ircm.proview.submission.GelSeparation;
 import ca.qc.ircm.proview.submission.GelThickness;
 import ca.qc.ircm.proview.submission.ProteinContent;
 import ca.qc.ircm.proview.submission.Quantification;
+import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -115,6 +116,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
   private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private LcmsmsSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -172,7 +174,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
     sample.setType(SampleType.DRY);
     newSubmission.getSamples().add(sample);
     SubmissionView view = navigate(SubmissionView.class);
-    test(test(view).find(Tabs.class).id(SERVICE)).select(LC_MS_MS.getLabel(locale));
+    test(test(view).find(Tabs.class).id(SERVICE))
+        .select(view.getTranslation(SERVICE_PREFIX + LC_MS_MS.name()));
     form = test(view).find(LcmsmsSubmissionForm.class).id(LcmsmsSubmissionForm.ID);
   }
 

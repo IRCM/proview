@@ -47,6 +47,7 @@ import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -79,6 +80,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
       messagePrefix(MassDetectionInstrumentSource.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private IntactProteinSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -116,7 +118,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     SubmissionView view = navigate(SubmissionView.class);
-    test(test(view).find(Tabs.class).id(SERVICE)).select(INTACT_PROTEIN.getLabel(locale));
+    test(test(view).find(Tabs.class).id(SERVICE))
+        .select(view.getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()));
     form = test(view).find(IntactProteinSubmissionForm.class).id(ID);
   }
 

@@ -121,6 +121,7 @@ public class SubmissionsView extends VerticalLayout
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
   protected H2 header = new H2();
@@ -242,8 +243,8 @@ public class SubmissionsView extends VerticalLayout
         INSTRUMENT).setKey(INSTRUMENT).setFlexGrow(2);
     instrument.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(instrument));
     service = submissions.addColumn(submission -> submission.getService() != null
-        ? submission.getService().getLabel(getLocale())
-        : Service.getNullLabel(getLocale()), SERVICE).setKey(SERVICE).setFlexGrow(2);
+        ? getTranslation(SERVICE_PREFIX + submission.getService().name())
+        : getTranslation(SERVICE_PREFIX + "NULL"), SERVICE).setKey(SERVICE).setFlexGrow(2);
     service.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(service));
     samplesCount =
         submissions.addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
@@ -449,7 +450,7 @@ public class SubmissionsView extends VerticalLayout
     instrumentFilter.setItemLabelGenerator(
         value -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()));
     serviceFilter.setPlaceholder(resources.message(ALL));
-    serviceFilter.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    serviceFilter.setItemLabelGenerator(value -> getTranslation(SERVICE_PREFIX + value.name()));
     samplesFilter.setPlaceholder(resources.message(ALL));
     statusFilter.setPlaceholder(resources.message(ALL));
     statusFilter
