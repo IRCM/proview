@@ -111,6 +111,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
       messagePrefix(ProteolyticDigestion.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
+  private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
   private LcmsmsSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -404,7 +405,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(GelSeparation.values().length, items.size());
     for (GelSeparation value : GelSeparation.values()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale), form.separation.getItemLabelGenerator().apply(value));
+      assertEquals(form.getTranslation(GEL_SEPARATION_PREFIX + value.name()),
+          form.separation.getItemLabelGenerator().apply(value));
     }
   }
 

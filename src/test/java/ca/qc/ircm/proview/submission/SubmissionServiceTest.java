@@ -94,6 +94,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       messagePrefix(ProteolyticDigestion.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
+  private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -1133,7 +1134,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"sample-quantity\""));
     assertFalse(content.contains("class=\"sample-volume\""));
     assertTrue(content.contains("class=\"separation\""));
-    assertTrue(content.contains(submission.getSeparation().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(GEL_SEPARATION_PREFIX + submission.getSeparation().name(), null, locale)));
     assertTrue(content.contains("class=\"thickness\""));
     assertTrue(content.contains(submission.getThickness().getLabel(locale)));
     assertTrue(content.contains("class=\"coloration\""));

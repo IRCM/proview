@@ -101,7 +101,8 @@
         </div>
         <div th:if="${sample.type.name() == 'GEL' && submission.separation != null}">
             <span class="label" th:text="#{submission.print.submission.separation}">Gel separation:</span>
-            <span class="separation" th:text="${submission.separation.getLabel(locale)}">1D</span>
+            <span class="separation"
+                  th:text="#{${'submission.GelSeparation.' + submission.separation.name()}}">1D</span>
         </div>
         <div th:if="${sample.type.name() == 'GEL' && submission.thickness != null}">
             <span class="label" th:text="#{submission.print.submission.thickness}">Gel thickness:</span>
