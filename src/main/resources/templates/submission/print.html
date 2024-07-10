@@ -109,7 +109,7 @@
         </div>
         <div th:if="${sample.type.name() == 'GEL' && submission.coloration != null}">
             <span class="label" th:text="#{submission.print.submission.coloration}">Coloration:</span>
-            <span class="coloration" th:text="${submission.coloration.getLabel(locale)}">Coomassie</span>
+            <span class="coloration" th:text="#{${'submission.GelColoration.' + submission.coloration.name()}}">Coomassie</span>
         </div>
         <div th:if="${sample.type.name() == 'GEL' && submission.coloration != null && submission.coloration.name() == 'OTHER'}">
             <span class="label" th:text="#{submission.print.submission.otherColoration}">Other coloration:</span>

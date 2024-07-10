@@ -69,6 +69,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final String PROTEOLYTIC_DIGESTION_PREFIX =
       messagePrefix(ProteolyticDigestion.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -161,7 +162,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     } else {
       form.separation().selectByText(separation.getLabel(locale));
       form.thickness().selectByText(thickness.getLabel(locale));
-      form.coloration().selectByText(coloration.getLabel(locale));
+      form.coloration().selectByText(
+          messageSource.getMessage(GEL_COLORATION_PREFIX + coloration.name(), null, locale));
       form.otherColoration().setValue(otherColoration);
       form.developmentTime().setValue(developmentTime);
       form.destained().setChecked(destained);

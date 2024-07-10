@@ -133,6 +133,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   private static final String PROTEOLYTIC_DIGESTION_PREFIX =
       messagePrefix(ProteolyticDigestion.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
   private static final long serialVersionUID = 1460183864073097086L;
   private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionForm.class);
   protected TextField experiment = new TextField();
@@ -223,7 +224,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     thickness.setItemLabelGenerator(value -> value.getLabel(getLocale()));
     coloration.setId(id(COLORATION));
     coloration.setItems(GelColoration.values());
-    coloration.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    coloration.setItemLabelGenerator(value -> getTranslation(GEL_COLORATION_PREFIX + value.name()));
     coloration.addValueChangeListener(e -> colorationChanged());
     otherColoration.setId(id(OTHER_COLORATION));
     developmentTime.setId(id(DEVELOPMENT_TIME));
