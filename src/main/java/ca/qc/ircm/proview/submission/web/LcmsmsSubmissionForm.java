@@ -136,6 +136,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
   private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
+  private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
   private static final long serialVersionUID = 1460183864073097086L;
   private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionForm.class);
   protected TextField experiment = new TextField();
@@ -242,7 +243,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     otherDigestion.setId(id(OTHER_DIGESTION));
     proteinContent.setId(id(PROTEIN_CONTENT));
     proteinContent.setItems(ProteinContent.values());
-    proteinContent.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    proteinContent.setRenderer(
+        new TextRenderer<>(value -> getTranslation(PROTEIN_CONTENT_PREFIX + value.name())));
     proteinContent.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());

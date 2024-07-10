@@ -188,7 +188,8 @@
         </div>
         <div th:if="${submission.service.name() == 'LC_MS_MS' && submission.proteinContent != null}">
             <span class="label" th:text="#{submission.print.submission.proteinContent}">Number of proteins:</span>
-            <span class="proteinContent" th:text="${submission.proteinContent.getLabel(locale)}">1 to 4</span>
+            <span class="proteinContent"
+                  th:text="#{${'submission.ProteinContent.' + submission.proteinContent.name()}}">1 to 4</span>
         </div>
         <div th:if="${submission.service.name() != 'SMALL_MOLECULE'}">
             <span class="label" th:text="#{submission.print.submission.instrument}">Instrument selection:</span>

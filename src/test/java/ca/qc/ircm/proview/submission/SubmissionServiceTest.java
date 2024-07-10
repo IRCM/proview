@@ -96,6 +96,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
   private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
+  private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -764,7 +765,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
-    assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(), null, locale)));
     assertTrue(content.contains("class=\"instrument\""));
     assertTrue(content.contains(messageSource.getMessage(
         MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
@@ -1167,7 +1169,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
-    assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(), null, locale)));
     assertTrue(content.contains("class=\"instrument\""));
     assertTrue(content.contains(messageSource.getMessage(
         MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
