@@ -74,6 +74,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   public static final String SAMPLE_NAME = SAMPLE + "Name";
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
+  private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SmallMoleculeSubmissionForm.class);
   protected RadioButtonGroup<SampleType> sampleType = new RadioButtonGroup<>();
@@ -140,7 +141,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     highResolution.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     solvents.setId(id(SOLVENTS));
     solvents.setItems(Solvent.values());
-    solvents.setItemLabelGenerator(solvent -> solvent.getLabel(getLocale()));
+    solvents.setItemLabelGenerator(solvent -> getTranslation(SOLVENT_PREFIX + solvent.name()));
     solvents.addValueChangeListener(e -> solventsChanged());
     otherSolvent.setId(id(OTHER_SOLVENT));
   }

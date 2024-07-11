@@ -73,6 +73,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
+  private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
   private SmallMoleculeSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -232,7 +233,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(Solvent.values().length, items.size());
     for (Solvent solvent : Solvent.values()) {
       assertTrue(items.contains(solvent));
-      assertEquals(solvent.getLabel(locale), form.solvents.getItemLabelGenerator().apply(solvent));
+      assertEquals(form.getTranslation(SOLVENT_PREFIX + solvent.name()),
+          form.solvents.getItemLabelGenerator().apply(solvent));
     }
   }
 

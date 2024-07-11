@@ -75,6 +75,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
+  private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -209,9 +210,10 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
         .getMessage(STORAGE_TEMPERATURE_PREFIX + storageTemperature.name(), null, locale));
     form.highResolution()
         .selectByText(submissionResource.message(property(HIGH_RESOLUTION, highResolution)));
-    Stream.of(Solvent.values())
-        .forEach(solvent -> form.solvents().deselectByText(solvent.getLabel(currentLocale())));
-    solvents.forEach(solvent -> form.solvents().selectByText(solvent.getLabel(currentLocale())));
+    Stream.of(Solvent.values()).forEach(solvent -> form.solvents()
+        .deselectByText(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)));
+    solvents.forEach(solvent -> form.solvents()
+        .selectByText(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)));
     form.otherSolvent().setValue(otherSolvent);
   }
 

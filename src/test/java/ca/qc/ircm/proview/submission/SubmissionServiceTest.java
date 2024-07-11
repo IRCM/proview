@@ -98,6 +98,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
+  private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -1397,7 +1398,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     for (Solvent solvent : Solvent.values()) {
       assertEquals(
           submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
-          content.contains(solvent.getLabel(locale)), solvent.name());
+          content.contains(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)),
+          solvent.name());
     }
     assertTrue(content.contains("class=\"comment\""));
     assertTrue(content.contains(formatMultiline(submission.getComment())));
@@ -1520,12 +1522,13 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"solvent\""));
-    assertFalse(content.contains(Solvent.OTHER.getLabel(locale)));
+    assertFalse(content
+        .contains(messageSource.getMessage(SOLVENT_PREFIX + Solvent.OTHER.name(), null, locale)));
     for (Solvent solvent : Solvent.values()) {
       assertEquals(
           submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
-          content.contains(
-              solvent == Solvent.OTHER ? submission.getOtherSolvent() : solvent.getLabel(locale)),
+          content.contains(solvent == Solvent.OTHER ? submission.getOtherSolvent()
+              : messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)),
           solvent.name());
     }
   }

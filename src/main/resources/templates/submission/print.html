@@ -232,7 +232,8 @@
         <div th:if="${submission.service.name() == 'SMALL_MOLECULE'}">
             <span class="label" th:text="#{submission.print.submission.solvents}">Soluble in:</span>
             <span th:each="solvent,iterStat : ${submission.solvents}">
-          <span class="solvent" th:utext="${solvent.getLabel(locale)}" th:if="${solvent.name() != 'OTHER'}">CH3OH</span><span
+          <span class="solvent" th:utext="#{${'treatment.Solvent.' + solvent.name()}}"
+                th:if="${solvent.name() != 'OTHER'}">CH3OH</span><span
                     class="solvent" th:text="${submission.otherSolvent}"
                     th:if="${solvent.name() == 'OTHER'}">CH3OH</span><span class="solvent-separator"
                                                                            th:if="${!iterStat.last}"
