@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +17,8 @@ import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -25,6 +28,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class HistoryViewItTest extends AbstractTestBenchTestCase {
+  private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
+  @Autowired
+  private MessageSource messageSource;
+
   private void open() {
     openView(VIEW_NAME, "1");
   }
@@ -97,6 +104,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     view.activities().view(0).click();
     TreatmentDialogElement dialog = view.treatmentDialog();
     assertTrue(dialog.isOpen());
-    assertEquals(TreatmentType.TRANSFER.getLabel(currentLocale()), dialog.header().getText());
+    assertEquals(messageSource.getMessage(TREATMENT_TYPE_PREFIX + TreatmentType.TRANSFER.name(),
+        null, currentLocale()), dialog.header().getText());
   }
 }

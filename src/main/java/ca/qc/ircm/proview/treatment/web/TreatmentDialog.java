@@ -30,6 +30,7 @@ import ca.qc.ircm.proview.treatment.FractionationType;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentService;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -57,6 +58,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   public static final String ID = "treatment-dialog";
   public static final String HEADER = "header";
   private static final String FRACTIONATION_TYPE_PREFIX = messagePrefix(FractionationType.class);
+  private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
   private static final long serialVersionUID = -3458086086713549138L;
   private static final Logger logger = LoggerFactory.getLogger(TreatmentDialog.class);
   protected Div deleted = new Div();
@@ -157,7 +159,8 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
 
   private void updateHeaderTitle() {
     final AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
-    setHeaderTitle(Optional.ofNullable(treatment).map(tr -> tr.getType().getLabel(getLocale()))
+    setHeaderTitle(Optional.ofNullable(treatment)
+        .map(tr -> getTranslation(TREATMENT_TYPE_PREFIX + tr.getType().name()))
         .orElse(resource.message(HEADER)));
   }
 

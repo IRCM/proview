@@ -66,6 +66,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("proview@ircm.qc.ca")
 public class TreatmentDialogTest extends SpringUIUnitTest {
   private static final String FRACTIONATION_TYPE_PREFIX = messagePrefix(FractionationType.class);
+  private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
   private TreatmentDialog dialog;
   @MockBean
   private TreatmentService service;
@@ -111,7 +112,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(TreatmentType.TRANSFER.getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + TreatmentType.TRANSFER.name()),
+        dialog.getHeaderTitle());
     assertEquals(treatmentResources.message(DELETED), dialog.deleted.getText());
     assertEquals(treatmentResources.message(TREATED_SAMPLES), dialog.samplesHeader.getText());
     HeaderRow headerRow = dialog.samples.getHeaderRows().get(0);
@@ -145,7 +147,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
     final AppResources treatmentResources = new AppResources(Treatment.class, locale);
     final AppResources treatedSampleResources = new AppResources(TreatedSample.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(TreatmentType.TRANSFER.getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + TreatmentType.TRANSFER.name()),
+        dialog.getHeaderTitle());
     assertEquals(treatmentResources.message(DELETED), dialog.deleted.getText());
     assertEquals(treatmentResources.message(TREATED_SAMPLES), dialog.samplesHeader.getText());
     HeaderRow headerRow = dialog.samples.getHeaderRows().get(0);
@@ -243,7 +246,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(1L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
@@ -266,7 +270,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(2L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
@@ -295,7 +300,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(2L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
@@ -323,7 +329,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(3L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
@@ -346,7 +353,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(4L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
@@ -369,7 +377,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(5L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
@@ -392,7 +401,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(6L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertTrue(dialog.protocol.isVisible());
     assertEquals(resources.message(PROTOCOL, treatment.getProtocol().getName()),
@@ -417,7 +427,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(7L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertTrue(dialog.protocol.isVisible());
     assertEquals(resources.message(PROTOCOL, treatment.getProtocol().getName()),
@@ -442,7 +453,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(323L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertTrue(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
