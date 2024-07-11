@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.treatment.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
 import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
@@ -64,6 +65,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class TreatmentDialogTest extends SpringUIUnitTest {
+  private static final String FRACTIONATION_TYPE_PREFIX = messagePrefix(FractionationType.class);
   private TreatmentDialog dialog;
   @MockBean
   private TreatmentService service;
@@ -269,7 +271,9 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
     assertEquals(
-        resources.message(FRACTIONATION_TYPE, treatment.getFractionationType().getLabel(locale)),
+        resources.message(FRACTIONATION_TYPE,
+            dialog.getTranslation(
+                FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())),
         dialog.fractionationType.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
@@ -296,7 +300,9 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
     assertEquals(
-        resources.message(FRACTIONATION_TYPE, treatment.getFractionationType().getLabel(locale)),
+        resources.message(FRACTIONATION_TYPE,
+            dialog.getTranslation(
+                FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())),
         dialog.fractionationType.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),

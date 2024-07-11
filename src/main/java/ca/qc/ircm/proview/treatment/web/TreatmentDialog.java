@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.treatment.web;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
@@ -55,6 +56,7 @@ import org.springframework.context.annotation.Scope;
 public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   public static final String ID = "treatment-dialog";
   public static final String HEADER = "header";
+  private static final String FRACTIONATION_TYPE_PREFIX = messagePrefix(FractionationType.class);
   private static final long serialVersionUID = -3458086086713549138L;
   private static final Logger logger = LoggerFactory.getLogger(TreatmentDialog.class);
   protected Div deleted = new Div();
@@ -179,7 +181,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     }
     if (treatment.getFractionationType() != null) {
       fractionationType.setText(resource.message(FRACTIONATION_TYPE,
-          treatment.getFractionationType().getLabel(getLocale())));
+          getTranslation(FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())));
       fractionationType.setVisible(true);
     }
     deleted.setVisible(treatment.isDeleted());
