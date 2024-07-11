@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.ProfileView.SAVED;
 import static ca.qc.ircm.proview.user.web.ProfileView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -33,12 +35,15 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ProfileViewItTest extends AbstractTestBenchTestCase {
+  private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   @Autowired
   private UserRepository repository;
   @Autowired
   private PasswordEncoder passwordEncoder;
   @Autowired
   private EntityManager entityManager;
+  @Autowired
+  private MessageSource messageSource;
   private String email = "test@ircm.qc.ca";
   private String name = "Test User";
   private String password = "test_password";
@@ -95,7 +100,8 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
     view.userForm().state().setValue(state);
     view.userForm().country().setValue(country);
     view.userForm().postalCode().setValue(postalCode);
-    view.userForm().phoneType().selectByText(phoneType.getLabel(locale));
+    view.userForm().phoneType().selectByText(
+        messageSource.getMessage(PHONE_NUMBER_TYPE_PREFIX + phoneType.name(), null, locale));
     view.userForm().number().setValue(number);
     view.userForm().extension().setValue(extension);
     view.save().click();

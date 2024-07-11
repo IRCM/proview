@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.security.Permission.WRITE;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
@@ -73,6 +74,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class UserFormTest extends SpringUIUnitTest {
+  private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   private UserForm form;
   @Autowired
   private UserRepository userRepository;
@@ -187,7 +189,8 @@ public class UserFormTest extends SpringUIUnitTest {
     assertEquals(addressResources.message(POSTAL_CODE), form.postalCode.getLabel());
     assertEquals(phoneNumberResources.message(TYPE), form.phoneType.getLabel());
     for (PhoneNumberType type : PhoneNumberType.values()) {
-      assertEquals(type.getLabel(locale), form.phoneType.getItemLabelGenerator().apply(type));
+      assertEquals(form.getTranslation(PHONE_NUMBER_TYPE_PREFIX + type.name()),
+          form.phoneType.getItemLabelGenerator().apply(type));
     }
     assertEquals(phoneNumberResources.message(NUMBER), form.number.getLabel());
     assertEquals(phoneNumberResources.message(EXTENSION), form.extension.getLabel());
@@ -215,7 +218,8 @@ public class UserFormTest extends SpringUIUnitTest {
     assertEquals(addressResources.message(POSTAL_CODE), form.postalCode.getLabel());
     assertEquals(phoneNumberResources.message(TYPE), form.phoneType.getLabel());
     for (PhoneNumberType type : PhoneNumberType.values()) {
-      assertEquals(type.getLabel(locale), form.phoneType.getItemLabelGenerator().apply(type));
+      assertEquals(form.getTranslation(PHONE_NUMBER_TYPE_PREFIX + type.name()),
+          form.phoneType.getItemLabelGenerator().apply(type));
     }
     assertEquals(phoneNumberResources.message(NUMBER), form.number.getLabel());
     assertEquals(phoneNumberResources.message(EXTENSION), form.extension.getLabel());

@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.AddressProperties.COUNTRY;
 import static ca.qc.ircm.proview.user.AddressProperties.LINE;
@@ -69,6 +70,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   public static final String NEW_LABORATORY_NAME = "newLaboratoryName";
   public static final String LABORATORY_NAME_PLACEHOLDER = "Translational Proteomics";
   public static final String NUMBER_PLACEHOLDER = "514-987-5500";
+  private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   protected TextField email = new TextField();
   protected TextField name = new TextField();
   protected Checkbox admin = new Checkbox();
@@ -160,7 +162,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     postalCode.setPlaceholder(address.getPostalCode());
     phoneType.setId(id(TYPE));
     phoneType.setItems(PhoneNumberType.values());
-    phoneType.setItemLabelGenerator(type -> type.getLabel(getLocale()));
+    phoneType.setItemLabelGenerator(type -> getTranslation(PHONE_NUMBER_TYPE_PREFIX + type.name()));
     phoneType.setValue(PhoneNumberType.WORK);
     number.setId(id(NUMBER));
     number.setPlaceholder(NUMBER_PLACEHOLDER);
