@@ -2,9 +2,9 @@ package ca.qc.ircm.proview.files.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.proview.web.ViewLayout;
@@ -30,6 +30,8 @@ public class GuidelinesView extends VerticalLayout
   public static final String VIEW_NAME = "guidelines";
   public static final String ID = "guidelines-view";
   public static final String HEADER = "header";
+  private static final String MESSAGES_PREFIX = messagePrefix(GuidelinesView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 1881767150748374598L;
   private static final Logger logger = LoggerFactory.getLogger(GuidelinesView.class);
   protected H2 header = new H2();
@@ -50,18 +52,16 @@ public class GuidelinesView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(getClass(), getLocale());
     removeAll();
     add(header);
-    header.setText(resources.message(HEADER));
+    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     guidelinesConfiguration.categories(getLocale())
         .forEach(category -> add(new CategoryComponent(category)));
   }
 
   @Override
   public String getPageTitle() {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(Constants.class, getLocale());
-    return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+    return getTranslation(MESSAGES_PREFIX + TITLE,
+        getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
   }
 }
