@@ -18,7 +18,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.mail.EmailService;
@@ -1036,10 +1035,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    AppResources resources = new AppResources("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(resources.message("submission.quantificationComment")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.quantificationComment", null, locale)));
     assertTrue(content.contains(formatMultiline(submission.getQuantificationComment())));
   }
 
@@ -1052,10 +1051,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    AppResources resources = new AppResources("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(resources.message("submission.quantificationComment")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.quantificationComment", null, locale)));
     assertFalse(content.contains("null"));
   }
 
@@ -1067,10 +1066,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    AppResources resources = new AppResources("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.quantificationComment.TMT", null, locale)));
     assertTrue(content.contains(formatMultiline(submission.getQuantificationComment())));
   }
 
@@ -1083,10 +1082,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    AppResources resources = new AppResources("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.quantificationComment.TMT", null, locale)));
     assertFalse(content.contains("null"));
   }
 
@@ -1099,7 +1098,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    final AppResources resources = new AppResources("submission.print", locale);
     assertFalse(content.contains("??"));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
@@ -1152,7 +1150,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"developmentTime\""));
     assertTrue(content.contains(submission.getDevelopmentTime()));
     assertTrue(content.contains("class=\"decoloration\""));
-    assertTrue(content.contains(resources.message("submission.decoloration.true")));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.decoloration.true", null, locale)));
     assertTrue(content.contains("class=\"weightMarkerQuantity\""));
     assertTrue(content.contains(String.valueOf(submission.getWeightMarkerQuantity())));
     assertTrue(content.contains("class=\"proteinQuantity\""));
@@ -1325,7 +1324,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    final AppResources resources = new AppResources("submission.print", locale);
     assertFalse(content.contains("??"));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
@@ -1376,7 +1374,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"toxicity\""));
     assertTrue(content.contains(submission.getToxicity()));
     assertTrue(content.contains("class=\"lightSensitive\""));
-    assertTrue(content.contains(resources.message("submission.lightSensitive.true")));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.lightSensitive.true", null, locale)));
     assertTrue(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains(messageSource.getMessage(
         STORAGE_TEMPERATURE_PREFIX + submission.getStorageTemperature().name(), null, locale)));
@@ -1392,7 +1391,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"quantification\""));
     assertFalse(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains("class=\"highResolution\""));
-    assertTrue(content.contains(resources.message("submission.highResolution.true")));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.highResolution.true", null, locale)));
     assertTrue(content.contains("class=\"solvent\""));
     for (Solvent solvent : Solvent.values()) {
       assertEquals(
@@ -1494,9 +1494,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    AppResources resources = new AppResources("submission.print", locale);
     assertTrue(content.contains("class=\"highResolution\""));
-    assertTrue(content.contains(resources.message("submission.highResolution.false")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.highResolution.false", null, locale)));
   }
 
   @Test
