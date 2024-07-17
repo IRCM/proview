@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.user;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,7 +11,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,6 +39,7 @@ import org.thymeleaf.util.StringUtils;
  */
 @ServiceTestAnnotations
 public class ForgotPasswordServiceTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordService.class);
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(ForgotPasswordServiceTest.class);
   @Autowired
@@ -46,6 +48,8 @@ public class ForgotPasswordServiceTest {
   private ForgotPasswordRepository repository;
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private MessageSource messageSource;
   @MockBean
   private ApplicationConfiguration applicationConfiguration;
   @MockBean
@@ -173,18 +177,22 @@ public class ForgotPasswordServiceTest {
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
     verify(email).addTo(user.getEmail());
-    AppResources resources = new AppResources(ForgotPasswordService.class, locale);
-    AppResources mailResources = new AppResources("user.forgotpassword", locale);
-    verify(email).setSubject(resources.message("subject"));
+    verify(email).setSubject(messageSource.getMessage(MESSAGES_PREFIX + "subject", null, locale));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());
     String textContent = stringCaptor.getAllValues().get(0);
     String htmlContent = stringCaptor.getAllValues().get(1);
-    assertTrue(textContent.contains(mailResources.message("header")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(mailResources.message("header"))));
-    assertTrue(textContent.contains(mailResources.message("message")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(mailResources.message("message"))));
-    assertTrue(textContent.contains(mailResources.message("footer")));
-    assertTrue(htmlContent.contains(StringUtils.escapeXml(mailResources.message("footer"))));
+    assertTrue(
+        textContent.contains(messageSource.getMessage("user.forgotpassword.header", null, locale)));
+    assertTrue(htmlContent.contains(StringUtils
+        .escapeXml(messageSource.getMessage("user.forgotpassword.header", null, locale))));
+    assertTrue(textContent
+        .contains(messageSource.getMessage("user.forgotpassword.message", null, locale)));
+    assertTrue(htmlContent.contains(StringUtils
+        .escapeXml(messageSource.getMessage("user.forgotpassword.message", null, locale))));
+    assertTrue(
+        textContent.contains(messageSource.getMessage("user.forgotpassword.footer", null, locale)));
+    assertTrue(htmlContent.contains(StringUtils
+        .escapeXml(messageSource.getMessage("user.forgotpassword.footer", null, locale))));
     String url = applicationConfiguration.getUrl(forgotPasswordUrl);
     assertTrue(textContent.contains(url));
     assertTrue(htmlContent.contains(url));
