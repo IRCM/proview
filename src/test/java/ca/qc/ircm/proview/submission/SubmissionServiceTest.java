@@ -40,6 +40,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
+import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
@@ -99,6 +100,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
   private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
+  private static final String PHONE_NUMBER_PREFIX = messagePrefix(PhoneNumber.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -711,7 +713,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
-    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
+    assertTrue(
+        content
+            .contains(
+                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+                    new Object[] { phoneNumber.getNumber(),
+                        Optional.ofNullable(phoneNumber.getExtension())
+                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
+                        phoneNumber.getExtension() },
+                    locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -1107,7 +1118,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
-    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
+    assertTrue(
+        content
+            .contains(
+                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+                    new Object[] { phoneNumber.getNumber(),
+                        Optional.ofNullable(phoneNumber.getExtension())
+                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
+                        phoneNumber.getExtension() },
+                    locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -1333,7 +1353,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
-    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
+    assertTrue(
+        content
+            .contains(
+                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+                    new Object[] { phoneNumber.getNumber(),
+                        Optional.ofNullable(phoneNumber.getExtension())
+                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
+                        phoneNumber.getExtension() },
+                    locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -1563,7 +1592,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
-    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
+    assertTrue(
+        content
+            .contains(
+                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+                    new Object[] { phoneNumber.getNumber(),
+                        Optional.ofNullable(phoneNumber.getExtension())
+                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
+                        phoneNumber.getExtension() },
+                    locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));

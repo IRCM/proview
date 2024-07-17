@@ -18,7 +18,8 @@
         <div class="two-columns">
             <div class="right">
                 <span class="label" th:text="#{submission.print.user.phonenumber}">Phone:</span>
-                <span class="user-phone" th:text="${user.phoneNumbers[0].getValue(locale)}"
+                <span class="user-phone"
+                      th:text="#{user.PhoneNumber.value(${user.phoneNumbers[0].number}, ${user.phoneNumbers[0].extension == null || user.phoneNumbers[0].extension.empty ? 0 : 1}, ${user.phoneNumbers[0].extension})}"
                       th:if="${user != null && !user.phoneNumbers.empty}">514-987-5500</span>
             </div>
             <div class="left">
