@@ -11,7 +11,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -65,6 +64,10 @@ public class SamplesStatusDialog extends Dialog
   public static final String ID = "samples-status-dialog";
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
+  private static final String MESSAGES_PREFIX = messagePrefix(SamplesStatusDialog.class);
+  private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
+  private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private static final Logger logger = LoggerFactory.getLogger(SamplesStatusDialog.class);
   protected Grid<SubmissionSample> samples = new Grid<>();
@@ -149,28 +152,24 @@ public class SamplesStatusDialog extends Dialog
   }
 
   private void localeChanged() {
-    final AppResources resources = new AppResources(SamplesStatusDialog.class, getLocale());
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
-    final AppResources sampleResources = new AppResources(Sample.class, getLocale());
-    final AppResources submissionSampleResources =
-        new AppResources(SubmissionSample.class, getLocale());
-    String nameHeader = sampleResources.message(NAME);
+    String nameHeader = getTranslation(SAMPLE_PREFIX + NAME);
     name.setHeader(nameHeader).setFooter(nameHeader);
-    String statusHeader = submissionSampleResources.message(STATUS);
+    String statusHeader = getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS);
     status.setHeader(statusHeader).setFooter(statusHeader);
-    allStatus.setLabel(resources.message(property(STATUS, ALL)));
-    save.setText(webResources.message(SAVE));
-    cancel.setText(webResources.message(CANCEL));
-    setHeaderTitle(resources.message(HEADER));
+    allStatus.setLabel(getTranslation(MESSAGES_PREFIX + property(STATUS, ALL)));
+    save.setText(getTranslation(CONSTANTS_PREFIX + SAVE));
+    cancel.setText(getTranslation(CONSTANTS_PREFIX + CANCEL));
+    setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER));
     if (submission != null) {
       for (SubmissionSample sample : submission.getSamples()) {
         Binder<SubmissionSample> binder = new BeanValidationBinder<>(SubmissionSample.class);
-        binder.forField(status(sample)).asRequired(webResources.message(REQUIRED)).bind(STATUS);
+        binder.forField(status(sample)).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+            .bind(STATUS);
         binder.setBean(sample);
         binders.put(sample, binder);
       }
       if (submission.getId() != null) {
-        setHeaderTitle(resources.message(HEADER, submission.getExperiment()));
+        setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()));
       }
     }
   }
@@ -215,9 +214,8 @@ public class SamplesStatusDialog extends Dialog
   private void save() {
     if (validate()) {
       logger.debug("update samples' status of submission {}", submission);
-      AppResources resources = new AppResources(SamplesStatusDialog.class, getLocale());
       sampleService.updateStatus(submission.getSamples());
-      showNotification(resources.message(SAVED, submission.getExperiment()));
+      showNotification(getTranslation(MESSAGES_PREFIX + SAVED, submission.getExperiment()));
       close();
       fireSavedEvent();
     }
