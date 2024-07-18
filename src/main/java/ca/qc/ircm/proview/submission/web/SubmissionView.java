@@ -16,7 +16,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.UploadInternationalization.uploadI18N;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -95,6 +94,9 @@ public class SubmissionView extends VerticalLayout
   public static final String SAVED = "saved";
   public static final int MAXIMUM_FILES_SIZE = 20 * 1024 * 1024; // 20MB
   public static final int MAXIMUM_FILES_COUNT = 6;
+  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionView.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionView.class);
@@ -197,27 +199,23 @@ public class SubmissionView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(SubmissionView.class, getLocale());
-    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
-    header.setText(resources.message(HEADER));
+    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     lcmsms.setLabel(getTranslation(SERVICE_PREFIX + LC_MS_MS.name()));
     smallMolecule.setLabel(getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()));
     intactProtein.setLabel(getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()));
-    comment.setLabel(submissionResources.message(COMMENT));
+    comment.setLabel(getTranslation(SUBMISSION_PREFIX + COMMENT));
     upload.setI18n(uploadI18N(getLocale()));
-    filename.setHeader(resources.message(FILENAME));
-    remove.setHeader(resources.message(REMOVE));
-    save.setText(webResources.message(SAVE));
+    filename.setHeader(getTranslation(MESSAGES_PREFIX + FILENAME));
+    remove.setHeader(getTranslation(MESSAGES_PREFIX + REMOVE));
+    save.setText(getTranslation(CONSTANTS_PREFIX + SAVE));
     binder.forField(comment).withNullRepresentation("").bind(COMMENT);
     setReadOnly();
   }
 
   @Override
   public String getPageTitle() {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(Constants.class, getLocale());
-    return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+    return getTranslation(MESSAGES_PREFIX + TITLE,
+        getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
   }
 
   Service service() {
@@ -238,14 +236,12 @@ public class SubmissionView extends VerticalLayout
     try {
       FileCopyUtils.copy(input, output);
     } catch (IOException e) {
-      AppResources resources = new AppResources(SubmissionView.class, getLocale());
-      showNotification(resources.message(FILES_IOEXCEPTION, filename));
+      showNotification(getTranslation(MESSAGES_PREFIX + FILES_IOEXCEPTION, filename));
       return;
     }
     file.setContent(output.toByteArray());
     if (filesDataProvider.getItems().size() >= MAXIMUM_FILES_COUNT) {
-      AppResources resources = new AppResources(SubmissionView.class, getLocale());
-      showNotification(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
+      showNotification(getTranslation(MESSAGES_PREFIX + FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
       return;
     }
     filesDataProvider.getItems().add(file);
@@ -290,8 +286,7 @@ public class SubmissionView extends VerticalLayout
         logger.debug("save submission {}", submission);
         submissionService.update(submission, null);
       }
-      final AppResources resources = new AppResources(SubmissionView.class, getLocale());
-      showNotification(resources.message(SAVED, submission.getExperiment()));
+      showNotification(getTranslation(MESSAGES_PREFIX + SAVED, submission.getExperiment()));
       UI.getCurrent().navigate(SubmissionsView.class);
     }
   }

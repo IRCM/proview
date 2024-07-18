@@ -41,7 +41,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -110,6 +109,9 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionView.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private SubmissionView view;
   @MockBean
@@ -127,9 +129,6 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(SubmissionView.class, locale);
-  private AppResources submissionResources = new AppResources(Submission.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
   private Submission submission;
   private String experiment = "my test experiment";
   private List<SubmissionFile> files;
@@ -342,40 +341,41 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     assertEquals(view.getTranslation(SERVICE_PREFIX + LC_MS_MS.name()), view.lcmsms.getLabel());
     assertEquals(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()),
         view.smallMolecule.getLabel());
     assertEquals(view.getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()),
         view.intactProtein.getLabel());
-    assertEquals(submissionResources.message(COMMENT), view.comment.getLabel());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + COMMENT), view.comment.getLabel());
     validateEquals(englishUploadI18N(), view.upload.getI18n());
     HeaderRow headerRow = view.files.getHeaderRows().get(0);
-    assertEquals(resources.message(FILENAME), headerRow.getCell(view.filename).getText());
-    assertEquals(resources.message(REMOVE), headerRow.getCell(view.remove).getText());
-    assertEquals(webResources.message(SAVE), view.save.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FILENAME),
+        headerRow.getCell(view.filename).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + REMOVE),
+        headerRow.getCell(view.remove).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + SAVE), view.save.getText());
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(SubmissionView.class, locale);
-    final AppResources submissionResources = new AppResources(Submission.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     assertEquals(view.getTranslation(SERVICE_PREFIX + LC_MS_MS.name()), view.lcmsms.getLabel());
     assertEquals(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()),
         view.smallMolecule.getLabel());
     assertEquals(view.getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()),
         view.intactProtein.getLabel());
-    assertEquals(submissionResources.message(COMMENT), view.comment.getLabel());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + COMMENT), view.comment.getLabel());
     validateEquals(frenchUploadI18N(), view.upload.getI18n());
     HeaderRow headerRow = view.files.getHeaderRows().get(0);
-    assertEquals(resources.message(FILENAME), headerRow.getCell(view.filename).getText());
-    assertEquals(resources.message(REMOVE), headerRow.getCell(view.remove).getText());
-    assertEquals(webResources.message(SAVE), view.save.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FILENAME),
+        headerRow.getCell(view.filename).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + REMOVE),
+        headerRow.getCell(view.remove).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + SAVE), view.save.getText());
   }
 
   @Test
@@ -456,8 +456,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 
   @Test
@@ -484,7 +484,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     };
     view.addFile(file.getFilename(), input);
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(FILES_IOEXCEPTION, file.getFilename()),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FILES_IOEXCEPTION, file.getFilename()),
         test(notification).getText());
     assertTrue(items(view.files).isEmpty());
     verify(filesDataProviderListener, never()).onDataChange(any());
@@ -500,7 +500,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     view.addFile(file.getFilename() + MAXIMUM_FILES_COUNT,
         new ByteArrayInputStream(file.getContent()));
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT),
         test(notification).getText());
     List<SubmissionFile> files = items(view.files);
     assertEquals(MAXIMUM_FILES_COUNT, files.size());
@@ -623,7 +623,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     }
     $(SubmissionsView.class).id(SubmissionsView.ID);
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, saved.getExperiment()), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
+        test(notification).getText());
   }
 
   @Test
@@ -689,7 +690,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     }
     $(SubmissionsView.class).id(SubmissionsView.ID);
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, saved.getExperiment()), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
+        test(notification).getText());
   }
 
   @Test
@@ -729,7 +731,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     }
     $(SubmissionsView.class).id(SubmissionsView.ID);
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, saved.getExperiment()), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
+        test(notification).getText());
   }
 
   @Test
@@ -777,7 +780,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     }
     $(SubmissionsView.class).id(SubmissionsView.ID);
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, saved.getExperiment()), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
+        test(notification).getText());
   }
 
   @Test
@@ -821,7 +825,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     }
     $(SubmissionsView.class).id(SubmissionsView.ID);
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, saved.getExperiment()), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
+        test(notification).getText());
   }
 
   @Test
@@ -875,7 +880,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     }
     $(SubmissionsView.class).id(SubmissionsView.ID);
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, saved.getExperiment()), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
+        test(notification).getText());
   }
 
   @Test

@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -59,6 +58,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final QSubmission qsubmission = QSubmission.submission;
+  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionView.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
@@ -196,7 +197,6 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
 
   private void setFields(SmallMoleculeSubmissionFormElement form) {
     Locale locale = currentLocale();
-    AppResources submissionResource = new AppResources(Submission.class, locale);
     form.sampleType().selectByText(
         messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
     form.sampleName().setValue(sampleName1);
@@ -208,8 +208,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.lightSensitive().setChecked(lightSensitive);
     form.storageTemperature().selectByText(messageSource
         .getMessage(STORAGE_TEMPERATURE_PREFIX + storageTemperature.name(), null, locale));
-    form.highResolution()
-        .selectByText(submissionResource.message(property(HIGH_RESOLUTION, highResolution)));
+    form.highResolution().selectByText(messageSource
+        .getMessage(SUBMISSION_PREFIX + property(HIGH_RESOLUTION, highResolution), null, locale));
     Stream.of(Solvent.values()).forEach(solvent -> form.solvents()
         .deselectByText(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)));
     solvents.forEach(solvent -> form.solvents()
@@ -287,8 +287,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(SubmissionView.class);
-    assertEquals(resources.message(SAVED, experiment), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
+        currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).get();
     assertEquals(experiment, submission.getExperiment());
     assertEquals(goal, submission.getGoal());
@@ -344,8 +344,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(SubmissionView.class);
-    assertEquals(resources.message(SAVED, experiment), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
+        currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).get();
     assertEquals(experiment, submission.getExperiment());
     assertEquals(goal, submission.getGoal());
@@ -407,8 +407,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(SubmissionView.class);
-    assertEquals(resources.message(SAVED, sampleName1), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { sampleName1 },
+        currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(sampleName1)).get();
     assertEquals(sampleName1, submission.getExperiment());
     assertEquals(solvent, submission.getSolutionSolvent());
@@ -448,8 +448,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(SubmissionView.class);
-    assertEquals(resources.message(SAVED, experiment), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
+        currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).get();
     assertEquals(experiment, submission.getExperiment());
     assertEquals(goal, submission.getGoal());
