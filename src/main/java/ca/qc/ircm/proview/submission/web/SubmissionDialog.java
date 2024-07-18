@@ -12,7 +12,6 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.web.DatePickerInternationalization.datePickerI18n;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
@@ -56,6 +55,9 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   private static final long serialVersionUID = 8452988829428470601L;
   public static final String ID = "submission-dialog";
   public static final String HEADER = "header";
+  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionDialog.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialog.class);
@@ -127,17 +129,15 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
     updateHeader();
     DatePickerI18n dateI18n = datePickerI18n(getLocale());
-    instrument.setLabel(submissionResources.message(INSTRUMENT));
-    dataAvailableDate.setLabel(submissionResources.message(DATA_AVAILABLE_DATE));
+    instrument.setLabel(getTranslation(SUBMISSION_PREFIX + INSTRUMENT));
+    dataAvailableDate.setLabel(getTranslation(SUBMISSION_PREFIX + DATA_AVAILABLE_DATE));
     dataAvailableDate.setI18n(dateI18n);
     dataAvailableDate.setLocale(Locale.CANADA); // ISO format.
-    save.setText(webResources.message(SAVE));
-    edit.setText(webResources.message(EDIT));
-    print.setText(webResources.message(PRINT));
+    save.setText(getTranslation(CONSTANTS_PREFIX + SAVE));
+    edit.setText(getTranslation(CONSTANTS_PREFIX + EDIT));
+    print.setText(getTranslation(CONSTANTS_PREFIX + PRINT));
     binder.forField(instrument).withNullRepresentation(MassDetectionInstrument.NULL)
         .bind(INSTRUMENT);
     binder.forField(dataAvailableDate).bind(DATA_AVAILABLE_DATE);
@@ -165,8 +165,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     if (submission != null && submission.getId() != null) {
       setHeaderTitle(submission.getExperiment());
     } else {
-      final AppResources resources = new AppResources(SubmissionDialog.class, getLocale());
-      setHeaderTitle(resources.message(HEADER));
+      setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER));
     }
   }
 
