@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -35,6 +34,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ProfileViewItTest extends AbstractTestBenchTestCase {
+  private static final String MESSAGES_PREFIX = messagePrefix(ProfileView.class);
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   @Autowired
   private UserRepository repository;
@@ -106,8 +106,8 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
     view.userForm().extension().setValue(extension);
     view.save().click();
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(ProfileView.class);
-    assertEquals(resources.message(SAVED), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, null, locale),
+        notification.getText());
     User user = repository.findById(10L).orElse(null);
     assertNotNull(user);
     entityManager.refresh(user);
