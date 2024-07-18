@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.CLASS_NAME;
 import static ca.qc.ircm.proview.user.web.PasswordsForm.PASSWORD;
@@ -13,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.UI;
@@ -32,10 +32,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class PasswordsFormTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(PasswordsForm.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private PasswordsForm form;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(PasswordsForm.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
   private String password = "test_password";
 
   /**
@@ -62,17 +62,18 @@ public class PasswordsFormTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(PASSWORD), form.password.getLabel());
-    assertEquals(resources.message(PASSWORD_CONFIRM), form.passwordConfirm.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + PASSWORD), form.password.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + PASSWORD_CONFIRM),
+        form.passwordConfirm.getLabel());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(PasswordsForm.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(PASSWORD), form.password.getLabel());
-    assertEquals(resources.message(PASSWORD_CONFIRM), form.passwordConfirm.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + PASSWORD), form.password.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + PASSWORD_CONFIRM),
+        form.passwordConfirm.getLabel());
   }
 
   @Test
@@ -137,7 +138,7 @@ public class PasswordsFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.password);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -153,7 +154,8 @@ public class PasswordsFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.password);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(PASSWORDS_NOT_MATCH)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(MESSAGES_PREFIX + PASSWORDS_NOT_MATCH)),
+        error.getMessage());
   }
 
   @Test
@@ -179,7 +181,7 @@ public class PasswordsFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.passwordConfirm);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
