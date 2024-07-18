@@ -4,7 +4,6 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
@@ -39,6 +38,8 @@ public class PrintSubmissionView extends VerticalLayout
   public static final String ID = "print-submission-view";
   public static final String HEADER = "header";
   public static final String SECOND_HEADER = "header-2";
+  private static final String MESSAGES_PREFIX = messagePrefix(PrintSubmissionView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(PrintSubmissionView.class);
@@ -65,16 +66,14 @@ public class PrintSubmissionView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(PrintSubmissionView.class, getLocale());
-    header.setText(resources.message(HEADER));
+    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     updateSecondHeader();
   }
 
   @Override
   public String getPageTitle() {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(Constants.class, getLocale());
-    return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+    return getTranslation(MESSAGES_PREFIX + TITLE,
+        getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
   }
 
   @Override

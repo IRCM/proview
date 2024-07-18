@@ -15,7 +15,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
@@ -39,6 +38,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class PrintSubmissionViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(PrintSubmissionView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private PrintSubmissionView view;
   @MockBean
@@ -46,8 +47,6 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(PrintSubmissionView.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.
@@ -68,7 +67,7 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
         view.secondHeader.getText());
   }
@@ -76,17 +75,16 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    AppResources resources = new AppResources(PrintSubmissionView.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
         view.secondHeader.getText());
   }
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 
   @Test
