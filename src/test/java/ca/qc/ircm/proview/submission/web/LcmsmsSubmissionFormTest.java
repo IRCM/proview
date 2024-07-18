@@ -62,7 +62,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
@@ -104,6 +103,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(LcmsmsSubmissionForm.class);
+  private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
   private static final String PROTEIN_IDENTIFICATION_PREFIX =
@@ -156,11 +160,6 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
   private Quantification quantification = Quantification.SILAC;
   private String quantificationComment = "Heavy: Lys8, Arg10\nMedium: Lys4, Arg6";
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
-  private AppResources submissionResources = new AppResources(Submission.class, locale);
-  private AppResources sampleResources = new AppResources(Sample.class, locale);
-  private AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.
@@ -283,114 +282,143 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
-    assertEquals(submissionResources.message(TAXONOMY), form.taxonomy.getLabel());
-    assertEquals(submissionResources.message(PROTEIN), form.protein.getLabel());
-    assertEquals(submissionSampleResources.message(MOLECULAR_WEIGHT),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + GOAL), form.goal.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + TAXONOMY), form.taxonomy.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + PROTEIN), form.protein.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_SAMPLE_PREFIX + MOLECULAR_WEIGHT),
         form.molecularWeight.getLabel());
-    assertEquals(submissionResources.message(POST_TRANSLATION_MODIFICATION),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION),
         form.postTranslationModification.getLabel());
-    assertEquals(resources.message(SAMPLES_TYPE), form.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLES_COUNT), form.samplesCount.getLabel());
-    assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
-    assertEquals(resources.message(SAMPLES_NAMES_PLACEHOLDER), form.samplesNames.getPlaceholder());
-    assertEquals(resources.message(SAMPLES_NAMES_TITLE),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_TYPE), form.sampleType.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT),
+        form.samplesCount.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES),
+        form.samplesNames.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_PLACEHOLDER),
+        form.samplesNames.getPlaceholder());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_TITLE),
         form.samplesNames.getElement().getAttribute(TITLE));
-    assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
-    assertEquals(sampleResources.message(QUANTITY), form.quantity.getLabel());
-    assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
-    assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
-    assertEquals(resources.message(VOLUME_PLACEHOLDER), form.volume.getPlaceholder());
-    assertEquals(submissionResources.message(CONTAMINANTS), form.contaminants.getLabel());
-    assertEquals(resources.message(CONTAMINANTS_PLACEHOLDER), form.contaminants.getPlaceholder());
-    assertEquals(submissionResources.message(STANDARDS), form.standards.getLabel());
-    assertEquals(resources.message(STANDARDS_PLACEHOLDER), form.standards.getPlaceholder());
-    assertEquals(submissionResources.message(SEPARATION), form.separation.getLabel());
-    assertEquals(submissionResources.message(THICKNESS), form.thickness.getLabel());
-    assertEquals(submissionResources.message(COLORATION), form.coloration.getLabel());
-    assertEquals(submissionResources.message(OTHER_COLORATION), form.otherColoration.getLabel());
-    assertEquals(submissionResources.message(DEVELOPMENT_TIME), form.developmentTime.getLabel());
-    assertEquals(resources.message(DEVELOPMENT_TIME_PLACEHOLDER),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES),
+        form.samplesNames.getLabel());
+    assertEquals(form.getTranslation(SAMPLE_PREFIX + QUANTITY), form.quantity.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + QUANTITY_PLACEHOLDER),
+        form.quantity.getPlaceholder());
+    assertEquals(form.getTranslation(SAMPLE_PREFIX + VOLUME), form.volume.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + VOLUME_PLACEHOLDER),
+        form.volume.getPlaceholder());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + CONTAMINANTS),
+        form.contaminants.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + CONTAMINANTS_PLACEHOLDER),
+        form.contaminants.getPlaceholder());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + STANDARDS), form.standards.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + STANDARDS_PLACEHOLDER),
+        form.standards.getPlaceholder());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + SEPARATION), form.separation.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + THICKNESS), form.thickness.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + COLORATION), form.coloration.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + OTHER_COLORATION),
+        form.otherColoration.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + DEVELOPMENT_TIME),
+        form.developmentTime.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + DEVELOPMENT_TIME_PLACEHOLDER),
         form.developmentTime.getPlaceholder());
-    assertEquals(submissionResources.message(DECOLORATION), form.destained.getLabel());
-    assertEquals(submissionResources.message(WEIGHT_MARKER_QUANTITY),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + DECOLORATION), form.destained.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + WEIGHT_MARKER_QUANTITY),
         form.weightMarkerQuantity.getLabel());
-    assertEquals(resources.message(WEIGHT_MARKER_QUANTITY_PLACEHOLDER),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + WEIGHT_MARKER_QUANTITY_PLACEHOLDER),
         form.weightMarkerQuantity.getPlaceholder());
-    assertEquals(submissionResources.message(PROTEIN_QUANTITY), form.proteinQuantity.getLabel());
-    assertEquals(resources.message(PROTEIN_QUANTITY_PLACEHOLDER),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + PROTEIN_QUANTITY),
+        form.proteinQuantity.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + PROTEIN_QUANTITY_PLACEHOLDER),
         form.proteinQuantity.getPlaceholder());
-    assertEquals(submissionResources.message(DIGESTION), form.digestion.getLabel());
-    assertEquals(submissionResources.message(USED_DIGESTION), form.usedDigestion.getLabel());
-    assertEquals(submissionResources.message(OTHER_DIGESTION), form.otherDigestion.getLabel());
-    assertEquals(submissionResources.message(PROTEIN_CONTENT), form.proteinContent.getLabel());
-    assertEquals(submissionResources.message(INSTRUMENT), form.instrument.getLabel());
-    assertEquals(submissionResources.message(IDENTIFICATION), form.identification.getLabel());
-    assertEquals(submissionResources.message(IDENTIFICATION_LINK),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + DIGESTION), form.digestion.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + USED_DIGESTION),
+        form.usedDigestion.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + OTHER_DIGESTION),
+        form.otherDigestion.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + PROTEIN_CONTENT),
+        form.proteinContent.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + INSTRUMENT), form.instrument.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + IDENTIFICATION),
+        form.identification.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + IDENTIFICATION_LINK),
         form.identificationLink.getLabel());
-    assertEquals(submissionResources.message(QUANTIFICATION), form.quantification.getLabel());
-    assertEquals(submissionResources.message(QUANTIFICATION_COMMENT),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + QUANTIFICATION),
+        form.quantification.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + QUANTIFICATION_COMMENT),
         form.quantificationComment.getLabel());
-    assertEquals(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER),
         form.quantificationComment.getPlaceholder());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
-    final AppResources submissionResources = new AppResources(Submission.class, locale);
-    final AppResources sampleResources = new AppResources(Sample.class, locale);
-    final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
-    assertEquals(submissionResources.message(TAXONOMY), form.taxonomy.getLabel());
-    assertEquals(submissionResources.message(PROTEIN), form.protein.getLabel());
-    assertEquals(submissionSampleResources.message(MOLECULAR_WEIGHT),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + GOAL), form.goal.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + TAXONOMY), form.taxonomy.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + PROTEIN), form.protein.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_SAMPLE_PREFIX + MOLECULAR_WEIGHT),
         form.molecularWeight.getLabel());
-    assertEquals(submissionResources.message(POST_TRANSLATION_MODIFICATION),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION),
         form.postTranslationModification.getLabel());
-    assertEquals(resources.message(SAMPLES_TYPE), form.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLES_COUNT), form.samplesCount.getLabel());
-    assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
-    assertEquals(resources.message(SAMPLES_NAMES_PLACEHOLDER), form.samplesNames.getPlaceholder());
-    assertEquals(resources.message(SAMPLES_NAMES_TITLE),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_TYPE), form.sampleType.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT),
+        form.samplesCount.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES),
+        form.samplesNames.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_PLACEHOLDER),
+        form.samplesNames.getPlaceholder());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_TITLE),
         form.samplesNames.getElement().getAttribute(TITLE));
-    assertEquals(sampleResources.message(QUANTITY), form.quantity.getLabel());
-    assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
-    assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
-    assertEquals(resources.message(VOLUME_PLACEHOLDER), form.volume.getPlaceholder());
-    assertEquals(submissionResources.message(CONTAMINANTS), form.contaminants.getLabel());
-    assertEquals(resources.message(CONTAMINANTS_PLACEHOLDER), form.contaminants.getPlaceholder());
-    assertEquals(submissionResources.message(STANDARDS), form.standards.getLabel());
-    assertEquals(resources.message(STANDARDS_PLACEHOLDER), form.standards.getPlaceholder());
-    assertEquals(submissionResources.message(SEPARATION), form.separation.getLabel());
-    assertEquals(submissionResources.message(THICKNESS), form.thickness.getLabel());
-    assertEquals(submissionResources.message(COLORATION), form.coloration.getLabel());
-    assertEquals(submissionResources.message(OTHER_COLORATION), form.otherColoration.getLabel());
-    assertEquals(submissionResources.message(DEVELOPMENT_TIME), form.developmentTime.getLabel());
-    assertEquals(resources.message(DEVELOPMENT_TIME_PLACEHOLDER),
+    assertEquals(form.getTranslation(SAMPLE_PREFIX + QUANTITY), form.quantity.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + QUANTITY_PLACEHOLDER),
+        form.quantity.getPlaceholder());
+    assertEquals(form.getTranslation(SAMPLE_PREFIX + VOLUME), form.volume.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + VOLUME_PLACEHOLDER),
+        form.volume.getPlaceholder());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + CONTAMINANTS),
+        form.contaminants.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + CONTAMINANTS_PLACEHOLDER),
+        form.contaminants.getPlaceholder());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + STANDARDS), form.standards.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + STANDARDS_PLACEHOLDER),
+        form.standards.getPlaceholder());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + SEPARATION), form.separation.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + THICKNESS), form.thickness.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + COLORATION), form.coloration.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + OTHER_COLORATION),
+        form.otherColoration.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + DEVELOPMENT_TIME),
+        form.developmentTime.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + DEVELOPMENT_TIME_PLACEHOLDER),
         form.developmentTime.getPlaceholder());
-    assertEquals(submissionResources.message(DECOLORATION), form.destained.getLabel());
-    assertEquals(submissionResources.message(WEIGHT_MARKER_QUANTITY),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + DECOLORATION), form.destained.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + WEIGHT_MARKER_QUANTITY),
         form.weightMarkerQuantity.getLabel());
-    assertEquals(resources.message(WEIGHT_MARKER_QUANTITY_PLACEHOLDER),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + WEIGHT_MARKER_QUANTITY_PLACEHOLDER),
         form.weightMarkerQuantity.getPlaceholder());
-    assertEquals(submissionResources.message(PROTEIN_QUANTITY), form.proteinQuantity.getLabel());
-    assertEquals(resources.message(PROTEIN_QUANTITY_PLACEHOLDER),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + PROTEIN_QUANTITY),
+        form.proteinQuantity.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + PROTEIN_QUANTITY_PLACEHOLDER),
         form.proteinQuantity.getPlaceholder());
-    assertEquals(submissionResources.message(DIGESTION), form.digestion.getLabel());
-    assertEquals(submissionResources.message(USED_DIGESTION), form.usedDigestion.getLabel());
-    assertEquals(submissionResources.message(OTHER_DIGESTION), form.otherDigestion.getLabel());
-    assertEquals(submissionResources.message(PROTEIN_CONTENT), form.proteinContent.getLabel());
-    assertEquals(submissionResources.message(INSTRUMENT), form.instrument.getLabel());
-    assertEquals(submissionResources.message(IDENTIFICATION), form.identification.getLabel());
-    assertEquals(submissionResources.message(IDENTIFICATION_LINK),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + DIGESTION), form.digestion.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + USED_DIGESTION),
+        form.usedDigestion.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + OTHER_DIGESTION),
+        form.otherDigestion.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + PROTEIN_CONTENT),
+        form.proteinContent.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + INSTRUMENT), form.instrument.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + IDENTIFICATION),
+        form.identification.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + IDENTIFICATION_LINK),
         form.identificationLink.getLabel());
-    assertEquals(submissionResources.message(QUANTIFICATION), form.quantification.getLabel());
-    assertEquals(submissionResources.message(QUANTIFICATION_COMMENT),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + QUANTIFICATION),
+        form.quantification.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + QUANTIFICATION_COMMENT),
         form.quantificationComment.getLabel());
-    assertEquals(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER),
         form.quantificationComment.getPlaceholder());
   }
 
@@ -496,10 +524,10 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
   @Test
   public void quantificationComment() {
     form.quantification.setValue(Quantification.TMT);
-    assertEquals(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER_TMT),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER_TMT),
         form.quantificationComment.getPlaceholder());
     form.quantification.setValue(Quantification.SILAC);
-    assertEquals(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER),
         form.quantificationComment.getPlaceholder());
   }
 
@@ -671,7 +699,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.experiment);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -687,7 +715,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.taxonomy);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -714,7 +742,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.molecularWeight);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(INVALID_NUMBER)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)),
+        error.getMessage());
   }
 
   @Test
@@ -730,7 +759,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.sampleType);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -746,7 +775,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -762,7 +791,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(INVALID_INTEGER)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_INTEGER)),
+        error.getMessage());
   }
 
   @Test
@@ -868,7 +898,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -884,7 +914,9 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+    assertEquals(
+        Optional
+            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
         error.getMessage());
   }
 
@@ -901,7 +933,9 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+    assertEquals(
+        Optional
+            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
         error.getMessage());
   }
 
@@ -935,7 +969,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_DUPLICATES, sampleName2)),
+    assertEquals(
+        Optional.of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, sampleName2)),
         error.getMessage());
   }
 
@@ -952,7 +987,9 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+    assertEquals(
+        Optional
+            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
         error.getMessage());
   }
 
@@ -969,7 +1006,9 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 3, samplesCount)),
+    assertEquals(
+        Optional
+            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 3, samplesCount)),
         error.getMessage());
   }
 
@@ -986,7 +1025,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_EXISTS, sampleName2)),
+    assertEquals(
+        Optional.of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_EXISTS, sampleName2)),
         error.getMessage());
   }
 
@@ -1017,7 +1057,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.quantity);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1045,7 +1085,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.volume);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1074,7 +1114,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.volume);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1091,7 +1131,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.separation);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1119,7 +1159,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.thickness);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1147,7 +1187,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.coloration);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1176,7 +1216,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.otherColoration);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1218,7 +1258,8 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.weightMarkerQuantity);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(INVALID_NUMBER)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)),
+        error.getMessage());
   }
 
   @Test
@@ -1245,7 +1286,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.digestion);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1262,7 +1303,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.usedDigestion);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1291,7 +1332,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.otherDigestion);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1319,7 +1360,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.proteinContent);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1335,7 +1376,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.identification);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1352,7 +1393,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.identificationLink);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1381,7 +1422,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.quantificationComment);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -1398,7 +1439,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.quantificationComment);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
