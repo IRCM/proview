@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SAVED;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SEPARATOR;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.VIEW_NAME;
@@ -9,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -31,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @TestBenchTestAnnotations
 public class UseForgotPasswordViewItTest extends AbstractTestBenchTestCase {
+  private static final String MESSAGES_PREFIX = messagePrefix(UseForgotPasswordView.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(UseForgotPasswordViewItTest.class);
   @Autowired
@@ -41,6 +43,8 @@ public class UseForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private EntityManager entityManager;
+  @Autowired
+  private MessageSource messageSource;
   private String password = "test_password";
   private long id = 9;
   private String confirm = "174407008";
@@ -77,8 +81,8 @@ public class UseForgotPasswordViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(UseForgotPasswordView.class);
-    assertEquals(resources.message(SAVED), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, null, currentLocale()),
+        notification.getText());
     ForgotPassword forgotPassword = repository.findById(id).orElse(null);
     entityManager.refresh(forgotPassword);
     assertTrue(forgotPassword.isUsed());
