@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.TOXICITY;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -72,6 +71,9 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   public static final String SAMPLE = "sample";
   public static final String SAMPLE_TYPE = SAMPLE + "Type";
   public static final String SAMPLE_NAME = SAMPLE + "Name";
+  private static final String MESSAGES_PREFIX = messagePrefix(SmallMoleculeSubmissionForm.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
   private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
@@ -135,9 +137,8 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     storageTemperature.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     highResolution.setId(id(HIGH_RESOLUTION));
     highResolution.setItems(false, true);
-    highResolution
-        .setRenderer(new TextRenderer<>(value -> new AppResources(Submission.class, getLocale())
-            .message(property(HIGH_RESOLUTION, value))));
+    highResolution.setRenderer(new TextRenderer<>(
+        value -> getTranslation(SUBMISSION_PREFIX + property(HIGH_RESOLUTION, value))));
     highResolution.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     solvents.setId(id(SOLVENTS));
     solvents.setItems(Solvent.values());
@@ -149,50 +150,52 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   @Override
   public void localeChange(LocaleChangeEvent event) {
     Locale locale = event.getLocale();
-    final AppResources resources = new AppResources(SmallMoleculeSubmissionForm.class, locale);
-    final AppResources submissionResources = new AppResources(Submission.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
-    sampleType.setLabel(resources.message(SAMPLE_TYPE));
-    sampleName.setLabel(resources.message(SAMPLE_NAME));
-    solvent.setLabel(submissionResources.message(SOLUTION_SOLVENT));
-    formula.setLabel(submissionResources.message(FORMULA));
-    monoisotopicMass.setLabel(submissionResources.message(MONOISOTOPIC_MASS));
-    averageMass.setLabel(submissionResources.message(AVERAGE_MASS));
-    toxicity.setLabel(submissionResources.message(TOXICITY));
-    lightSensitive.setLabel(submissionResources.message(LIGHT_SENSITIVE));
-    storageTemperature.setLabel(submissionResources.message(STORAGE_TEMPERATURE));
-    highResolution.setLabel(submissionResources.message(HIGH_RESOLUTION));
-    solvents.setLabel(submissionResources.message(SOLVENTS));
-    otherSolvent.setLabel(submissionResources.message(OTHER_SOLVENT));
-    firstSampleBinder.forField(sampleType).asRequired(webResources.message(REQUIRED)).bind(TYPE);
-    firstSampleBinder.forField(sampleName).asRequired(webResources.message(REQUIRED))
+    sampleType.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLE_TYPE));
+    sampleName.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLE_NAME));
+    solvent.setLabel(getTranslation(SUBMISSION_PREFIX + SOLUTION_SOLVENT));
+    formula.setLabel(getTranslation(SUBMISSION_PREFIX + FORMULA));
+    monoisotopicMass.setLabel(getTranslation(SUBMISSION_PREFIX + MONOISOTOPIC_MASS));
+    averageMass.setLabel(getTranslation(SUBMISSION_PREFIX + AVERAGE_MASS));
+    toxicity.setLabel(getTranslation(SUBMISSION_PREFIX + TOXICITY));
+    lightSensitive.setLabel(getTranslation(SUBMISSION_PREFIX + LIGHT_SENSITIVE));
+    storageTemperature.setLabel(getTranslation(SUBMISSION_PREFIX + STORAGE_TEMPERATURE));
+    highResolution.setLabel(getTranslation(SUBMISSION_PREFIX + HIGH_RESOLUTION));
+    solvents.setLabel(getTranslation(SUBMISSION_PREFIX + SOLVENTS));
+    otherSolvent.setLabel(getTranslation(SUBMISSION_PREFIX + OTHER_SOLVENT));
+    firstSampleBinder.forField(sampleType).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .bind(TYPE);
+    firstSampleBinder.forField(sampleName).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").withValidator(sampleNameExists(locale)).bind(NAME);
     solvent.setRequiredIndicatorVisible(true);
     binder.forField(solvent)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .withNullRepresentation("").bind(SOLUTION_SOLVENT);
-    binder.forField(formula).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
-        .bind(FORMULA);
-    binder.forField(monoisotopicMass).asRequired(webResources.message(REQUIRED))
+    binder.forField(formula).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .withNullRepresentation("").bind(FORMULA);
+    binder.forField(monoisotopicMass).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("")
-        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .withConverter(
+            new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)))
         .bind(MONOISOTOPIC_MASS);
     binder.forField(averageMass).withNullRepresentation("")
-        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .withConverter(
+            new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)))
         .bind(AVERAGE_MASS);
     binder.forField(toxicity).withNullRepresentation("").bind(TOXICITY);
     binder.forField(lightSensitive).bind(LIGHT_SENSITIVE);
-    binder.forField(storageTemperature).asRequired(webResources.message(REQUIRED))
+    binder.forField(storageTemperature).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .bind(STORAGE_TEMPERATURE);
-    binder.forField(highResolution).asRequired(webResources.message(REQUIRED))
+    binder.forField(highResolution).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .bind(HIGH_RESOLUTION);
-    binder.forField(solvents).asRequired(webResources.message(REQUIRED))
+    binder.forField(solvents).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withConverter(value -> value != null ? (List<Solvent>) new ArrayList<>(value) : null,
             value -> value != null ? new HashSet<>(value) : new HashSet<>())
         .withValidator(solventsNotEmpty(locale)).bind(SOLVENTS);
     otherSolvent.setRequiredIndicatorVisible(true);
     binder.forField(otherSolvent)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(OTHER_SOLVENT);
     sampleTypeChanged();
     solventsChanged();
@@ -212,8 +215,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   private Validator<String> sampleNameExists(Locale locale) {
     return (value, context) -> {
       if (sampleService.exists(value)) {
-        final AppResources resources = new AppResources(Constants.class, locale);
-        return ValidationResult.error(resources.message(ALREADY_EXISTS, value));
+        return ValidationResult.error(getTranslation(CONSTANTS_PREFIX + ALREADY_EXISTS, value));
       }
       return ValidationResult.ok();
     };
@@ -222,8 +224,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   private Validator<List<Solvent>> solventsNotEmpty(Locale locale) {
     return (value, context) -> {
       if (value.isEmpty()) {
-        final AppResources resources = new AppResources(Constants.class, locale);
-        return ValidationResult.error(resources.message(REQUIRED, value));
+        return ValidationResult.error(getTranslation(CONSTANTS_PREFIX + REQUIRED, value));
       }
       return ValidationResult.ok();
     };
