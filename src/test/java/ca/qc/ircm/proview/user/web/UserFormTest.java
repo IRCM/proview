@@ -39,7 +39,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.UserPermissionEvaluator;
@@ -74,6 +73,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class UserFormTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(UserForm.class);
+  private static final String USER_PREFIX = messagePrefix(User.class);
+  private static final String ADDRESS_PREFIX = messagePrefix(Address.class);
+  private static final String PHONE_NUMBER_PREFIX = messagePrefix(PhoneNumber.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   private UserForm form;
   @Autowired
@@ -89,11 +93,6 @@ public class UserFormTest extends SpringUIUnitTest {
   @SpyBean
   private UserPermissionEvaluator userPermissionEvaluator;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(UserForm.class, locale);
-  private AppResources userResources = new AppResources(User.class, locale);
-  private AppResources addressResources = new AppResources(Address.class, locale);
-  private AppResources phoneNumberResources = new AppResources(PhoneNumber.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
   private List<Laboratory> laboratories;
   private String email = "test@ircm.qc.ca";
   private String name = "Test User";
@@ -175,54 +174,54 @@ public class UserFormTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(userResources.message(EMAIL), form.email.getLabel());
-    assertEquals(userResources.message(NAME), form.name.getLabel());
-    assertEquals(userResources.message(ADMIN), form.admin.getLabel());
-    assertEquals(userResources.message(MANAGER), form.manager.getLabel());
-    assertEquals(userResources.message(LABORATORY), form.laboratory.getLabel());
-    assertEquals(resources.message(CREATE_NEW_LABORATORY), form.createNewLaboratory.getLabel());
-    assertEquals(resources.message(NEW_LABORATORY_NAME), form.newLaboratoryName.getLabel());
-    assertEquals(addressResources.message(LINE), form.addressLine.getLabel());
-    assertEquals(addressResources.message(TOWN), form.town.getLabel());
-    assertEquals(addressResources.message(STATE), form.state.getLabel());
-    assertEquals(addressResources.message(COUNTRY), form.country.getLabel());
-    assertEquals(addressResources.message(POSTAL_CODE), form.postalCode.getLabel());
-    assertEquals(phoneNumberResources.message(TYPE), form.phoneType.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + EMAIL), form.email.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + NAME), form.name.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + ADMIN), form.admin.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + MANAGER), form.manager.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + LABORATORY), form.laboratory.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + CREATE_NEW_LABORATORY),
+        form.createNewLaboratory.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + NEW_LABORATORY_NAME),
+        form.newLaboratoryName.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + LINE), form.addressLine.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + TOWN), form.town.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + STATE), form.state.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + COUNTRY), form.country.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + POSTAL_CODE), form.postalCode.getLabel());
+    assertEquals(form.getTranslation(PHONE_NUMBER_PREFIX + TYPE), form.phoneType.getLabel());
     for (PhoneNumberType type : PhoneNumberType.values()) {
       assertEquals(form.getTranslation(PHONE_NUMBER_TYPE_PREFIX + type.name()),
           form.phoneType.getItemLabelGenerator().apply(type));
     }
-    assertEquals(phoneNumberResources.message(NUMBER), form.number.getLabel());
-    assertEquals(phoneNumberResources.message(EXTENSION), form.extension.getLabel());
+    assertEquals(form.getTranslation(PHONE_NUMBER_PREFIX + NUMBER), form.number.getLabel());
+    assertEquals(form.getTranslation(PHONE_NUMBER_PREFIX + EXTENSION), form.extension.getLabel());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(UserForm.class, locale);
-    final AppResources userResources = new AppResources(User.class, locale);
-    final AppResources addressResources = new AppResources(Address.class, locale);
-    final AppResources phoneNumberResources = new AppResources(PhoneNumber.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(userResources.message(EMAIL), form.email.getLabel());
-    assertEquals(userResources.message(NAME), form.name.getLabel());
-    assertEquals(userResources.message(ADMIN), form.admin.getLabel());
-    assertEquals(userResources.message(MANAGER), form.manager.getLabel());
-    assertEquals(userResources.message(LABORATORY), form.laboratory.getLabel());
-    assertEquals(resources.message(CREATE_NEW_LABORATORY), form.createNewLaboratory.getLabel());
-    assertEquals(resources.message(NEW_LABORATORY_NAME), form.newLaboratoryName.getLabel());
-    assertEquals(addressResources.message(LINE), form.addressLine.getLabel());
-    assertEquals(addressResources.message(TOWN), form.town.getLabel());
-    assertEquals(addressResources.message(STATE), form.state.getLabel());
-    assertEquals(addressResources.message(COUNTRY), form.country.getLabel());
-    assertEquals(addressResources.message(POSTAL_CODE), form.postalCode.getLabel());
-    assertEquals(phoneNumberResources.message(TYPE), form.phoneType.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + EMAIL), form.email.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + NAME), form.name.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + ADMIN), form.admin.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + MANAGER), form.manager.getLabel());
+    assertEquals(form.getTranslation(USER_PREFIX + LABORATORY), form.laboratory.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + CREATE_NEW_LABORATORY),
+        form.createNewLaboratory.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + NEW_LABORATORY_NAME),
+        form.newLaboratoryName.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + LINE), form.addressLine.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + TOWN), form.town.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + STATE), form.state.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + COUNTRY), form.country.getLabel());
+    assertEquals(form.getTranslation(ADDRESS_PREFIX + POSTAL_CODE), form.postalCode.getLabel());
+    assertEquals(form.getTranslation(PHONE_NUMBER_PREFIX + TYPE), form.phoneType.getLabel());
     for (PhoneNumberType type : PhoneNumberType.values()) {
       assertEquals(form.getTranslation(PHONE_NUMBER_TYPE_PREFIX + type.name()),
           form.phoneType.getItemLabelGenerator().apply(type));
     }
-    assertEquals(phoneNumberResources.message(NUMBER), form.number.getLabel());
-    assertEquals(phoneNumberResources.message(EXTENSION), form.extension.getLabel());
+    assertEquals(form.getTranslation(PHONE_NUMBER_PREFIX + NUMBER), form.number.getLabel());
+    assertEquals(form.getTranslation(PHONE_NUMBER_PREFIX + EXTENSION), form.extension.getLabel());
   }
 
   @Test
@@ -648,7 +647,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -663,7 +662,8 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(INVALID_EMAIL)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_EMAIL)),
+        error.getMessage());
   }
 
   @Test
@@ -678,7 +678,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.name);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -701,7 +701,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.laboratory);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -718,7 +718,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.laboratory);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -736,7 +736,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.newLaboratoryName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -751,7 +751,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.addressLine);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -766,7 +766,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.town);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -781,7 +781,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.state);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -796,7 +796,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.country);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -811,7 +811,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.postalCode);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -826,7 +826,7 @@ public class UserFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.number);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test

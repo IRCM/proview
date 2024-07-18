@@ -18,7 +18,6 @@ import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.Permission;
@@ -60,6 +59,11 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserForm extends FormLayout implements LocaleChangeObserver {
+  private static final String MESSAGES_PREFIX = messagePrefix(UserForm.class);
+  private static final String USER_PREFIX = messagePrefix(User.class);
+  private static final String ADDRESS_PREFIX = messagePrefix(Address.class);
+  private static final String PHONE_NUMBER_PREFIX = messagePrefix(PhoneNumber.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 3285639770914046262L;
   public static final String ID = "user-form";
   public static final String HEADER = "header";
@@ -175,50 +179,49 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(UserForm.class, getLocale());
-    final AppResources userResources = new AppResources(User.class, getLocale());
-    final AppResources addressResources = new AppResources(Address.class, getLocale());
-    final AppResources phoneNumberResources = new AppResources(PhoneNumber.class, getLocale());
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
-    email.setLabel(userResources.message(EMAIL));
-    name.setLabel(userResources.message(NAME));
-    admin.setLabel(userResources.message(ADMIN));
-    manager.setLabel(userResources.message(MANAGER));
-    laboratory.setLabel(userResources.message(LABORATORY));
-    createNewLaboratory.setLabel(resources.message(CREATE_NEW_LABORATORY));
-    newLaboratoryName.setLabel(resources.message(NEW_LABORATORY_NAME));
-    addressLine.setLabel(addressResources.message(LINE));
-    town.setLabel(addressResources.message(TOWN));
-    state.setLabel(addressResources.message(STATE));
-    country.setLabel(addressResources.message(COUNTRY));
-    postalCode.setLabel(addressResources.message(POSTAL_CODE));
-    phoneType.setLabel(phoneNumberResources.message(TYPE));
-    number.setLabel(phoneNumberResources.message(NUMBER));
-    extension.setLabel(phoneNumberResources.message(EXTENSION));
+    email.setLabel(getTranslation(USER_PREFIX + EMAIL));
+    name.setLabel(getTranslation(USER_PREFIX + NAME));
+    admin.setLabel(getTranslation(USER_PREFIX + ADMIN));
+    manager.setLabel(getTranslation(USER_PREFIX + MANAGER));
+    laboratory.setLabel(getTranslation(USER_PREFIX + LABORATORY));
+    createNewLaboratory.setLabel(getTranslation(MESSAGES_PREFIX + CREATE_NEW_LABORATORY));
+    newLaboratoryName.setLabel(getTranslation(MESSAGES_PREFIX + NEW_LABORATORY_NAME));
+    addressLine.setLabel(getTranslation(ADDRESS_PREFIX + LINE));
+    town.setLabel(getTranslation(ADDRESS_PREFIX + TOWN));
+    state.setLabel(getTranslation(ADDRESS_PREFIX + STATE));
+    country.setLabel(getTranslation(ADDRESS_PREFIX + COUNTRY));
+    postalCode.setLabel(getTranslation(ADDRESS_PREFIX + POSTAL_CODE));
+    phoneType.setLabel(getTranslation(PHONE_NUMBER_PREFIX + TYPE));
+    number.setLabel(getTranslation(PHONE_NUMBER_PREFIX + NUMBER));
+    extension.setLabel(getTranslation(PHONE_NUMBER_PREFIX + EXTENSION));
 
-    binder.forField(email).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
-        .withValidator(new EmailValidator(webResources.message(INVALID_EMAIL))).bind(EMAIL);
-    binder.forField(name).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
-        .bind(NAME);
+    binder.forField(email).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .withNullRepresentation("")
+        .withValidator(new EmailValidator(getTranslation(CONSTANTS_PREFIX + INVALID_EMAIL)))
+        .bind(EMAIL);
+    binder.forField(name).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .withNullRepresentation("").bind(NAME);
     binder.forField(admin).bind(ADMIN);
     binder.forField(manager).bind(MANAGER);
     binder.forField(laboratory)
-        .withValidator(laboratoryRequiredValidator(webResources.message(REQUIRED)))
+        .withValidator(laboratoryRequiredValidator(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .withNullRepresentation(null).bind(LABORATORY);
-    laboratoryBinder.forField(newLaboratoryName).asRequired(webResources.message(REQUIRED))
-        .withNullRepresentation("").bind(LABORATORY_NAME);
-    addressBinder.forField(addressLine).asRequired(webResources.message(REQUIRED))
+    laboratoryBinder.forField(newLaboratoryName)
+        .asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED)).withNullRepresentation("")
+        .bind(LABORATORY_NAME);
+    addressBinder.forField(addressLine).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(LINE);
-    addressBinder.forField(town).asRequired(webResources.message(REQUIRED))
+    addressBinder.forField(town).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(TOWN);
-    addressBinder.forField(state).asRequired(webResources.message(REQUIRED))
+    addressBinder.forField(state).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(STATE);
-    addressBinder.forField(country).asRequired(webResources.message(REQUIRED))
+    addressBinder.forField(country).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(COUNTRY);
-    addressBinder.forField(postalCode).asRequired(webResources.message(REQUIRED))
+    addressBinder.forField(postalCode).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(POSTAL_CODE);
-    phoneNumberBinder.forField(phoneType).asRequired(webResources.message(REQUIRED)).bind(TYPE);
-    phoneNumberBinder.forField(number).asRequired(webResources.message(REQUIRED))
+    phoneNumberBinder.forField(phoneType).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .bind(TYPE);
+    phoneNumberBinder.forField(number).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(NUMBER);
     phoneNumberBinder.forField(extension).withNullRepresentation("").bind(EXTENSION);
     updateReadOnly();
