@@ -2,12 +2,12 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialogElement;
@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -32,10 +33,14 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
+  private static final String SAMPLES_STATUS_DIALOG_PREFIX =
+      messagePrefix(SamplesStatusDialog.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewItTest.class);
   @Autowired
   private SubmissionRepository repository;
+  @Autowired
+  private MessageSource messageSource;
   @Value("${spring.application.name}")
   private String applicationName;
 
@@ -135,9 +140,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
     SamplesStatusDialogElement dialog = view.statusDialog();
     assertTrue(dialog.isOpen());
-    AppResources resources = resources(SamplesStatusDialog.class);
-    assertEquals(resources.message(SamplesStatusDialog.HEADER, "POLR3B-Flag"),
-        dialog.header().getText());
+    assertEquals(messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
+        new Object[] { "POLR3B-Flag" }, currentLocale()), dialog.header().getText());
   }
 
   @Test
@@ -173,9 +177,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
     SamplesStatusDialogElement dialog = view.statusDialog();
     assertTrue(dialog.isOpen());
-    AppResources resources = resources(SamplesStatusDialog.class);
-    assertEquals(resources.message(SamplesStatusDialog.HEADER, "POLR3B-Flag"),
-        dialog.header().getText());
+    assertEquals(messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
+        new Object[] { "POLR3B-Flag" }, currentLocale()), dialog.header().getText());
   }
 
   @Test

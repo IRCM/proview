@@ -52,7 +52,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -110,6 +109,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionsViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
+  private static final String LABORATORY_PREFIX = messagePrefix(Laboratory.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
@@ -124,11 +128,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Captor
   private ArgumentCaptor<SubmissionFilter> filterCaptor;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(SubmissionsView.class, locale);
-  private AppResources submissionResources = new AppResources(Submission.class, locale);
-  private AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
-  private AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
   private List<Submission> submissions;
 
   /**
@@ -195,64 +194,83 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void labels() {
     view.submissions.setItems(submissions);
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     HeaderRow header = view.submissions.getHeaderRows().get(0);
     FooterRow footer = view.submissions.getFooterRows().get(0);
-    assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
-    assertEquals(webResources.message(VIEW), footer.getCell(view.view).getText());
-    assertEquals(submissionResources.message(EXPERIMENT),
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), footer.getCell(view.view).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
         header.getCell(view.experiment).getText());
-    assertEquals(submissionResources.message(EXPERIMENT),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
         footer.getCell(view.experiment).getText());
-    assertEquals(submissionResources.message(USER), header.getCell(view.user).getText());
-    assertEquals(submissionResources.message(USER), footer.getCell(view.user).getText());
-    assertEquals(laboratoryResources.message(DIRECTOR), header.getCell(view.director).getText());
-    assertEquals(laboratoryResources.message(DIRECTOR), footer.getCell(view.director).getText());
-    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + USER),
+        header.getCell(view.user).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + USER),
+        footer.getCell(view.user).getText());
+    assertEquals(view.getTranslation(LABORATORY_PREFIX + DIRECTOR),
+        header.getCell(view.director).getText());
+    assertEquals(view.getTranslation(LABORATORY_PREFIX + DIRECTOR),
+        footer.getCell(view.director).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + DATA_AVAILABLE_DATE),
         header.getCell(view.dataAvailableDate).getText());
-    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + DATA_AVAILABLE_DATE),
         footer.getCell(view.dataAvailableDate).getText());
-    assertEquals(submissionResources.message(SUBMISSION_DATE), header.getCell(view.date).getText());
-    assertEquals(submissionResources.message(SUBMISSION_DATE), footer.getCell(view.date).getText());
-    assertEquals(submissionResources.message(INSTRUMENT),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SUBMISSION_DATE),
+        header.getCell(view.date).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SUBMISSION_DATE),
+        footer.getCell(view.date).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + INSTRUMENT),
         header.getCell(view.instrument).getText());
-    assertEquals(submissionResources.message(INSTRUMENT),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + INSTRUMENT),
         footer.getCell(view.instrument).getText());
-    assertEquals(submissionResources.message(SERVICE), header.getCell(view.service).getText());
-    assertEquals(submissionResources.message(SERVICE), footer.getCell(view.service).getText());
-    assertEquals(resources.message(SAMPLES_COUNT), header.getCell(view.samplesCount).getText());
-    assertEquals(resources.message(SAMPLES_COUNT), footer.getCell(view.samplesCount).getText());
-    assertEquals(submissionResources.message(SAMPLES), header.getCell(view.samples).getText());
-    assertEquals(submissionResources.message(SAMPLES), footer.getCell(view.samples).getText());
-    assertEquals(submissionSampleResources.message(STATUS), header.getCell(view.status).getText());
-    assertEquals(submissionSampleResources.message(STATUS), footer.getCell(view.status).getText());
-    assertEquals(submissionResources.message(HIDDEN), header.getCell(view.hidden).getText());
-    assertEquals(submissionResources.message(HIDDEN), footer.getCell(view.hidden).getText());
-    assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
-    assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
-    assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
-    assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SERVICE),
+        header.getCell(view.service).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SERVICE),
+        footer.getCell(view.service).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT),
+        header.getCell(view.samplesCount).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT),
+        footer.getCell(view.samplesCount).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SAMPLES),
+        header.getCell(view.samples).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SAMPLES),
+        footer.getCell(view.samples).getText());
+    assertEquals(view.getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS),
+        header.getCell(view.status).getText());
+    assertEquals(view.getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS),
+        footer.getCell(view.status).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + HIDDEN),
+        header.getCell(view.hidden).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + HIDDEN),
+        footer.getCell(view.hidden).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL),
+        view.experimentFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.userFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.directorFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL),
+        view.instrumentFilter.getPlaceholder());
     view.instrumentFilter.getListDataView().getItems()
         .forEach(instrument -> assertEquals(
             view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
             view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
-    assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.serviceFilter.getPlaceholder());
     view.serviceFilter.getListDataView().getItems()
         .forEach(service -> assertEquals(view.getTranslation(SERVICE_PREFIX + service.name()),
             view.serviceFilter.getItemLabelGenerator().apply(service)));
-    assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
-    assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.samplesFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.statusFilter.getPlaceholder());
     view.statusFilter.getListDataView().getItems()
         .forEach(status -> assertEquals(view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
             view.statusFilter.getItemLabelGenerator().apply(status)));
-    assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.hiddenFilter.getPlaceholder());
     view.hiddenFilter.getListDataView().getItems()
-        .forEach(hidden -> assertEquals(submissionResources.message(property(HIDDEN, hidden)),
+        .forEach(hidden -> assertEquals(
+            view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, hidden)),
             view.hiddenFilter.getItemLabelGenerator().apply(hidden)));
-    assertEquals(resources.message(ADD), view.add.getText());
-    assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
-    assertEquals(resources.message(HISTORY), view.history.getText());
-    assertEquals(resources.message(HIDE_COLUMNS), view.hideColumns.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ADD), view.add.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT_STATUS), view.editStatus.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HIDE_COLUMNS), view.hideColumns.getText());
     assertEquals(view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL"),
         test(view.submissions).getCellText(2, 6));
   }
@@ -262,70 +280,84 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   public void localeChange() {
     view.submissions.setItems(submissions);
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(SubmissionsView.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
-    final AppResources submissionResources = new AppResources(Submission.class, locale);
-    final AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
-    final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     HeaderRow header = view.submissions.getHeaderRows().get(0);
     FooterRow footer = view.submissions.getFooterRows().get(0);
-    assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
-    assertEquals(webResources.message(VIEW), footer.getCell(view.view).getText());
-    assertEquals(submissionResources.message(EXPERIMENT),
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), footer.getCell(view.view).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
         header.getCell(view.experiment).getText());
-    assertEquals(submissionResources.message(EXPERIMENT),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
         footer.getCell(view.experiment).getText());
-    assertEquals(submissionResources.message(USER), header.getCell(view.user).getText());
-    assertEquals(submissionResources.message(USER), footer.getCell(view.user).getText());
-    assertEquals(laboratoryResources.message(DIRECTOR), header.getCell(view.director).getText());
-    assertEquals(laboratoryResources.message(DIRECTOR), footer.getCell(view.director).getText());
-    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + USER),
+        header.getCell(view.user).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + USER),
+        footer.getCell(view.user).getText());
+    assertEquals(view.getTranslation(LABORATORY_PREFIX + DIRECTOR),
+        header.getCell(view.director).getText());
+    assertEquals(view.getTranslation(LABORATORY_PREFIX + DIRECTOR),
+        footer.getCell(view.director).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + DATA_AVAILABLE_DATE),
         header.getCell(view.dataAvailableDate).getText());
-    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + DATA_AVAILABLE_DATE),
         footer.getCell(view.dataAvailableDate).getText());
-    assertEquals(submissionResources.message(SUBMISSION_DATE), header.getCell(view.date).getText());
-    assertEquals(submissionResources.message(SUBMISSION_DATE), footer.getCell(view.date).getText());
-    assertEquals(submissionResources.message(INSTRUMENT),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SUBMISSION_DATE),
+        header.getCell(view.date).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SUBMISSION_DATE),
+        footer.getCell(view.date).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + INSTRUMENT),
         header.getCell(view.instrument).getText());
-    assertEquals(submissionResources.message(INSTRUMENT),
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + INSTRUMENT),
         footer.getCell(view.instrument).getText());
-    assertEquals(submissionResources.message(SERVICE), header.getCell(view.service).getText());
-    assertEquals(submissionResources.message(SERVICE), footer.getCell(view.service).getText());
-    assertEquals(resources.message(SAMPLES_COUNT), header.getCell(view.samplesCount).getText());
-    assertEquals(resources.message(SAMPLES_COUNT), footer.getCell(view.samplesCount).getText());
-    assertEquals(submissionResources.message(SAMPLES), header.getCell(view.samples).getText());
-    assertEquals(submissionResources.message(SAMPLES), footer.getCell(view.samples).getText());
-    assertEquals(submissionSampleResources.message(STATUS), header.getCell(view.status).getText());
-    assertEquals(submissionSampleResources.message(STATUS), footer.getCell(view.status).getText());
-    assertEquals(submissionResources.message(HIDDEN), header.getCell(view.hidden).getText());
-    assertEquals(submissionResources.message(HIDDEN), footer.getCell(view.hidden).getText());
-    assertEquals(resources.message(ALL), view.experimentFilter.getPlaceholder());
-    assertEquals(resources.message(ALL), view.userFilter.getPlaceholder());
-    assertEquals(resources.message(ALL), view.directorFilter.getPlaceholder());
-    assertEquals(resources.message(ALL), view.instrumentFilter.getPlaceholder());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SERVICE),
+        header.getCell(view.service).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SERVICE),
+        footer.getCell(view.service).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT),
+        header.getCell(view.samplesCount).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT),
+        footer.getCell(view.samplesCount).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SAMPLES),
+        header.getCell(view.samples).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SAMPLES),
+        footer.getCell(view.samples).getText());
+    assertEquals(view.getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS),
+        header.getCell(view.status).getText());
+    assertEquals(view.getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS),
+        footer.getCell(view.status).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + HIDDEN),
+        header.getCell(view.hidden).getText());
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + HIDDEN),
+        footer.getCell(view.hidden).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL),
+        view.experimentFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.userFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.directorFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL),
+        view.instrumentFilter.getPlaceholder());
     view.instrumentFilter.getListDataView().getItems()
         .forEach(instrument -> assertEquals(
             view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
             view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
-    assertEquals(resources.message(ALL), view.serviceFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.serviceFilter.getPlaceholder());
     view.serviceFilter.getListDataView().getItems()
         .forEach(service -> assertEquals(view.getTranslation(SERVICE_PREFIX + service.name()),
             view.serviceFilter.getItemLabelGenerator().apply(service)));
-    assertEquals(resources.message(ALL), view.samplesFilter.getPlaceholder());
-    assertEquals(resources.message(ALL), view.statusFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.samplesFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.statusFilter.getPlaceholder());
     view.statusFilter.getListDataView().getItems()
         .forEach(status -> assertEquals(view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
             view.statusFilter.getItemLabelGenerator().apply(status)));
-    assertEquals(resources.message(ALL), view.hiddenFilter.getPlaceholder());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.hiddenFilter.getPlaceholder());
     view.hiddenFilter.getListDataView().getItems()
-        .forEach(hidden -> assertEquals(submissionResources.message(property(HIDDEN, hidden)),
+        .forEach(hidden -> assertEquals(
+            view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, hidden)),
             view.hiddenFilter.getItemLabelGenerator().apply(hidden)));
-    assertEquals(resources.message(ADD), view.add.getText());
-    assertEquals(resources.message(EDIT_STATUS), view.editStatus.getText());
-    assertEquals(resources.message(HISTORY), view.history.getText());
-    assertEquals(resources.message(HIDE_COLUMNS), view.hideColumns.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ADD), view.add.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT_STATUS), view.editStatus.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HIDE_COLUMNS), view.hideColumns.getText());
     assertEquals(view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL"),
         test(view.submissions).getCellText(2, 6));
   }
@@ -352,8 +384,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 
   @Test
@@ -468,8 +500,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
       assertEquals(SAMPLES_SPAN, rendererTemplate(samplesRenderer));
       assertTrue(samplesRenderer.getValueProviders().containsKey("samplesValue"));
       assertEquals(
-          resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
-              submission.getSamples().size()),
+          view.getTranslation(MESSAGES_PREFIX + SAMPLES_VALUE,
+              submission.getSamples().get(0).getName(), submission.getSamples().size()),
           samplesRenderer.getValueProviders().get("samplesValue").apply(submission));
       assertTrue(samplesRenderer.getValueProviders().containsKey("samplesTitle"));
       assertEquals(
@@ -485,7 +517,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
       assertEquals(STATUS_SPAN, rendererTemplate(statusRenderer));
       assertTrue(statusRenderer.getValueProviders().containsKey("statusValue"));
       assertEquals(
-          resources.message(STATUS_VALUE,
+          view.getTranslation(MESSAGES_PREFIX + STATUS_VALUE,
               view.getTranslation(SAMPLE_STATUS_PREFIX + statuses.get(0).name()), statuses.size()),
           statusRenderer.getValueProviders().get("statusValue").apply(submission));
       assertTrue(statusRenderer.getValueProviders().containsKey("statusTitle"));
@@ -504,7 +536,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
               : ButtonVariant.LUMO_SUCCESS.getVariantName(),
           hiddenRenderer.getValueProviders().get("hiddenTheme").apply(submission));
       assertTrue(hiddenRenderer.getValueProviders().containsKey("hiddenValue"));
-      assertEquals(submissionResources.message(property(HIDDEN, submission.isHidden())),
+      assertEquals(view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, submission.isHidden())),
           hiddenRenderer.getValueProviders().get("hiddenValue").apply(submission));
       assertTrue(hiddenRenderer.getValueProviders().containsKey("hiddenIcon"));
       assertEquals(submission.isHidden() ? "vaadin:eye-slash" : "vaadin:eye",
@@ -1067,7 +1099,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     List<Boolean> values = items(view.hiddenFilter);
     assertArrayEquals(new Boolean[] { false, true }, values.toArray(new Boolean[0]));
     for (Boolean value : values) {
-      assertEquals(submissionResources.message(property(HIDDEN, value)),
+      assertEquals(view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, value)),
           view.hiddenFilter.getItemLabelGenerator().apply(value));
     }
   }
@@ -1084,19 +1116,27 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Test
   public void getHeaderText() {
     view = navigate(SubmissionsView.class);
-    assertEquals(webResources.message(VIEW), view.getHeaderText(view.view));
-    assertEquals(submissionResources.message(EXPERIMENT), view.getHeaderText(view.experiment));
-    assertEquals(submissionResources.message(USER), view.getHeaderText(view.user));
-    assertEquals(laboratoryResources.message(DIRECTOR), view.getHeaderText(view.director));
-    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), view.getHeaderText(view.view));
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
+        view.getHeaderText(view.experiment));
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + USER), view.getHeaderText(view.user));
+    assertEquals(view.getTranslation(LABORATORY_PREFIX + DIRECTOR),
+        view.getHeaderText(view.director));
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + DATA_AVAILABLE_DATE),
         view.getHeaderText(view.dataAvailableDate));
-    assertEquals(submissionResources.message(SUBMISSION_DATE), view.getHeaderText(view.date));
-    assertEquals(submissionResources.message(INSTRUMENT), view.getHeaderText(view.instrument));
-    assertEquals(submissionResources.message(SERVICE), view.getHeaderText(view.service));
-    assertEquals(resources.message(SAMPLES_COUNT), view.getHeaderText(view.samplesCount));
-    assertEquals(submissionResources.message(SAMPLES), view.getHeaderText(view.samples));
-    assertEquals(submissionSampleResources.message(STATUS), view.getHeaderText(view.status));
-    assertEquals(submissionResources.message(HIDDEN), view.getHeaderText(view.hidden));
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SUBMISSION_DATE),
+        view.getHeaderText(view.date));
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + INSTRUMENT),
+        view.getHeaderText(view.instrument));
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SERVICE),
+        view.getHeaderText(view.service));
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT),
+        view.getHeaderText(view.samplesCount));
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + SAMPLES),
+        view.getHeaderText(view.samples));
+    assertEquals(view.getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS),
+        view.getHeaderText(view.status));
+    assertEquals(view.getTranslation(SUBMISSION_PREFIX + HIDDEN), view.getHeaderText(view.hidden));
   }
 
   @Test
@@ -1130,7 +1170,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     assertFalse($(SamplesStatusDialog.class).exists());
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(property(SUBMISSIONS, REQUIRED)), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
+        test(notification).getText());
   }
 
   @Test
@@ -1156,7 +1197,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     assertFalse($(HistoryView.class).exists());
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(property(SUBMISSIONS, REQUIRED)), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
+        test(notification).getText());
   }
 
   @Test

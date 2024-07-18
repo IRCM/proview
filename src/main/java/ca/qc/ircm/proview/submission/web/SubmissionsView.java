@@ -22,7 +22,6 @@ import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.persistence.QueryDsl;
@@ -118,6 +117,11 @@ public class SubmissionsView extends VerticalLayout
   public static final String VIEW_BUTTON =
       "<vaadin-button class='" + VIEW + "' theme='icon' @click='${view}'>"
           + "<vaadin-icon icon='vaadin:eye' slot='prefix'></vaadin-icon>" + "</vaadin-button>";
+  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
+  private static final String LABORATORY_PREFIX = messagePrefix(Laboratory.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
@@ -371,8 +375,7 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private String sampleNamesValue(Submission submission) {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    return resources.message(SAMPLES_VALUE, submission.getSamples().get(0).getName(),
+    return getTranslation(MESSAGES_PREFIX + SAMPLES_VALUE, submission.getSamples().get(0).getName(),
         submission.getSamples().size());
   }
 
@@ -382,10 +385,9 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private String statusesValue(Submission submission) {
-    final AppResources resources = new AppResources(getClass(), getLocale());
     List<SampleStatus> statuses = submission.getSamples().stream().map(sample -> sample.getStatus())
         .distinct().collect(Collectors.toList());
-    return resources.message(STATUS_VALUE,
+    return getTranslation(MESSAGES_PREFIX + STATUS_VALUE,
         getTranslation(SAMPLE_STATUS_PREFIX + statuses.get(0).name()), statuses.size());
   }
 
@@ -402,8 +404,7 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private String hiddenValue(Submission submission) {
-    final AppResources resources = new AppResources(Submission.class, getLocale());
-    return resources.message(property(HIDDEN, submission.isHidden()));
+    return getTranslation(SUBMISSION_PREFIX + property(HIDDEN, submission.isHidden()));
   }
 
   private String hiddenIcon(Submission submission) {
@@ -412,56 +413,50 @@ public class SubmissionsView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
-    final AppResources laboratoryResources = new AppResources(Laboratory.class, getLocale());
-    final AppResources submissionSampleResources =
-        new AppResources(SubmissionSample.class, getLocale());
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
-    header.setText(resources.message(HEADER));
-    String experimentHeader = submissionResources.message(EXPERIMENT);
+    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
+    String experimentHeader = getTranslation(SUBMISSION_PREFIX + EXPERIMENT);
     experiment.setHeader(experimentHeader).setFooter(experimentHeader);
-    String userHeader = submissionResources.message(USER);
+    String userHeader = getTranslation(SUBMISSION_PREFIX + USER);
     user.setHeader(userHeader).setFooter(userHeader);
-    String directorHeader = laboratoryResources.message(DIRECTOR);
+    String directorHeader = getTranslation(LABORATORY_PREFIX + DIRECTOR);
     director.setHeader(directorHeader).setFooter(directorHeader);
-    String dataAvailableDateHeader = submissionResources.message(DATA_AVAILABLE_DATE);
+    String dataAvailableDateHeader = getTranslation(SUBMISSION_PREFIX + DATA_AVAILABLE_DATE);
     dataAvailableDate.setHeader(dataAvailableDateHeader).setFooter(dataAvailableDateHeader);
-    String dateHeader = submissionResources.message(SUBMISSION_DATE);
+    String dateHeader = getTranslation(SUBMISSION_PREFIX + SUBMISSION_DATE);
     date.setHeader(dateHeader).setFooter(dateHeader);
-    String instrumentHeader = submissionResources.message(INSTRUMENT);
+    String instrumentHeader = getTranslation(SUBMISSION_PREFIX + INSTRUMENT);
     instrument.setHeader(instrumentHeader).setFooter(instrumentHeader);
-    String serviceHeader = submissionResources.message(SERVICE);
+    String serviceHeader = getTranslation(SUBMISSION_PREFIX + SERVICE);
     service.setHeader(serviceHeader).setFooter(serviceHeader);
-    String samplesCountHeader = resources.message(SAMPLES_COUNT);
+    String samplesCountHeader = getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT);
     samplesCount.setHeader(samplesCountHeader).setFooter(samplesCountHeader);
-    String samplesHeader = submissionResources.message(SAMPLES);
+    String samplesHeader = getTranslation(SUBMISSION_PREFIX + SAMPLES);
     samples.setHeader(samplesHeader).setFooter(samplesHeader);
-    String statusHeader = submissionSampleResources.message(STATUS);
+    String statusHeader = getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS);
     status.setHeader(statusHeader).setFooter(statusHeader);
-    String hiddenHeader = submissionResources.message(HIDDEN);
+    String hiddenHeader = getTranslation(SUBMISSION_PREFIX + HIDDEN);
     hidden.setHeader(hiddenHeader).setFooter(hiddenHeader);
-    String viewHeader = webResources.message(VIEW);
+    String viewHeader = getTranslation(CONSTANTS_PREFIX + VIEW);
     view.setHeader(viewHeader).setFooter(viewHeader);
-    experimentFilter.setPlaceholder(resources.message(ALL));
-    userFilter.setPlaceholder(resources.message(ALL));
-    directorFilter.setPlaceholder(resources.message(ALL));
-    instrumentFilter.setPlaceholder(resources.message(ALL));
+    experimentFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
+    userFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
+    directorFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
+    instrumentFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
     instrumentFilter.setItemLabelGenerator(
         value -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()));
-    serviceFilter.setPlaceholder(resources.message(ALL));
+    serviceFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
     serviceFilter.setItemLabelGenerator(value -> getTranslation(SERVICE_PREFIX + value.name()));
-    samplesFilter.setPlaceholder(resources.message(ALL));
-    statusFilter.setPlaceholder(resources.message(ALL));
+    samplesFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
+    statusFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
     statusFilter
         .setItemLabelGenerator(value -> getTranslation(SAMPLE_STATUS_PREFIX + value.name()));
-    hiddenFilter.setPlaceholder(resources.message(ALL));
+    hiddenFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
     hiddenFilter.setItemLabelGenerator(
-        value -> new AppResources(Submission.class, getLocale()).message(property(HIDDEN, value)));
-    add.setText(resources.message(ADD));
-    editStatus.setText(resources.message(EDIT_STATUS));
-    history.setText(resources.message(HISTORY));
-    hideColumns.setText(resources.message(HIDE_COLUMNS));
+        value -> getTranslation(SUBMISSION_PREFIX + property(HIDDEN, value)));
+    add.setText(getTranslation(MESSAGES_PREFIX + ADD));
+    editStatus.setText(getTranslation(MESSAGES_PREFIX + EDIT_STATUS));
+    history.setText(getTranslation(MESSAGES_PREFIX + HISTORY));
+    hideColumns.setText(getTranslation(MESSAGES_PREFIX + HIDE_COLUMNS));
     hideColumnsContextMenu.removeAll();
     hidableColumns.forEach(
         column -> hideColumnsContextMenu.addColumnToggleItem(getHeaderText(column), column));
@@ -474,9 +469,8 @@ public class SubmissionsView extends VerticalLayout
 
   @Override
   public String getPageTitle() {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(Constants.class, getLocale());
-    return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+    return getTranslation(MESSAGES_PREFIX + TITLE,
+        getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
   }
 
   void filterExperiment(String value) {
@@ -560,8 +554,7 @@ public class SubmissionsView extends VerticalLayout
     if (os.isPresent()) {
       editStatus(os.get());
     } else {
-      AppResources resources = new AppResources(SubmissionsView.class, locale);
-      showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
+      showNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)));
     }
   }
 
@@ -570,8 +563,7 @@ public class SubmissionsView extends VerticalLayout
     if (os.isPresent()) {
       history(os.get());
     } else {
-      AppResources resources = new AppResources(SubmissionsView.class, locale);
-      showNotification(resources.message(property(SUBMISSIONS, REQUIRED)));
+      showNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)));
     }
   }
 
