@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.security.web;
 
-import ca.qc.ircm.proview.AppResources;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
+
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.web.SigninView;
@@ -19,6 +20,7 @@ import org.springframework.security.access.AccessDeniedException;
  */
 @SpringComponent
 public class ConfigureUiServiceInitListener implements VaadinServiceInitListener {
+  private static final String MESSAGES_PREFIX = messagePrefix(ConfigureUiServiceInitListener.class);
   private static final Logger logger =
       LoggerFactory.getLogger(ConfigureUiServiceInitListener.class);
   private static final long serialVersionUID = -5535854753812022664L;
@@ -51,11 +53,10 @@ public class ConfigureUiServiceInitListener implements VaadinServiceInitListener
         UI.getCurrent().navigate(SigninView.class);
       } else {
         UI ui = event.getUI();
-        AppResources resources =
-            new AppResources(ConfigureUiServiceInitListener.class, ui.getLocale());
         String email = authenticatedUser.getUser().map(User::getEmail).orElse("<anonymous>");
-        String message = resources.message(AccessDeniedException.class.getSimpleName(), email,
-            event.getNavigationTarget().getSimpleName());
+        String message =
+            ui.getTranslation(MESSAGES_PREFIX + AccessDeniedException.class.getSimpleName(), email,
+                event.getNavigationTarget().getSimpleName());
         logger.info(message);
         event.rerouteToError(new AccessDeniedException(message), message);
       }
