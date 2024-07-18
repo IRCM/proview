@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.web.UserDialog.HEADER;
 import static ca.qc.ircm.proview.user.web.UserDialog.ID;
@@ -20,7 +21,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
@@ -47,6 +47,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class UserDialogTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(UserDialog.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private UserDialog dialog;
   @MockBean
   private UserService service;
@@ -57,8 +59,6 @@ public class UserDialogTest extends SpringUIUnitTest {
   @Autowired
   private UserRepository repository;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(UserDialog.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.
@@ -85,23 +85,23 @@ public class UserDialogTest extends SpringUIUnitTest {
   @Test
   public void labels() {
     User user = repository.findById(dialog.getUserId()).get();
-    assertEquals(resources.message(HEADER, 1, user.getName()), dialog.getHeaderTitle());
-    assertEquals(webResources.message(SAVE), dialog.save.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, user.getName()),
+        dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), dialog.save.getIcon());
-    assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + CANCEL), dialog.cancel.getText());
     validateIcon(VaadinIcon.CLOSE.create(), dialog.cancel.getIcon());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(UserDialog.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
     User user = repository.findById(dialog.getUserId()).get();
-    assertEquals(resources.message(HEADER, 1, user.getName()), dialog.getHeaderTitle());
-    assertEquals(webResources.message(SAVE), dialog.save.getText());
-    assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, user.getName()),
+        dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + CANCEL), dialog.cancel.getText());
   }
 
   @Test
@@ -136,7 +136,8 @@ public class UserDialogTest extends SpringUIUnitTest {
     dialog.setUserId(user.getId());
 
     verify(dialog.form).setUser(user);
-    assertEquals(resources.message(HEADER, 1, user.getName()), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, user.getName()),
+        dialog.getHeaderTitle());
   }
 
   @Test
@@ -148,7 +149,8 @@ public class UserDialogTest extends SpringUIUnitTest {
     dialog.setUserId(user.getId());
 
     verify(dialog.form).setUser(user);
-    assertEquals(resources.message(HEADER, 1, user.getName()), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, user.getName()),
+        dialog.getHeaderTitle());
   }
 
   @Test
@@ -158,7 +160,7 @@ public class UserDialogTest extends SpringUIUnitTest {
     dialog.setUserId(null);
 
     verify(dialog.form).setUser(null);
-    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 0), dialog.getHeaderTitle());
   }
 
   @Test
