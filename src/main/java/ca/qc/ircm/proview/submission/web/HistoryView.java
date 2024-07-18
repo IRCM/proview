@@ -9,7 +9,6 @@ import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
 import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
 import static ca.qc.ircm.proview.history.ActivityProperties.USER;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
@@ -67,6 +66,9 @@ public class HistoryView extends VerticalLayout
       "<span .title='${item.descriptionTitle}'>${item.descriptionValue}</span>";
   public static final String EXPLANATION_SPAN =
       "<span .title='${item.explanationTitle}'>${item.explanationValue}</span>";
+  private static final String MESSAGES_PREFIX = messagePrefix(HistoryView.class);
+  private static final String ACTIVITY_PREFIX = messagePrefix(Activity.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String ACTION_TYPE_PREFIX = messagePrefix(ActionType.class);
   private static final long serialVersionUID = -6131172448162015562L;
   private static final Logger logger = LoggerFactory.getLogger(HistoryView.class);
@@ -133,20 +135,17 @@ public class HistoryView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    AppResources resources = new AppResources(getClass(), getLocale());
-    AppResources activityResources = new AppResources(Activity.class, getLocale());
-    AppResources webResources = new AppResources(Constants.class, getLocale());
-    String viewHeader = webResources.message(VIEW);
+    String viewHeader = getTranslation(CONSTANTS_PREFIX + VIEW);
     view.setHeader(viewHeader).setFooter(viewHeader);
-    String userHeader = activityResources.message(USER);
+    String userHeader = getTranslation(ACTIVITY_PREFIX + USER);
     user.setHeader(userHeader).setFooter(userHeader);
-    String typeHeader = activityResources.message(ACTION_TYPE);
+    String typeHeader = getTranslation(ACTIVITY_PREFIX + ACTION_TYPE);
     type.setHeader(typeHeader).setFooter(typeHeader);
-    String dateHeader = activityResources.message(TIMESTAMP);
+    String dateHeader = getTranslation(ACTIVITY_PREFIX + TIMESTAMP);
     date.setHeader(dateHeader).setFooter(dateHeader);
-    String descriptionHeader = resources.message(DESCRIPTION);
+    String descriptionHeader = getTranslation(MESSAGES_PREFIX + DESCRIPTION);
     description.setHeader(descriptionHeader).setFooter(descriptionHeader);
-    String explanationHeader = activityResources.message(EXPLANATION);
+    String explanationHeader = getTranslation(ACTIVITY_PREFIX + EXPLANATION);
     explanation.setHeader(explanationHeader).setFooter(explanationHeader);
     updateHeader();
   }
@@ -156,19 +155,17 @@ public class HistoryView extends VerticalLayout
   }
 
   private void updateHeader() {
-    AppResources resources = new AppResources(getClass(), getLocale());
     if (submission != null && submission.getId() != null) {
-      header.setText(resources.message(HEADER, submission.getExperiment()));
+      header.setText(getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()));
     } else {
-      header.setText(resources.message(HEADER, ""));
+      header.setText(getTranslation(MESSAGES_PREFIX + HEADER, ""));
     }
   }
 
   @Override
   public String getPageTitle() {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(Constants.class, getLocale());
-    return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+    return getTranslation(MESSAGES_PREFIX + TITLE,
+        getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
   }
 
   @Override
@@ -212,8 +209,8 @@ public class HistoryView extends VerticalLayout
       treatmentDialog.setTreatmentId(((Treatment) record).getId());
       treatmentDialog.open();
     } else {
-      AppResources resources = new AppResources(HistoryView.class, locale);
-      showNotification(resources.message(VIEW_ERROR, record.getClass().getSimpleName()));
+      showNotification(
+          getTranslation(MESSAGES_PREFIX + VIEW_ERROR, record.getClass().getSimpleName()));
     }
     logger.trace("view activity {}", activity);
   }

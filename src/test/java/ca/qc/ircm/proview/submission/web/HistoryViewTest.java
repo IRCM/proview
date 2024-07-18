@@ -32,7 +32,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
@@ -80,6 +79,9 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class HistoryViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(HistoryView.class);
+  private static final String ACTIVITY_PREFIX = messagePrefix(Activity.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String ACTION_TYPE_PREFIX = messagePrefix(ActionType.class);
   private HistoryView view;
   @MockBean
@@ -105,9 +107,6 @@ public class HistoryViewTest extends SpringUIUnitTest {
   @Captor
   private ArgumentCaptor<LitRenderer<Activity>> litRendererCaptor;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(HistoryView.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
-  private AppResources activityResources = new AppResources(Activity.class, locale);
   private List<Activity> activities;
 
   /**
@@ -137,22 +136,29 @@ public class HistoryViewTest extends SpringUIUnitTest {
   @Test
   public void labels() {
     Submission submission = submissionRepository.findById(1L).get();
-    assertEquals(resources.message(HEADER, submission.getExperiment()), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
+        view.header.getText());
     HeaderRow header = view.activities.getHeaderRows().get(0);
     FooterRow footer = view.activities.getFooterRows().get(0);
-    assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
-    assertEquals(webResources.message(VIEW), footer.getCell(view.view).getText());
-    assertEquals(activityResources.message(USER), header.getCell(view.user).getText());
-    assertEquals(activityResources.message(USER), footer.getCell(view.user).getText());
-    assertEquals(activityResources.message(ACTION_TYPE), header.getCell(view.type).getText());
-    assertEquals(activityResources.message(ACTION_TYPE), footer.getCell(view.type).getText());
-    assertEquals(activityResources.message(TIMESTAMP), header.getCell(view.date).getText());
-    assertEquals(activityResources.message(TIMESTAMP), footer.getCell(view.date).getText());
-    assertEquals(resources.message(DESCRIPTION), header.getCell(view.description).getText());
-    assertEquals(resources.message(DESCRIPTION), footer.getCell(view.description).getText());
-    assertEquals(activityResources.message(EXPLANATION),
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), footer.getCell(view.view).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + USER), header.getCell(view.user).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + USER), footer.getCell(view.user).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + ACTION_TYPE),
+        header.getCell(view.type).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + ACTION_TYPE),
+        footer.getCell(view.type).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + TIMESTAMP),
+        header.getCell(view.date).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + TIMESTAMP),
+        footer.getCell(view.date).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + DESCRIPTION),
+        header.getCell(view.description).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + DESCRIPTION),
+        footer.getCell(view.description).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + EXPLANATION),
         header.getCell(view.explanation).getText());
-    assertEquals(activityResources.message(EXPLANATION),
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + EXPLANATION),
         footer.getCell(view.explanation).getText());
   }
 
@@ -160,26 +166,30 @@ public class HistoryViewTest extends SpringUIUnitTest {
   public void localeChange() {
     Submission submission = submissionRepository.findById(1L).get();
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(HistoryView.class, locale);
-    final AppResources activityResources = new AppResources(Activity.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER, submission.getExperiment()), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
+        view.header.getText());
     HeaderRow header = view.activities.getHeaderRows().get(0);
     FooterRow footer = view.activities.getFooterRows().get(0);
-    assertEquals(webResources.message(VIEW), header.getCell(view.view).getText());
-    assertEquals(webResources.message(VIEW), footer.getCell(view.view).getText());
-    assertEquals(activityResources.message(USER), header.getCell(view.user).getText());
-    assertEquals(activityResources.message(USER), footer.getCell(view.user).getText());
-    assertEquals(activityResources.message(ACTION_TYPE), header.getCell(view.type).getText());
-    assertEquals(activityResources.message(ACTION_TYPE), footer.getCell(view.type).getText());
-    assertEquals(activityResources.message(TIMESTAMP), header.getCell(view.date).getText());
-    assertEquals(activityResources.message(TIMESTAMP), footer.getCell(view.date).getText());
-    assertEquals(resources.message(DESCRIPTION), header.getCell(view.description).getText());
-    assertEquals(resources.message(DESCRIPTION), footer.getCell(view.description).getText());
-    assertEquals(activityResources.message(EXPLANATION),
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), footer.getCell(view.view).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + USER), header.getCell(view.user).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + USER), footer.getCell(view.user).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + ACTION_TYPE),
+        header.getCell(view.type).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + ACTION_TYPE),
+        footer.getCell(view.type).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + TIMESTAMP),
+        header.getCell(view.date).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + TIMESTAMP),
+        footer.getCell(view.date).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + DESCRIPTION),
+        header.getCell(view.description).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + DESCRIPTION),
+        footer.getCell(view.description).getText());
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + EXPLANATION),
         header.getCell(view.explanation).getText());
-    assertEquals(activityResources.message(EXPLANATION),
+    assertEquals(view.getTranslation(ACTIVITY_PREFIX + EXPLANATION),
         footer.getCell(view.explanation).getText());
   }
 
@@ -302,7 +312,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     test(view.activities).doubleClickRow(0);
 
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(VIEW_ERROR, Plate.class.getSimpleName()),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + VIEW_ERROR, Plate.class.getSimpleName()),
         test(notification).getText());
   }
 
@@ -314,7 +324,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     test(view.activities).doubleClickRow(0);
 
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(VIEW_ERROR, Object.class.getSimpleName()),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + VIEW_ERROR, Object.class.getSimpleName()),
         test(notification).getText());
   }
 
@@ -325,14 +335,14 @@ public class HistoryViewTest extends SpringUIUnitTest {
     test(view.activities).doubleClickRow(0);
 
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(VIEW_ERROR, Object.class.getSimpleName()),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + VIEW_ERROR, Object.class.getSimpleName()),
         test(notification).getText());
   }
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 
   @Test
@@ -344,7 +354,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, 12L);
     verify(submissionService).get(12L);
     assertEquals(1L, view.getSubmissionId());
-    assertEquals(resources.message(HEADER, experiment), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, experiment), view.header.getText());
   }
 
   @Test
@@ -353,7 +363,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, 12L);
     verify(submissionService).get(12L);
     assertNull(view.getSubmissionId());
-    assertEquals(resources.message(HEADER, ""), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, ""), view.header.getText());
   }
 
   @Test
@@ -361,6 +371,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, null);
     Submission submission = submissionRepository.findById(1L).get();
     assertEquals(1L, view.getSubmissionId());
-    assertEquals(resources.message(HEADER, submission.getExperiment()), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
+        view.header.getText());
   }
 }
