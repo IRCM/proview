@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.doubleClickItem;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.functions;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
@@ -42,7 +43,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.SwitchUserService;
@@ -86,6 +86,9 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class UsersViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(UsersView.class);
+  private static final String USER_PREFIX = messagePrefix(User.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private UsersView view;
   @MockBean
   private UserService service;
@@ -100,9 +103,6 @@ public class UsersViewTest extends SpringUIUnitTest {
   @Autowired
   private AuthenticatedUser authenticatedUser;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(UsersView.class, locale);
-  private AppResources userResources = new AppResources(User.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
   private List<User> users;
 
   /**
@@ -161,77 +161,90 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     HeaderRow headerRow = view.users.getHeaderRows().get(0);
     FooterRow footerRow = view.users.getFooterRows().get(0);
-    assertEquals(webResources.message(EDIT), headerRow.getCell(view.edit).getText());
-    assertEquals(webResources.message(EDIT), footerRow.getCell(view.edit).getText());
-    assertEquals(userResources.message(EMAIL), headerRow.getCell(view.email).getText());
-    assertEquals(userResources.message(EMAIL), footerRow.getCell(view.email).getText());
-    assertEquals(userResources.message(NAME), headerRow.getCell(view.name).getText());
-    assertEquals(userResources.message(NAME), footerRow.getCell(view.name).getText());
-    assertEquals(userResources.message(LABORATORY), headerRow.getCell(view.laboratory).getText());
-    assertEquals(userResources.message(LABORATORY), footerRow.getCell(view.laboratory).getText());
-    assertEquals(userResources.message(ACTIVE), headerRow.getCell(view.active).getText());
-    assertEquals(userResources.message(ACTIVE), footerRow.getCell(view.active).getText());
-    assertEquals(webResources.message(ALL), view.emailFilter.getPlaceholder());
-    assertEquals(webResources.message(ALL), view.nameFilter.getPlaceholder());
-    assertEquals(webResources.message(ALL), view.laboratoryFilter.getPlaceholder());
-    assertEquals(webResources.message(ALL),
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + EDIT),
+        headerRow.getCell(view.edit).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + EDIT),
+        footerRow.getCell(view.edit).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + EMAIL), headerRow.getCell(view.email).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + EMAIL), footerRow.getCell(view.email).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + NAME), headerRow.getCell(view.name).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + NAME), footerRow.getCell(view.name).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + LABORATORY),
+        headerRow.getCell(view.laboratory).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + LABORATORY),
+        footerRow.getCell(view.laboratory).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + ACTIVE),
+        headerRow.getCell(view.active).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + ACTIVE),
+        footerRow.getCell(view.active).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + ALL), view.emailFilter.getPlaceholder());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + ALL), view.nameFilter.getPlaceholder());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + ALL),
+        view.laboratoryFilter.getPlaceholder());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + ALL),
         view.activeFilter.getItemLabelGenerator().apply(Optional.empty()));
-    assertEquals(userResources.message(property(ACTIVE, false)),
+    assertEquals(view.getTranslation(USER_PREFIX + property(ACTIVE, false)),
         view.activeFilter.getItemLabelGenerator().apply(Optional.of(false)));
-    assertEquals(userResources.message(property(ACTIVE, true)),
+    assertEquals(view.getTranslation(USER_PREFIX + property(ACTIVE, true)),
         view.activeFilter.getItemLabelGenerator().apply(Optional.of(true)));
-    assertEquals(resources.message(ADD), view.add.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ADD), view.add.getText());
     validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
-    assertEquals(resources.message(SWITCH_USER), view.switchUser.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SWITCH_USER), view.switchUser.getText());
     validateIcon(VaadinIcon.BUG.create(), view.switchUser.getIcon());
-    assertEquals(resources.message(VIEW_LABORATORY), view.viewLaboratory.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + VIEW_LABORATORY),
+        view.viewLaboratory.getText());
     validateIcon(VaadinIcon.EDIT.create(), view.viewLaboratory.getIcon());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(UsersView.class, locale);
-    final AppResources userResources = new AppResources(User.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     HeaderRow headerRow = view.users.getHeaderRows().get(0);
     FooterRow footerRow = view.users.getFooterRows().get(0);
-    assertEquals(webResources.message(EDIT), headerRow.getCell(view.edit).getText());
-    assertEquals(webResources.message(EDIT), footerRow.getCell(view.edit).getText());
-    assertEquals(userResources.message(EMAIL), headerRow.getCell(view.email).getText());
-    assertEquals(userResources.message(EMAIL), footerRow.getCell(view.email).getText());
-    assertEquals(userResources.message(NAME), headerRow.getCell(view.name).getText());
-    assertEquals(userResources.message(NAME), footerRow.getCell(view.name).getText());
-    assertEquals(userResources.message(LABORATORY), headerRow.getCell(view.laboratory).getText());
-    assertEquals(userResources.message(LABORATORY), footerRow.getCell(view.laboratory).getText());
-    assertEquals(userResources.message(ACTIVE), headerRow.getCell(view.active).getText());
-    assertEquals(userResources.message(ACTIVE), footerRow.getCell(view.active).getText());
-    assertEquals(webResources.message(ALL), view.emailFilter.getPlaceholder());
-    assertEquals(webResources.message(ALL), view.nameFilter.getPlaceholder());
-    assertEquals(webResources.message(ALL), view.laboratoryFilter.getPlaceholder());
-    assertEquals(webResources.message(ALL),
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + EDIT),
+        headerRow.getCell(view.edit).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + EDIT),
+        footerRow.getCell(view.edit).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + EMAIL), headerRow.getCell(view.email).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + EMAIL), footerRow.getCell(view.email).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + NAME), headerRow.getCell(view.name).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + NAME), footerRow.getCell(view.name).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + LABORATORY),
+        headerRow.getCell(view.laboratory).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + LABORATORY),
+        footerRow.getCell(view.laboratory).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + ACTIVE),
+        headerRow.getCell(view.active).getText());
+    assertEquals(view.getTranslation(USER_PREFIX + ACTIVE),
+        footerRow.getCell(view.active).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + ALL), view.emailFilter.getPlaceholder());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + ALL), view.nameFilter.getPlaceholder());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + ALL),
+        view.laboratoryFilter.getPlaceholder());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + ALL),
         view.activeFilter.getItemLabelGenerator().apply(Optional.empty()));
-    assertEquals(userResources.message(property(ACTIVE, false)),
+    assertEquals(view.getTranslation(USER_PREFIX + property(ACTIVE, false)),
         view.activeFilter.getItemLabelGenerator().apply(Optional.of(false)));
-    assertEquals(userResources.message(property(ACTIVE, true)),
+    assertEquals(view.getTranslation(USER_PREFIX + property(ACTIVE, true)),
         view.activeFilter.getItemLabelGenerator().apply(Optional.of(true)));
-    assertEquals(resources.message(ADD), view.add.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ADD), view.add.getText());
     validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
-    assertEquals(resources.message(SWITCH_USER), view.switchUser.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SWITCH_USER), view.switchUser.getText());
     validateIcon(VaadinIcon.BUG.create(), view.switchUser.getIcon());
-    assertEquals(resources.message(VIEW_LABORATORY), view.viewLaboratory.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + VIEW_LABORATORY),
+        view.viewLaboratory.getText());
     validateIcon(VaadinIcon.EDIT.create(), view.viewLaboratory.getIcon());
   }
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 
   @Test
@@ -319,7 +332,7 @@ public class UsersViewTest extends SpringUIUnitTest {
               : ButtonVariant.LUMO_ERROR.getVariantName(),
           activeRenderer.getValueProviders().get("activeTheme").apply(user));
       assertTrue(activeRenderer.getValueProviders().containsKey("activeValue"));
-      assertEquals(userResources.message(property(ACTIVE, user.isActive())),
+      assertEquals(view.getTranslation(USER_PREFIX + property(ACTIVE, user.isActive())),
           activeRenderer.getValueProviders().get("activeValue").apply(user));
       assertTrue(activeRenderer.getValueProviders().containsKey("activeIcon"));
       assertEquals(user.isActive() ? "vaadin:eye" : "vaadin:eye-slash",
@@ -562,7 +575,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     verify(switchUserService, never()).switchUser(any(), any());
     assertTrue($(UsersView.class).exists());
     assertTrue(view.error.isVisible());
-    assertEquals(resources.message(USERS_REQUIRED), view.error.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED), view.error.getText());
   }
 
   @Test
@@ -586,7 +599,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     verify(laboratoryService, never()).get(any());
     assertFalse($(LaboratoryDialog.class).exists());
     assertTrue(view.error.isVisible());
-    assertEquals(resources.message(USERS_REQUIRED), view.error.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED), view.error.getText());
   }
 
   @Test
@@ -646,6 +659,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     view.afterNavigation(event);
 
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SWITCH_FAILED), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SWITCH_FAILED),
+        test(notification).getText());
   }
 }
