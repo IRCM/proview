@@ -36,6 +36,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 public class ProfileViewItTest extends AbstractTestBenchTestCase {
   private static final String MESSAGES_PREFIX = messagePrefix(ProfileView.class);
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @Autowired
   private UserRepository repository;
   @Autowired
@@ -72,8 +73,12 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
   public void title() throws Throwable {
     open();
 
-    assertEquals(resources(ProfileView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    Locale locale = currentLocale();
+    String applicationName =
+        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        getDriver().getTitle());
   }
 
   @Test

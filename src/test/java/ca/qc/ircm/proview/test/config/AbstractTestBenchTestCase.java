@@ -90,10 +90,6 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     return optlocale.orElse(null);
   }
 
-  protected AppResources resources(Class<?> baseClass) {
-    return new AppResources(baseClass, currentLocale());
-  }
-
   protected <T> Optional<T> optional(Supplier<T> supplier) {
     try {
       return Optional.of(supplier.get());

@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.LaboratoryDialog.SAVED;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +14,7 @@ import ca.qc.ircm.proview.user.LaboratoryRepository;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.transaction.TestTransaction;
 
@@ -22,8 +24,11 @@ import org.springframework.test.context.transaction.TestTransaction;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
+  private static final String MESSAGES_PREFIX = messagePrefix(LaboratoryDialog.class);
   @Autowired
   private LaboratoryRepository repository;
+  @Autowired
+  private MessageSource messageSource;
   private String name = "new laboratory name";
 
   private void open() {
@@ -61,7 +66,9 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
     TestTransaction.end();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(resources(LaboratoryDialog.class).message(SAVED, name), notification.getText());
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { name }, currentLocale()),
+        notification.getText());
     Laboratory laboratory = repository.findById(1L).get();
     assertEquals(name, laboratory.getName());
     assertEquals("Robot", laboratory.getDirector());

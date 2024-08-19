@@ -77,6 +77,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
   private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
@@ -251,8 +252,12 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   public void title() throws Throwable {
     open();
 
-    assertEquals(resources(SubmissionView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    Locale locale = currentLocale();
+    String applicationName =
+        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        getDriver().getTitle());
   }
 
   @Test

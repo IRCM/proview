@@ -16,6 +16,7 @@ import ca.qc.ircm.proview.user.ForgotPasswordRepository;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
 import java.util.List;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import org.springframework.context.MessageSource;
 @TestBenchTestAnnotations
 public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewItTest.class);
   @Autowired
@@ -44,8 +46,12 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   public void title() throws Throwable {
     open();
 
-    assertEquals(resources(ForgotPasswordView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    Locale locale = currentLocale();
+    String applicationName =
+        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        getDriver().getTitle());
   }
 
   @Test

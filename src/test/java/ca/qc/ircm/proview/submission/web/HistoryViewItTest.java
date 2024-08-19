@@ -16,6 +16,7 @@ import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
 import ca.qc.ircm.proview.web.SigninViewElement;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -28,7 +29,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class HistoryViewItTest extends AbstractTestBenchTestCase {
+  private static final String MESSAGES_PREFIX = messagePrefix(HistoryView.class);
   private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
+  private static final String MS_ANALYSIS_DIALOG_PREFIX = messagePrefix(MsAnalysisDialog.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @Autowired
   private MessageSource messageSource;
 
@@ -64,8 +68,12 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   public void title() throws Throwable {
     open();
 
-    assertEquals(resources(HistoryView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    Locale locale = currentLocale();
+    String applicationName =
+        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        getDriver().getTitle());
   }
 
   @Test
@@ -93,8 +101,8 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     view.activities().view(5).click();
     MsAnalysisDialogElement dialog = view.msAnalysisDialog();
     assertTrue(dialog.isOpen());
-    assertEquals(resources(MsAnalysisDialog.class).message(MsAnalysisDialog.HEADER),
-        dialog.header().getText());
+    assertEquals(messageSource.getMessage(MS_ANALYSIS_DIALOG_PREFIX + MsAnalysisDialog.HEADER, null,
+        currentLocale()), dialog.header().getText());
   }
 
   @Test

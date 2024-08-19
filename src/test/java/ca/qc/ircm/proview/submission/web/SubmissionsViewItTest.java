@@ -17,6 +17,7 @@ import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.button.ButtonVariant;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import org.slf4j.Logger;
@@ -33,8 +34,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
+  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
   private static final String SAMPLES_STATUS_DIALOG_PREFIX =
       messagePrefix(SamplesStatusDialog.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewItTest.class);
   @Autowired
@@ -60,8 +63,12 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   public void title() throws Throwable {
     open();
 
-    assertEquals(resources(SubmissionsView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    Locale locale = currentLocale();
+    String applicationName =
+        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        getDriver().getTitle());
   }
 
   @Test
